@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx 
+       	   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	<context:annotation-config />
+	<tx:annotation-driven />
+
+	<bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+				<!-- add other properties file like *-qa.properties to locations but 
+					only include one. -->
+            	<value>file:/web_apps/server/shercolor/deploy/shercolorcommon.properties</value>
+           <!--     <value>classpath:config/spring/shercolorcommon.properties</value> -->
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+
+	 <bean id="dataSource" class="oracle.ucp.jdbc.PoolDataSourceFactory" factory-method="getPoolDataSource">
+	    <property name="URL" value="${jdbc.url.${dbEnv}}" />
+	    <property name="user" value="${jdbc.username.${dbEnv}}" />
+	    <property name="password" value="${jdbc.password.${dbEnv}}" />
+	    <property name="connectionFactoryClassName" value="oracle.jdbc.pool.OracleDataSource" />
+	    <property name="connectionPoolName" value="ANAG_POOL" />
+	    <property name="minPoolSize" value="5" />
+	    <property name="maxPoolSize" value="10" />
+	    <!-- does not work with jboss eap 6/tomcat 7 property name="initialPoolSize" value="5" /> -->
+	    <property name="inactiveConnectionTimeout" value="120" />
+	    <property name="validateConnectionOnBorrow" value="true" />
+	    <property name="maxStatements" value="10" />
+	</bean>  
+ 
+    <!-- Each domain file needs to registered here -->
+	<bean id="sessionFactory"	class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+		<property name="annotatedClasses">
+			<list>
+				<value>com.sherwin.shercolor.common.domain.CdsCieStds</value>
+				<value>com.sherwin.shercolor.common.domain.CdsClrnt</value>
+				<value>com.sherwin.shercolor.common.domain.CdsClrntCost</value>
+				<value>com.sherwin.shercolor.common.domain.CdsClrntIncr</value>
+				<value>com.sherwin.shercolor.common.domain.CdsClrntList</value>
+				<value>com.sherwin.shercolor.common.domain.CdsClrntSys</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorBase</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorMast</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorRgbv1</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorStand</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorXyzRgbConvert</value>
+				<value>com.sherwin.shercolor.common.domain.CdsFbColor</value>
+				<value>com.sherwin.shercolor.common.domain.CdsFbProd</value>
+				<value>com.sherwin.shercolor.common.domain.CdsFormulaChgList</value>
+				<value>com.sherwin.shercolor.common.domain.CdsMessage</value>
+				<value>com.sherwin.shercolor.common.domain.CdsMiscCodes</value>
+				<value>com.sherwin.shercolor.common.domain.CdsProd</value>
+				<value>com.sherwin.shercolor.common.domain.CdsProdCharzd</value>
+				<value>com.sherwin.shercolor.common.domain.CdsProdFamily</value>
+				<value>com.sherwin.shercolor.common.domain.CdsProdList</value>
+				<value>com.sherwin.shercolor.common.domain.CdsProdNotes</value>
+				<value>com.sherwin.shercolor.common.domain.CdsRoomList</value>
+				<value>com.sherwin.shercolor.common.domain.PosProd</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebColorantsTxt</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebDevices</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebEcal</value>	
+				<value>com.sherwin.shercolor.common.domain.CustWebJobFields</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebLoginTransform</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebParms</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebTinterEvents</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebTinterEventsDetail</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebTran</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebTranCorr</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebActiveProds</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebDealer</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebDealerCust</value>
+				<value>com.sherwin.shercolor.common.domain.CustWebDealerCustOrd</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="locale" class="java.util.Locale">
+		<constructor-arg value="en"/>
+		<constructor-arg value="US"/>
+	</bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename">
+		<value>source/shercolorcommon</value>
+		</property>	
+	</bean>
+	
+	<bean id="SherColorExceptionBuilder" name="SherColorExceptionBuilder" class="com.sherwin.shercolor.common.exception.SherColorExceptionBuilderImpl">
+	</bean>
+	
+<!-- place DAO beans here --> 
+	<bean id="CdsClrntSysDao" class="com.sherwin.shercolor.common.dao.CdsClrntSysDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsCieStdsDao" class="com.sherwin.shercolor.common.dao.CdsCieStdsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsClrntDaoImpl" class="com.sherwin.shercolor.common.dao.CdsClrntDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsClrntIncrDaoImpl" class="com.sherwin.shercolor.common.dao.CdsClrntIncrDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsColorBaseDao" class="com.sherwin.shercolor.common.dao.CdsColorBaseDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsColorMastDao" class="com.sherwin.shercolor.common.dao.CdsColorMastDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsClrntListDao" class="com.sherwin.shercolor.common.dao.CdsClrntListDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsColorStandDao" class="com.sherwin.shercolor.common.dao.CdsColorStandDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsColorXyzRgbConvertDao" class="com.sherwin.shercolor.common.dao.CdsColorXyzRgbConvertDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsFormulaChgListDao" class="com.sherwin.shercolor.common.dao.CdsFormulaChgListDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsMessageDao" class="com.sherwin.shercolor.common.dao.CdsMessageDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsMiscCodesDao" class="com.sherwin.shercolor.common.dao.CdsMiscCodesDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="PosProdDao" class="com.sherwin.shercolor.common.dao.PosProdDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsClrntCostDao" class="com.sherwin.shercolor.common.dao.CdsClrntCostDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CdsProdDao" class="com.sherwin.shercolor.common.dao.CdsProdDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsProdCharzdDao" class="com.sherwin.shercolor.common.dao.CdsProdCharzdDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsProdListDao" class="com.sherwin.shercolor.common.dao.CdsProdListDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsProdNotesDao" class="com.sherwin.shercolor.common.dao.CdsProdNotesDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CdsFbProdDao" class="com.sherwin.shercolor.common.dao.CdsFbProdDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CdsFbColorDao" class="com.sherwin.shercolor.common.dao.CdsFbColorDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CdsProdFamilyDao" class="com.sherwin.shercolor.common.dao.CdsProdFamilyDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CdsRoomListDao" class="com.sherwin.shercolor.common.dao.CdsRoomListDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebColorantsTxtDao" class="com.sherwin.shercolor.common.dao.CustWebColorantsTxtDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CustWebDevicesDao" class="com.sherwin.shercolor.common.dao.CustWebDevicesDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CustWebEcalDao" class="com.sherwin.shercolor.common.dao.CustWebEcalDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CustWebJobFieldsDao" class="com.sherwin.shercolor.common.dao.CustWebJobFieldsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CustWebLoginTransformDao" class="com.sherwin.shercolor.common.dao.CustWebLoginTransformDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="CustWebParmsDao" class="com.sherwin.shercolor.common.dao.CustWebParmsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebTinterEventsDao" class="com.sherwin.shercolor.common.dao.CustWebTinterEventsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebTinterEventsDetailDao" class="com.sherwin.shercolor.common.dao.CustWebTinterEventsDetailDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebTranDao" class="com.sherwin.shercolor.common.dao.CustWebTranDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebTranCorrDao" class="com.sherwin.shercolor.common.dao.CustWebTranCorrDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebActiveProdsDao" class="com.sherwin.shercolor.common.dao.CustWebActiveProdsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="colorCoordinatesCalculator" name="colorCoordinatesCalculator" class="com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculatorImpl">
+	</bean>
+	<bean id="colorSpaceConverter" name="colorSpaceConverter" class="com.sherwin.shercolor.colormath.functions.ColorSpaceConverterImpl">
+	</bean>
+	<bean id="CustWebDealerDao" class="com.sherwin.shercolor.common.dao.CustWebDealerDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	<bean id="CustWebDealerCustDao" class="com.sherwin.shercolor.common.dao.CustWebDealerCustDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+		<bean id="CustWebDealerCustOrdDao" class="com.sherwin.shercolor.common.dao.CustWebDealerCustOrdDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	
+<!-- place validator beans here -->
+ 	<bean id="colorValidator" name="colorValidator" class="com.sherwin.shercolor.common.validation.ColorValidatorImpl"> 
+ 	</bean> 
+ 	<bean id="productColorValidator" name="productColorValidator" class="com.sherwin.shercolor.common.validation.ProductColorValidatorImpl"> 
+ 	</bean> 
+ 	<bean id="productValidator" name="productValidator" class="com.sherwin.shercolor.common.validation.ProductValidatorImpl"> 
+ 	</bean> 
+ 	
+<!-- place service beans here --> 
+ 	<bean id="colorMastService" name="colorMastService" class="com.sherwin.shercolor.common.service.ColorMastServiceImpl"> 
+ 	</bean> 
+	<bean id="colorBaseService" name="colorBaseService" class="com.sherwin.shercolor.common.service.ColorBaseServiceImpl">
+	</bean>
+	<bean id="productService" name="productService"	class="com.sherwin.shercolor.common.service.ProductServiceImpl">
+	</bean>
+	<bean id="productColorService" name="productColorService" class="com.sherwin.shercolor.common.service.ProductColorServiceImpl">
+	</bean>
+	<bean id="customerService" name="customerService" class="com.sherwin.shercolor.common.service.CustomerServiceImpl">
+	</bean>
+	<bean id="colorantService" name="colorantService" class="com.sherwin.shercolor.common.service.ColorantServiceImpl">
+	</bean>
+	<bean id="colorService" name="colorService" class="com.sherwin.shercolor.common.service.ColorServiceImpl">
+	</bean>
+	<bean id="EcalService" name="EcalService" class="com.sherwin.shercolor.common.service.EcalServiceImpl">
+	</bean>
+	<bean id="tranHistoryService" name="tranHistoryService" class="com.sherwin.shercolor.common.service.TranHistoryServiceImpl">
+	</bean>
+	<bean id="formulationService" name="formulationService" class="com.sherwin.shercolor.common.service.FormulationServiceImpl">
+		<property name="oeBaseUrl" value="${oeBaseUrl.${dbEnv}}" />
+	</bean>
+	<bean id="tinterService" name="tinterService" class="com.sherwin.shercolor.common.service.TinterServiceImpl">
+	</bean>
+	<bean id="customerOrderService" name="customerOrderService" class="com.sherwin.shercolor.common.service.CustomerOrderServiceImpl">
+	</bean>
+
+</beans> 

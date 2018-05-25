@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C677A50A-476A-40DB-A4EA-956C6CC08835}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWDeviceHandler-Common.Net", "SWDeviceHandler-Common.Net\SWDeviceHandler-Common.Net.csproj", "{05819784-5314-4BB0-BD1C-58999411FB4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWFluid.Net", "SWFluid.Net\SWFluid.Net.csproj", "{4B3E01F9-AA55-4715-847F-45B0795BD459}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMAsyncSocketServer.Net", "FMAsyncSocketServer.Net\FMAsyncSocketServer.Net.csproj", "{3191B20A-612F-43AC-B799-F03A12E4B9AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMAsyncSocketServer1Tests.Net", "FMAsyncSocketServer1Tests.Net\FMAsyncSocketServer1Tests.Net.csproj", "{877851A7-393C-48CA-994C-C3FD3C4D360E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMTinter.Tests1.Net", "FMTinter.Tests1.Net\FMTinter.Tests1.Net.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05819784-5314-4BB0-BD1C-58999411FB4B} = {05819784-5314-4BB0-BD1C-58999411FB4B}
+		{4B3E01F9-AA55-4715-847F-45B0795BD459} = {4B3E01F9-AA55-4715-847F-45B0795BD459}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05819784-5314-4BB0-BD1C-58999411FB4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05819784-5314-4BB0-BD1C-58999411FB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05819784-5314-4BB0-BD1C-58999411FB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05819784-5314-4BB0-BD1C-58999411FB4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B3E01F9-AA55-4715-847F-45B0795BD459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B3E01F9-AA55-4715-847F-45B0795BD459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B3E01F9-AA55-4715-847F-45B0795BD459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B3E01F9-AA55-4715-847F-45B0795BD459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3191B20A-612F-43AC-B799-F03A12E4B9AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3191B20A-612F-43AC-B799-F03A12E4B9AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3191B20A-612F-43AC-B799-F03A12E4B9AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3191B20A-612F-43AC-B799-F03A12E4B9AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{877851A7-393C-48CA-994C-C3FD3C4D360E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{877851A7-393C-48CA-994C-C3FD3C4D360E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{877851A7-393C-48CA-994C-C3FD3C4D360E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{877851A7-393C-48CA-994C-C3FD3C4D360E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+		SolutionGuid = {7728595E-1AAF-4021-9A65-5D1BB800A8CE}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           				http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           				http://www.springframework.org/schema/aop
+           				http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+           				http://www.springframework.org/schema/tx 
+     	   				http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+           				http://www.springframework.org/schema/context
+           				http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+<!-- need this for hibernate session.  use with @Repository, @Transactional -->
+	<tx:annotation-driven transaction-manager="transactionManager" /> 
+	
+	<context:annotation-config />
+
+	<!-- Set base package for annotations looks for @Component and automagically creates a bean -->
+	<context:component-scan base-package="com.sherwin.shercolor.cal" />
+	<!-- TinterEventsExceptionBuilder -->
+<!-- com.sherwin.shercolor.tinterevents.exception -->
+    <bean id="locale" class="java.util.Locale">
+		<constructor-arg value="en_US"/>
+	</bean>
+
+	
+
+	<bean	class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+			</list>
+		</property>
+		
+		<property name="ignoreResourceNotFound" value="true" />
+	</bean>
+
+ 	 <bean id="dataSource" class="oracle.ucp.jdbc.PoolDataSourceFactory" factory-method="getPoolDataSource" >
+	    <property name="URL" value="${jdbc.url.${dbEnv}}" />
+	    <property name="user" value="${jdbc.username.${dbEnv}}" />
+	    <property name="password" value="${jdbc.password.${dbEnv}}" />
+	    <property name="connectionFactoryClassName" value="oracle.jdbc.pool.OracleDataSource" />
+	    <property name="connectionPoolName" value="ANAG_POOL" />
+	    <property name="minPoolSize" value="5" />
+	    <property name="maxPoolSize" value="10" />
+	    <property name="inactiveConnectionTimeout" value="120" />
+	    <property name="validateConnectionOnBorrow" value="true" />
+	    <property name="maxStatements" value="10" />
+	
+	
+	</bean>  
+<!-- 
+	Lou. Please follow this pattern. Any class or interface referenced by an action has to be included in session factory.
+	Note: 2 references in spring xml file for domain class and dao
+ -->
+ <!-- 				
+				<value>com.sherwin.shercolor.deltae.exception.DeltaeException</value>
+ -->			
+ 	<bean id="sessionFactory"	class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="annotatedClasses">
+			<list>
+				<value>com.sherwin.shercolor.cal.domain.CalTemplate</value>
+				<value>com.sherwin.shercolor.cal.domain.Ecal</value>
+				<value>com.sherwin.shercolor.cal.domain.Boo</value>
+ 			</list>
+		</property>
+	
+		<property name="dataSource" ref="dataSource" />
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource" />
+			
+	</bean>
+
+<!--  com.sherwin.shercolor.tinterevents.web.action.TinterEventsByStoreDateAction.tintereventsService -->
+<!-- <bean id="tintereventsService"  class="com.sherwin.shercolor.tinterevents.service.TinterEventsServiceImpl">
+
+</bean>
+
+<bean id="tintereventsStatusService"  class="com.sherwin.shercolor.tinterevents.service.TinterEventsStatusServiceImpl">
+
+</bean>
+<bean id="visitorsService"  class="com.sherwin.shercolor.tinterevents.service.VisitorsServiceImpl">
+
+</bean>
+
+-->
+	
+
+</beans>

@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+ 
+  <artifactId>SWSimTinter</artifactId>
+  <name>SWSimTinter</name>
+  	<scm>
+		<connection>scm:svn:http://storescolor/ShercolorWeb/SWSimTinter</connection>
+		<developerConnection>scm:svn:http://storescolor/ShercolorWeb/SWSimTinter</developerConnection>
+		<url>http://storescolor/ShercolorWeb/SWSimTinter</url>
+	</scm>
+   <parent>
+		<groupId>com.sherwin.shercolor.swdevicehandler</groupId>
+		<artifactId>SWDeviceHandler-MainPom</artifactId>
+		<version>0.0.15-SNAPSHOT</version>
+		<relativePath>../SWDeviceHandler-MainPom/pom.xml</relativePath>
+	</parent>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+    <plugins>
+  	    <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+   
+
+    </plugins>
+  </build>
+ 
+
+
+
+  	
+ 
+  <dependencies>
+  	<dependency>
+	    <groupId>net.java.dev.jna</groupId>
+	    <artifactId>jna</artifactId>
+	    <version>4.4.0</version>
+	</dependency>
+  	<dependency>
+  		<groupId>com.sherwin.shercolor.swdevicehandler</groupId>
+  		<artifactId>SWDeviceHandler-common</artifactId>
+  	</dependency>
+  </dependencies>
+</project>

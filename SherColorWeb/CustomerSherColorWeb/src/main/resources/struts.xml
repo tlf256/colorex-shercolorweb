@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.mapper.action.prefix.enabled" value="true" />
+	<package name="default" namespace="/" extends="struts-default,json-default">
+		<!-- define interceptor to use when not logged in.  We will add this interceptor ref to each action we want to require a login. -->
+		<interceptors>
+			<interceptor name="login" class="com.sherwin.shercolor.customershercolorweb.interceptor.LoginInterceptor" />
+			<interceptor name="nocache"	class="com.sherwin.shercolor.customershercolorweb.interceptor.NoCacheInterceptor" />
+			<interceptor-stack name="stack-with-login">
+				<interceptor-ref name="login" />
+				<interceptor-ref name="nocache" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		    <interceptor-stack name="jsonFromJspStack">
+		        <interceptor-ref name="defaultStack"/>
+		        <interceptor-ref name="json" />
+		    </interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="stack-with-login" />
+		<default-action-ref name="invalidLoginAction"/>
+		<action name="loginGetUserAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginUserAction" method="display">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success">/WEB-INF/pages/setLogin.jsp</result>
+			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="loginUserAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginUserAction" method="execute">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="login">/WEB-INF/pages/LoggedOut.jsp</result>
+			<result name="input">/WEB-INF/pages/setLogin.jsp</result>
+			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="expirepass" type="redirectAction">
+				<param name="actionName">passwordResetAction</param>
+				<param name="guid1">${guid1}</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="guid1">${guid1}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="loginAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAction" method="execute">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="login">/WEB-INF/pages/LoggedOut.jsp</result>
+			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="passwordResetAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="display">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success">/WEB-INF/pages/ChangePassword.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="passwordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="change">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="login">/WEB-INF/pages/LoggedOut.jsp</result>
+			<result name="input">/WEB-INF/pages/ChangePassword.jsp</result>
+			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="guid1">${guid1}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="logoutAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LogoutAction" method="display">
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>		
+			<result name="success" type="redirectAction">
+				<param name="actionName">logout2Action</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="goodCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SelectJobAction" method="reset">
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="logout2Action" class="com.sherwin.shercolor.customershercolorweb.web.action.LogoutAction" method="execute">
+		<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>		
+			<result name="success">/WEB-INF/pages/LoggedOut.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="loginAgainAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAgainAction" method="loginagain">		
+			<result name="success" type="redirect">
+				<param name="location">${sherLinkURL}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayDispenseColorantsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DispenseColorantsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/Dispense.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="dispenseConvertIncrementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DispenseColorantsAction" method="convert">
+			<interceptor-ref name="jsonFromJspStack"/>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="processColorantLevelsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorantLevelsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ColorantLevels.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="clrntLevelsUpdateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorantLevelsAction" method="update">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="setallfull">/WEB-INF/pages/ColorantLevels.jsp</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="listJobsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="swdhInstallAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeviceHandlerUtilityAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DeviceHandlerInstall.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="swdhTroubleshootAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeviceHandlerUtilityAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DeviceHandlerTroubleshoot.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="selectJobAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="startNewJob" class="com.sherwin.shercolor.customershercolorweb.web.action.SelectJobAction" method="startNewJob">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayJobFieldsAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayJobFieldsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessJobFieldsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetJobFields.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="processJobFieldsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessJobFieldsAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayJobFieldUpdateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessJobFieldsAction" method="displayupdate">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetJobFields.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="processJobFieldUpdateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessJobFieldsAction" method="executeupdate">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetJobFields.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayColorAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetColor.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroCalibrateAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/CalibrateSpectro.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroGetInfoAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroGetInfoAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetSpectroInfo.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroConfigureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroConfigureAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ConfigureSpectro.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroSaveAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroConfigureAction" method="saveNewSpectro">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="listProducts" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="listProducts">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+				<param name="root">options</param>
+			</result>
+		</action>
+		<action name="listColors" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="listColors">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+				<param name="root">options</param>
+			</result>
+		</action>
+
+		<action name="ProcessProductAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetClrntSys.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="ProcessClrntSysAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetFormulaOptions.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="userCancelAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SelectJobAction" method="reset">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="measure" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="MeasureColorNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="MeasureColorAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/MeasureColor.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="pctUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessPctAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetPercentage.jsp</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		<action name="deltaEYesAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessDeltaEAction" method="executeYes">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		<action name="deltaENoAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessDeltaEAction" method="executeNo">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="intExtUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessPctIntExtAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetPercentageIntExt.jsp</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		<action name="clrntUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="colorUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="productUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="productUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayClrntAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="clrntUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayVinylSafeAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="fbBaseUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessPctFormulaBookBaseAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetPercentageFormulaBookBase.jsp</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		
+		<action name="fbBase2UserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaBookBaseAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetFormulaBookBase.jsp</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		<action name="prodFamilyUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProdFamilyAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetPercentageFormulaBookBase.jsp</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		<action name="formulateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.GenerateFormulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="getpctfbbase" type="redirectAction">
+				<param name="actionName">displayFbBaseAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="getpct">/WEB-INF/pages/GetPercentage.jsp</result>
+			<result name="getpctintext" type="redirectAction">
+				<param name="actionName">displayIntExtAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="pickprodfam" type="redirectAction">
+				<param name="actionName">displayProdFamilyAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+<!-- 			<result name="getfbbase">/WEB-INF/pages/GetFormulaBookBase.jsp</result> -->
+			<result name="getfbbase" type="redirectAction">
+				<param name="actionName">displayFbBase2Action</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="manual" type="redirectAction">
+				<param name="actionName">displayManualFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="complete" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+
+		
+		<action name="displayIntExtAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessPctIntExtAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetPercentageIntExt.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
+		<action name="displayProdFamilyAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProdFamilyAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProdFamily.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
+		<action name="displayManualFormulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/EditFormula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+
+		<action name="displayFbBaseAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessPctFormulaBookBaseAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetPercentageFormulaBookBase.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
+		<action name="displayFbBase2Action" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaBookBaseAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetFormulaBookBase.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
+		<action name="displayClrntAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetClrntSys.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayVinylSafeAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="none">/WEB-INF/pages/FormulationError.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
+		<action name="displayVinylSafeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessVinylSafeAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetVinylSafeOption.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayLightSourceAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="vsUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessVinylSafeAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayLightSourceAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="vsUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessVinylSafeAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayLightSourceAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetIlluminantsOption.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">formulateAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="lsUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">formulateAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="lsUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="MfUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/EditFormula.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="recDirty">${recDirty}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayFormulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="errormsg">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="success">/WEB-INF/pages/DisplayFormula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="formulaUserPrintAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="print">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="test.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="downloadExeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadExeAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+			  	<param name="inputName">fileInputStream</param>
+			  	<param name="contentDisposition">attachment;filename="SWDHSetup.exe"</param>
+	  			<param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="formulaUserEditAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/EditFormula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="formulaUserCorrectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/CorrectFormula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="percentOfFormulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="percentAddition">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="percentAdjustmentAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="percentAdjustment">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="correctionConvertIncrementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="convertFormulaToDispenseItems">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="postCorrectionStatusAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="postContainerStatus">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="saveCorrectionStepAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="saveCorrectionStep">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="mergeCorrWithStartingFormAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="mergeCorrWithStartForm">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="formulaUserSaveAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="saveOnPrintAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveOnPrint">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="bumpDispenseCounterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="bumpDispense">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="stampSessionSpectroAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroUtilityAction" method="stampSession">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="stampSessionTinterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="stampSession">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="stampSessionTinterInitAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="stampSessionTinterInit">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="getSessionTinterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="getSession">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="decrementColorantLevelsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="decrementColorant">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="logTinterEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterEventAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="getNozzleVideoAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterVideoAction" method="getCleanNozzle">
+			<result name="success" type="stream">
+				<param name="contentType">${vidContentType}</param>
+				<param name="inputName">inputStream</param>"
+				<param name="contentDisposition">attachment;filename="${vidFileName}"</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		<action name="tinterPurgeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterPurgeAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/TinterPurge.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="tinterConfigAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterConfigAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/TinterConfig.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="ecalManagerAction"	class="com.sherwin.shercolor.customershercolorweb.web.action.EcalAction"	method="display">			
+			<result name="success">/WEB-INF/pages/Ecal.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			
+		</action>
+		<action name="GetTinterModelsAction"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterConfigAction"
+			method="AjaxGetModels">
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="error" type="json" />
+		</action>
+		<action name="GetCanisterList"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterConfigAction"
+			method="AjaxGetCanisterList">
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="error" type="json" />
+		</action>
+		<action name="SaveNewTinter"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterConfigAction"
+			method="SaveNewTinter">
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+					<param name="reqGuid">${reqGuid}</param>
+					<param name="reReadLocalHostTinter">${reReadLocalHostTinter}</param>
+			</result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/TinterConfig.jsp</result>
+			<result name="error">/WEB-INF/pages/TinterConfig.jsp</result>
+
+		</action>
+	
+
+		<action name="selectECal"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.EcalAction"
+			method="SelectEcal">
+			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+		
+		</action>
+		<action name="selectGData"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.EcalAction"
+			method="SelectGData">
+			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+		</action>
+
+		<action name="getECalList"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.EcalAction"
+			method="GetECalList">
+			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+		</action>
+
+		<action name="uploadEcal"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.EcalAction"
+			method="UploadEcal">
+			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+		</action>
+		<action name="getEcalsByCustomer"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.EcalAction"
+			method="GetEcalsByCustomer">
+			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>
+			<result name="success" type="json"></result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+		</action>
+		<action name="invalidLoginAction"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAgainAction"
+			method="invalidLogin">
+			<result name="ajax" type="json"></result>
+			<result name="success">/WEB-INF/pages/LoggedOut.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="listDealerCustomers" class="com.sherwin.shercolor.customershercolorweb.web.action.ListDealerCustomers" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplayDealerCustomers.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="listDealerCustomerOrders" class="com.sherwin.shercolor.customershercolorweb.web.action.ListDealerCustomerOrders" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrders.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="listDealerCustomerOrderDetail" class="com.sherwin.shercolor.customershercolorweb.web.action.ListDealerCustomerOrderDetail" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrderDetail.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+	</package>
+</struts>
