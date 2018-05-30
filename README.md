@@ -1,2 +1,2 @@
 # SherColor_SherColorWeb
-SherColor Web Repo
+SherColor Web Repository
