@@ -1,0 +1,15 @@
+.navbar-brandcenter {
+  transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
+}
+
+
+/* DEMO example styles for logo image */
+.navbar-brandcenter {
+  padding: 0px;
+}
+.navbar-brandcenter>img {
+  height: auto;
+  width: auto;
+}
