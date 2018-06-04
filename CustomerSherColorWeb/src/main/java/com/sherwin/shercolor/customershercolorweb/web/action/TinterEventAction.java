@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,14 +48,20 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			tintEvent.setTinterSerialNbr(tinter.getSerialNbr());
 			
 			
+			Date stampDate;
 			if(eventDate==null){
 				System.out.println("Event date is null");
+				stampDate = new Date();
 			} else {
 				System.out.println("Event date is " + eventDate.toString());
 				SimpleDateFormat jsdf = new SimpleDateFormat("EE MMM d y H:m:s 'GMT'Z (zz)");
-				
-				tintEvent.setDateTime(jsdf.parse(eventDate));
+				try {
+					stampDate = jsdf.parse(eventDate);
+				} catch (Exception e) {
+					stampDate = new Date();
+				}
 			}
+			tintEvent.setDateTime(stampDate);
 			
 			List<CustWebTinterEventsDetail> tedList = new ArrayList<CustWebTinterEventsDetail>();
 			if(tintEventDetail!=null){
