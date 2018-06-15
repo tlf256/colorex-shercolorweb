@@ -71,7 +71,11 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			SimpleDateFormat jsdf = new SimpleDateFormat("EE MMM d y H:m:s 'GMT'Z (zz)");
 			Date localeDateTime;
 			if(jsDateString!=null && !jsDateString.isEmpty()){
-				localeDateTime = jsdf.parse(jsDateString);
+				try {
+					localeDateTime = jsdf.parse(jsDateString);
+				} catch (Exception e) {
+					localeDateTime = new Date();
+				}
 			} else {
 				localeDateTime = new Date();
 			}
