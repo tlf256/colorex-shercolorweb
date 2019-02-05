@@ -95,11 +95,13 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			if(tinterList.size()>0) siteHasTinter = true;
 
 			sessionHasTinter = false;
-			if(tinter!=null && tinter.getModel()!=null && !tinter.getModel().isEmpty()){
+			// BMW: Update - 1/21/2018 - Added an additional conditional check here to prevent dispense
+			// 							 when creating a job that uses a colorant system that does not
+			//							 match the currently used tinter
+			if(tinter!=null && tinter.getModel()!=null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
 				sessionHasTinter = true;
 				// Setup Tinter Colorant Dispense Info for Formula being displayed
 				System.out.println("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
-
 				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
 				System.out.println("back from tinterService");
