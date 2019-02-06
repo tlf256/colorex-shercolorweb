@@ -727,13 +727,26 @@
 		}
 		
 		function wssBrowserCheck(){
+			
+			var wssCountFlag = false;
+		
 			if(wssCount === 0){
 				if (ws_tinter || ws_spectro && $("#startNewJob_newSession").val() === "true") {
-					if(!ws_tinter.validBrowser || !ws_spectro.validBrowser){
-						wssCount++;
-						$("#unsupportedBrowserModal").modal('show');
+					if(ws_tinter){
+						if(!ws_tinter.validBrowser){
+							wssCountFlag = true;
+						}
+					}else if (ws_spectro) {
+						if(!ws_spectro.validBrowser){
+							wssCountFlag = true;
+						}
 					}
 				}
+			}
+			
+			if(wssCountFlag){
+				wssCount++;
+				$("#unsupportedBrowserModal").modal('show');
 			}
 		}
 
