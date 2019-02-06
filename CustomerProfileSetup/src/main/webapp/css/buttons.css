@@ -1,0 +1,8 @@
+input.button
+{
+float: none;
+display: block;
+width: 150px;
+height: 25px;
+margin: 10px auto;
+}
