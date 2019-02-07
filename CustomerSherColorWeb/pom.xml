@@ -79,6 +79,7 @@
 	    <groupId>javax.servlet</groupId>
 	    <artifactId>jstl</artifactId>
 	    <version>1.2</version>
+	    <scope>provided</scope>
 	</dependency>
 	<dependency>
 		<groupId>taglibs</groupId>
@@ -126,12 +127,23 @@
     	<version>1.0.2.Final</version>
     	<scope>provided</scope>
 	</dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
-      <artifactId>jboss-jsp-api_2.2_spec</artifactId>
-      <version>1.0.1.Final-redhat-2</version>
-      <scope>test</scope>
-    </dependency>
+	<!-- Changed below dependency. Potential deprecation? as it would not install -->
+    <!-- https://mvnrepository.com/artifact/org.jboss.spec.javax.servlet.jsp/jboss-jsp-api_2.2_spec -->
+	<dependency>
+  	  <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
+   	  <artifactId>jboss-jsp-api_2.2_spec</artifactId>
+  	  <version>1.0.2.Final</version>
+  	  <scope>test</scope>
+	</dependency>
+	<!-- Previous Dependency version that wouldnt install
+	<dependency>
+    	<groupId>org.jboss.spec.javax.servlet.jsp</groupId>
+    	<artifactId>jboss-jsp-api_2.2_spec</artifactId>
+    	<version>1.0.1.Final-redhat-2</version>
+    	<scope>test</scope>
+	</dependency>
+	-->
+
  </dependencies>
   <build>
 		<plugins>
