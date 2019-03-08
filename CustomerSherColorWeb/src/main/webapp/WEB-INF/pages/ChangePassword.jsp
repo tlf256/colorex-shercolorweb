@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!doctype html>
 
@@ -63,9 +64,18 @@
   	    		<div class="form-group row mt-5">
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
 					</div>	
-					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">	
+					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+						<s:hidden name="whereFrom1" id="whereFrom" value="%{whereFrom}"/>	
 						<div class="alert alert-danger" role="alert" align="center">
-							Login failed. Your password has expired.
+							<c:set var="whereFrom" value="${whereFrom1}"/>
+							<c:choose>
+								<c:when test="${whereFrom == 'EXPIRED'}">
+									Your password has expired.
+								 </c:when>
+							 	<c:otherwise>
+									Please change your password.
+							 	</c:otherwise>
+						 	</c:choose>
 					   	</div>
 				   	</div>
 				   	<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">

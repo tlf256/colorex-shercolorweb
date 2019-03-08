@@ -65,6 +65,13 @@
 			<result name="success">/WEB-INF/pages/ChangePassword.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="passwordResetAction2" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="display2">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success">/WEB-INF/pages/ChangePassword.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="passwordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="change">
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />

@@ -69,6 +69,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean reReadLocalHostTinter;
 	private String sherLinkURL;
 	private String loMessage;
+	
+	private int daysUntilPwdExp;
 
 	
 	public String execute() {
@@ -87,6 +89,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		siteHasTinter = false;
 		siteHasSpectro = false;
 		sessionHasTinter = false;
+		String userId = "";
 		
 		try {
 			// Get the testmode.properties file data first.  If the file is not present we are not in test mode.
@@ -135,6 +138,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					acct = loginReqObj.getCustomerID();
 					first = loginReqObj.getFirstName();
 					last = loginReqObj.getLastName();
+					//01-14-2019*BKP*get the user login from guid1 and post it in the RequestObject for the reqGuid.
+					//               this will allow for inside the application password changes.
+					userId = loginReqObj.getUserId();
+					//03-01-2019*BKP*pass through the "days until password expires field as well.
+					daysUntilPwdExp = loginReqObj.getDaysUntilPasswdExpire();
 					
 					System.out.println("successfully validated");
 					if (acct==null || acct.isEmpty()) {
@@ -168,6 +176,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setLastName(Encode.forHtml(last));
 							reqObj.setCustomerName(custName);
 							reqObj.setSherLinkURL(sherLinkURL);
+							reqObj.setUserId(userId);
+							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 							
 							System.out.println("DEBUG new reqGuid created "+ reqGuid);
 							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(acct));
@@ -224,6 +234,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 acct = origReqObj.getCustomerID();
 				 first = origReqObj.getFirstName();
 				 last = origReqObj.getLastName();
+				 userId = origReqObj.getUserId();
+				 daysUntilPwdExp = origReqObj.getDaysUntilPasswdExpire();
 				 sherLinkURL = origReqObj.getSherLinkURL();
 				 custName = origReqObj.getCustomerName();
 				 origReqObj.reset();
@@ -233,6 +245,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 origReqObj.setFirstName(first);
 				 origReqObj.setLastName(last);
 				 origReqObj.setSherLinkURL(sherLinkURL);
+				 origReqObj.setUserId(userId);
+				 origReqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 				 
 				 newSession = false;
 				 tinter=origReqObj.getTinter();
@@ -654,6 +668,14 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	public void setLoMessage(String loMessage) {
 		this.loMessage = Encode.forHtml(loMessage);
+	}
+	
+	public int getDaysUntilPwdExp() {
+		return daysUntilPwdExp;
+	}
+
+	public void setDaysUntilPwdExp(int daysUntilPwdExp) {
+		this.daysUntilPwdExp = daysUntilPwdExp;
 	}
 
 }
