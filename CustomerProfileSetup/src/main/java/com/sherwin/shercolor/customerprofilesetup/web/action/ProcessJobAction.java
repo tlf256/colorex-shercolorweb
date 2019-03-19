@@ -31,7 +31,7 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 	
 	public String execute() {
 		try { 
-			if(job.getScreenLabel()!=null) {
+			if(job!=null) {
 				List<JobFields> jobList = new ArrayList<JobFields>();
 				String[] reqlist = new String[10];
 				setUpdateMode(false);

@@ -70,7 +70,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			customer.setCustList(editCustList);
 			sessionMap.put("CustomerDetail", customer);
 			
-			if(login.getKeyField()!=null) {
+			if(login!=null) {
 				for(int i = 0; i < login.getKeyField().size(); i++) {
 					if(!login.getKeyField().get(i).equals("")) {
 						//set values for custweblogintrans record
@@ -91,7 +91,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			if(job.getScreenLabel()!=null) {
+			if(job!=null) {
 				Job jobs = (Job) sessionMap.get("JobDetail");
 				String[] reqlist = new String[10];
 				String[] actvlist = new String[10];
