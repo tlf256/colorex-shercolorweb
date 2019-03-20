@@ -32,7 +32,7 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 	@Override
 	public String execute() {
 		try {
-			if(login.getKeyField()!=null) {
+			if(login!=null) {
 				List<LoginTrans> loginList = new ArrayList<LoginTrans>();
 				for(int i = 0; i < login.getKeyField().size(); i++) {
 					if(!login.getKeyField().get(i).equals("")) {
