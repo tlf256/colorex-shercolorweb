@@ -14,7 +14,7 @@ import com.sherwin.shercolor.common.service.EcalService;
 @Component
 public class SherColorLoaderController {
 	 @Autowired
-	 EcalService service;
+	 EcalService myservice;
 	 
 	 CustWebEcal ecal = new CustWebEcal();
 	 
@@ -34,9 +34,11 @@ public class SherColorLoaderController {
 			String[] arr = filename.split("_");
 			String time = "0001";
 			if(arr.length >=5){
-				 arr[4].substring(0, 4);
+				 time = arr[4].substring(0, 4);
 			}
-			
+			if(arr.length >=6){
+				 time = arr[5].substring(0, 4);
+			}
 	        ecal.setCustomerid("TEST");
 	        ecal.setColorantid(arr[0]);
 	        ecal.setTintermodel(arr[1]);
@@ -48,15 +50,15 @@ public class SherColorLoaderController {
 		}
 	 public void UploadEcal(String customerId){
 		 getEcal().setCustomerid(customerId);
-		 service.uploadEcal(getEcal());
+		 myservice.uploadEcal(getEcal());
 	 }
 
-	public EcalService getService() {
-		return service;
+	public EcalService getMyService() {
+		return myservice;
 	}
 
-	public void setService(EcalService service) {
-		this.service = service;
+	public void setMyService(EcalService service) {
+		this.myservice = service;
 	}
 
 	public CustWebEcal getEcal() {

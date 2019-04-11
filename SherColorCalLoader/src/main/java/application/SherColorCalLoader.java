@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.sherwin.shercolor.calloader.controller.SherColorLoaderController;
-import com.sherwin.shercolor.common.dao.CustWebEcalDao;
-import com.sherwin.shercolor.common.domain.CustWebEcal;
 import com.sherwin.shercolor.common.service.EcalService;
 
 import javafx.application.Application;
@@ -27,16 +28,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
-
+@Component
 public class SherColorCalLoader extends Application {
    
-	SherColorLoaderController controller = new SherColorLoaderController();
-
+	SherColorLoaderController controller = null;
+	
+	org.apache.logging.log4j.Logger logger = LogManager.getLogger(SherColorCalLoader.class);
     File selectedFile = null;
     TextField customerTextField = new TextField();
 	Label lFileName = new Label("");
@@ -46,6 +49,7 @@ public class SherColorCalLoader extends Application {
 	Label lUpld = new Label("");
 	Label ltUpld = new Label("");
 	Button btn = new Button("Choose File");
+	Label status = new Label("");
 
    
     private void setFields(){
@@ -79,7 +83,18 @@ public class SherColorCalLoader extends Application {
 	    @Override
 	    public void handle(ActionEvent e) {
 	    	if(customerTextField.getText().length()>0){
-	    		getController().UploadEcal(customerTextField.getText());
+	    		try {
+	    			getController().UploadEcal(customerTextField.getText());
+	    			 status.setTextFill(Color.web("#00FF00"));
+	    			status.setText("Upload complete");
+	    		}
+	    		catch(Exception ex) {
+	    			status.setText(ex.getMessage());
+	    			status.setTextFill(Color.web("#FF0000"));
+	    			
+	    		}
+	    		btn.setOnAction(chooserHandler);
+    		    btn.setText("Choose another file");
 	    	}
 			
 			}
@@ -91,15 +106,17 @@ public class SherColorCalLoader extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		ApplicationContext context = 
-	            new ClassPathXmlApplicationContext("classpath*:config/spring/shercolorcommon.xml");
-	       System.out.println("The method of my Bean: " + getController().getService().toString());
+	            new ClassPathXmlApplicationContext("classpath:shercolorcalloader.xml");
+		controller = context.getBean(SherColorLoaderController.class);
+		//this.getController().setMyService(service);
+		System.out.println("The method of my Bean: " + getController().getMyService().toString());
 		try {
 			GridPane grid = new GridPane();
 			grid.setAlignment(Pos.CENTER);
 			grid.setHgap(10);
 			grid.setVgap(10);
 			grid.setPadding(new Insets(25, 25, 25, 25));
-			Text scenetitle = new Text("Welcome");
+			Text scenetitle = new Text("SherColor Web Cal Loader");
 			scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 			grid.add(scenetitle, 0, 0, 2, 1);
 
@@ -147,7 +164,8 @@ public class SherColorCalLoader extends Application {
 			
 			btn.setOnAction(chooserHandler);
 		
-	
+			grid.add(status, 1, 9);
+			
 		
 			Scene scene = new Scene(grid,1200,400);
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
