@@ -117,6 +117,7 @@
 				<div class="row">
 						<div class="col-lg-2 col-md-2 col-sm-1">
 							<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
+							<s:hidden name="colorData" id="colorData" value=""/>
 						</div>
 						<div class="col-lg-8 col-md-8 col-sm-10">
 							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="Enter Color Name or Number" placeholder="Choose color type, then enter color name or number here" size="30" maxlength="30" cssStyle="font-size: 16px;" autofocus="autofocus"  />
