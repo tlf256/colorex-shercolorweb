@@ -73,16 +73,17 @@
 								<th>Color Name</th>
 								<th>Chip</th>
 								<th>Product</th>
+								<th>Sz Code</th>
 								<th>Qty Disp</th>
 								<!--  What needs to be included in the table (but won't be shown) -->
-								<th style="">Colorant System</th>
-								<th style="">Formula</th>
+								<th style="">Clrnt System</th>
+								<th style="">Formula: OZ/32/64/128</th>
 								<th style="display:none">Formula (Colorant: OZ / 32 / 64 / 128)</th>
 							</tr>
 						</thead>
 						<tbody>
 							<s:iterator var="job" value="jobHistory" status="outer">
-								<tr>
+								<tr class="border-bottom-1 border-dark">
 									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
 										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue"/></span></td>
@@ -91,14 +92,15 @@
 									<td><s:property value="#job.colorName" /></td>
 									<td bgcolor="<s:property value="#job.rgbhex"/>"> </td>
 									<td><s:property value="#job.prodNbr" /></td>
+									<td><s:property value="#job.sizeCode"/></td>
 									<td><s:property value="#job.quantityDispensed" /></td>
 									<!-- What needs to be included in the table (but won't be shown) -->
 									<td style=""><s:property value="#job.clrntSysId"/></td>
-									<td style="">
+									<td style="padding: 0px 0px 0px 0px; width: 100px">
 										<table>
 											<thead>
-												<tr>
-												<th>Colorant Name</th>
+												<tr style="display:none">
+												<th></th>
 												<th>OZ</th>
 												<th>32</th>
 												<th>64</th>
@@ -108,11 +110,11 @@
 											<tbody>
 												<s:iterator begin="0" end="#job.numberOfColorants-1" status="innermost">
 													<tr>
-													<td><s:property value="#job.recipe[#innermost.count-1].name"/> - <s:property value="#job.recipe[#innermost.count-1].tintSysId"/></td>
-													<td><s:property value="#job.recipe[#innermost.count-1].increment[0]"/></td>
-													<td><s:property value="#job.recipe[#innermost.count-1].increment[1]"/></td>
-													<td><s:property value="#job.recipe[#innermost.count-1].increment[2]"/></td>
-													<td><s:property value="#job.recipe[#innermost.count-1].increment[3]"/></td>						
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].tintSysId"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[0]"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[1]"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[2]"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[3]"/></td>						
 													</tr>
 												</s:iterator>
 											</tbody>
@@ -120,7 +122,7 @@
 									</td>
 									<td style="display: none">
 										<s:iterator begin="0" end="#job.numberOfColorants-1" status="innermost">
-											<s:property value="#job.recipe[#innermost.count-1].name"/> - <s:property value="#job.recipe[#innermost.count-1].tintSysId"/>: 
+											<s:property value="#job.recipe[#innermost.count-1].tintSysId"/>: 
 											<s:property value="#job.recipe[#innermost.count-1].increment[0]"/> /
 											<s:property value="#job.recipe[#innermost.count-1].increment[1]"/> /
 											<s:property value="#job.recipe[#innermost.count-1].increment[2]"/> /

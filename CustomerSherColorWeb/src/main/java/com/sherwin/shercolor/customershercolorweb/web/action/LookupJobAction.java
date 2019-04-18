@@ -101,6 +101,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				job.setProdNbr(tranHistory.get(index).getProdNbr());
 				job.setQuantityDispensed(tranHistory.get(index).getQuantityDispensed());
 				job.setRgbHex(tranHistory.get(index).getRgbHex());
+				job.setSizeCode(tranHistory.get(index).getSizeCode());
 				job.setRecipe(getDefaultRecipeInfo(webTran));
 				job.setNumberOfColorants(job.getRecipe().size());
 				job.setJobFieldList(getJobFields(webTran));

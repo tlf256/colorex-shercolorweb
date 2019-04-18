@@ -22,6 +22,7 @@ public class JobHistoryInfo{
 	private int numberOfColorants;
 	private List<JobField> jobFieldList;
 	private List<FormulaIngredient> recipe;
+	private String sizeCode;
 	
 	public String getClrntSysId() {
 		return clrntSysId;
@@ -83,5 +84,11 @@ public class JobHistoryInfo{
 	}
 	public void setRecipe(List<FormulaIngredient> recipe) {
 		this.recipe = recipe;
+	}
+	public void setSizeCode(String sizeCode) {
+		this.sizeCode = sizeCode;
+	}
+	public String getSizeCode() {
+		return sizeCode;
 	}
 }
