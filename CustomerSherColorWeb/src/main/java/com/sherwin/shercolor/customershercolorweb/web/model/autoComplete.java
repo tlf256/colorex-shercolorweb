@@ -3,6 +3,8 @@ package com.sherwin.shercolor.customershercolorweb.web.model;
 public class autoComplete {
 	private String label;
 	private String value;
+	private String companyName;
+	private String colorNumber;
 	
 	public autoComplete(String label, String value) {
 		this.label = label;
@@ -22,5 +24,16 @@ public class autoComplete {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	public String getColorNumber() {
+		return colorNumber;
+	}
+	public void setColorNumber(String colorNumber) {
+		this.colorNumber = colorNumber;
+	}
 }

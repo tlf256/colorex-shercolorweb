@@ -25,6 +25,7 @@
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
@@ -35,8 +36,9 @@
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" src="script/DisplayJobs.js"></script>
+		
+		
 	</head>
-
 	<body>
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
@@ -71,26 +73,66 @@
 								<th>Color Name</th>
 								<th>Chip</th>
 								<th>Product</th>
+								<th>Sz Code</th>
 								<th>Qty Disp</th>
+								<!--  What needs to be included in the table (but won't be shown) -->
+								<th style="">Clrnt System</th>
+								<th style="">Formula: OZ/32/64/128</th>
+								<th style="display:none">Formula (Colorant: OZ / 32 / 64 / 128)</th>
 							</tr>
 						</thead>
 						<tbody>
-							<s:iterator var="tran" value="tranHistory" status="outer">
-								<tr>
-									<td><s:property value="#tran.controlNbr" /></td>
+							<s:iterator var="job" value="jobHistory" status="outer">
+								<tr class="border-bottom-1 border-dark">
+									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
-										<s:if test="#inner.count < 10">
-											<td><s:property value="#tran['jobField0'+#inner.count]"/></td>
-										</s:if>
-										<s:else>
-											<td><s:property value="#tran['jobField'+#inner.count]"/></td>
-										</s:else>
+										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue"/></span></td>
 									</s:iterator>
-									<td><s:property value="#tran.colorId" /></td>
-									<td><s:property value="#tran.colorName" /></td>
-									<td bgcolor="<s:property value="#tran.rgbhex"/>"> </td>
-									<td><s:property value="#tran.prodNbr" /></td>
-									<td><s:property value="#tran.quantityDispensed" /></td>
+									<td><s:property value="#job.colorId" /></td>
+									<td><s:property value="#job.colorName" /></td>
+									<td bgcolor="<s:property value="#job.rgbhex"/>"> </td>
+									<td><s:property value="#job.prodNbr" /></td>
+									<td><s:property value="#job.sizeCode"/></td>
+									<td><s:property value="#job.quantityDispensed" /></td>
+									<!-- What needs to be included in the table (but won't be shown) -->
+									<td style=""><s:property value="#job.clrntSysId"/></td>
+									<td style="padding: 0px 0px 0px 0px; width: 100px">
+										<table>
+											<thead>
+												<tr style="display:none">
+												<th></th>
+												<th>OZ</th>
+												<th>32</th>
+												<th>64</th>
+												<th>128</th>
+												</tr>
+											</thead>
+											<tbody>
+												<s:iterator begin="0" end="#job.numberOfColorants-1" status="innermost">
+													<tr>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].tintSysId"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[0]"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[1]"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[2]"/></td>
+													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[3]"/></td>						
+													</tr>
+												</s:iterator>
+											</tbody>
+										</table>
+									</td>
+									<td style="display: none">
+										<s:iterator begin="0" end="#job.numberOfColorants-1" status="innermost">
+											<s:property value="#job.recipe[#innermost.count-1].tintSysId"/>: 
+											<s:property value="#job.recipe[#innermost.count-1].increment[0]"/> /
+											<s:property value="#job.recipe[#innermost.count-1].increment[1]"/> /
+											<s:property value="#job.recipe[#innermost.count-1].increment[2]"/> /
+											<s:property value="#job.recipe[#innermost.count-1].increment[3]"/>
+											<s:if test="#innermost.count<#job.numberOfColorants">
+											,
+											</s:if>
+											<br>	
+										</s:iterator>
+									</td>
 								</tr>
 							</s:iterator>
 						</tbody>
