@@ -232,18 +232,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					colorType = "CUSTOMMATCH";
 
 				} else {
-					
-					//String[] compAndId = new String[10];
-					//compAndId = partialColorNameOrId.split(String.valueOf((char) 31));
-					//compAndId = partialColorNameOrId.split("  :  ");
-					//System.out.println("partialcolorNameOrId=" + partialColorNameOrId);
-					//compAndId = partialColorNameOrId.split(String.valueOf((char) 0));
-					//System.out.println("color split done, length is " + compAndId.length);
-					//if (compAndId.length==0) {
-					//colorComp = "";
-					//colorID = "";
-					
-					
 					// Following method call should be able to cover all conditionals previously
 					// implemented here
 					parseColorData(colorData);
@@ -252,34 +240,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 						colorType = "SHERWIN-WILLIAMS";
 					} else {
 						colorType = "COMPETITIVE";
-					}
-					
-					
-					/*if (colorComp.equals("") && colorID.equals("")) {
-						//Do Nothing
-					//} else if (colorComp.equals("") && !colorID.equals("")) {
-					//} else if (compAndId.length==1) {
-						//something was entered and not looked up, most likely.  Put what was
-						// entered in as colorID, and then check if it's SW we can populate 
-						//colorComp - otherwise, leave it blank.
-						//colorComp = "";
-						//if (selectedCoTypes.equalsIgnoreCase("SW")) {
-							//colorComp = "SHERWIN-WILLIAMS";
-							//colorType = "SHERWIN-WILLIAMS";
-						//}
-						//colorID = compAndId[0];
-					//} else {
-						//colorComp = compAndId[0];
-						//colorID = compAndId[1];
-						if (selectedCoTypes.equalsIgnoreCase("SW")) {
-							colorType = "SHERWIN-WILLIAMS";
-						} else {
-							colorType = "COMPETITIVE";
-						}
-					}*/
-					//colorComp = colorComp.trim().toUpperCase();
-					//colorID = colorID.trim().toUpperCase();
-					
+					}	
 					// Try getting an RGB value for the object.
 					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
 					if (colorCoord != null) {
