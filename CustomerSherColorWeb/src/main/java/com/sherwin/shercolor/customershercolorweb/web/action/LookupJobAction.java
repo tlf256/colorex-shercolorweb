@@ -20,6 +20,7 @@ import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
+import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
@@ -161,6 +162,10 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setRgbHex(webTran.getRgbHex());
 		reqObj.setSalesNbr(webTran.getSalesNbr());
 		reqObj.setProdNbr(webTran.getProdNbr());
+		
+		PosProd posProd = productService.readPosProd(reqObj.getSalesNbr());
+		reqObj.setUpc(posProd.getUpc());
+		
 		reqObj.setSizeCode(webTran.getSizeCode());
 		reqObj.setSizeText(productService.getSizeText(webTran.getSizeCode()));
 		reqObj.setClrntSys(webTran.getClrntSysId());
