@@ -66,6 +66,7 @@ public class RequestObject {
 	private int quantityDispensed;
 	private TinterInfo tinter;
 	private SpectroInfo spectro;
+	private int daysUntilPasswdExpire;
 
 	public String getColorComp() {
 		return colorComp;
@@ -393,6 +394,7 @@ public class RequestObject {
 		this.canLabelMsgs = null;
 		this.upc = "";
 		this.quantityDispensed = 0;
+		this.daysUntilPasswdExpire = 90;
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -453,6 +455,12 @@ public class RequestObject {
 	}
 	public void setSpectro(SpectroInfo spectro) {
 		this.spectro = spectro;
+	}
+	public int getDaysUntilPasswdExpire() {
+		return daysUntilPasswdExpire;
+	}
+	public void setDaysUntilPasswdExpire(int daysUntilPasswdExpire) {
+		this.daysUntilPasswdExpire = daysUntilPasswdExpire;
 	}
 
 
