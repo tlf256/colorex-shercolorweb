@@ -87,7 +87,22 @@
 
         });
 		</script>
-
+		<script>
+		<!--
+		  function HF_openSherwin() {
+		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");
+		    popupWin.focus();
+		  }  
+		  function HF_openLegal() {
+		    var popupWin = window.open("http://www.sherwin-williams.com/terms/", "legal", "resizable=no,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=800,height=600,left=10,top=10");
+		    popupWin.focus();
+		  }
+		  function HF_openPrivacy() {
+		    var popupWin = window.open("http://privacy.sherwin-williams.com/", "privacy", "resizable=yes,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=640,height=480,left=10,top=10");
+		    popupWin.focus();
+		  }
+		//-->
+		</script>
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>
