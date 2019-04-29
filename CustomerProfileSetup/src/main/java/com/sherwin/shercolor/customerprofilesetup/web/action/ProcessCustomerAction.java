@@ -42,19 +42,25 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				//lookup national customer ids
 				List<CustWebParms> custWebParms = customerService.getNatlCustomerIds();
 				
-				Object[] idList = custWebParms.toArray();
-				
-				int result = Integer.parseInt(idList[0].toString().substring(2)) + 1;
-				//create new id beginning with 99
-				StringBuilder newResult = new StringBuilder();
-				newResult.append("99");
-				newResult.append(result);
-				if(newResult.length() < 6) {
-					while(newResult.length() < 6) {
-						newResult.insert(2, 0);
+				if(custWebParms.isEmpty()) {
+					//first national id created with '99'
+					customer.setCustomerId("990001");
+				} else {
+					Object[] idList = custWebParms.toArray();
+					
+					int result = Integer.parseInt(idList[0].toString().substring(2)) + 1;
+					//create new id beginning with 99
+					StringBuilder newResult = new StringBuilder();
+					newResult.append("99");
+					newResult.append(result);
+					if(newResult.length() < 6) {
+						while(newResult.length() < 6) {
+							newResult.insert(2, 0);
+						}
 					}
+					customer.setCustomerId(newResult.toString());
 				}
-				customer.setCustomerId(newResult.toString());
+				
 				break;
 			case "intnatlWdigits":  //customerid = account number
 				customer.setCustomerId(customer.getIntntlacctnbr().trim());
@@ -63,19 +69,25 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				//lookup international customer ids
 				List<CustWebParms> custParms = customerService.getIntnatlCustomerIds();
 				
-				Object[] custIdList = custParms.toArray();
-				
-				int nextId = Integer.parseInt(custIdList[0].toString().substring(4)) + 1;
-				//create new id beginning with intl
-				StringBuilder newId = new StringBuilder();
-				newId.append("INTL");
-				newId.append(nextId);
-				if(newId.length() < 8) {
-					while(newId.length() < 8) {
-						newId.insert(4, 0);
+				if(custParms.isEmpty()) {
+					//first international id created with 'INTL'
+					customer.setCustomerId("INTL0001");
+				} else {
+					Object[] custIdList = custParms.toArray();
+					
+					int nextId = Integer.parseInt(custIdList[0].toString().substring(4)) + 1;
+					//create new id beginning with intl
+					StringBuilder newId = new StringBuilder();
+					newId.append("INTL");
+					newId.append(nextId);
+					if(newId.length() < 8) {
+						while(newId.length() < 8) {
+							newId.insert(4, 0);
+						}
 					}
+					customer.setCustomerId(newId.toString());
 				}
-				customer.setCustomerId(newId.toString());
+				
 				break;
 			}
 						

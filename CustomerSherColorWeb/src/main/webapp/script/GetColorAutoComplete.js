@@ -16,7 +16,7 @@ $(document).ready(function() {
 	// request.term in line #15 keyword does not change.
 	$("#partialColorNameOrId").autocomplete({
 		minLength : 3,
-		delay : 300,
+		delay : 500,
 		autoFocus : true,
 		source : function(request, response){
 			$.ajax({	
@@ -35,6 +35,9 @@ $(document).ready(function() {
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
                 	else{
+                		$("#colorData").attr("value",JSON.stringify(data));
+                		//console.log(data);
+                		console.log($("#colorData").attr("value"));
                 		response(data.slice(0,100));
                 	}
 				}
