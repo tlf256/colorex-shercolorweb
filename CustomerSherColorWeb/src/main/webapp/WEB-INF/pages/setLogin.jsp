@@ -13,7 +13,7 @@
 <link rel=StyleSheet href="js/smoothness/jquery-ui.css"
 	type="text/css">
 <link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<script type="text/javascript" charset="utf-8" src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8"
 	src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
