@@ -89,7 +89,7 @@
 					async: true,
 					success: function (data) {
 						
-						console.log(data);		
+						//console.log(data);		
 						
 						if(data.sessionStatus === "expired"){
 		            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
