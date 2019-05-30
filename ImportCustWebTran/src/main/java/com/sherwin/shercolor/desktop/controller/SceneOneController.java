@@ -1,17 +1,22 @@
 package com.sherwin.shercolor.desktop.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.PosProd;
+import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.ProductService;
+import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.desktop.domain.CdsTranAll;
 import com.sherwin.shercolor.desktop.domain.CdsTranClrnt;
 import com.sherwin.shercolor.desktop.domain.CdsTranDet;
@@ -19,6 +24,7 @@ import com.sherwin.shercolor.desktop.domain.CdsTranDetWithClrnt;
 import com.sherwin.shercolor.desktop.domain.CdsTranMast;
 import com.sherwin.shercolor.desktop.service.CdsTranService;
 import com.sherwin.shercolor.desktop.service.CdsTranServiceImpl;
+import com.sherwin.shercolor.util.domain.SwMessage;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
@@ -30,11 +36,15 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 @Controller
 public class SceneOneController implements Initializable {
@@ -45,64 +55,47 @@ public class SceneOneController implements Initializable {
 	@Autowired
 	ProductService productService;
 	
+	@Autowired
+	CustomerService customerService;
+	
+	@Autowired
+	TranHistoryService tranHistoryService;
+	
 	List<CdsTranAll> cdsTranAllList;
 	int CurrentPosition=-1;
+	private CustWebParms selectedCustomer;
 	
 	private ObservableList<CdsTranMast> displayTranMast = FXCollections.observableArrayList();
 	private ObservableList<CdsTranDet> displayTranDet = FXCollections.observableArrayList();
 	private ObservableList<CdsTranClrnt> displayTranClrnt = FXCollections.observableArrayList();
 	private ObservableList<CustWebTran> displayCustWebTran = FXCollections.observableArrayList();
+	private ObservableList<CustWebParms> customerList = FXCollections.observableArrayList();
+	
+	private List<CustWebTran> custWebTranList;
 
-	@FXML
-	public TextField inputFileDir;
+	@FXML	public TextField inputFileDir;
 	
-	@FXML
-	public Spinner<Integer> controlNbr;
+	@FXML	public Spinner<Integer> controlNbr;
 	
-	@FXML
-	public Button uxLoad;
+	@FXML	public Button uxLoad;
 	
-	@FXML
-	public Button uxLookup;
+	@FXML	public Button uxLookup;
 	
-	@FXML
-	public ProgressBar loadProgress;
+	@FXML	public ProgressBar loadProgress;
 	
-	@FXML
-	public TableView<CdsTranMast> tranMastTable;
+	@FXML	public TableView<CdsTranMast> tranMastTable;
 	
-	@FXML
-	private TableColumn<CdsTranMast, Integer> colControlNbr;
-	
-	@FXML
-	private TableColumn<CdsTranMast, Integer> colLineNbr;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colColorComp;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colColorId;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colColorName;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colActBase;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colcFld1;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colcFld2;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colcFld3;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colcFld4;
-	
-	@FXML
-	private TableColumn<CdsTranMast, String> colcFld5;
+	@FXML	private TableColumn<CdsTranMast, Integer> colControlNbr;
+	@FXML	private TableColumn<CdsTranMast, Integer> colLineNbr;
+	@FXML	private TableColumn<CdsTranMast, String> colColorComp;
+	@FXML	private TableColumn<CdsTranMast, String> colColorId;
+	@FXML	private TableColumn<CdsTranMast, String> colColorName;
+	@FXML	private TableColumn<CdsTranMast, String> colActBase;
+	@FXML	private TableColumn<CdsTranMast, String> colcFld1;
+	@FXML	private TableColumn<CdsTranMast, String> colcFld2;
+	@FXML	private TableColumn<CdsTranMast, String> colcFld3;
+	@FXML	private TableColumn<CdsTranMast, String> colcFld4;
+	@FXML	private TableColumn<CdsTranMast, String> colcFld5;
 	
 	@FXML	public TableView<CdsTranDet> tranDetTable;
 	@FXML	private TableColumn<CdsTranDet, Integer> colTranDetSeq;
@@ -204,8 +197,19 @@ public class SceneOneController implements Initializable {
 	@FXML	private TableColumn<CustWebTran, String> colCwtProjCurve;
 	@FXML	private TableColumn<CustWebTran, String> colCwtMeasCurve;
 	
+	@FXML	private ComboBox<CustWebParms> uxCustomer;
+	
+	@FXML	private Label uxReadyForSave;
+	
+	@FXML	private Label uxSaveResult;
+	
+	@FXML	private Button uxShutdown;
+	
+	
+	
+	
 	public void initialize(URL location, ResourceBundle resources) {
-		inputFileDir.setText("/Users/bms90r/Documents/CSW Installs/Pacific Rainbow");
+		inputFileDir.setText("/Users/bms90r/Documents/CSW Installs/Carribean Export");
 //		uxLoad.setOnAction((event)-> {
 //			
 //		});
@@ -334,6 +338,35 @@ public class SceneOneController implements Initializable {
 		colCwtRgbHex.setCellValueFactory(rowData -> new ReadOnlyObjectWrapper(rowData.getValue().getRgbHex()));
 		colCwtProjCurve.setCellValueFactory(rowData -> new ReadOnlyObjectWrapper(Arrays.toString(rowData.getValue().getProjCurve())));
 		colCwtMeasCurve.setCellValueFactory(rowData -> new ReadOnlyObjectWrapper(Arrays.toString(rowData.getValue().getMeasCurve())));
+		
+		uxCustomer.setConverter(new StringConverter<CustWebParms>() {
+		    @Override
+		    public String toString(CustWebParms object) {
+		    	if(object==null){
+		    		return null;
+		    	} else {
+			        return object.getSwuiTitle();
+		    	}
+		    }
+
+		    @Override
+		    public CustWebParms fromString(String string) {
+		        return null;
+		    }
+		});
+				
+		List<CustWebParms> loadMe = customerService.listAllCustomerDefaultParms();
+		for(CustWebParms addMe : loadMe){
+			customerList.add(addMe);
+		}
+		
+		uxCustomer.setItems(customerList);
+		
+		uxCustomer.valueProperty().addListener((obs, oldVal, newVal) -> {
+			selectedCustomer = newVal;
+			System.out.println("new value is " + newVal.getCustomerId());	
+		});
+	
 	}
 	
 	@FXML
@@ -443,6 +476,65 @@ public class SceneOneController implements Initializable {
 		
 	} //end handleTranslateClick
 	
+	@FXML
+	private void handleTranslateAllClick(ActionEvent event){
+		int failCount = 0;
+		int pointer = 0;
+		custWebTranList = new ArrayList<CustWebTran>();
+
+		if (selectedCustomer == null){
+			System.out.println("First select a customer before you Translate all");
+			return;
+		}
+		
+		int listSize = cdsTranAllList.size();
+		for(pointer=0;pointer<listSize;pointer++){
+			CustWebTran custWebTran = cdsTranService.ConvertToCustWeb(cdsTranAllList.get(pointer));
+			if(custWebTran==null){
+				System.out.println("Could not translate controlNbr " + cdsTranAllList.get(pointer).getTranMast().getControlNbr());
+				failCount++;
+			} else {
+				custWebTran.setCustomerId(selectedCustomer.getCustomerId());
+				custWebTranList.add(custWebTran);
+			}
+			if(pointer%1000==0) {
+				System.out.println("translated " + pointer);
+			}
+		}
+
+		uxReadyForSave.setText(custWebTranList.size() + " records ready to Save (" + failCount + " errors)");
+	} //end handleTranslateClick
+	
+	@FXML
+	private void handleSaveAllClick(ActionEvent event){
+		List<SwMessage> failedSaveList = new ArrayList<SwMessage>();
+		
+		//TODO check if customer has been selected
+		if (selectedCustomer == null){
+			System.out.println("First select a customer before you Translate all");
+			return;
+		}
+		
+		if(custWebTranList==null || custWebTranList.size()==0){
+			//TODO message box that they need to translate all first
+			System.out.println("Please translate all before trying to save.");
+			return;
+		} else {
+			//TODO prompt yes/no to confirm import of xx records
+			//TODO import data to customer's db
+			for (CustWebTran tran : custWebTranList){
+				SwMessage saveResult = tranHistoryService.saveNewTranHistory(tran, tran.getControlNbr());
+				if (saveResult != null){
+					System.out.println("Saving import control nbr [" + tran.getControlNbr() + "] failed [" + saveResult.getCode() + "-" + saveResult.getMessage() + "].");
+					saveResult.setMessage(saveResult.getMessage() + tran.getControlNbr());
+					failedSaveList.add(saveResult);
+				}
+			}
+		}
+
+		uxSaveResult.setText("Successfully saved " + custWebTranList.size() + " records (" + failedSaveList.size() + " failed)");
+	}
+	
 	private void lookupTranMast(Integer controlNbr){
 		displayTranMast.clear();
 		displayTranDet.clear();
@@ -491,6 +583,18 @@ public class SceneOneController implements Initializable {
 			}
 		}
 	} //end lookupTranDet
+	
+	@FXML
+	private void handleShutdownClick(ActionEvent event){
+		System.out.println("shutdown button clicked");
+		try {
+			Stage stage = (Stage) uxShutdown.getScene().getWindow();
+			
+			stage.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
 
 }

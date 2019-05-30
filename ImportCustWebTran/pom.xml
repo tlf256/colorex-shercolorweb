@@ -45,12 +45,24 @@
 			<artifactId>javax.el-api</artifactId>
 			<version>2.2.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.kordamp.bootstrapfx</groupId>
+			<artifactId>bootstrapfx-core</artifactId>
+			<version>0.2.1</version>
+		</dependency>
   </dependencies>
 	<build>
 	    <plugins>
 	        <plugin>
 	            <groupId>org.springframework.boot</groupId>
 	            <artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.sherwin.shercolor.desktop.app.ImportCustWebTran</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 	        </plugin>
 	    </plugins>
 	</build>  
