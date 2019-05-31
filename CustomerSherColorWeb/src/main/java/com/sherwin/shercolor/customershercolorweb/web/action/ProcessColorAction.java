@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
+import org.springframework.web.util.HtmlUtils;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -256,8 +257,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					}
 					// Following method call should be able to cover all conditionals previously
 					// implemented here
-					parseColorData(colorData);
 					
+					parseColorData(colorData);
+					colorID = HtmlUtils.htmlUnescape(colorID);
+					colorComp = HtmlUtils.htmlUnescape(colorComp);
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						colorType = "SHERWIN-WILLIAMS";
 					} else {
