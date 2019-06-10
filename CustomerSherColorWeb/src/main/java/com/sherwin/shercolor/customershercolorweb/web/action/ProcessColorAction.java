@@ -164,9 +164,18 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	public void parseColorData(String colorData) {
 		
 		
-		if (colorData.equals("") || colorData.equals("[]")) {
-			//Do Nothing
+		if (colorData.equals("")) {
+			// The user typed nothing, so do nothing
 		} 
+		else if (colorData.equals("[]")){
+			// The user typed a color id or name that does not exist
+			setColorID(partialColorNameOrId);
+			if (selectedCoTypes.equalsIgnoreCase("SW")) {
+				setColorComp("SHERWIN-WILLIAMS");
+			} else {
+				setColorComp("COMPETITIVE");
+			}
+		}
 		else {
 			// Colordata contains JSON so it sequentially gets broken down to parse an array of
 			// autocomplete results and returns the value typed into the search bar
@@ -261,11 +270,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					parseColorData(colorData);
 					colorID = HtmlUtils.htmlUnescape(colorID);
 					colorComp = HtmlUtils.htmlUnescape(colorComp);
+					
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						colorType = "SHERWIN-WILLIAMS";
 					} else {
 						colorType = "COMPETITIVE";
-					}	
+					}
+					
 					// Try getting an RGB value for the object.
 					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
 					if (colorCoord != null) {
