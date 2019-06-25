@@ -104,7 +104,11 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				job.setRgbHex(tranHistory.get(index).getRgbHex());
 				job.setSizeCode(tranHistory.get(index).getSizeCode());
 				job.setRecipe(getDefaultRecipeInfo(webTran));
-				job.setNumberOfColorants(job.getRecipe().size());
+				if (job.getRecipe().isEmpty()) {
+					job.setNumberOfColorants(0);
+				} else {
+					job.setNumberOfColorants(job.getRecipe().size());
+				}
 				job.setJobFieldList(getJobFields(webTran));
 				jobHistory.add(job);
 				index++;
@@ -393,8 +397,10 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			recipe.add(item8);
 		}
 		// Complete formulaInfo with following two fields
-		formulationService.fillIngredientInfoFromTintSysId(recipe);
-		formulationService.convertShotsToIncr(recipe);
+		if (!recipe.isEmpty()) {
+			formulationService.fillIngredientInfoFromTintSysId(recipe);
+			formulationService.convertShotsToIncr(recipe);
+		}
 		
 		return recipe;
 	}
