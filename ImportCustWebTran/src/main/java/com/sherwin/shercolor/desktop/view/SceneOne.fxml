@@ -1,16 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.ProgressBar?>
+<?import java.net.URL?>
 
-<HBox spacing="10" xmlns="http://javafx.com/javafx/8" 
+<?scenebuilder-stylesheet ../view/sceneone.css?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" 
                    xmlns:fx="http://javafx.com/fxml/1"
                    fx:controller="com.sherwin.shercolor.desktop.controller.SceneOneController"
+                   style="-fx-background-color: rgba(0, 0, 0, .1)"
                    >
+<!--                    style="-fx-background-color: rgba(14, 108, 239, 0.5)" -->
+  <stylesheets>
+    <URL value="@sceneone.css" />
+  </stylesheets>
+   <top>
+<!--    style="-fx-background-color: rgba(0, 0, 102, 1)" -->
+<!--    style="-fx-background-color: rgba(153, 0, 0, 1)" -->
+      <HBox BorderPane.alignment="CENTER" style="-fx-background-color: rgba(0, 0, 102, 1)">
+<!--          <padding> -->
+<!--             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" /> -->
+<!--          </padding> -->
+         <children>
+            <ImageView fitHeight="75" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+<!--                   <Image url="file:///C:/Users/bms90r/git/SherColorHelp/SherColorHelp/src/main/resources/shercolor-sm.jpg" /> -->
+<!--                   <Image url="file:///C:/fiscal/shercolor/help/html/graphics/shercolor-sm.jpg" /> -->
+                  <Image url="file:///fiscal/shercolor/help/html/graphics/shercolor-sm.jpg" />
+               </image>
+            </ImageView>
+<!--             <Label alignment="CENTER" contentDisplay="CENTER" text="Sher-Color Help" textFill="#ffffff"> -->
+<!--                <font> -->
+<!--                   <Font size="18.0" /> -->
+<!--                </font> -->
+<!--             </Label> -->
+         </children>
+      </HBox>
+   </top>
+
+<center>
+<!-- <HBox spacing="10" xmlns="http://javafx.com/javafx/8"  -->
+<!--                    xmlns:fx="http://javafx.com/fxml/1" -->
+<!--                    fx:controller="com.sherwin.shercolor.desktop.controller.SceneOneController" -->
+<!--                    > -->
+<HBox style="-fx-background-color: rgba(238, 238, 238, 1)">
+         <padding>
+            <Insets bottom="10.0" left="10" right="10" top="10" />
+         </padding>
 	<children>
-		<GridPane style = "-fx-background-color: rgba(255, 255, 255, 0.5)" hgap="10" vgap="5">
+		<GridPane style = "-fx-background-color: rgba(238, 238, 238, 1)" hgap="10" vgap="5">
 		
 			<Label text="Directory to find files" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 			<TextField fx:id="inputFileDir" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="4" />
@@ -74,8 +119,6 @@
 
 			<Button fx:id="uxTranslate" text="Translate One" onAction="#handleTranslateClick" 
 					GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-			<Button fx:id="uxTranslateAll" text="Translate All" onAction="#handleTranslateClick" 
-					GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
 			<ScrollPane GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="10" MaxHeight="200">
 				<TableView fx:id="custWebTranTable"
@@ -163,8 +206,32 @@
 					</columns>
 				</TableView> 
 			</ScrollPane>
+			<Label text="Customer:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+			<ComboBox fx:id="uxCustomer" promptText="choose customer" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+			<Button fx:id="uxTranslateAll" text="Translate All" onAction="#handleTranslateAllClick" 
+					GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+			<Label fx:id="uxReadyForSave" text="0 Records Ready for Save" GridPane.columnIndex="3" GridPane.rowIndex="8"/>
+			<Button fx:id="uxSave" text="Save All" onAction="#handleSaveAllClick"
+					GridPane.columnIndex="4" GridPane.rowIndex="8"/>
+			<Label fx:id="uxSaveResult" text="0 Records Saved" GridPane.columnIndex="5" GridPane.rowIndex="8"/>
 
 		</GridPane>
 	</children>
 	
 </HBox>
+</center>
+   
+   <bottom>
+      <HBox alignment="BOTTOM_RIGHT" BorderPane.alignment="CENTER_RIGHT" style="-fx-background-color: rgba(0, 0, 102, 1)">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="10.0" top="5.0" />
+         </padding>
+         <children>
+	      	<Button alignment="CENTER" fx:id="uxShutdown" text="Exit" onAction="#handleShutdownClick" 
+	      		
+	      	/>
+         </children>
+<!-- 		<Label fx:id="uxSocketStatus" text="Not connected"/> -->
+      </HBox>
+   </bottom>
+</BorderPane>

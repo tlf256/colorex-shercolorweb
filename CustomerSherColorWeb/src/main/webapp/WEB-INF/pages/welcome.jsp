@@ -14,7 +14,7 @@
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-		<script type="text/javascript" charset="utf-8" src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
@@ -788,6 +788,12 @@
 										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Add New Tinter</a></li>
 				        			</ul>
 	       						</li>
+	       						<li class="dropdown-item dropdown-submenu">
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">User Menu</a>
+	        						<ul class="dropdown-menu" id="usermenu">
+								    	<li id="changePwd"><a class="dropdown-item" tabindex="-1" href='<s:url action="passwordResetAction2"><s:param name="guid1" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-2'></span> Change Password</a></li>
+				        			</ul>
+	       						</li>
 	        				</ul>
 	        			</li>
 	        				<!-- Popover links -->
@@ -882,6 +888,7 @@
 							<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
 							<s:hidden name="reReadLocalHostTinter" value="%{reReadLocalHostTinter}"/>
 							<s:hidden name="siteHasSpectro" value="%{siteHasSpectro}"/>
+							<s:hidden name="daysUntilPwdExp" value="%{daysUntilPwdExp}"/>
 							<s:submit cssClass="btn btn-primary btn-lg pull-left" id="startNewJobFocus" autofocus="autofocus" value="Start New Job" action="startNewJob"/>
 							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="Lookup Existing Job" action="listJobsAction"/>
 				    	</div>  
@@ -958,7 +965,24 @@
 								</div>
 							</div>
 						</div>
-					</div>		    
+					</div>	
+					<!-- Password Approaching Expiration Modal Window -->
+				    <div class="modal fade" aria-labelledby="passwordExpirationModal" aria-hidden="true"  id="passwordExpirationModal" role="dialog">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="passwordExpirationTitle">Password Due to Expire</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<div class="alert alert-danger" role="alert" id="pswexperror">Your password is due to expire in <strong>${sessionScope[thisGuid].daysUntilPasswdExpire}</strong> days.  Please consider changing your password via the User Menu.</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-success" id="passwordExpirationOK" data-dismiss="modal" aria-label="Close" >OK</button>
+								</div>
+							</div>
+						</div>
+					</div>	    
 					</s:form>
 				</div>
 				<div class="col-xl-4 col-lg-3 col-sm-1 col-xs-0">
@@ -1029,6 +1053,11 @@
 			if($("#startNewJob_siteHasSpectro").val()=="true"){
 				ws_spectro = new WSWrapper("coloreye");
 				readLocalhostSpectroConfig();
+			}
+			//Add code to check days until password expiration.
+ 			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   
+			if (daysUntilPwdExpire <= 7 && $("#startNewJob_newSession").val()=="true") {
+				$('#passwordExpirationModal').modal('show');
 			}
 		});
 		</script>

@@ -21,6 +21,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class PasswordAction extends ActionSupport  implements SessionAware, LoginRequired {
 	private String guid1;
+	private String whereFrom = "EXPIRED";
 	private String userPass;
 	private String userPassConfirm;
 	private static final long serialVersionUID = 1L;
@@ -35,6 +36,18 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		String returnStatus = "";
 
 		try {
+			returnStatus = SUCCESS;
+		} catch (Exception e) {
+			
+		}
+		return returnStatus;
+	}
+	
+	public String display2() {
+		String returnStatus = "";
+
+		try {
+			whereFrom = "USERCHANGE";
 			returnStatus = SUCCESS;
 		} catch (Exception e) {
 			
@@ -66,7 +79,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			} else {		
 				//call the SsoHelper and see what its response is now.
 				logger.error("passwords match...");
-
+				
 				if (SsoHelper.getInstance().userPasswordReset(userId, userPass)) {
 					logger.error("...and the reset was successful");
 					//and update the SWUser's password change date.
@@ -110,6 +123,14 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 
 	public void setUserPass(String userPass) {
 		this.userPass = Encode.forHtml(userPass);
+	}
+	
+	public String getWhereFrom() {
+		return whereFrom;
+	}
+
+	public void setWhereFrom(String whereFrom) {
+		this.whereFrom = Encode.forHtml(whereFrom);
 	}
 
 	public String getUserPassConfirm() {

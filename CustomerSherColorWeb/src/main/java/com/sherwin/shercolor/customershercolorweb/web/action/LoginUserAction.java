@@ -145,6 +145,10 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 					//BKP 2018-02-23 - Sher-Link would check and possibly return a warning that the 
 					//password was going to expire, and forward to another page.  Not sure what we
 					//want to do here with that.
+					//BKP 2019-02-22 - We will check the changePasswordDate from SW_USER, subtract today's
+					//date from it, and post that as the number of days until password expiration.
+					//on the main jsp page, we will add a modal to warn the password is expiring if that
+					//number is 7 or less.
 
 					// Redirect to SherColor URL
 					// BKP 2018-02-19 Changed to just look up user id, first name, last name, account number,
@@ -152,6 +156,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 					// BKP 2018-02-26 The 'isLoginActive' routine looked up the first and last names and acct number.
 					// Return SUCCESS at this point.
 					// Stuff these items in a session object and pass the guid to the LoginAction.
+					
 						reqObj = new RequestObject();
 						guid1 = UUID.randomUUID().toString().replace("-", "");
 						reqObj.setGuid(guid1);
@@ -164,6 +169,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 						reqObj.setGemsEmpId(Encode.forHtml(gemsEmpId));
 						reqObj.setSalesRep(isSalesRep);
 						reqObj.setStoreEmp(isStoreEmp);
+						reqObj.setDaysUntilPasswdExpire(calcDaysUntilPasswdExpire());
 						sessionMap.put(reqObj.getGuid(), reqObj);
 						String expiredPassResponse = checkExpiredPassword();
 						if (!expiredPassResponse.isEmpty()) {
@@ -202,6 +208,25 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			return ERROR;
 		}
 		
+	}
+	
+	private int calcDaysUntilPasswdExpire() {
+		int returnDays = 90;
+		Date currentDate = new Date();
+		
+		try {
+			//System.out.println("currentDate is " + currentDate);
+			//System.out.println("changePasswordDate is " + changePasswordDate);
+			long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
+			//System.out.println("diffInMillies is " + diffInMillies);
+		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		    //System.out.println("diff is " + diff);
+		    returnDays = (int) diff;
+		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+		}
+		
+		return returnDays;
 	}
 	
 	private String checkExpiredPassword() throws Exception {
@@ -286,6 +311,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 						isStoreEmp = false;
 					}
 					changePasswordDate = theUserRec.getChangePassword();
+					//System.out.println("changePasswordDate is " + changePasswordDate);
 					return true;
 				} else {
 					firstName = "";

@@ -27,9 +27,13 @@ import com.sherwin.shercolor.desktop.service.CdsTranService;
 import com.sherwin.shercolor.desktop.service.CdsTranServiceImpl;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.fxml.FXMLLoader;
 
 /**
@@ -52,6 +56,10 @@ public class ImportCustWebTran extends Application
 	
 //	ProductService productService;
 //	SessionFactory sessionFactory;
+	
+	// for window drag
+	private double xOffset = 0;
+	private double yOffset = 0;
 	
     public static void main(final String[] args)
     {
@@ -101,7 +109,8 @@ public class ImportCustWebTran extends Application
 		loader.setControllerFactory(springContext::getBean);
 		
 		
-		HBox hbox = loader.load();
+		//HBox hbox = loader.load();
+		BorderPane borderPane = loader.load();
 
 		Integer width = null;
 		try {
@@ -114,18 +123,36 @@ public class ImportCustWebTran extends Application
 			height = Integer.parseInt(getParameters().getNamed().get("height"));
 		} catch (Exception e) {
 		}
-		if (height == null || height == 0) height = 700;
+		if (height == null || height == 0) height = 750;
 		stage.setWidth(width);
 		stage.setHeight(height);
 
+		// setup drag window...
+		borderPane.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				xOffset = event.getSceneX();
+				yOffset = event.getSceneY();
+            }
+		});
+		
+		borderPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            }
+		});
+		
 		// setup scene
-		Scene scene = new Scene(hbox);
-		//Scene scene = new Scene(rootNode);
+		//Scene scene = new Scene(hbox);
+		Scene scene = new Scene(borderPane);
 		
 	    stage.setScene(scene);
 		stage.setTitle("Import SherColor Web Transactions");
 		stage.setAlwaysOnTop(false);
 		stage.setResizable(true);
+		stage.initStyle(StageStyle.TRANSPARENT); // nice no border
 	    stage.show();
 	}
 
