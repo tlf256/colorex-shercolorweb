@@ -95,6 +95,43 @@ function getGDataFromServer(colorantid){
 	return gdataobj;
 }
 
+function getPdfFromServer(myGuid){
+	var pdfobj=null;
+	if(reqGuid !=null){
+		$.ajax({
+			url : "formulaUserPrintAsJsonAction",
+			context : document.body,
+			data : {
+				reqGuid : myGuid //without this guid you will get a login exception and you won't even get an error
+				//filename: uFilename
+			},
+			async : false,
+			type: "POST",
+			dataType: "json",
+			success: function (pdfResp) {
+				//console.log(calobj);
+				console.log(encodeURI(pdfResp));
+				if(cal.sessionStatus === "expired"){
+            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            	}
+            	else{
+            		pdfobj = pdfResp;
+            	}
+			},
+			error: function(error){
+				pdfobj="error";
+				console.log(error);
+				alert("Could not generate pdf for " + printing);
+			}
+		});
+	}
+	else {
+		alert("Not logged in.  ReqGuid not found");
+	}
+
+	return pdfobj;
+}
+
 function getCalFromServer(uFilename){
 	var calobj=null;
 	if(reqGuid !=null){
@@ -147,18 +184,18 @@ function Calibration_Download(filename){
 	}
 	
 }
-function GData(mycolorant){
-	this.colorantid = mycolorant;
+function pdf(myguid){
+
 	this.data = null;
+
 	
+	var pdf_file = getPdfFromServer(myguid);
+	if(pdf_file !=null && pdf_file.data != null){
 	
-	var gdata_file = getGDataFromServer(mycolorant);
-	if(gdata_file !=null && gdata_file.data != null){
-	
-		this.data=gdata_file.data;
+		this.data=pdf_file.data;
 	}
 	else{
-		alert("Could not find Default GData for colorant:" + mycolorant  );
+		alert("Could not find Default pdf for colorant:" + mycolorant  );
 	}
 }
 

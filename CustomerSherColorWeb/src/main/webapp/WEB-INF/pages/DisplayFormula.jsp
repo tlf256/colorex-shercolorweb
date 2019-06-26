@@ -100,6 +100,13 @@
 		}
     }
 
+    function printButtonClickJson(){
+	    var myguid = $( "#formulaUserPrintAction_reqGuid" ).val();
+        console.log("calling print window open for print action with guid " + myValue);
+        var myPdf = new pdf(myguid);
+		        
+    }
+    
     function printButtonClick(){
 	    var myValue = $( "#formulaUserPrintAction_reqGuid" ).val();
         console.log("calling print window open for print action with guid " + myValue);
