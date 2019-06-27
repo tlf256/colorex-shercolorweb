@@ -557,7 +557,6 @@
 							<s:hidden name="siteHasTinter" value="%{siteHasTinter}"/>
 							<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}"/>
 							<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
-							<s:hidden name="sessionHasPrinter" value="%{sessionHasPrinter}"/>
 							<s:hidden name="tinterClrntSysId" value="%{#session[reqGuid].tinter.clrntSysId}"/>
 							<s:hidden name="formulaClrntSysId" value="%{#session[reqGuid].displayFormula.clrntSysId}"/>
 							<s:hidden name="recDirty" value="%{recDirty}"/>
@@ -858,8 +857,8 @@
 			if($("#formulaUserPrintAction_sessionHasTinter").val()=="true"){
 				ws_tinter = new WSWrapper("tinter");
 			}
-			if($("#formulaUserPrintAction_sessionHasPrinter").val()=="true"){
-				ws_tinter = new WSWrapper("printer");
+			if($("#formulaUserPrintAction_siteHasPrinter").val()=="true"){
+				ws_printer = new WSWrapper("printer");
 			}
 			// init which buttons user can see
 			updateButtonDisplay();
