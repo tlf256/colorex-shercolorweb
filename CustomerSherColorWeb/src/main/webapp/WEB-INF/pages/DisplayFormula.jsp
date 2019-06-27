@@ -102,7 +102,7 @@
 
     function printButtonClickJson(){
 	    var myguid = $( "#formulaUserPrintAction_reqGuid" ).val();
-        console.log("calling print window open for print action with guid " + myValue);
+        console.log("calling print window open for print action with guid " + myguid);
         var myPdf = new pdf(myguid);
 		        
     }
@@ -555,7 +555,9 @@
 	 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
 	 						<s:hidden name="jsDateString" value=""/>
 							<s:hidden name="siteHasTinter" value="%{siteHasTinter}"/>
+							<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}"/>
 							<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
+							<s:hidden name="sessionHasPrinter" value="%{sessionHasPrinter}"/>
 							<s:hidden name="tinterClrntSysId" value="%{#session[reqGuid].tinter.clrntSysId}"/>
 							<s:hidden name="formulaClrntSysId" value="%{#session[reqGuid].displayFormula.clrntSysId}"/>
 							<s:hidden name="recDirty" value="%{recDirty}"/>
@@ -772,7 +774,7 @@
 								</div>
 								<div class="modal-body">
 									<div class="embed-responsive embed-responsive-1by1">
-									  <embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>" frameborder="0" class="embed-responsive-item">
+									  <embed src="formulaUserPrintAsJsonAction.action?reqGuid=<s:property value="reqGuid"/>" frameborder="0" class="embed-responsive-item">
 									</div>
 
 								</div>
@@ -785,7 +787,7 @@
 				</s:form>
 			</s:if>
 			<s:else>
-				<s:form action="formulaUserPrintAction" validate="true"  theme="bootstrap">
+				<s:form action="formulaUserPrintAsJsonAction" validate="true"  theme="bootstrap">
 					<div class="row">
 	            		<div class="col-sm-2">
 						</div>
@@ -855,6 +857,9 @@
 			//init comms to device handler for tinter
 			if($("#formulaUserPrintAction_sessionHasTinter").val()=="true"){
 				ws_tinter = new WSWrapper("tinter");
+			}
+			if($("#formulaUserPrintAction_sessionHasPrinter").val()=="true"){
+				ws_tinter = new WSWrapper("printer");
 			}
 			// init which buttons user can see
 			updateButtonDisplay();
