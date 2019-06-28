@@ -161,7 +161,9 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 				
 
 			}
-			if(this.getCustomerId()!=null && this.getCustomerId()!= "DEFAULT" && this.getNewtinter().getSerialNbr() != null
+			//2018-05-06 BKP Corrected comparison on string to use .equals instead of != based on Veracode scan
+			//if(this.getCustomerId()!=null && this.getCustomerId()!= "DEFAULT" && this.getNewtinter().getSerialNbr() != null
+			if(this.getCustomerId()!=null && !this.getCustomerId().equals("DEFAULT") && this.getNewtinter().getSerialNbr() != null
 					&& this.getNewtinter().getSerialNbr().length()>1){
 				logger.info("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
 				System.out.println("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
