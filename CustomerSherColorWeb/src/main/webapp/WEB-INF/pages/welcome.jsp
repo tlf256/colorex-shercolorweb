@@ -380,7 +380,7 @@
 			var initErrorList = [];
 			console.log("Received Message");
 			//console.log("Message is " + ws_tinter.wsmsg);
-			if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg!=""){
+			if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg != ""){
 				if(sendingTinterCommand == "true"){
 					// received an error from WSWrapper so we won't get any JSON result (probably no SWDeviceHandler)
 					// If we are sending a ReadConfig command don't show any error (localhost has no devices)

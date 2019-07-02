@@ -1,10 +1,10 @@
 
-
+var ws_printer = new WSWrapper("printer");
 
 
 function getPdfFromServer(myGuid){
 	var pdfobj=null;
-	if(reqGuid !=null){
+	if(myGuid !=null){
 		$.ajax({
 			url : "formulaUserPrintAsJsonAction",
 			context : document.body,
@@ -18,7 +18,7 @@ function getPdfFromServer(myGuid){
 			success: function (pdfResp) {
 				//console.log(calobj);
 				console.log(encodeURI(pdfResp));
-				if(cal.sessionStatus === "expired"){
+				if(pdfResp.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
             	else{
@@ -71,18 +71,19 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function PrinterMessage(mymodel,myserial, mydata){
+function PrinterMessage(myconfig, mydata){
 	console.log("In PrinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
 	this.messageName="PrinterMessage";
-	this.data=data;
-	this.model=mymodel;
-	this.serial=myserial
+	this.command="Print";
+	this.data=mydata;
+	this.configuration = myconfig;
 	//returned items
 	
 	this.errorCode=0;
 	this.errorMessage=0;
+	this.printerList=null;
 	
 }
 function createUUID() {
@@ -100,3 +101,20 @@ function createUUID() {
     return uuid;
 }
 
+function print(myPdf) {
+
+	
+	var printermessage = new PrinterMessage(null,myPdf.data);
+
+	var json = JSON.stringify(printermessage);
+	sendingDispCommand = "true";
+	if (ws_printer != null && ws_printer.isReady == "false") {
+		console
+				.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
+		ws_printer = new WSWrapper("printer");
+	}
+	
+	// Send to tinter
+	ws_printer.send(json);
+
+}
