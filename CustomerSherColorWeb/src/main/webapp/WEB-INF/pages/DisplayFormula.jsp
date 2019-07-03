@@ -167,76 +167,60 @@
 		
 		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of " + dispenseQuantity;
 		$(".dispenseNumberTracker").text(dispenseNumberTracker);
-	
-			// comes from getSessionTinterInfo
-
-			// check if purge required...
-			var dateFromString = new Date(sessionTinterInfo.lastPurgeDate);
-			var today = new Date();
-			if (dateFromString.getFullYear() < today.getFullYear()
-					|| dateFromString.getMonth() < today.getMonth()
-					|| dateFromString.getDate() < today.getDate()) {
+		// comes from getSessionTinterInfo
+		// check if purge required...
+		var dateFromString = new Date(sessionTinterInfo.lastPurgeDate);
+		var today = new Date();
+		if (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() || dateFromString.getDate()<today.getDate()){
+			$("#tinterErrorList").empty();
+			$("#tinterErrorList").append('<li class="alert alert-danger">Tinter Purge is Required. Last done on ' + moment(dateFromString).format('ddd MMM DD YYYY') + '</li>');
+			waitForShowAndHide("#tinterInProgressModal");
+			$("#tinterErrorListModal").modal('show');
+			$("#tinterErrorListTitle").text("Purge Required");
+			$("#tinterErrorListSummary").text("Save your formula and go to the SherColor Home page to perform Tinter Purge. ");
+		
+			
+		} else {
+			// Check Levels
+			console.log("about to check levels");
+			// Check for STOP! because there is not enough colorant in the tinter
+			var stopList = checkDispenseColorantEmpty(shotList, sessionTinterInfo.canisterList);
+			if(stopList[0]!=null){
 				$("#tinterErrorList").empty();
-				$("#tinterErrorList").append(
-						'<li class="alert alert-danger">Tinter Purge is Required. Last done on '
-								+ moment(dateFromString).format(
-										'ddd MMM DD YYYY') + '</li>');
+				stopList.forEach(function(item){
+					$("#tinterErrorList").append('<li class="alert alert-danger">' + item + '</li>');
+				});
+				//Show it in a modal they can't go on
 				waitForShowAndHide("#tinterInProgressModal");
 				$("#tinterErrorListModal").modal('show');
-				$("#tinterErrorListTitle").text("Purge Required");
-				$("#tinterErrorListSummary")
-						.text(
-								"Save your formula and go to the SherColor Home page to perform Tinter Purge. ");
-
+				$("#tinterErrorListTitle").text("Colorant Level Too Low");
+				$("#tinterErrorListSummary").text("Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
+				
+				
 			} else {
-				// Check Levels
-				console.log("about to check levels");
-				// Check for STOP! because there is not enough colorant in the tinter
-				var stopList = checkDispenseColorantEmpty(shotList,
-						sessionTinterInfo.canisterList);
-				if (stopList[0] != null) {
-					$("#tinterErrorList").empty();
-					stopList.forEach(function(item) {
-						$("#tinterErrorList").append(
-								'<li class="alert alert-danger">' + item
-										+ '</li>');
+				var warnList = checkDispenseColorantLow(shotList, sessionTinterInfo.canisterList);
+				if(warnList[0]!=null){
+					$("#tinterWarningList").empty();
+					warnList.forEach(function(item){
+						$("#tinterWarningList").append('<li class="alert alert-warning">'+item+'</li>');
 					});
-					//Show it in a modal they can't go on
+					//Show in modal, they can say OK to continue
 					waitForShowAndHide("#tinterInProgressModal");
-					$("#tinterErrorListModal").modal('show');
-					$("#tinterErrorListTitle").text("Colorant Level Too Low");
-					$("#tinterErrorListSummary")
-							.text(
-									"Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
-
+					$("#tinterWarningListTitle").text("Low Colorant Levels");
+					$("#tinterWarningListModal").modal('show');
 				} else {
-					var warnList = checkDispenseColorantLow(shotList,
-							sessionTinterInfo.canisterList);
-					if (warnList[0] != null) {
-						$("#tinterWarningList").empty();
-						warnList.forEach(function(item) {
-							$("#tinterWarningList").append(
-									'<li class="alert alert-warning">' + item
-											+ '</li>');
-						});
-						//Show in modal, they can say OK to continue
-						waitForShowAndHide("#tinterInProgressModal");
-						$("#tinterWarningListTitle")
-								.text("Low Colorant Levels");
-						$("#tinterWarningListModal").modal('show');
-					} else {
-						console.log("about to show verify modal");
-						//OK to verify
-						console.log("in progress shown");
-						waitForShowAndHide("#tinterInProgressModal");
-						console.log("in progress hidden");
-						$("#verifyModal").modal('show');
-						console.log("end of else");
-
-					}
-				} // end colorant level checks
-			} // end purge check
-		}
+					console.log("about to show verify modal");
+					//OK to verify
+					console.log("in progress shown");
+					waitForShowAndHide("#tinterInProgressModal");
+					console.log("in progress hidden");
+					$("#verifyModal").modal('show'); 
+					console.log("end of else");
+					
+				}
+			} // end colorant level checks
+		} // end purge check
+	}
 
 		function decrementColorantLevels() {
 			console.log("Calling decrementColorantLevels");
