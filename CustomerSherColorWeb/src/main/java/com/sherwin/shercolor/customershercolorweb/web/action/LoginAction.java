@@ -180,7 +180,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 							
 							System.out.println("DEBUG new reqGuid created "+ reqGuid);
-							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(acct));
+							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
 							spectro = new SpectroInfo();
 							
 							if (spectroList.size()==1) {
@@ -209,7 +209,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							newSession = true; // this will trigger the welcome page to do "on login only" activities... (e.g. read config for tinter from device handler)
 							tinter = new TinterInfo();
 							reqObj.setTinter(tinter);
-							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(acct), null);
+							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(reqObj.getCustomerID()), null);
 							if(tinterList.size()>0) siteHasTinter = true;
 							
 						 	sessionMap.put(reqObj.getGuid(), reqObj);
@@ -255,7 +255,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					 sessionHasTinter = true;
 				 }
 				 spectro=origReqObj.getSpectro();
-				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!=null) siteHasSpectro = true;
+				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!="") siteHasSpectro = true;
 				 
 				 sessionMap.put(origReqObj.getGuid(), origReqObj);
 				 returnStatus = "SUCCESS";
