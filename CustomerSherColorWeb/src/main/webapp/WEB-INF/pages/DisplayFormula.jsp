@@ -134,8 +134,8 @@
 					'Print Label', 'width=500, height=1000');
 		}
 
-		// now build the dispense formula object
-		var sendingDispCommand = "false";
+	// now build the dispense formula object
+	var sendingDispCommand = "false";
 
 	// using strut2 to build shotlist...
 	var shotList = [];
