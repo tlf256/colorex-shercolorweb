@@ -283,7 +283,9 @@
 					} // end switch statement
 				} else {
 					$("#printLabelModal").modal('show'); //switch to pdf popup as before
-					/*if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
+					
+					/* DJM switch to this if 
+					if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
 					$("#printerInProgressMessage").text(
 							ws_printer.wserrormsg);
 					}
