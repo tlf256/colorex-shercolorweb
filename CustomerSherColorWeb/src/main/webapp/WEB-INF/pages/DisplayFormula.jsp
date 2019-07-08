@@ -1,55 +1,62 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!doctype html>
 
 
-<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 
 <html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		
-		<title>Formula</title>
-			<!-- JQuery -->
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/Printer.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/Tinter.js"></script>
-		<s:set var="thisGuid" value="reqGuid" />
-		<style>
-	        .sw-bg-main {
-	            background-color: ${sessionScope[thisGuid].rgbHex};
-	        }
-	        
-	        #dispenseQuantityInputError  {
-  				font-weight: bold;
-  				color: red;
-			}
-	        
-	        #verifyScanInputError {
-  				font-weight: bold;
-  				color: red;
-			}
-			badge{
-				font-size: 14px;
-    			margin: 5px;
-			}
-			.btn{
-				margin-left: 3px;
-				margin-right: 3px;
-			}
-	    </style>
-	<script type="text/javascript">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Formula</title>
+<!-- JQuery -->
+<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
+<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
+<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
+<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
+<link
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="script/CustomerSherColorWeb.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/Printer.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
+<s:set var="thisGuid" value="reqGuid" />
+<style>
+.sw-bg-main {
+	background-color: ${sessionScope[thisGuid].rgbHex
+}
+
+;
+}
+#dispenseQuantityInputError {
+	font-weight: bold;
+	color: red;
+}
+
+#verifyScanInputError {
+	font-weight: bold;
+	color: red;
+}
+
+badge {
+	font-size: 14px;
+	margin: 5px;
+}
+
+.btn {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+</style>
+<script type="text/javascript">
 	
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
@@ -542,486 +549,528 @@
 			});
 		}
 	</script>
-	</head>
-	<body>
-		<!-- including Header -->
-		<s:include value="Header.jsp"></s:include>
-		
-		<div class="container-fluid">
+</head>
+<body>
+	<!-- including Header -->
+	<s:include value="Header.jsp"></s:include>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3"></div>
+			<div class="col-sm-6"></div>
+			<div class="col-sm-3">
+				<s:set var="thisGuid" value="reqGuid" />
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-sm-2"></div>
+		</div>
+
+		<s:if
+			test="%{#session[reqGuid].controlNbr != null && #session[reqGuid].controlNbr > 0}">
+			<div class="row" id="controlNbrDisplay">
+		</s:if>
+		<s:else>
+			<div class="row" id="controlNbrDisplay" hidden="true">
+		</s:else>
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Job Number:</strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8" id="controlNbr">
+			${sessionScope[thisGuid].controlNbr}</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
+				<strong><s:property value="screenLabel" />:</strong>
+				<br>
+			</s:iterator>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
+				<s:property value="enteredValue" />
+				<br>
+			</s:iterator>
+		</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<br>
+
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Color Company:</strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+			${sessionScope[thisGuid].colorComp}</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Color ID:</strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+			${sessionScope[thisGuid].colorID}</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Color Name:</strong>
+		</div>
+		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+			${sessionScope[thisGuid].colorName}<br>
+			<div class="card card-body sw-bg-main"></div>
+		</div>
+		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Sales Number:</strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+			${sessionScope[thisGuid].salesNbr}<br>
+		</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Product Number:</strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+			${sessionScope[thisGuid].prodNbr} -
+			${sessionScope[thisGuid].sizeText}</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong>Product Descr:</strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+			${sessionScope[thisGuid].intExt} ${sessionScope[thisGuid].quality}
+			${sessionScope[thisGuid].composite} ${sessionScope[thisGuid].finish}<br>
+			${sessionScope[thisGuid].base}<br>
+		</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<br>
+	<div class="row mt-3">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
+			${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
+		</div>
+		<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+	</div>
+
+	<s:if
+		test="%{#session[reqGuid].displayFormula.deltaEWarning == '' || #session[reqGuid].displayFormula.deltaEWarning == null}">
+		<s:form action="formulaUserPrintAction" validate="true"
+			theme="bootstrap">
 			<div class="row">
-				<div class="col-sm-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="jsDateString" value="" />
+					<s:hidden name="siteHasTinter" value="%{siteHasTinter}" />
+					<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
+					<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}" />
+					<s:hidden name="tinterClrntSysId"
+						value="%{#session[reqGuid].tinter.clrntSysId}" />
+					<s:hidden name="formulaClrntSysId"
+						value="%{#session[reqGuid].displayFormula.clrntSysId}" />
+					<s:hidden name="recDirty" value="%{recDirty}" />
+					<s:hidden name="midCorrection" value="%{midCorrection}" />
 				</div>
-				<div class="col-sm-6">
+				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+					<s:if test="hasActionMessages()">
+						<s:actionmessage />
+					</s:if>
 				</div>
-				<div class="col-sm-3">
-					<s:set var="thisGuid" value="reqGuid" />
-				</div>
+				<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
 			</div>
 			<br>
 			<div class="row">
-				<div class="col-sm-2">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*COLORANT</strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[1]}</strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[2]}</strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[3]}</strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="displayFormula.ingredients" status="i">
+								<tr id="<s:property value="%{#i.index}"/>">
+									<td class="col-lg-5 col-md-6 col-sm-4 col-xs-4"
+										id="col1row<s:property value="%{#i.index}"/>"><s:property
+											value="tintSysId" />-<s:property value="name" /></td>
+									<s:iterator value="increment" status="stat">
+										<td><s:property value="top" /></td>
+									</s:iterator>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
 				</div>
 			</div>
-			
-			<s:if test="%{#session[reqGuid].controlNbr != null && #session[reqGuid].controlNbr > 0}">
-				<div class="row" id="controlNbrDisplay">
+			<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
+			<br>
+			<s:if test="%{siteHasTinter==true}">
+				<div class="row" id="dispenseInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong>Qty Dispensed: </strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
 			</s:if>
 			<s:else>
-				<div class="row" id="controlNbrDisplay" hidden="true">
-			</s:else> 
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+				<div class="row" id="dispenseInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong>Qty Dispensed: </strong> <span
+							class="dispenseInfo d-none badge badge-secondary"
+							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Job Number:</strong>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8" id="controlNbr">
-						${sessionScope[thisGuid].controlNbr}
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<strong><s:property value="screenLabel"/>:</strong><br>
-					</s:iterator>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue"/><br>
-					</s:iterator>	
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
-				</div>
-				<br>
-				
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Color Company:</strong>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-						${sessionScope[thisGuid].colorComp}
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Color ID:</strong>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-						${sessionScope[thisGuid].colorID}
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Color Name:</strong>
-					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-						${sessionScope[thisGuid].colorName}<br>
-						<div class="card card-body sw-bg-main"></div>
-					</div>
-					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Sales Number:</strong>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-						${sessionScope[thisGuid].salesNbr}<br>
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Product Number:</strong>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-						${sessionScope[thisGuid].prodNbr} - ${sessionScope[thisGuid].sizeText}
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Product Descr:</strong>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-						${sessionScope[thisGuid].intExt} ${sessionScope[thisGuid].quality} ${sessionScope[thisGuid].composite} ${sessionScope[thisGuid].finish}<br>
-						${sessionScope[thisGuid].base}<br>
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-					</div>
-				</div>
-				<br>
-				<div class="row mt-3">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					</div>
-					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
-					${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
-					</div>
-					<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0">
-					</div>
-				</div>
-	
-	<s:if test="%{#session[reqGuid].displayFormula.deltaEWarning == '' || #session[reqGuid].displayFormula.deltaEWarning == null}"> 
-				<s:form action="formulaUserPrintAction" validate="true"  theme="bootstrap">
-					<div class="row">
-	            		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-	 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
-	 						<s:hidden name="jsDateString" value=""/>
-							<s:hidden name="siteHasTinter" value="%{siteHasTinter}"/>
-							<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}"/>
-							<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
-							<s:hidden name="tinterClrntSysId" value="%{#session[reqGuid].tinter.clrntSysId}"/>
-							<s:hidden name="formulaClrntSysId" value="%{#session[reqGuid].displayFormula.clrntSysId}"/>
-							<s:hidden name="recDirty" value="%{recDirty}"/>
-							<s:hidden name="midCorrection" value="%{midCorrection}"/>
-						</div>
-						<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-							<s:if test="hasActionMessages()">
-							      <s:actionmessage/>
-							</s:if>
-						</div>
-						<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0">
-						</div>
-					</div>
-					<br>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-						</div>
-						<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-							  <table class="table">
-							    <thead>
-							      <tr>
-							        <th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*COLORANT</strong></th>
-							        <th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</strong></th>
-							        <th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[1]}</strong></th>
-							        <th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[2]}</strong></th>
-							        <th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[3]}</strong></th>
-							      </tr>
-							    </thead>
-							    <tbody>
-							    <s:iterator value="displayFormula.ingredients" status="i">
-							      <tr id="<s:property value="%{#i.index}"/>">
-							        <td class="col-lg-5 col-md-6 col-sm-4 col-xs-4" id="col1row<s:property value="%{#i.index}"/>"><s:property value="tintSysId"/>-<s:property value="name"/></td>
-							        <s:iterator value="increment" status="stat">
-										<td><s:property value="top"/></td>
-									</s:iterator>
-							      </tr>
-							     </s:iterator>
-							    </tbody>
-							  </table>
-							</div>
-						</div>
-						<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0">
-						</div>
-					<br>
-					<s:if test="%{siteHasTinter==true}">
-						<div class="row" id="dispenseInfoRow">
-							<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-							</div>
-							<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-								<strong>Qty Dispensed: </strong>
-								<span class="dispenseInfo badge badge-secondary" style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-								<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
-							</div>
-							<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
-							</div>
-						</div>
-					</s:if> 
-					<s:else>
-						<div class="row" id="dispenseInfoRow">
-							<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-							</div>
-							<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-								<strong>Qty Dispensed: </strong>
-								<span class="dispenseInfo d-none badge badge-secondary" style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-								<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
-							</div>
-							<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">					
-							</div>
-						</div>
-					</s:else>
-					<br>	
-					<div class="d-flex flex-row justify-content-around mt-3">	
-							<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2">
-							</div>
-							<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
-								<button type="button" class="btn btn-primary" id="formulaDispense" onclick="setDispenseQuantity()" autofocus="autofocus">Dispense</button>
-								<s:submit cssClass="btn btn-secondary" value="Save" action="formulaUserSaveAction" autofocus="autofocus"/>
-<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
-								<button type="button" class="btn btn-secondary" id="formulaPrint" onclick="prePrintSave();return false;">Print</button>
-								<s:submit cssClass="btn btn-secondary" value="Edit Formula" action="formulaUserEditAction"/>
-								<s:submit cssClass="btn btn-secondary" value="Correct" action="formulaUserCorrectAction"/>
-								<s:submit cssClass="btn btn-secondary" value="Copy to New Job" action="displayJobFieldUpdateAction"/> 
-				    			<s:submit cssClass="btn btn-secondary pull-right" value="Next Job" action="userCancelAction"/>
-							</div>
-							<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2">
-							</div>
-			    	</div>
-			    	
-			    	<!-- Set Dispense Quantity Modal Window -->
-					<div class="modal" aria-labelledby="setDispenseQuantityModal" aria-hidden="true" id="setDispenseQuantityModal" role="dialog">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title">Enter Number of Containers to Dispense</h5>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-									</div>
-									<div class="modal-body">
-										<input type="text" class="form-control" id="dispenseQuantityInput" autofocus="autofocus">
-										<strong id="dispenseQuantityInputError"></strong>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-primary" data-dismiss="modal" id="setDispenseQuantityButton">Next</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					
-					</div>
-					
-				    <!-- Dispense Verify Modal Window -->
-				    <div class="modal" aria-labelledby="verifyModal" aria-hidden="true"  id="verifyModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title">Scan Product to Verify Dispense</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<input type="text" class="form-control" id="verifyScanInput" autofocus="autofocus">
-									<strong id="verifyScanInputError"></strong>
-								</div>
-								<div class="modal-body">
-									<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" data-dismiss="modal" id="verifyButton">Verify</button>
-								</div>
-							</div>
-						</div>
-					</div>			    
-	
-				    <!-- Position Container Modal Window -->
-				    <div class="modal" aria-labelledby="positionContainerModal" aria-hidden="true"  id="positionContainerModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title">Prepare for Dispense</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<p font-size="4">Position Container and Click Start Dispense when Ready</p>
-								</div>
-								<div class="modal-body">
-									<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button>
-								</div>
-							</div>
-						</div>
-					</div>			    
-					
-				    <!-- Tinter In Progress Modal Window -->
-				    <div class="modal" aria-labelledby="tinterInProgressModal" aria-hidden="true"  id="tinterInProgressModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title" id="tinterInProgressTitle">Dispense In Progress</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<p id="tinterInProgressMessage" font-size="4"></p>
-								</div>
-								<div class="modal-body">
-									<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
-								</div>
-								<div class="modal-footer">
-								</div>
-							</div>
-						</div>
-					</div>			    
-
-				    <!-- Dispense Error Modal Window -->
-				    <div class="modal" aria-labelledby="tinterSocketErrorModal" aria-hidden="true"  id="tinterSocketErrorModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title">Dispense Error</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<p id="tinterSocketError" font-size="4"></p>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" >Close</button>
-								</div>
-							</div>
-						</div>
-					</div>			    
-
-				    <!-- Tinter Error List Modal Window -->
-				    <div class="modal" aria-labelledby="tinterErrorListModal" aria-hidden="true"  id="tinterErrorListModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<div>
-										<ul class="p-0" id="tinterErrorList" style="list-style: none;">
-										</ul>
-									</div>
-									<p id="tinterErrorListSummary" font-size="4"></p>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
-								</div>
-							</div>
-						</div>
-					</div>			    
-
-				    <!-- Tinter Warning List Modal Window -->
-				    <div class="modal" aria-labelledby="tinterWarningListModal" aria-hidden="true"  id="tinterWarningListModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="tinterWarningListTitle">Tinter Error</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<div>
-										<ul class="p-0" id="tinterWarningList" style="list-style: none;">
-										</ul>
-									</div>
-									<p id="tinterWarningListSummary" font-size="4">Click OK to continue or Cancel to return to formula page.</p>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" aria-label="Close" >OK</button>
-									<button type="button" class="btn btn-secondary" id="tinterWarningListCancel" data-dismiss="modal" aria-label="Close" >Cancel</button>
-								</div>
-							</div>
-						</div>
-					</div>			    
-  <!-- Printer In Progress Modal Window -->
-				    <div class="modal" aria-labelledby="printerInProgressModal" aria-hidden="true"  id="printerInProgressModal" role="dialog">
-				    	<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-								<!-- 	<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i> -->
-									<h5 class="modal-title" id="printerInProgressTitle">Label Printer Error</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<p id="printerInProgressMessage" font-size="4"></p>
-								</div>
-								<div class="modal-footer">
-								</div>
-							</div>
-						</div>
-					</div>			
-				    <!-- Print Label Modal Window -->
-				    <div class="modal" aria-labelledby="printLabelModal" aria-hidden="true"  id="printLabelModal" role="dialog">
-				    	<div class="modal-dialog modal-md">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="printLabelTitle">Print Label</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-								</div>
-								<div class="modal-body">
-									<div class="embed-responsive embed-responsive-1by1">
-									  <embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>" frameborder="0" class="embed-responsive-item">
-									</div>
-
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" id="printLabelClose" data-dismiss="modal" aria-label="Close" >Close</button>
-								</div>
-							</div>
-						</div>
-					</div>			    
-				</s:form>
-			</s:if>
-			<s:else>
-				<s:form action="formulaUserPrintAsJsonAction" validate="true"  theme="bootstrap">
-					<div class="row">
-	            		<div class="col-sm-2">
-						</div>
-	
-						<div class="col-sm-8">
-							<s:if test="hasActionMessages()">
-							      <s:actionmessage/>
-							</s:if>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-8">
-	 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
-							<Strong>${sessionScope[thisGuid].displayFormula.deltaEWarning}</Strong>
-						</div>
-					</div>
-	    			
-					<br>
-					<br>
-					<div class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-							<strong>Still Use (Yes/No)?</strong>
-						</div>
-					</div>
-					<br>
-					<br>	
-					<div class="row">
-					
-							<div class="col-sm-2">
-							</div>
-							<div class="col-sm-2">	
-								<s:submit cssClass="btn btn-primary" value="No" action="deltaENoAction" autofocus="autofocus"/>
-	   						</div>
-							<div class="col-sm-2">
-								<s:submit cssClass="btn btn-secondary" value="Yes" action="deltaEYesAction"/>
-							</div>
-				    	
-			    	</div>
-				</s:form>
 			</s:else>
-		</div>
-		
-				<br>
-		<br>
-		<br>
+			<br>
+			<div class="d-flex flex-row justify-content-around mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+				<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+					<button type="button" class="btn btn-primary" id="formulaDispense"
+						onclick="setDispenseQuantity()" autofocus="autofocus">Dispense</button>
+					<s:submit cssClass="btn btn-secondary" value="Save"
+						action="formulaUserSaveAction" autofocus="autofocus" />
+					<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
+					<button type="button" class="btn btn-secondary" id="formulaPrint"
+						onclick="prePrintSave();return false;">Print</button>
+					<s:submit cssClass="btn btn-secondary" value="Edit Formula"
+						action="formulaUserEditAction" />
+					<s:submit cssClass="btn btn-secondary" value="Correct"
+						action="formulaUserCorrectAction" />
+					<s:submit cssClass="btn btn-secondary" value="Copy to New Job"
+						action="displayJobFieldUpdateAction" />
+					<s:submit cssClass="btn btn-secondary pull-right" value="Next Job"
+						action="userCancelAction" />
+				</div>
+				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+			</div>
 
-		<script>
+			<!-- Set Dispense Quantity Modal Window -->
+			<div class="modal" aria-labelledby="setDispenseQuantityModal"
+				aria-hidden="true" id="setDispenseQuantityModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Enter Number of Containers to
+									Dispense</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<input type="text" class="form-control"
+									id="dispenseQuantityInput" autofocus="autofocus"> <strong
+									id="dispenseQuantityInputError"></strong>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal" id="setDispenseQuantityButton">Next</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- Dispense Verify Modal Window -->
+			<div class="modal" aria-labelledby="verifyModal" aria-hidden="true"
+				id="verifyModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Scan Product to Verify Dispense</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<input type="text" class="form-control" id="verifyScanInput"
+								autofocus="autofocus"> <strong id="verifyScanInputError"></strong>
+						</div>
+						<div class="modal-body">
+							<span class="dispenseNumberTracker mx-auto"
+								style="background-color: #FF0; font-size: 125%;"></span>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal" id="verifyButton">Verify</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Position Container Modal Window -->
+			<div class="modal" aria-labelledby="positionContainerModal"
+				aria-hidden="true" id="positionContainerModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Prepare for Dispense</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p font-size="4">Position Container and Click Start Dispense
+								when Ready</p>
+						</div>
+						<div class="modal-body">
+							<span class="dispenseNumberTracker mx-auto"
+								style="background-color: #FF0; font-size: 125%;"></span>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								id="startDispenseButton">Start Dispense</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tinter In Progress Modal Window -->
+			<div class="modal" aria-labelledby="tinterInProgressModal"
+				aria-hidden="true" id="tinterInProgressModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted"
+								style="font-size: 1.5rem;"></i>
+							<h5 class="modal-title" id="tinterInProgressTitle">Dispense
+								In Progress</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p id="tinterInProgressMessage" font-size="4"></p>
+						</div>
+						<div class="modal-body">
+							<span class="dispenseNumberTracker mx-auto"
+								style="background-color: #FF0; font-size: 125%;"></span>
+						</div>
+						<div class="modal-footer"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Dispense Error Modal Window -->
+			<div class="modal" aria-labelledby="tinterSocketErrorModal"
+				aria-hidden="true" id="tinterSocketErrorModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Dispense Error</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p id="tinterSocketError" font-size="4"></p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								id="tinterSocketErrorButton" data-dismiss="modal"
+								aria-label="Close">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tinter Error List Modal Window -->
+			<div class="modal" aria-labelledby="tinterErrorListModal"
+				aria-hidden="true" id="tinterErrorListModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="tinterErrorListTitle">Tinter
+								Error</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div>
+								<ul class="p-0" id="tinterErrorList" style="list-style: none;">
+								</ul>
+							</div>
+							<p id="tinterErrorListSummary" font-size="4"></p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								id="tinterErrorListOK" data-dismiss="modal" aria-label="Close">OK</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tinter Warning List Modal Window -->
+			<div class="modal" aria-labelledby="tinterWarningListModal"
+				aria-hidden="true" id="tinterWarningListModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="tinterWarningListTitle">Tinter
+								Error</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div>
+								<ul class="p-0" id="tinterWarningList" style="list-style: none;">
+								</ul>
+							</div>
+							<p id="tinterWarningListSummary" font-size="4">Click OK to
+								continue or Cancel to return to formula page.</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								id="tinterWarningListOK" data-dismiss="modal" aria-label="Close">OK</button>
+							<button type="button" class="btn btn-secondary"
+								id="tinterWarningListCancel" data-dismiss="modal"
+								aria-label="Close">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Printer In Progress Modal Window -->
+			<div class="modal" aria-labelledby="printerInProgressModal"
+				aria-hidden="true" id="printerInProgressModal" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<!-- 	<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i> -->
+							<h5 class="modal-title" id="printerInProgressTitle">Label
+								Printer Error</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p id="printerInProgressMessage" font-size="4"></p>
+						</div>
+						<div class="modal-footer"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Print Label Modal Window -->
+			<div class="modal" aria-labelledby="printLabelModal"
+				aria-hidden="true" id="printLabelModal" role="dialog">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="printLabelTitle">Print Label</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="embed-responsive embed-responsive-1by1">
+								<embed
+									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>"
+									frameborder="0" class="embed-responsive-item">
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								id="printLabelClose" data-dismiss="modal" aria-label="Close">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</s:form>
+	</s:if>
+	<s:else>
+		<s:form action="formulaUserPrintAsJsonAction" validate="true"
+			theme="bootstrap">
+			<div class="row">
+				<div class="col-sm-2"></div>
+
+				<div class="col-sm-8">
+					<s:if test="hasActionMessages()">
+						<s:actionmessage />
+					</s:if>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-8">
+					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<Strong>${sessionScope[thisGuid].displayFormula.deltaEWarning}</Strong>
+				</div>
+			</div>
+
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-2">
+					<strong>Still Use (Yes/No)?</strong>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row">
+
+				<div class="col-sm-2"></div>
+				<div class="col-sm-2">
+					<s:submit cssClass="btn btn-primary" value="No"
+						action="deltaENoAction" autofocus="autofocus" />
+				</div>
+				<div class="col-sm-2">
+					<s:submit cssClass="btn btn-secondary" value="Yes"
+						action="deltaEYesAction" />
+				</div>
+
+			</div>
+		</s:form>
+	</s:else>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+	<script>
 		<!--
 		  function HF_openSherwin() {
 		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");
@@ -1237,8 +1286,8 @@
 			if($("#formulaPrint").hasClass("btn-secondary")) $("#formulaPrint").removeClass("btn-secondary");
 	}
 		</script>
-  
-		<!-- Including footer -->
-		<s:include value="Footer.jsp"></s:include>
-	</body>
+
+	<!-- Including footer -->
+	<s:include value="Footer.jsp"></s:include>
+</body>
 </html>
