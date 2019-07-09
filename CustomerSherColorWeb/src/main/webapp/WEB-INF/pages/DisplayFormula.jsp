@@ -30,6 +30,11 @@
 	            background-color: ${sessionScope[thisGuid].rgbHex};
 	        }
 	        
+	        #dispenseQuantityInputError  {
+  				font-weight: bold;
+  				color: red;
+			}
+	        
 	        #verifyScanInputError {
   				font-weight: bold;
   				color: red;
@@ -44,7 +49,11 @@
 			}
 	    </style>
 	<script type="text/javascript">
-
+	
+	var dispenseQuantity = 0;
+	var numberOfDispenses = 0;
+	var dispenseTracker = "Container: " + numberOfDispenses + " out of " + dispenseQuantity;
+	
     function prePrintSave(){
         // save before print
 		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
@@ -115,7 +124,15 @@
 		var color<s:property value="#clrnt.index"/> = new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>);
 		shotList.push(color<s:property value="#clrnt.index"/>);	
 	</s:iterator>
-
+	
+	function setDispenseQuantity(){
+		$("#dispenseQuantityInputError").text("");
+		$("#dispenseQuantityInput").val("1");
+		$("#dispenseQuantityInput").attr("value","1");
+		$("#setDispenseQuantityModal").modal('show');
+		$("#dispenseQuantityInput").select();
+	}
+	
 	function preDispenseCheck(){
 		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
 		$("#tinterInProgressMessage").text("Please wait while we Check the Colorant Levels for your tinter...");
@@ -128,6 +145,9 @@
 	}
 	
 	function preDispenseCheckCallback(){
+		
+		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of " + dispenseQuantity;
+		$(".dispenseNumberTracker").text(dispenseNumberTracker);
 		// comes from getSessionTinterInfo
 
 		// check if purge required...
@@ -299,6 +319,12 @@
     			var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
     			var tedArray = [teDetail];
     			sendTinterEvent(myGuid, curDate, myReturnMessage, tedArray); 
+    			
+    			if(numberOfDispenses != dispenseQuantity){
+    				numberOfDispenses++;
+    				console.log("Dispense Complete: Going to the next container.");
+    				preDispenseCheck();
+    			}
         	}
 		});
 	}
@@ -347,13 +373,42 @@
 			// verify scan
 			if ($("#verifyScanInput").val() !== "" && ($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}" || $("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}" || $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" || $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
 				waitForShowAndHide("#verifyModal");
+				
 				$("#positionContainerModal").modal('show');
 			} else {
 		        $("#verifyScanInputError").text("Product Scanned does not match order");
 		        $("#verifyScanInput").select();
 			}
 		});
-
+		
+		$(document).on("keypress", "#dispenseQuantityInput", function(event){
+	        if (event.keyCode == 13){
+	            event.preventDefault();
+	            $("#setDispenseQuantityButton").click();
+	        }
+	    });
+		
+		$("#setDispenseQuantityButton").on("click", function(event){
+			event.preventDefault();
+			event.stopPropagation();
+			// verify quantity input
+				//var quantity = parseInt($("#dispenseQuantityInput").val);
+				var quantity = parseInt($("#dispenseQuantityInput").val());
+				
+				//$("#dispenseQuantityInput").attr("value",quantity);
+				if ( quantity > 0 && quantity < 1000) {
+					console.log("Number of containers to dispense: " + quantity);
+					dispenseQuantity = quantity;
+					numberOfDispenses = 1;
+					waitForShowAndHide("#setDispenseQuantityModal");
+					preDispenseCheck();
+				} else {
+					console.log("Invalid input was entered. Input was: " + quantity);
+					$("#dispenseQuantityInputError").text("Invalid input: Please enter a number of containers from 1 to 999");
+					$("#dispenseQuantityInput").select();
+				}
+		});
+		
 	    $(document).on("shown.bs.modal", "#positionContainerModal", function(event){
 			$("#startDispenseButton").focus();
 	    });
@@ -624,7 +679,7 @@
 							<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2">
 							</div>
 							<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
-								<button type="button" class="btn btn-primary" id="formulaDispense" onclick="preDispenseCheck()" autofocus="autofocus">Dispense</button>
+								<button type="button" class="btn btn-primary" id="formulaDispense" onclick="setDispenseQuantity()" autofocus="autofocus">Dispense</button>
 								<s:submit cssClass="btn btn-secondary" value="Save" action="formulaUserSaveAction" autofocus="autofocus"/>
 <%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
 								<button type="button" class="btn btn-secondary" id="formulaPrint" onclick="prePrintSave();return false;">Print</button>
@@ -637,6 +692,28 @@
 							</div>
 			    	</div>
 			    	
+			    	<!-- Set Dispense Quantity Modal Window -->
+					<div class="modal" aria-labelledby="setDispenseQuantityModal" aria-hidden="true" id="setDispenseQuantityModal" role="dialog">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Enter Number of Containers to Dispense</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+									</div>
+									<div class="modal-body">
+										<input type="text" class="form-control" id="dispenseQuantityInput" autofocus="autofocus">
+										<strong id="dispenseQuantityInputError"></strong>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-primary" data-dismiss="modal" id="setDispenseQuantityButton">Next</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					
+					</div>
+					
 				    <!-- Dispense Verify Modal Window -->
 				    <div class="modal" aria-labelledby="verifyModal" aria-hidden="true"  id="verifyModal" role="dialog">
 				    	<div class="modal-dialog" role="document">
@@ -648,6 +725,9 @@
 								<div class="modal-body">
 									<input type="text" class="form-control" id="verifyScanInput" autofocus="autofocus">
 									<strong id="verifyScanInputError"></strong>
+								</div>
+								<div class="modal-body">
+									<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-primary" data-dismiss="modal" id="verifyButton">Verify</button>
@@ -667,13 +747,16 @@
 								<div class="modal-body">
 									<p font-size="4">Position Container and Click Start Dispense when Ready</p>
 								</div>
+								<div class="modal-body">
+									<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
+								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button>
 								</div>
 							</div>
 						</div>
 					</div>			    
-
+					
 				    <!-- Tinter In Progress Modal Window -->
 				    <div class="modal" aria-labelledby="tinterInProgressModal" aria-hidden="true"  id="tinterInProgressModal" role="dialog">
 				    	<div class="modal-dialog" role="document">
@@ -685,6 +768,9 @@
 								</div>
 								<div class="modal-body">
 									<p id="tinterInProgressMessage" font-size="4"></p>
+								</div>
+								<div class="modal-body">
+									<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
 								</div>
 								<div class="modal-footer">
 								</div>
