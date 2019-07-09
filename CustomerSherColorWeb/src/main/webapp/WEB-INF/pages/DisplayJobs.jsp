@@ -83,6 +83,7 @@
 						</thead>
 						<tbody>
 							<s:iterator var="job" value="jobHistory" status="outer">
+							<s:if test="#job.deleted==false">
 								<tr class="border-bottom-1 border-dark">
 									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
@@ -133,7 +134,20 @@
 											<br>	
 										</s:iterator>
 									</td>
+									<td>
+										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="Delete job">
+											<i class="far fa-trash-alt"></i>
+										</button>
+									</td>
 								</tr>
+							</s:if>
+							<s:else>
+								<tr class="border-bottom-1 border-dark">
+									<td>
+										<h5>No Jobs to Display</h5>
+									</td>
+								</tr>
+							</s:else>
 							</s:iterator>
 						</tbody>
 					</table>

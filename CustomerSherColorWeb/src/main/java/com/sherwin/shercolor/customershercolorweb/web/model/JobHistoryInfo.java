@@ -23,6 +23,7 @@ public class JobHistoryInfo{
 	private List<JobField> jobFieldList;
 	private List<FormulaIngredient> recipe;
 	private String sizeCode;
+	private boolean deleted;
 	
 	public String getClrntSysId() {
 		return clrntSysId;
@@ -90,5 +91,11 @@ public class JobHistoryInfo{
 	}
 	public String getSizeCode() {
 		return sizeCode;
+	}
+	public boolean isDeleted() {
+		return deleted;
+	}
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 }

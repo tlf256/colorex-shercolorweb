@@ -72,6 +72,17 @@ $(document).ready(function() {
     	document.forms[0].submit();
     });
     $("#job_table").addClass("table-hover");
+    
+    $('#job_table tbody').on('click', '.dltrow', function(){
+    	//var controlNbr = jobTable.row(this).data()[0];
+    	var deleteRow = $(this).closest('tr');
+    	var controlNbr = deleteRow.data()[0];
+    	document.forms[0].lookupControlNbr.value = controlNbr;
+    	document.forms[0].submit();
+    	window.alert("controlNbr " + controlNbr);
+    	jobTable.remove(deleteRow).draw();
+    });
+    
 });
 
 
