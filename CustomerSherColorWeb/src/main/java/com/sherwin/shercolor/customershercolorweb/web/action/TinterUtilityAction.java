@@ -199,9 +199,15 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 
 			tinter = reqObj.getTinter();
 			System.out.println("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
-			refreshTinterInfo(reqObj.getCustomerID(), tinter);
 			
-			retVal = SUCCESS;
+			if (tinter.getModel() != null && tinter.getSerialNbr() != null) {
+				refreshTinterInfo(reqObj.getCustomerID(), tinter);
+				retVal = SUCCESS;
+			} else {
+				logger.info("DEBUG  Site/Session does not have any tinters configured.");
+				retVal = ERROR;
+			}
+			
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			System.out.println("Get Session Exception: " + e.getMessage());
