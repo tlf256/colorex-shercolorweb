@@ -63,6 +63,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean newSession;
 	private boolean siteHasTinter;
 	private boolean sessionHasTinter;
+	private boolean siteHasPrinter;
 	private TinterInfo tinter;
 	private boolean siteHasSpectro;
 	private SpectroInfo spectro;
@@ -87,8 +88,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		String testModeAcct = "";
 		newSession = true;
 		siteHasTinter = false;
-		siteHasSpectro = false;
+	
+		siteHasPrinter = false;
 		sessionHasTinter = false;
+		siteHasSpectro = false;
+		
 		String userId = "";
 		
 		try {
@@ -676,6 +680,14 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	public void setDaysUntilPwdExp(int daysUntilPwdExp) {
 		this.daysUntilPwdExp = daysUntilPwdExp;
+	}
+
+	public boolean isSiteHasPrinter() {
+		return siteHasPrinter;
+	}
+
+	public void setSiteHasPrinter(boolean siteHasPrinter) {
+		this.siteHasPrinter = siteHasPrinter;
 	}
 
 }

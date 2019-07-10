@@ -413,7 +413,9 @@
 	});
 	$(document).on("click", "#btn_downloadEcal", function(event) {
 		event.preventDefault();
-		var filename = $('#filename').val();
+		
+		var filename = $("input[name='filename']:checked"). val();
+		
 			if(filename != null && filename !== undefined){
 			    $('#btn_downloadEcal').prop('disabled', true);
 				

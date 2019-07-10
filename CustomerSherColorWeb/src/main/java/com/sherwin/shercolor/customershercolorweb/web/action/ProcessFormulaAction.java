@@ -15,6 +15,7 @@ import org.owasp.encoder.Encode;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
@@ -38,6 +39,7 @@ import com.sherwin.shercolor.util.domain.SwMessage;
 public class ProcessFormulaAction extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private DataInputStream inputStream;
+	private byte[] data;
 	static Logger logger = LogManager.getLogger(ProcessFormulaAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
@@ -63,7 +65,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			displayFormula = reqObj.getDisplayFormula();
 			qtyDispensed = reqObj.getQuantityDispensed();
 			tinter = reqObj.getTinter();
-			
+
 			// setup formula display messages since this now intercepts other actions from going directly to displayFormula.jsp
 			if(reqObj.getDisplayMsgs()!=null){
 				for(SwMessage item:reqObj.getDisplayMsgs()) {
@@ -78,9 +80,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 			// Check if correction in process
 			List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-			
+
 			CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-			
+
 			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
 			if(corrInfo.getCorrStatus().equalsIgnoreCase("MIDUNIT") || corrInfo.getCorrStatus().equalsIgnoreCase("MIDCYCLE")){
 				midCorrection = true;
@@ -88,7 +90,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			} else {
 				midCorrection = false;
 			}
-			
+
 
 			siteHasTinter = false;
 			List<String> tinterList = tinterService.listOfModelsForCustomerId(reqObj.getCustomerID(), null);
@@ -106,7 +108,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 				System.out.println("back from tinterService");
 				if(colorantMap!=null && !colorantMap.isEmpty()){
-					
+
 					//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
 					for(FormulaIngredient ingr : displayFormula.getIngredients()){
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
@@ -116,7 +118,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 							return "errormsg";
 						}
 					}
-					
+
 					System.out.println("colorant map is not null");
 					if(dispenseFormula==null) dispenseFormula = new ArrayList<DispenseItem>();
 					else dispenseFormula.clear();
@@ -174,6 +176,30 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 			printLabel.CreateLabelPdf("label.pdf", reqObj);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
+
+			return SUCCESS;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ERROR;
+		}
+	}
+
+	public String printAsJson() {
+		FileInputStream fin = null;
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
+			printLabel.CreateLabelPdf("label.pdf", reqObj);
+			File file = new File("label.pdf");
+			fin = new FileInputStream(file);
+			byte fileContent[] = new byte[(int)file.length()];
+
+
+			// Reads up to certain bytes of data from this input stream into an array of bytes.
+			fin.read(fileContent);
+			setData(fileContent);
+			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
+
 
 			return SUCCESS;
 		} catch (Exception e) {
@@ -278,6 +304,16 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public List<CustWebTran> getTranHistory() {
 		return tranHistory;
+	}
+
+
+	public byte[] getData() {
+		return data;
+	}
+
+	@TypeConversion(converter="com.sherwin.shercolor.common.web.model.StringToByteArrayConverter")
+	public void setData(byte[] data) {
+		this.data = data;
 	}
 
 }
