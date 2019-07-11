@@ -152,6 +152,14 @@
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="deleteJobAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeleteJobAction" method="execute">
+			<interceptor-ref name="defaultStack"/>
+		    <interceptor-ref name="json" />
+			<result name="success" type="json">
+				<param name="result">${result}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="swdhInstallAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeviceHandlerUtilityAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

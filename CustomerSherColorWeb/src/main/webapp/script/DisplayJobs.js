@@ -72,6 +72,46 @@ $(document).ready(function() {
     	document.forms[0].submit();
     });
     $("#job_table").addClass("table-hover");
+    
+    $('#job_table tbody').on({
+    	mouseenter: function(){
+    		$("#job_table").removeClass("table-hover");
+    	},
+    	mouseleave: function(){
+    		$("#job_table").addClass("table-hover");
+    	}
+    }, '.dltrow');
+    
+    var deleteRow;
+    var controlNbr;
+    
+    $('#job_table tbody').on('click', '.dltrow', function(event){
+    	event.stopPropagation();
+    	deleteRow = $(this).closest('tr');
+    	controlNbr = jobTable.row(deleteRow).data()[0];
+    	window.alert("controlNbr " + controlNbr);
+    	$('#deletemodal').modal().show();
+    });
+    
+    $('#yesbtn').on('click', function(){
+    	var reqGuid = $('#guid').val();
+    	$.ajax({
+			url:"deleteJobAction.action",
+			data:{"controlNbr": controlNbr, "reqGuid": reqGuid},
+			type: "POST",
+			dataType:"json",
+			success:function(){
+				console.log("Success");
+			},
+			error:function(request, status, error){
+				console.log("Error: " + status + " (" + error + ")");
+			}
+		});
+    	jobTable.row(deleteRow).remove().draw();
+    	$('#dltmsg').removeClass('d-none');
+    	$('#dltmsg').text("Job " + controlNbr + " deleted successfully");
+    });
+    
 });
 
 
