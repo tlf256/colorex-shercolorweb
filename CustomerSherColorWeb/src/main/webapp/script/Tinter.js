@@ -95,6 +95,8 @@ function getGDataFromServer(colorantid){
 	return gdataobj;
 }
 
+
+
 function getCalFromServer(uFilename){
 	var calobj=null;
 	if(reqGuid !=null){
@@ -147,20 +149,7 @@ function Calibration_Download(filename){
 	}
 	
 }
-function GData(mycolorant){
-	this.colorantid = mycolorant;
-	this.data = null;
-	
-	
-	var gdata_file = getGDataFromServer(mycolorant);
-	if(gdata_file !=null && gdata_file.data != null){
-	
-		this.data=gdata_file.data;
-	}
-	else{
-		alert("Could not find Default GData for colorant:" + mycolorant  );
-	}
-}
+
 
 function Calibration(mycolorant,mymodel,myserial){
 	

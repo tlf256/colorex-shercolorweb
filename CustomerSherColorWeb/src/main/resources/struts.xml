@@ -638,6 +638,16 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="formulaUserPrintAsJsonAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printAsJson">
+			<result name="loginRedirect" type="redirectAction">
+			<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"></result>
+   			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>           
+			
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="downloadExeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadExeAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

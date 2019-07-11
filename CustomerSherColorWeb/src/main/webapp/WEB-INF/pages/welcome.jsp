@@ -380,7 +380,7 @@
 			var initErrorList = [];
 			console.log("Received Message");
 			//console.log("Message is " + ws_tinter.wsmsg);
-			if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg!=""){
+			if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg != ""){
 				if(sendingTinterCommand == "true"){
 					// received an error from WSWrapper so we won't get any JSON result (probably no SWDeviceHandler)
 					// If we are sending a ReadConfig command don't show any error (localhost has no devices)
@@ -1031,9 +1031,9 @@
  	 			// check if session has tinter, if so setup ws tinter
  	 			if ( $("#startNewJob_sessionHasTinter").val()=="true"){
  	 				ws_tinter = new WSWrapper("tinter");
+ 	 				// Get tinter session to post status info to header popover
+ 	 	 			getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
  	 			}
- 	 			// Get tinter session to post status info to header popover
- 	 			getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 			}
 			
 			if(localhostSpectroConfig!=null){ 
@@ -1076,7 +1076,7 @@
 		    var popupWin = window.open("http://privacy.sherwin-williams.com/", "privacy", "resizable=yes,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=640,height=480,left=10,top=10");
 		    popupWin.focus();
 		  }
-		//-->
+		-->
 		</script>
 		
 		<!-- Including footer -->
