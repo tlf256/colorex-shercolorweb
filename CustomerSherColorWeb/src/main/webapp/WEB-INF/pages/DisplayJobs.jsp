@@ -41,6 +41,29 @@
 		
 	</head>
 	<body>
+		<div class="modal fade" tabindex="-1" role="dialog" id="deletemodal">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title text-danger">Delete Job</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <h6>Are you sure you want to delete this job?</h6>
+		      </div>
+		      <div class="modal-footer">
+		      <s:form>
+			        <%-- <s:submit id="deletebtn" class="btn btn-danger" action="deleteCustomer" value="Yes"></s:submit> --%>
+			        <button type="button" id="yesbtn" class="btn btn-danger" data-dismiss="modal">Yes</button>
+			        <button type="button" id="nobtn" class="btn btn-secondary" data-dismiss="modal">No</button>
+		       </s:form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
 		
@@ -60,6 +83,7 @@
 				<div class="col-lg-0 col-md-0">
 				</div>
 				<div class="col-lg-12 col-md-12">
+					<h6 id="dltmsg" class="text-danger d-none"></h6>
 					<s:if test="hasActionMessages()">
 					      <s:actionmessage cssClass="alert-danger"/>
 					</s:if>

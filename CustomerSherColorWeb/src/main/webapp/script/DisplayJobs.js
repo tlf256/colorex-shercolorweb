@@ -73,14 +73,28 @@ $(document).ready(function() {
     });
     $("#job_table").addClass("table-hover");
     
+    $('#job_table tbody').on({
+    	mouseenter: function(){
+    		$("#job_table").removeClass("table-hover");
+    	},
+    	mouseleave: function(){
+    		$("#job_table").addClass("table-hover");
+    	}
+    }, '.dltrow');
+    
+    var deleteRow;
+    var controlNbr;
+    
     $('#job_table tbody').on('click', '.dltrow', function(event){
     	event.stopPropagation();
-    	var deleteRow = $(this).closest('tr');
-    	var controlNbr = jobTable.row(deleteRow).data()[0];
-    	var reqGuid = $('#guid').val();
+    	deleteRow = $(this).closest('tr');
+    	controlNbr = jobTable.row(deleteRow).data()[0];
     	window.alert("controlNbr " + controlNbr);
-    	window.alert("reqGuid " + reqGuid);
-    	//$.get("deleteJobAction.action",{"controlNbr": controlNbr});
+    	$('#deletemodal').modal().show();
+    });
+    
+    $('#yesbtn').on('click', function(){
+    	var reqGuid = $('#guid').val();
     	$.ajax({
 			url:"deleteJobAction.action",
 			data:{"controlNbr": controlNbr, "reqGuid": reqGuid},
@@ -94,6 +108,8 @@ $(document).ready(function() {
 			}
 		});
     	jobTable.row(deleteRow).remove().draw();
+    	$('#dltmsg').removeClass('d-none');
+    	$('#dltmsg').text("Job " + controlNbr + " deleted successfully");
     });
     
 });
