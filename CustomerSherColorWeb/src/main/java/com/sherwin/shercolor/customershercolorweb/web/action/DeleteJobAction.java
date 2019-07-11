@@ -22,7 +22,8 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 	static Logger logger = LogManager.getLogger(DeleteJobAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
-	private int lookupControlNbr;
+	private int controlNbr;
+	private String result;
 	
 	@Autowired
 	TranHistoryService tranHistoryService;
@@ -33,7 +34,7 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			String customerId = reqObj.getCustomerID();
-			CustWebTran custWebTran = tranHistoryService.readTranHistory(customerId, lookupControlNbr, 1);
+			CustWebTran custWebTran = tranHistoryService.readTranHistory(customerId, controlNbr, 1);
 			custWebTran.setDeleted(true);
 			
 			List<SwMessage> displayMsgs = new ArrayList<SwMessage>();
@@ -43,13 +44,17 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 			
 			sessionMap.put(reqGuid, reqObj);
 			
+			result = "success";
+			
 			return SUCCESS;
 			
 		} catch (HibernateException he) {
 			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			result = "error";
 			return ERROR;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			result = "error";
 			return ERROR;
 		}
 	}
@@ -75,12 +80,20 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 		this.reqGuid = reqGuid;
 	}
 
-	public int getLookupControlNbr() {
-		return lookupControlNbr;
+	public int getControlNbr() {
+		return controlNbr;
 	}
 
-	public void setLookupControlNbr(int lookupControlNbr) {
-		this.lookupControlNbr = lookupControlNbr;
+	public void setControlNbr(int controlNbr) {
+		this.controlNbr = controlNbr;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 }

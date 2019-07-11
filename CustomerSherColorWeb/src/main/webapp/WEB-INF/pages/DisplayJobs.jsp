@@ -19,6 +19,7 @@
 		<link rel=StyleSheet href="css/joblist_datatable.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" data-auto-replace-svg="nest"></script>
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
@@ -79,11 +80,11 @@
 								<th style="">Clrnt System</th>
 								<th style="">Formula: OZ/32/64/128</th>
 								<th style="display:none">Formula (Colorant: OZ / 32 / 64 / 128)</th>
+								<th>Delete</th>
 							</tr>
 						</thead>
 						<tbody>
 							<s:iterator var="job" value="jobHistory" status="outer">
-							<s:if test="#job.deleted==false">
 								<tr class="border-bottom-1 border-dark">
 									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
@@ -140,14 +141,6 @@
 										</button>
 									</td>
 								</tr>
-							</s:if>
-							<s:else>
-								<tr class="border-bottom-1 border-dark">
-									<td>
-										<h5>No Jobs to Display</h5>
-									</td>
-								</tr>
-							</s:else>
 							</s:iterator>
 						</tbody>
 					</table>
@@ -160,7 +153,7 @@
 			<s:form id="mainForm" action="selectJobAction" validate="true"  theme="bootstrap">
 				<div class="row">
             		<div class="col-sm-1">
- 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+ 						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
  						<s:hidden name="lookupControlNbr"/>
 					</div>
 
