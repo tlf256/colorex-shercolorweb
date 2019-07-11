@@ -56,12 +56,14 @@ function pdf(myguid){
 
 
 
-function Configuration(mymodel,myserial){
+function PrinterConfig(mymodel,myserial,myPrintOnDispense,myLabels){
 		
 	
 	this.model=mymodel;
 	this.serial=myserial;
 	this.port=null;
+	this.printOnDispense=myPrintOnDispense;
+	this.numLabels=myLabels;
 	
 	
 }
@@ -71,14 +73,14 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function PrinterMessage(myconfig, mydata){
+function PrinterMessage(mycommand, mydata, myconfig){
 	console.log("In PrinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
 	this.messageName="PrinterMessage";
-	this.command="Print";
+	this.command=mycommand;
 	this.data=mydata;
-	this.configuration = myconfig;
+	this.printerConfig = myconfig;
 	//returned items
 	
 	this.errorCode=0;
@@ -104,7 +106,7 @@ function createUUID() {
 function print(myPdf) {
 
 	
-	var printermessage = new PrinterMessage(null,myPdf.data);
+	var printermessage = new PrinterMessage("print",myPdf.data,null);
 
 	var json = JSON.stringify(printermessage);
 	sendingDispCommand = "true";
@@ -117,4 +119,54 @@ function print(myPdf) {
 	// Send to tinter
 	ws_printer.send(json);
 
+}
+function getPrinters() {
+
+	
+	var printermessage = new PrinterMessage("GetPrinters",null,null);
+
+	var json = JSON.stringify(printermessage);
+	
+	if (ws_printer != null && ws_printer.isReady == "false") {
+		console
+				.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
+		ws_printer = new WSWrapper("printer");
+	}
+	
+	// Send to tinter
+	ws_printer.send(json);
+
+}
+function getPrinterConfig() {
+
+	
+	var printermessage = new PrinterMessage("GetConfig",null,null);
+
+	var json = JSON.stringify(printermessage);
+	if (ws_printer != null && ws_printer.isReady == "false") {
+		console
+				.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
+		ws_printer = new WSWrapper("printer");
+	}
+	
+	// Send to tinter
+	ws_printer.send(json);
+
+}
+
+function setPrinterConfig(myconfig) {
+
+		
+		var printermessage = new PrinterMessage("SetConfig",null,myconfig);
+
+		var json = JSON.stringify(printermessage);
+		
+		if (ws_printer != null && ws_printer.isReady == "false") {
+			console
+					.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
+			ws_printer = new WSWrapper("printer");
+		}
+		
+		// Send to tinter
+		ws_printer.send(json);
 }

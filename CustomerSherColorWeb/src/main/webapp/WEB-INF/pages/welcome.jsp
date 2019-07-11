@@ -789,6 +789,12 @@
 				        			</ul>
 	       						</li>
 	       						<li class="dropdown-item dropdown-submenu">
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Printer Menu</a>
+	        						<ul class="dropdown-menu" id="tintermenu">
+								    	<li id="printerConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="printerConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
+				   					</ul>
+	       						</li>
+	       						<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">User Menu</a>
 	        						<ul class="dropdown-menu" id="usermenu">
 								    	<li id="changePwd"><a class="dropdown-item" tabindex="-1" href='<s:url action="passwordResetAction2"><s:param name="guid1" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-2'></span> Change Password</a></li>
