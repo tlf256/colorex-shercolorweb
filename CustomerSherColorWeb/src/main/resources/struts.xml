@@ -948,7 +948,7 @@
 			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrderDetail.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-				<action name="printerConfigureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="display">
+		<action name="printerConfigureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>

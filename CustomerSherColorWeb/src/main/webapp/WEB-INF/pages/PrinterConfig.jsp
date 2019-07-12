@@ -25,27 +25,36 @@
 <script type="text/javascript" charset="utf-8" src="script/Printer.js"></script>
 <script type="text/javascript">
 
+/*
+ *  Create dropdown for Printers based on Printer Drivers installed on Windows
+ */
 function CreatePrinters(printerList){
 	var s = $("#selectPrinterModel");
 	 for(var i in printerList) {
 		$('<option />', {value: printerList[i], text: printerList[i]}).appendTo(s);
 	 }
 }
+/*
+ *  Save Configuration to SWDeviceHandler and CustWebDevices
+ */
 function ConfigClick(){
 	var model = $("#selectPrinterModel").val();
 	var printOnDispense = $("#autoPrintCheck").prop('checked');
-	var serial = "12345";
+	var serial = "Default";
 	var numLabels = $("#numLabels").val();
 	config = new PrinterConfig(model,serial,printOnDispense,numLabels);
 	setPrinterConfig(config);
+	$("#frmSubmit").submit();
 }
+/*
+ *fill form based on what was read from SWDeviceHandler
+ */
 function FillForm(printerConfig){
 
 	modelBox = $('#selectPrinterModel');
 	modelBox.val(printerConfig.model);
-	//$('#selectPrinterModel option[value=' +printerConfig.model+']').prop('selected', true);
-	
-	$("#printerSerialNbr").val(printerConfig.serial);
+		
+	//$("#printerSerialNbr").val(printerConfig.serial);
 	
 	$("#autoPrintCheck").prop('checked',printerConfig.printOnDispense) ;
 	$("#numLabels").val(printerConfig.numLabels);
@@ -55,7 +64,7 @@ function FillForm(printerConfig){
 function ParsePrinterMessage() {
 
 	try {
-		if (ws_printer != null && ws_printer.wsmsg != null){
+		if (ws_printer != null && ws_printer.wsmsg != null && ws_printer.wsmsg != ""){
 			 
 			var return_message = JSON.parse(ws_printer.wsmsg);
 
@@ -102,19 +111,10 @@ function ParsePrinterMessage() {
 						.log("Message from different command is junk, throw it out");
 			} // end switch statement
 		} else {
-			$("#printerResponseModal").modal('show'); //switch to pdf popup as before
-
-			/* DJM switch to this if 
-			if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
-			$("#printerInProgressMessage").text(
-					ws_printer.wserrormsg);
-			}
-			else {
-				$("#printerInProgressMessage").text(
-						"Unknown error communicating with SWDeviceHandler");
-			}
-			 */
-		}
+			$("#configError").text(ws_printer.wserrormsg);
+			$("#configErrorModal").modal('show'); //switch to pdf popup as before
+			
+		}	
 
 	} catch (error) {
 		console.log("Caught error is = " + error);
@@ -129,11 +129,17 @@ function RecdMessage() {
 	if (ws_printer) {
 		ParsePrinterMessage();
 	}
+	else{
+			$("#configError").text(ws_printer.wserrormsg);
+			$("configErrorModal").modal('show');
+		
+		}
 }
 $(document).ready(function() {
 	
-		
-		getPrinterConfig();
+	    if($("#siteHasPrinter").val() == "true"){
+			getPrinterConfig();
+		}
 	
 });
 
@@ -203,53 +209,15 @@ input[type=number] {
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
 		
-		<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-3">
-						</div>
-						<div class="col-sm-6">
-						</div>
-						<div class="col-sm-3">
-							<s:set var="thisGuid" value="reqGuid" />
-							<s:hidden value="%{thisGuid}" id="reqGuid"></s:hidden>
-						</div>
-					</div>
-					<br>
+		
+				
+				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xl-3 col-lg-2 col-md-0 col-sm-0">
 						</div>
 						<div class="col-xl-6 col-lg-10 col-md-12 col-sm-12">
 							<div class="card card-body bg-light mb-3">
 									<div class="d-flex flex-row justify-content-around">
-									<div class="p-2 mr-3" style="width: 10rem;">
-										<span class="badge badge-secondary" style="font-size: 1.2rem;">Printer Config</span>
-										<h5 class="text-primary mt-3"><strong><s:property value="tinter.model"/></strong></h5>
-									</div>
-									<div class="p-2">
-										
-									</div>
-									<div class="p-2 ml-3">
-										<s:url var="dispenseURL" action="printerSaveAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-										<button class="btn btn-primary mr-4" id="dispense">Configure</button>
-									</div>
-									<div class="p-2">
-										<s:url var="cancelURL" action="userCancelAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-										<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel">Done</a>
-									</div>
-									
-								</div>
-							</div>	
-							
-							<br>
-						</div>
-						<div class="col-xl-3 col-lg-0 col-md-0 col-sm-0">
-						</div>
-					</div>
-				</div>
-				
-				<br>
-				<div class="container center-form-parent">
-
 
 
 		<s:set var="thisGuid" value="reqGuid" />
@@ -267,24 +235,12 @@ input[type=number] {
 				<label class="sw-label" for="selectPrinterModel">Printer Model</label>
 				<select id="selectPrinterModel" name="printerModel" >
 					<option value="-1">Select Printer</option>
-					<option value="Zebra GK420d">Zebra GK420d</option>
+				
 				 </select>
 
 
 			</div>
 			
-			<div class="form-label-group">
-				<label class="sw-label" for="tSerialNbr">Serial Number</label>
-				<s:textfield id="printerSerialNbr" name="printerSerialNbr"></s:textfield>
-
-				<p style="color: red; font-weight: bold" id="SNValidationError"></p>
-
-				<br>
-
-				<s:actionerror />
-			</div>
-			
-
 		<div class="form-label-group">
 
 				<label class="sw-label" for="autoPrintCheck">Auto Print on Dispense</label>
@@ -296,16 +252,21 @@ input[type=number] {
 					<option value="3">3</option>
 					<option value="4">4</option>
 					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
 					
 				 </select>
-
+				
 		</div>
 			
 			<div class="form-row">
 
 				<input type="button" class="btn btn-lg btn-primary btn-block"
 					id="btn_printerConfig" data-toggle="modal" onclick="ConfigClick()"
-					 value="Configure" />
+					 value="Save" />
 
 				<s:submit cssClass="btn btn-lg btn-secondary btn-block"
 					value="Cancel" action="userCancelAction" />
@@ -319,7 +280,11 @@ input[type=number] {
 				
 				</div>
 			<div id="hidden_modellist" class="col-md-2"></div>
+			<s:hidden id="siteHasPrinter" name="siteHasPrinter"/>
 		</s:form>
+	</div>
+	</div>
+	</div>
 	</div>
 				<!-- Printer Response Modal Window -->
 			<div class="modal" aria-labelledby="printerResponseModal"
@@ -342,6 +307,39 @@ input[type=number] {
 					</div>
 				</div>
 			</div>
+			<!-- Config Error Modal Window -->
+	<div class="modal fade" aria-labelledby="configErrorModal"
+		aria-hidden="true" id="configErrorModal" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Configuration Error</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="configError" ></p>
+				</div>
+				<div class="modal-footer">
+					<s:url var="troubleshootURL" action="swdhTroubleshootAction"
+						escapeAmp="false">
+						<s:param name="reqGuid" value="%{thisGuid}" />
+					</s:url>
+					<s:url var="installURL" action="swdhInstallAction"
+						escapeAmp="false">
+						<s:param name="reqGuid" value="%{thisGuid}" />
+					</s:url>
+					<a href="<s:property value="troubleshootURL"/>"
+						class="btn btn-primary">Troubleshoot</a> <a
+						href="<s:property value="installURL"/>" class="btn btn-success">Install</a>
+					<button type="button" class="btn btn-secondary"
+						id="configErrorButton" data-dismiss="modal" aria-label="Close">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 				<br>
 				<br>
 				<br>

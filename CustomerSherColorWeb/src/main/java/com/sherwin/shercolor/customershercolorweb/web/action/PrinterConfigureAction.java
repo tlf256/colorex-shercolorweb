@@ -31,6 +31,7 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 
 	
 	private boolean siteHasPrinter;
+	private String printerModel;
 	
 	
 	
@@ -65,30 +66,30 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 		}
 	}
 	
-	public String display() {
-		 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		int custId;
+	private void setIsPrinterConfigured() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		System.out.println("Looking for printer devices");
 
-		 try {
-				try {
-					custId = Integer.valueOf(reqObj.getCustomerID());
-				} catch (Exception e) {
-					//we couldn't convert to integer, so it's definitely not an id that could
-					//be an internal user.
-					custId = 0;
-				}
-				
-				//Only include these internal types if the customer ID is an "internal" customer ID
-				//(400000000-400000016, or six digit starting with 99, ie 990001, etc.)
-				if (custId < 990001 || (custId > 999999 && custId < 400000000) || custId > 400000016) {
-				//if ((custId > 400000000 && custId < 400000017) || (custId > 990000 && custId < 999999) ) {
-					
-				}
-		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return ERROR;
+		List<CustWebDevices> devices = customerService.getCustDevices(reqObj.getCustomerID());
+		for (CustWebDevices d: devices) {
+		
+			if(d.getDeviceType().equalsIgnoreCase("PRINTER")) {
+				reqObj.setPrinterConfigured(true);
+				setSiteHasPrinter(true);
+				setPrinterModel(d.getDeviceModel());
+				System.out.println("Device found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+			}
+			else {
+				setSiteHasPrinter(false);
+			}
 		}
+
+	}
+
+	public String display() {
+		setIsPrinterConfigured();
+		return SUCCESS;
+
 	}
 	
 	public String saveNewPrinter(){
@@ -98,11 +99,12 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 		
 		if(reqObj !=null) {
 			//.out.println("request object getPrinter getMmodel is " + reqObj.getSpectro().getModel());
-			System.out.println("request object  getPrinterMmodel is " + reqObj.getPrinterModel());
+			//System.out.println("request object  getPrinterMmodel is " + reqObj.getPrinterModel());
 			custWebDev.setCustomerId(reqObj.getCustomerID());
-			custWebDev.setSerialNbr("1234");//reqObj.getSpectro().getSerialNbr());
-			custWebDev.setDeviceModel("Zebra");//reqObj.getSpectro().getModel());
+			custWebDev.setSerialNbr("Default");//reqObj.getSpectro().getSerialNbr());
+			custWebDev.setDeviceModel(getPrinterModel());//reqObj.getSpectro().getModel());
 			custWebDev.setDeviceType("PRINTER");
+			reqObj.setPrinterConfigured(true);
 		}
 
 			if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
@@ -117,13 +119,10 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 				}
 				System.out.println("made it past returnMessage check");
 				setSiteHasPrinter(true);
-/*				spectro = new SpectroInfo();
-				spectro.setSerialNbr(custWebDev.getSerialNbr());
-				spectro.setModel(custWebDev.getDeviceModel());
-*/				System.out.println("set the spectro object");
+
 			}
 			else {
-				addActionError("Invalid Color Eye data - customer, model type or serial number is black");
+				addActionError("Printer Model is blank");
 				return ERROR;
 			}
 
@@ -166,6 +165,14 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
+	}
+
+	public String getPrinterModel() {
+		return printerModel;
+	}
+
+	public void setPrinterModel(String printerModel) {
+		this.printerModel = printerModel;
 	}
 	
 	
