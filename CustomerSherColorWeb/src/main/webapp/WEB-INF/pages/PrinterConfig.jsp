@@ -81,17 +81,6 @@ function ParsePrinterMessage() {
 					CreatePrinters(return_message.printerList);
 					}
 				break;
-			case 'SetConfig':
-				if (return_message.errorNumber != 0) {
-					// save a dispense (will bump the counter)
-					$("#printerResponseModal").modal('show');
-					$("#printerResponseMessage").text(
-							"Set Printer Config Result: " + return_message.errorMessage);
-					console.log(return_message);
-					//waitForShowAndHide("#tinterInProgressModal");
-				}
-				
-				break;
 			case 'GetConfig':
 				if (return_message.errorNumber != 0) {
 					// save a dispense (will bump the counter)
@@ -104,6 +93,17 @@ function ParsePrinterMessage() {
 					CreatePrinters(return_message.printerList);
 					FillForm(return_message.printerConfig);
 					}
+				break;
+			case 'SetConfig':
+				if (return_message.errorNumber != 0) {
+					// save a dispense (will bump the counter)
+					$("#printerResponseModal").modal('show');
+					$("#printerResponseMessage").text(
+							"Set Printer Config Result: " + return_message.errorMessage);
+					console.log(return_message);
+					//waitForShowAndHide("#tinterInProgressModal");
+				}
+				
 				break;
 			default:
 				//Not an response we expected...

@@ -106,7 +106,7 @@ function createUUID() {
 function print(myPdf) {
 
 	
-	var printermessage = new PrinterMessage("print",myPdf.data,null);
+	var printermessage = new PrinterMessage("Print",myPdf.data,null);
 
 	var json = JSON.stringify(printermessage);
 	sendingDispCommand = "true";
@@ -137,6 +137,9 @@ function getPrinters() {
 	ws_printer.send(json);
 
 }
+/*
+ * get config from SWDeviceHandler
+ */
 function getPrinterConfig() {
 
 	
@@ -153,7 +156,9 @@ function getPrinterConfig() {
 	ws_printer.send(json);
 
 }
-
+/*
+ * set config at SWDeviceHandler
+ */
 function setPrinterConfig(myconfig) {
 
 		
