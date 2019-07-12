@@ -105,17 +105,8 @@ badge {
 								$("#controlNbrDisplay").show();
 								//    	 				$("#tinterInProgressModal").modal('hide');
 								updateButtonDisplay();
-								if(printerConfig && printerConfig.model){
-									$("#printLabelPrint").show();
-									
-									$("#numLabels").val(printerConfig.numLabels);
-									$("#numLabels").show();
-								}
-								else{
-									$("#printLabelPrint").hide();
-									$("#numLabels").hide();
-								}
-								$("#printLabelModal").modal('show');
+								showPrintModal();
+								
 							}
 						},
 						error : function(err) {
@@ -125,14 +116,27 @@ badge {
 
 		} else {
 
-			$("#printLabelModal").modal('show');
+			showPrintModal();
 		}
 	}
 
+	function showPrintModal(){
+		if(printerConfig && printerConfig.model){
+			
+			$("#printLabelPrint").show();
+			
+			$("#numLabels").val(printerConfig.numLabels);
+			$("#numLabels").show();
+		}
+		else{
+			$("#printLabelPrint").hide();
+			$("#numLabels").hide();
+		}
+		$("#printLabelModal").modal('show');
+}
 	function printButtonClickJson() {
 		var myguid = $("#formulaUserPrintAction_reqGuid").val();
-		console.log("calling print window open for print action with guid "
-				+ myguid);
+	
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text("Printer: In Progress ");
 		print(myPdf);
@@ -1094,7 +1098,7 @@ badge {
 									id="printLabelPrint" data-dismiss="modal" aria-label="Print" onclick="printButtonClickJson()">Print</button>
 							</div>
 							<div class="col-xs-4">
-									Labels
+								
 								<select id="numLabels" name="numLabels"  >
 									<option value="1">1</option>
 									<option value="2">2</option>
