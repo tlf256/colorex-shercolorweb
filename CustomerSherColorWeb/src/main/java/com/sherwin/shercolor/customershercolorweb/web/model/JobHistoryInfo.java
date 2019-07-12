@@ -91,4 +91,5 @@ public class JobHistoryInfo{
 	public String getSizeCode() {
 		return sizeCode;
 	}
+	
 }
