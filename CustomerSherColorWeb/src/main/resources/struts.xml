@@ -642,6 +642,21 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+
+<!--  added by edo78r for Help Menu 7/10/2019 -->		
+		<action name="downloadPdfAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadPdfAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+			  	<param name="inputName">fileInputStream</param>
+			  	<param name="contentDisposition">attachment;filename=%{pdfFile}</param> 
+	  			<param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
 		<action name="formulaUserEditAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
