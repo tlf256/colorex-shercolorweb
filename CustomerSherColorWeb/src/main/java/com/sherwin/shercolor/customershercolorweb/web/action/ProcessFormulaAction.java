@@ -17,6 +17,7 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
+import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -49,6 +50,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private TinterInfo tinter;
 	private int recDirty;
 	private boolean siteHasTinter;
+	private boolean siteHasPrinter;
 	private boolean sessionHasTinter;
 	private boolean midCorrection = false;
 
@@ -65,6 +67,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			displayFormula = reqObj.getDisplayFormula();
 			qtyDispensed = reqObj.getQuantityDispensed();
 			tinter = reqObj.getTinter();
+			setSiteHasPrinter(reqObj.isPrinterConfigured());
 
 			// setup formula display messages since this now intercepts other actions from going directly to displayFormula.jsp
 			if(reqObj.getDisplayMsgs()!=null){
@@ -218,6 +221,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			return ERROR;
 		}
 	}
+	
+	
 
 	public DataInputStream getInputStream() {
 		return inputStream;
@@ -315,5 +320,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	public void setData(byte[] data) {
 		this.data = data;
 	}
+
+	public boolean isSiteHasPrinter() {
+		return siteHasPrinter;
+	}
+
+	public void setSiteHasPrinter(boolean siteHasPrinter) {
+		this.siteHasPrinter = siteHasPrinter;
+	}
+	
 
 }

@@ -215,7 +215,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setTinter(tinter);
 							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(reqObj.getCustomerID()), null);
 							if(tinterList.size()>0) siteHasTinter = true;
-							
+							setIsPrinterConfigured();
 						 	sessionMap.put(reqObj.getGuid(), reqObj);
 						 	returnStatus = "SUCCESS";
 					 } else {
@@ -377,6 +377,25 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			logger.error(e.getMessage());
 		}
 		return theCustWebParmsKey;
+	}
+	private void setIsPrinterConfigured() {
+		
+		System.out.println("Looking for printer devices");
+
+		List<CustWebDevices> devices = customerService.getCustDevices(reqObj.getCustomerID());
+		for (CustWebDevices d: devices) {
+		
+			if(d.getDeviceType().equalsIgnoreCase("PRINTER")) {
+				reqObj.setPrinterConfigured(true);
+				setSiteHasPrinter(true);
+				
+				System.out.println("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+			}
+			else {
+				setSiteHasPrinter(false);
+			}
+		}
+
 	}
 	
 //	@SuppressWarnings("restriction")
