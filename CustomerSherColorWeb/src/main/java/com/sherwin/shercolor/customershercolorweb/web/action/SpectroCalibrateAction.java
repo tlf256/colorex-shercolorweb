@@ -21,26 +21,16 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 
 	private ColorService colorService;
 	private CustomerService customerService;
-
 	private Map<String, Object> sessionMap;
-	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(SpectroCalibrateAction.class);
-	
-
 	private String reqGuid;
-
-	
 	private String message;
-	
-
 	
 	public SpectroCalibrateAction(){
 		
 		
 	}
-	
-
 	
 	// User hit the backup button on the Color page
 	public String backItUp() {
@@ -74,9 +64,6 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 		}
 	}
 	
-
-
-	
 	public String getMessage() {
 		return message;
 	}
@@ -84,11 +71,6 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 	public void setMessage(String message) {
 		this.message = Encode.forHtml(message);
 	}
-
-	
-	
-
-
 
 	public void setSession(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;		
@@ -102,7 +84,6 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 		this.customerService = customerService;
 	}
 
-	
 	public String getReqGuid() {
 		return reqGuid;
 	}

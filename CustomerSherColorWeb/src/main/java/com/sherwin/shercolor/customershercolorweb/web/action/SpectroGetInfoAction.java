@@ -21,26 +21,16 @@ public class SpectroGetInfoAction extends ActionSupport implements SessionAware,
 
 	private ColorService colorService;
 	private CustomerService customerService;
-
 	private Map<String, Object> sessionMap;
-	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(SpectroGetInfoAction.class);
-	
-
 	private String reqGuid;
-
-	
 	private String message;
-	
-
 	
 	public SpectroGetInfoAction(){
 		
 		
 	}
-	
-
 	
 	// User hit the backup button on the Color page
 	public String backItUp() {
