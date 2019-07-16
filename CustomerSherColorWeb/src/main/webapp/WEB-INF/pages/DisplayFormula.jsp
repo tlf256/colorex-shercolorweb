@@ -61,6 +61,7 @@ badge {
 	var numberOfDispenses = 0;
 	var dispenseTracker = "Container: " + numberOfDispenses + " out of "
 			+ dispenseQuantity;
+	var printerConfig;
 
 	function prePrintSave() {
 		// save before print
@@ -104,10 +105,8 @@ badge {
 								$("#controlNbrDisplay").show();
 								//    	 				$("#tinterInProgressModal").modal('hide');
 								updateButtonDisplay();
-
-								printButtonClickJson();
-								//    					window.alert("need to pause");
-								//printButtonClick();
+								showPrintModal();
+								
 							}
 						},
 						error : function(err) {
@@ -117,15 +116,27 @@ badge {
 
 		} else {
 
-			printButtonClickJson();
-			//printButtonClick();
+			showPrintModal();
 		}
 	}
 
+	function showPrintModal(){
+		if(printerConfig && printerConfig.model){
+			
+			$("#printLabelPrint").show();
+			
+			$("#numLabels").val(printerConfig.numLabels);
+			$("#numLabels").show();
+		}
+		else{
+			$("#printLabelPrint").hide();
+			$("#numLabels").hide();
+		}
+		$("#printLabelModal").modal('show');
+}
 	function printButtonClickJson() {
 		var myguid = $("#formulaUserPrintAction_reqGuid").val();
-		console.log("calling print window open for print action with guid "
-				+ myguid);
+	
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text("Printer: In Progress ");
 		print(myPdf);
@@ -285,7 +296,7 @@ badge {
 
 		try {
 			if (ws_printer != null && ws_printer.wsmsg != null
-					&& ws_printer.wserror != null) {
+					&& ws_printer.wserror == null) {
 				var return_message = JSON.parse(ws_printer.wsmsg);
 
 				switch (return_message.command) {
@@ -300,13 +311,26 @@ badge {
 					}
 					sendingDispCommand = "false";
 					break;
+				case 'GetConfig':
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerResponseModal").modal('show');
+						$("#printerResponseMessage").text(
+								"Get Printer Result: " + return_message.errorMessage);
+						console.log(return_message);
+					}
+					else{
+						printerConfig = return_message.printerConfig;
+						
+						}
+					break;
 				default:
 					//Not an response we expected...
 					console
 							.log("Message from different command is junk, throw it out");
 				} // end switch statement
 			} else {
-				$("#printLabelModal").modal('show'); //switch to pdf popup as before
+				$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
 
 				/* DJM switch to this if 
 				if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
@@ -1069,8 +1093,30 @@ badge {
 
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-primary pull-left"
+									id="printLabelPrint" data-dismiss="modal" aria-label="Print" onclick="printButtonClickJson()">Print</button>
+							</div>
+							<div class="col-xs-4">
+								
+								<select id="numLabels" name="numLabels"  >
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+									
+								 </select>
+							</div>
+							 <div class="col-xs-2 ">
+								<button type="button" class="btn btn-secondary"
 								id="printLabelClose" data-dismiss="modal" aria-label="Close">Close</button>
+						</div>
 						</div>
 					</div>
 				</div>
@@ -1161,7 +1207,7 @@ badge {
 				ws_tinter = new WSWrapper("tinter");
 			}
 			if ($("#formulaUserPrintAction_siteHasPrinter").val() == "true") {
-				ws_printer = new WSWrapper("printer");
+				getPrinterConfig();
 			}
 			// init which buttons user can see
 			updateButtonDisplay();
