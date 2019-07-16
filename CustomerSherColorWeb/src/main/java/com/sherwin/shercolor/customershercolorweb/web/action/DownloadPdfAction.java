@@ -26,6 +26,8 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 		return fileInputStream;
 	}
 
+//Opens Help Menu links on the welcome page - edo78r
+	
 	public String execute() throws Exception {
 		try {
 			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/" + pdfFile));
