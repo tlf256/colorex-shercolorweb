@@ -63,6 +63,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean newSession;
 	private boolean siteHasTinter;
 	private boolean sessionHasTinter;
+	private boolean siteHasPrinter;
 	private TinterInfo tinter;
 	private boolean siteHasSpectro;
 	private SpectroInfo spectro;
@@ -87,8 +88,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		String testModeAcct = "";
 		newSession = true;
 		siteHasTinter = false;
-		siteHasSpectro = false;
+	
+		siteHasPrinter = false;
 		sessionHasTinter = false;
+		siteHasSpectro = false;
+		
 		String userId = "";
 		
 		try {
@@ -180,7 +184,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 							
 							System.out.println("DEBUG new reqGuid created "+ reqGuid);
-							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(acct));
+							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
 							spectro = new SpectroInfo();
 							
 							if (spectroList.size()==1) {
@@ -209,9 +213,9 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							newSession = true; // this will trigger the welcome page to do "on login only" activities... (e.g. read config for tinter from device handler)
 							tinter = new TinterInfo();
 							reqObj.setTinter(tinter);
-							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(acct), null);
+							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(reqObj.getCustomerID()), null);
 							if(tinterList.size()>0) siteHasTinter = true;
-							
+							setIsPrinterConfigured();
 						 	sessionMap.put(reqObj.getGuid(), reqObj);
 						 	returnStatus = "SUCCESS";
 					 } else {
@@ -255,7 +259,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					 sessionHasTinter = true;
 				 }
 				 spectro=origReqObj.getSpectro();
-				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!=null) siteHasSpectro = true;
+				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!="") siteHasSpectro = true;
 				 
 				 sessionMap.put(origReqObj.getGuid(), origReqObj);
 				 returnStatus = "SUCCESS";
@@ -373,6 +377,25 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			logger.error(e.getMessage());
 		}
 		return theCustWebParmsKey;
+	}
+	private void setIsPrinterConfigured() {
+		
+		System.out.println("Looking for printer devices");
+
+		List<CustWebDevices> devices = customerService.getCustDevices(reqObj.getCustomerID());
+		for (CustWebDevices d: devices) {
+		
+			if(d.getDeviceType().equalsIgnoreCase("PRINTER")) {
+				reqObj.setPrinterConfigured(true);
+				setSiteHasPrinter(true);
+				
+				System.out.println("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+			}
+			else {
+				setSiteHasPrinter(false);
+			}
+		}
+
 	}
 	
 //	@SuppressWarnings("restriction")
@@ -676,6 +699,14 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	public void setDaysUntilPwdExp(int daysUntilPwdExp) {
 		this.daysUntilPwdExp = daysUntilPwdExp;
+	}
+
+	public boolean isSiteHasPrinter() {
+		return siteHasPrinter;
+	}
+
+	public void setSiteHasPrinter(boolean siteHasPrinter) {
+		this.siteHasPrinter = siteHasPrinter;
 	}
 
 }

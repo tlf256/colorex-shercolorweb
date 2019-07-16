@@ -67,6 +67,7 @@ public class RequestObject {
 	private TinterInfo tinter;
 	private SpectroInfo spectro;
 	private int daysUntilPasswdExpire;
+	private boolean printerConfigured;  //printer configured through SWDeviceHandler
 
 	public String getColorComp() {
 		return colorComp;
@@ -462,6 +463,14 @@ public class RequestObject {
 	public void setDaysUntilPasswdExpire(int daysUntilPasswdExpire) {
 		this.daysUntilPasswdExpire = daysUntilPasswdExpire;
 	}
+	public boolean isPrinterConfigured() {
+		return printerConfigured;
+	}
+	public void setPrinterConfigured(boolean printerConfigured) {
+		this.printerConfigured = printerConfigured;
+	}
+	
+	
 
 
 }

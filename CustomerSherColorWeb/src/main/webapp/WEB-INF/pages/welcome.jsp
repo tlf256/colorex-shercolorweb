@@ -380,7 +380,7 @@
 			var initErrorList = [];
 			console.log("Received Message");
 			//console.log("Message is " + ws_tinter.wsmsg);
-			if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg!=""){
+			if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg != ""){
 				if(sendingTinterCommand == "true"){
 					// received an error from WSWrapper so we won't get any JSON result (probably no SWDeviceHandler)
 					// If we are sending a ReadConfig command don't show any error (localhost has no devices)
@@ -789,6 +789,12 @@
 				        			</ul>
 	       						</li>
 	       						<li class="dropdown-item dropdown-submenu">
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Printer Menu</a>
+	        						<ul class="dropdown-menu" id="tintermenu">
+								    	<li id="printerConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="printerConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
+				   					</ul>
+	       						</li>
+	       						<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">User Menu</a>
 	        						<ul class="dropdown-menu" id="usermenu">
 								    	<li id="changePwd"><a class="dropdown-item" tabindex="-1" href='<s:url action="passwordResetAction2"><s:param name="guid1" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-2'></span> Change Password</a></li>
@@ -1045,9 +1051,9 @@
  	 			// check if session has tinter, if so setup ws tinter
  	 			if ( $("#startNewJob_sessionHasTinter").val()=="true"){
  	 				ws_tinter = new WSWrapper("tinter");
+ 	 				// Get tinter session to post status info to header popover
+ 	 	 			getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
  	 			}
- 	 			// Get tinter session to post status info to header popover
- 	 			getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 			}
 			
 			if(localhostSpectroConfig!=null){ 
@@ -1090,7 +1096,7 @@
 		    var popupWin = window.open("http://privacy.sherwin-williams.com/", "privacy", "resizable=yes,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=640,height=480,left=10,top=10");
 		    popupWin.focus();
 		  }
-		//-->
+		-->
 		</script>
 		
 		<!-- Including footer -->
