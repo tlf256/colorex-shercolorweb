@@ -37,6 +37,16 @@ navbar-brandcenter {
   color:#efefef;
 }
 
+.dot {
+  height: 50px;
+  width: 50px;
+  background-color: #bbb;
+  border-radius: 50%;
+  border: 1px solid lightgrey;
+  display: inline-block;
+  position: relative;
+  left: 50px;
+}
 
 table.custorderdata table
 {
