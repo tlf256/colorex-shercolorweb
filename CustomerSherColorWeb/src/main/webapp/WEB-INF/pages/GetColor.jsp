@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoCompleteV1-3-0.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
 				$("[id^=selectedCoTypes]").change(function(){

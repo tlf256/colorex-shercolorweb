@@ -152,6 +152,14 @@
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="deleteJobAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeleteJobAction" method="execute">
+			<interceptor-ref name="defaultStack"/>
+		    <interceptor-ref name="json" />
+			<result name="success" type="json">
+				<param name="result">${result}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="swdhInstallAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeviceHandlerUtilityAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -630,6 +638,16 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="formulaUserPrintAsJsonAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printAsJson">
+			<result name="loginRedirect" type="redirectAction">
+			<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"></result>
+   			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>           
+			
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="downloadExeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadExeAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -951,6 +969,23 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrderDetail.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="printerConfigureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/PrinterConfig.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="printerSaveAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="saveNewPrinter">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 	</package>
