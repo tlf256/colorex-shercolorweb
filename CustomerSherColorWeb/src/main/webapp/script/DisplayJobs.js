@@ -68,8 +68,8 @@ $(document).ready(function() {
     	//window.alert("row clicked ");
     	var lookupControlNbr = jobTable.row(this).data()[0];
     	//window.alert("job number clicked is " + lookupControlNbr);
-    	document.forms[0].lookupControlNbr.value = lookupControlNbr;
-    	document.forms[0].submit();
+    	document.getElementById('controlNbr').value = lookupControlNbr;
+    	document.getElementById('mainForm').submit();
     });
     $("#job_table").addClass("table-hover");
     
@@ -86,11 +86,11 @@ $(document).ready(function() {
     var controlNbr;
     
     $('#job_table tbody').on('click', '.dltrow', function(event){
-    	event.stopPropagation();
     	deleteRow = $(this).closest('tr');
     	controlNbr = jobTable.row(deleteRow).data()[0];
-    	window.alert("controlNbr " + controlNbr);
+    	//console.log("controlNbr " + controlNbr);
     	$('#deletemodal').modal().show();
+    	event.stopPropagation();
     });
     
     $('#yesbtn').on('click', function(){
