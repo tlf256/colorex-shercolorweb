@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
@@ -47,6 +48,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
 	private CustomerService customerService;
+	private EulaService eulaService;
 
 	@Autowired
 	private TinterService tinterService;
@@ -271,7 +273,44 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			 
 			 if (returnStatus == "SUCCESS"){
 				 //Finally, we are good to display the welcome page - we are in
-			 	return SUCCESS;
+				 //BKP 07/16/2019 Wait, check to see if the user has accepted the EULA.  
+				 //If not, they need to route to the EULA page.
+				 if (reqGuid!=null) {
+					 logger.info("reqguid is not null");
+					 RequestObject finalReqObj = (RequestObject) sessionMap.get(reqGuid);
+					 if (finalReqObj!=null) {
+						 logger.info("finalReqObj is not null");
+						 String eulaCustId = finalReqObj.getCustomerID();
+						 if (eulaCustId!=null) {
+							 logger.info("eulaCustId is " + eulaCustId );
+							 String eulaAcceptanceCode = eulaService.getAcceptanceCode("CUSTOMERSHERCOLORWEB", eulaCustId);
+							 if(eulaAcceptanceCode!=null) {
+								 logger.info("eulaAcceptanceCode is not null");
+								 //We have an activation code - this user needs to approve the eula.
+								 return "eula";
+							 } else {
+								 logger.info("eulaAcceptanceCode is null");
+								 //no activation code, the user already activated, head on in.
+								 return SUCCESS;
+							 }
+						 } else {
+							 logger.info("eulaCustId is null");
+							 //the customer id was null, on what looks to be a valid requestObject?
+							 //should never happen, but log it and return NONE
+							 return NONE;
+						 }
+					 } else {
+						 logger.info("finalReqObj is null");
+						 //Unable to get the request object we just wrote from the sessionMap.
+						 //should never happen, but log it and return NONE
+						 return NONE;
+					 }
+				 } else {
+					 logger.info("reqGuid is null");
+					 //should probably never happen, but if so, return NONE
+					 return NONE;
+				 }
+			 	//return SUCCESS;
 			 } else {
 				 //bad/invalid entry
 				 return NONE;
@@ -577,6 +616,14 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		this.customerService = customerService;
 	}
 
+	public EulaService getEulaService() {
+		return eulaService;
+	}
+
+	public void setEulaService(EulaService eulaService) {
+		this.eulaService = eulaService;
+	}
+	
 	public String getGuid1() {
 		return guid1;
 	}
