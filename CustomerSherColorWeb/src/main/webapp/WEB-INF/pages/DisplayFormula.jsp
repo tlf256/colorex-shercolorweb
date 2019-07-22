@@ -26,7 +26,7 @@
 <script type="text/javascript" charset="utf-8"
 	src="script/CustomerSherColorWeb.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Printer.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
 <script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
@@ -139,7 +139,8 @@ badge {
 	
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text("Printer: In Progress ");
-		print(myPdf);
+		var numLabels = $("#numLabels").val();
+		print(myPdf,numLabels);
 
 	}
 
@@ -172,6 +173,7 @@ badge {
 	}
 
 	function preDispenseCheck() {
+		printButtonClickJson(); //new print on dispense
 		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
 		$("#tinterInProgressMessage")
 				.text(
