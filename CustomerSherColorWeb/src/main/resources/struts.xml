@@ -244,6 +244,17 @@
 			<result name="success">/WEB-INF/pages/GetColor.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="spectroCalibrateRedirectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="calibrate">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">spectroCalibrateAction</param>
+				<param name="measureColor">${measureColor}</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="spectroCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroCalibrateAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -318,6 +329,16 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="measureColorReturnAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="measure">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -325,6 +346,7 @@
 			<result name="measure" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<!-- <param name="measureColor">${measureColor}</param> -->
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
