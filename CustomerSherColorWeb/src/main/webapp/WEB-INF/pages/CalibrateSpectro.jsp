@@ -61,9 +61,6 @@
 			$(".pleasewait").hide();
 			$(".blackcal").hide();
 			$(".greenmeas").hide();
-			//$(".calsuccess").hide();
-			//$(".calincomplete").hide();
-			//$(".error").hide();
 			$(".whitecal").show();
 		}
 
@@ -80,9 +77,6 @@
 		    $(".pleasewait").hide();
 			$(".whitecal").hide();
 			$(".greenmeas").hide();
-			//$(".calsuccess").hide();
-			//$(".calincomplete").hide();
-			//$(".error").hide();
 			$(".blackcal").show();
 		}
 
@@ -99,45 +93,30 @@
 		    $(".pleasewait").hide();
 			$(".whitecal").hide();
 			$(".blackcal").hide();
-			//$(".calsuccess").hide();
-			//$(".calincomplete").hide();
-			//$(".error").hide();
 			$(".greenmeas").show();
 		}
 
 		function DisplayError() {
 			$('#spectroCalModal').modal().hide();
 			$('.modal-backdrop').remove();
-			//$('#calcrcl').addClass('d-none');
 		  	console.log("DisplayError")
 		  	calibrate_step = "DisplayError";
 		  	
-		    //$(".pleasewait").hide();
-			//$(".whitecal").hide();
-			//$(".blackcal").hide();
-			//$(".greenmeas").hide();
 			$(".calsuccess").hide();
 			$(".calincomplete").hide();
 			$(".error").show();
 			$(".done").show();
 		}
-			  	  	
-		 
-		  	  	
+			  	  	  	
 		function CalibrateSuccess() {
 			$('#spectroCalModal').modal().hide();
 			$('.modal-backdrop').remove();
-			//$('#calcrcl').addClass('d-none');
 			console.log("CalibrateSuccess")
 		  	calibrate_step = "CalibrateSuccess";
 		  	
-		    //$(".pleasewait").hide();
-			//$(".whitecal").hide();
-			//$(".blackcal").hide();
-			//$(".greenmeas").hide();
-			$(".calsuccess").show();
 			$(".calincomplete").hide();
 			$(".error").hide();
+			$(".calsuccess").show();
 			$(".done").show();
 		}
 		
@@ -145,17 +124,12 @@
 			console.log("CalibrateIncomplete")
 		  	calibrate_step = "CalibrateIncomplete";
 		  	
-		    //$(".pleasewait").hide();
-			//$(".whitecal").hide();
-			//$(".blackcal").hide();
-			//$(".greenmeas").hide();
-			$(".calincomplete").show();
 			$(".calsuccess").hide();
 			$(".error").hide();
+			$(".calincomplete").show();
 			$(".done").show();
 		}
 		  	
-		  
 		function RecdMessage() {
 			console.log("Received Message");
 		  	//parse the spectro
@@ -193,7 +167,7 @@
 					break;
 				case 'MeasureGreen':
 					if (return_message.responseMessage=="true") {
-						CalibrateSuccess();
+						CalibrateSuccess();						
 					} else {
 						$("#errmsg").text(return_message.errorMessage);
 		  		  		DisplayError();
@@ -211,20 +185,18 @@
 			console.log("in docready");
 			//this loads on startup! 
 			
-			/*$('#spectroCalModal').modal({
-				backdrop: 'static',
-				keyboard: false
-			});*/
-			
 			var cntr = 1;
-			InitializeCalibrationScreen();
 			
 			$('#spectroCalModal').modal().show();
+			
+			InitializeCalibrationScreen();
 
 			console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
 			
 			//send the calibrate white message.
 			GetCalSteps();
+			
+			//CalibrateSuccess(); //test calibrateSuccess
 			
 			//TODO set a timer
 			
@@ -236,83 +208,75 @@
 	<body>
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
+		<s:set var="thisGuid" value="reqGuid" />
 		<s:form action="colorUserNextAction" validate="true" theme="bootstrap">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-sm-3">
-					<%-- 			this guid is <s:property value="thisGuid"/> --%>
-					<%-- 			this guid is <s:property value="%{reqGuid}"/> --%>
-					<!-- 			<br> -->
-					<%-- 			this sess is <s:property value="#session"/> --%>
-					<!-- 			<br> -->
-					<%-- 			jf obj is <s:property value="#session[reqGuid].jobFieldList"/> --%>
-				</div>
-				<div class="col-sm-6">
-				
-				</div>
-				<div class="col-sm-3">
-					<s:set var="thisGuid" value="reqGuid" />
-				</div>
-			</div>
-			<br>
-			<br>
-			<div class="row">
-				<div class="col-sm-3">
-					
-				</div>
-				<div class="col-sm-6">
-					<h2 class="error">A Calibration Error has occurred:</h2>
-	 	            <h2 class="calsuccess">Successful Calibration</h2>
-	 	            <h2 class="calincomplete">Done Calibrating?</h2>
-				</div>
-				<div class="col-sm-3">
-					
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">
-					
-				</div>
-				<div class="col-sm-6">
-					<h2 class="error"></h2>
-				</div>
-				<div class="col-sm-3">
-					
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">
-					
-				</div>
-				<div class="col-sm-6">
-					<h2 class="error" id="errmsg"></h2>
-				</div>
-				<div class="col-sm-3">
-					
-				</div>
-			</div>
-			<br>
-			<br>
-			<div class="row">
-				<div class="col-sm-3">
-					
-				</div>
-				<div class="col-sm-6">
-					<div class="calincomplete">
-						<s:submit class="btn btn-primary" id="calibrate" value="Calibrate" action="spectroCalibrateAction"></s:submit>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-3">
+						<%-- 			this guid is <s:property value="thisGuid"/> --%>
+						<%-- 			this guid is <s:property value="%{reqGuid}"/> --%>
+						<!-- 			<br> -->
+						<%-- 			this sess is <s:property value="#session"/> --%>
+						<!-- 			<br> -->
+						<%-- 			jf obj is <s:property value="#session[reqGuid].jobFieldList"/> --%>
 					</div>
-					<div class="calsuccess">
-						<s:submit cssClass="btn btn-primary" value="Next" action="goodCalibrateAction"/>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-3">
+						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
+						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
+						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>
 				</div>
-				<div class="col-sm-3">
-					<div class="done">
-						<s:submit cssClass="btn btn-secondary" value="Done" action="userCancelAction"/>
+				<br>
+				<br>
+				<div class="row">
+					<div class="col-sm-3"></div>
+					<div class="col-sm-6">
+						<h2 class="error">A Calibration Error has occurred:</h2>
+		 	            <h2 class="calsuccess">Successful Calibration</h2>
+		 	            <h2 class="calincomplete">Cancel Calibration?</h2>
+					</div>
+					<div class="col-sm-3"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-3"></div>
+					<div class="col-sm-6">
+						<h2 class="error"></h2>
+					</div>
+					<div class="col-sm-3"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-3"></div>
+					<div class="col-sm-6">
+						<h2 class="error" id="errmsg"></h2>
+					</div>
+					<div class="col-sm-3"></div>
+				</div>
+				<br>
+				<br>
+				<div class="row">
+					<div class="col-sm-3"></div>
+					<div class="col-sm-4">
+						<div class="calincomplete">
+							<s:submit class="btn btn-primary" id="calibrate" value="Calibrate" action="spectroCalibrateAction"></s:submit>
+						</div>
+						<div class="calsuccess">
+						<s:if test="measureColor">
+							<s:submit cssClass="btn btn-primary" value="Measure Sample" action="measureColorReturnAction"/>
+						</s:if>
+						<s:else>
+							<s:submit cssClass="btn btn-primary" value="Next" action="goodCalibrateAction"/>
+						</s:else>
+						</div>
+					</div>
+					<div class="col-sm-5">
+						<div class="done">
+							<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		
+		</s:form>
 		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="spectroCalModal">
 		  <div class="modal-dialog modal-lg">
 		    <div class="modal-content">
@@ -325,111 +289,76 @@
 		      </div>
 		      <div class="modal-body">
 		        <div class="container-fluid">
-		        	
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="pleasewait"></h3>
+ 	            			<h3 class="whitecal">1. Remove the plastic cap from the white tile on the Calibration base.</h3>
+ 	            			<h3 class="blackcal">1. Replace the plastic cap on the white tile.</h3>
+ 	            			<h3 class="greenmeas">1. Flip the base and remove the plastic cap from the green tile.</h3>
 						</div>
-						<div class="row">
-							<div class="col-sm-1">
-								<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
-							</div>
-		            		<div class="col-sm-10">
-		            			<h3 class="pleasewait"></h3>
-	 	            			<h3 class="whitecal">1. Remove the plastic cap from the white tile on the Calibration base.</h3>
-	 	            			<h3 class="blackcal">1. Replace the plastic cap on the white tile.</h3>
-	 	            			<h3 class="greenmeas">1. Flip the base and remove the plastic cap from the green tile.</h3>
-	 	            			<!-- <h3 class="error">A Calibration Error has occurred:</h3>
-	 	            			<h3 class="calsuccess">Successful Calibration</h3> -->
-							</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="pleasewait"></h3>
+ 	            			<h3 class="whitecal">2. Position the target window on top of the white tile.</h3>
+ 	            			<h3 class="blackcal">2. Position the target window on top of the black opening.</h3>
+ 	            			<h3 class="greenmeas">2. Position the target window on top of the green tile.</h3>
+ 	            		</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="pleasewait">Connecting to color eye, please wait...</h3>
+ 	            			<h3 class="whitecal">3. Press the instrument firmly down until the next prompt appears.</h3>
+ 	            			<h3 class="blackcal">3. Press the instrument firmly down until the next prompt appears.</h3>
+ 	            			<h3 class="greenmeas">3. Press the instrument firmly down until the next prompt appears.</h3>
 						</div>
-						<div class="row">
-							<div class="col-sm-2">
-								<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
-							</div>
-		            		<div class="col-sm-10">
-							</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="pleasewait"></h5>
+ 	            			<h5 class="whitecal">Note: the two status lights on the instrument should change</h5>
+ 	            			<h5 class="blackcal">Note: the two status lights on the instrument should change</h5>
+ 	            			<h5 class="greenmeas">Note: the two status lights on the instrument should change</h5>
 						</div>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-		            			<h3 class="pleasewait"></h3>
-	 	            			<h3 class="whitecal">2. Position the target window on top of the white tile.</h3>
-	 	            			<h3 class="blackcal">2. Position the target window on top of the black opening.</h3>
-	 	            			<h3 class="greenmeas">2. Position the target window on top of the green tile.</h3>
-	 	            			<!-- <h3 class="error"></h3> -->
-	 	            		</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="pleasewait"></h5>
+ 	            			<h5 class="whitecal">from red to green on successful measurement.</h5>
+ 	            			<h5 class="blackcal">from red to green and the calibration light should change</h5>
+ 	            			<h5 class="greenmeas">from red to green on successful measurement.</h5>
 						</div>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-							</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="pleasewait"></h5>
+ 	            			<h5 class="whitecal"></h5>
+ 	            			<h5 class="blackcal"> to yellow on successful measurement.</h5>
+ 	            			<h5 class="greenmeas"></h5>
 						</div>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-		            			<h3 class="pleasewait">Connecting to color eye, please wait...</h3>
-	 	            			<h3 class="whitecal">3. Press the instrument firmly down until the next prompt appears.</h3>
-	 	            			<h3 class="blackcal">3. Press the instrument firmly down until the next prompt appears.</h3>
-	 	            			<h3 class="greenmeas">3. Press the instrument firmly down until the next prompt appears.</h3>
-	 	            			<!-- <h3 class="error" id="errmsg"></h3> -->
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-							</div>
-						</div>
-						<br>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-		            			<h5 class="pleasewait"></h5>
-	 	            			<h5 class="whitecal">Note: the two status lights on the instrument should change</h5>
-	 	            			<h5 class="blackcal">Note: the two status lights on the instrument should change</h5>
-	 	            			<h5 class="greenmeas">Note: the two status lights on the instrument should change</h5>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-		            			<h5 class="pleasewait"></h5>
-	 	            			<h5 class="whitecal">from red to green on successful measurement.</h5>
-	 	            			<h5 class="blackcal">from red to green and the calibration light should change</h5>
-	 	            			<h5 class="greenmeas">from red to green on successful measurement.</h5>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-1">
-							</div>
-		            		<div class="col-sm-10">
-		            			<h5 class="pleasewait"></h5>
-	 	            			<h5 class="whitecal"></h5>
-	 	            			<h5 class="blackcal"> to yellow on successful measurement.</h5>
-	 	            			<h5 class="greenmeas"></h5>
-							</div>
-						</div>
-						
-					
-						<%-- <div class="row mb-4">
-							<div class="col-sm-1">
-							</div>	
-							<div class="col-sm-8">
-								<div class="calsuccess">
-									<s:submit cssClass="btn btn-primary" value="Next" action="goodCalibrateAction"/>
-								</div>
-							</div>
-							<div class="col-sm-2">
-								<s:submit cssClass="btn btn-secondary" id="done" value="Done" action="userCancelAction"/>
-							</div>
-				    	</div> --%>
-			    	
+					</div>
 				</div>
 		      </div>
 		      <div class="modal-footer">
@@ -438,7 +367,6 @@
 		    </div>
 		  </div>
 		</div>
-		</s:form>
 		<br>
 		<br>
 		<br>

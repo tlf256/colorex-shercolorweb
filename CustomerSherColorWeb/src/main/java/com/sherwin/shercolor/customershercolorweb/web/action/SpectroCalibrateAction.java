@@ -26,6 +26,7 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 	static Logger logger = LogManager.getLogger(SpectroCalibrateAction.class);
 	private String reqGuid;
 	private String message;
+	private boolean measureColor;
 	
 	public SpectroCalibrateAction(){
 		
@@ -98,6 +99,14 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 
 	public void setColorService(ColorService colorService) {
 		this.colorService = colorService;
+	}
+
+	public boolean isMeasureColor() {
+		return measureColor;
+	}
+
+	public void setMeasureColor(boolean measureColor) {
+		this.measureColor = measureColor;
 	}
 
 }
