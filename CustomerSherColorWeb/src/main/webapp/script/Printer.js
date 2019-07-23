@@ -73,13 +73,22 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function PrinterMessage(mycommand, mydata, myconfig){
+function PrinterMessage(mycommand, mydata, myconfig, mynumlabels){
 	console.log("In PrinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
 	this.messageName="PrinterMessage";
 	this.command=mycommand;
 	this.data=mydata;
+	if(mynumlabels){
+		this.numLabels=mynumlabels;
+	}
+	else if(myconfig && myconfig.numLabels){
+		this.numLabels=myconfig.numLabels;
+	}
+	else{
+		this.numLabels=1;
+	}
 	this.printerConfig = myconfig;
 	//returned items
 	
@@ -103,13 +112,13 @@ function createUUID() {
     return uuid;
 }
 
-function print(myPdf) {
+function print(myPdf,myNumLabels) {
 
 	
-	var printermessage = new PrinterMessage("Print",myPdf.data,null);
+	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels);
 
 	var json = JSON.stringify(printermessage);
-	sendingDispCommand = "true";
+	
 	if (ws_printer != null && ws_printer.isReady == "false") {
 		console
 				.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
@@ -123,7 +132,7 @@ function print(myPdf) {
 function getPrinters() {
 
 	
-	var printermessage = new PrinterMessage("GetPrinters",null,null);
+	var printermessage = new PrinterMessage("GetPrinters",null,null,null);
 
 	var json = JSON.stringify(printermessage);
 	
@@ -143,7 +152,7 @@ function getPrinters() {
 function getPrinterConfig() {
 
 	
-	var printermessage = new PrinterMessage("GetConfig",null,null);
+	var printermessage = new PrinterMessage("GetConfig",null,null,null);
 
 	var json = JSON.stringify(printermessage);
 	if (ws_printer != null && ws_printer.isReady == "false") {
@@ -162,7 +171,7 @@ function getPrinterConfig() {
 function setPrinterConfig(myconfig) {
 
 		
-		var printermessage = new PrinterMessage("SetConfig",null,myconfig);
+		var printermessage = new PrinterMessage("SetConfig",null,myconfig,null);
 
 		var json = JSON.stringify(printermessage);
 		
