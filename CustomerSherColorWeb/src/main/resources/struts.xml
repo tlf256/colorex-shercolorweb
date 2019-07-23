@@ -53,9 +53,58 @@
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
 			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="eula" type="redirectAction">
+				<param name="actionName">getEulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="login">/WEB-INF/pages/LoggedOut.jsp</result>
 			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
 			<result name="success">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="getEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DisplayEulaAction" method="start">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success">/WEB-INF/pages/ShowEula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="startEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DisplayEulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/ShowEula.jsp</result>
+			<result name="success">/WEB-INF/pages/ShowEula2.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="printEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DisplayEulaAction" method="print">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="test.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="acceptEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.AcceptEulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="loginRedirect">/WEB-INF/pages/login.jsp</result>
+			<result name="success">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="declineEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeclineEulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">logoutAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="passwordResetAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="display">
@@ -660,6 +709,21 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+
+<!--  added by edo78r for Help Menu 7/10/2019 -->		
+		<action name="downloadPdfAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadPdfAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+			  	<param name="inputName">fileInputStream</param>
+			  	<param name="contentDisposition">attachment;filename=%{pdfFile}</param> 
+	  			<param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
 		<action name="formulaUserEditAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

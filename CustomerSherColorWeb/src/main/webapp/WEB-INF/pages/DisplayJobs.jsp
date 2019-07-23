@@ -178,7 +178,7 @@
 				<div class="row">
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
- 						<s:hidden name="lookupControlNbr"/>
+ 						<s:hidden id="controlNbr" name="lookupControlNbr" value=""/>
 					</div>
 
 					<div class="col-sm-10">
