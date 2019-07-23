@@ -118,7 +118,7 @@ function print(myPdf,myNumLabels) {
 	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels);
 
 	var json = JSON.stringify(printermessage);
-	sendingDispCommand = "true";
+	
 	if (ws_printer != null && ws_printer.isReady == "false") {
 		console
 				.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");

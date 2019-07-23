@@ -1,6 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.util.LinkedHashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import org.owasp.encoder.Encode;
 import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
-import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
+
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -33,38 +33,8 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 	private boolean siteHasPrinter;
 	private String printerModel;
 	
-	
-	
-	
-	//return default company value
-	public String getDefaultPrinterTypeValue(){
-		return "Zebra GK420d";
-	}
-	
-	/*
-	public PrinterConfigureAction(){
-		spectrotypes = new LinkedHashMap<String, String>();
-		
-		spectrotypes.put("Ci52+SWS",CI52);
-		spectrotypes.put("Ci62",CI62);
-		spectrotypes.put("Ci52+SWW",CI52SWW);
-		spectrotypes.put("Ci62+SWW",CI62SWW);
-	}
-	*/
 
-	// User hit the backup button on the Color page
-	public String backItUp() {
-		try {
-			//blank out the color info as we are backing up.
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-
-			sessionMap.put(reqGuid, reqObj);
-		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return ERROR;
-		}
-	}
+	
 	
 	private void setIsPrinterConfigured() {
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
