@@ -39,8 +39,10 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 			
 			List<SwMessage> displayMsgs = new ArrayList<SwMessage>();
 			SwMessage msg = tranHistoryService.updateTranHistory(custWebTran);
-			displayMsgs.add(msg);
-			reqObj.setDisplayMsgs(displayMsgs);
+			if(msg != null) {
+				displayMsgs.add(msg);
+				reqObj.setDisplayMsgs(displayMsgs);
+			}
 			
 			sessionMap.put(reqGuid, reqObj);
 			

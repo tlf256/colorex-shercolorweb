@@ -26,7 +26,7 @@
 <script type="text/javascript" charset="utf-8"
 	src="script/CustomerSherColorWeb.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Printer.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
 <script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
@@ -134,12 +134,20 @@ badge {
 		}
 		$("#printLabelModal").modal('show');
 }
-	function printButtonClickJson() {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
 	
-		var myPdf = new pdf(myguid);
-		$("#printerInProgressMessage").text("Printer: In Progress ");
-		print(myPdf);
+	function printButtonClickJson() {
+		if (printerConfig && printerConfig.model
+				&& printerConfig.printOnDispense) {
+			var myguid = $("#formulaUserPrintAction_reqGuid").val();
+
+			var myPdf = new pdf(myguid);
+			$("#printerInProgressMessage").text("Printer: In Progress ");
+			var numLabels = null;
+
+			numLabels = printerConfig.numLabels;
+
+			print(myPdf, numLabels);
+		}
 
 	}
 
@@ -185,7 +193,6 @@ badge {
 	}
 
 	function preDispenseCheckCallback() {
-
 		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of "
 				+ dispenseQuantity;
 		$(".dispenseNumberTracker").text(dispenseNumberTracker);
@@ -276,6 +283,7 @@ badge {
 	}
 
 	function dispense() {
+		printButtonClickJson(); //new print on dispense
 		var cmd = "Dispense";
 
 		var tintermessage = new TinterMessage(cmd, shotList, null, null, null);
@@ -316,13 +324,13 @@ badge {
 						// save a dispense (will bump the counter)
 						$("#printerResponseModal").modal('show');
 						$("#printerResponseMessage").text(
-								"Get Printer Result: " + return_message.errorMessage);
+								"Get Printer Result: "
+										+ return_message.errorMessage);
 						console.log(return_message);
-					}
-					else{
+					} else {
 						printerConfig = return_message.printerConfig;
-						
-						}
+
+					}
 					break;
 				default:
 					//Not an response we expected...
