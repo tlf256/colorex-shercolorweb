@@ -261,7 +261,10 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					 sessionHasTinter = true;
 				 }
 				 spectro=origReqObj.getSpectro();
-				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!="") siteHasSpectro = true;
+				 //BKP 07/22/2019 Modified to match getTinter if logic above to rectify Veracode eror
+				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!=null && origReqObj.getSpectro().getModel().isEmpty()) {
+					 siteHasSpectro = true;
+				 }
 				 
 				 sessionMap.put(origReqObj.getGuid(), origReqObj);
 				 returnStatus = "SUCCESS";
