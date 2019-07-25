@@ -357,7 +357,7 @@ badge {
 			}
 
 		} catch (error) {
-			console.log("Caught error is = " + error);
+			console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
 			console.log("Message is junk, throw it out");
 			//console.log("Junk Message is " + ws_tinter.wsmsg);
 		}
@@ -397,7 +397,7 @@ badge {
 						isTintJSON = true;
 					}
 				} catch (error) {
-					console.log("Caught error is = " + error);
+					console.log("Caught error is = " + error + " If response is for printer message, this error trying to parse tinter message is expected.");
 					console.log("Message is junk, throw it out");
 					//console.log("Junk Message is " + ws_tinter.wsmsg);
 				}
