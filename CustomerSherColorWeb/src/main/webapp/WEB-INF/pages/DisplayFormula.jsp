@@ -124,6 +124,8 @@ badge {
 		if(printerConfig && printerConfig.model){
 			
 			$("#printLabelPrint").show();
+			$("#printLabelPrint").focus();
+			
 			
 			$("#numLabels").val(printerConfig.numLabels);
 			$("#numLabels").show();
@@ -133,6 +135,8 @@ badge {
 			$("#numLabels").hide();
 		}
 		$("#printLabelModal").modal('show');
+
+		
 }
 	
 	function printButtonClickJson() {
@@ -353,7 +357,7 @@ badge {
 			}
 
 		} catch (error) {
-			console.log("Caught error is = " + error);
+			console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
 			console.log("Message is junk, throw it out");
 			//console.log("Junk Message is " + ws_tinter.wsmsg);
 		}
@@ -393,7 +397,7 @@ badge {
 						isTintJSON = true;
 					}
 				} catch (error) {
-					console.log("Caught error is = " + error);
+					console.log("Caught error is = " + error + " If response is for printer message, this error trying to parse tinter message is expected.");
 					console.log("Message is junk, throw it out");
 					//console.log("Junk Message is " + ws_tinter.wsmsg);
 				}
@@ -1103,7 +1107,7 @@ badge {
 						<div class="modal-footer">
 							<div class="col-xs-6">
 								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print" onclick="printButtonClickJson()">Print</button>
+									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickJson()">Print</button>
 							</div>
 							<div class="col-xs-4">
 								
@@ -1219,6 +1223,22 @@ badge {
 			}
 			// init which buttons user can see
 			updateButtonDisplay();
+			
+			//Enable enter key to print.  No need for mouse click
+			$("#printLabelPrint").keypress(function(event){
+			    var keycode = (event.keyCode ? event.keyCode : event.which);
+			    if(keycode == '13'){
+					if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
+					    // print button is visible
+						 printButtonClickJson(); 
+					}
+			       
+			    }
+			});
+			$('#printLabelModal').on('shown.bs.modal', function () {
+				$("#printLabelPrint").focus();
+			});  
+
 			//TODO if in correction, go to correction screen.
 		});
 
