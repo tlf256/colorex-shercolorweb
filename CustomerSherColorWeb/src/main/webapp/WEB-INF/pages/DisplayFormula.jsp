@@ -140,8 +140,7 @@ badge {
 }
 	
 	function printButtonClickJson() {
-		if (printerConfig && printerConfig.model
-				&& printerConfig.printOnDispense) {
+		if (printerConfig && printerConfig.model) {
 			var myguid = $("#formulaUserPrintAction_reqGuid").val();
 
 			var myPdf = new pdf(myguid);
@@ -287,7 +286,9 @@ badge {
 	}
 
 	function dispense() {
-		printButtonClickJson(); //new print on dispense
+		if(printerConfig.printOnDispense){
+			printButtonClickJson(); //new print on dispense
+		}
 		var cmd = "Dispense";
 
 		var tintermessage = new TinterMessage(cmd, shotList, null, null, null);
