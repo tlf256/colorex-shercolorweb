@@ -148,7 +148,10 @@ badge {
 			var numLabels = null;
 
 			numLabels = printerConfig.numLabels;
-
+			numLabelsVal = $("#numLabels").val();
+			if(numLabelsVal && numLabelsVal !=0){
+				numLabels = numLabelsVal;
+			}
 			print(myPdf, numLabels);
 		}
 
