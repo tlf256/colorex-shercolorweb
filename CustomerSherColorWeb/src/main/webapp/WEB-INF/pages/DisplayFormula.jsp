@@ -289,7 +289,7 @@ badge {
 	}
 
 	function dispense() {
-		if(printerConfig.printOnDispense){
+		if(printerConfig && printerConfig.printOnDispense){
 			printButtonClickJson(); //new print on dispense
 		}
 		var cmd = "Dispense";
@@ -309,14 +309,16 @@ badge {
 	}
 
 	function ParsePrintMessage() {
-
+		var parsed = false;
 		try {
 			if (ws_printer != null && ws_printer.wsmsg != null
 					&& ws_printer.wserror == null) {
 				var return_message = JSON.parse(ws_printer.wsmsg);
-
+				if(return_message){
 				switch (return_message.command) {
 				case 'Print':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
 					if (return_message.errorNumber != 0) {
 						// save a dispense (will bump the counter)
 						$("#printerInProgressModal").modal('show');
@@ -325,9 +327,11 @@ badge {
 						console.log(return_message);
 						//waitForShowAndHide("#tinterInProgressModal");
 					}
-					sendingDispCommand = "false";
+					
 					break;
 				case 'GetConfig':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
 					if (return_message.errorNumber != 0) {
 						// save a dispense (will bump the counter)
 						$("#printerResponseModal").modal('show');
@@ -344,8 +348,10 @@ badge {
 					//Not an response we expected...
 					console
 							.log("Message from different command is junk, throw it out");
+				}
 				} // end switch statement
 			} else {
+				//not sure if I need this
 				$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
 
 				/* DJM switch to this if 
@@ -365,15 +371,17 @@ badge {
 			console.log("Message is junk, throw it out");
 			//console.log("Junk Message is " + ws_tinter.wsmsg);
 		}
+		return parsed;
 	}
 	function RecdMessage() {
+		var printMessageParsed = false;
 		console.log("Received Message");
 		//parse the spectro
 
 		if (ws_printer) {
-			ParsePrintMessage();
+			printMessageParsed = ParsePrintMessage();
 		}
-		if (typeof ws_tinter !== 'undefined' && ws_tinter) {
+		if (!printMessageParsed && typeof ws_tinter !== 'undefined' && ws_tinter) {
 			if (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
 				console.log("isReady is " + ws_tinter.isReady + "BTW");
 				if (sendingDispCommand == "true") {
