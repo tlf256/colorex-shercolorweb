@@ -29,8 +29,40 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 //Opens Help Menu links on the welcome page - edo78r
 	
 	public String execute() throws Exception {
+		String pdfFileName = "";
 		try {
-			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/" + pdfFile));
+			switch(pdfFile) {
+				case "1":
+					pdfFileName = "SherColor_Web_Customer_Guide.pdf";
+					break;
+				case "2":
+					pdfFileName = "SherColor_Web_Accutinter_Installation_Guide.pdf";
+					break;
+				case "3":
+					pdfFileName = "SherColor_Web_Fluid_Management_Calibration.pdf";
+				    break;
+				case "4":
+				    pdfFileName = "SherColor_Web_Color_Eye_Installation.pdf";
+				    break;
+				case "5":
+				    pdfFileName = "SherColor_Web_Corob_Installation_Guide.pdf";
+				    break;
+				case "6":
+				    pdfFileName = "SherColor_Web_Corob_Calibration.pdf";
+				    break;
+				case "7":
+				    pdfFileName = "SherColor_Web_Dymo_Install.pdf";
+				    break;
+				case "8":
+				    pdfFileName = "SherColor_Web_Zebra_Install.pdf";
+				    break;
+				default:
+					pdfFileName = "INVALID";
+			}
+			if (pdfFileName.equals("INVALID")) {
+				return ERROR;
+			}
+			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/" + pdfFileName));
 	    	return SUCCESS;
 		 } catch (Exception e) {
 			logger.error(e.getMessage());
