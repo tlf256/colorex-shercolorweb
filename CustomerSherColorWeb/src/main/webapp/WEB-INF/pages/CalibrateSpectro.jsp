@@ -262,7 +262,7 @@
 						</div>
 						<div class="calsuccess">
 						<s:if test="measureColor">
-							<s:submit cssClass="btn btn-primary" value="Measure Sample" action="measureColorReturnAction"/>
+							<s:submit cssClass="btn btn-primary" value="Next" action="measureColorReturnAction"/>
 						</s:if>
 						<s:else>
 							<s:submit cssClass="btn btn-primary" value="Next" action="goodCalibrateAction"/>
