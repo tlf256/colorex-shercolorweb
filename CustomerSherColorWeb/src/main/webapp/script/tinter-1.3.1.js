@@ -552,10 +552,22 @@ function checkColorantLow(mySessionCanList){
 	return messageList;
 }
 		
+function removeZeroShots(myShotList){
+	
+	for (index = 0; index < myShotList.length; index++){
+		if (myShotList[index].shots == 0){
+			console.log("Found a a colorant with no shots");
+			myShotList.splice(index,1);
+			index--;
+		}
+	}
+	
+	return myShotList
+}
 
 function decrementColorantForDispense(myGuid, myShotList, callback) {
 	console.log("inside dec colorant and shotList is ");
-	console.log(myShotList);
+	
 	var mydata = {reqGuid:myGuid, shotList:myShotList};
 	var jsonIn = JSON.stringify(mydata);
 	$.ajax({
