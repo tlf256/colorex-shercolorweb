@@ -604,8 +604,12 @@
     					data.dispenseItemList.forEach(function(item){
     						shotList.push(new Colorant(item.clrntCode, item.shots, item.position, item.uom));
     					});
-    					console.log(shotList)
-
+    					console.log(shotList); // Before removing potential Zero Shot colorants
+						
+    					shotList = removeZeroShots(shotList);
+    					
+    					console.log(shotList); // After removing potential Zero Shot colorants
+    					
     					// start dispense process (productFillLevelCheck --> preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
     					productFillLevelCheck();
                 	}
