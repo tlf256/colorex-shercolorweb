@@ -138,8 +138,21 @@ badge {
 
 		
 }
-	
-	function printButtonClickJson() {
+
+	function printOnDispenseGetJson() {
+		if (printerConfig && printerConfig.model) {
+			var myguid = $("#formulaUserPrintAction_reqGuid").val();
+
+			var myPdf = new pdf(myguid);
+			$("#printerInProgressMessage").text("Printer: In Progress ");
+			var numLabels = null;
+
+			numLabels = printerConfig.numLabels;
+			print(myPdf, numLabels);
+		}
+
+	}
+	function printButtonClickGetJson() {
 		if (printerConfig && printerConfig.model) {
 			var myguid = $("#formulaUserPrintAction_reqGuid").val();
 
@@ -290,7 +303,7 @@ badge {
 
 	function dispense() {
 		if(printerConfig && printerConfig.printOnDispense){
-			printButtonClickJson(); //new print on dispense
+			printOnDispenseGetJson(); //new print on dispense
 		}
 		var cmd = "Dispense";
 
@@ -351,8 +364,8 @@ badge {
 				}
 				} // end switch statement
 			} else {
-				//not sure if I need this
-				$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
+				//was hitting this on ws_tinter.wsmsg causing the modal to show.  was designed to show when SWDeviceHandler not installed 
+				//$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
 
 				/* DJM switch to this if 
 				if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
@@ -1119,7 +1132,7 @@ badge {
 						<div class="modal-footer">
 							<div class="col-xs-6">
 								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickJson()">Print</button>
+									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()">Print</button>
 							</div>
 							<div class="col-xs-4">
 								
@@ -1242,7 +1255,7 @@ badge {
 			    if(keycode == '13'){
 					if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
 					    // print button is visible
-						 printButtonClickJson(); 
+						 printButtonClickGetJson(); 
 					}
 			       
 			    }
