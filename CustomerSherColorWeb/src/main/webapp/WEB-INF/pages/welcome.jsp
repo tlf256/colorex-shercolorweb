@@ -1082,6 +1082,8 @@
 				$('li#spectroGetInfo').hide();
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
+			//PSCWEB-330 CSW - Color Eye Status does not display after configuration - BKP - added
+			// an "or" to check if the spectroModel has been set in the session.  If so, perform a config/detect/get calibration.
 			if($("#startNewJob_siteHasSpectro").val()=="true" || "${sessionScope[thisGuid].spectroModel}"!=null) {		
 				ws_spectro = new WSWrapper("coloreye");
 				console.log("ready to read local host spectro config");
