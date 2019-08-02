@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/Tinter.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -84,6 +84,7 @@
 		var localhostConfig = null;
 		var localhostSpectroConfig = null;
 		var siteSpectroConfig = null;
+		var configSessionSpectro = "false";
 		var wssCount = 0;
 		var sendingTinterCommand = "false";
 		var sendingSpectroCommand = "false";
@@ -100,6 +101,7 @@
 			console.log("siteSpectroConfig model is "+ siteSpectroConfig.model);
 			console.log("siteSpectroConfig serial is "+ siteSpectroConfig.serial);
 			console.log("siteSpectroConfig port is "+ siteSpectroConfig.port);
+			configSessionSpectro = "true";
 			//localhostSpectroConfig = siteSpectroConfig;
 		</s:if>
 
@@ -1066,7 +1068,7 @@
  	 			}
 			}
 			
-			if(localhostSpectroConfig!=null){ 
+			if(localhostSpectroConfig!=null || configSessionSpectro=="true"){ 
 				console.log("localhostSpectroConfig is NOT null");			
 				$('#coloreyeNotify').show(); 
 				if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
@@ -1080,10 +1082,12 @@
 				$('li#spectroGetInfo').hide();
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
-			if($("#startNewJob_siteHasSpectro").val()=="true"){
+			if($("#startNewJob_siteHasSpectro").val()=="true" || "${sessionScope[thisGuid].spectroModel}"!=null) {		
 				ws_spectro = new WSWrapper("coloreye");
 				console.log("ready to read local host spectro config");
 				readLocalhostSpectroConfig();
+			} else {
+				console.log("#startNewJob_siteHasSpectro is false");
 			}
 			//Add code to check days until password expiration.
  			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   
