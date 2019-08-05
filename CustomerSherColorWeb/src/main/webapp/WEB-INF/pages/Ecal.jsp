@@ -24,7 +24,7 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
 
 
 
@@ -413,7 +413,9 @@
 	});
 	$(document).on("click", "#btn_downloadEcal", function(event) {
 		event.preventDefault();
-		var filename = $('#filename').val();
+		
+		var filename = $("input[name='filename']:checked"). val();
+		
 			if(filename != null && filename !== undefined){
 			    $('#btn_downloadEcal').prop('disabled', true);
 				

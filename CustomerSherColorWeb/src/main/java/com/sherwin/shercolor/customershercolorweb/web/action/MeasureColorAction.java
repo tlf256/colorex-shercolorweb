@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CustWebParms;
@@ -33,11 +34,10 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(MeasureColorAction.class);
 	
-
 	private String reqGuid;
+	private boolean measureColor;
 	private String measuredCurve;
 
-	
 	private String message;
 	
 	private String intBases;
@@ -45,13 +45,10 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String extBases;
 	
 
-	
 	public MeasureColorAction(){
 		
 		
 	}
-	
-
 	
 	// User hit the backup button on the Color page
 	public String backItUp() {
@@ -91,9 +88,6 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		String rgbHex = null;
 		BigDecimal[] curveArray = new BigDecimal[40];
 		String[] strCurveArray = new String[40];
-		
-
-
 		
 		try {
 			
@@ -142,7 +136,26 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		}
 	}
 
+	public String calibrate() {
 
+		 try {
+			 measureColor = true;
+		     return SUCCESS;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ERROR;
+		}
+	}
+	
+	public String measure() {
+
+		 try {
+		     return SUCCESS;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ERROR;
+		}
+	}
 	
 	public String getMessage() {
 		return message;
@@ -179,6 +192,10 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 	public void setReqGuid(String reqGuid) {
 		this.reqGuid = reqGuid;
+	}
+
+	public boolean isMeasureColor() {
+		return measureColor;
 	}
 
 	public ColorService getColorService() {

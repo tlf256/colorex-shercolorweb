@@ -3,6 +3,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -316,7 +317,18 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			tranCorr.setStatus(stepStatus);
 			tranCorr.setUserId(reqObj.getFirstName()+ " " + reqObj.getLastName());
 			SimpleDateFormat jsdf = new SimpleDateFormat("EE MMM d y H:m:s 'GMT'Z (zz)");
-			tranCorr.setDateTime(jsdf.parse(jsDateString));
+			//BKP-20170730-PSCWEB 316
+			Date localeDateTime;
+			if(jsDateString!=null && !jsDateString.isEmpty()){
+				try {
+					localeDateTime = jsdf.parse(jsDateString);
+				} catch (Exception e) {
+					localeDateTime = new Date();
+				}
+			} else {
+				localeDateTime = new Date();
+			}
+			tranCorr.setDateTime(localeDateTime);
 			tranCorr.setCorrMethod(stepMethod);
 			tranCorr.setMergedWithOrig(false);
 			tranCorr.setClrntSysId(reqObj.getClrntSys());
