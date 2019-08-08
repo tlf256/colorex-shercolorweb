@@ -636,6 +636,10 @@
 								if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
 								$('#coloreyeNotify').show();
 								$('li#spectroCalibrate').show();
+								var colorEyeModel = localhostSpectroConfig.model;
+								if(colorEyeModel === "Ci62+SWW" || colorEyeModel === "Ci62+SWS"){
+									$('li#spectroManageStoredMeasurements').show();
+								}
 								$('li#spectroGetInfo').show();
 								$("#coloreyeStatusList").append("<li><strong>Comm Status:</strong> CONNECTED</li>");
 								console.log("ready to get spctro calibration status as we received a Detect");
@@ -783,6 +787,7 @@
 	<%-- 								    </c:if>  --%>
 	<%-- 									<li><a href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog'></span> Configure</a></li> --%>
 									    <li id="spectroCalibrate"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCalibrateAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-bullseye pr-1'></span> Calibrate</a></li>
+										<li id="spectroManageStoredMeasurements"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroManageStoredMeasurementsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-edit'></span>  Manage Stored Measurements</a></li>
 										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> Color Eye Information</a></li>
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
 				        			</ul>
@@ -1077,6 +1082,7 @@
 				$('#coloreyeNotify').hide(); 
 				if(!$('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').addClass('d-none');}
 				$('li#spectroCalibrate').hide();
+				$('li#spectroManageStoredMeasurements').hide();
 				$('li#spectroGetInfo').hide();
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
