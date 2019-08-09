@@ -24,7 +24,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/Tinter.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -604,8 +604,12 @@
     					data.dispenseItemList.forEach(function(item){
     						shotList.push(new Colorant(item.clrntCode, item.shots, item.position, item.uom));
     					});
-    					console.log(shotList)
-
+    					console.log(shotList); // Before removing potential Zero Shot colorants
+						
+    					shotList = removeZeroShots(shotList);
+    					
+    					console.log(shotList); // After removing potential Zero Shot colorants
+    					
     					// start dispense process (productFillLevelCheck --> preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
     					productFillLevelCheck();
                 	}
