@@ -35,7 +35,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/DisplayJobs.js"></script>
+		<script type="text/javascript" src="script/DisplayJobs-1.3.1.js"></script>
 		
 		
 	</head>
