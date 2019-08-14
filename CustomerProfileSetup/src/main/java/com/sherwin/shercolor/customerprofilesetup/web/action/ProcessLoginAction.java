@@ -42,16 +42,8 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 						//create new custweblogintransform record list
 						LoginTrans newlogin = new LoginTrans();
 						newlogin.setKeyField(allowCharacters(login.getKeyField().get(i)));
-						if(login.getMasterAcctName().get(i).equals("")) {
-							newlogin.setMasterAcctName(null);
-						} else {
-							newlogin.setMasterAcctName(allowCharacters(login.getMasterAcctName().get(i)));
-						}
-						if(login.getAcctComment().get(i).equals("")) {
-							newlogin.setAcctComment(null);
-						} else {
-							newlogin.setAcctComment(allowCharacters(login.getAcctComment().get(i)));
-						}
+						newlogin.setMasterAcctName(allowCharacters(login.getMasterAcctName().get(i)));
+						newlogin.setAcctComment(allowCharacters(login.getAcctComment().get(i)));
 						loginList.add(newlogin);
 					}
 				}

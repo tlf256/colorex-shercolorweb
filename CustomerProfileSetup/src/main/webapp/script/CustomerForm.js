@@ -202,7 +202,7 @@ $(document).ready(function() {
 			if($("#bacdefault").is(":checked") && !$("#bac").is(":checked")){
 				throw "Please choose BAC colorant system before selecting it as the default";
 			}
-			if($("#884default").is(":checked") && !$("#844").is(":checked")){
+			if($("#844default").is(":checked") && !$("#844").is(":checked")){
 				throw "Please choose 844 colorant system before selecting it as the default";
 			}
 			valid = true;

@@ -65,22 +65,23 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			for(int i = 0; i < editclrntlist.size(); i++) {
-				//set values for custwebparms record
-				CustParms newcust = new CustParms();
-				newcust.setCustomerId(reqObj.getCustomerId());
-				newcust.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
-				newcust.setClrntSysId(editclrntlist.get(i));
-				newcust.setSeqNbr(i+1);
-				newcust.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
-				newcust.setActive(cust.isActive());
-				editCustList.add(newcust);
-			}
-			
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
 			reqObj.setActive(cust.isActive());
 			reqObj.setClrntList(editclrntlist);
+			
+			for(int i = 0; i < editclrntlist.size(); i++) {
+				//set values for custwebparms record
+				CustParms newcust = new CustParms();
+				newcust.setCustomerId(reqObj.getCustomerId());
+				newcust.setSwuiTitle(reqObj.getSwuiTitle());
+				newcust.setClrntSysId(editclrntlist.get(i));
+				newcust.setSeqNbr(i+1);
+				newcust.setCdsAdlFld(reqObj.getCdsAdlFld());
+				newcust.setActive(reqObj.isActive());
+				editCustList.add(newcust);
+			}
+			
 			reqObj.setCustList(editCustList);
 			
 			if(login!=null) {

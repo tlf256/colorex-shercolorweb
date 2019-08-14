@@ -57,11 +57,7 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 						JobFields newjob = new JobFields();
 						newjob.setSeqNbr(seqnbr);
 						newjob.setScreenLabel(allowCharacters(job.getScreenLabel().get(i)));
-						if(job.getFieldDefault().get(i).equals("")) {
-							newjob.setFieldDefault(null);
-						} else {
-							newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i)));
-						}
+						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i)));
 						if(reqlist[i].contains("true")) {
 							newjob.setEntryRequired(true);
 						} else {
