@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -162,8 +162,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	public void parseColorData(String colorData) {
-		
-		
+
+		try {
+			colorData = URLDecoder.decode(colorData,"UTF-8");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing
 		} 

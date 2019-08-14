@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/Tinter.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -84,6 +84,7 @@
 		var localhostConfig = null;
 		var localhostSpectroConfig = null;
 		var siteSpectroConfig = null;
+		var configSessionSpectro = "false";
 		var wssCount = 0;
 		var sendingTinterCommand = "false";
 		var sendingSpectroCommand = "false";
@@ -100,6 +101,7 @@
 			console.log("siteSpectroConfig model is "+ siteSpectroConfig.model);
 			console.log("siteSpectroConfig serial is "+ siteSpectroConfig.serial);
 			console.log("siteSpectroConfig port is "+ siteSpectroConfig.port);
+			configSessionSpectro = "true";
 			//localhostSpectroConfig = siteSpectroConfig;
 		</s:if>
 
@@ -217,6 +219,7 @@
 			var cmd = "ReadConfig";
 	    	var clreyemodel = $('#spectroModel').val();
 	    	var clreyeserial = $('#spectroSerial').val();
+	    	console.log("READING LOCALHOST SPECTRO CONFIG");
 	    	console.log("ws_spectro.context is " + ws_spectro.deviceContext);
 	    	
 			var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
@@ -232,6 +235,7 @@
 			var cmd = "Detect";
 	    	var clreyemodel = localhostSpectroConfig.model;
 	    	var clreyeserial = localhostSpectroConfig.serial;
+	    	console.log("DETECTING SPECTRO");
 	    	console.log("ws_spectro.context is " + ws_spectro.deviceContext);
 	    	
 			var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
@@ -247,6 +251,7 @@
   		  	var cmd = "GetCalStatusMinUntilCalExpiration";
 	    	var clreyemodel = localhostSpectroConfig.model;
 	    	var clreyeserial = localhostSpectroConfig.serial;
+	    	console.log("GETTING SPECTRO CALIBRATION STATUS");
 	    	console.log("ws_spectro.context is " + ws_spectro.deviceContext);
 	    	
 	    	var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
@@ -563,8 +568,14 @@
 				var isSpectroJSON = false;
 				try{
 					if(ws_spectro && ws_spectro.wsmsg!=null && ws_spectro.wsmsg.length !=  0){
-						var return_message=JSON.parse(ws_spectro.wsmsg);
+						//console.log("recd msg: " + encodeURI(evt.data));
+						var spectro_return_message=JSON.parse(ws_spectro.wsmsg);
+						//try blanking out wsmsg and let it be filled on next valid spectro return call.
+						ws_spectro.wsmsg = "";
 						isSpectroJSON = true;
+					} else {
+						console.log("recd a msg, maybe a tinter msg, while the spectro wrapper was alive, skipping.")
+						
 					}
 				}
 				catch(error){
@@ -574,15 +585,15 @@
 				}
 				
 				if(isSpectroJSON){
-					switch (return_message.command) {
+					switch (spectro_return_message.command) {
 						case 'GetCalStatusMinUntilCalExpiration':
-							if (return_message.errorMessage!="") {
+							if (spectro_return_message.errorMessage!="") {
 								// what to do here?
 								//$("#errmsg").text(return_message.errorMessage);
 								//DisplayError();
 							} else {
-								if (return_message.responseMessage.match(/^OK/)) {
-									var goodMsg = return_message.responseMessage.split(" ");
+								if (spectro_return_message.responseMessage.match(/^OK/)) {
+									var goodMsg = spectro_return_message.responseMessage.split(" ");
 									$("#calIntTemp").text(goodMsg[1]);
 									var rmnTime = goodMsg[2];
 									var theHrs = Math.floor(parseInt(rmnTime)/60);
@@ -608,35 +619,36 @@
 							
 							localhostSpectroConfig = new SpectroConfig();
 							localhostSpectroConfig.port = "USB";
-							localhostSpectroConfig.model = return_message.spectroConfig.model;
-							localhostSpectroConfig.serial = return_message.spectroConfig.serial;
+							localhostSpectroConfig.model = spectro_return_message.spectroConfig.model;
+							localhostSpectroConfig.serial = spectro_return_message.spectroConfig.serial;
 							console.log("localhostSpectroConfig is " +  localhostSpectroConfig.model + " " + localhostSpectroConfig.serial + " USB");
 							// save config info to sesssion on app server
-							saveSpectroConfigToSession(return_message.spectroConfig.model,return_message.spectroConfig.serial);
+							saveSpectroConfigToSession(spectro_return_message.spectroConfig.model,spectro_return_message.spectroConfig.serial);
 							//update the spectro popover
 							$("#coloreyeStatusList").append("<li><strong>Model:</strong> " + localhostSpectroConfig.model + "</li>");
 							$("#coloreyeStatusList").append("<li><strong>S/N:</strong> " + localhostSpectroConfig.serial + "</li>");
 							
 							//now detect the spectro and see if it is connected.
-							
+							console.log("ready to detect spctro as we received a ReadConfig");
 							detectSpectro();
 							break;
 						case 'Detect':
-							if(return_message.responseMessage==="true"){
+							if(spectro_return_message.responseMessage==="true"){
 								// Enable items in Spectro Menu
 								if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
 								$('#coloreyeNotify').show();
 								$('li#spectroCalibrate').show();
 								$('li#spectroGetInfo').show();
 								$("#coloreyeStatusList").append("<li><strong>Comm Status:</strong> CONNECTED</li>");
+								console.log("ready to get spctro calibration status as we received a Detect");
 								GetCalStatus();
 							} else {
 								//TODO Show a modal with error message to make sure the user is forced to read it.
 //	 							$("#detectError").text(return_message.errorMessage);
 //	 							$("#detectErrorModal").modal('show');
 
-								if (return_message.responseMessage==="notconfigured") {
-									console.log("detection error " + return_message.errorCode + ", hiding coloreyeNotify" );
+								if (spectro_return_message.responseMessage==="notconfigured") {
+									console.log("detection error " + spectro_return_message.errorCode + ", hiding coloreyeNotify" );
 									$('#coloreyeNotify').hide();
 									if(!$('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').addClass('d-none');}
 								} else {
@@ -803,14 +815,14 @@
 				        		<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Help Menu</a>
 	        						<ul class="dropdown-menu" id="helpMenu">
-	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">1</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Use Customer SherColor Web</a></li>
-	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">2</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up An Accutinter</a></li>
-								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">3</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate An Accutinter</a></li>
-								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">4</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Color Eye</a></li>
-								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">5</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Corob</a></li>
-								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">6</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate A Corob</a></li>
-								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">7</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Dymo Label Printer</a></li>
-								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">8</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Zebra Label Printer</a></li>
+	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Customer_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Use Customer SherColor Web</a></li>
+	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Accutinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up An Accutinter</a></li>
+								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Fluid_Management_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate An Accutinter</a></li>
+								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Color_Eye_Installation.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Color Eye</a></li>
+								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Corob</a></li>
+								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate A Corob</a></li>
+								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Dymo_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Dymo Label Printer</a></li>
+								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Zebra_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Zebra Label Printer</a></li>
 				        			</ul>
 				        			
 	       						</li>
@@ -1056,7 +1068,7 @@
  	 			}
 			}
 			
-			if(localhostSpectroConfig!=null){ 
+			if(localhostSpectroConfig!=null || configSessionSpectro=="true"){ 
 				console.log("localhostSpectroConfig is NOT null");			
 				$('#coloreyeNotify').show(); 
 				if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
@@ -1070,9 +1082,14 @@
 				$('li#spectroGetInfo').hide();
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
-			if($("#startNewJob_siteHasSpectro").val()=="true"){
+			//PSCWEB-330 CSW - Color Eye Status does not display after configuration - BKP - added
+			// an "or" to check if the spectroModel has been set in the session.  If so, perform a config/detect/get calibration.
+			if($("#startNewJob_siteHasSpectro").val()=="true" || "${sessionScope[thisGuid].spectroModel}"!=null) {		
 				ws_spectro = new WSWrapper("coloreye");
+				console.log("ready to read local host spectro config");
 				readLocalhostSpectroConfig();
+			} else {
+				console.log("#startNewJob_siteHasSpectro is false");
 			}
 			//Add code to check days until password expiration.
  			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   

@@ -136,11 +136,12 @@ function RecdMessage() {
 		}
 }
 $(document).ready(function() {
-	
 	    if($("#siteHasPrinter").val() == "true"){
 			getPrinterConfig();
 		}
-	
+	    else{
+	    	getPrinters();  //just get list of printers for combo box.
+		    }	
 });
 
 </script>

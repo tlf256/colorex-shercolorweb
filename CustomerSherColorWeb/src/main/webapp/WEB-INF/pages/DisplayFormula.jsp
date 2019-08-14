@@ -27,7 +27,7 @@
 	src="script/CustomerSherColorWeb.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
-<script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
@@ -138,8 +138,8 @@ badge {
 
 		
 }
-	
-	function printButtonClickJson() {
+
+	function printOnDispenseGetJson() {
 		if (printerConfig && printerConfig.model) {
 			var myguid = $("#formulaUserPrintAction_reqGuid").val();
 
@@ -148,7 +148,23 @@ badge {
 			var numLabels = null;
 
 			numLabels = printerConfig.numLabels;
+			print(myPdf, numLabels);
+		}
 
+	}
+	function printButtonClickGetJson() {
+		if (printerConfig && printerConfig.model) {
+			var myguid = $("#formulaUserPrintAction_reqGuid").val();
+
+			var myPdf = new pdf(myguid);
+			$("#printerInProgressMessage").text("Printer: In Progress ");
+			var numLabels = null;
+
+			numLabels = printerConfig.numLabels;
+			numLabelsVal = $("#numLabels").val();
+			if(numLabelsVal && numLabelsVal !=0){
+				numLabels = numLabelsVal;
+			}
 			print(myPdf, numLabels);
 		}
 
@@ -286,8 +302,8 @@ badge {
 	}
 
 	function dispense() {
-		if(printerConfig.printOnDispense){
-			printButtonClickJson(); //new print on dispense
+		if(printerConfig && printerConfig.printOnDispense){
+			printOnDispenseGetJson(); //new print on dispense
 		}
 		var cmd = "Dispense";
 
@@ -306,14 +322,16 @@ badge {
 	}
 
 	function ParsePrintMessage() {
-
+		var parsed = false;
 		try {
 			if (ws_printer != null && ws_printer.wsmsg != null
 					&& ws_printer.wserror == null) {
 				var return_message = JSON.parse(ws_printer.wsmsg);
-
+				if(return_message){
 				switch (return_message.command) {
 				case 'Print':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
 					if (return_message.errorNumber != 0) {
 						// save a dispense (will bump the counter)
 						$("#printerInProgressModal").modal('show');
@@ -322,9 +340,11 @@ badge {
 						console.log(return_message);
 						//waitForShowAndHide("#tinterInProgressModal");
 					}
-					sendingDispCommand = "false";
+					
 					break;
 				case 'GetConfig':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
 					if (return_message.errorNumber != 0) {
 						// save a dispense (will bump the counter)
 						$("#printerResponseModal").modal('show');
@@ -341,9 +361,11 @@ badge {
 					//Not an response we expected...
 					console
 							.log("Message from different command is junk, throw it out");
+				}
 				} // end switch statement
 			} else {
-				$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
+				//was hitting this on ws_tinter.wsmsg causing the modal to show.  was designed to show when SWDeviceHandler not installed 
+				//$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
 
 				/* DJM switch to this if 
 				if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
@@ -362,15 +384,17 @@ badge {
 			console.log("Message is junk, throw it out");
 			//console.log("Junk Message is " + ws_tinter.wsmsg);
 		}
+		return parsed;
 	}
 	function RecdMessage() {
+		var printMessageParsed = false;
 		console.log("Received Message");
 		//parse the spectro
 
 		if (ws_printer) {
-			ParsePrintMessage();
+			printMessageParsed = ParsePrintMessage();
 		}
-		if (typeof ws_tinter !== 'undefined' && ws_tinter) {
+		if (!printMessageParsed && typeof ws_tinter !== 'undefined' && ws_tinter) {
 			if (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
 				console.log("isReady is " + ws_tinter.isReady + "BTW");
 				if (sendingDispCommand == "true") {
@@ -1108,7 +1132,7 @@ badge {
 						<div class="modal-footer">
 							<div class="col-xs-6">
 								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickJson()">Print</button>
+									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()">Print</button>
 							</div>
 							<div class="col-xs-4">
 								
@@ -1231,7 +1255,7 @@ badge {
 			    if(keycode == '13'){
 					if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
 					    // print button is visible
-						 printButtonClickJson(); 
+						 printButtonClickGetJson(); 
 					}
 			       
 			    }

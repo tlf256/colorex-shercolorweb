@@ -35,7 +35,7 @@ $(document).ready(function() {
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
                 	else{
-                		$("#colorData").attr("value",JSON.stringify(data));
+                		$("#colorData").attr("value",encodeURIComponent(JSON.stringify(data)));
                 		//console.log(data);
                 		console.log($("#colorData").attr("value"));
                 		response(data.slice(0,100));
