@@ -16,6 +16,7 @@ import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Job;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Login;
+import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class EditCustomerAction extends ActionSupport implements SessionAware {
 
@@ -37,58 +38,64 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			List<LoginTrans> editLoginList = new ArrayList<LoginTrans>();
 			List<JobFields> editJobList = new ArrayList<JobFields>();
 			
-			Customer customer = (Customer) sessionMap.get("CustomerDetail");
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			
 			for(int i = 0; i < cust.getClrntList().size(); i++) {
 				editclrntlist.add(cust.getClrntList().get(i));
 			}
 			if(cust.getCce()!=null) {
-				editclrntlist.add(cust.getCce());
+				if(cust.getDefaultClrntSys().contains("cce")) {
+					editclrntlist.add(0, "CCE");
+				} else {
+					editclrntlist.add("CCE");
+				}
 			}
 			if(cust.getBac()!=null) {
-				editclrntlist.add(cust.getBac());
+				if(cust.getDefaultClrntSys().contains("bac")) {
+					editclrntlist.add(0, "BAC");
+				} else {
+					editclrntlist.add("BAC");
+				}
 			}
-			if(cust.getEef()!=null) {
-				editclrntlist.add(cust.getEef());
+			if(cust.getEff()!=null) {
+				if(cust.getDefaultClrntSys().contains("eff")) {
+					editclrntlist.add(0, "844");
+				} else {
+					editclrntlist.add("844");
+				}
 			}
 			
 			for(int i = 0; i < editclrntlist.size(); i++) {
 				//set values for custwebparms record
 				CustParms newcust = new CustParms();
-				newcust.setCustomerId(customer.getCustomerId());
-				newcust.setSwuiTitle(cust.getSwuiTitle().trim());
+				newcust.setCustomerId(reqObj.getCustomerId());
+				newcust.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 				newcust.setClrntSysId(editclrntlist.get(i));
 				newcust.setSeqNbr(i+1);
-				newcust.setCdsAdlFld(cust.getCdsAdlFld().trim());
+				newcust.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
 				newcust.setActive(cust.isActive());
 				editCustList.add(newcust);
 			}
 			
-			customer.setSwuiTitle(cust.getSwuiTitle().trim());
-			customer.setCdsAdlFld(cust.getCdsAdlFld().trim());
-			customer.setActive(cust.isActive());
-			customer.setClrntList(editclrntlist);
-			customer.setCustList(editCustList);
-			sessionMap.put("CustomerDetail", customer);
+			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
+			reqObj.setActive(cust.isActive());
+			reqObj.setClrntList(editclrntlist);
+			reqObj.setCustList(editCustList);
 			
 			if(login!=null) {
 				for(int i = 0; i < login.getKeyField().size(); i++) {
 					if(!login.getKeyField().get(i).equals("")) {
 						//set values for custweblogintrans record
 						LoginTrans newlogin = new LoginTrans();
-						newlogin.setKeyField(login.getKeyField().get(i).trim());
-						newlogin.setMasterAcctName(login.getMasterAcctName().get(i).trim());
-						newlogin.setAcctComment(login.getAcctComment().get(i).trim());
+						newlogin.setKeyField(allowCharacters(login.getKeyField().get(i)));
+						newlogin.setMasterAcctName(allowCharacters(login.getMasterAcctName().get(i)));
+						newlogin.setAcctComment(allowCharacters(login.getAcctComment().get(i)));
 						editLoginList.add(newlogin);
 					}
 				}
-				if(sessionMap.containsKey("LoginDetail")) {
-					Login logins = (Login) sessionMap.get("LoginDetail");
-					logins.setLoginList(editLoginList);
-					sessionMap.put("LoginDetail", logins);
-				}else {
-					login.setLoginList(editLoginList);
-					sessionMap.put("LoginDetail", login);
-				}
+				
+				reqObj.setLoginList(editLoginList);
 			}
 			
 			if(job!=null) {
@@ -117,8 +124,8 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 						//set values for custwebjobfields record
 						JobFields newjob = new JobFields();
 						newjob.setSeqNbr(seqnbr);
-						newjob.setScreenLabel(job.getScreenLabel().get(i).trim());
-						newjob.setFieldDefault(job.getFieldDefault().get(i).trim());
+						newjob.setScreenLabel(allowCharacters(job.getScreenLabel().get(i)));
+						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i)));
 						if(reqlist[i].contains("true")) {
 							newjob.setEntryRequired(true);
 						} else {
@@ -133,9 +140,11 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 						seqnbr++;
 					}
 				}
-				jobs.setJobFieldList(editJobList);
-				sessionMap.put("JobDetail", jobs);
+				
+				reqObj.setJobFieldList(editJobList);
 			}
+			
+			sessionMap.put("CustomerDetail", reqObj);
 			
 			return SUCCESS;
 			
@@ -146,6 +155,24 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			logger.error(e.getMessage());
 			return ERROR;
 		}
+	}
+	
+	public String allowCharacters(String escapedString) {
+		String newString = "";
+		if(escapedString != null) {
+			if(escapedString.contains("&amp;")) {
+				newString = escapedString.replace("&amp;", "&");
+			} else if(escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&#38;", "&");
+			} else if(escapedString.contains("&apos;")) {
+				newString = escapedString.replace("&apos;", "'");
+			} else if(escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&#39;", "'");
+			} else {
+				newString = escapedString;
+			}
+		}
+		return newString;
 	}
 
 	@Override

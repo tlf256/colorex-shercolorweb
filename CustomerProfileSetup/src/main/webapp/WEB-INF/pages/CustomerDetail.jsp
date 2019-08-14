@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -139,7 +139,7 @@
 			</tr>
 			<tr>
 				<td><strong>Customer Name</strong></td>
-				<td>
+				<td id="customername">
 					<s:property value="sessionMap['CustomerDetail'].swuiTitle" />
 				</td>
 			</tr>
@@ -169,7 +169,7 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
-	<s:if test="!sessionMap['LoginDetail'].loginList.isEmpty">
+	<s:if test="!sessionMap['CustomerDetail'].loginList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
@@ -179,7 +179,7 @@
 				<th>Employee Name</th>
 				<th>Comment</th>
 			</tr>
-			<s:iterator var="login" value="sessionMap['LoginDetail'].loginList" status="i">
+			<s:iterator var="login" value="sessionMap['CustomerDetail'].loginList" status="i">
 			<tr>
 				<td>
 					<s:property value="#login.keyField" />
@@ -198,7 +198,7 @@
 	</div>
 	</s:if>
 	<br>
-	<s:if test="!sessionMap['JobDetail'].jobFieldList.isEmpty">
+	<s:if test="!sessionMap['CustomerDetail'].jobFieldList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
@@ -210,7 +210,7 @@
 				<th>Entry Required</th>
 				<th>Active</th>
 			</tr>
-			<s:iterator var="jobFields" value="sessionMap['JobDetail'].jobFieldList">
+			<s:iterator var="jobFields" value="sessionMap['CustomerDetail'].jobFieldList">
 			<tr>
 				<td>
 					<s:property value="#jobFields.seqNbr" />

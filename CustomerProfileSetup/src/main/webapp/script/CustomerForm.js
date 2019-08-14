@@ -182,7 +182,7 @@ $(document).ready(function() {
 	$(document).on("change", "input:checkbox", function(){
 		try{
 			if(($("#ccedefault").is(":checked") && !$("#cce").is(":checked")) || ($("#bacdefault").is(":checked") && !$("#bac").is(":checked")) 
-					|| ($("#884default").is(":checked") && !$("#884").is(":checked"))){
+					|| ($("#844default").is(":checked") && !$("#844").is(":checked"))){
 				throw "Please choose the correct default colorant system";
 			}
 			valid = true;
@@ -202,8 +202,8 @@ $(document).ready(function() {
 			if($("#bacdefault").is(":checked") && !$("#bac").is(":checked")){
 				throw "Please choose BAC colorant system before selecting it as the default";
 			}
-			if($("#884default").is(":checked") && !$("#884").is(":checked")){
-				throw "Please choose 884 colorant system before selecting it as the default";
+			if($("#884default").is(":checked") && !$("#844").is(":checked")){
+				throw "Please choose 844 colorant system before selecting it as the default";
 			}
 			valid = true;
 			$("#clrntsyserror").text("");
@@ -219,8 +219,8 @@ $(document).ready(function() {
 	
 	$("#loginnext-btn").click(function(){
 		try{
-			if((!$("#cce").is(":checked") && !$("#bac").is(":checked") && !$("#884").is(":checked")) || 
-					(!$("#ccedefault").is(":checked") && !$("#bacdefault").is(":checked") && !$("#884default").is(":checked"))){
+			if((!$("#cce").is(":checked") && !$("#bac").is(":checked") && !$("#844").is(":checked")) || 
+					(!$("#ccedefault").is(":checked") && !$("#bacdefault").is(":checked") && !$("#844default").is(":checked"))){
 				throw "Please choose colorant system(s) and select a default";
 			}
 			if(valid===false){

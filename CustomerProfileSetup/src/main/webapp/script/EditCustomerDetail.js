@@ -46,15 +46,9 @@ $(document).ready(function() {
 		$("#newloginrow").addClass("d-none");
 	}
 	
-	/*$("#addnewloginrow").click(function(){
-		if(loginrows > 0){
-			//$("#newloginrow").removeClass("d-none");
-			$("#loginTrans_detail").append($("#newloginrow"));
-			$(this).addClass("d-none");
-		}else{
-			$(this).addClass("d-none");
-		}
-	});*/
+	//var customername = $("#customername").val();
+	//$("#customername").html(customername);
+	//$("#customername").val($("#customername").text());
 	
 	$(".dltrow").click(function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
@@ -67,9 +61,6 @@ $(document).ready(function() {
 		}else{
 			input.val("");
 			$(this).parent('td').parent('tr').remove();
-			/*if(!$(".cloned-loginrow").is(":visible")){
-				$("#addnewloginrow").removeClass("d-none");
-			}*/
 		}
 	});
 	
@@ -114,14 +105,6 @@ $(document).ready(function() {
 		input.eq(0).focus();
 		input.eq(0).select();
 	});
-	
-	/*$(".truefalse").change(function(){
-		if($(this).prop("checked")==true){
-			$(this).siblings("label").text("true");
-		} else {
-			$(this).siblings("label").text("false");
-		}
-	});*/
 	
 	var jsvalue = String($.trim($("#customerid").text()));
 	var valid;
@@ -194,9 +177,6 @@ $(document).ready(function() {
 				}
 			});
 			try{
-				/*if(!keyfld){
-					$(this).parents("tr").find("input:text").val("");
-				}*/
 				if(keyfld.length > 20){
 					throw "Login ID cannot be greater than 20 characters";
 				}
@@ -262,22 +242,6 @@ $(document).ready(function() {
 		"change":function(){
 			$(this).attr("placeholder", "150 Character Limit");
 		}
-		/*try{
-			if($(this).val().length > 150){
-				throw "Account Comment cannot be greater than 150 characters";
-			}
-			valid = true;
-			$("#custediterror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			valid = false;
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-			$("#custediterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).focus();
-		}*/
 		
 	}, ".acctcmmnt");
 	
@@ -288,9 +252,6 @@ $(document).ready(function() {
 				if(scrnlbl.length > 15){
 					throw "Screen Label cannot be greater than 15 characters";
 				}
-				/*if(!scrnlbl && $(this).parents("tr").find("input:text").val()!=""){
-					throw "Please enter a value for Screen Label";
-				}*/
 				if($(this).parents("tr").index()==0 && !$(this).parents("tr").find("input:text").val()){
 					throw "Please enter Job Field information";
 				}
@@ -307,14 +268,7 @@ $(document).ready(function() {
 				$(this).addClass("border-danger");
 				$(this).focus();
 			}
-		}/*,
-		"change":function(){
-			//window.alert(!$(this).val());
-			if(!$(this).val()){
-				$(this).parents("tr").find("input:text").val("");
-				$(this).parents("tr").find("input:checkbox").removeAttr("checked");
-			}
-		}*/
+		}
 	}, ".scrnlbl");
 	
 	$(document).on({
@@ -349,8 +303,8 @@ $(document).ready(function() {
 				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
 					throw "Please choose BAC colorant system before selecting the default";
 				}
-				if($("#884default").is(":checked") && !$("#884").is(":checked")){
-					throw "Please choose 884 colorant system before selecting the default";
+				if($("#844default").is(":checked") && !$("#844").is(":checked")){
+					throw "Please choose 844 colorant system before selecting the default";
 				}
 				valid = true;
 				$("#custediterror").text("");
@@ -377,8 +331,8 @@ $(document).ready(function() {
 				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
 					throw "Please choose BAC colorant system";
 				}
-				if($("#884default").is(":checked") && !$("#884").is(":checked")){
-					throw "Please choose 884 colorant system";
+				if($("#844default").is(":checked") && !$("#844").is(":checked")){
+					throw "Please choose 844 colorant system";
 				}
 				valid = true;
 				$("#custediterror").text("");

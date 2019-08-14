@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Login;
+import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class ProcessLoginAction extends ActionSupport implements SessionAware {
 	/**
@@ -33,27 +34,30 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 	public String execute() {
 		try {
 			if(login!=null) {
+				RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+				
 				List<LoginTrans> loginList = new ArrayList<LoginTrans>();
 				for(int i = 0; i < login.getKeyField().size(); i++) {
 					if(!login.getKeyField().get(i).equals("")) {
 						//create new custweblogintransform record list
 						LoginTrans newlogin = new LoginTrans();
-						newlogin.setKeyField(login.getKeyField().get(i).trim());
-						if(login.getMasterAcctName()!=null) {
-							newlogin.setMasterAcctName(login.getMasterAcctName().get(i).trim());
-						} else {
+						newlogin.setKeyField(allowCharacters(login.getKeyField().get(i)));
+						if(login.getMasterAcctName().get(i).equals("")) {
 							newlogin.setMasterAcctName(null);
-						}
-						if(login.getAcctComment()!=null) {
-							newlogin.setAcctComment(login.getAcctComment().get(i).trim());
 						} else {
+							newlogin.setMasterAcctName(allowCharacters(login.getMasterAcctName().get(i)));
+						}
+						if(login.getAcctComment().get(i).equals("")) {
 							newlogin.setAcctComment(null);
+						} else {
+							newlogin.setAcctComment(allowCharacters(login.getAcctComment().get(i)));
 						}
 						loginList.add(newlogin);
 					}
 				}
-				login.setLoginList(loginList);
-				sessionMap.put("LoginDetail", login);
+				
+				reqObj.setLoginList(loginList);
+				sessionMap.put("CustomerDetail", reqObj);
 			}
 			
 			return SUCCESS;
@@ -75,18 +79,6 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 			} else {
 				result = "false";
 			}
-			/*result = new ArrayList<String>();
-			int i = 0;
-			if(keyfield!=null) {
-				while(i<keyfield.size()) {
-					if(keyfieldList.contains(keyfield.get(i))) {
-						result.add(i, "true");
-					} else {
-						result.add(i, "false");
-					}
-					i++;
-				}
-			}*/
 		} catch (HibernateException he) {
 			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
 			return ERROR;
@@ -95,6 +87,24 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 			return ERROR;
 		}
 		return SUCCESS;
+	}
+	
+	public String allowCharacters(String escapedString) {
+		String newString = "";
+		if(escapedString != null) {
+			if(escapedString.contains("&amp;") || escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&amp;", "&");
+			} else if(escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&#38;", "&");
+			} else if(escapedString.contains("&apos;") || escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&apos;", "'");
+			} else if(escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&#39;", "'");
+			} else {
+				newString = escapedString;
+			}
+		}
+		return newString;
 	}
 	
 	@Override

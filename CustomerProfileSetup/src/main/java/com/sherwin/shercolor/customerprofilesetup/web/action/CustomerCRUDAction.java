@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.HibernateException;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -24,6 +25,7 @@ import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Job;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Login;
+import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 
@@ -51,7 +53,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			List<CustWebParms> custParms = customerService.getAllCustWebParms(lookupCustomerId);
 			
+			RequestObject reqObj = new RequestObject();
 			Customer customer = new Customer();
+			
 			updateMode = true;
 			//check for job history
 			List<CustWebTran> jobHistory = tranHistoryService.getCustomerJobs(lookupCustomerId);
@@ -76,38 +80,71 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 			
 			customer.setClrntList(clrntlist);
-			sessionMap.put("CustomerDetail", customer);
+			
+			reqObj.setCustomerId(customer.getCustomerId());
+			reqObj.setAccttype(customer.getAccttype());
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setActive(customer.isActive());
+			reqObj.setHistory(customer.isHistory());
+			reqObj.setClrntList(customer.getClrntList());
 			
 			List<CustWebJobFields> jobFields = customerService.getCustJobFields(lookupCustomerId);
-			Job job = new Job();
+			
 			//map custwebjobfields to model object
 			for(CustWebJobFields jobs : jobFields) {
 				JobFields fields = new JobFields();
 				fields.setSeqNbr(jobs.getSeqNbr());
-				fields.setScreenLabel(jobs.getScreenLabel());
-				fields.setFieldDefault(jobs.getFieldDefault());
+				fields.setScreenLabel(Encode.forHtml(jobs.getScreenLabel()));
+				fields.setFieldDefault(Encode.forHtml(jobs.getFieldDefault()));
 				fields.setEntryRequired(jobs.isEntryRequired());
 				fields.setActive(jobs.isActive());
 				jobFieldList.add(fields);
 			}
 			
-			job.setJobFieldList(jobFieldList);
-			sessionMap.put("JobDetail", job);
+			// create new arraylist to hold fields with allowed special characters
+			List<JobFields> jflist = new ArrayList<JobFields>();
+			
+			// allow certain special characters 
+			for(JobFields jf : jobFieldList) {
+				JobFields jobfields = new JobFields();
+				jobfields.setSeqNbr(jf.getSeqNbr());
+				jobfields.setScreenLabel(allowCharacters(jf.getScreenLabel()));
+				jobfields.setFieldDefault(allowCharacters(jf.getFieldDefault()));
+				jobfields.setEntryRequired(jf.isEntryRequired());
+				jobfields.setActive(jf.isActive());
+				jflist.add(jobfields);
+			}
+			
+			reqObj.setJobFieldList(jflist);
 			
 			List<CustWebLoginTransform> loginTrans = customerService.getCustLoginTrans(lookupCustomerId);
 			//if customer has login ids, map custweblogintransform to model object
 			if(!loginTrans.isEmpty()) {
-				Login login = new Login();
 				for(CustWebLoginTransform logtran : loginTrans) {
 					LoginTrans trans = new LoginTrans();
-					trans.setKeyField(logtran.getKeyField());
-					trans.setMasterAcctName(logtran.getMasterAcctName());
-					trans.setAcctComment(logtran.getAcctComment());
+					trans.setKeyField(Encode.forHtml(logtran.getKeyField()));
+					trans.setMasterAcctName(Encode.forHtml(logtran.getMasterAcctName()));
+					trans.setAcctComment(Encode.forHtml(logtran.getAcctComment()));
 					loginList.add(trans);
 				}
-				login.setLoginList(loginList);
-				sessionMap.put("LoginDetail", login);
+				
+				// create new arraylist to hold fields with allowed special characters
+				List<LoginTrans> ltlist = new ArrayList<LoginTrans>();
+				
+				// allow certain special characters 
+				for(LoginTrans lt : loginList) {
+					LoginTrans login = new LoginTrans();
+					login.setKeyField(allowCharacters(lt.getKeyField()));
+					login.setMasterAcctName(allowCharacters(lt.getMasterAcctName()));
+					login.setAcctComment(allowCharacters(lt.getAcctComment()));
+					ltlist.add(login);
+				}
+				
+				reqObj.setLoginList(ltlist);
 			}
+			
+			sessionMap.put("CustomerDetail", reqObj);
 						
 			return SUCCESS;
 	
@@ -123,15 +160,15 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 
 	public String createOrUpdate() {
 		try {			
-			Customer customer = (Customer) sessionMap.get("CustomerDetail");
-			Job jobs = (Job) sessionMap.get("JobDetail");
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			
 			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
 			List<CustWebJobFields> jobList = new ArrayList<CustWebJobFields>();
 			List<CustWebLoginTransform> loginList = new ArrayList<CustWebLoginTransform>();
 			//get date
 			Date sqlDate = new Date(System.currentTimeMillis());
 			//map session values to custwebparms domain object
-			for(CustParms cust : customer.getCustList()) {
+			for(CustParms cust : reqObj.getCustList()) {
 				CustWebParms custWebParms = new CustWebParms();
 				custWebParms.setCustomerId(cust.getCustomerId());
 				custWebParms.setSeqNbr(cust.getSeqNbr());
@@ -140,7 +177,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				custWebParms.setColorComp("SHERWIN-WILLIAMS");
 				custWebParms.setProdComp("SW");
 				custWebParms.setClrntSysId(cust.getClrntSysId());
-				custWebParms.setActive(cust.getActive());
+				custWebParms.setActive(cust.isActive());
 				custWebParms.setSwuiTyp("SW");
 				custWebParms.setSwuiTitle(cust.getSwuiTitle());
 				custWebParms.setAltProdComp1("SWMZDP");
@@ -159,9 +196,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 			
 			//map session values to custwebjobfields domain object
-			for(JobFields job : jobs.getJobFieldList()) {
+			for(JobFields job : reqObj.getJobFieldList()) {
 				CustWebJobFields custWebJobs = new CustWebJobFields();
-				custWebJobs.setCustomerId(customer.getCustomerId());
+				custWebJobs.setCustomerId(reqObj.getCustomerId());
 				custWebJobs.setSeqNbr(job.getSeqNbr());
 				custWebJobs.setScreenLabel(job.getScreenLabel());
 				custWebJobs.setFieldDefault(job.getFieldDefault());
@@ -170,12 +207,11 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				jobList.add(custWebJobs);
 			}
 			
-			if(sessionMap.containsKey("LoginDetail")) {
-				Login logins = (Login) sessionMap.get("LoginDetail");
+			if(reqObj.getLoginList() != null) {
 				//map session values to custweblogintransform domain object
-				for(LoginTrans login : logins.getLoginList()) {
+				for(LoginTrans login : reqObj.getLoginList()) {
 					CustWebLoginTransform custWebLogin = new CustWebLoginTransform();
-					custWebLogin.setCustomerId(customer.getCustomerId());
+					custWebLogin.setCustomerId(reqObj.getCustomerId());
 					custWebLogin.setKeyField(login.getKeyField());
 					custWebLogin.setMasterAcctName(login.getMasterAcctName());
 					custWebLogin.setAcctComment(login.getAcctComment());
@@ -183,9 +219,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customer.getCustomerId());
-			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customer.getCustomerId());
-			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(customer.getCustomerId());
+			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
+			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
+			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(reqObj.getCustomerId());
 			
 			
 			if(existingRecords.isEmpty()) {
@@ -251,14 +287,14 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	
 	public String delete() {
 		try {
-			Customer customer = (Customer) sessionMap.get("CustomerDetail");
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
 			//check for existing records
-			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customer.getCustomerId());
-			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customer.getCustomerId());
-			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(customer.getCustomerId());
+			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
+			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
+			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(reqObj.getCustomerId());
 			
-			if(!customer.getHistory()) {
+			if(!reqObj.isHistory()) {
 				if(!existingRecords.isEmpty()) {
 					for(CustWebParms record : existingRecords) {
 						customerService.deleteCustWebParmsRecord(record);
@@ -295,14 +331,15 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	
 	public String setInactive() {
 		try {
-			Customer customer = (Customer) sessionMap.get("CustomerDetail");
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
-			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customer.getCustomerId());
+			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
 	
 			for(CustWebParms record : existingRecords) {
 				record.setActive(false);
 				customerService.updateCustWebParmsRecord(record);
 			}
+			
 			sessionMap.clear();
 			crudmsg = "Customer has been set to inactive";
 			sessionMap.put("msg", crudmsg);
@@ -316,6 +353,24 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			logger.error(e.getMessage());
 			return ERROR;
 		}
+	}
+	
+	public String allowCharacters(String escapedString) {
+		String newString = "";
+		if(escapedString != null) {
+			if(escapedString.contains("&amp;")) {
+				newString = escapedString.replace("&amp;", "&");
+			} else if(escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&#38;", "&");
+			} else if(escapedString.contains("&apos;")) {
+				newString = escapedString.replace("&apos;", "'");
+			} else if(escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&#39;", "'");
+			} else {
+				newString = escapedString;
+			}
+		}
+		return newString;
 	}
 
 	@Override
