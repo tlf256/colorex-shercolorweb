@@ -71,6 +71,7 @@
 			<result name="success">/WEB-INF/pages/LoginIDform.jsp</result>
 			<result name="nologin">/WEB-INF/pages/JobForm.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/CustomerForm.jsp</result>
 		</action>
 		<action name="getLoginInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessLoginAction" method="execute">
 			<result name="success">/WEB-INF/pages/JobForm.jsp</result>

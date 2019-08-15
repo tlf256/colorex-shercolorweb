@@ -10,21 +10,16 @@ public class RequestObject {
 	
 	private String customerId;
 	private String accttype;
-	private String ntlacctnbr;
+	/*private String ntlacctnbr;
 	private String intntlacctnbr;
 	private String cce;
 	private String bac;
-	private String eef;
+	private String eff;*/
 	private String defaultClrntSys;
 	private boolean active;
+	private boolean history;
 	private String swuiTitle;
 	private String cdsAdlFld;
-	private String fieldDefault;
-	private boolean entryRequired;
-	private String screenLabel;
-	private List<String> keyField;
-	private List<String> masterAcctName;
-	private List<String> acctComment;
 	private List<CustParms> custList;
 	private List<JobFields> jobFieldList;
 	private List<LoginTrans> loginList;
@@ -42,7 +37,7 @@ public class RequestObject {
 	public void setAccttype(String accttype) {
 		this.accttype = accttype;
 	}
-	public String getNtlacctnbr() {
+	/*public String getNtlacctnbr() {
 		return ntlacctnbr;
 	}
 	public void setNtlacctnbr(String ntlacctnbr) {
@@ -66,12 +61,12 @@ public class RequestObject {
 	public void setBac(String bac) {
 		this.bac = bac;
 	}
-	public String getEef() {
-		return eef;
+	public String getEff() {
+		return eff;
 	}
-	public void setEef(String eef) {
-		this.eef = eef;
-	}
+	public void setEff(String eff) {
+		this.eff = eff;
+	}*/
 	public String getDefaultClrntSys() {
 		return defaultClrntSys;
 	}
@@ -85,6 +80,12 @@ public class RequestObject {
 		this.active = active;
 	}
 	
+	public boolean isHistory() {
+		return history;
+	}
+	public void setHistory(boolean history) {
+		this.history = history;
+	}
 	public String getSwuiTitle() {
 		return swuiTitle;
 	}
@@ -96,42 +97,6 @@ public class RequestObject {
 	}
 	public void setCdsAdlFld(String cdsAdlFld) {
 		this.cdsAdlFld = cdsAdlFld;
-	}
-	public String getFieldDefault() {
-		return fieldDefault;
-	}
-	public void setFieldDefault(String fieldDefault) {
-		this.fieldDefault = fieldDefault;
-	}
-	public boolean isEntryRequired() {
-		return entryRequired;
-	}
-	public void setEntryRequired(boolean entryRequired) {
-		this.entryRequired = entryRequired;
-	}
-	public String getScreenLabel() {
-		return screenLabel;
-	}
-	public void setScreenLabel(String screenLabel) {
-		this.screenLabel = screenLabel;
-	}
-	public List<String> getKeyField() {
-		return keyField;
-	}
-	public void setKeyField(List<String> keyField) {
-		this.keyField = keyField;
-	}
-	public List<String> getMasterAcctName() {
-		return masterAcctName;
-	}
-	public void setMasterAcctName(List<String> masterAcctName) {
-		this.masterAcctName = masterAcctName;
-	}
-	public List<String> getAcctComment() {
-		return acctComment;
-	}
-	public void setAcctComment(List<String> acctComment) {
-		this.acctComment = acctComment;
 	}
 	public List<JobFields> getJobFieldList() {
 		return jobFieldList;
@@ -162,24 +127,16 @@ public class RequestObject {
 	public void reset() {
 		this.customerId = "";
 		this.accttype = "";
-		/*this.ntlWdigits = "";
-		this.ntlWOdigits = "";
-		this.intntlWdigits = "";
-		this.intntlWOdigits = "";*/
-		this.ntlacctnbr = "";
+		/*this.ntlacctnbr = "";
 		this.intntlacctnbr = "";
 		this.cce = "";
 		this.bac = "";
-		this.eef = "";
+		this.eff = "";*/
 		this.defaultClrntSys = "";
 		this.active = false;
+		this.history = false;
 		this.swuiTitle = "";
-		this.fieldDefault = "";
-		this.entryRequired = false;
-		this.screenLabel = null;
-		this.keyField = null;
-		this.masterAcctName = null;
-		this.acctComment = null;
+		this.cdsAdlFld = "";
 		this.jobFieldList = null;
 		this.custList = null;
 		this.loginList = null;
