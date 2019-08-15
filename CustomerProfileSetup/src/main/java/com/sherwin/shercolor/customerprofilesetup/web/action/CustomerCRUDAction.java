@@ -52,40 +52,36 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> custParms = customerService.getAllCustWebParms(lookupCustomerId);
 			
 			RequestObject reqObj = new RequestObject();
-			Customer customer = new Customer();
+			CustParms customer = new CustParms();
 			
 			updateMode = true;
 			//check for job history
 			List<CustWebTran> jobHistory = tranHistoryService.getCustomerJobs(lookupCustomerId);
 			
 			if(jobHistory.isEmpty()) {
-				customer.setHistory(false);
+				reqObj.setHistory(false);
 			}else {
-				customer.setHistory(true);
+				reqObj.setHistory(true);
 			}
 			//map custwebparms to model object
 			for(CustWebParms webparms : custParms) {
-				customer.setCustomerId(webparms.getCustomerId());
+				customer.setCustomerId(Encode.forHtml(webparms.getCustomerId()));
 				if(webparms.getCustomerId().length()==9) {
-					customer.setAccttype("natlWdigits");
+					reqObj.setAccttype("natlWdigits");
 				}else {
-					customer.setAccttype("loginRequired");
+					reqObj.setAccttype("loginRequired");
 				}
-				customer.setSwuiTitle(webparms.getSwuiTitle());
-				customer.setCdsAdlFld(webparms.getCdsAdlFld());
-				clrntlist.add(webparms.getClrntSysId());
+				customer.setSwuiTitle(Encode.forHtml(webparms.getSwuiTitle()));
+				customer.setCdsAdlFld(Encode.forHtml(webparms.getCdsAdlFld()));
+				clrntlist.add(Encode.forHtml(webparms.getClrntSysId()));
 				customer.setActive(webparms.isActive());
 			}
-			
-			customer.setClrntList(clrntlist);
-			
-			reqObj.setCustomerId(customer.getCustomerId());
-			reqObj.setAccttype(customer.getAccttype());
+						
+			reqObj.setCustomerId(allowCharacters(customer.getCustomerId()));
 			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
 			reqObj.setActive(customer.isActive());
-			reqObj.setHistory(customer.isHistory());
-			reqObj.setClrntList(customer.getClrntList());
+			reqObj.setClrntList(clrntlist);
 			
 			List<CustWebJobFields> jobFields = customerService.getCustJobFields(lookupCustomerId);
 			
