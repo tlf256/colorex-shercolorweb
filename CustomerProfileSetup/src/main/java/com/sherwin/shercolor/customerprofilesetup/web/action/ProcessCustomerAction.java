@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.HibernateException;
-import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -66,7 +65,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				break;
 			case "intnatlWdigits":  //customerid = account number
-				reqObj.setCustomerId(customer.getIntntlacctnbr().trim());
+				reqObj.setCustomerId(customer.getIntntlacctnbr());
 				break;
 			case "intnatlWOdigits":  //create customerid
 				//lookup international customer ids

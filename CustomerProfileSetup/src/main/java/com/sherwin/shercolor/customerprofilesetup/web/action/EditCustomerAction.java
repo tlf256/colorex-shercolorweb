@@ -100,7 +100,6 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			}
 			
 			if(job!=null) {
-				Job jobs = (Job) sessionMap.get("JobDetail");
 				String[] reqlist = new String[10];
 				String[] actvlist = new String[10];
 				int start = 0;

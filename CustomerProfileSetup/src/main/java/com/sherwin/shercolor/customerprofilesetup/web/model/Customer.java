@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.owasp.encoder.Encode;
 
-import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
-
 public class Customer {
 	private String customerId;
 	private String accttype;
