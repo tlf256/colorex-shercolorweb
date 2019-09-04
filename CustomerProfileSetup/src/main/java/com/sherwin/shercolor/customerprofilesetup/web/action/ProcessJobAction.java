@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Job;
+import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class ProcessJobAction extends ActionSupport implements SessionAware {
 	/**
@@ -32,6 +33,8 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 	public String execute() {
 		try { 
 			if(job!=null) {
+				RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+				
 				List<JobFields> jobList = new ArrayList<JobFields>();
 				String[] reqlist = new String[10];
 				setUpdateMode(false);
@@ -53,8 +56,8 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 						//create new custwebjobfields record list
 						JobFields newjob = new JobFields();
 						newjob.setSeqNbr(seqnbr);
-						newjob.setScreenLabel(job.getScreenLabel().get(i).trim());
-						newjob.setFieldDefault(job.getFieldDefault().get(i).trim());
+						newjob.setScreenLabel(allowCharacters(job.getScreenLabel().get(i)));
+						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i)));
 						if(reqlist[i].contains("true")) {
 							newjob.setEntryRequired(true);
 						} else {
@@ -66,8 +69,9 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 					}
 					i++;
 				}
-				job.setJobFieldList(jobList);
-				sessionMap.put("JobDetail", job);
+				
+				reqObj.setJobFieldList(jobList);
+				sessionMap.put("CustomerDetail", reqObj);
 			}
 			
 			return SUCCESS;
@@ -79,6 +83,24 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 			logger.error(e.getMessage());
 			return ERROR;
 		}
+	}
+	
+	public String allowCharacters(String escapedString) {
+		String newString = "";
+		if(escapedString != null) {
+			if(escapedString.contains("&amp;") || escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&amp;", "&");
+			} else if(escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&#38;", "&");
+			} else if(escapedString.contains("&apos;") || escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&apos;", "'");
+			} else if(escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&#39;", "'");
+			} else {
+				newString = escapedString;
+			}
+		}
+		return newString;
 	}
 
 	@Override

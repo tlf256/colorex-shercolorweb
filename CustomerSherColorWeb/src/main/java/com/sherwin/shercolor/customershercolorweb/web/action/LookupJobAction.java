@@ -92,24 +92,32 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
 			jobHistory = new ArrayList<JobHistoryInfo>();
 			
-			int index= 0;
+			//int index= 0;
 			for (CustWebTran webTran : tranHistory) {
-				JobHistoryInfo job = new JobHistoryInfo();
-				job.setClrntSysId(tranHistory.get(index).getClrntSysId());
-				job.setColorId(tranHistory.get(index).getColorId());
-				job.setColorName(tranHistory.get(index).getColorName());
-				job.setControlNbr(tranHistory.get(index).getControlNbr());
-				job.setProdNbr(tranHistory.get(index).getProdNbr());
-				job.setQuantityDispensed(tranHistory.get(index).getQuantityDispensed());
-				job.setRgbHex(tranHistory.get(index).getRgbHex());
-				job.setSizeCode(tranHistory.get(index).getSizeCode());
-				job.setRecipe(getDefaultRecipeInfo(webTran));
-				job.setNumberOfColorants(job.getRecipe().size());
-				job.setJobFieldList(getJobFields(webTran));
-				jobHistory.add(job);
-				index++;
+				if(webTran.isDeleted()) {
+					continue;
+				} else {
+					JobHistoryInfo job = new JobHistoryInfo();
+					job.setClrntSysId(webTran.getClrntSysId());
+					job.setColorId(webTran.getColorId());
+					job.setColorName(webTran.getColorName());
+					job.setControlNbr(webTran.getControlNbr());
+					job.setProdNbr(webTran.getProdNbr());
+					job.setQuantityDispensed(webTran.getQuantityDispensed());
+					job.setRgbHex(webTran.getRgbHex());
+					job.setSizeCode(webTran.getSizeCode());
+					job.setRecipe(getDefaultRecipeInfo(webTran));
+					if (job.getRecipe().isEmpty()) {
+						job.setNumberOfColorants(0);
+					} else {
+						job.setNumberOfColorants(job.getRecipe().size());
+					}
+					job.setJobFieldList(getJobFields(webTran));
+					jobHistory.add(job);
+				}
+				//index++;
 			}
-
+			
 				return SUCCESS;
 		
 		} catch (HibernateException he) {
@@ -393,8 +401,10 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			recipe.add(item8);
 		}
 		// Complete formulaInfo with following two fields
-		formulationService.fillIngredientInfoFromTintSysId(recipe);
-		formulationService.convertShotsToIncr(recipe);
+		if (!recipe.isEmpty()) {
+			formulationService.fillIngredientInfoFromTintSysId(recipe);
+			formulationService.convertShotsToIncr(recipe);
+		}
 		
 		return recipe;
 	}

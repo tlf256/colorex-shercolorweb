@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -108,9 +108,9 @@
 								<label id="baclabel" for="BAC" class="form-check-label font-weight-normal">BAC</label>
 								<input type="checkbox" id="BAC" name="cust.bac" class="form-check-input ml-0" value="BAC" />
 							</s:if>
-							<s:if test="'884' not in sessionMap['CustomerDetail'].clrntList">
-								<label id="eeflabel" for="884" class="form-check-label font-weight-normal">884</label>
-								<input type="checkbox" id="884" name="cust.eef" class="form-check-input ml-0" value="884" />
+							<s:if test="'844' not in sessionMap['CustomerDetail'].clrntList">
+								<label id="efflabel" for="844" class="form-check-label font-weight-normal">844</label>
+								<input type="checkbox" id="844" name="cust.eff" class="form-check-input ml-0" value="844" />
 							</s:if>
 						</div>
 					</div>
@@ -139,11 +139,11 @@
 								</label>
 								<input type="radio" id="BACdefault" name="cust.defaultClrntSys" class="form-check-input ml-0" value="BAC" />
 							</s:if>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='884'}">
-								<label id="" for="884default" class="form-check-label font-weight-normal">
-									884
+							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='844'}">
+								<label id="" for="844default" class="form-check-label font-weight-normal">
+									844
 								</label>
-								<input type="radio" id="884default" name="cust.defaultClrntSys" class="form-check-input ml-0" value="884" />
+								<input type="radio" id="844default" name="cust.defaultClrntSys" class="form-check-input ml-0" value="844" />
 							</s:if>
 						</div>
 					</div>
@@ -183,7 +183,7 @@
 				<th>Comment</th>
 				<th>Edit Row</th>
 			</tr>
-			<s:iterator var="logintrans" value="sessionMap['LoginDetail'].loginList" status="i">
+			<s:iterator var="logintrans" value="sessionMap['CustomerDetail'].loginList" status="i">
 			<tr class="loginrow">
 				<td>
 					<s:textfield class="kyfld" id="kyfld%{#i.index}" name="login.keyField" value="%{#logintrans.keyField}" readonly="true"></s:textfield>
@@ -220,7 +220,7 @@
 					<button type="button" id="deleteloginrow" class="btn btn-danger dltrow" title="Delete row">
 						<i class="far fa-trash-alt"></i>
 					</button>
-					<s:if test="sessionMap['LoginDetail'].loginList.size!=10">
+					<s:if test="sessionMap['CustomerDetail'].loginList.size!=10">
 						<button type="button" id="addloginrow" class="btn btn-secondary addrow" title="Add row">
 							<i class="far fa-plus-square"></i>
 						</button>
@@ -251,7 +251,7 @@
 				<th>Active</th>
 				<th>Edit Row</th>
 			</tr>
-			<s:iterator var="jobFields" value="sessionMap['JobDetail'].jobFieldList" status="j">
+			<s:iterator var="jobFields" value="sessionMap['CustomerDetail'].jobFieldList" status="j">
 			<tr class="jobrow">
 				<td>
 					<s:property value="#jobFields.seqNbr" />

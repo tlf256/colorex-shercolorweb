@@ -72,7 +72,6 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 		
 		try {
 			recDirty=1;
-			if(debugOn) System.out.println("in display, getting object from session");
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			 
 			jobFields = reqObj.getJobFieldList();
@@ -86,7 +85,6 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			colorId = reqObj.getColorID();
 			colorName = reqObj.getColorName();
 			 
-			if(debugOn) System.out.println("in display, initializing displayFormula");
 			displayFormula = new FormulaInfo();
 			if(reqObj.isVinylExclude()){
 				displayFormula.setSource("MANV");
@@ -102,7 +100,6 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			 
 			displayFormula.setIncrementHdr(incrHdr);
 			 
-			if(debugOn) System.out.println("in display, building ingredientList");
 			//Setup blank edit formula (8 ingredients, all zeroes)
 			//List<FormulaIngredient> editIngredients = new ArrayList<FormulaIngredient>();
 			List<String> incrs = new ArrayList<String>();
@@ -216,8 +213,10 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	public String execute() {
 		String retVal = SUCCESS;
 		try{
+			if(debugOn) System.out.println("Start of execute, reqGuid is " + reqGuid);
 			recDirty=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if(debugOn) System.out.println("successfully read reqObj");
 
 			reqObj.setColorID(colorId);
 			reqObj.setColorName(colorName);
@@ -231,6 +230,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			//check user input, first make sure all positive integers used...
 			boolean positiveValueEntered = false;
 			boolean badValueEntered = false;
+			if(debugOn) System.out.println("ready to look through ingredientlist");
 			for(ManualIngredient item : ingredientList){
 				positiveValueEntered = false;
 				badValueEntered = false;

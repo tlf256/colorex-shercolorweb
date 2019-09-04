@@ -14,24 +14,17 @@
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css"
-	type="text/css">
-<link rel="StylesSheet" href="css/jquery.dataTables.min-1.10.16.css"
-	type="text/css">
+<link rel=StyleSheet href="js/smoothness/jquery-ui.css"	type="text/css">
+<link rel="StylesSheet" href="css/jquery.dataTables.min-1.10.16.css" type="text/css">
 <link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<link
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet">
-<script type="text/javascript" charset="utf-8" src="js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="js/jquery-ui.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="js/jquery.dataTables.min-1.10.16.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="script/CustomerSherColorWeb.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
 
 
 
@@ -420,7 +413,9 @@
 	});
 	$(document).on("click", "#btn_downloadEcal", function(event) {
 		event.preventDefault();
-		var filename = $('#filename').val();
+		
+		var filename = $("input[name='filename']:checked"). val();
+		
 			if(filename != null && filename !== undefined){
 			    $('#btn_downloadEcal').prop('disabled', true);
 				

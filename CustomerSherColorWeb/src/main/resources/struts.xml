@@ -53,9 +53,58 @@
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
 			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="eula" type="redirectAction">
+				<param name="actionName">getEulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="login">/WEB-INF/pages/LoggedOut.jsp</result>
 			<result name="none">/WEB-INF/pages/InvalidLogin.jsp</result>
 			<result name="success">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="getEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DisplayEulaAction" method="start">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="success">/WEB-INF/pages/ShowEula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="startEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DisplayEulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/ShowEula.jsp</result>
+			<result name="success">/WEB-INF/pages/ShowEula2.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="printEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DisplayEulaAction" method="print">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="test.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="acceptEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.AcceptEulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="loginRedirect">/WEB-INF/pages/login.jsp</result>
+			<result name="success">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="declineEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeclineEulaAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">logoutAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="passwordResetAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="display">
@@ -152,6 +201,14 @@
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="deleteJobAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeleteJobAction" method="execute">
+			<interceptor-ref name="defaultStack"/>
+		    <interceptor-ref name="json" />
+			<result name="success" type="json">
+				<param name="result">${result}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="swdhInstallAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeviceHandlerUtilityAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -236,6 +293,17 @@
 			<result name="success">/WEB-INF/pages/GetColor.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="spectroCalibrateRedirectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="calibrate">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">spectroCalibrateAction</param>
+				<param name="measureColor">${measureColor}</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="spectroCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroCalibrateAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -310,6 +378,16 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="measureColorReturnAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="measure">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -317,6 +395,7 @@
 			<result name="measure" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<!-- <param name="measureColor">${measureColor}</param> -->
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
@@ -630,6 +709,16 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="formulaUserPrintAsJsonAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printAsJson">
+			<result name="loginRedirect" type="redirectAction">
+			<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"></result>
+   			<result name="input" type="json"></result>
+			<result name="error" type="json"></result>           
+			
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="downloadExeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadExeAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -642,6 +731,21 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+
+<!--  added by edo78r for Help Menu 7/10/2019 -->		
+		<action name="downloadPdfAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadPdfAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+			  	<param name="inputName">fileInputStream</param>
+			  	<param name="contentDisposition">attachment;filename=%{pdfFile}</param> 
+	  			<param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		
 		<action name="formulaUserEditAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -936,6 +1040,23 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrderDetail.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="printerConfigureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/PrinterConfig.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="printerSaveAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="saveNewPrinter">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 	</package>

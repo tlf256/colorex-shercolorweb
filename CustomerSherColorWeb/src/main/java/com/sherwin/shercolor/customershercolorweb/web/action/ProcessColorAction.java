@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
+import org.springframework.web.util.HtmlUtils;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -161,38 +162,67 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	public void parseColorData(String colorData) {
-		
-		if (colorData.equals("") || colorData.equals("[]")) {
-			//Do Nothing
-		} else {
-			colorData = colorData.replace("[", "");
-			colorData = colorData.replace("]", "");
-			colorData = colorData.replace("{", "");
-			colorData = colorData.replace("\"", "");
-			String[] outList = colorData.split("},");
-			boolean foundMatch = false;
-			for (String record : outList) {
-				String[] data = record.split(",");
-				String theValue = data[3].replaceAll("value:", "");
-				// The below replace statement fixes a bug when there
-				// is only one object in the autocomplete list
-				theValue = theValue.replace("}", "");
-				if (partialColorNameOrId.equals(theValue)) {
-					foundMatch = true;
-					setColorID(data[0].replaceAll("colorNumber:", ""));
-					setColorComp(data[1].replaceAll("companyName:", ""));
-					break;
-				}
+
+		try {
+			colorData = URLDecoder.decode(colorData,"UTF-8");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
+		if (colorData.equals("")) {
+			// The user typed nothing, so do nothing
+		} 
+		else if (colorData.equals("[]")){
+			// The user typed a color id or name that does not exist
+			setColorID(partialColorNameOrId);
+			if (selectedCoTypes.equalsIgnoreCase("SW")) {
+				setColorComp("SHERWIN-WILLIAMS");
+			} else {
+				setColorComp("COMPETITIVE");
 			}
-			if (foundMatch == false) {
-				setColorID(partialColorNameOrId);
+		}
+		else {
+			// Colordata contains JSON so it sequentially gets broken down to parse an array of
+			// autocomplete results and returns the value typed into the search bar
+			if (colorData.contains("[")) {
+				colorData = colorData.replace("[", "");
+				colorData = colorData.replace("]", "");
+				colorData = colorData.replace("{", "");
+				colorData = colorData.replace("\"", "");
+				String[] outList = colorData.split("},");
+				boolean foundMatch = false;
+				for (String record : outList) {
+					String[] data = record.split(",");
+					String theValue = data[3].replaceAll("value:", "");
+					// The below replace statement fixes a bug when there
+					// is only one object in the autocomplete list
+					theValue = theValue.replace("}", "");
+					if (partialColorNameOrId.equals(theValue)) {
+						foundMatch = true;
+						setColorID(data[0].replaceAll("colorNumber:", ""));
+						setColorComp(data[1].replaceAll("companyName:", ""));
+						break;
+					}
+				}
+				if (foundMatch == false) {
+					setColorID(partialColorNameOrId);
+					if (selectedCoTypes.equalsIgnoreCase("SW")) {
+						setColorComp("SHERWIN-WILLIAMS");
+					} else {
+						setColorComp("COMPETITIVE");
+					}
+				}
+			} 
+			// colordata does not contain JSON so it directly assigns the colordata
+			// as the colorId and then uses the selectedCoTypes to assign the colorComp
+			else {
+				setColorID(colorData);
 				if (selectedCoTypes.equalsIgnoreCase("SW")) {
 					setColorComp("SHERWIN-WILLIAMS");
 				} else {
 					setColorComp("COMPETITIVE");
 				}
-			}
-			
+			}	
 		}
 	}
 	public String execute() {
@@ -232,15 +262,26 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					colorType = "CUSTOMMATCH";
 
 				} else {
+					
+					// This conditional helps prevent times where colorData doesn't get populated
+					// when the user quickly enters in a numnber and does a next operation before
+					// the auto complete gets triggered
+					if (colorData.equals("")) {
+						colorData = Encode.forHtml(partialColorNameOrId.trim());
+					}
 					// Following method call should be able to cover all conditionals previously
 					// implemented here
+					
 					parseColorData(colorData);
+					colorID = HtmlUtils.htmlUnescape(colorID);
+					colorComp = HtmlUtils.htmlUnescape(colorComp);
 					
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						colorType = "SHERWIN-WILLIAMS";
 					} else {
 						colorType = "COMPETITIVE";
-					}	
+					}
+					
 					// Try getting an RGB value for the object.
 					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
 					if (colorCoord != null) {

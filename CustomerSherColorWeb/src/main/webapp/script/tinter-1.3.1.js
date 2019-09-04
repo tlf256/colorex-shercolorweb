@@ -95,6 +95,8 @@ function getGDataFromServer(colorantid){
 	return gdataobj;
 }
 
+
+
 function getCalFromServer(uFilename){
 	var calobj=null;
 	if(reqGuid !=null){
@@ -147,20 +149,7 @@ function Calibration_Download(filename){
 	}
 	
 }
-function GData(mycolorant){
-	this.colorantid = mycolorant;
-	this.data = null;
-	
-	
-	var gdata_file = getGDataFromServer(mycolorant);
-	if(gdata_file !=null && gdata_file.data != null){
-	
-		this.data=gdata_file.data;
-	}
-	else{
-		alert("Could not find Default GData for colorant:" + mycolorant  );
-	}
-}
+
 
 function Calibration(mycolorant,mymodel,myserial){
 	
@@ -563,10 +552,22 @@ function checkColorantLow(mySessionCanList){
 	return messageList;
 }
 		
+function removeZeroShots(myShotList){
+	
+	for (index = 0; index < myShotList.length; index++){
+		if (myShotList[index].shots == 0){
+			console.log("Found a a colorant with no shots");
+			myShotList.splice(index,1);
+			index--;
+		}
+	}
+	
+	return myShotList
+}
 
 function decrementColorantForDispense(myGuid, myShotList, callback) {
 	console.log("inside dec colorant and shotList is ");
-	console.log(myShotList);
+	
 	var mydata = {reqGuid:myGuid, shotList:myShotList};
 	var jsonIn = JSON.stringify(mydata);
 	$.ajax({

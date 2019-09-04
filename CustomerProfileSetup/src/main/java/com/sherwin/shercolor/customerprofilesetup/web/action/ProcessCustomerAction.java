@@ -15,6 +15,7 @@ import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
+import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class ProcessCustomerAction extends ActionSupport implements SessionAware {
 	
@@ -33,10 +34,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public String execute() {
 		try {	
+			RequestObject reqObj = new RequestObject();
 			//check for entered account number
 			switch(customer.getAccttype()) {
 			case "natlWdigits":  //customerid = account number
-				customer.setCustomerId(customer.getNtlacctnbr().trim());
+				reqObj.setCustomerId(customer.getNtlacctnbr());
 				break;
 			case "natlWOdigits":  //create customerid
 				//lookup national customer ids
@@ -44,7 +46,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				if(custWebParms.isEmpty()) {
 					//first national id created with '99'
-					customer.setCustomerId("990001");
+					reqObj.setCustomerId("990001");
 				} else {
 					Object[] idList = custWebParms.toArray();
 					
@@ -58,12 +60,12 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 							newResult.insert(2, 0);
 						}
 					}
-					customer.setCustomerId(newResult.toString());
+					reqObj.setCustomerId(newResult.toString());
 				}
 				
 				break;
 			case "intnatlWdigits":  //customerid = account number
-				customer.setCustomerId(customer.getIntntlacctnbr().trim());
+				reqObj.setCustomerId(customer.getIntntlacctnbr());
 				break;
 			case "intnatlWOdigits":  //create customerid
 				//lookup international customer ids
@@ -71,7 +73,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				if(custParms.isEmpty()) {
 					//first international id created with 'INTL'
-					customer.setCustomerId("INTL0001");
+					reqObj.setCustomerId("INTL0001");
 				} else {
 					Object[] custIdList = custParms.toArray();
 					
@@ -85,10 +87,16 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 							newId.insert(4, 0);
 						}
 					}
-					customer.setCustomerId(newId.toString());
+					reqObj.setCustomerId(newId.toString());
 				}
 				
 				break;
+			default:
+				// result not expected
+				System.out.println("String is junk, return to form");
+				
+				return INPUT;
+				
 			}
 						
 			List<String> clrntlist = new ArrayList<String>();
@@ -107,33 +115,39 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					clrntlist.add("BAC");
 				}
 			}
-			if(customer.getEef()!=null) {
-				if(customer.getDefaultClrntSys().contains("884")) {
-					clrntlist.add(0, "884");
+			if(customer.getEff()!=null) {
+				if(customer.getDefaultClrntSys().contains("844")) {
+					clrntlist.add(0, "844");
 				} else {
-					clrntlist.add("884");
+					clrntlist.add("844");
 				}
 			}
-			customer.setClrntList(clrntlist);
-			customer.setActive(true);
+			
+			reqObj.setAccttype(customer.getAccttype());
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
+			reqObj.setClrntList(clrntlist);
+			reqObj.setActive(true);
+			reqObj.setHistory(false);
 			
 			List<CustParms> newcustlist = new ArrayList<CustParms>();
 			
 			for(int j = 0; j < clrntlist.size(); j++) {
 				//create new custwebparms record
 				CustParms newcust = new CustParms();
-				newcust.setCustomerId(customer.getCustomerId());
-				newcust.setSwuiTitle(customer.getSwuiTitle().trim());
-				newcust.setCdsAdlFld(customer.getCdsAdlFld().trim());
+				newcust.setCustomerId(reqObj.getCustomerId());
+				newcust.setSwuiTitle(reqObj.getSwuiTitle());
+				newcust.setCdsAdlFld(reqObj.getCdsAdlFld());
 				newcust.setSeqNbr(j+1);
 				newcust.setClrntSysId(clrntlist.get(j));
 				newcust.setActive(true);
 				newcustlist.add(newcust);
 			}
 			
-			customer.setCustList(newcustlist);
-			customer.setHistory(false);
-			sessionMap.put("CustomerDetail", customer);	
+			reqObj.setCustList(newcustlist);
+			
+			sessionMap.put("CustomerDetail", reqObj);	
 			
 			if(customer.getAccttype().equals("natlWdigits")) {
 				return "nologin";
@@ -166,6 +180,24 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			return ERROR;
 		}
 		return SUCCESS;
+	}
+	
+	public String allowCharacters(String escapedString) {
+		String newString = "";
+		if(escapedString != null) {
+			if(escapedString.contains("&amp;") || escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&amp;", "&");
+			} else if(escapedString.contains("&#38;")) {
+				newString = escapedString.replaceAll("&#38;", "&");
+			} else if(escapedString.contains("&apos;") || escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&apos;", "'");
+			} else if(escapedString.contains("&#39;")) {
+				newString = escapedString.replaceAll("&#39;", "'");
+			} else {
+				newString = escapedString;
+			}
+		}
+		return newString;
 	}
 
 	@Override

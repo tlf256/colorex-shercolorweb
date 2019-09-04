@@ -209,7 +209,8 @@ public class SceneOneController implements Initializable {
 	
 	
 	public void initialize(URL location, ResourceBundle resources) {
-		inputFileDir.setText("/Users/bms90r/Documents/CSW Installs/Carribean Export");
+		// TODO add directory picker then we won't have to put a default in the text box which the following line is doing
+		inputFileDir.setText("/Users/bms90r/OneDrive - Sherwin-Williams/Documents/CSW Installs/Carribean Export");
 //		uxLoad.setOnAction((event)-> {
 //			
 //		});
@@ -384,6 +385,10 @@ public class SceneOneController implements Initializable {
 					cdsTranService.setProgressUpdate((workDone,totalWork) -> updateProgress(workDone,totalWork));
 					List<CdsTranMast> cdsTranMastList = cdsTranService.ImportCdsTranMast(inputFileDir.getText());
 					//updateProgress(cdsTranMastList.size(), totalLineCnt);
+					if(cdsTranMastList == null || cdsTranMastList.size() <= 0){
+						System.out.println("Failed to Load cds-tran-mast.d");
+						return null;
+					}
 
 					cdsTranService.setLinesComplete(cdsTranMastList.size());
 					List<CdsTranDet> cdsTranDetList = cdsTranService.ImportCdsTranDet(inputFileDir.getText());
@@ -480,6 +485,8 @@ public class SceneOneController implements Initializable {
 	private void handleTranslateAllClick(ActionEvent event){
 		int failCount = 0;
 		int pointer = 0;
+		int skipDisabledCount = 0;
+		
 		custWebTranList = new ArrayList<CustWebTran>();
 
 		if (selectedCustomer == null){
@@ -489,16 +496,21 @@ public class SceneOneController implements Initializable {
 		
 		int listSize = cdsTranAllList.size();
 		for(pointer=0;pointer<listSize;pointer++){
-			CustWebTran custWebTran = cdsTranService.ConvertToCustWeb(cdsTranAllList.get(pointer));
-			if(custWebTran==null){
-				System.out.println("Could not translate controlNbr " + cdsTranAllList.get(pointer).getTranMast().getControlNbr());
-				failCount++;
+			if(cdsTranAllList.get(pointer).getTranMast().getActiveStatus().equalsIgnoreCase("Disabled")){
+				skipDisabledCount ++;
+				System.out.println("Skipping DISABLED record"  + cdsTranAllList.get(pointer).getTranMast().getControlNbr());
 			} else {
-				custWebTran.setCustomerId(selectedCustomer.getCustomerId());
-				custWebTranList.add(custWebTran);
-			}
-			if(pointer%1000==0) {
-				System.out.println("translated " + pointer);
+				CustWebTran custWebTran = cdsTranService.ConvertToCustWeb(cdsTranAllList.get(pointer));
+				if(custWebTran==null){
+					System.out.println("Could not translate controlNbr " + cdsTranAllList.get(pointer).getTranMast().getControlNbr());
+					failCount++;
+				} else {
+					custWebTran.setCustomerId(selectedCustomer.getCustomerId());
+					custWebTranList.add(custWebTran);
+				}
+				if(pointer%1000==0) {
+					System.out.println("translated " + pointer);
+				}
 			}
 		}
 

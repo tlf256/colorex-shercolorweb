@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
@@ -47,6 +48,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
 	private CustomerService customerService;
+	private EulaService eulaService;
 
 	@Autowired
 	private TinterService tinterService;
@@ -63,6 +65,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean newSession;
 	private boolean siteHasTinter;
 	private boolean sessionHasTinter;
+	private boolean siteHasPrinter;
 	private TinterInfo tinter;
 	private boolean siteHasSpectro;
 	private SpectroInfo spectro;
@@ -87,8 +90,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		String testModeAcct = "";
 		newSession = true;
 		siteHasTinter = false;
-		siteHasSpectro = false;
+	
+		siteHasPrinter = false;
 		sessionHasTinter = false;
+		siteHasSpectro = false;
+		
 		String userId = "";
 		
 		try {
@@ -180,7 +186,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 							
 							System.out.println("DEBUG new reqGuid created "+ reqGuid);
-							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(acct));
+							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
 							spectro = new SpectroInfo();
 							
 							if (spectroList.size()==1) {
@@ -209,9 +215,9 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							newSession = true; // this will trigger the welcome page to do "on login only" activities... (e.g. read config for tinter from device handler)
 							tinter = new TinterInfo();
 							reqObj.setTinter(tinter);
-							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(acct), null);
+							List<String> tinterList = tinterService.listOfModelsForCustomerId(Encode.forHtml(reqObj.getCustomerID()), null);
 							if(tinterList.size()>0) siteHasTinter = true;
-							
+							setIsPrinterConfigured();
 						 	sessionMap.put(reqObj.getGuid(), reqObj);
 						 	returnStatus = "SUCCESS";
 					 } else {
@@ -255,7 +261,10 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					 sessionHasTinter = true;
 				 }
 				 spectro=origReqObj.getSpectro();
-				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!=null) siteHasSpectro = true;
+				 //BKP 07/22/2019 Modified to match getTinter if logic above to rectify Veracode eror
+				 if(origReqObj.getSpectro()!=null && origReqObj.getSpectro().getModel()!=null && origReqObj.getSpectro().getModel().isEmpty()) {
+					 siteHasSpectro = true;
+				 }
 				 
 				 sessionMap.put(origReqObj.getGuid(), origReqObj);
 				 returnStatus = "SUCCESS";
@@ -267,7 +276,44 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			 
 			 if (returnStatus == "SUCCESS"){
 				 //Finally, we are good to display the welcome page - we are in
-			 	return SUCCESS;
+				 //BKP 07/16/2019 Wait, check to see if the user has accepted the EULA.  
+				 //If not, they need to route to the EULA page.
+				 if (reqGuid!=null) {
+					 logger.info("reqguid is not null");
+					 RequestObject finalReqObj = (RequestObject) sessionMap.get(reqGuid);
+					 if (finalReqObj!=null) {
+						 logger.info("finalReqObj is not null");
+						 String eulaCustId = finalReqObj.getCustomerID();
+						 if (eulaCustId!=null) {
+							 logger.info("eulaCustId is " + eulaCustId );
+							 String eulaAcceptanceCode = eulaService.getAcceptanceCode("CUSTOMERSHERCOLORWEB", eulaCustId);
+							 if(eulaAcceptanceCode!=null) {
+								 logger.info("eulaAcceptanceCode is not null");
+								 //We have an activation code - this user needs to approve the eula.
+								 return "eula";
+							 } else {
+								 logger.info("eulaAcceptanceCode is null");
+								 //no activation code, the user already activated, head on in.
+								 return SUCCESS;
+							 }
+						 } else {
+							 logger.info("eulaCustId is null");
+							 //the customer id was null, on what looks to be a valid requestObject?
+							 //should never happen, but log it and return NONE
+							 return NONE;
+						 }
+					 } else {
+						 logger.info("finalReqObj is null");
+						 //Unable to get the request object we just wrote from the sessionMap.
+						 //should never happen, but log it and return NONE
+						 return NONE;
+					 }
+				 } else {
+					 logger.info("reqGuid is null");
+					 //should probably never happen, but if so, return NONE
+					 return NONE;
+				 }
+			 	//return SUCCESS;
 			 } else {
 				 //bad/invalid entry
 				 return NONE;
@@ -373,6 +419,25 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			logger.error(e.getMessage());
 		}
 		return theCustWebParmsKey;
+	}
+	private void setIsPrinterConfigured() {
+		
+		System.out.println("Looking for printer devices");
+
+		List<CustWebDevices> devices = customerService.getCustDevices(reqObj.getCustomerID());
+		for (CustWebDevices d: devices) {
+		
+			if(d.getDeviceType().equalsIgnoreCase("PRINTER")) {
+				reqObj.setPrinterConfigured(true);
+				setSiteHasPrinter(true);
+				
+				System.out.println("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+			}
+			else {
+				setSiteHasPrinter(false);
+			}
+		}
+
 	}
 	
 //	@SuppressWarnings("restriction")
@@ -554,6 +619,14 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		this.customerService = customerService;
 	}
 
+	public EulaService getEulaService() {
+		return eulaService;
+	}
+
+	public void setEulaService(EulaService eulaService) {
+		this.eulaService = eulaService;
+	}
+	
 	public String getGuid1() {
 		return guid1;
 	}
@@ -676,6 +749,14 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	public void setDaysUntilPwdExp(int daysUntilPwdExp) {
 		this.daysUntilPwdExp = daysUntilPwdExp;
+	}
+
+	public boolean isSiteHasPrinter() {
+		return siteHasPrinter;
+	}
+
+	public void setSiteHasPrinter(boolean siteHasPrinter) {
+		this.siteHasPrinter = siteHasPrinter;
 	}
 
 }

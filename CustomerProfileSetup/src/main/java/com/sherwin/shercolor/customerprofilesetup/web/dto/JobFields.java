@@ -1,7 +1,5 @@
 package com.sherwin.shercolor.customerprofilesetup.web.dto;
 
-import org.owasp.encoder.Encode;
-
 public class JobFields {
 
 	private int seqNbr;
@@ -14,11 +12,7 @@ public class JobFields {
 		return fieldDefault;
 	}
 	public void setFieldDefault(String fieldDefault) {
-		if (fieldDefault!=null) {
-			this.fieldDefault = Encode.forHtml(fieldDefault);
-		} else {
-			this.fieldDefault = fieldDefault;
-		}
+		this.fieldDefault = fieldDefault;
 	}
 	public int getSeqNbr() {
 		return seqNbr;
@@ -36,11 +30,7 @@ public class JobFields {
 		return screenLabel;
 	}
 	public void setScreenLabel(String screenLabel) {
-		if (screenLabel!=null) {
-			this.screenLabel = Encode.forHtml(screenLabel);
-		} else {
-			this.screenLabel = screenLabel;
-		}
+		this.screenLabel = screenLabel;
 	}
 	public boolean isActive() {
 		return active;
