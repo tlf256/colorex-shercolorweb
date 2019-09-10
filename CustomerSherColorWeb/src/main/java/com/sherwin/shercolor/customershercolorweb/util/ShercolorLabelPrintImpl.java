@@ -38,6 +38,7 @@ import com.sherwin.shercolor.util.domain.SwMessage;
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
 import be.quodlibet.boxable.HorizontalAlignment;
+import be.quodlibet.boxable.Paragraph;
 import be.quodlibet.boxable.Row;
 import be.quodlibet.boxable.VerticalAlignment;
 
@@ -49,7 +50,7 @@ import be.quodlibet.boxable.VerticalAlignment;
  * */
 
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
-	static Logger logger = LogManager.getLogger(ShercolorLabelPrintImpl.class);
+	static Logger logger = LogManager.getLogger(ShercolorLabelPrintImplGood.class);
 
 	@Autowired
 	ProductService productService;
@@ -288,7 +289,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 						e.printStackTrace();
 					}
 				  
-				    
+				    //----------------------------------------------------------------------------------------
 				    // Use Interior/Exterior
 				    
 				    fontSize = 6;
@@ -304,8 +305,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    cellSettings(klass,fontSize,rowHeight ,cellWidth);
 				    //Cell<PDPage> klass =  createLabelCustOrdProdData(row,reqObj.getKlass(), fontSize, rowHeight,cellWidth, "right");
 				    
-				 //   tbl0.draw();
-				    //******************************************************************************************
+				//-----------------------------------------------------------------------------------------
 				    // 01/20/2017 - Quality and Composite - Begin.
 				    errorLocation = "Quality & Composite";
 				    int setQualityParm = 50;
@@ -360,8 +360,321 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				     Cell<PDPage> tinter = row.createCell(cellWidth, reqObj.getTinter().getModel(), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 				    cellSettings(tinter,fontSize,rowHeight ,cellWidth);
 				    //----------------------------------------------------------------------
+				    //====================================================================================================
+				    // Color Id, Color Name and Formula Type
+				    //====================================================================================================
+	
+				    errorLocation = "Color I.D. & Name";
+	
+	
+				    // Color i.d. and name.
+				    // 01/20/2017 - Begin Color I.D. and Color Name field build.
+				    totalCharsLength = reqObj.getColorID().length() + reqObj.getColorName().length();
+				    
+				    //Modify input values, replace / and " with -
+				    if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
+				    	reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
+				    	reqObj.setColorName(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-"));
+				    }
+				    
+				    // Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
+				    // for the Color name.
+				    if (totalCharsLength >= 22){
+				    	int colorNameLength = 22 - reqObj.getColorID().length();
+				    	if (reqObj.getColorName().length() > colorNameLength){
+				    		reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
+				    	}
+				    }
+					// 01/20/2017 - Begin Color I.D. and Color Name field build.
+				    totalCharsLength = reqObj.getColorID().length() + reqObj.getColorName().length();
+				    
+				    //Modify input values, replace / and " with -
+				    if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
+				    	reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
+				    	reqObj.setColorName(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-"));
+				    }
+				    
+				    // Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
+				    // for the Color name.
+				    if (totalCharsLength >= 22){
+				    	int colorNameLength = 22 - reqObj.getColorID().length();
+				    	if (reqObj.getColorName().length() > colorNameLength){
+				    		reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
+				    	}
+				    }
+				    fontSize = 10;
+				    rowHeight=12;
+				    cellWidth=100f;
+				 /*   //DJM trying boxable paragraph
+				    Paragraph paragraph = new  Paragraph(reqObj.getColorID() + " " + reqObj.getColorName(), courierBold,  fontSize, WIDTH, HorizontalAlignment.CENTER); 
+				   paragraph.setLineSpacing(lineSpacing8);
+				    // paragraph.write(stream, cursorX, cursorY)
+				    // Put the text at the page's center, no offset
+				    Point2D.Float center = new Point2D.Float(0, 0);
+				    //DJM's function replacing with paragraph above addCenteredText(reqObj.getColorID() + " " + reqObj.getColorName(), courierBold,  fontSize, page, center); 
+				   */
+				    row = tbl0.createRow(rowHeight);
+				    Cell<PDPage> color = row.createCell(cellWidth, reqObj.getColorID() + " " + reqObj.getColorName(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				    cellSettings(color,fontSize,rowHeight ,cellWidth);
+				    //--------------------------------------------------------------------------------------------------
+				    errorLocation = "Formula Type";
+				    // Formula Type
+				    fontSize = 8;
+				    rowHeight=8;
+				    cellWidth=100f;
+				    row = tbl0.createRow(rowHeight);
+				    Cell<PDPage> formulaType = row.createCell(cellWidth, reqObj.getDisplayFormula().getSourceDescr(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				    cellSettings(formulaType,fontSize,rowHeight ,cellWidth);
 				    tbl0.draw();
-			    	
+				    //---------------------------------------------------------------------------------------------------------
+				    //====================================================================================================
+				    // Formula Heading and 5 Colorant Lines maximum.
+				    //====================================================================================================
+				    errorLocation = "Formula Heading & Colorant Lines";
+				    //Paragraph formulaLines = new Paragraph(0);
+				    BaseTable tbl2 = createTableFormula(page);
+				    //tbl2.setWidthPercentage(98);
+				    //tbl2.setWidths(new float[] { 58, 10, 10, 10, 12 });
+				    //tbl2.setSpacingBefore(0);
+				    //tbl2.setSpacingAfter(lineSpacing2);
+				    
+				    errorLocation = "Formula Label Line Headings";
+				    // Formula Label Line Headings
+				    row = tbl2.createRow(rowHeight);
+				    fontSize = 7;
+				    List<String> listIncrementHdr = reqObj.getDisplayFormula().getIncrementHdr();
+				    //(Row<PDPage> row, String cellValue, int fontSize,  float cellHeight, float cellWidth, String cellAlign)
+				    Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",50f, 7,  "left");
+				    
+				    Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),14f, 8, "center");
+				   
+				    Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 14f,8, "center");
+				   
+				    Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 14f,8, "center");
+				    
+				    Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 16f,8, "center");
+				   //--------------------------------------------------------------------------------------------------------
+				    // Formula Label Line Item.
+				    //List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
+				    errorLocation = "Formula Label Line Items";
+				    int lineCtr = 0;
+				    Cell<PDPage> fcellLine1;
+				    Cell<PDPage> fcellLine3;
+				    Cell<PDPage> fcellLine4;
+				    Cell<PDPage> fcellLine5;
+				    Cell<PDPage> fcellLine6;
+					if(listFormulaIngredients != null && listFormulaIngredients.size() > 0){
+						// Process each instance of the listFormulaIngredients objects.
+						for(FormulaIngredient line : listFormulaIngredients){
+							int [] amount = line.getIncrement();
+							// Add the available formula lines to the label.
+							  row = tbl2.createRow(rowHeight);
+						    fcellLine1 =  createFormulaLine(row,line.getTintSysId() + " " + line.getName(),48f,8,"left");
+						   
+	
+						    if (! Integer.toString(amount[0]).equals("0")){
+						    	fcellLine3 =  createFormulaLine(row,Integer.toString(amount[0]), 14f, 8, "right");
+						    }
+						    else {
+						    	fcellLine3 =  createFormulaLine(row," ", 14f, 8, "right");
+						    }
+						   
+						    
+						    if (! Integer.toString(amount[1]).equals("0")){
+						    	fcellLine4 =  createFormulaLine(row,Integer.toString(amount[1]), 14f, 8, "right");
+						    }
+						    else {
+							    fcellLine4 =  createFormulaLine(row," ", 14f, 8, "right");
+						    }
+				
+						    if (! Integer.toString(amount[2]).equals("0")){
+						    	fcellLine5 =  createFormulaLine(row,Integer.toString(amount[2]), 14f,8, "right");
+						    }
+						    else {
+							    fcellLine5 =  createFormulaLine(row," ", 14f, 8, "right");
+						    }
+						 
+	
+						    if (! Integer.toString(amount[3]).equals("0")){
+						    	fcellLine6 =  createFormulaLine(row,Integer.toString(amount[3]), 16f, 8, "right");
+						    }
+						    else {
+							    fcellLine6 =  createFormulaLine(row," ", 16f,8, "right");
+						    }
+						 
+	
+						    lineCtr++;
+						}
+						// Complete adding 5 lines in total to label by adding blank lines.
+						while (lineCtr < 5){
+						    fcellLine1 =  createFormulaLine(row," ", 50f, 8, "left");
+						   
+						    fcellLine3 =  createFormulaLine(row," ", 14f, 8, "right");
+						 
+						    fcellLine4 =  createFormulaLine(row," ", 14f, 8, "right");
+						    
+						    fcellLine5 =  createFormulaLine(row," ", 14f, 8, "right");
+						   
+						    fcellLine6 =  createFormulaLine(row," ", 16f, 8, "right");
+						   
+						    lineCtr++;
+						}
+					}
+				    tbl2.draw();
+				    //***********************************************************************************
+				    //====================================================================================================
+				    // Product Information
+				    //====================================================================================================
+				    // Build the label product and size lines 2 columns by 2 rows.
+				    BaseTable prodInfoMsgTable = createTableProd(page);
+					  
+				    errorLocation = "Size and Base";
+				    // Customer Name
+				   // contents.setFont(courierBold, 7);
+				    //---------------------------------------------------------------------------------------
+				    rowHeight = 8;
+				    fontSize = 8;
+				    Row<PDPage> prodRow = prodInfoMsgTable.createRow(rowHeight);
+				    cellWidth = 50;
+				   
+				    Cell<PDPage> sizeCell = prodRow.createCell(cellWidth, reqObj.getSizeText(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+				    cellSettings(sizeCell,fontSize,rowHeight ,cellWidth);
+				    // createLabelCustOrdProdData(row,reqObj.getCustomerName() , fontSize,rowHeight ,cellWidth, "left");
+				    
+				    //---------------------------------------------------------------------------------------
+				  
+				    fontSize = 8;
+				    rowHeight = 8;
+				    cellWidth = 50;
+				    // Abbreviating base type name to 16 characters to keep font size on label line.
+				    if (reqObj.getBase().length() > 15)
+				    	reqObj.setBase(reqObj.getBase().substring(0, 16));
+				    
+				    Cell<PDPage> baseCell = prodRow.createCell(cellWidth, reqObj.getBase(), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
+				    cellSettings(baseCell,fontSize,rowHeight ,cellWidth);
+				    //---------------------------------------------------------------------------------------
+				    rowHeight = 8;
+				    fontSize = 8;
+				    Row<PDPage> prodNumRow = prodInfoMsgTable.createRow(rowHeight);
+				    cellWidth = 50;
+				   
+				    Cell<PDPage> prodNumCell = prodNumRow.createCell(cellWidth, reqObj.getProdNbr(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+				    cellSettings(prodNumCell,fontSize,rowHeight ,cellWidth);
+				    // createLabelCustOrdProdData(row,reqObj.getCustomerName() , fontSize,rowHeight ,cellWidth, "left");
+				    
+				    //---------------------------------------------------------------------------------------
+				  
+				    fontSize = 8;
+				    rowHeight = 8;
+				    cellWidth = 50;
+				    // Abbreviating base type name to 16 characters to keep font size on label line.
+				    if (reqObj.getBase().length() > 15)
+				    	reqObj.setBase(reqObj.getBase().substring(0, 16));
+				    
+				    Cell<PDPage> salesCell = prodNumRow.createCell(cellWidth, reqObj.getSalesNbr(), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
+				    cellSettings(salesCell,fontSize,rowHeight ,cellWidth);
+				
+				    //====================================================================================================
+				    // Formula Messages.
+				    //====================================================================================================
+				    errorLocation = "Formula Messages";
+				    //---------------------------------------------------------------------
+				    fontSize = 5;
+				    rowHeight=8;
+				    cellWidth=100f;
+				    row = prodInfoMsgTable.createRow(rowHeight);
+				    
+				    List<SwMessage> listSwMessages = reqObj.getCanLabelMsgs();
+					int messageCount = 0;
+					if (partMessage != null){
+						//Cell<PDPage> mcellLine =  createMessageLine(partMessage, boldFont5, 8, "center");
+						  row = prodInfoMsgTable.createRow(rowHeight);
+						  Cell<PDPage> partCell = row.createCell(cellWidth, partMessage, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+						  cellSettings(partCell,fontSize,rowHeight ,cellWidth);
+						messageCount++;
+					}
+					if(listSwMessages != null && listSwMessages.size() > 0){
+						// Process each instance of the message list objects - maximum 3 messages.
+						// Messages include Room by Room (not yet implemented), colorant warning and primer message.
+						   fontSize = 5;
+						    rowHeight=8;
+						for(SwMessage message : listSwMessages){
+							if (messageCount < 4 && message.getMessage().length() > 0){
+								  row = prodInfoMsgTable.createRow(rowHeight);
+								  Cell<PDPage> msgCell = row.createCell(cellWidth, message.getMessage(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+								  cellSettings(msgCell,fontSize,rowHeight ,cellWidth);
+								//Cell<PDPage> mcellLine =  createMessageLine(message.getMessage(), boldFont5, 8, "center");
+								//tbl4.addCell(mcellLine);
+								messageCount++;
+							}
+						}
+					}	
+					  fontSize = 5;
+					    rowHeight=8;
+					while (messageCount < 4){
+						  row = prodInfoMsgTable.createRow(rowHeight);
+						  Cell<PDPage> msgCell = row.createCell(cellWidth, " ", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+						  cellSettings(msgCell,fontSize,rowHeight ,cellWidth);
+						messageCount++;
+						}
+//------------------------------djm-------------------------
+					List<JobField> listJobField = reqObj.getJobFieldList();
+				    
+				    //Modify input values, replace / and " with -
+				    if(!listJobField.isEmpty()){
+				    	for (JobField jobField : listJobField) {
+					    	jobField.setEnteredValue(jobField.getEnteredValue().replaceAll("\"|\\\\|\\~", "-"));
+						}
+				    }
+				    
+				    Cell<PDPage> jcellLine1;
+				    Cell<PDPage> jcellLine2;
+				    int jobCount = 0;
+				    if(listJobField != null && listJobField.size() > 0){
+						// Process each instance of the listJobField objects.
+				    	//TODO - Will these always be in order?  Will there always be 4?
+						for(JobField job : listJobField){
+						// Only process defined job data.	
+							if (job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ){
+								// 01/20/2017 - Begin Job
+								// Truncate Screen Label to fit the line space.
+								if (job.getScreenLabel().length() > 13){
+									job.setScreenLabel(job.getScreenLabel().substring(0, 13));
+								}
+								// Truncate Entered Value to fit the line space.
+								if (job.getEnteredValue().length() > 16){
+									job.setEnteredValue(job.getEnteredValue().substring(0, 16));
+								}
+								// 01/20/2017 - End Job 
+								cellWidth=50f;
+								  fontSize = 5;
+								  rowHeight=8;
+								  row = prodInfoMsgTable.createRow(rowHeight);
+								  Cell<PDPage> jobCell = row.createCell(cellWidth, job.getScreenLabel()+":", HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
+								  cellSettings(jobCell,fontSize,rowHeight ,cellWidth);
+								//-----------------------------------------------------------------------------------  
+								//jcellLine1 =  createJobLine(job.getScreenLabel() + ":", courierBold, 8, "right");
+								//tbl5.addCell(jcellLine1);
+								//jcellLine2 =  createJobLine(job.getEnteredValue(), regularFont7, 8, "left");
+								//tbl5.addCell(jcellLine2);
+								
+								  Cell<PDPage> enteredCell = row.createCell(cellWidth, job.getEnteredValue(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+								  cellSettings(enteredCell,fontSize,rowHeight ,cellWidth);
+								  //-----------------------------------------------------------------
+								jobCount++;
+							}
+						}
+					}	
+				    while (jobCount < 5){
+				    	  fontSize = 5;
+						  rowHeight=8;
+				  	  Cell<PDPage> enteredCell = row.createCell(cellWidth, " ", HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
+					  cellSettings(enteredCell,fontSize,rowHeight ,cellWidth);
+						jobCount++;
+				    }
+				    prodInfoMsgTable.draw();
+				    //******************************************************************************************
+		
 				}
 				
 				catch(IOException ie) {
@@ -395,6 +708,95 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		
 
 	}
+	private BaseTable createTableFormula(PDPage page) {
+	      float margin = 10f;
+	        float bottomMargin = 0;
+	        // starting y position is whole page height subtracted by top and bottom margin
+	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
+	        // we want table across whole page width (subtracted by left and right margin ofcourse)
+	        float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
+	        float yPosition = 200f;
+	        boolean drawContent = true;
+	        boolean drawLines = false;
+			BaseTable table = null;
+			try {
+				table = new BaseTable(yPosition, yStartNewPage,
+				            bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			   return table;
+	}
+	   private Cell<PDPage> createFormulaHeading(Row<PDPage> row, String cellValue, float cellWidth,int fontSize, String cellAlign)
+		  {
+		   row.setHeaderRow(true);
+	 
+	 Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
+	 cell.setFontBold(courierBold);
+	 cell.setFontSize(fontSize);
+	 cell.setValign(VerticalAlignment.MIDDLE);
+	 //cell.setHeight(cellHeight);
+	
+	//cell.setMinimumHeight(cellHeight);
+	   if (cellAlign.equals("left"))
+		   cell.setAlign(HorizontalAlignment.LEFT);
+	   if (cellAlign.equals("right"))
+		   cell.setAlign(HorizontalAlignment.RIGHT);
+	   if (cellAlign.equals("center"))
+		   cell.setAlign(HorizontalAlignment.CENTER);
+	   cell.setLeftPadding(0);
+		cell.setRightPadding(2f);
+		cell.setTopPadding(0);
+		cell.setBottomPadding(0);
+		   return cell;
+	};
+
+	   private Cell<PDPage> createFormulaLine(Row<PDPage> row, String cellValue, float cellWidth,int fontSize, String cellAlign)
+		  {
+		   	 row.setHeaderRow(false);
+			 
+			 Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
+			 cell.setFontBold(courierBold);
+			 cell.setFontSize(fontSize);
+			 cell.setValign(VerticalAlignment.MIDDLE);
+			 //cell.setHeight(cellHeight);
+			
+			//cell.setMinimumHeight(cellHeight);
+			   if (cellAlign.equals("left"))
+				   cell.setAlign(HorizontalAlignment.LEFT);
+			   if (cellAlign.equals("right"))
+				   cell.setAlign(HorizontalAlignment.RIGHT);
+			   if (cellAlign.equals("center"))
+				   cell.setAlign(HorizontalAlignment.CENTER);
+			    cell.setLeftPadding(0);
+				cell.setRightPadding(2f);
+				cell.setTopPadding(0);
+				cell.setBottomPadding(0);
+				   return cell;
+	};
+	private BaseTable createTableProd(PDPage page) {
+	      float margin = 0f;
+	        float bottomMargin = 0;
+	        // starting y position is whole page height subtracted by top and bottom margin
+	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
+	        // we want table across whole page width (subtracted by left and right margin ofcourse)
+	        float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
+	        float yPosition = 120f;
+	        boolean drawContent = true;
+	        boolean drawLines = true;
+			BaseTable table = null;
+			try {
+				table = new BaseTable(yPosition, yStartNewPage,
+				            bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			   return table;
+	}
 		/*	
 		 private void createLabelCustOrdProdData(Row<PDPage> row, String cellValue, int fontSize,  float cellHeight, float cellWidth, String cellAlign)
 				  {
@@ -420,6 +822,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				  
 			};
 */
+	
+	/*  DJM original
 		   private Cell<PDPage> createFormulaHeading(Row<PDPage> row, String cellValue, int fontSize,  float cellHeight, String cellAlign)
 			  {
 		 Cell<PDPage> cell = row.createCell(cellValue);
@@ -463,7 +867,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		   cell.setBottomPadding(0);
 			   return cell;
 		};
-
+*/
 		   private Cell<PDPage> createMessageLine(Row<PDPage> row, String cellValue, int fontSize,  float cellHeight, String cellAlign)
 			  {
 		 Cell<PDPage> cell = row.createCell(cellValue);
