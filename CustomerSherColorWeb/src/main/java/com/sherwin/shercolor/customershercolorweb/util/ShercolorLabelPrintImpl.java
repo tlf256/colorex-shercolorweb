@@ -65,6 +65,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	RequestObject reqObj;
 	
 	  PDFont courierBold 	= PDType1Font.COURIER_BOLD;
+	  //PDFont courierBold 	= PDType1Font.HELVETICA_BOLD;
+	 // PDFont courierBold 	= PDType1Font.TIMES_BOLD;
 
 	private float cellWidth;
 	private static float WIDTH = 144f;
@@ -137,7 +139,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 	}
 	private BaseTable createTable(PDPage page) {
-	      float margin = 2;
+	      float margin = 3;
 	        float bottomMargin = 0;
 	        // starting y position is whole page height subtracted by top and bottom margin
 	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
@@ -479,37 +481,38 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 							int [] amount = line.getIncrement();
 							// Add the available formula lines to the label.
 							  row = tbl2.createRow(rowHeight);
-						    fcellLine1 =  createFormulaLine(row,line.getTintSysId() + " " + line.getName(),51f,8,"left");
+							  
+						    fcellLine1 =  createFormulaLine(row,line.getTintSysId() + " " + line.getName(),51f,7,"left");
 						   
 	
 						    if (! Integer.toString(amount[0]).equals("0")){
-						    	fcellLine3 =  createFormulaLine(row,Integer.toString(amount[0]), 11f, 8, "right");
+						    	fcellLine3 =  createFormulaLine(row,Integer.toString(amount[0]), 11f, 7, "right");
 						    }
 						    else {
-						    	fcellLine3 =  createFormulaLine(row," ", 11f, 8, "right");
+						    	fcellLine3 =  createFormulaLine(row,"-", 11f, 7, "right");
 						    }
 						   
 						    
 						    if (! Integer.toString(amount[1]).equals("0")){
-						    	fcellLine4 =  createFormulaLine(row,Integer.toString(amount[1]), 11f, 8, "right");
+						    	fcellLine4 =  createFormulaLine(row,Integer.toString(amount[1]), 11f, 7, "right");
 						    }
 						    else {
-							    fcellLine4 =  createFormulaLine(row," ", 11f, 8, "right");
+							    fcellLine4 =  createFormulaLine(row,"-", 11f, 7, "right");
 						    }
 				
 						    if (! Integer.toString(amount[2]).equals("0")){
-						    	fcellLine5 =  createFormulaLine(row,Integer.toString(amount[2]), 11f,8, "right");
+						    	fcellLine5 =  createFormulaLine(row,Integer.toString(amount[2]), 11f,7, "right");
 						    }
 						    else {
-							    fcellLine5 =  createFormulaLine(row," ", 11f, 8, "right");
+							    fcellLine5 =  createFormulaLine(row,"-", 11f, 7, "right");
 						    }
 						 
 	
 						    if (! Integer.toString(amount[3]).equals("0")){
-						    	fcellLine6 =  createFormulaLine(row,Integer.toString(amount[3]), 12f, 8, "right");
+						    	fcellLine6 =  createFormulaLine(row,Integer.toString(amount[3]), 14f, 7, "right");
 						    }
 						    else {
-							    fcellLine6 =  createFormulaLine(row," ", 16f,8, "right");
+							    fcellLine6 =  createFormulaLine(row,"-", 14f,7, "right");
 						    }
 						 
 	
@@ -517,15 +520,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 						}
 						// Complete adding 5 lines in total to label by adding blank lines.
 						while (lineCtr < 5){
-						    fcellLine1 =  createFormulaLine(row," ", 50f, 8, "left");
+						    fcellLine1 =  createFormulaLine(row," ", 50f, 7, "left");
 						   
-						    fcellLine3 =  createFormulaLine(row," ", 14f, 8, "right");
+						    fcellLine3 =  createFormulaLine(row," ", 11f, 7, "right");
 						 
-						    fcellLine4 =  createFormulaLine(row," ", 14f, 8, "right");
+						    fcellLine4 =  createFormulaLine(row," ", 11f, 7, "right");
 						    
-						    fcellLine5 =  createFormulaLine(row," ", 14f, 8, "right");
+						    fcellLine5 =  createFormulaLine(row," ", 11f, 7, "right");
 						   
-						    fcellLine6 =  createFormulaLine(row," ", 16f, 8, "right");
+						    fcellLine6 =  createFormulaLine(row," ", 14f, 7, "right");
 						   
 						    lineCtr++;
 						}
@@ -788,6 +791,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			 
 			 Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
 			 cell.setFontBold(courierBold);
+			 cell.setFont(courierBold);
 			 cell.setFontSize(fontSize);
 			 cell.setValign(VerticalAlignment.MIDDLE);
 			 //cell.setHeight(cellHeight);
@@ -806,7 +810,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				   return cell;
 	};
 	private BaseTable createTableProd(PDPage page) {
-	      float margin = 2f;
+	      float margin = 4f;
 	        float bottomMargin = 0;
 	        // starting y position is whole page height subtracted by top and bottom margin
 	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
