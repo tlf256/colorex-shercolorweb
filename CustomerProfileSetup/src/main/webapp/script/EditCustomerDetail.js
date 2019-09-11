@@ -383,4 +383,17 @@ $(document).ready(function() {
 		}
 	});
 	
+	$('#effDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	$('#expDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	
 });

@@ -26,6 +26,7 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 	private Map<String, Object> sessionMap;
 	private Job job;
 	private boolean updateMode;
+	private boolean newCustomer;
 	
 	@Autowired
 	CustomerService customerService;
@@ -38,6 +39,7 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 				List<JobFields> jobList = new ArrayList<JobFields>();
 				String[] reqlist = new String[10];
 				setUpdateMode(false);
+				setNewCustomer(true);
 				
 				int start = 0;
 				int end = 9;
@@ -88,11 +90,11 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 	public String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
-			if(escapedString.contains("&amp;") || escapedString.contains("&#38;")) {
+			if(escapedString.contains("&amp;")) {
 				newString = escapedString.replaceAll("&amp;", "&");
 			} else if(escapedString.contains("&#38;")) {
 				newString = escapedString.replaceAll("&#38;", "&");
-			} else if(escapedString.contains("&apos;") || escapedString.contains("&#39;")) {
+			} else if(escapedString.contains("&apos;")) {
 				newString = escapedString.replaceAll("&apos;", "'");
 			} else if(escapedString.contains("&#39;")) {
 				newString = escapedString.replaceAll("&#39;", "'");
@@ -130,6 +132,14 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 
 	public void setUpdateMode(boolean updateMode) {
 		this.updateMode = updateMode;
+	}
+
+	public boolean isNewCustomer() {
+		return newCustomer;
+	}
+
+	public void setNewCustomer(boolean newCustomer) {
+		this.newCustomer = newCustomer;
 	}
 
 }

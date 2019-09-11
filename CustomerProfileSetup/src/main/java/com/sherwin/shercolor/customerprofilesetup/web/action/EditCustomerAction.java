@@ -1,7 +1,12 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +14,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.HibernateException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.Eula;
+import com.sherwin.shercolor.common.domain.EulaHist;
+import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
@@ -28,8 +38,15 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	private Job job;
 	private Login login;
 	private Customer cust;
-	private boolean updateMode;
+	//private boolean updateMode;
+	private boolean edited;
 	private Map<String, Object> sessionMap;
+	private File eulafile;
+	private Date effDate;
+	private Date expDate;
+	
+	@Autowired
+	EulaService eulaService;
 	
 	public String execute() {
 		try {
@@ -39,6 +56,9 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			List<JobFields> editJobList = new ArrayList<JobFields>();
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			
+			//setUpdateMode(true);
+			setEdited(true);
 			
 			for(int i = 0; i < cust.getClrntList().size(); i++) {
 				editclrntlist.add(cust.getClrntList().get(i));
@@ -65,10 +85,11 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
+			reqObj.setClrntList(editclrntlist);
+			
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
 			reqObj.setActive(cust.isActive());
-			reqObj.setClrntList(editclrntlist);
 			
 			for(int i = 0; i < editclrntlist.size(); i++) {
 				//set values for custwebparms record
@@ -83,6 +104,76 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			}
 			
 			reqObj.setCustList(editCustList);
+			
+			if(eulafile != null) {
+				// first check if customer already has an associated eula
+				Eula activeEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
+				
+				if(activeEula.getCustomerId() != null) {
+					addFieldError("custediterror", "EULA for " + activeEula.getCustomerId() + " already exists");
+					return INPUT;
+				}
+				
+				byte[] filebytes = readBytesFromFile(eulafile);
+				
+				Eula eula = new Eula();
+				eula.setCustomerId(reqObj.getCustomerId());
+				eula.setWebSite("CUSTOMERSHERCOLORWEB");
+				eula.setEffectiveDate(effDate);
+				eula.setExpirationDate(expDate);
+				eula.setEulaPdf(filebytes);
+				
+				reqObj.setEula(eula);
+			}
+			
+			if(reqObj.getEulaHistList() == null) {
+				// no eula history
+				
+				// check if activate eula selected
+				if(cust.getWebsite() != null) {
+					List<EulaHist> ehlist = new ArrayList<EulaHist>();
+					
+					EulaHist eh = new EulaHist();
+					
+					if(cust.getWebsite().equals("SherColor Web Eula")) {
+						Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
+						eh = activateEula(reqObj.getCustomerId(), sherColorWebEula);
+						ehlist.add(0, eh);
+						reqObj.setWebsite(sherColorWebEula.getWebSite());
+						reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
+					} else if(cust.getWebsite().equals("None")) {
+						eh = null;
+						ehlist = null;
+					} else {
+						//unexpected value
+						addFieldError("custediterror", "Please select Eula from list");
+						return INPUT;
+					}
+					
+					reqObj.setEulaHistToActivate(eh);
+					reqObj.setEulaHistList(ehlist);
+				}
+				
+			} else {
+				// eula history, includes recent toactivate record
+				
+				if(reqObj.getEulaHistToActivate() == null) {
+					// eula history, no recent toactivate record
+					// option to create new toactivate record?
+					
+				} else {
+					// eula history, recent toactivate record
+					// check for true/false
+					
+					if(!cust.isActivateEula()) {
+						// if recently added toactivate eula record is unchecked
+						// remove record from request object
+						
+						reqObj.setEulaHistToActivate(null);
+						reqObj.setEulaHistList(null);
+					}
+				}
+			}
 			
 			if(login!=null) {
 				for(int i = 0; i < login.getKeyField().size(); i++) {
@@ -157,6 +248,22 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		}
 	}
 	
+	public EulaHist activateEula(String customerId, Eula eula) {
+		
+		EulaHist eh = new EulaHist();
+		Calendar c = Calendar.getInstance();
+		
+		eh.setActionType("TOACTIVATE");
+		eh.setActionUser("UNSET");
+		eh.setCustomerId(customerId);
+		eh.setWebSite(eula.getWebSite());
+		eh.setSeqNbr(eula.getSeqNbr());
+		eh.setActionTimeStamp(c.getTime());
+		eh.setActiveAcceptanceCode(true);
+		
+		return eh;
+	}
+	
 	public String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
@@ -174,6 +281,16 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		}
 		return newString;
 	}
+	
+	private static byte[] readBytesFromFile(File file) throws IOException {
+        FileInputStream inputStream = new FileInputStream(file);
+         
+        byte[] fileBytes = new byte[(int) file.length()];
+        inputStream.read(fileBytes);
+        inputStream.close();
+         
+        return fileBytes;
+    }
 
 	@Override
 	public void setSession(Map<String, Object> sessionMap) {
@@ -212,12 +329,44 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		this.cust = cust;
 	}
 
-	public boolean isUpdateMode() {
+	/*public boolean isUpdateMode() {
 		return updateMode;
 	}
 
 	public void setUpdateMode(boolean updateMode) {
 		this.updateMode = updateMode;
+	}*/
+
+	public boolean isEdited() {
+		return edited;
+	}
+
+	public void setEdited(boolean edited) {
+		this.edited = edited;
+	}
+
+	public File getEulafile() {
+		return eulafile;
+	}
+
+	public void setEulafile(File eulafile) {
+		this.eulafile = eulafile;
+	}
+
+	public Date getEffDate() {
+		return effDate;
+	}
+
+	public void setEffDate(Date effDate) {
+		this.effDate = effDate;
+	}
+
+	public Date getExpDate() {
+		return expDate;
+	}
+
+	public void setExpDate(Date expDate) {
+		this.expDate = expDate;
 	}
 
 }

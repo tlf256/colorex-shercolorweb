@@ -48,7 +48,7 @@
 		<div class="col-sm-6"></div>
 		<div class="col-sm-3"></div>
 	</div>
-	<s:form id="custdetail" theme="bootstrap">
+	<s:form id="custdetail" theme="bootstrap" method="post" enctype="multipart/form-data">
 	<div class="row">
 		<div class="col-lg-2 col-md-2">
 			<s:set var="updateMode" value="updateMode" />
@@ -172,6 +172,124 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
+	<s:if test="sessionMap['CustomerDetail'].eula != null">
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+				<s:form>
+					<table id="eula_detail" class="table table-striped table-bordered">
+						<tr>
+							<th>EULA</th>
+							<th>Effective Date</th>
+							<th>Expiration Date</th>
+						</tr>
+						<tr>
+							<td>
+								<s:property value="eula.website" />
+							</td>
+							<td>
+								<s:property value="eula.effectiveDate" />
+							</td>
+							<td>
+								<s:property value="eula.expirationDate" />
+							</td>
+							<td>
+								<s:submit id="download" action="downloadEula" class="btn btn-primary mb-1 mt-5" value="Download EULA"></s:submit>
+							</td>
+						</tr>
+					</table>
+				</s:form>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	</s:if>
+	<s:else>
+		<s:if test="sessionMap['CustomerDetail'].history">
+			<div class="row">
+				<div class="col-lg-2 col-md-2"></div>
+				<div class="col-lg-8 col-md-8">
+					<table id="uploadEula" class="table table-striped table-bordered">
+						<tr>
+							<th>Upload EULA</th>
+							<th>Effective Date</th>
+							<th>Expiration Date</th>
+						</tr>
+						<tr>
+							<td>
+								<s:file class="bg-light border-secondary" name="eulafile" accept="text/*" />
+								<%-- <s:submit id="upload" action="uploadEula" class="btn btn-primary mb-1 mt-5" value="Upload EULA"></s:submit> --%>
+							</td>
+							<td class="align-middle">
+								<s:textfield id="effDate" name="effDate"></s:textfield>
+							</td>
+							<td class="align-middle">
+								<s:textfield id="expDate" name="expDate"></s:textfield>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-lg-2 col-md-2"></div>
+			</div>
+		</s:if>
+	</s:else>
+	<br>
+	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null">
+		<div class="row">
+		<div class="col-lg-2 col-md-2"></div>
+		<div class="col-lg-8 col-md-8">
+			<table id="eulaHist_detail" class="table table-striped table-bordered">
+				<tr>
+					<th>EULA History</th>
+					<th>Type</th>
+					<th>User</th>
+					<th>Date</th>
+					<th>Activate</th>
+				</tr>
+				<tr>
+					<td>
+						<s:property value="sessionMap['CustomerDetail'].eulaHistToActivate.website" />
+					</td>
+					<td>
+						<s:property value="sessionMap['CustomerDetail'].eulaHistToActivate.actionType" />
+					</td>
+					<td>
+						<s:property value="sessionMap['CustomerDetail'].eulaHistToActivate.actionUser" />
+					</td>
+					<td>
+						<s:property value="sessionMap['CustomerDetail'].eulaHistToActivate.actionTimeStamp" />
+					</td>
+					<td>
+						<div class="form-check">
+							<input class="ml-2 mt-2" type="checkbox" id="activateEula" name="cust.activateEula" value="true" checked="checked" />
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-lg-2 col-md-2"></div>
+		</div>
+	</s:if>
+	<s:else>
+		<s:if test="sessionMap['CustomerDetail'].eulaHistList == null && !sessionMap['CustomerDetail'].history">
+			<div class="row">
+				<div class="col-lg-2 col-md-2"></div>
+				<div class="col-lg-8 col-md-8">
+					<table id="newEula" class="table table-striped table-bordered">
+						<tr>
+							<th>Activate EULA</th>
+						</tr>
+						<tr>
+							<td>
+								<s:select label="Activate Eula" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="cust.website" headerValue="None"></s:select>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-lg-2 col-md-2"></div>
+			</div>
+		</s:if>
+	</s:else>
+	<br>
 	<s:if test="sessionMap['CustomerDetail'].accttype!='natlWdigits'">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
@@ -230,11 +348,6 @@
 		</table>
 		</div>
 		<div class="col-lg-2 col-md-2">
-			<%-- <s:if test="sessionMap['LoginDetail'].loginList.size gt 0 && sessionMap['LoginDetail'].loginList.size lt 10">
-			<button type="button" title="Add login" id="addnewloginrow" class="btn btn-secondary">
-				<i class="far fa-plus-square"></i>
-			</button>
-			</s:if> --%>
 		</div>
 	</div>
 	<br>
@@ -264,25 +377,25 @@
 				</td>
 				<td>
 					<s:if test="#jobFields.entryRequired==true">
-					<div class="form-check">
-						<input class="ml-2 mt-4" type="checkbox" id="jobreq<s:property value='%{#j.index}'/>" name="job.entryRequired" value="<s:property value='%{#j.index}'/>" checked="checked" />
-					</div>
+						<div class="form-check">
+							<input class="ml-2 mt-4" type="checkbox" id="jobreq<s:property value='%{#j.index}'/>" name="job.entryRequired" value="<s:property value='%{#j.index}'/>" checked="checked" />
+						</div>
 					</s:if>
 					<s:else>
-					<div class="form-check">
-						<input class="ml-2 mt-4" type="checkbox" id="jobreq<s:property value='%{#j.index}'/>" name="job.entryRequired" value="<s:property value='%{#j.index}'/>" title="entry required" />
-					</div>
+						<div class="form-check">
+							<input class="ml-2 mt-4" type="checkbox" id="jobreq<s:property value='%{#j.index}'/>" name="job.entryRequired" value="<s:property value='%{#j.index}'/>" title="entry required" />
+						</div>
 					</s:else>
 				</td>
 				<td>
 					<s:if test="#jobFields.active==true">
-					<div class="form-check">
-						<input class="mt-4" type="checkbox" id="jobactv<s:property value='%{#j.index}'/>" name="job.active" value="<s:property value='%{#j.index}'/>" checked="checked" />
-					</div>
+						<div class="form-check">
+							<input class="mt-4" type="checkbox" id="jobactv<s:property value='%{#j.index}'/>" name="job.active" value="<s:property value='%{#j.index}'/>" checked="checked" />
+						</div>
 					</s:if>
 					<s:else>
-					<div class="form-check">
-						<input class="mt-4" type="checkbox" id="jobactv<s:property value='%{#j.index}'/>" name="job.active" value="<s:property value='%{#j.index}'/>" title="active" />
+						<div class="form-check">
+							<input class="mt-4" type="checkbox" id="jobactv<s:property value='%{#j.index}'/>" name="job.active" value="<s:property value='%{#j.index}'/>" title="active" />
 						</div>
 					</s:else>
 				</td>
@@ -331,12 +444,12 @@
 		<div class="col-lg-8 col-md-8">
 			<s:if test="updateMode">
 				<s:submit cssClass="btn btn-primary mb-5 mt-2" id="submitchng" value="Accept Changes" action="displayUpdate" />
-				<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel Update" action="displayUpdateDetail"/>
 			</s:if>
 			<s:else>
 				<s:submit cssClass="btn btn-primary mb-5 mt-2" id="submitchng" value="Accept Changes" action="displayEdit" />
-				<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel Edit" action="displayDetail"/>
+				<%-- <s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel Edit" action="displayDetail"/> --%>
 			</s:else>
+			<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel" action="cancelUpdate"/>
 		</div>
 		<div class="col-lg-2 col-md-2"></div>
 	</div>

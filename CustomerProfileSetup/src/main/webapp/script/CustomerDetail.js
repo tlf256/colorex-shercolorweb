@@ -15,4 +15,14 @@ $(document).ready(function() {
 		$("#inactivemodal").modal('show');
 	});
 	
+	var eulaPdfTable = $('#eulapdf').DataTable({
+		dom: 'ifBrtp',
+		buttons : [
+			'copy', 'print',
+        ],
+        "paginate": false,
+        "scrollY" : 500,
+        "pagingType": "full"
+    });
+	
 });

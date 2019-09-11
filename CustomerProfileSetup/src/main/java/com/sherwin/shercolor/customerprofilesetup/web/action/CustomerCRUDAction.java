@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,12 +18,14 @@ import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebLoginTransform;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.domain.Eula;
+import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
-import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class CustomerCRUDAction extends ActionSupport implements SessionAware {
@@ -43,6 +46,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	@Autowired
 	TranHistoryService tranHistoryService;
 	
+	@Autowired
+	EulaService eulaService;
+	
 	public String read() {
 		try {
 			List<String> clrntlist = new ArrayList<String>();
@@ -52,6 +58,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> custParms = customerService.getAllCustWebParms(lookupCustomerId);
 			
 			RequestObject reqObj = new RequestObject();
+			
+			reqObj.setExistingCustomer(true);
+			
 			CustParms customer = new CustParms();
 			
 			updateMode = true;
@@ -60,8 +69,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			if(jobHistory.isEmpty()) {
 				reqObj.setHistory(false);
+				System.out.println("Job history not found");
 			}else {
 				reqObj.setHistory(true);
+				System.out.println("Job history found");
 			}
 			//map custwebparms to model object
 			for(CustWebParms webparms : custParms) {
@@ -138,6 +149,28 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				reqObj.setLoginList(ltlist);
 			}
 			
+			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", lookupCustomerId);
+			
+			if(scwEulaList != null) {
+				List<EulaHist> ehlist = new ArrayList<EulaHist>();
+				for(EulaHist eh : scwEulaList) {
+					if(eh.getActionType().equals("TOACTIVATE")) {
+						ehlist.add(0, eh);
+						reqObj.setToactivateRecord(true);
+					} else {
+						ehlist.add(eh);
+					}
+				}
+				reqObj.setWebsite("CUSTOMERSHERCOLORWEB");
+				reqObj.setEulaHistList(ehlist);
+			} 
+			
+			Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", lookupCustomerId);
+			
+			if(sherColorWebEula.getCustomerId() != null) {
+				reqObj.setEula(sherColorWebEula);
+			}
+			
 			sessionMap.put("CustomerDetail", reqObj);
 						
 			return SUCCESS;
@@ -159,6 +192,11 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
 			List<CustWebJobFields> jobList = new ArrayList<CustWebJobFields>();
 			List<CustWebLoginTransform> loginList = new ArrayList<CustWebLoginTransform>();
+			
+			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
+			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
+			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(reqObj.getCustomerId());
+			
 			//get date
 			Date sqlDate = new Date(System.currentTimeMillis());
 			//map session values to custwebparms domain object
@@ -189,6 +227,23 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				customerList.add(custWebParms);
 			}
 			
+			//create EulaHist record to activate eula
+			if(reqObj.getEulaHistToActivate() != null) {
+				// generate 6 digit random acceptance code
+				String ac = generateRandomDigit(6);
+				System.out.println("acceptance code = " + ac);
+				
+				EulaHist eh = reqObj.getEulaHistToActivate();
+				eh.setAcceptanceCode(ac);
+				
+				eulaService.createEulaHist(eh);
+			}
+			
+			// create eula pdf
+			if(reqObj.getEula().getCustomerId() != null) {
+				eulaService.createEula(reqObj.getEula());
+			}
+			
 			//map session values to custwebjobfields domain object
 			for(JobFields job : reqObj.getJobFieldList()) {
 				CustWebJobFields custWebJobs = new CustWebJobFields();
@@ -212,10 +267,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					loginList.add(custWebLogin);
 				}
 			}
-			
-			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
-			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
-			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(reqObj.getCustomerId());
 			
 			
 			if(existingRecords.isEmpty()) {
@@ -289,21 +340,25 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(reqObj.getCustomerId());
 			
 			if(!reqObj.isHistory()) {
-				if(!existingRecords.isEmpty()) {
-					for(CustWebParms record : existingRecords) {
-						customerService.deleteCustWebParmsRecord(record);
+				if(reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode()) {
+					if(!existingRecords.isEmpty()) {
+						for(CustWebParms record : existingRecords) {
+							customerService.deleteCustWebParmsRecord(record);
+						}
 					}
-				}
-				if(!existingLogins.isEmpty()) {
-					for(CustWebLoginTransform logins : existingLogins) {
-						customerService.deleteCustWebLoginTransRecord(logins);
+					if(!existingLogins.isEmpty()) {
+						for(CustWebLoginTransform logins : existingLogins) {
+							customerService.deleteCustWebLoginTransRecord(logins);
+						}
 					}
-				}
-				if(!existingJobfields.isEmpty()) {
-					for(CustWebJobFields jobfields : existingJobfields) {
-						customerService.deleteCustWebJobFieldsRecord(jobfields);
+					if(!existingJobfields.isEmpty()) {
+						for(CustWebJobFields jobfields : existingJobfields) {
+							customerService.deleteCustWebJobFieldsRecord(jobfields);
+						}
 					}
+					eulaService.deleteEulaHist(reqObj.getEulaHistToActivate());
 				}
+				
 				sessionMap.clear();
 				crudmsg = "Delete Successful";
 				sessionMap.put("msg", crudmsg);
@@ -349,6 +404,19 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		}
 	}
 	
+	public List<EulaHist> createEulaHistList(List<EulaHist> eulaHistList) {
+		List<EulaHist> ehlist = new ArrayList<EulaHist>();
+		// create eulahist list with toactivate record first
+		for(EulaHist eh : eulaHistList) {
+			if(eh.getActionType().equals("TOACTIVATE")) {
+				ehlist.add(0, eh);
+			} else {
+				ehlist.add(eh);
+			}
+		}
+		return ehlist;
+	}
+	
 	public String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
@@ -365,6 +433,16 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 		}
 		return newString;
+	}
+	
+	public String generateRandomDigit(int length) {
+		Random rand = new Random();
+		StringBuilder sb = new StringBuilder(length);
+		for(int i = 0; i < length; i++) {
+			int randInt = rand.nextInt(9) + 1;
+			sb.append(randInt);
+		}
+		return sb.toString();
 	}
 
 	@Override
