@@ -23,6 +23,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
+import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
@@ -136,7 +137,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 	}
 	private BaseTable createTable(PDPage page) {
-	      float margin = 0;
+	      float margin = 2;
 	        float bottomMargin = 0;
 	        // starting y position is whole page height subtracted by top and bottom margin
 	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
@@ -148,7 +149,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			BaseTable table = null;
 			try {
 				table = new BaseTable(yPosition, yStartNewPage,
-				            bottomMargin, tableWidth, margin, document, page, true, drawContent);
+				            bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -164,10 +165,16 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		   			int rowHeight = 2;
 		// Create a new blank page and add it to the document
 					PDPage page = new PDPage();
-					document.addPage( page );
+
 					// Create the 2" x 4" document.
 					page.setMediaBox(new PDRectangle(0, 0 , 144f, 288f));
-					
+					 PDPageContentStream content = null;
+					try {
+						content = new PDPageContentStream(document, page);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
 					
 				try{
@@ -213,7 +220,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    rowHeight = 8;
 				    fontSize = 7;
 				    Row<PDPage> row = table.createRow(rowHeight);
-				    cellWidth = 50;
+				    cellWidth = 66;
 				   
 				    Cell<PDPage> cell = row.createCell(cellWidth, reqObj.getCustomerName(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 				    cellSettings(cell,fontSize,rowHeight ,cellWidth);
@@ -226,7 +233,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    String strDate = sdf.format(date);
 				    fontSize = 7;
 				    rowHeight = 8;
-				    cellWidth = 50;
+				    cellWidth = 34;
 				  
 				    Cell<PDPage> cell1 = row.createCell(cellWidth, strDate, HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 				    cellSettings(cell1,fontSize,rowHeight ,cellWidth);
@@ -235,6 +242,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				   //---------------------------------------------------------------------------------
 				    row = table.createRow(rowHeight);
 				    // Optional Field - Not yet implemented.
+				    cellWidth = 50;
 				    cell = row.createCell(cellWidth, "", HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 				    cellSettings(cell,fontSize,rowHeight ,cellWidth);
 				    // createLabelCustOrdProdData(row," ", fontSize, rowHeight, cellWidth,"left");
@@ -265,7 +273,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    cellSettings(cell7,fontSize,rowHeight ,cellWidth);
 				  //   createLabelCustOrdProdData(row,"", fontSize, rowHeight,cellWidth, "right");
 	
-				    table.draw();
+				   // table.draw();
 				    //----------------------------------------------------------------------------
 				      //----------------------------------------------------------------------------------------------------------
 				    errorLocation = "Use & Class";
@@ -280,7 +288,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			        float yPosition = yStartNewPage;
 			        boolean drawContent = true;
 			        boolean drawLines = false;
-					BaseTable tbl0 = null;
+				
+			        /*BaseTable tbl0 = null;
 					try {
 						tbl0 = new BaseTable(250f, yStartNewPage,
 						            bottomMargin, tableWidth, margin, document, page, true, drawContent);
@@ -288,6 +297,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 				  
 				    //----------------------------------------------------------------------------------------
 				    // Use Interior/Exterior
@@ -295,7 +305,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    fontSize = 6;
 				    rowHeight = 8;
 				    cellWidth = 30;
-				    row = tbl0.createRow(rowHeight);
+				    row = table.createRow(rowHeight);
 				      Cell<PDPage> intExt = row.createCell(cellWidth,reqObj.getIntExt(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 				    cellSettings(intExt,fontSize,rowHeight ,cellWidth);
 				   // Cell<PDPage> intExt =  createLabelCustOrdProdData(row,reqObj.getIntExt(), fontSize, rowHeight, cellWidth, "left");
@@ -331,7 +341,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					    fontSize = 6;
 					    rowHeight = 8;
 					    cellWidth = setQualityParm;
-					    row = tbl0.createRow(rowHeight);
+					    row = table.createRow(rowHeight);
 			        Cell<PDPage> quality = row.createCell(cellWidth,reqObj.getQuality(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 				    cellSettings(quality,fontSize,rowHeight ,cellWidth);
 				   // Cell<PDPage> intExt =  createLabelCustOrdProdData(row,reqObj.getIntExt(), fontSize, rowHeight, cellWidth, "left");
@@ -348,15 +358,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		
 				    errorLocation = "Finish & Tinter Type";
 				    // 01/20/2017 - Begin Finish and Tinter Type.
-				    row = tbl0.createRow(rowHeight);
-				    cellWidth = 60f;
+				    row = table.createRow(rowHeight);
+				    cellWidth = 30f;
 			        Cell<PDPage> finish = row.createCell(cellWidth,reqObj.getFinish(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 				    cellSettings(finish,fontSize,rowHeight ,cellWidth);
 				   // Cell<PDPage> intExt =  createLabelCustOrdProdData(row,reqObj.getIntExt(), fontSize, rowHeight, cellWidth, "left");
 				 // Class
 				    errorLocation = "Tinter";
 				    // Composite
-				    cellWidth = 40f;
+				    cellWidth = 70f;
 				     Cell<PDPage> tinter = row.createCell(cellWidth, reqObj.getTinter().getModel(), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 				    cellSettings(tinter,fontSize,rowHeight ,cellWidth);
 				    //----------------------------------------------------------------------
@@ -413,7 +423,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    Point2D.Float center = new Point2D.Float(0, 0);
 				    //DJM's function replacing with paragraph above addCenteredText(reqObj.getColorID() + " " + reqObj.getColorName(), courierBold,  fontSize, page, center); 
 				   */
-				    row = tbl0.createRow(rowHeight);
+				    row = table.createRow(rowHeight);
 				    Cell<PDPage> color = row.createCell(cellWidth, reqObj.getColorID() + " " + reqObj.getColorName(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 				    cellSettings(color,fontSize,rowHeight ,cellWidth);
 				    //--------------------------------------------------------------------------------------------------
@@ -422,10 +432,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    fontSize = 8;
 				    rowHeight=8;
 				    cellWidth=100f;
-				    row = tbl0.createRow(rowHeight);
+				    row = table.createRow(rowHeight);
 				    Cell<PDPage> formulaType = row.createCell(cellWidth, reqObj.getDisplayFormula().getSourceDescr(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 				    cellSettings(formulaType,fontSize,rowHeight ,cellWidth);
-				    tbl0.draw();
+				    table.draw();
 				    //---------------------------------------------------------------------------------------------------------
 				    //====================================================================================================
 				    // Formula Heading and 5 Colorant Lines maximum.
@@ -444,15 +454,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    fontSize = 7;
 				    List<String> listIncrementHdr = reqObj.getDisplayFormula().getIncrementHdr();
 				    //(Row<PDPage> row, String cellValue, int fontSize,  float cellHeight, float cellWidth, String cellAlign)
-				    Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",50f, 7,  "left");
+				    Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",52f, 7,  "left");
 				    
-				    Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),14f, 8, "center");
+				    Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),11f, 8, "center");
 				   
-				    Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 14f,8, "center");
+				    Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 11f,8, "center");
 				   
-				    Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 14f,8, "center");
+				    Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 11f,8, "center");
 				    
-				    Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 16f,8, "center");
+				    Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 14f,8, "center");
 				   //--------------------------------------------------------------------------------------------------------
 				    // Formula Label Line Item.
 				    //List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
@@ -469,34 +479,34 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 							int [] amount = line.getIncrement();
 							// Add the available formula lines to the label.
 							  row = tbl2.createRow(rowHeight);
-						    fcellLine1 =  createFormulaLine(row,line.getTintSysId() + " " + line.getName(),48f,8,"left");
+						    fcellLine1 =  createFormulaLine(row,line.getTintSysId() + " " + line.getName(),51f,8,"left");
 						   
 	
 						    if (! Integer.toString(amount[0]).equals("0")){
-						    	fcellLine3 =  createFormulaLine(row,Integer.toString(amount[0]), 14f, 8, "right");
+						    	fcellLine3 =  createFormulaLine(row,Integer.toString(amount[0]), 11f, 8, "right");
 						    }
 						    else {
-						    	fcellLine3 =  createFormulaLine(row," ", 14f, 8, "right");
+						    	fcellLine3 =  createFormulaLine(row," ", 11f, 8, "right");
 						    }
 						   
 						    
 						    if (! Integer.toString(amount[1]).equals("0")){
-						    	fcellLine4 =  createFormulaLine(row,Integer.toString(amount[1]), 14f, 8, "right");
+						    	fcellLine4 =  createFormulaLine(row,Integer.toString(amount[1]), 11f, 8, "right");
 						    }
 						    else {
-							    fcellLine4 =  createFormulaLine(row," ", 14f, 8, "right");
+							    fcellLine4 =  createFormulaLine(row," ", 11f, 8, "right");
 						    }
 				
 						    if (! Integer.toString(amount[2]).equals("0")){
-						    	fcellLine5 =  createFormulaLine(row,Integer.toString(amount[2]), 14f,8, "right");
+						    	fcellLine5 =  createFormulaLine(row,Integer.toString(amount[2]), 11f,8, "right");
 						    }
 						    else {
-							    fcellLine5 =  createFormulaLine(row," ", 14f, 8, "right");
+							    fcellLine5 =  createFormulaLine(row," ", 11f, 8, "right");
 						    }
 						 
 	
 						    if (! Integer.toString(amount[3]).equals("0")){
-						    	fcellLine6 =  createFormulaLine(row,Integer.toString(amount[3]), 16f, 8, "right");
+						    	fcellLine6 =  createFormulaLine(row,Integer.toString(amount[3]), 12f, 8, "right");
 						    }
 						    else {
 							    fcellLine6 =  createFormulaLine(row," ", 16f,8, "right");
@@ -540,8 +550,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    Cell<PDPage> sizeCell = prodRow.createCell(cellWidth, reqObj.getSizeText(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 				    cellSettings(sizeCell,fontSize,rowHeight ,cellWidth);
 				    // createLabelCustOrdProdData(row,reqObj.getCustomerName() , fontSize,rowHeight ,cellWidth, "left");
-				    
-				    //---------------------------------------------------------------------------------------
+				   
 				  
 				    fontSize = 8;
 				    rowHeight = 8;
@@ -579,9 +588,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    //====================================================================================================
 				    errorLocation = "Formula Messages";
 				    //---------------------------------------------------------------------
-				    fontSize = 5;
+				    fontSize = 6;
 				    rowHeight=8;
-				    cellWidth=100f;
+				    cellWidth=98f;
 				    row = prodInfoMsgTable.createRow(rowHeight);
 				    
 				    List<SwMessage> listSwMessages = reqObj.getCanLabelMsgs();
@@ -596,7 +605,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					if(listSwMessages != null && listSwMessages.size() > 0){
 						// Process each instance of the message list objects - maximum 3 messages.
 						// Messages include Room by Room (not yet implemented), colorant warning and primer message.
-						   fontSize = 5;
+						   fontSize = 7;
 						    rowHeight=8;
 						for(SwMessage message : listSwMessages){
 							if (messageCount < 4 && message.getMessage().length() > 0){
@@ -609,7 +618,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 							}
 						}
 					}	
-					  fontSize = 5;
+					  fontSize = 7;
 					    rowHeight=8;
 					while (messageCount < 4){
 						  row = prodInfoMsgTable.createRow(rowHeight);
@@ -647,7 +656,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 								}
 								// 01/20/2017 - End Job 
 								cellWidth=50f;
-								  fontSize = 5;
+								  fontSize = 7;
 								  rowHeight=8;
 								  row = prodInfoMsgTable.createRow(rowHeight);
 								  Cell<PDPage> jobCell = row.createCell(cellWidth, job.getScreenLabel()+":", HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
@@ -666,7 +675,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 						}
 					}	
 				    while (jobCount < 5){
-				    	  fontSize = 5;
+				    	  fontSize = 7;
 						  rowHeight=8;
 				  	  Cell<PDPage> enteredCell = row.createCell(cellWidth, " ", HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 					  cellSettings(enteredCell,fontSize,rowHeight ,cellWidth);
@@ -674,7 +683,26 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				    }
 				    prodInfoMsgTable.draw();
 				    //******************************************************************************************
-		
+				    //====================================================================================================
+				    // Bar Code and Order and Line Numbers (part of bar code).
+				    //====================================================================================================
+				    errorLocation = "Bar Code & Order Number";
+				    
+				    
+				   
+				    String barCodeChars = String.format("%08d-%03d",reqObj.getControlNbr(), 1);
+		    		BufferedImage bufferedImage = geBufferedImageForCode128Bean(barCodeChars);
+		    		PDImageXObject pdImage = JPEGFactory.createFromImage(document, bufferedImage);
+		    		
+		    		content.drawImage(pdImage, 20, 12, 100, 15);
+		    		
+		    		
+		    		//(String text, PDFont font, int fontSize,  PDPage page, Point2D.Float offset)
+		    		//add human readable under barcode
+		    		
+		    		addCenteredText(content,barCodeChars,courierBold,8,page,4.0f);
+		    		content.close();
+		    		document.addPage( page );
 				}
 				
 				catch(IOException ie) {
@@ -689,7 +717,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		   		   logger.error(re.getMessage());
 			   	}
 			}
-	private void cellSettings(Cell<PDPage> cell,float cellWidth, int fontSize,  float cellHeight)
+	
+	private void cellSettings(Cell<PDPage> cell, int fontSize, float cellHeight, float cellWidth )
 	{
 		
 		cell.setFontBold(courierBold);
@@ -709,13 +738,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 	}
 	private BaseTable createTableFormula(PDPage page) {
-	      float margin = 10f;
+	      float margin = 2f;
 	        float bottomMargin = 0;
 	        // starting y position is whole page height subtracted by top and bottom margin
-	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
+	        float yStartNewPage = page.getMediaBox().getHeight();
 	        // we want table across whole page width (subtracted by left and right margin ofcourse)
 	        float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
-	        float yPosition = 200f;
+	        float yPosition = 211f;
 	        boolean drawContent = true;
 	        boolean drawLines = false;
 			BaseTable table = null;
@@ -777,15 +806,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				   return cell;
 	};
 	private BaseTable createTableProd(PDPage page) {
-	      float margin = 0f;
+	      float margin = 2f;
 	        float bottomMargin = 0;
 	        // starting y position is whole page height subtracted by top and bottom margin
 	        float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
 	        // we want table across whole page width (subtracted by left and right margin ofcourse)
 	        float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
-	        float yPosition = 120f;
+	        float yPosition = 140f;
 	        boolean drawContent = true;
-	        boolean drawLines = true;
+	        boolean drawLines = false;
 			BaseTable table = null;
 			try {
 				table = new BaseTable(yPosition, yStartNewPage,
@@ -939,11 +968,19 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			    final int dpi = 150;
 			    code128Bean.setModuleWidth(UnitConv.in2mm(1.0f / dpi)); //makes the narrow bar 
 			    code128Bean.doQuietZone(false);
+			    code128Bean.setMsgPosition(HumanReadablePlacement.HRP_NONE);
 			    BitmapCanvasProvider canvas1 = new BitmapCanvasProvider(
 			        dpi, BufferedImage.TYPE_BYTE_BINARY, false, 0
 			    );
 			    //Generate the barcode
 			    code128Bean.generateBarcode(canvas1, barcodeString);
+			    
+			    try {
+					canvas1.finish();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			    return canvas1.getBufferedImage();
 			}
 		   /*
@@ -963,9 +1000,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		       return cell;
 		   }
 		   */
-		   void addCenteredText(String text, PDFont font, int fontSize,  PDPage page, Point2D.Float offset) throws IOException {
+		   void addCenteredText(PDPageContentStream content, String text, PDFont font, int fontSize,  PDPage page, float yOffset) throws IOException {
 			// Create the output file stream.
-				PDPageContentStream content = new PDPageContentStream(document, page);
+			//	PDPageContentStream content = new PDPageContentStream(document, page);
 			   content.setFont(font, fontSize);
 			    content.beginText();
 
@@ -976,19 +1013,19 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			    // We use the text's width to place it at the center of the page
 			    float stringWidth = getStringWidth(text, font, fontSize);
 			    if (pageIsLandscape) {
-			        float textX = pageCenter.x - stringWidth / 2F + offset.x;
-			        float textY = pageCenter.y - offset.y;
+			        float textX = pageCenter.x - stringWidth / 2F ;
+			        float textY = pageCenter.y - yOffset;
 			        // Swap X and Y due to the rotation
-			        content.setTextMatrix(Matrix.getRotateInstance(Math.PI / 2, textY, textX));
+			        content.setTextMatrix(Matrix.getRotateInstance(Math.PI / 2, yOffset, textX));
 			    } else {
-			        float textX = pageCenter.x - stringWidth / 2F + offset.x;
-			        float textY = pageCenter.y + offset.y;
-			        content.setTextMatrix(Matrix.getTranslateInstance(textX, textY));
+			        float textX = pageCenter.x - stringWidth / 2F ;
+			        float textY = pageCenter.y + yOffset;
+			        content.setTextMatrix(Matrix.getTranslateInstance(textX, yOffset));
 			    }
 
 			    content.showText(text);
 			    content.endText();
-			    content.close();
+			   // content.close();
 			}
 
 			boolean isLandscape(PDPage page) {
