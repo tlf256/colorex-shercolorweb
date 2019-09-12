@@ -183,7 +183,7 @@ public class PrintLabelTest  {
 		reqObj.setCustomerID(label[14]);
 		reqObj.setCustomerName(label[15]);
 		TinterInfo tinter = new TinterInfo();
-		tinter.setModel("Standalone");
+		tinter.setModel("COROB CUSTOM MOD16HF");
 		reqObj.setTinter(tinter);
 		// intBases - not required.
 		// extBases - not required.
