@@ -463,464 +463,486 @@ public class CdsTranServiceImpl implements CdsTranService {
 		int lastGood = -1;
 		int lastCorr = -1;
 
-		if(cdsTranAll==null || cdsTranAll.getTranDetWithClrntList()==null || cdsTranAll.getTranDetWithClrntList().size()==0){
+		if(cdsTranAll==null){
+			System.out.println("cdsTranAll is null");
 			retVal = null;
 			return retVal;
 		}
 			
-		// get first disp
-		for (int i=0; i < cdsTranAll.getTranDetWithClrntList().size(); i++) {
-			if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
-				firstDispPos = i;
-				break;
-			}
+		if(cdsTranAll.getTranDetWithClrntList()==null){
+			System.out.println("TranDetWithClrntList is null");
+			retVal = null;
+			return retVal;
 		}
+		
+		if(cdsTranAll.getTranDetWithClrntList().size()==0){
+			System.out.println("TranDetWithClrntList is empty (size = 0");
+			retVal = null;
+			return retVal;
+		}
+		
+		try {
+			// get first disp
+			for (int i=0; i < cdsTranAll.getTranDetWithClrntList().size(); i++) {
+				if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
+					firstDispPos = i;
+					break;
+				}
+			}
 
-		for (int i =0; i < cdsTranAll.getTranDetWithClrntList().size(); i++) {
-			if(lastGood>-1){
-				if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("MTCH") ||
-				   cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
-					if (cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")) {
-						lastCorr = i;
-					} else {
-						lastGood = i;
-					}
-				}
-			} else {
-				if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("SAVE") ||
-				   cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("MTCH") ||
-				   cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
-					if (!cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")) {
-						lastGood = i;
-					}
-				}
-			} // end if stdDisp set
-		}
-		
-		// ControlNbr and LineNbr (from tranMast)
-		retVal.setControlNbr(cdsTranAll.getTranMast().getControlNbr());
-		retVal.setLineNbr(cdsTranAll.getTranMast().getLineNbr());
-		
-		// ColorComp, ColorId, ColorName (all from tranMast)
-		retVal.setColorComp(cdsTranAll.getTranMast().getColorComp());
-		retVal.setColorId(cdsTranAll.getTranMast().getColorId());
-		retVal.setColorName(cdsTranAll.getTranMast().getColorName());
-		
-		//OrigColorComp & OrigColorId (both from tranMast)
-		retVal.setOrigColorComp(cdsTranAll.getTranMast().getOrigColorComp());
-		retVal.setOrigColorId(cdsTranAll.getTranMast().getOrigColorId());
-		
-		// SalesNbr (from tranMast)
-		retVal.setSalesNbr(cdsTranAll.getTranMast().getSalesNbr());
-
-		// get prodNbr and size code from database
-		if(productService==null) System.out.println("productService is null");
-		
-		PosProd posProd = productService.readPosProd(retVal.getSalesNbr());
-		System.out.println("salesnbr [" + retVal.getSalesNbr() + "] has a prodnbr of " + posProd.getProdNbr());
-		retVal.setProdNbr(posProd.getProdNbr());
-		retVal.setSizeCode(posProd.getSzCd());
-		
-		//clrntSysId
-		retVal.setClrntSysId(cdsTranAll.getTranDetWithClrntList().get(firstDispPos).getTranClrntList().get(0).getClrntSys());
-		retVal.setUserId("Imported");
-		
-		// ColorType (calculated from lastCorr else lastGood)
-		int recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		if((cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("SAVE")||
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("DISP")) &&
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("SW")) {
-			// SW with SAVE or DISP
-			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
-				retVal.setColorType("SHERWIN-WILLIAMS");
-			}
-		}
-		if((cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("SAVE")||
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("DISP")) &&
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("COMP")) {
-			// COMP with SAVE or DISP
-			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
-				retVal.setColorType("COMPETITVE");
-			}
-		}
-		if((cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("SAVE")||
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("DISP") ||
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("MTCH")) &&
-		   (cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("CUST") ||
-			cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("CORR"))) {
-				// Cust with SAVE or DISP or MTCH
-				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT")){
-					retVal.setColorType("CUSTOMMATCH");
-				}
-				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MAN")||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MANV")){
-					retVal.setColorType("CUSTOM");
-				}
-		}
-		
-		//Orig ColorType (calculated from firstDisp else first)
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("SW")) {
-			// SW
-			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
-				retVal.setOrigColorType("SHERWIN-WILLIAMS");
-			}
-		}
-		if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("COMP")) {
-			// COMP
-			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
-			   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
-				retVal.setOrigColorType("COMPETITVE");
-			}
-		}
-		if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("CUST")) {
-				// Cust
-				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT")){
-					retVal.setOrigColorType("CUSTOMMATCH");
-				}
-				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MAN")||
-				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MANV")){
-					retVal.setOrigColorType("CUSTOM");
-				}
-		}
-		
-		//TranCode  CSW only has SAVE or DISP
-		if(cdsTranAll.getTranDetWithClrntList().get(lastGood).getTranDet().getTranCode().equalsIgnoreCase("SAVE")){
-			retVal.setTranCode("SAVE");
-		} else {
-			retVal.setTranCode("DISP");
-		};
-		
-		// InitTranDate
-		retVal.setInitTranDate(cdsTranAll.getTranDetWithClrntList().get(0).getTranDet().getTranDate());
-		
-		//LastTranDate (lastCorr else lastGood)
-		recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		retVal.setLastTranDate(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranDate());
-		
-		//FormSource (laseCorr else lastGood)
-		recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		retVal.setFormSource(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource());
-		
-		//OrigFormSourcepe (calculated from firstDisp else first)
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		retVal.setOrigFormSource(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource());
-		
-		//FormMethod (calc from lastGood)
-		recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		switch(retVal.getFormSource()){
-		case "ENG":
-			if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("SHER-COLOR FORMULA");
-			else retVal.setFormMethod("CUSTOM SHER-COLOR MATCH");
-			break;
-		case "FB":
-			if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("FORMULA BOOK");
-			else retVal.setFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "FBV":
-			if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("FORMULA BOOK");
-			else retVal.setFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "MAN":
-			retVal.setFormMethod("MANUAL FORMULA");
-			break;
-		case "MANV":
-			retVal.setFormMethod("CUSTOM MANUAL VINYL SAFE MATCH");
-			break;
-		case "PCT":
-			int pct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
-			if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && pct>0) retVal.setFormMethod(pct + "% OF FORMULA BOOK");
-			else retVal.setFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "SCPCT":
-			int scpct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
-			if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && scpct>0) retVal.setFormMethod(scpct + "% FORMULA");
-			else retVal.setFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "VNL":
-			if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("VINYL SAFE FORMULA");
-			else retVal.setFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		}
-		
-		//OrigFormMethod(calculated from firstDisp else first record)
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		switch(retVal.getOrigFormSource()){
-		case "ENG":
-			if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("SHER-COLOR FORMULA");
-			else retVal.setOrigFormMethod("CUSTOM SHER-COLOR MATCH");
-			break;
-		case "FB":
-			if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("FORMULA BOOK");
-			else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "FBV":
-			if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("FORMULA BOOK");
-			else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "MAN":
-			retVal.setOrigFormMethod("MANUAL FORMULA");
-			break;
-		case "MANV":
-			retVal.setOrigFormMethod("CUSTOM MANUAL VINYL SAFE MATCH");
-			break;
-		case "PCT":
-			int pct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
-			if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && pct>0) retVal.setOrigFormMethod(pct + "% OF FORMULA BOOK");
-			else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "SCPCT":
-			int scpct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
-			if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && scpct>0) retVal.setOrigFormMethod(scpct + "% FORMULA");
-			else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		case "VNL":
-			if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("VINYL SAFE FORMULA");
-			else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
-			break;
-		}
-		
-
-		//Clrnt1 - Clrnt8
-		//ClrntAmt1 - ClrntAmt8
-		// Get initial clrnt list and unit nbr
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		List<CdsTranClrnt> totalClrntList = new ArrayList<CdsTranClrnt>();
-		for(CdsTranClrnt addme : cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList()){
-			CdsTranClrnt newClrnt = new CdsTranClrnt();
-			newClrnt.setClrntCode(addme.getClrntCode());
-			newClrnt.setClrntAmt(addme.getClrntAmt());
-			totalClrntList.add(newClrnt);
-		}
-		int unitNbr = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranMastUnit();
-		//walk through tran det, get all DISP CORR for this unitNbr and add to totalClrntList
-		for(int i=recPtr+1; i<cdsTranAll.getTranDetWithClrntList().size();i++){
-			if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranMastUnit()==unitNbr &&
-				cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP") &&
-				cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")){
-				// got one, add to totalClrntList
-				for(CdsTranClrnt addTranClrnt : cdsTranAll.getTranDetWithClrntList().get(i).getTranClrntList()){
-					boolean found = false;
-					for(int j=0;j<totalClrntList.size();j++){
-						if(totalClrntList.get(j).getClrntCode().equalsIgnoreCase(addTranClrnt.getClrntCode())){
-							// matching colorant code add amount to existing amount
-							found=true;
-							totalClrntList.get(j).setClrntAmt(totalClrntList.get(j).getClrntAmt()+addTranClrnt.getClrntAmt());
+			for (int i =0; i < cdsTranAll.getTranDetWithClrntList().size(); i++) {
+				if(lastGood>-1){
+					if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("MTCH") ||
+					   cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
+						if (cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")) {
+							lastCorr = i;
+						} else {
+							lastGood = i;
 						}
-					} // end for j
-					if(!found) totalClrntList.add(addTranClrnt); // not found add to end
+					}
+				} else {
+					if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("SAVE") ||
+					   cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("MTCH") ||
+					   cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
+						if (!cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")) {
+							lastGood = i;
+						}
+					}
+				} // end if stdDisp set
+			}
+			
+			// ControlNbr and LineNbr (from tranMast)
+			retVal.setControlNbr(cdsTranAll.getTranMast().getControlNbr());
+			retVal.setLineNbr(cdsTranAll.getTranMast().getLineNbr());
+			
+			// ColorComp, ColorId, ColorName (all from tranMast)
+			retVal.setColorComp(cdsTranAll.getTranMast().getColorComp());
+			retVal.setColorId(cdsTranAll.getTranMast().getColorId());
+			retVal.setColorName(cdsTranAll.getTranMast().getColorName());
+			
+			//OrigColorComp & OrigColorId (both from tranMast)
+			retVal.setOrigColorComp(cdsTranAll.getTranMast().getOrigColorComp());
+			retVal.setOrigColorId(cdsTranAll.getTranMast().getOrigColorId());
+			
+			// SalesNbr (from tranMast)
+			retVal.setSalesNbr(cdsTranAll.getTranMast().getSalesNbr());
+
+			// get prodNbr and size code from database
+			if(productService==null) System.out.println("productService is null");
+			
+			PosProd posProd = productService.readPosProd(retVal.getSalesNbr());
+			//System.out.println("salesnbr [" + retVal.getSalesNbr() + "] has a prodnbr of " + posProd.getProdNbr());
+			retVal.setProdNbr(posProd.getProdNbr());
+			retVal.setSizeCode(posProd.getSzCd());
+			
+			//clrntSysId
+			int recPtr = 0;
+			if (firstDispPos > -1) recPtr = firstDispPos;
+			else recPtr = lastGood;
+			retVal.setClrntSysId(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(0).getClrntSys());
+			retVal.setUserId("Imported");
+			
+			// ColorType (calculated from lastCorr else lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			if((cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("SAVE")||
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("DISP")) &&
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("SW")) {
+				// SW with SAVE or DISP
+				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
+					retVal.setColorType("SHERWIN-WILLIAMS");
 				}
 			}
-		}
-		// now totalClrntList just needs to be mapped to retVal colorant fields
-		for(int i=0; i<totalClrntList.size();i++){
-			switch(i){
-			case 0:
-				retVal.setClrnt1(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt1(totalClrntList.get(i).getClrntAmt());
+			if((cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("SAVE")||
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("DISP")) &&
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("COMP")) {
+				// COMP with SAVE or DISP
+				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
+					retVal.setColorType("COMPETITVE");
+				}
+			}
+			if((cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("SAVE")||
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("DISP") ||
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranCode().equalsIgnoreCase("MTCH")) &&
+			   (cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("CUST") ||
+				cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("CORR"))) {
+					// Cust with SAVE or DISP or MTCH
+					if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT")){
+						retVal.setColorType("CUSTOMMATCH");
+					}
+					if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MAN")||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MANV")){
+						retVal.setColorType("CUSTOM");
+					}
+			}
+			
+			//Orig ColorType (calculated from firstDisp else first)
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("SW")) {
+				// SW
+				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
+					retVal.setOrigColorType("SHERWIN-WILLIAMS");
+				}
+			}
+			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("COMP")) {
+				// COMP
+				if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FB") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("FBVS") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT") ||
+				   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("PCT")){
+					retVal.setOrigColorType("COMPETITVE");
+				}
+			}
+			if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSourceInd().equalsIgnoreCase("CUST")) {
+					// Cust
+					if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("ENG")||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("HP") ||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("VNL") ||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("SCPCT")){
+						retVal.setOrigColorType("CUSTOMMATCH");
+					}
+					if(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MAN")||
+					   cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource().equalsIgnoreCase("MANV")){
+						retVal.setOrigColorType("CUSTOM");
+					}
+			}
+			
+			//TranCode  CSW only has SAVE or DISP
+			if(cdsTranAll.getTranDetWithClrntList().get(lastGood).getTranDet().getTranCode().equalsIgnoreCase("SAVE")){
+				retVal.setTranCode("SAVE");
+			} else {
+				retVal.setTranCode("DISP");
+			};
+			
+			// InitTranDate
+			retVal.setInitTranDate(cdsTranAll.getTranDetWithClrntList().get(0).getTranDet().getTranDate());
+			
+			//LastTranDate (lastCorr else lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			retVal.setLastTranDate(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranDate());
+			
+			//FormSource (laseCorr else lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			retVal.setFormSource(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource());
+			
+			//OrigFormSourcepe (calculated from firstDisp else first)
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			retVal.setOrigFormSource(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormSource());
+			
+			//FormMethod (calc from lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			switch(retVal.getFormSource()){
+			case "ENG":
+				if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("SHER-COLOR FORMULA");
+				else retVal.setFormMethod("CUSTOM SHER-COLOR MATCH");
 				break;
-			case 1:
-				retVal.setClrnt2(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt2(totalClrntList.get(i).getClrntAmt());
+			case "FB":
+				if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("FORMULA BOOK");
+				else retVal.setFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 2:
-				retVal.setClrnt3(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt3(totalClrntList.get(i).getClrntAmt());
+			case "FBV":
+				if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("FORMULA BOOK");
+				else retVal.setFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 3:
-				retVal.setClrnt4(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt4(totalClrntList.get(i).getClrntAmt());
+			case "MAN":
+				retVal.setFormMethod("MANUAL FORMULA");
 				break;
-			case 4:
-				retVal.setClrnt5(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt5(totalClrntList.get(i).getClrntAmt());
+			case "MANV":
+				retVal.setFormMethod("CUSTOM MANUAL VINYL SAFE MATCH");
 				break;
-			case 5:
-				retVal.setClrnt6(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt6(totalClrntList.get(i).getClrntAmt());
+			case "PCT":
+				int pct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
+				if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && pct>0) retVal.setFormMethod(pct + "% OF FORMULA BOOK");
+				else retVal.setFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 6:
-				retVal.setClrnt7(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt7(totalClrntList.get(i).getClrntAmt());
+			case "SCPCT":
+				int scpct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
+				if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && scpct>0) retVal.setFormMethod(scpct + "% FORMULA");
+				else retVal.setFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 7:
-				retVal.setClrnt8(totalClrntList.get(i).getClrntCode());
-				retVal.setClrntAmt8(totalClrntList.get(i).getClrntAmt());
-				break;
-			default:
-				System.out.println("too many CdsTranClrnt records in list ("+i+") for controlNbr "+cdsTranAll.getTranMast().getControlNbr());
+			case "VNL":
+				if(retVal.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setFormMethod("VINYL SAFE FORMULA");
+				else retVal.setFormMethod("CUSTOM MANUAL MATCH");
 				break;
 			}
-		}
-		
-		//Orig Clrnts and ClrntAmts (firstDisp else firstRecord)
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		for(int i=0; i<cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().size();i++){
-			switch(i){
-			case 0:
-				retVal.setOrigClrnt1(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt1(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			
+			//OrigFormMethod(calculated from firstDisp else first record)
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			switch(retVal.getOrigFormSource()){
+			case "ENG":
+				if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("SHER-COLOR FORMULA");
+				else retVal.setOrigFormMethod("CUSTOM SHER-COLOR MATCH");
 				break;
-			case 1:
-				retVal.setOrigClrnt2(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt2(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			case "FB":
+				if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("FORMULA BOOK");
+				else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 2:
-				retVal.setOrigClrnt3(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt3(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			case "FBV":
+				if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("FORMULA BOOK");
+				else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 3:
-				retVal.setOrigClrnt4(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt4(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			case "MAN":
+				retVal.setOrigFormMethod("MANUAL FORMULA");
 				break;
-			case 4:
-				retVal.setOrigClrnt5(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt5(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			case "MANV":
+				retVal.setOrigFormMethod("CUSTOM MANUAL VINYL SAFE MATCH");
 				break;
-			case 5:
-				retVal.setOrigClrnt6(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt6(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			case "PCT":
+				int pct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
+				if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && pct>0) retVal.setOrigFormMethod(pct + "% OF FORMULA BOOK");
+				else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 6:
-				retVal.setOrigClrnt7(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt7(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+			case "SCPCT":
+				int scpct = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct();
+				if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS") && scpct>0) retVal.setOrigFormMethod(scpct + "% FORMULA");
+				else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
 				break;
-			case 7:
-				retVal.setOrigClrnt8(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
-				retVal.setOrigClrntAmt8(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
-				break;
-			default:
-				System.out.println("too many CdsTranClrnt records in list ("+i+") for controlNbr "+cdsTranAll.getTranMast().getControlNbr());
+			case "VNL":
+				if(retVal.getOrigColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")) retVal.setOrigFormMethod("VINYL SAFE FORMULA");
+				else retVal.setOrigFormMethod("CUSTOM MANUAL MATCH");
 				break;
 			}
-		}
-		
-		//ShotSize (firstDisp else firstRec)
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		retVal.setShotSize(Integer.parseInt(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(0).getClrntQual()));
-		
-		//FormPct (firstDisp else firstRec)
-		recPtr = 0;
-		if(firstDispPos>-1) recPtr = firstDispPos;
-		retVal.setFormPct(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct());
-		
-		//VinylSafe (based on calculated FormSource)
-		if(retVal.getFormSource().equalsIgnoreCase("VNL") || retVal.getFormSource().equalsIgnoreCase("MANV")){
-			retVal.setVinylSafe(true);
-		} else {
-			retVal.setVinylSafe(false);
-		}
+			
 
-		//PrimerId (lookup colorMast from ColorComp + ColorId)
-		CdsColorMast cdsColorMast = colorMastService.read(retVal.getColorComp(), retVal.getColorId());
-		if (cdsColorMast!=null){
-			retVal.setPrimerId(cdsColorMast.getPrimerId());
-		}
-		
-		//TODO RgbHex (calc from curve using shercolorcommon)
-		
-		//DE Primary/Secondary/Tertiary/Average (lastCorr else lastGood)
-		recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		retVal.setDeltaEPrimary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getDeltaePrimary());
-		retVal.setDeltaESecondary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getDeltaeSecondary());
-		retVal.setDeltaETertiary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getDeltaeTertiary());
-		retVal.setAverageDeltaE((retVal.getDeltaEPrimary()+retVal.getDeltaESecondary()+retVal.getDeltaETertiary())/3.0D);
-		
-		//CR Thick/Thin (lastCorr else lastGood)
-		//EngineDecisionValue (lastCorr else lastGood)
-		//FormulaRule (lastCorr else lastGood)
-		//Illum Primary/Secondary/Tertiary (lastCorr else lastGood)
-		//ColorEngVer (lastCorr else lastGood)
-		//Spd (lastCorr else lastGood)
-		//MetamerismIndex (lastCorr else lastGood)
-		//FormulationTime (lastCorr else lastGood)
-		recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		retVal.setCrThick(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getCrFilm1());
-		retVal.setCrThin(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getCrFilm2());
-		retVal.setEngDecisionValue(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getCost());
-		retVal.setFormulaRule(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getRule());
-		retVal.setIllumPrimary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getIllumPrimary());
-		retVal.setIllumSecondary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getIllumSecondary());
-		retVal.setIllumTertiary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getIllumTertiary());
-		retVal.setColorEngVer(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getColorEngVer());
-		retVal.setSpd(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSpecDev());
-		retVal.setMetamerismIndex(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getMetamerismIdx());
-		retVal.setFormulationTime(0D); //Not Available in SherColorPOS
-		
-		//ProjectedCurve and MeasuredCurve (lastCorr else lastGood)
-		recPtr = 0;
-		if(lastCorr>-1) recPtr = lastCorr;
-		else recPtr = lastGood;
-		retVal.setProjCurve(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getProjectCurve());
-		retVal.setMeasCurve(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getMeasureCurve());
-		
-		// JobFields (tranMast)
-		retVal.setJobField01(cdsTranAll.getTranMast().getcFld1());
-		retVal.setJobField02(cdsTranAll.getTranMast().getcFld2());
-		retVal.setJobField03(cdsTranAll.getTranMast().getcFld3());
-		retVal.setJobField04(cdsTranAll.getTranMast().getcFld4());
-		retVal.setJobField05(cdsTranAll.getTranMast().getcFld5());
-		retVal.setJobField06(cdsTranAll.getTranMast().getcFld6());
-		retVal.setJobField07(cdsTranAll.getTranMast().getcFld7());
-		retVal.setJobField08(cdsTranAll.getTranMast().getcFld8());
-		retVal.setJobField09(cdsTranAll.getTranMast().getcFld9());
-		retVal.setJobField10(cdsTranAll.getTranMast().getcFld10());
-		
-		//QuantityDispensed
-		int qty=0;
-		for (int i =0; i < cdsTranAll.getTranDetWithClrntList().size(); i++) {
-			if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
-				if(!cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")) qty++;
+			//Clrnt1 - Clrnt8
+			//ClrntAmt1 - ClrntAmt8
+			// Get initial clrnt list and unit nbr
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			List<CdsTranClrnt> totalClrntList = new ArrayList<CdsTranClrnt>();
+			for(CdsTranClrnt addme : cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList()){
+				CdsTranClrnt newClrnt = new CdsTranClrnt();
+				newClrnt.setClrntCode(addme.getClrntCode());
+				newClrnt.setClrntAmt(addme.getClrntAmt());
+				totalClrntList.add(newClrnt);
 			}
+			int unitNbr = cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getTranMastUnit();
+			//walk through tran det, get all DISP CORR for this unitNbr and add to totalClrntList
+			for(int i=recPtr+1; i<cdsTranAll.getTranDetWithClrntList().size();i++){
+				if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranMastUnit()==unitNbr &&
+					cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP") &&
+					cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")){
+					// got one, add to totalClrntList
+					for(CdsTranClrnt addTranClrnt : cdsTranAll.getTranDetWithClrntList().get(i).getTranClrntList()){
+						boolean found = false;
+						for(int j=0;j<totalClrntList.size();j++){
+							if(totalClrntList.get(j).getClrntCode().equalsIgnoreCase(addTranClrnt.getClrntCode())){
+								// matching colorant code add amount to existing amount
+								found=true;
+								totalClrntList.get(j).setClrntAmt(totalClrntList.get(j).getClrntAmt()+addTranClrnt.getClrntAmt());
+							}
+						} // end for j
+						if(!found) totalClrntList.add(addTranClrnt); // not found add to end
+					}
+				}
+			}
+			// now totalClrntList just needs to be mapped to retVal colorant fields
+			for(int i=0; i<totalClrntList.size();i++){
+				switch(i){
+				case 0:
+					retVal.setClrnt1(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt1(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 1:
+					retVal.setClrnt2(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt2(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 2:
+					retVal.setClrnt3(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt3(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 3:
+					retVal.setClrnt4(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt4(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 4:
+					retVal.setClrnt5(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt5(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 5:
+					retVal.setClrnt6(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt6(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 6:
+					retVal.setClrnt7(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt7(totalClrntList.get(i).getClrntAmt());
+					break;
+				case 7:
+					retVal.setClrnt8(totalClrntList.get(i).getClrntCode());
+					retVal.setClrntAmt8(totalClrntList.get(i).getClrntAmt());
+					break;
+				default:
+					System.out.println("too many CdsTranClrnt records in list ("+i+") for controlNbr "+cdsTranAll.getTranMast().getControlNbr());
+					break;
+				}
+			}
+			
+			//Orig Clrnts and ClrntAmts (firstDisp else firstRecord)
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			for(int i=0; i<cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().size();i++){
+				switch(i){
+				case 0:
+					retVal.setOrigClrnt1(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt1(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 1:
+					retVal.setOrigClrnt2(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt2(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 2:
+					retVal.setOrigClrnt3(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt3(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 3:
+					retVal.setOrigClrnt4(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt4(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 4:
+					retVal.setOrigClrnt5(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt5(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 5:
+					retVal.setOrigClrnt6(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt6(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 6:
+					retVal.setOrigClrnt7(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt7(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				case 7:
+					retVal.setOrigClrnt8(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntCode());
+					retVal.setOrigClrntAmt8(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(i).getClrntAmt());
+					break;
+				default:
+					System.out.println("too many CdsTranClrnt records in list ("+i+") for controlNbr "+cdsTranAll.getTranMast().getControlNbr());
+					break;
+				}
+			}
+			
+			//ShotSize (firstDisp else firstRec)
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			retVal.setShotSize(Integer.parseInt(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranClrntList().get(0).getClrntQual()));
+			
+			//FormPct (firstDisp else firstRec)
+			recPtr = 0;
+			if(firstDispPos>-1) recPtr = firstDispPos;
+			retVal.setFormPct(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getFormPct());
+			
+			//VinylSafe (based on calculated FormSource)
+			if(retVal.getFormSource().equalsIgnoreCase("VNL") || retVal.getFormSource().equalsIgnoreCase("MANV")){
+				retVal.setVinylSafe(true);
+			} else {
+				retVal.setVinylSafe(false);
+			}
+
+			//PrimerId (lookup colorMast from ColorComp + ColorId)
+			CdsColorMast cdsColorMast = colorMastService.read(retVal.getColorComp(), retVal.getColorId());
+			if (cdsColorMast!=null){
+				retVal.setPrimerId(cdsColorMast.getPrimerId());
+			}
+			
+			//TODO RgbHex (calc from curve using shercolorcommon)
+			
+			//DE Primary/Secondary/Tertiary/Average (lastCorr else lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			retVal.setDeltaEPrimary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getDeltaePrimary());
+			retVal.setDeltaESecondary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getDeltaeSecondary());
+			retVal.setDeltaETertiary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getDeltaeTertiary());
+			retVal.setAverageDeltaE((retVal.getDeltaEPrimary()+retVal.getDeltaESecondary()+retVal.getDeltaETertiary())/3.0D);
+			
+			//CR Thick/Thin (lastCorr else lastGood)
+			//EngineDecisionValue (lastCorr else lastGood)
+			//FormulaRule (lastCorr else lastGood)
+			//Illum Primary/Secondary/Tertiary (lastCorr else lastGood)
+			//ColorEngVer (lastCorr else lastGood)
+			//Spd (lastCorr else lastGood)
+			//MetamerismIndex (lastCorr else lastGood)
+			//FormulationTime (lastCorr else lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			retVal.setCrThick(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getCrFilm1());
+			retVal.setCrThin(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getCrFilm2());
+			retVal.setEngDecisionValue(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getCost());
+			retVal.setFormulaRule(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getRule());
+			retVal.setIllumPrimary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getIllumPrimary());
+			retVal.setIllumSecondary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getIllumSecondary());
+			retVal.setIllumTertiary(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getIllumTertiary());
+			retVal.setColorEngVer(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getColorEngVer());
+			retVal.setSpd(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getSpecDev());
+			retVal.setMetamerismIndex(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getMetamerismIdx());
+			retVal.setFormulationTime(0D); //Not Available in SherColorPOS
+			
+			//ProjectedCurve and MeasuredCurve (lastCorr else lastGood)
+			recPtr = 0;
+			if(lastCorr>-1) recPtr = lastCorr;
+			else recPtr = lastGood;
+			retVal.setProjCurve(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getProjectCurve());
+			retVal.setMeasCurve(cdsTranAll.getTranDetWithClrntList().get(recPtr).getTranDet().getMeasureCurve());
+			
+			// JobFields (tranMast)
+			retVal.setJobField01(cdsTranAll.getTranMast().getcFld1());
+			retVal.setJobField02(cdsTranAll.getTranMast().getcFld2());
+			retVal.setJobField03(cdsTranAll.getTranMast().getcFld3());
+			retVal.setJobField04(cdsTranAll.getTranMast().getcFld4());
+			retVal.setJobField05(cdsTranAll.getTranMast().getcFld5());
+			retVal.setJobField06(cdsTranAll.getTranMast().getcFld6());
+			retVal.setJobField07(cdsTranAll.getTranMast().getcFld7());
+			retVal.setJobField08(cdsTranAll.getTranMast().getcFld8());
+			retVal.setJobField09(cdsTranAll.getTranMast().getcFld9());
+			retVal.setJobField10(cdsTranAll.getTranMast().getcFld10());
+			
+			//QuantityDispensed
+			int qty=0;
+			for (int i =0; i < cdsTranAll.getTranDetWithClrntList().size(); i++) {
+				if(cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getTranCode().equalsIgnoreCase("DISP")){
+					if(!cdsTranAll.getTranDetWithClrntList().get(i).getTranDet().getSourceInd().equalsIgnoreCase("CORR")) qty++;
+				}
+			}
+			retVal.setQuantityDispensed(qty);
+		} catch (Exception e) {
+			System.out.println("ConvertToWeb threw an exception ");
+			e.printStackTrace();
+			retVal = null;
 		}
-		retVal.setQuantityDispensed(qty);
 			
 		return retVal;
 	}

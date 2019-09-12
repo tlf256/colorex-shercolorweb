@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
+import org.springframework.web.util.HtmlUtils;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -28,6 +31,7 @@ import com.sherwin.shercolor.common.validation.ColorValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import com.sun.prism.impl.Disposer.Record;
 
 
 
@@ -44,7 +48,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	private CdsColorMast thisColor;
 	private String reqGuid;
-
+	private String colorData;
+	
 	private String colorComp;
 	private String colorID;
 	private String colorName;
@@ -124,7 +129,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		
 		//BKP 2018-03-09 check foe null/empty colorList
 		if (colorList != null) {
+			int index = 0;
 			for (CdsColorMast item : colorList) {
+				
 				if (coType=="SW") {
 					//only display locID if present.
 					if (item.getLocId()==null) {
@@ -132,23 +139,98 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					} else {
 						theLabel = item.getColorId() + " " + item.getColorName() + " " +  item.getLocId();
 					}
-					theValue = item.getColorComp() + Character.toString((char) 31) + " " + item.getColorId();
+					//theValue = item.getColorComp() + Character.toString((char) 31) + " " + item.getColorId();
 					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
+					theValue = item.getColorComp() + " " + item.getColorId();
 				} else {
 					theLabel = item.getColorComp() + " " + item.getColorId() + " " + item.getColorName();
-					theValue = item.getColorComp() + Character.toString((char) 31) + " " + item.getColorId();
+					//theValue = item.getColorComp() + Character.toString((char) 31) + " " + item.getColorId();
 					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
+					theValue = item.getColorComp() + " " + item.getColorId();
 				}
-			    outList.add(new autoComplete(theLabel,theValue));
+				autoComplete autoComplete = new autoComplete(theLabel,theValue);
+				autoComplete.setColorNumber(item.getColorId());
+				autoComplete.setCompanyName(item.getColorComp());
+			    outList.add(autoComplete);
+			    if (index > 98) {
+			    	break;
+			    }
+			    index++;
 			} 
 		}
 		return outList;
 	}
 	
-	
-	public String execute() {
+	public void parseColorData(String colorData) {
 
+		try {
+			colorData = URLDecoder.decode(colorData,"UTF-8");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
+		if (colorData.equals("")) {
+			// The user typed nothing, so do nothing
+		} 
+		else if (colorData.equals("[]")){
+			// The user typed a color id or name that does not exist
+			setColorID(partialColorNameOrId);
+			if (selectedCoTypes.equalsIgnoreCase("SW")) {
+				setColorComp("SHERWIN-WILLIAMS");
+			} else {
+				setColorComp("COMPETITIVE");
+			}
+		}
+		else {
+			// Colordata contains JSON so it sequentially gets broken down to parse an array of
+			// autocomplete results and returns the value typed into the search bar
+			if (colorData.contains("[")) {
+				colorData = colorData.replace("[", "");
+				colorData = colorData.replace("]", "");
+				colorData = colorData.replace("{", "");
+				colorData = colorData.replace("\"", "");
+				String[] outList = colorData.split("},");
+				boolean foundMatch = false;
+				for (String record : outList) {
+					String[] data = record.split(",");
+					String theValue = data[3].replaceAll("value:", "");
+					// The below replace statement fixes a bug when there
+					// is only one object in the autocomplete list
+					theValue = theValue.replace("}", "");
+					if (partialColorNameOrId.equals(theValue)) {
+						foundMatch = true;
+						setColorID(data[0].replaceAll("colorNumber:", ""));
+						setColorComp(data[1].replaceAll("companyName:", ""));
+						break;
+					}
+				}
+				if (foundMatch == false) {
+					setColorID(partialColorNameOrId);
+					if (selectedCoTypes.equalsIgnoreCase("SW")) {
+						setColorComp("SHERWIN-WILLIAMS");
+					} else {
+						setColorComp("COMPETITIVE");
+					}
+				}
+			} 
+			// colordata does not contain JSON so it directly assigns the colordata
+			// as the colorId and then uses the selectedCoTypes to assign the colorComp
+			else {
+				setColorID(colorData);
+				if (selectedCoTypes.equalsIgnoreCase("SW")) {
+					setColorComp("SHERWIN-WILLIAMS");
+				} else {
+					setColorComp("COMPETITIVE");
+				}
+			}	
+		}
+	}
+	public String execute() {
+		
+		
 		List<String> baseList;
+		colorComp = "";
+		colorID = "";
 		String rgbHex = null;
 		String primerId = null;
 		Boolean vinylColor = false;
@@ -180,35 +262,25 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					colorType = "CUSTOMMATCH";
 
 				} else {
-					String[] compAndId = new String[10];
-					compAndId = partialColorNameOrId.split(String.valueOf((char) 31));
-					//System.out.println("partialcolorNameOrId=" + partialColorNameOrId);
-					//compAndId = partialColorNameOrId.split(String.valueOf((char) 0));
-					//System.out.println("color split done, length is " + compAndId.length);
-					if (compAndId.length==0) {
-						colorComp = "";
-						colorID = "";
-					} else if (compAndId.length==1) {
-						//something was entered and not looked up, most likely.  Put what was
-						// entered in as colorID, and then check if it's SW we can populate 
-						//colorComp - otherwise, leave it blank.
-						colorComp = "";
-						if (selectedCoTypes.equalsIgnoreCase("SW")) {
-							colorComp = "SHERWIN-WILLIAMS";
-							colorType = "SHERWIN-WILLIAMS";
-						}
-						colorID = compAndId[0];
-					} else {
-						colorComp = compAndId[0];
-						colorID = compAndId[1];
-						if (selectedCoTypes.equalsIgnoreCase("SW")) {
-							colorType = "SHERWIN-WILLIAMS";
-						} else {
-							colorType = "COMPETITIVE";
-						}
+					
+					// This conditional helps prevent times where colorData doesn't get populated
+					// when the user quickly enters in a numnber and does a next operation before
+					// the auto complete gets triggered
+					if (colorData.equals("")) {
+						colorData = Encode.forHtml(partialColorNameOrId.trim());
 					}
-					colorComp = colorComp.trim().toUpperCase();
-					colorID = colorID.trim().toUpperCase();
+					// Following method call should be able to cover all conditionals previously
+					// implemented here
+					
+					parseColorData(colorData);
+					colorID = HtmlUtils.htmlUnescape(colorID);
+					colorComp = HtmlUtils.htmlUnescape(colorComp);
+					
+					if (selectedCoTypes.equalsIgnoreCase("SW")) {
+						colorType = "SHERWIN-WILLIAMS";
+					} else {
+						colorType = "COMPETITIVE";
+					}
 					
 					// Try getting an RGB value for the object.
 					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
@@ -456,6 +528,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 	public void setReqGuid(String reqGuid) {
 		this.reqGuid = reqGuid;
+	}
+	
+	public String getColorData(String colorData) {
+		return colorData;
+	}
+	
+	public void setColorData(String colorData) {
+		this.colorData = colorData;
 	}
 
 	public ColorService getColorService() {

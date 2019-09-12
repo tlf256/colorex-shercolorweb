@@ -16,11 +16,11 @@
 		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 	
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-		<script type="text/javascript" charset="utf-8" src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
 				$("[id^=selectedCoTypes]").change(function(){
@@ -117,6 +117,7 @@
 				<div class="row">
 						<div class="col-lg-2 col-md-2 col-sm-1">
 							<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
+							<s:hidden name="colorData" id="colorData" value=""/>
 						</div>
 						<div class="col-lg-8 col-md-8 col-sm-10">
 							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="Enter Color Name or Number" placeholder="Choose color type, then enter color name or number here" size="30" maxlength="30" cssStyle="font-size: 16px;" autofocus="autofocus"  />

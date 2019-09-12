@@ -15,14 +15,14 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <s:set var="thisGuid" value="reqGuid" />
 <s:set var="thisUOM" value="UOM" />
-<script type="text/javascript" charset="utf-8" src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8"src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Tinter.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Dispense.js"></script>
 <script type="text/javascript">
 var shotList = [];

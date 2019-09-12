@@ -20,6 +20,7 @@ import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
+import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
@@ -27,6 +28,7 @@ import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
+import com.sherwin.shercolor.customershercolorweb.web.model.JobHistoryInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
@@ -62,6 +64,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	
 	List<CustWebTran> tranHistory;
 	
+	List<JobHistoryInfo> jobHistory;
+	
 	public String display() {
 		
 		try {
@@ -84,10 +88,37 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			reqObj.setJobFieldList(jobFieldList);
 			
 			sessionMap.put(reqGuid, reqObj);
-
+			
 			tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
-
-			return SUCCESS;
+			jobHistory = new ArrayList<JobHistoryInfo>();
+			
+			//int index= 0;
+			for (CustWebTran webTran : tranHistory) {
+				if(webTran.isDeleted()) {
+					continue;
+				} else {
+					JobHistoryInfo job = new JobHistoryInfo();
+					job.setClrntSysId(webTran.getClrntSysId());
+					job.setColorId(webTran.getColorId());
+					job.setColorName(webTran.getColorName());
+					job.setControlNbr(webTran.getControlNbr());
+					job.setProdNbr(webTran.getProdNbr());
+					job.setQuantityDispensed(webTran.getQuantityDispensed());
+					job.setRgbHex(webTran.getRgbHex());
+					job.setSizeCode(webTran.getSizeCode());
+					job.setRecipe(getDefaultRecipeInfo(webTran));
+					if (job.getRecipe().isEmpty()) {
+						job.setNumberOfColorants(0);
+					} else {
+						job.setNumberOfColorants(job.getRecipe().size());
+					}
+					job.setJobFieldList(getJobFields(webTran));
+					jobHistory.add(job);
+				}
+				//index++;
+			}
+			
+				return SUCCESS;
 		
 		} catch (HibernateException he) {
 			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
@@ -139,6 +170,10 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setRgbHex(webTran.getRgbHex());
 		reqObj.setSalesNbr(webTran.getSalesNbr());
 		reqObj.setProdNbr(webTran.getProdNbr());
+		
+		PosProd posProd = productService.readPosProd(reqObj.getSalesNbr());
+		reqObj.setUpc(posProd.getUpc());
+		
 		reqObj.setSizeCode(webTran.getSizeCode());
 		reqObj.setSizeText(productService.getSizeText(webTran.getSizeCode()));
 		reqObj.setClrntSys(webTran.getClrntSysId());
@@ -152,6 +187,153 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		
 		//formula fields
 		FormulaInfo formula = new FormulaInfo();
+		List<FormulaIngredient> recipe = new ArrayList<FormulaIngredient>();
+		
+		recipe = getDefaultRecipeInfo(webTran);
+		
+		
+		formula.setIngredients(recipe);
+		formula.setAverageDeltaE(webTran.getAverageDeltaE());
+		formula.setClrntSysId(webTran.getClrntSysId());
+		if(webTran.getClrntSysId()!=null){
+			CdsClrntSys cdsClrntSys = colorantService.getColorantSystem(webTran.getClrntSysId());
+			formula.setClrntSysName(cdsClrntSys.getClrntSysName());
+			List<String> incrHdr = colorantService.getColorantIncrementHeader(webTran.getClrntSysId());
+			formula.setIncrementHdr(incrHdr);
+		}
+		formula.setColorantCost(webTran.getEngDecisionValue());
+		formula.setColorComp(webTran.getColorComp());
+		formula.setColorEngineVersion(webTran.getColorEngVer());
+		formula.setColorId(webTran.getColorId());
+		formula.setContrastRatioThick(webTran.getCrThick());
+		formula.setContrastRatioThin(webTran.getCrThin());
+		Double[] deltaes = {0D,0D,0D};
+		deltaes[0] = webTran.getDeltaEPrimary();
+		deltaes[1] = webTran.getDeltaESecondary();
+		deltaes[2] = webTran.getDeltaETertiary();
+		formula.setDeltaEs(deltaes);
+		//formula.setDeltaEComment(webTran.getDeltaEComement()); not saved to DB
+		//formula.setDeltaEOverDarkThick(webTran.getDeltaEOverDarkThick); not saved to DB
+		//formula.setDeltaEOverDarkThin(webTran.getDeltaEOverDarkThin); not saved to DB
+		//formula.setDeltaEThin(webTran.getDeltaEThin()); not saved to DB
+		formula.setDeltaEWarning("");
+		formula.setFormulationTime(webTran.getFormulationTime());
+		String[] illums = {"","",""};
+		illums[0] = webTran.getIllumPrimary();
+		illums[1] = webTran.getIllumSecondary();
+		illums[2] = webTran.getIllumTertiary();
+		formula.setIllums(illums);
+		formula.setMetamerismIndex(webTran.getMetamerismIndex());
+		formula.setPercent(webTran.getFormPct());
+		formula.setProdNbr(webTran.getProdNbr());
+		formula.setRule(webTran.getFormulaRule());
+		formula.setSalesNbr(webTran.getSalesNbr());
+		formula.setSizeCode(webTran.getSizeCode());
+		//formula.setSource(webTran.getFormSource());
+		//formula.setSourceDescr(webTran.getSourceDescr():
+		formula.setSpd(webTran.getSpd());
+	
+		formula.setSource(webTran.getFormSource());
+		formula.setSourceDescr(webTran.getFormMethod());
+		
+		Double[] measCurve = new Double[40];
+		Arrays.fill(measCurve, 0D);
+		if(webTran.getMeasCurve()!=null && webTran.getMeasCurve().length==40){
+			for(int i=0;i<40;i++){
+				measCurve[i] = webTran.getMeasCurve()[i];			}
+		}
+		formula.setMeasuredCurve(measCurve);
+		Double[] projCurve = new Double[40];
+		Arrays.fill(projCurve, 0D);
+		if(webTran.getProjCurve()!=null && webTran.getProjCurve().length==40){
+			for(int i=0;i<40;i++){
+				projCurve[i] = webTran.getProjCurve()[i];			}
+		}
+		formula.setProjectedCurve(projCurve);
+		reqObj.setDisplayFormula(formula);
+		
+		// BMW: Update - 1/28/2019 - Put the JobField init code into it's own method so it can be
+		//							 called again to pass JobFields to the JobHistoryInfo object.
+		List<JobField> jobFields = getJobFields(webTran);
+		reqObj.setJobFieldList(jobFields);
+		
+		// lookup fields not stored to DB tran record
+		CdsProd cdsProd = productService.readCdsProd(webTran.getSalesNbr());
+		if(cdsProd!=null){
+			reqObj.setBase(cdsProd.getBase());
+			reqObj.setComposite(cdsProd.getComposite());
+			reqObj.setFinish(cdsProd.getFinish());
+			reqObj.setIntExt(cdsProd.getIntExt());
+			reqObj.setKlass(cdsProd.getKlass());
+			reqObj.setQuality(cdsProd.getQuality());
+		}
+		
+		// lookup color fields
+		CdsColorMast cdsColorMast = colorMastService.read(webTran.getColorComp(), webTran.getColorId());
+		if(cdsColorMast!=null){
+			reqObj.setColorVinylOnly(cdsColorMast.getIsVinylSiding());
+		}
+		
+		// set a blank formulaResponse
+		reqObj.setFormResponse(new FormulationResponse());
+		reqObj.getFormResponse().setMessages(new ArrayList<SwMessage>());
+		
+		reqObj.setQuantityDispensed(webTran.getQuantityDispensed());
+	}
+	
+	public void setSession(Map<String, Object> sessionMap) {
+		this.setSessionMap(sessionMap);
+	}
+
+	public Map<String, Object> getSessionMap() {
+		return sessionMap;
+	}
+
+	public void setSessionMap(Map<String, Object> sessionMap) {
+		this.sessionMap = sessionMap;
+	}
+
+	public String getReqGuid() {
+		return reqGuid;
+	}
+
+	public void setReqGuid(String reqGuid) {
+		this.reqGuid = reqGuid;
+	}
+	public List<CustWebTran> getTranHistory() {
+		return tranHistory;
+	}
+	
+	public List<JobHistoryInfo> getJobHistory() {
+		return jobHistory;
+	}
+	
+	public List<JobField> getJobFieldList() {
+		return jobFieldList;
+	}
+
+	public void setJobFieldList(List<JobField> jobFieldList) {
+		this.jobFieldList = jobFieldList;
+	}
+
+	public int getLookupControlNbr() {
+		return lookupControlNbr;
+	}
+
+	public void setLookupControlNbr(int lookupControlNbr) {
+		this.lookupControlNbr = lookupControlNbr;
+	}
+
+	public FormulaInfo getDisplayFormula() {
+		return displayFormula;
+	}
+
+	public void setDisplayFormula(FormulaInfo displayFormula) {
+		this.displayFormula = displayFormula;
+	}
+	
+	protected List<FormulaIngredient> getDefaultRecipeInfo(CustWebTran webTran){
+		
 		List<FormulaIngredient> recipe = new ArrayList<FormulaIngredient>();
 		
 		if(webTran.getClrnt1()!=null){
@@ -219,71 +401,17 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			recipe.add(item8);
 		}
 		// Complete formulaInfo with following two fields
-		formulationService.fillIngredientInfoFromTintSysId(recipe);
-		formulationService.convertShotsToIncr(recipe);
-		
-		formula.setIngredients(recipe);
-		formula.setAverageDeltaE(webTran.getAverageDeltaE());
-		formula.setClrntSysId(webTran.getClrntSysId());
-		if(webTran.getClrntSysId()!=null){
-			CdsClrntSys cdsClrntSys = colorantService.getColorantSystem(webTran.getClrntSysId());
-			formula.setClrntSysName(cdsClrntSys.getClrntSysName());
-			List<String> incrHdr = colorantService.getColorantIncrementHeader(webTran.getClrntSysId());
-			formula.setIncrementHdr(incrHdr);
+		if (!recipe.isEmpty()) {
+			formulationService.fillIngredientInfoFromTintSysId(recipe);
+			formulationService.convertShotsToIncr(recipe);
 		}
-		formula.setColorantCost(webTran.getEngDecisionValue());
-		formula.setColorComp(webTran.getColorComp());
-		formula.setColorEngineVersion(webTran.getColorEngVer());
-		formula.setColorId(webTran.getColorId());
-		formula.setContrastRatioThick(webTran.getCrThick());
-		formula.setContrastRatioThin(webTran.getCrThin());
-		Double[] deltaes = {0D,0D,0D};
-		deltaes[0] = webTran.getDeltaEPrimary();
-		deltaes[1] = webTran.getDeltaESecondary();
-		deltaes[2] = webTran.getDeltaETertiary();
-		formula.setDeltaEs(deltaes);
-		//formula.setDeltaEComment(webTran.getDeltaEComement()); not saved to DB
-		//formula.setDeltaEOverDarkThick(webTran.getDeltaEOverDarkThick); not saved to DB
-		//formula.setDeltaEOverDarkThin(webTran.getDeltaEOverDarkThin); not saved to DB
-		//formula.setDeltaEThin(webTran.getDeltaEThin()); not saved to DB
-		formula.setDeltaEWarning("");
-		formula.setFormulationTime(webTran.getFormulationTime());
-		String[] illums = {"","",""};
-		illums[0] = webTran.getIllumPrimary();
-		illums[1] = webTran.getIllumSecondary();
-		illums[2] = webTran.getIllumTertiary();
-		formula.setIllums(illums);
-		formula.setMetamerismIndex(webTran.getMetamerismIndex());
-		formula.setPercent(webTran.getFormPct());
-		formula.setProdNbr(webTran.getProdNbr());
-		formula.setRule(webTran.getFormulaRule());
-		formula.setSalesNbr(webTran.getSalesNbr());
-		formula.setSizeCode(webTran.getSizeCode());
-		//formula.setSource(webTran.getFormSource());
-		//formula.setSourceDescr(webTran.getSourceDescr():
-		formula.setSpd(webTran.getSpd());
-	
-		formula.setSource(webTran.getFormSource());
-		formula.setSourceDescr(webTran.getFormMethod());
 		
-		Double[] measCurve = new Double[40];
-		Arrays.fill(measCurve, 0D);
-		if(webTran.getMeasCurve()!=null && webTran.getMeasCurve().length==40){
-			for(int i=0;i<40;i++){
-				measCurve[i] = webTran.getMeasCurve()[i];			}
-		}
-		formula.setMeasuredCurve(measCurve);
-		Double[] projCurve = new Double[40];
-		Arrays.fill(projCurve, 0D);
-		if(webTran.getProjCurve()!=null && webTran.getProjCurve().length==40){
-			for(int i=0;i<40;i++){
-				projCurve[i] = webTran.getProjCurve()[i];			}
-		}
-		formula.setProjectedCurve(projCurve);
-		reqObj.setDisplayFormula(formula);
-		
-		List<JobField> jobFields = new ArrayList<JobField>();
+		return recipe;
+	}
+
+	protected List<JobField> getJobFields(CustWebTran webTran){
 		List<CustWebJobFields> CustWebJobFields = customerService.getCustJobFields(webTran.getCustomerId());
+		List<JobField> jobFields = new ArrayList<JobField>();
 		int ctr = 0;
 		for(CustWebJobFields thisJobField : CustWebJobFields){
 			ctr++;
@@ -302,79 +430,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			if(jobField.getEnteredValue()==null) jobField.setEnteredValue("");
 			jobFields.add(jobField);
 		}
-		reqObj.setJobFieldList(jobFields);
 		
-		// lookup fields not stored to DB tran record
-		CdsProd cdsProd = productService.readCdsProd(webTran.getSalesNbr());
-		if(cdsProd!=null){
-			reqObj.setBase(cdsProd.getBase());
-			reqObj.setComposite(cdsProd.getComposite());
-			reqObj.setFinish(cdsProd.getFinish());
-			reqObj.setIntExt(cdsProd.getIntExt());
-			reqObj.setKlass(cdsProd.getKlass());
-			reqObj.setQuality(cdsProd.getQuality());
-		}
-		
-		// lookup color fields
-		CdsColorMast cdsColorMast = colorMastService.read(webTran.getColorComp(), webTran.getColorId());
-		if(cdsColorMast!=null){
-			reqObj.setColorVinylOnly(cdsColorMast.getIsVinylSiding());
-		}
-		
-		// set a blank formulaResponse
-		reqObj.setFormResponse(new FormulationResponse());
-		reqObj.getFormResponse().setMessages(new ArrayList<SwMessage>());
-		
-		reqObj.setQuantityDispensed(webTran.getQuantityDispensed());
+		return jobFields;
 	}
-	
-	public void setSession(Map<String, Object> sessionMap) {
-		this.setSessionMap(sessionMap);
-	}
-
-	public Map<String, Object> getSessionMap() {
-		return sessionMap;
-	}
-
-	public void setSessionMap(Map<String, Object> sessionMap) {
-		this.sessionMap = sessionMap;
-	}
-
-	public String getReqGuid() {
-		return reqGuid;
-	}
-
-	public void setReqGuid(String reqGuid) {
-		this.reqGuid = reqGuid;
-	}
-	public List<CustWebTran> getTranHistory() {
-		return tranHistory;
-	}
-	
-	public List<JobField> getJobFieldList() {
-		return jobFieldList;
-	}
-
-	public void setJobFieldList(List<JobField> jobFieldList) {
-		this.jobFieldList = jobFieldList;
-	}
-
-	public int getLookupControlNbr() {
-		return lookupControlNbr;
-	}
-
-	public void setLookupControlNbr(int lookupControlNbr) {
-		this.lookupControlNbr = lookupControlNbr;
-	}
-
-	public FormulaInfo getDisplayFormula() {
-		return displayFormula;
-	}
-
-	public void setDisplayFormula(FormulaInfo displayFormula) {
-		this.displayFormula = displayFormula;
-	}
-
-	
 
 }
