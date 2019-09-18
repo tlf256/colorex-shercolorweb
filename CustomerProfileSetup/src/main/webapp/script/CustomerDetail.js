@@ -15,14 +15,14 @@ $(document).ready(function() {
 		$("#inactivemodal").modal('show');
 	});
 	
-	var eulaPdfTable = $('#eulapdf').DataTable({
-		dom: 'ifBrtp',
-		buttons : [
-			'copy', 'print',
-        ],
-        "paginate": false,
-        "scrollY" : 500,
-        "pagingType": "full"
-    });
+	$("#download_modal").on('show.bs.modal', function(){
+		$("#eulapdf").html('<iframe src="downloadEula.action" class="embed-responsive-item" allowfullscreen></iframe>');
+	});
 	
 });
+
+function downloadPdf(){
+	
+	$("#download_modal").modal('show');
+	
+}

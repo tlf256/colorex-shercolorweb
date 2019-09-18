@@ -52,6 +52,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	public String read() {
 		try {
 			List<String> clrntlist = new ArrayList<String>();
+			List<CustParms> custList = new ArrayList<CustParms>();
 			List<JobFields> jobFieldList = new ArrayList<JobFields>();
 			List<LoginTrans> loginList = new ArrayList<LoginTrans>();
 			
@@ -60,9 +61,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			RequestObject reqObj = new RequestObject();
 			
 			reqObj.setExistingCustomer(true);
-			
-			CustParms customer = new CustParms();
-			
+						
 			updateMode = true;
 			//check for job history
 			List<CustWebTran> jobHistory = tranHistoryService.getCustomerJobs(lookupCustomerId);
@@ -76,22 +75,27 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 			//map custwebparms to model object
 			for(CustWebParms webparms : custParms) {
-				customer.setCustomerId(Encode.forHtml(webparms.getCustomerId()));
+				CustParms cp = new CustParms();
+				cp.setCustomerId(webparms.getCustomerId());
 				if(webparms.getCustomerId().length()==9) {
 					reqObj.setAccttype("natlWdigits");
 				}else {
 					reqObj.setAccttype("loginRequired");
 				}
-				customer.setSwuiTitle(Encode.forHtml(webparms.getSwuiTitle()));
-				customer.setCdsAdlFld(Encode.forHtml(webparms.getCdsAdlFld()));
-				clrntlist.add(Encode.forHtml(webparms.getClrntSysId()));
-				customer.setActive(webparms.isActive());
+				cp.setSeqNbr(webparms.getSeqNbr());
+				cp.setSwuiTitle(webparms.getSwuiTitle());
+				cp.setCdsAdlFld(webparms.getCdsAdlFld());
+				cp.setClrntSysId(webparms.getClrntSysId());
+				clrntlist.add(webparms.getClrntSysId());
+				cp.setActive(webparms.isActive());
+				custList.add(cp);
 			}
-						
-			reqObj.setCustomerId(allowCharacters(customer.getCustomerId()));
-			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			reqObj.setActive(customer.isActive());
+			
+			reqObj.setCustList(custList);
+			reqObj.setCustomerId(allowCharacters(custParms.get(0).getCustomerId()));
+			reqObj.setSwuiTitle(allowCharacters(custParms.get(0).getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(custParms.get(0).getCdsAdlFld()));
+			reqObj.setActive(custParms.get(0).isActive());
 			reqObj.setClrntList(clrntlist);
 			
 			List<CustWebJobFields> jobFields = customerService.getCustJobFields(lookupCustomerId);
@@ -100,28 +104,14 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			for(CustWebJobFields jobs : jobFields) {
 				JobFields fields = new JobFields();
 				fields.setSeqNbr(jobs.getSeqNbr());
-				fields.setScreenLabel(Encode.forHtml(jobs.getScreenLabel()));
-				fields.setFieldDefault(Encode.forHtml(jobs.getFieldDefault()));
+				fields.setScreenLabel(jobs.getScreenLabel());
+				fields.setFieldDefault(jobs.getFieldDefault());
 				fields.setEntryRequired(jobs.isEntryRequired());
 				fields.setActive(jobs.isActive());
 				jobFieldList.add(fields);
 			}
 			
-			// create new arraylist to hold fields with allowed special characters
-			List<JobFields> jflist = new ArrayList<JobFields>();
-			
-			// allow certain special characters 
-			for(JobFields jf : jobFieldList) {
-				JobFields jobfields = new JobFields();
-				jobfields.setSeqNbr(jf.getSeqNbr());
-				jobfields.setScreenLabel(allowCharacters(jf.getScreenLabel()));
-				jobfields.setFieldDefault(allowCharacters(jf.getFieldDefault()));
-				jobfields.setEntryRequired(jf.isEntryRequired());
-				jobfields.setActive(jf.isActive());
-				jflist.add(jobfields);
-			}
-			
-			reqObj.setJobFieldList(jflist);
+			reqObj.setJobFieldList(jobFieldList);
 			
 			List<CustWebLoginTransform> loginTrans = customerService.getCustLoginTrans(lookupCustomerId);
 			//if customer has login ids, map custweblogintransform to model object
@@ -169,6 +159,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			if(sherColorWebEula.getCustomerId() != null) {
 				reqObj.setEula(sherColorWebEula);
+				reqObj.setUploadedEula(true);
 			}
 			
 			sessionMap.put("CustomerDetail", reqObj);
@@ -189,42 +180,112 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		try {			
 			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
-			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
-			List<CustWebJobFields> jobList = new ArrayList<CustWebJobFields>();
-			List<CustWebLoginTransform> loginList = new ArrayList<CustWebLoginTransform>();
-			
 			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
 			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(reqObj.getCustomerId());
 			
-			//get date
-			Date sqlDate = new Date(System.currentTimeMillis());
-			//map session values to custwebparms domain object
-			for(CustParms cust : reqObj.getCustList()) {
-				CustWebParms custWebParms = new CustWebParms();
-				custWebParms.setCustomerId(cust.getCustomerId());
-				custWebParms.setSeqNbr(cust.getSeqNbr());
-				custWebParms.setAbbrev("SW");
-				custWebParms.setStoreComp("SW");
-				custWebParms.setColorComp("SHERWIN-WILLIAMS");
-				custWebParms.setProdComp("SW");
-				custWebParms.setClrntSysId(cust.getClrntSysId());
-				custWebParms.setActive(cust.isActive());
-				custWebParms.setSwuiTyp("SW");
-				custWebParms.setSwuiTitle(cust.getSwuiTitle());
-				custWebParms.setAltProdComp1("SWMZDP");
-				custWebParms.setFormRule("2DK");
-				custWebParms.setBulkDeep(true);
-				custWebParms.setBulkDn("6,4");
-				custWebParms.setBulkUp("10,12,14");
-				custWebParms.setBulkStart("8");
-				custWebParms.setColorPrime(true);
-				custWebParms.setOpacityCtrl(true);
-				custWebParms.setFormQtrShot(true);
-				custWebParms.setTargetCr2(true);
-				custWebParms.setCdsAdlFld(cust.getCdsAdlFld());
-				custWebParms.setLastUpd(sqlDate);
-				customerList.add(custWebParms);
+			String error = "";
+			
+			if(reqObj.isCustDeleted() || reqObj.isNewCustomer()) {
+				List<CustWebParms> customerList = new ArrayList<CustWebParms>();
+				boolean result = true;
+				//get date
+				Date sqlDate = new Date(System.currentTimeMillis());
+				//map session values to custwebparms domain object
+				for(CustParms cust : reqObj.getCustList()) {
+					CustWebParms custWebParms = new CustWebParms();
+					custWebParms.setCustomerId(cust.getCustomerId());
+					custWebParms.setSeqNbr(cust.getSeqNbr());
+					custWebParms.setAbbrev("SW");
+					custWebParms.setStoreComp("SW");
+					custWebParms.setColorComp("SHERWIN-WILLIAMS");
+					custWebParms.setProdComp("SW");
+					custWebParms.setClrntSysId(cust.getClrntSysId());
+					custWebParms.setActive(cust.isActive());
+					custWebParms.setSwuiTyp("SW");
+					custWebParms.setSwuiTitle(cust.getSwuiTitle());
+					custWebParms.setAltProdComp1("SWMZDP");
+					custWebParms.setFormRule("2DK");
+					custWebParms.setBulkDeep(true);
+					custWebParms.setBulkDn("6,4");
+					custWebParms.setBulkUp("10,12,14");
+					custWebParms.setBulkStart("8");
+					custWebParms.setColorPrime(true);
+					custWebParms.setOpacityCtrl(true);
+					custWebParms.setFormQtrShot(true);
+					custWebParms.setTargetCr2(true);
+					custWebParms.setCdsAdlFld(cust.getCdsAdlFld());
+					custWebParms.setLastUpd(sqlDate);
+					customerList.add(custWebParms);
+				}
+				
+				if(existingRecords.isEmpty()) {
+					//create new CustWebParms records
+					result = customerService.createAllCustWebParms(customerList);
+					if(!result) {
+						error = "Unable to create CustWebParms record(s)";
+						sessionMap.put("error", error);
+						return INPUT;
+					}
+				} else {
+					// one or more records have been deleted
+					// delete existing records, then
+					// recreate CustWebParms records
+					result = customerService.deleteAllCustWebParms(existingRecords);
+					result = customerService.createAllCustWebParms(customerList);
+					if(!result) {
+						error = "Unable to update CustWebParms record(s)";
+						sessionMap.put("error", error);
+						return INPUT;
+					}
+				}
+			}
+				
+			if(reqObj.isCustEdited()) {
+				// update changed CustWebParms records
+				
+				boolean result = true;
+				
+				List<CustWebParms> editedCustParmsRecords = new ArrayList<CustWebParms>();
+				
+				Date sqlDate = new Date(System.currentTimeMillis());
+				
+				for(CustParms cp : reqObj.getCustResultList()) {
+					CustWebParms custWebParms = new CustWebParms();
+					custWebParms.setCustomerId(cp.getCustomerId());
+					custWebParms.setSeqNbr(cp.getSeqNbr());
+					custWebParms.setAbbrev("SW");
+					custWebParms.setStoreComp("SW");
+					custWebParms.setColorComp("SHERWIN-WILLIAMS");
+					custWebParms.setProdComp("SW");
+					custWebParms.setClrntSysId(cp.getClrntSysId());
+					custWebParms.setActive(cp.isActive());
+					custWebParms.setSwuiTyp("SW");
+					custWebParms.setSwuiTitle(cp.getSwuiTitle());
+					custWebParms.setAltProdComp1("SWMZDP");
+					custWebParms.setFormRule("2DK");
+					custWebParms.setBulkDeep(true);
+					custWebParms.setBulkDn("6,4");
+					custWebParms.setBulkUp("10,12,14");
+					custWebParms.setBulkStart("8");
+					custWebParms.setColorPrime(true);
+					custWebParms.setOpacityCtrl(true);
+					custWebParms.setFormQtrShot(true);
+					custWebParms.setTargetCr2(true);
+					custWebParms.setCdsAdlFld(cp.getCdsAdlFld());
+					custWebParms.setLastUpd(sqlDate);
+					editedCustParmsRecords.add(custWebParms);
+				}
+				
+				// update changed records
+				for(CustWebParms custParms : editedCustParmsRecords) {
+					result = customerService.updateCustWebParmsRecord(custParms);
+					if(!result) {
+						error = "Unable to update CustWebParms record";
+						sessionMap.put("error", error);
+						return INPUT;
+					}
+				}
 			}
 			
 			//create EulaHist record to activate eula
@@ -240,81 +301,143 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 			
 			// create eula pdf
-			if(reqObj.getEula().getCustomerId() != null) {
+			if(reqObj.getEula() != null) {
 				eulaService.createEula(reqObj.getEula());
 			}
 			
-			//map session values to custwebjobfields domain object
-			for(JobFields job : reqObj.getJobFieldList()) {
-				CustWebJobFields custWebJobs = new CustWebJobFields();
-				custWebJobs.setCustomerId(reqObj.getCustomerId());
-				custWebJobs.setSeqNbr(job.getSeqNbr());
-				custWebJobs.setScreenLabel(job.getScreenLabel());
-				custWebJobs.setFieldDefault(job.getFieldDefault());
-				custWebJobs.setEntryRequired(job.isEntryRequired());
-				custWebJobs.setActive(job.isActive());
-				jobList.add(custWebJobs);
-			}
-			
-			if(reqObj.getLoginList() != null) {
-				//map session values to custweblogintransform domain object
-				for(LoginTrans login : reqObj.getLoginList()) {
-					CustWebLoginTransform custWebLogin = new CustWebLoginTransform();
-					custWebLogin.setCustomerId(reqObj.getCustomerId());
-					custWebLogin.setKeyField(login.getKeyField());
-					custWebLogin.setMasterAcctName(login.getMasterAcctName());
-					custWebLogin.setAcctComment(login.getAcctComment());
-					loginList.add(custWebLogin);
+			if(reqObj.isJobDeleted() || reqObj.isNewCustomer()) {
+				List<CustWebJobFields> jobList = new ArrayList<CustWebJobFields>();
+				boolean result = true;
+				
+				// map model object to domain object
+				for(JobFields job : reqObj.getJobFieldList()) {
+					CustWebJobFields custWebJobs = new CustWebJobFields();
+					custWebJobs.setCustomerId(reqObj.getCustomerId());
+					custWebJobs.setSeqNbr(job.getSeqNbr());
+					custWebJobs.setScreenLabel(job.getScreenLabel());
+					custWebJobs.setFieldDefault(job.getFieldDefault());
+					custWebJobs.setEntryRequired(job.isEntryRequired());
+					custWebJobs.setActive(job.isActive());
+					jobList.add(custWebJobs);
 				}
-			}
-			
-			
-			if(existingRecords.isEmpty()) {
-				//create parms records
-				for(CustWebParms record : customerList) {
-					customerService.createCustWebParmsRecord(record);
-				}
-			} else {
-				//'update' parms records
-				for(CustWebParms exrecord : existingRecords) {
-					customerService.deleteCustWebParmsRecord(exrecord);
-				}
-				for(CustWebParms record : customerList) {
-					customerService.createCustWebParmsRecord(record);
-				}
-			}
-			
-			if(!loginList.isEmpty()) {
-				if(existingLogins.isEmpty()) {
-					//create login transform records
-					for(CustWebLoginTransform logtran : loginList) {
-						customerService.createCustWebLoginTransRecord(logtran);
+				
+				if(existingJobs.isEmpty()) {
+					// if customer does not have existing records
+					// create job fields records
+					result = customerService.createAllCustWebJobFields(jobList);
+					if(!result) {
+						error = "Unable to create CustWebJobFields record(s)";
+						sessionMap.put("error", error);
+						return INPUT;
 					}
+					
 				} else {
-					//'update' login transform records
-					for(CustWebLoginTransform exlogin : existingLogins) {
-						customerService.deleteCustWebLoginTransRecord(exlogin);
-					}
-					for(CustWebLoginTransform logtran : loginList) {
-						customerService.createCustWebLoginTransRecord(logtran);
+					// one or more records have been deleted
+					// delete existing records, then
+					// recreate CustWebJobFields records
+					result = customerService.deleteAllCustWebJobFields(existingJobs);
+					result = customerService.createAllCustWebJobFields(jobList);
+					if(!result) {
+						error = "Unable to update CustWebJobFields record(s)";
+						sessionMap.put("error", error);
+						return INPUT;
 					}
 				}
 			}
 			
-			if(existingJobs.isEmpty()) {
-				//create job fields records
-				for(CustWebJobFields jobfld : jobList) {
-					customerService.createCustWebJobFieldsRecord(jobfld);
+			if(reqObj.isJobEdited()) {
+				// update changed CustWebJobFields records
+				
+				boolean result = true;
+				
+				List<CustWebJobFields> editedJobRecords = new ArrayList<CustWebJobFields>();
+				// map model object to domain object
+				for(JobFields jf : reqObj.getJobFieldResultList()) {
+					CustWebJobFields cwjf = new CustWebJobFields();
+					cwjf.setCustomerId(reqObj.getCustomerId());
+					cwjf.setSeqNbr(jf.getSeqNbr());
+					cwjf.setScreenLabel(jf.getScreenLabel());
+					cwjf.setFieldDefault(jf.getFieldDefault());
+					cwjf.setEntryRequired(jf.isEntryRequired());
+					cwjf.setActive(jf.isActive());
+					editedJobRecords.add(cwjf);
 				}
-			} else {
-				//'update' job fields records
-				for(CustWebJobFields exjob : existingJobs) {
-					customerService.deleteCustWebJobFieldsRecord(exjob);
-				}
-				for(CustWebJobFields jobfld : jobList) {
-					customerService.createCustWebJobFieldsRecord(jobfld);
+				
+				// update changed records
+				for(CustWebJobFields jobfld : editedJobRecords) {
+					result = customerService.updateCustWebJobFieldsRecord(jobfld);
+					if(!result) {
+						error = "Unable to update CustWebJobFields record";
+						sessionMap.put("error", error);
+						return INPUT;
+					}
 				}
 			}
+			
+			if(reqObj.isLoginDeleted() || reqObj.isNewCustomer()) {
+				if(reqObj.getLoginList() != null) {
+					List<CustWebLoginTransform> loginList = new ArrayList<CustWebLoginTransform>();
+					boolean result = true;
+					//map session values to custweblogintransform domain object
+					for(LoginTrans login : reqObj.getLoginList()) {
+						CustWebLoginTransform custWebLogin = new CustWebLoginTransform();
+						custWebLogin.setCustomerId(reqObj.getCustomerId());
+						custWebLogin.setKeyField(login.getKeyField());
+						custWebLogin.setMasterAcctName(login.getMasterAcctName());
+						custWebLogin.setAcctComment(login.getAcctComment());
+						loginList.add(custWebLogin);
+					}
+					
+					if(existingLogins.isEmpty()) {
+						//create login transform records
+						result = customerService.createAllCustWebLoginTrans(loginList);
+						if(!result) {
+							error = "Unable to update CustWebLoginTransform record(s)";
+							sessionMap.put("error", error);
+							return INPUT;
+						}
+					} else {
+						// one or more records have been deleted
+						// delete existing records, then
+						// recreate CustWebLoginTransform records
+						result = customerService.deleteAllCustWebLoginTrans(existingLogins);
+						result = customerService.createAllCustWebLoginTrans(loginList);
+						if(!result) {
+							error = "Unable to update CustWebLoginTransform record(s)";
+							sessionMap.put("error", error);
+							return INPUT;
+						}
+					}				
+				}
+			}
+			
+			if(reqObj.isLoginEdited()) {
+				// update changed CustWebLoginTransform records
+				
+				boolean result = true;
+				
+				List<CustWebLoginTransform> editedLoginRecords = new ArrayList<CustWebLoginTransform>();
+				// map model object to domain object
+				for(LoginTrans lt : reqObj.getLoginResultList()) {
+					CustWebLoginTransform cwlt = new CustWebLoginTransform();
+					cwlt.setCustomerId(reqObj.getCustomerId());
+					cwlt.setKeyField(lt.getKeyField());
+					cwlt.setMasterAcctName(lt.getMasterAcctName());
+					cwlt.setAcctComment(lt.getAcctComment());
+					editedLoginRecords.add(cwlt);
+				}
+				
+				// update changed records
+				for(CustWebLoginTransform loginTrans : editedLoginRecords) {
+					result = customerService.updateCustWebLoginTransRecord(loginTrans);
+					if(!result) {
+						error = "Unable to update CustWebLoginTransform record";
+						sessionMap.put("error", error);
+						return INPUT;
+					}
+				}
+			}
+			
 			sessionMap.clear();
 			crudmsg = "Save Successful";
 			sessionMap.put("msg", crudmsg);
@@ -339,32 +462,74 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
 			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(reqObj.getCustomerId());
 			
+			String error = "";
+			
+			// check if job history exists
 			if(!reqObj.isHistory()) {
-				if(reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode()) {
+				// check if a EULA has been signed
+				if(reqObj.getEulaHistToActivate() == null && (reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode() || reqObj.getEulaHistList() == null)) {
+					
+					boolean result = true;
+					
 					if(!existingRecords.isEmpty()) {
-						for(CustWebParms record : existingRecords) {
-							customerService.deleteCustWebParmsRecord(record);
+						result = customerService.deleteAllCustWebParms(existingRecords);
+						if(!result) {
+							error = "Unable to delete CustWebParms record(s)";
+							sessionMap.put("error", error);
+							return INPUT;
 						}
 					}
 					if(!existingLogins.isEmpty()) {
-						for(CustWebLoginTransform logins : existingLogins) {
-							customerService.deleteCustWebLoginTransRecord(logins);
+						result = customerService.deleteAllCustWebLoginTrans(existingLogins);
+						if(!result) {
+							error = "Unable to delete CustWebLoginTransform record(s)";
+							sessionMap.put("error", error);
+							return INPUT;
 						}
 					}
 					if(!existingJobfields.isEmpty()) {
-						for(CustWebJobFields jobfields : existingJobfields) {
-							customerService.deleteCustWebJobFieldsRecord(jobfields);
+						result = customerService.deleteAllCustWebJobFields(existingJobfields);
+						if(!result) {
+							error = "Unable to delete CustWebJobFields record(s)";
+							sessionMap.put("error", error);
+							return INPUT;
 						}
 					}
-					eulaService.deleteEulaHist(reqObj.getEulaHistToActivate());
+					// check for toactivate record
+					if(reqObj.getEulaHistToActivate() != null || (reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode())) {
+						EulaHist eulaHistToActivate = reqObj.getEulaHistToActivate();
+						EulaHist eulaHistListToActivate = reqObj.getEulaHistList().get(0);
+						
+						if(eulaHistToActivate == null) {
+							result = eulaService.deleteEulaHist(eulaHistListToActivate);
+						} else {
+							result = eulaService.deleteEulaHist(eulaHistToActivate);
+						}
+						
+						if(!result) {
+							error = "Unable to delete EulaHist TOACTIVATE record";
+							sessionMap.put("error", error);
+							return INPUT;
+						}
+					}
+					// check for eula pdf record
+					if(reqObj.getEula() != null) {
+						result = eulaService.deleteEula(reqObj.getEula());
+						if(!result) {
+							error = "Unable to delete Eula record";
+							sessionMap.put("error", error);
+							return INPUT;
+						}
+					}
+					
+					sessionMap.clear();
+					crudmsg = "Delete Successful";
+					sessionMap.put("msg", crudmsg);
+					
+				} else {
+					crudmsg = "Delete Unsuccessful";
+					sessionMap.put("msg", crudmsg);
 				}
-				
-				sessionMap.clear();
-				crudmsg = "Delete Successful";
-				sessionMap.put("msg", crudmsg);
-			}else {
-				crudmsg = "Delete Unsuccessful";
-				sessionMap.put("msg", crudmsg);
 			}
 			
 			return SUCCESS;

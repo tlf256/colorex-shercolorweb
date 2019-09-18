@@ -110,26 +110,16 @@
         	<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
 			<div class="col-lg-8 col-md-8">
-				<table id="eulapdf" class="table table-striped table-bordered">
-					<tr>
-						<th>Eula PDF</th>
-					</tr>
-					<tr>
-						<td>
-							
-						</td>
-					</tr>
-				</table>
+				<div id="eulapdf" class="embed-responsive embed-responsive-4by3">
+					
+				</div>
 			</div>
 			<div class="col-lg-2 col-md-2"></div>
 		</div>
         </div>
       </div>
       <div class="modal-footer">
-      <s:form>
-      	<%-- <s:submit id="uploadeula" class="btn btn-secondary" action="uploadEula" value="Upload"></s:submit> --%>
 	    <button type="button" id="cancelbtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-       </s:form>
       </div>
     </div>
   </div>
@@ -152,7 +142,6 @@
 	<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
-			<div id="custDetailError" class="text-danger"></div>
 		</div>
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
@@ -162,11 +151,18 @@
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
 		<h3>Customer Information</h3><br>
+		<div id="custDetailError" class="text-danger">
+			<s:property value="sessionMap['error']" />
+		</div>
 		<s:if test="edited">
-			<div class="text-danger">You must submit this form for changes to take effect</div>
+			<div class="text-danger"><h6>You must submit this form for changes to take effect!</h6></div>
 		</s:if>
 		<s:form>
 			<s:if test="updateMode">
+				<s:hidden name="updateMode" value="updateMode" />
+				<s:if test="sessionMap['CustomerDetail'].uploadedEula">
+					<button id="download" onclick="downloadPdf();return false;" class="btn btn-primary mb-1 mt-5">Download EULA</button>
+				</s:if>
 				<s:submit id="edit" action="updateDetail" class="btn btn-primary mb-1 mt-5" value="Edit"></s:submit>
 				<s:if test="sessionMap['CustomerDetail'].history">
 					<button type="button" id="inactivate" class="btn btn-danger mb-1 mt-5">Delete</button>
@@ -243,8 +239,8 @@
 			</div>
 			<div class="col-lg-2 col-md-2"></div>
 		</div>
-	</s:if>
 	<br>
+	</s:if>
 	<s:if test="sessionMap['CustomerDetail'].eulaHistList != null">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
@@ -276,8 +272,8 @@
 			</div>
 			<div class="col-lg-2 col-md-2"></div>
 		</div>
-	</s:if>
 	<br>
+	</s:if>
 	<s:if test="!sessionMap['CustomerDetail'].loginList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
@@ -305,8 +301,8 @@
 		</div>
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
-	</s:if>
 	<br>
+	</s:if>
 	<s:if test="!sessionMap['CustomerDetail'].jobFieldList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>

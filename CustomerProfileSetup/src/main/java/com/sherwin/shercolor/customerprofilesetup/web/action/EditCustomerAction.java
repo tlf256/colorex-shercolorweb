@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.HibernateException;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -38,12 +39,12 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	private Job job;
 	private Login login;
 	private Customer cust;
-	//private boolean updateMode;
 	private boolean edited;
 	private Map<String, Object> sessionMap;
 	private File eulafile;
 	private Date effDate;
 	private Date expDate;
+	private String eulaText;
 	
 	@Autowired
 	EulaService eulaService;
@@ -57,7 +58,6 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
-			//setUpdateMode(true);
 			setEdited(true);
 			
 			for(int i = 0; i < cust.getClrntList().size(); i++) {
@@ -85,7 +85,21 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			reqObj.setClrntList(editclrntlist);
+			List<String> resultClrntList = new ArrayList<String>();
+			
+			if(reqObj.getClrntList().size() == editclrntlist.size()) {
+				// check if data in edited list and 
+				// original list match
+				for(int i = 0; i < editclrntlist.size(); i++) {
+					if(!editclrntlist.get(i).equals(reqObj.getClrntList().get(i))) {
+						resultClrntList.add(editclrntlist.get(i));
+					}
+				}
+			}
+			
+			if(!resultClrntList.isEmpty()) {
+				reqObj.setClrntList(editclrntlist);
+			}
 			
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
@@ -103,7 +117,29 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				editCustList.add(newcust);
 			}
 			
-			reqObj.setCustList(editCustList);
+			List<CustParms> resultCustList = new ArrayList<CustParms>();
+			
+			if(reqObj.getCustList().size() == editCustList.size()) {
+				int index = 0;
+				// check if data in edited list and 
+				// original list match
+				for(CustParms cp1 : editCustList) {
+					CustParms cp2 = reqObj.getCustList().get(index);
+					if(!cp1.getCustomerId().equals(cp2.getCustomerId()) || !cp1.getSwuiTitle().equals(cp2.getSwuiTitle()) || cp1.isActive() != cp2.isActive() || 
+							cp1.getSeqNbr() != cp2.getSeqNbr() || !cp1.getCdsAdlFld().equals(cp2.getCdsAdlFld()) || !cp1.getClrntSysId().equals(cp2.getClrntSysId())) {
+						resultCustList.add(cp1);
+					}
+					index++;
+				}
+			} else {
+				reqObj.setCustDeleted(true);
+			}
+			
+			if(!resultCustList.isEmpty()) {
+				reqObj.setCustResultList(resultCustList);
+				reqObj.setCustList(editCustList);
+				reqObj.setCustEdited(true);
+			}
 			
 			if(eulafile != null) {
 				// first check if customer already has an associated eula
@@ -119,8 +155,10 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				Eula eula = new Eula();
 				eula.setCustomerId(reqObj.getCustomerId());
 				eula.setWebSite("CUSTOMERSHERCOLORWEB");
+				eula.setSeqNbr(1);
 				eula.setEffectiveDate(effDate);
 				eula.setExpirationDate(expDate);
+				eula.setEulaText1(eulaText);
 				eula.setEulaPdf(filebytes);
 				
 				reqObj.setEula(eula);
@@ -187,14 +225,36 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				}
 				
-				reqObj.setLoginList(editLoginList);
+				List<LoginTrans> resultLoginList = new ArrayList<LoginTrans>();
+				
+				if(reqObj.getLoginList().size() == editLoginList.size()) {
+					int index = 0;
+					// check if data in edited list and 
+					// original list match
+					for(LoginTrans lt1 : editLoginList) {
+						LoginTrans lt2 = reqObj.getLoginList().get(index);
+						if(!lt1.getKeyField().equals(lt2.getKeyField()) || !lt1.getMasterAcctName().equals(lt2.getMasterAcctName())
+								|| !lt1.getAcctComment().equals(lt2.getAcctComment())) {
+							resultLoginList.add(lt1);
+						}
+						index++;
+					}
+				} else {
+					reqObj.setLoginDeleted(true);
+				}
+				
+				if(!resultLoginList.isEmpty()) {
+					reqObj.setLoginList(editLoginList);
+					reqObj.setLoginEdited(true);
+				}
+				
 			}
 			
 			if(job!=null) {
 				String[] reqlist = new String[10];
 				String[] actvlist = new String[10];
 				int start = 0;
-				int end = 9;
+				int end = 10;
 				int seqnbr = 1;
 				//initial fill of string arrays with default false
 				Arrays.fill(reqlist, start, end, "false");
@@ -210,6 +270,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 						actvlist[Integer.parseInt(job.getActive().get(index))] = "true";
 					}
 				}
+				
 				for(int i = 0; i < job.getScreenLabel().size(); i++) {
 					if(!job.getScreenLabel().get(i).equals("")) {
 						//set values for custwebjobfields record
@@ -232,7 +293,30 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				}
 				
-				reqObj.setJobFieldList(editJobList);
+				List<JobFields> resultJobList = new ArrayList<JobFields>();
+				
+				if(reqObj.getJobFieldList().size() == editJobList.size()) {
+					int index = 0;
+					// check if data in edited list and 
+					// original list match
+					for(JobFields jf1 : editJobList) {
+						JobFields jf2 = reqObj.getJobFieldList().get(index);
+						if(!jf1.getScreenLabel().equals(jf2.getScreenLabel()) || jf1.getSeqNbr() != jf2.getSeqNbr() || !jf1.getFieldDefault().equals(jf2.getFieldDefault()) 
+								|| jf1.isEntryRequired() != jf2.isEntryRequired() || jf1.isActive() != jf2.isActive()) {
+							resultJobList.add(jf1);
+						}	
+						index++;
+					}
+				} else {
+					reqObj.setJobDeleted(true);
+				}
+				
+				if(!resultJobList.isEmpty()) {
+					reqObj.setJobFieldResultList(resultJobList);
+					reqObj.setJobFieldList(editJobList);
+					reqObj.setJobEdited(true);
+				}
+				
 			}
 			
 			sessionMap.put("CustomerDetail", reqObj);
@@ -328,15 +412,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	public void setCust(Customer cust) {
 		this.cust = cust;
 	}
-
-	/*public boolean isUpdateMode() {
-		return updateMode;
-	}
-
-	public void setUpdateMode(boolean updateMode) {
-		this.updateMode = updateMode;
-	}*/
-
+	
 	public boolean isEdited() {
 		return edited;
 	}
@@ -367,6 +443,14 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 
 	public void setExpDate(Date expDate) {
 		this.expDate = expDate;
+	}
+
+	public String getEulaText() {
+		return eulaText;
+	}
+
+	public void setEulaText(String eulaText) {
+		this.eulaText = allowCharacters(Encode.forHtml(eulaText.trim()));
 	}
 
 }

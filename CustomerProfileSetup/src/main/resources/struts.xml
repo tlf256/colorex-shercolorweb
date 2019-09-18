@@ -98,12 +98,18 @@
 				<param name="actionName">displayCustomers</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
 		</action>
 		<action name="deleteCustomer" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="delete">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayCustomers</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
 		</action>
 		<action name="resetAction" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="reset">
 			<result name="success" type="redirectAction">
@@ -135,13 +141,18 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="uploadEula" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessEulaAction" method="execute">
-			<result name="success" type="redirectAction">
+		<action name="downloadEula" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessEulaAction" method="execute">
+			<result name="success" type="stream">
+				<param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="eula.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+			<result name="noeula" type="redirectAction">
 				<param name="actionName">displayDetail</param>
 				<param name="updateMode">${updateMode}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-			<result name="input">/WEB-INF/pages/EditCustomerDetail.jsp</result>
 		</action>
 	</package>
 </struts>

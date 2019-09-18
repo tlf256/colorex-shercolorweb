@@ -12,7 +12,11 @@ public class JobFields {
 		return fieldDefault;
 	}
 	public void setFieldDefault(String fieldDefault) {
-		this.fieldDefault = fieldDefault;
+		if(fieldDefault == null) {
+			this.fieldDefault = "";
+		} else {
+			this.fieldDefault = fieldDefault;
+		}
 	}
 	public int getSeqNbr() {
 		return seqNbr;

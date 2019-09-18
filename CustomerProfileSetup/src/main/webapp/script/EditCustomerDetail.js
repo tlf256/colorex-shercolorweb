@@ -46,10 +46,6 @@ $(document).ready(function() {
 		$("#newloginrow").addClass("d-none");
 	}
 	
-	//var customername = $("#customername").val();
-	//$("#customername").html(customername);
-	//$("#customername").val($("#customername").text());
-	
 	$(".dltrow").click(function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
 		//window.alert($(".cloned-loginrow").length);
@@ -348,7 +344,7 @@ $(document).ready(function() {
 				//$(this).prop("checked", false);
 			}
 		}
-	}, "input:checkbox");
+	}, "input[name^='cust']");
 	
 	$(document).on("click", "#submitchng", function(){
 		try{

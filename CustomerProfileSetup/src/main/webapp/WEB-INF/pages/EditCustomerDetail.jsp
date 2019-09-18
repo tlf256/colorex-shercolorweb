@@ -154,7 +154,7 @@
 				<td><strong>Active</strong></td>
 				<td>
 					<div class="form-check-inline">
-						<s:if test="sessionMap['CustomerDetail'].active==true">
+						<s:if test="sessionMap['CustomerDetail'].active">
 						<div class="form-check">
 							<input class="form-check-input truefalse" type="checkbox" id="custactv" name="cust.active" value="true" checked="checked" />
 						</div>
@@ -194,7 +194,7 @@
 								<s:property value="eula.expirationDate" />
 							</td>
 							<td>
-								<s:submit id="download" action="downloadEula" class="btn btn-primary mb-1 mt-5" value="Download EULA"></s:submit>
+								
 							</td>
 						</tr>
 					</table>
@@ -213,10 +213,11 @@
 							<th>Upload EULA</th>
 							<th>Effective Date</th>
 							<th>Expiration Date</th>
+							<th>EULA Text</th>
 						</tr>
 						<tr>
 							<td>
-								<s:file class="bg-light border-secondary" name="eulafile" accept="text/*" />
+								<s:file class="bg-light border-secondary" name="eulafile" accept="pdf" />
 								<%-- <s:submit id="upload" action="uploadEula" class="btn btn-primary mb-1 mt-5" value="Upload EULA"></s:submit> --%>
 							</td>
 							<td class="align-middle">
@@ -224,6 +225,9 @@
 							</td>
 							<td class="align-middle">
 								<s:textfield id="expDate" name="expDate"></s:textfield>
+							</td>
+							<td class="align-middle">
+								<s:textfield id="eulatext" name="eulaText"></s:textfield>
 							</td>
 						</tr>
 					</table>
@@ -376,7 +380,7 @@
 					<s:textfield class="flddflt" id="flddflt%{#j.index}" name="job.fieldDefault" value="%{#jobFields.fieldDefault}" readonly="true" />
 				</td>
 				<td>
-					<s:if test="#jobFields.entryRequired==true">
+					<s:if test="#jobFields.entryRequired">
 						<div class="form-check">
 							<input class="ml-2 mt-4" type="checkbox" id="jobreq<s:property value='%{#j.index}'/>" name="job.entryRequired" value="<s:property value='%{#j.index}'/>" checked="checked" />
 						</div>
@@ -388,7 +392,7 @@
 					</s:else>
 				</td>
 				<td>
-					<s:if test="#jobFields.active==true">
+					<s:if test="#jobFields.active">
 						<div class="form-check">
 							<input class="mt-4" type="checkbox" id="jobactv<s:property value='%{#j.index}'/>" name="job.active" value="<s:property value='%{#j.index}'/>" checked="checked" />
 						</div>
@@ -400,7 +404,7 @@
 					</s:else>
 				</td>
 				<td>
-					<button type="button" id="editjobrow<s:property value='%{#j.index}'/>" class="btn btn-primary edtrow" title="Edit row">
+					<button type="button" id="editjobrow<s:property value='%{#j.index}'/>" class="btn btn-primary edtrow ml-2 mt-2" title="Edit row">
 						<i class="far fa-edit"></i>
 					</button>
 				</td>
@@ -433,13 +437,6 @@
 	<br>
 	<div class="row">
        	<div class="col-lg-2 col-md-2">
-			<%-- <s:hidden name="lookupCustomerId" /> --%>
-			<%-- <s:hidden name="updateMode" />
-			<script type="text/javascript">
-				function savevalue(value){
-					$("input:hidden[name='updateMode']").val(value);
-				}
-			</script> --%>
 		</div>
 		<div class="col-lg-8 col-md-8">
 			<s:if test="updateMode">
@@ -447,7 +444,6 @@
 			</s:if>
 			<s:else>
 				<s:submit cssClass="btn btn-primary mb-5 mt-2" id="submitchng" value="Accept Changes" action="displayEdit" />
-				<%-- <s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel Edit" action="displayDetail"/> --%>
 			</s:else>
 			<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel" action="cancelUpdate"/>
 		</div>

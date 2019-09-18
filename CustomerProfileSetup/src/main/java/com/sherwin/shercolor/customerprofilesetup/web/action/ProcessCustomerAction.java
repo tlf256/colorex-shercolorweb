@@ -1,12 +1,9 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -30,7 +27,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	 */
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessCustomerAction.class);
-	private RequestObject reqObj;
 	private Customer customer;
 	private Map<String, Object> sessionMap;
 	private String result;
@@ -44,7 +40,10 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public String execute() {
 		try {	
-			reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			RequestObject reqObj = new RequestObject();
+			
+			reqObj.setNewCustomer(true);
+			
 			//check for entered account number
 			switch(customer.getAccttype()) {
 			case "natlWdigits":  //customerid = account number
@@ -266,14 +265,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public void setSessionMap(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;
-	}
-
-	public RequestObject getReqObj() {
-		return reqObj;
-	}
-
-	public void setReqObj(RequestObject reqObj) {
-		this.reqObj = reqObj;
 	}
 
 	public String getResult() {
