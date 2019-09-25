@@ -52,7 +52,7 @@ import be.quodlibet.boxable.VerticalAlignment;
  * */
 
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
-	static Logger logger = LogManager.getLogger(ShercolorLabelPrintImplGood.class);
+	static Logger logger = LogManager.getLogger(ShercolorLabelPrintImpl.class);
 
 	@Autowired
 	ProductService productService;
@@ -64,11 +64,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	PDDocument document = new PDDocument();
 	String filename;
 	RequestObject reqObj;
-
+  
 	// Set all fonts to bold temporarily to resolve light printing issue.
-	PDFont courierBold 	= PDType1Font.COURIER_BOLD;
-	//PDFont courierBold 	= PDType1Font.HELVETICA_BOLD;
-	// PDFont courierBold 	= PDType1Font.TIMES_BOLD;
+	//PDFont courierBold 	= PDType1Font.COURIER_BOLD;
+	PDFont courierBold 	= PDType1Font.HELVETICA_BOLD;
+	
 
 
 	private static float WIDTH = 144f;
