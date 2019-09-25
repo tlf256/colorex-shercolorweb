@@ -37,7 +37,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	static Logger logger = LogManager.getLogger(CustomerCRUDAction.class);
 	private Map<String, Object> sessionMap;
 	private String lookupCustomerId;
-	private boolean updateMode;
 	private String crudmsg;
 	
 	@Autowired
@@ -62,7 +61,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			reqObj.setExistingCustomer(true);
 						
-			updateMode = true;
+			reqObj.setUpdateMode(true);
 			//check for job history
 			List<CustWebTran> jobHistory = tranHistoryService.getCustomerJobs(lookupCustomerId);
 			
@@ -291,11 +290,11 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			//create EulaHist record to activate eula
 			if(reqObj.getEulaHistToActivate() != null) {
 				// generate 6 digit random acceptance code
-				String ac = generateRandomDigit(6);
-				System.out.println("acceptance code = " + ac);
+				//String ac = generateRandomDigit(6);
+				//System.out.println("acceptance code = " + ac);
 				
 				EulaHist eh = reqObj.getEulaHistToActivate();
-				eh.setAcceptanceCode(ac);
+				//eh.setAcceptanceCode(ac);
 				
 				eulaService.createEulaHist(eh);
 			}
@@ -600,7 +599,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		return newString;
 	}
 	
-	public String generateRandomDigit(int length) {
+	/*public String generateRandomDigit(int length) {
 		Random rand = new Random();
 		StringBuilder sb = new StringBuilder(length);
 		for(int i = 0; i < length; i++) {
@@ -608,7 +607,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			sb.append(randInt);
 		}
 		return sb.toString();
-	}
+	}*/
 
 	@Override
 	public void setSession(Map<String, Object> sessionMap) {
@@ -628,14 +627,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	}
 	public void setLookupCustomerId(String lookupCustomerId) {
 		this.lookupCustomerId = lookupCustomerId;
-	}
-
-	public boolean isUpdateMode() {
-		return updateMode;
-	}
-
-	public void setUpdateMode(boolean updateMode) {
-		this.updateMode = updateMode;
 	}
 
 	public String getCrudmsg() {

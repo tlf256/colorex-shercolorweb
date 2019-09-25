@@ -221,17 +221,26 @@ $(document).ready(function() {
 		}
 	});
 	
-	$("#acceptCode").on("blur change", function(){
-		var ac = $.trim($("#acceptCode").val());
+	$("#acceptcode").on("blur", function(){
 		try{
-			if(ac.length != 6 && isNaN(ac)){
-				throw "Acceptance code must be 6 digits";
+			var acceptcode = $.trim($(this).val());
+			var eula = $("#eulalist").val();
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			if(eula && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eula == 'None' && acceptcode){
+				throw "Please choose a EULA";
 			}
 			valid = true;
+			$("#custformerror").text("");
 			$("#eulaerror").text("");
 			$(this).removeClass("border-danger");
-		} catch(msg) {
+		}catch(msg){
 			valid = false;
+			
 			$("#eulaerror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).focus();

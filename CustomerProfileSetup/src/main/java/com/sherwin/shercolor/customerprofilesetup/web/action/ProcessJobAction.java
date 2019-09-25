@@ -25,8 +25,6 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 	static Logger logger = LogManager.getLogger(ProcessJobAction.class);
 	private Map<String, Object> sessionMap;
 	private Job job;
-	private boolean updateMode;
-	private boolean newCustomer;
 	
 	@Autowired
 	CustomerService customerService;
@@ -38,8 +36,6 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 				
 				List<JobFields> jobList = new ArrayList<JobFields>();
 				String[] reqlist = new String[10];
-				setUpdateMode(false);
-				setNewCustomer(true);
 				
 				int start = 0;
 				int end = 9;
@@ -124,22 +120,6 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 
 	public void setJob(Job job) {
 		this.job = job;
-	}
-
-	public boolean isUpdateMode() {
-		return updateMode;
-	}
-
-	public void setUpdateMode(boolean updateMode) {
-		this.updateMode = updateMode;
-	}
-
-	public boolean isNewCustomer() {
-		return newCustomer;
-	}
-
-	public void setNewCustomer(boolean newCustomer) {
-		this.newCustomer = newCustomer;
 	}
 
 }

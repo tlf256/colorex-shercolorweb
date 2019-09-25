@@ -168,20 +168,18 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				// no eula history
 				
 				// check if activate eula selected
-				if(cust.getWebsite() != null) {
+				if(!cust.getWebsite().equals("None")) {
 					List<EulaHist> ehlist = new ArrayList<EulaHist>();
 					
 					EulaHist eh = new EulaHist();
 					
-					if(cust.getWebsite().equals("SherColor Web Eula")) {
-						Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
-						eh = activateEula(reqObj.getCustomerId(), sherColorWebEula);
+					Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
+					
+					if(cust.getWebsite().equals("SherColor Web EULA") || cust.getWebsite().equals("Custom EULA")) {
+						eh = activateEula(reqObj.getCustomerId(), cust.getAcceptCode(), sherColorWebEula);
 						ehlist.add(0, eh);
 						reqObj.setWebsite(sherColorWebEula.getWebSite());
 						reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
-					} else if(cust.getWebsite().equals("None")) {
-						eh = null;
-						ehlist = null;
 					} else {
 						//unexpected value
 						addFieldError("custediterror", "Please select Eula from list");
@@ -196,8 +194,8 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				// eula history, includes recent toactivate record
 				
 				if(reqObj.getEulaHistToActivate() == null) {
-					// eula history, no recent toactivate record
-					// option to create new toactivate record?
+					// TODO eula history, no recent toactivate record
+					// option to create another toactivate record?
 					
 				} else {
 					// eula history, recent toactivate record
@@ -206,9 +204,14 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					if(!cust.isActivateEula()) {
 						// if recently added toactivate eula record is unchecked
 						// remove record from request object
-						
 						reqObj.setEulaHistToActivate(null);
-						reqObj.setEulaHistList(null);
+						// check if eulahistlist contains only toactivate record
+						if(reqObj.getEulaHistList().size() > 1) {
+							// TODO previous eula history with new toactivate record
+						} else {
+							reqObj.setEulaHistList(null);
+						}
+						
 					}
 				}
 			}
@@ -332,7 +335,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		}
 	}
 	
-	public EulaHist activateEula(String customerId, Eula eula) {
+	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();
@@ -343,6 +346,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		eh.setWebSite(eula.getWebSite());
 		eh.setSeqNbr(eula.getSeqNbr());
 		eh.setActionTimeStamp(c.getTime());
+		eh.setAcceptanceCode(acceptCode);
 		eh.setActiveAcceptanceCode(true);
 		
 		return eh;

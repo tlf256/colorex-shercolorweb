@@ -48,11 +48,9 @@
 		<div class="col-sm-6"></div>
 		<div class="col-sm-3"></div>
 	</div>
-	<s:form id="custdetail" theme="bootstrap" method="post" enctype="multipart/form-data">
+	<s:form id="editcustdetail" theme="bootstrap" method="post" enctype="multipart/form-data">
 	<div class="row">
-		<div class="col-lg-2 col-md-2">
-			<s:set var="updateMode" value="updateMode" />
-		</div>
+		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
 			<h3>Edit Customer Information</h3><br>
 			<div id="formerror" class="text-danger"></div>
@@ -172,71 +170,42 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
-	<s:if test="sessionMap['CustomerDetail'].eula != null">
+	<s:if test="!sessionMap['CustomerDetail'].uploadedEula && sessionMap['CustomerDetail'].updateMode && sessionMap['CustomerDetail'].eulaHistList != null">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
 			<div class="col-lg-8 col-md-8">
-				<s:form>
-					<table id="eula_detail" class="table table-striped table-bordered">
-						<tr>
-							<th>EULA</th>
-							<th>Effective Date</th>
-							<th>Expiration Date</th>
-						</tr>
-						<tr>
-							<td>
-								<s:property value="eula.website" />
-							</td>
-							<td>
-								<s:property value="eula.effectiveDate" />
-							</td>
-							<td>
-								<s:property value="eula.expirationDate" />
-							</td>
-							<td>
-								
-							</td>
-						</tr>
-					</table>
-				</s:form>
+				<table id="uploadEula" class="table table-striped table-bordered">
+					<tr>
+						<th colspan="3">Upload EULA</th>
+					</tr>
+					<tr>
+						<td colspan="3" class="align-middle">
+							<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
+						</td>
+					</tr>
+					<tr>
+						<th>Effective Date</th>
+						<th>Expiration Date</th>
+						<th>EULA Text</th>
+					</tr>
+					<tr>
+						<td class="align-middle">
+							<s:textfield id="effDate" name="effDate"></s:textfield>
+						</td>
+						<td class="align-middle">
+							<s:textfield id="expDate" name="expDate"></s:textfield>
+						</td>
+						<td class="align-middle w-50">
+							<s:textarea id="eulatext" name="eulaText"></s:textarea>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div class="col-lg-2 col-md-2"></div>
 		</div>
-	</s:if>
-	<s:else>
-		<s:if test="sessionMap['CustomerDetail'].history">
-			<div class="row">
-				<div class="col-lg-2 col-md-2"></div>
-				<div class="col-lg-8 col-md-8">
-					<table id="uploadEula" class="table table-striped table-bordered">
-						<tr>
-							<th>Upload EULA</th>
-							<th>Effective Date</th>
-							<th>Expiration Date</th>
-							<th>EULA Text</th>
-						</tr>
-						<tr>
-							<td>
-								<s:file class="bg-light border-secondary" name="eulafile" accept="pdf" />
-								<%-- <s:submit id="upload" action="uploadEula" class="btn btn-primary mb-1 mt-5" value="Upload EULA"></s:submit> --%>
-							</td>
-							<td class="align-middle">
-								<s:textfield id="effDate" name="effDate"></s:textfield>
-							</td>
-							<td class="align-middle">
-								<s:textfield id="expDate" name="expDate"></s:textfield>
-							</td>
-							<td class="align-middle">
-								<s:textfield id="eulatext" name="eulaText"></s:textfield>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="col-lg-2 col-md-2"></div>
-			</div>
-		</s:if>
-	</s:else>
 	<br>
+	</s:if>
+	
 	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
@@ -247,6 +216,7 @@
 					<th>Type</th>
 					<th>User</th>
 					<th>Date</th>
+					<th>Acceptance Code</th>
 					<th>Activate</th>
 				</tr>
 				<tr>
@@ -263,6 +233,15 @@
 						<s:property value="sessionMap['CustomerDetail'].eulaHistToActivate.actionTimeStamp" />
 					</td>
 					<td>
+						<div class="form-inline">
+							<s:textfield id="acceptcode" name="cust.acceptCode" cssStyle="width:100px"
+							value="%{sessionMap['CustomerDetail'].eulaHistToActivate.acceptanceCode}" readonly="true"></s:textfield>
+							<button type="button" id="edt2" class="btn btn-primary pull-right ml-4">
+								<i class="far fa-edit"></i>
+							</button>
+						</div>
+					</td>
+					<td>
 						<div class="form-check">
 							<input class="ml-2 mt-2" type="checkbox" id="activateEula" name="cust.activateEula" value="true" checked="checked" />
 						</div>
@@ -272,19 +251,23 @@
 		</div>
 		<div class="col-lg-2 col-md-2"></div>
 		</div>
+	<br>
 	</s:if>
 	<s:else>
-		<s:if test="sessionMap['CustomerDetail'].eulaHistList == null && !sessionMap['CustomerDetail'].history">
+		<s:if test="sessionMap['CustomerDetail'].eulaHistList == null">
 			<div class="row">
 				<div class="col-lg-2 col-md-2"></div>
 				<div class="col-lg-8 col-md-8">
 					<table id="newEula" class="table table-striped table-bordered">
 						<tr>
-							<th>Activate EULA</th>
+							<th colspan="2">Activate EULA</th>
 						</tr>
 						<tr>
 							<td>
 								<s:select label="Activate Eula" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="cust.website" headerValue="None"></s:select>
+							</td>
+							<td>
+								<s:textfield label="Acceptance Code" name="cust.acceptCode" id="acceptcode" />
 							</td>
 						</tr>
 					</table>
@@ -292,8 +275,9 @@
 				<div class="col-lg-2 col-md-2"></div>
 			</div>
 		</s:if>
-	</s:else>
 	<br>
+	</s:else>
+	
 	<s:if test="sessionMap['CustomerDetail'].accttype!='natlWdigits'">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
@@ -439,7 +423,7 @@
        	<div class="col-lg-2 col-md-2">
 		</div>
 		<div class="col-lg-8 col-md-8">
-			<s:if test="updateMode">
+			<s:if test="sessionMap['CustomerDetail'].updateMode">
 				<s:submit cssClass="btn btn-primary mb-5 mt-2" id="submitchng" value="Accept Changes" action="displayUpdate" />
 			</s:if>
 			<s:else>

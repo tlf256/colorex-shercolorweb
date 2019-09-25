@@ -132,14 +132,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				}
 			}
 			
-			reqObj.setAccttype(customer.getAccttype());
-			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
-			reqObj.setClrntList(clrntlist);
-			reqObj.setActive(true);
-			reqObj.setHistory(false);
-			
 			List<CustParms> newcustlist = new ArrayList<CustParms>();
 			
 			for(int j = 0; j < clrntlist.size(); j++) {
@@ -154,14 +146,21 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				newcustlist.add(newcust);
 			}
 			
+			reqObj.setAccttype(customer.getAccttype());
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
+			reqObj.setClrntList(clrntlist);
+			reqObj.setActive(true);
+			reqObj.setHistory(false);
 			reqObj.setCustList(newcustlist);
 			
 			List<EulaHist> ehlist = new ArrayList<EulaHist>();
 			EulaHist eh = new EulaHist();
 	
-			if(customer.getWebsite().equals("SherColor Web Eula")) {
+			if(customer.getWebsite().equals("SherColor Web EULA")) {
 				Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
-				eh = activateEula(reqObj.getCustomerId(), sherColorWebEula);
+				eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
 				ehlist.add(0, eh);
 				reqObj.setWebsite(sherColorWebEula.getWebSite());
 				reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
@@ -194,7 +193,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		}
 	}
 	
-	public EulaHist activateEula(String customerId, Eula eula) {
+	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();
@@ -205,6 +204,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		eh.setWebSite(eula.getWebSite());
 		eh.setSeqNbr(eula.getSeqNbr());
 		eh.setActionTimeStamp(c.getTime());
+		eh.setAcceptanceCode(acceptCode);
 		eh.setActiveAcceptanceCode(true);
 		
 		return eh;

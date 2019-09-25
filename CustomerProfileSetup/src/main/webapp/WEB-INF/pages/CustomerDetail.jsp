@@ -129,9 +129,7 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-3"></div>
-		<div class="col-sm-6">
-			<s:set var="updateMode" value="updateMode" />
-		</div>
+		<div class="col-sm-6"></div>
 		<div class="col-sm-3"></div>
 	</div>
 	<div class="row">
@@ -158,8 +156,8 @@
 			<div class="text-danger"><h6>You must submit this form for changes to take effect!</h6></div>
 		</s:if>
 		<s:form>
-			<s:if test="updateMode">
-				<s:hidden name="updateMode" value="updateMode" />
+			<s:if test="sessionMap['CustomerDetail'].updateMode">
+				
 				<s:if test="sessionMap['CustomerDetail'].uploadedEula">
 					<button id="download" onclick="downloadPdf();return false;" class="btn btn-primary mb-1 mt-5">Download EULA</button>
 				</s:if>
@@ -251,6 +249,7 @@
 						<th>Type</th>
 						<th>User</th>
 						<th>Date</th>
+						<th>Acceptance Code</th>
 					</tr>
 					<s:iterator var="eula" value="sessionMap['CustomerDetail'].eulaHistList" status="i">
 					<tr>
@@ -265,6 +264,9 @@
 						</td>
 						<td>
 							<s:property value="#eula.actionTimeStamp" />
+						</td>
+						<td>
+							<s:property value="#eula.acceptanceCode" />
 						</td>
 					</tr>
 					</s:iterator>
@@ -342,12 +344,9 @@
 	<br>
 	<s:form>
 	<div class="row">
-       	<div class="col-lg-2 col-md-2">
-			<%-- <s:hidden name="lookupCustomerId" /> --%>
-			<%-- <s:hidden name="updateMode" /> --%>
-		</div>
+       	<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
-			<s:if test="edited || newCustomer">
+			<s:if test="edited || sessionMap['CustomerDetail'].newCustomer">
 				<button type="button" id="submitbtn" class="btn btn-primary mb-5 mt-2">Submit</button>
 			</s:if>
 			<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel" action="resetAction"/>

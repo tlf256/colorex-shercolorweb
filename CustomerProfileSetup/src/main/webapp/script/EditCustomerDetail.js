@@ -95,6 +95,12 @@ $(document).ready(function() {
 		$("#cdsadlfld").select();
 	});
 	
+	$("#edt2").click(function(){
+		$("#acceptcode").removeAttr("readonly");
+		$("#acceptcode").focus();
+		$("#acceptcode").select();
+	});
+	
 	$(".edtrow").click(function(){
 		var input = $(this).parent('td').parent('tr').find("input");
 		input.removeAttr("readonly");
@@ -134,6 +140,104 @@ $(document).ready(function() {
 			var cdsadlfld = $.trim($(this).val());
 			if(cdsadlfld.length > 20){
 				throw "Additional info cannot be greater than 20 characters";
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#acceptcode").on("blur", function(){
+		try{
+			var acceptcode = $.trim($(this).val());
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#eulafile").on("change", function(){
+		try{
+			var eula = $("#eulafile").val();
+			var ext = eula.split('.').pop().toLowerCase();
+			if(eula){
+				if(ext != 'pdf'){
+					throw "Invalid file extension";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#effDate").on("change", function(){
+		try{
+			var effdate = $.trim($(this).val());
+			var eula = $("#eulafile").val();
+			if(eula && !effdate){
+				throw "Please enter an Effective Date";
+			}
+			if(!eula && effdate){
+				throw "Please choose a EULA pdf";
+			}
+			if(effdate){
+				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(effdate)){
+					throw "Please enter valid date in mm/dd/yyyy format";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#expDate").on("change", function(){
+		try{
+			var expdate = $.trim($(this).val());
+			if(expdate){
+				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(expdate)){
+					throw "Please enter valid date in mm/dd/yyyy format";
+				}
 			}
 			valid = true;
 			$("#custediterror").text("");
@@ -346,7 +450,7 @@ $(document).ready(function() {
 		}
 	}, "input[name^='cust']");
 	
-	$(document).on("click", "#submitchng", function(){
+	$(document).on("click", "#submitchng", function(e){
 		try{
 			if(valid===false){
 				throw "Please fix form error(s):";
@@ -369,9 +473,26 @@ $(document).ready(function() {
 					}
 				}
 			});
+			var acceptcode = $.trim($("#acceptcode").val());
+			var eulaws = $("#eulalist").val();
+			var eula = $("#eulafile").val();
+			var eulatext = $("#eulatext").val();
+			if(eula && !eulatext){
+				throw "Please enter EULA text";
+			}
+			if(!eula && eulatext){
+				throw "Please choose a EULA pdf";
+			}
+			if(eulaws != 'None' && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eulaws == 'None' && acceptcode){
+				throw "Please choose a EULA";
+			}
 			$("#formerror").text("");
+			return true;
 		}catch(msg){
-			event.preventDefault();
+			e.preventDefault();
 			$("#formerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top

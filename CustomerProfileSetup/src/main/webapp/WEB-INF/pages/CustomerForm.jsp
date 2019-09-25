@@ -28,11 +28,7 @@
 		<div class="col-sm-2"></div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2">
-			<%-- <s:if test="hasActionMessages()">
-			    <s:actionmessage cssClass="alert-danger"/>
-			</s:if> --%>
-		</div>
+		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 	</div>
@@ -168,7 +164,8 @@
 	<div class="row" id="eula">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<s:select label="Activate Eula" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="customer.website" headerValue="None"></s:select>
+			<s:select label="Activate EULA" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="customer.website" headerValue="None"></s:select>
+			<s:textfield label="Acceptance Code" name="customer.acceptCode" id="acceptcode" requiredLabel="true" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>

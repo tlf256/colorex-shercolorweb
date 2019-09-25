@@ -41,6 +41,7 @@ public class RequestObject {
 	private Eula eula;
 	private boolean toactivateRecord;
 	private boolean uploadedEula;
+	private boolean updateMode;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -232,6 +233,12 @@ public class RequestObject {
 	}
 	public void setUploadedEula(boolean uploadedEula) {
 		this.uploadedEula = uploadedEula;
+	}
+	public boolean isUpdateMode() {
+		return updateMode;
+	}
+	public void setUpdateMode(boolean updateMode) {
+		this.updateMode = updateMode;
 	}
 	public void reset() {
 		this.customerId = "";

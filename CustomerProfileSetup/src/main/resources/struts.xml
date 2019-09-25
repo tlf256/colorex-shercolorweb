@@ -25,7 +25,6 @@
 			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<param name="updateMode">${updateMode}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -44,12 +43,10 @@
 			<result name="success">/WEB-INF/pages/EditCustomerDetail.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="cancelUpdate" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="cancel">
+		<action name="cancelUpdate" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="cancelUpdate">
 			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<param name="updateMode">${updateMode}</param>
-				<param name="edited">${edited}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -61,7 +58,6 @@
 		<action name="displayEdit" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="execute">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<!-- <param name="updateMode">${updateMode}</param> -->
 				<param name="edited">${edited}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
@@ -88,8 +84,6 @@
 		<action name="getJobInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessJobAction" method="execute">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<param name="updateMode">${updateMode}</param>
-				<param name="newCustomer">${newCustomer}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -150,7 +144,6 @@
 			</result>
 			<result name="noeula" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<param name="updateMode">${updateMode}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>

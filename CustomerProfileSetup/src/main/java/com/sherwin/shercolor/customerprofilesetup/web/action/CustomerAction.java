@@ -75,15 +75,15 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			
 			eulaList.add(0, "None");
 			
-			if(reqObj.getCustomerId() == null) {
-				
-				// read active eulas for new customer
-				sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", null);
-				
-			}
+			// read active eulas 
+			sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
 			
 			if(sherColorWebEula != null) {
-				eulaList.add("SherColor Web Eula");
+				if(sherColorWebEula.getCustomerId() == null) {
+					eulaList.add("SherColor Web EULA");
+				} else {
+					eulaList.add("Custom EULA");
+				}
 			}
 			
 			reqObj.setEulaList(eulaList);
@@ -98,7 +98,6 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	
 	public String update() { 
 		try { 
-			setUpdateMode(true);
 			setEdited(true);
 			
 			return SUCCESS;
@@ -116,6 +115,16 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	public String reset() {
 		 try {
 			 sessionMap.clear();
+		     return SUCCESS;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ERROR;
+		}
+	}
+	
+	public String cancelUpdate() {
+		try {
+			setEdited(false);
 		     return SUCCESS;
 		} catch (Exception e) {
 			logger.error(e.getMessage());

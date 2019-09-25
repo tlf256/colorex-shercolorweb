@@ -54,7 +54,16 @@ $(document).ready(function() {
              }
             },
         ],
-        
+        "columnDefs": [
+        	{
+    			'jobFieldList': {
+    				data: 'enteredValue',
+    				render: function(data, type, row){
+        				return $(".idNumber").html(data).text();
+        			}
+    			}
+            }
+        ],
 		"emptyTable" : "No jobs available",
         "ordering": true,
         "order": [ 0, 'desc' ],

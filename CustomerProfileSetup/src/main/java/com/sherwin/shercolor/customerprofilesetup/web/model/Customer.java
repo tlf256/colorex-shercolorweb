@@ -22,6 +22,7 @@ public class Customer {
 	private boolean history;
 	private List<String> clrntList;
 	private String website;
+	private String acceptCode;
 	private boolean activateEula;
 	private byte[] eulapdf;
 	
@@ -167,6 +168,17 @@ public class Customer {
 		}
 	}
 	
+	public String getAcceptCode() {
+		return acceptCode;
+	}
+	public void setAcceptCode(String acceptCode) {
+		if(acceptCode != null) {
+			this.acceptCode = Encode.forHtml(acceptCode.trim());
+		} else {
+			this.acceptCode = acceptCode;
+		}
+		
+	}
 	public boolean isActivateEula() {
 		return activateEula;
 	}
@@ -179,20 +191,5 @@ public class Customer {
 	public void setEulapdf(byte[] eulapdf) {
 		this.eulapdf = eulapdf;
 	}
-	public void reset() {
-		this.customerId = "";
-		this.accttype = "";
-		this.ntlacctnbr = "";
-		this.intntlacctnbr = "";
-		this.defaultClrntSys = "";
-		this.cce = "";
-		this.bac = "";
-		this.eff = "";
-		this.defaultClrntSys = "";
-		this.cdsAdlFld = "";
-		this.active = false;
-		this.history = false;
-		this.swuiTitle = "";
-		this.clrntList = null;
-	}
+	
 }
