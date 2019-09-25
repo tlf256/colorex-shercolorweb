@@ -1,9 +1,9 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.Eula;
+import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
@@ -31,10 +34,16 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	EulaService eulaService;
 
 	public String execute() {
 		try {	
 			RequestObject reqObj = new RequestObject();
+			
+			reqObj.setNewCustomer(true);
+			
 			//check for entered account number
 			switch(customer.getAccttype()) {
 			case "natlWdigits":  //customerid = account number
@@ -123,14 +132,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				}
 			}
 			
-			reqObj.setAccttype(customer.getAccttype());
-			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
-			reqObj.setClrntList(clrntlist);
-			reqObj.setActive(true);
-			reqObj.setHistory(false);
-			
 			List<CustParms> newcustlist = new ArrayList<CustParms>();
 			
 			for(int j = 0; j < clrntlist.size(); j++) {
@@ -145,7 +146,35 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				newcustlist.add(newcust);
 			}
 			
+			reqObj.setAccttype(customer.getAccttype());
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
+			reqObj.setClrntList(clrntlist);
+			reqObj.setActive(true);
+			reqObj.setHistory(false);
 			reqObj.setCustList(newcustlist);
+			
+			List<EulaHist> ehlist = new ArrayList<EulaHist>();
+			EulaHist eh = new EulaHist();
+	
+			if(customer.getWebsite().equals("SherColor Web EULA")) {
+				Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
+				eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
+				ehlist.add(0, eh);
+				reqObj.setWebsite(sherColorWebEula.getWebSite());
+				reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
+			} else if(customer.getWebsite().equals("None")) {
+				eh = null;
+				ehlist = null;
+			} else {
+				//unexpected value
+				addFieldError("eulaerror", "Please select Eula from list");
+				return INPUT;
+			}
+			
+			reqObj.setEulaHistToActivate(eh);
+			reqObj.setEulaHistList(ehlist);
 			
 			sessionMap.put("CustomerDetail", reqObj);	
 			
@@ -162,6 +191,23 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			logger.error(e.getMessage());
 			return ERROR;
 		}
+	}
+	
+	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+		
+		EulaHist eh = new EulaHist();
+		Calendar c = Calendar.getInstance();
+		
+		eh.setActionType("TOACTIVATE");
+		eh.setActionUser("UNSET");
+		eh.setCustomerId(customerId);
+		eh.setWebSite(eula.getWebSite());
+		eh.setSeqNbr(eula.getSeqNbr());
+		eh.setActionTimeStamp(c.getTime());
+		eh.setAcceptanceCode(acceptCode);
+		eh.setActiveAcceptanceCode(true);
+		
+		return eh;
 	}
 	
 	public String checkAcctNbr() {
@@ -185,11 +231,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	public String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
-			if(escapedString.contains("&amp;") || escapedString.contains("&#38;")) {
+			if(escapedString.contains("&amp;")) {
 				newString = escapedString.replaceAll("&amp;", "&");
 			} else if(escapedString.contains("&#38;")) {
 				newString = escapedString.replaceAll("&#38;", "&");
-			} else if(escapedString.contains("&apos;") || escapedString.contains("&#39;")) {
+			} else if(escapedString.contains("&apos;")) {
 				newString = escapedString.replaceAll("&apos;", "'");
 			} else if(escapedString.contains("&#39;")) {
 				newString = escapedString.replaceAll("&#39;", "'");

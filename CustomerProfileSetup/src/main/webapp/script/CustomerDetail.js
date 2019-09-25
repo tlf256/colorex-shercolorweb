@@ -15,4 +15,14 @@ $(document).ready(function() {
 		$("#inactivemodal").modal('show');
 	});
 	
+	$("#download_modal").on('show.bs.modal', function(){
+		$("#eulapdf").html('<iframe src="downloadEula.action" class="embed-responsive-item" allowfullscreen></iframe>');
+	});
+	
 });
+
+function downloadPdf(){
+	
+	$("#download_modal").modal('show');
+	
+}

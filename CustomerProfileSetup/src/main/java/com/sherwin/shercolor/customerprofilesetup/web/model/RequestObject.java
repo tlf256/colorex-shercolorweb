@@ -2,6 +2,8 @@ package com.sherwin.shercolor.customerprofilesetup.web.model;
 
 import java.util.List;
 
+import com.sherwin.shercolor.common.domain.Eula;
+import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
@@ -10,20 +12,36 @@ public class RequestObject {
 	
 	private String customerId;
 	private String accttype;
-	/*private String ntlacctnbr;
-	private String intntlacctnbr;
-	private String cce;
-	private String bac;
-	private String eff;*/
 	private String defaultClrntSys;
 	private boolean active;
 	private boolean history;
 	private String swuiTitle;
 	private String cdsAdlFld;
+	private String website;
+	private boolean newCustomer;
+	private boolean existingCustomer;
 	private List<CustParms> custList;
 	private List<JobFields> jobFieldList;
 	private List<LoginTrans> loginList;
+	private List<CustParms> custResultList;
+	private List<JobFields> jobFieldResultList;
+	private List<LoginTrans> loginResultList;
+	private boolean custEdited;
+	private boolean jobEdited;
+	private boolean loginEdited;
+	private boolean custDeleted;
+	private boolean jobDeleted;
+	private boolean loginDeleted;
 	private List<String> clrntList;
+	private List<EulaHist> eulaHistList;
+	private List<String> eulaList;
+	private int seqNbr;
+	private EulaHist eulaHistToActivate;
+	private byte[] eulapdf;
+	private Eula eula;
+	private boolean toactivateRecord;
+	private boolean uploadedEula;
+	private boolean updateMode;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -37,36 +55,6 @@ public class RequestObject {
 	public void setAccttype(String accttype) {
 		this.accttype = accttype;
 	}
-	/*public String getNtlacctnbr() {
-		return ntlacctnbr;
-	}
-	public void setNtlacctnbr(String ntlacctnbr) {
-		this.ntlacctnbr = ntlacctnbr;
-	}
-	public String getIntntlacctnbr() {
-		return intntlacctnbr;
-	}
-	public void setIntntlacctnbr(String intntlacctnbr) {
-		this.intntlacctnbr = intntlacctnbr;
-	}
-	public String getCce() {
-		return cce;
-	}
-	public void setCce(String cce) {
-		this.cce = cce;
-	}
-	public String getBac() {
-		return bac;
-	}
-	public void setBac(String bac) {
-		this.bac = bac;
-	}
-	public String getEff() {
-		return eff;
-	}
-	public void setEff(String eff) {
-		this.eff = eff;
-	}*/
 	public String getDefaultClrntSys() {
 		return defaultClrntSys;
 	}
@@ -98,6 +86,24 @@ public class RequestObject {
 	public void setCdsAdlFld(String cdsAdlFld) {
 		this.cdsAdlFld = cdsAdlFld;
 	}
+	public String getWebsite() {
+		return website;
+	}
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+	public boolean isNewCustomer() {
+		return newCustomer;
+	}
+	public void setNewCustomer(boolean newCustomer) {
+		this.newCustomer = newCustomer;
+	}
+	public boolean isExistingCustomer() {
+		return existingCustomer;
+	}
+	public void setExistingCustomer(boolean existingCustomer) {
+		this.existingCustomer = existingCustomer;
+	}
 	public List<JobFields> getJobFieldList() {
 		return jobFieldList;
 	}
@@ -117,6 +123,60 @@ public class RequestObject {
 		this.loginList = loginList;
 	}
 	
+	public List<CustParms> getCustResultList() {
+		return custResultList;
+	}
+	public void setCustResultList(List<CustParms> custResultList) {
+		this.custResultList = custResultList;
+	}
+	public List<JobFields> getJobFieldResultList() {
+		return jobFieldResultList;
+	}
+	public void setJobFieldResultList(List<JobFields> jobFieldResultList) {
+		this.jobFieldResultList = jobFieldResultList;
+	}
+	public List<LoginTrans> getLoginResultList() {
+		return loginResultList;
+	}
+	public void setLoginResultList(List<LoginTrans> loginResultList) {
+		this.loginResultList = loginResultList;
+	}
+	public boolean isCustEdited() {
+		return custEdited;
+	}
+	public void setCustEdited(boolean custEdited) {
+		this.custEdited = custEdited;
+	}
+	public boolean isJobEdited() {
+		return jobEdited;
+	}
+	public void setJobEdited(boolean jobEdited) {
+		this.jobEdited = jobEdited;
+	}
+	public boolean isLoginEdited() {
+		return loginEdited;
+	}
+	public void setLoginEdited(boolean loginEdited) {
+		this.loginEdited = loginEdited;
+	}
+	public boolean isCustDeleted() {
+		return custDeleted;
+	}
+	public void setCustDeleted(boolean custDeleted) {
+		this.custDeleted = custDeleted;
+	}
+	public boolean isJobDeleted() {
+		return jobDeleted;
+	}
+	public void setJobDeleted(boolean jobDeleted) {
+		this.jobDeleted = jobDeleted;
+	}
+	public boolean isLoginDeleted() {
+		return loginDeleted;
+	}
+	public void setLoginDeleted(boolean loginDeleted) {
+		this.loginDeleted = loginDeleted;
+	}
 	public List<String> getClrntList() {
 		return clrntList;
 	}
@@ -124,14 +184,65 @@ public class RequestObject {
 		this.clrntList = clrntList;
 	}
 	
+	public List<EulaHist> getEulaHistList() {
+		return eulaHistList;
+	}
+	public void setEulaHistList(List<EulaHist> eulaHistList) {
+		this.eulaHistList = eulaHistList;
+	}
+	
+	public List<String> getEulaList() {
+		return eulaList;
+	}
+	public void setEulaList(List<String> eulaList) {
+		this.eulaList = eulaList;
+	}
+	public int getSeqNbr() {
+		return seqNbr;
+	}
+	public void setSeqNbr(int seqNbr) {
+		this.seqNbr = seqNbr;
+	}
+	public EulaHist getEulaHistToActivate() {
+		return eulaHistToActivate;
+	}
+	public void setEulaHistToActivate(EulaHist eulaHistToActivate) {
+		this.eulaHistToActivate = eulaHistToActivate;
+	}
+	public byte[] getEulapdf() {
+		return eulapdf;
+	}
+	public void setEulapdf(byte[] eulapdf) {
+		this.eulapdf = eulapdf;
+	}
+	public Eula getEula() {
+		return eula;
+	}
+	public void setEula(Eula eula) {
+		this.eula = eula;
+	}
+	
+	public boolean isToactivateRecord() {
+		return toactivateRecord;
+	}
+	public void setToactivateRecord(boolean toactivateRecord) {
+		this.toactivateRecord = toactivateRecord;
+	}
+	public boolean isUploadedEula() {
+		return uploadedEula;
+	}
+	public void setUploadedEula(boolean uploadedEula) {
+		this.uploadedEula = uploadedEula;
+	}
+	public boolean isUpdateMode() {
+		return updateMode;
+	}
+	public void setUpdateMode(boolean updateMode) {
+		this.updateMode = updateMode;
+	}
 	public void reset() {
 		this.customerId = "";
 		this.accttype = "";
-		/*this.ntlacctnbr = "";
-		this.intntlacctnbr = "";
-		this.cce = "";
-		this.bac = "";
-		this.eff = "";*/
 		this.defaultClrntSys = "";
 		this.active = false;
 		this.history = false;
@@ -141,6 +252,8 @@ public class RequestObject {
 		this.custList = null;
 		this.loginList = null;
 		this.clrntList = null;
+		this.eulaHistList = null;
+		this.eulaList = null;
 	}
 	
 }

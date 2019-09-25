@@ -8,6 +8,7 @@ $(document).ready(function() {
 	$("#cdsadlfld").hide();
 	$("#clrnt").hide();
 	$("#loginnext-btn").hide();
+	$("#eula").hide();
 	
 	function natlWdigits(){
 		$("#ntlacct").show();
@@ -16,6 +17,7 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	function intnatlWdigits(){
@@ -25,6 +27,7 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	function acctWOdigits(){
@@ -34,38 +37,39 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	$("#selectedAccttype-0").click(function(){
 		natlWdigits();
 		$("#ntlacctnbr").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#ntlacct").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-1").click(function(){
 		acctWOdigits();
 		$("#swuititle").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#cstmrnm").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-2").click(function(){
 		intnatlWdigits();
 		$("#intntlacctnbr").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#intntlacct").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-3").click(function(){
 		acctWOdigits();
 		$("#swuititle").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#cstmrnm").offset().top
+		}, 1000);
 	});
 	
 	var valid = false;
@@ -214,6 +218,41 @@ $(document).ready(function() {
 			$(this).prop("checked", false);
 			//$(this).focus();
 			//$("#loginnext-btn").addClass("d-none");
+		}
+	});
+	
+	$("#acceptcode").on("blur", function(){
+		try{
+			var acceptcode = $.trim($(this).val());
+			var eula = $("#eulalist").val();
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			if(eula && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eula == 'None' && acceptcode){
+				throw "Please choose a EULA";
+			}
+			valid = true;
+			$("#custformerror").text("");
+			$("#eulaerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			
+			$("#eulaerror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#eulalist").on("change", function(){
+		var ws = $("#eulalist").val();
+		if(ws != "None"){
+			$("#eulahist").removeClass("d-none");
+		} else {
+			$("#eulahist").addClass("d-none");
 		}
 	});
 	
