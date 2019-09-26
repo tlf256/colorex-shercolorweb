@@ -54,7 +54,6 @@ $(document).ready(function() {
              }
             },
         ],
-        
 		"emptyTable" : "No jobs available",
         "ordering": true,
         "order": [ 0, 'desc' ],

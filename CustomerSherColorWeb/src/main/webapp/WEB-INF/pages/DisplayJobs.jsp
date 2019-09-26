@@ -54,7 +54,6 @@
 		      </div>
 		      <div class="modal-footer">
 		      <s:form>
-			        <%-- <s:submit id="deletebtn" class="btn btn-danger" action="deleteCustomer" value="Yes"></s:submit> --%>
 			        <button type="button" id="yesbtn" class="btn btn-danger" data-dismiss="modal">Yes</button>
 			        <button type="button" id="nobtn" class="btn btn-secondary" data-dismiss="modal">No</button>
 		       </s:form>
@@ -91,7 +90,7 @@
 							<tr>
 								<th>Job #</th>
 								<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-									<th><s:property value="screenLabel"/></th>
+									<th><s:property value="screenLabel" /></th>
 								</s:iterator>
 								<th>Color #</th>
 								<th>Color Name</th>
@@ -111,7 +110,7 @@
 								<tr class="border-bottom-1 border-dark">
 									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
-										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue"/></span></td>
+										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue" escapeHtml="false"/></span></td>
 									</s:iterator>
 									<td><s:property value="#job.colorId" /></td>
 									<td><s:property value="#job.colorName" /></td>
