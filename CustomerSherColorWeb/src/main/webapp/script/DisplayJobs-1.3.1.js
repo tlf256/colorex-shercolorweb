@@ -54,7 +54,25 @@ $(document).ready(function() {
              }
             },
         ],
-		"emptyTable" : "No jobs available",
+        /*"columnDefs": [
+        	{
+        		"targets": "_all",
+        		"data": null,
+				"render": function(data, type, row){
+					console.log(data);
+					console.log(type);
+					console.log(row);
+					if(type === 'display'){
+						var str = $('td').text();
+						return $.parseHTML(str);
+					}
+					return data;
+				}
+            }
+        ],*/
+        "language": {
+        	"emptyTable" : "No jobs available"
+        },
         "ordering": true,
         "order": [ 0, 'desc' ],
         "paginate": false,
@@ -62,6 +80,28 @@ $(document).ready(function() {
         "scrollX": true,
         "pagingType": "full",
     });
+	
+	/*var cell = jobTable.cell(this);
+	var celldata = cell.data();
+	var enteredValue = jobTable.cells(".idNumber").data();
+	var index = 0;*/
+	
+	/*$(".idNumber").each(function(){
+		$(this).html($(this).text());
+	});*/
+	
+	/*$.fn.dataTable.render.encodedHtml = function(){
+		return function(data, type, row){
+			console.log(data);
+			console.log(type);
+			console.log(row);
+			if(type === 'display'){
+				var str = data.toString();
+				return $('td').html(str);
+			}
+			return data;
+		};
+	};*/
     
     $('#job_table tbody').on('click','tr',function(event){
     	//window.alert("row clicked ");

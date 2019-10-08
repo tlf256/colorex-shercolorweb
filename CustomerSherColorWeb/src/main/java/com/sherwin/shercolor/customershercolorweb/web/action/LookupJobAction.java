@@ -136,8 +136,12 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			String customerId = reqObj.getCustomerID();
 			
 			CustWebTran webTran = tranHistoryService.readTranHistory(customerId, lookupControlNbr, 1);
+			
+			System.out.println("domain object jobfieldlist entered value: " + webTran.getJobField02());
 
 			mapCustWebTranToRequestObject(webTran, reqObj);
+			
+			System.out.println("reqObj jobfieldlist entered value: " + reqObj.getJobFieldList().get(1).getEnteredValue());
 			
 			displayFormula = reqObj.getDisplayFormula();
 			
