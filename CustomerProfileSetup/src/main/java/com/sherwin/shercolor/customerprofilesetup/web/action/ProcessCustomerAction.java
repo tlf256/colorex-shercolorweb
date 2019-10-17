@@ -157,24 +157,23 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			
 			List<EulaHist> ehlist = new ArrayList<EulaHist>();
 			EulaHist eh = new EulaHist();
-	
-			if(customer.getWebsite().equals("SherColor Web EULA")) {
-				Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
-				eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
-				ehlist.add(0, eh);
-				reqObj.setWebsite(sherColorWebEula.getWebSite());
-				reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
-			} else if(customer.getWebsite().equals("None")) {
-				eh = null;
-				ehlist = null;
-			} else {
-				//unexpected value
-				addFieldError("eulaerror", "Please select Eula from list");
-				return INPUT;
-			}
 			
-			reqObj.setEulaHistToActivate(eh);
-			reqObj.setEulaHistList(ehlist);
+			if(!customer.getWebsite().equals("None")) {
+				if(customer.getWebsite().equals("SherColor Web EULA")) {
+					Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
+					eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
+					ehlist.add(0, eh);
+					reqObj.setWebsite(sherColorWebEula.getWebSite());
+					reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
+				} else {
+					//unexpected value
+					addFieldError("eulaerror", "Please select Eula from list");
+					return INPUT;
+				}
+				
+				reqObj.setEulaHistToActivate(eh);
+				reqObj.setEulaHistList(ehlist);
+			}
 			
 			sessionMap.put("CustomerDetail", reqObj);	
 			

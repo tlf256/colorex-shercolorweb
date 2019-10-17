@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -74,7 +75,9 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 		try{
 			updateMode=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
 			jobFieldList = reqObj.getJobFieldList();
+			
 			reqObj.setQuantityDispensed(0);
 
 			
@@ -117,6 +120,9 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					if(debugOn) System.out.println("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
+					// encode entered value
+					thisField.setEnteredValue(Encode.forHtml(thisField.getEnteredValue()));
+					if(debugOn) System.out.println("thisField after encoding: " + thisField.getEnteredValue());
 					i++;
 					validateMe.add(thisField.getEnteredValue());
 				}

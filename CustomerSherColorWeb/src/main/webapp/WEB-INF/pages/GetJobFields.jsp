@@ -69,7 +69,7 @@
 						<%--     							<s:set var="setFirstFieldFocus" value="%{'true'}"/> --%>
 						<%-- 							</s:if> --%>
 						<%-- 							<s:else> --%>
-						<s:textfield name="jobFieldList[%{#outerStat.index}].enteredValue" />
+						<s:textfield class="entval" name="jobFieldList[%{#outerStat.index}].enteredValue" />
 						<%-- 							</s:else> --%>
 
 					</div>
@@ -109,9 +109,15 @@
 	<br>
 	<br>
 	<script>
-		 $(window).on('load', function () {
+		 $(document).ready(function () {
 			 var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
 			 txtBox.focus();
+			 
+			 $(".entval").each(function(){
+				var enteredValue = $(this).val();
+				//console.log("enteredValue = " + enteredValue);
+				$(this).val($(this).html(enteredValue).text());
+			 });
 		 });
 		<!--
 		  function HF_openSherwin() {
