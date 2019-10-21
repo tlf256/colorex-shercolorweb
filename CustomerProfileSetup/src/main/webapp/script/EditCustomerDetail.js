@@ -477,6 +477,12 @@ $(document).ready(function() {
 			var eulaws = $("#eulalist").val();
 			var eula = $("#eulafile").val();
 			var eulatext = $("#eulatext").val();
+			var d = new Date();
+			var dd = String(d.getDate()).padStart(2, '0');
+			var mm = String(d.getMonth() + 1).padStart(2, '0');
+			var yyyy = String(d.getFullYear());
+			var today = mm + "/" + dd + "/" + yyyy;
+			console.log("today's date = " + today);
 			if(eula && !eulatext){
 				throw "Please enter EULA text";
 			}
@@ -488,6 +494,11 @@ $(document).ready(function() {
 			}
 			if(eulaws == 'None' && acceptcode){
 				throw "Please choose a EULA";
+			}
+			if($("#expDate") != null && $("#expDate").val() != ""){
+				if($("#expDate").val() < $("#effDate").val()){
+					throw "Invalid Expiration Date";
+				}
 			}
 			$("#formerror").text("");
 			return true;
