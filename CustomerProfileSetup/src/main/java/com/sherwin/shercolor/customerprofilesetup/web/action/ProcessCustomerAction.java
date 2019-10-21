@@ -132,6 +132,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				}
 			}
 			
+			reqObj.setAccttype(customer.getAccttype());
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
+			reqObj.setClrntList(clrntlist);
+			reqObj.setActive(true);
+			reqObj.setHistory(false);
+			
 			List<CustParms> newcustlist = new ArrayList<CustParms>();
 			
 			for(int j = 0; j < clrntlist.size(); j++) {
@@ -146,13 +154,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				newcustlist.add(newcust);
 			}
 			
-			reqObj.setAccttype(customer.getAccttype());
-			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
-			reqObj.setClrntList(clrntlist);
-			reqObj.setActive(true);
-			reqObj.setHistory(false);
 			reqObj.setCustList(newcustlist);
 			
 			List<EulaHist> ehlist = new ArrayList<EulaHist>();

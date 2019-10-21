@@ -45,7 +45,11 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			for(Object[] item : custList) {
 				CustomerSummary summary = new CustomerSummary();
 				summary.setCustomerId(item[0].toString());
-				summary.setCustomerName(item[1].toString());
+				if(item[1]==null) {
+					summary.setCustomerName("");
+				} else {
+					summary.setCustomerName(item[1].toString());
+				}
 				summary.setClrntSysSummary(item[2].toString());
 				custSummList.add(summary);
 			}
