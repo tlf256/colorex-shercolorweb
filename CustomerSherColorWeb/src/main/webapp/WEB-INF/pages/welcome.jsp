@@ -378,6 +378,70 @@
 				}
 			}
     	}
+		function DetectFMXResp(return_message){
+			console.log("Processing FMX Detect Response");
+			var initErrorList;
+			// log event
+			var curDate = new Date();
+			var myGuid = $( "#startNewJob_reqGuid" ).val();
+			sendTinterEvent(myGuid, curDate, return_message, null); 
+			waitForShowAndHide('#initTinterInProgressModal');
+			initErrorList = [];
+			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+				// Detected and no errors from tinter 			
+				// clear init error in session			
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+			} else {
+				if (return_message.errorNumber == -10500 && return_message.commandRC == -10500){
+					// show warnings?	
+					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+				} else {
+					//Show a modal with error message to make sure the user is forced to read it.
+					$("#tinterErrorList").empty();
+					
+					if(return_message.errorList!=null && return_message.errorList[0]!=null){
+						return_message.errorList.forEach(function(item){
+							$("#tinterErrorList").append("<li>" + item.message + "</li>");
+							initErrorList.push(item.message);
+						});
+					} else {
+						initErrorList.push(return_message.errorMessage);
+						$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+					}
+					$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
+					$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+					$("#tinterErrorListModal").modal('show');
+					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+				}
+			}
+    	}
+    	function DispenseProgressResp(){
+    		$("#progress-message").text(return_message.errorMessage);
+    		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 0 ||
+					 return_message.status == 1)) {
+				//keep updating modal with status
+				$("#progress-message").text(return_message.errorMessage);
+				console.log(return_message);
+			}
+			else if(return_message.errorMessage.indexOf("Done") >= 0){
+				sendingTinterCommand = "false";
+				// clear init error in session
+				
+				sendTinterEvent(myGuid, curDate, return_message, null); 
+			
+				// Detected and no errors from tinter 
+				waitForShowAndHide('#PurgeInProgressModal');
+			
+			}
+			else if  (return_message.errorNumber != 0 ) {
+				//error
+				$("#progress-message").text(return_message.errorMessage);
+				console.log(return_message);
+				// Detected and error from tinter 
+				waitForShowAndHide('#PurgeInProgressModal');
+			}
+				
+        	}
 		function RecdMessage() {
 			//Display WSS unsupported browser message
 			wssBrowserCheck();
@@ -535,6 +599,9 @@
 					    		// get session for tinter status
 					    		getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 							}
+							else if(localhostConfig.model.indexOf("FM X") >= 0){
+								DetectFMXResp(return_message);
+								}
 							else{
 								DetectFMResp(return_message);								
 							}
