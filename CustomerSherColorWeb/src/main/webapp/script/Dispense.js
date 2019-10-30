@@ -261,6 +261,64 @@ function dispense(){
     // Send to tinter
     ws_tinter.send(json);
 }
+function FMXDispenseProgress(){
+	console.log('before purge status modal show');
+	//$("#PurgeInProgressModal").modal('show');
+	rotateIcon();
+	var cmd = "DispenseProgress";
+	var shotList = null;
+	var configuration = null;
+	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+	var json = JSON.stringify(tintermessage);
+	sendingTinterCommand = "true";
+	ws_tinter.send(json);
+}
+function dispenseProgressResp(return_message){
+	//$("#progress-message").text(return_message.errorMessage);
+	if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
+			 return_message.status == 1)) {
+		//keep updating modal with status
+		//$("#progress-message").text(return_message.errorMessage);
+		$("#tinterErrorList").empty();
+		initErrorList = [];
+		if(return_message.errorList!=null && return_message.errorList[0]!=null){
+			return_message.errorList.forEach(function(item){
+				$("#tinterErrorList").append("<li>" + item.message + "</li>");
+				initErrorList.push(item.message);
+			});
+		} else {
+			initErrorList.push(return_message.errorMessage);
+			$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+		}
+		console.log(return_message);
+		setTimeout(function(){
+			FMXDispenseProgress();
+		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+		
+	}
+	else{
+		dispenseComplete(return_message);
+		}
+		
+}
+
+function dispenseComplete(return_message){
+    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+        // save a dispense (will bump the counter)
+        getSessionTinterInfo($("#reqGuid").val(),warningCheck);
+        $("#dispenseStatus").text("Last Dispense: Complete");
+        $('#progressok').removeClass('d-none');
+        $('#tinterInProgressTitle').text('Tinter Progress');
+        $('#tinterInProgressMessage').text('');
+    } else {
+        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage);
+        waitForShowAndHide("#tinterInProgressModal");
+        console.log('hide done');
+        //Show a modal with error message to make sure the user is forced to read it.
+        showTinterErrorModal("Dispense Error",null,return_message);
+    }
+    sendingDispCommand = "false";
+}
 
 function RecdMessage() {
     console.log("Received Message");
@@ -310,21 +368,14 @@ function RecdMessage() {
             console.log(return_message);
             switch (return_message.command) {
                 case 'Dispense':
-                    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
-                        // save a dispense (will bump the counter)
-                        getSessionTinterInfo($("#reqGuid").val(),warningCheck);
-                        $("#dispenseStatus").text("Last Dispense: Complete");
-                        $('#progressok').removeClass('d-none');
-                        $('#tinterInProgressTitle').text('Tinter Progress');
-                        $('#tinterInProgressMessage').text('');
-                    } else {
-                        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage);
-                        waitForShowAndHide("#tinterInProgressModal");
-                        console.log('hide done');
-                        //Show a modal with error message to make sure the user is forced to read it.
-                        showTinterErrorModal("Dispense Error",null,return_message);
-                    }
-                    sendingDispCommand = "false";
+                case 'DispenseProgress':
+                	var tinterModel = $("#tinterModel").val();
+					if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
+						dispenseProgressResp(return_message);
+					}
+					else{
+						dispenseComplete(return_message);
+					}
                     break;
                 default:
                     //Not an response we expected...

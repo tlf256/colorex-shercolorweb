@@ -104,6 +104,7 @@ input[type=number] {
 						<div class="col-sm-3">
 							<s:set var="thisGuid" value="reqGuid" />
 							<s:hidden value="%{thisGuid}" id="reqGuid"></s:hidden>
+							<s:hidden value="%{tinter.model}" id="tinterModel"></s:hidden>
 						</div>
 					</div>
 					<br>
@@ -191,6 +192,7 @@ input[type=number] {
 								<div class="modal-body">
 									<p id="dispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
+									<ul class="list-unstyled" id="tinterErrorList"></ul>
 								</div>
 								<div class="modal-footer">
 									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>

@@ -67,15 +67,26 @@
     	ws_tinter.send(json);
 	}
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
-		$("#progress-message").text(return_message.errorMessage);
-		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 0 ||
+		//$("#progress-message").text(return_message.errorMessage);
+		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 1 ||
 				 return_message.status == 1)) {
 			//keep updating modal with status
-			$("#progress-message").text(return_message.errorMessage);
+			//$("#progress-message").text(return_message.errorMessage);
+			$("#tinterErrorList").empty();
+			initErrorList = [];
+			if(return_message.errorList!=null && return_message.errorList[0]!=null){
+				return_message.errorList.forEach(function(item){
+					$("#tinterErrorList").append("<li>" + item.message + "</li>");
+					initErrorList.push(item.message);
+				});
+			} else {
+				initErrorList.push(return_message.errorMessage);
+				$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+			}
 			console.log(return_message);
-			setTimeout(function(){
+			//setTimeout(function(){
 				FMXPurgeProgress();
-			}, 200);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+		//	}, 200);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 			
 		}
 		else{
@@ -84,6 +95,7 @@
 			
     }
     function purgeComplete(myGuid, curDate,return_message, tedArray){
+        return_message.command = "PurgeAll";
     	sendTinterEvent(myGuid, curDate, return_message, tedArray);
 		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 			// show purge
@@ -341,16 +353,18 @@
 					</div>
 				</div>
 				<!-- do not display nozzle instructions for x - series -->
-				<s:if test="%{#sessionScope[thisGuid].tinter.model=='FM XPROTINT' || #sessionScope[thisGuid].tinter.model=='FM XSMART'  }">
-					<div class="row">
+				<div class="row">
 						<div class="col-sm-3">
 						</div>
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
+							<s:if test="%{#sessionScope[thisGuid].tinter.model=='FM XPROTINT' || #sessionScope[thisGuid].tinter.model=='FM XSMART'  }">
+					
 								<p class="lead">1. Thoroughly Clean Nozzle with the Cleaning Tool</p>
 								<p class="lead">2. Clean and Moisten Humidifier Sponge Before Purging</p>
 								<p class="lead">3. Position Container and click Purge button to start purge colorants</p>
 								<p></p>
+								</s:if>
 								<p class="lead" id="lastPurgeText">Last purge was done on <s:property value="lastPurgeDate"/> by <s:property value="lastPurgeUser"/></p>
 								<p></p>
 							</div>
@@ -373,7 +387,8 @@
 		
 						</div>
 					</div>
-				</s:if>
+				
+				
 				<div class="row">
 					<div class="col-sm-3">
 					</div>
@@ -458,6 +473,8 @@
 							</div>
 							<div class="modal-body">
 								<p id="progress-message" font-size="4">Please wait while the tinter performs Purge All Colorants...</p>
+								<ul class="list-unstyled" id="tinterErrorList">
+										</ul>
 							</div>
 							<div class="modal-footer">
 							</div>
