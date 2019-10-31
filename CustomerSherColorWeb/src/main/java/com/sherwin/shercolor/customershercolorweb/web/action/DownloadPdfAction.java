@@ -32,28 +32,28 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 		String pdfFileName = "";
 		try {
 			switch(pdfFile) {
-				case "1":
+				case "SherColor_Web_Customer_Guide.pdf":
 					pdfFileName = "SherColor_Web_Customer_Guide.pdf";
 					break;
-				case "2":
+				case "SherColor_Web_Accutinter_Installation_Guide.pdf":
 					pdfFileName = "SherColor_Web_Accutinter_Installation_Guide.pdf";
 					break;
-				case "3":
+				case "SherColor_Web_Fluid_Management_Calibration.pdf":
 					pdfFileName = "SherColor_Web_Fluid_Management_Calibration.pdf";
 				    break;
-				case "4":
+				case "SherColor_Web_Color_Eye_Installation.pdf":
 				    pdfFileName = "SherColor_Web_Color_Eye_Installation.pdf";
 				    break;
-				case "5":
+				case "SherColor_Web_Corob_Installation_Guide.pdf":
 				    pdfFileName = "SherColor_Web_Corob_Installation_Guide.pdf";
 				    break;
-				case "6":
+				case "SherColor_Web_Corob_Calibration.pdf":
 				    pdfFileName = "SherColor_Web_Corob_Calibration.pdf";
 				    break;
-				case "7":
+				case "SherColor_Web_Dymo_Install.pdf":
 				    pdfFileName = "SherColor_Web_Dymo_Install.pdf";
 				    break;
-				case "8":
+				case "SherColor_Web_Zebra_Install.pdf":
 				    pdfFileName = "SherColor_Web_Zebra_Install.pdf";
 				    break;
 				default:

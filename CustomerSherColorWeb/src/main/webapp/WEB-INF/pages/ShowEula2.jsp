@@ -73,6 +73,7 @@
 	 	.dropdown-toggle::after {
 		    display: none;
 		}
+	
 	</style>
 	<script type="text/javascript">
 
@@ -153,9 +154,33 @@
 				}
 			}
 		}
+		
+		function printEula(){
+			$("#printEulaModal").modal('show');
+		}
 
 	</script>
   </head>
+  	<div class="modal fade" tabindex="-1" role="dialog" id="printEulaModal">
+	  <div class="modal-dialog modal-xl">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Print EULA</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+			<div id="eulapdf" class="embed-responsive embed-responsive-16by9">
+				
+			</div>
+	      </div>
+	      <div class="modal-footer">
+		    <button type="button" id="cancelbtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 		    
 	    <nav class="navbar navbar-dark bg-dark navbar-expand-md">			 
 			   <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
@@ -286,7 +311,7 @@
  							<s:hidden name="eulaSeqNbr" value="%{eulaSeqNbr}"/> 
 							<s:submit cssClass="btn btn-primary btn-lg pull-left" style="visibility:hidden" id="acceptEulaBtn" autofocus="autofocus" value="Accept Agreement" action="acceptEulaAction" disabled="true"/>
 							<s:submit cssClass="btn btn-secondary" id="eulaTextNotAcceptBtn" value="I Do Not Agree" action="declineEulaAction"/>
-							<s:submit cssClass="btn btn-secondary" id="printEulaBtn" value="Print" action="printEulaAction"/>
+							<button class="btn btn-secondary pull-right" id="printEulaBtn" onclick="printEula();return false;">Print</button>
 						</div>  
 <!-- 		    			Unsupported Browser Modal Window -->
 					    <div class="modal fade" aria-labelledby="unsupportedBrowserModal" aria-hidden="true"  id="unsupportedBrowserModal" role="dialog">
@@ -322,7 +347,11 @@
 				  document.getElementById('acceptEulaBtn').style.visibility='visible';
 // 				  $("button[id='acceptEulaBtn']").removeAttr("disabled");
 			  });
-			});
+			  
+			  $("#printEulaModal").on('show.bs.modal', function(){
+					$("#eulapdf").html('<embed src="printEulaAction.action?reqGuid=<s:property value="reqGuid"/>" frameborder="0" class="embed-responsive-item"></embed>');
+			  });
+		});
 		<!--
 		  function HF_openSherwin() {
 		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");

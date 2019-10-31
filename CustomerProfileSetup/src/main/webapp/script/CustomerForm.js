@@ -8,6 +8,7 @@ $(document).ready(function() {
 	$("#cdsadlfld").hide();
 	$("#clrnt").hide();
 	$("#loginnext-btn").hide();
+	$("#eula").hide();
 	
 	function natlWdigits(){
 		$("#ntlacct").show();
@@ -16,6 +17,7 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	function intnatlWdigits(){
@@ -25,6 +27,7 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	function acctWOdigits(){
@@ -34,38 +37,39 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	$("#selectedAccttype-0").click(function(){
 		natlWdigits();
 		$("#ntlacctnbr").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#ntlacct").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-1").click(function(){
 		acctWOdigits();
 		$("#swuititle").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#cstmrnm").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-2").click(function(){
 		intnatlWdigits();
 		$("#intntlacctnbr").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#intntlacct").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-3").click(function(){
 		acctWOdigits();
 		$("#swuititle").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#cstmrnm").offset().top
+		}, 1000);
 	});
 	
 	var valid = false;
@@ -182,7 +186,7 @@ $(document).ready(function() {
 	$(document).on("change", "input:checkbox", function(){
 		try{
 			if(($("#ccedefault").is(":checked") && !$("#cce").is(":checked")) || ($("#bacdefault").is(":checked") && !$("#bac").is(":checked")) 
-					|| ($("#884default").is(":checked") && !$("#884").is(":checked"))){
+					|| ($("#844default").is(":checked") && !$("#844").is(":checked"))){
 				throw "Please choose the correct default colorant system";
 			}
 			valid = true;
@@ -202,8 +206,8 @@ $(document).ready(function() {
 			if($("#bacdefault").is(":checked") && !$("#bac").is(":checked")){
 				throw "Please choose BAC colorant system before selecting it as the default";
 			}
-			if($("#884default").is(":checked") && !$("#884").is(":checked")){
-				throw "Please choose 884 colorant system before selecting it as the default";
+			if($("#844default").is(":checked") && !$("#844").is(":checked")){
+				throw "Please choose 844 colorant system before selecting it as the default";
 			}
 			valid = true;
 			$("#clrntsyserror").text("");
@@ -217,10 +221,45 @@ $(document).ready(function() {
 		}
 	});
 	
+	$("#acceptcode").on("blur", function(){
+		try{
+			var acceptcode = $.trim($(this).val());
+			var eula = $("#eulalist").val();
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			if(eula && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eula == 'None' && acceptcode){
+				throw "Please choose a EULA";
+			}
+			valid = true;
+			$("#custformerror").text("");
+			$("#eulaerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			
+			$("#eulaerror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#eulalist").on("change", function(){
+		var ws = $("#eulalist").val();
+		if(ws != "None"){
+			$("#eulahist").removeClass("d-none");
+		} else {
+			$("#eulahist").addClass("d-none");
+		}
+	});
+	
 	$("#loginnext-btn").click(function(){
 		try{
-			if((!$("#cce").is(":checked") && !$("#bac").is(":checked") && !$("#884").is(":checked")) || 
-					(!$("#ccedefault").is(":checked") && !$("#bacdefault").is(":checked") && !$("#884default").is(":checked"))){
+			if((!$("#cce").is(":checked") && !$("#bac").is(":checked") && !$("#844").is(":checked")) || 
+					(!$("#ccedefault").is(":checked") && !$("#bacdefault").is(":checked") && !$("#844default").is(":checked"))){
 				throw "Please choose colorant system(s) and select a default";
 			}
 			if(valid===false){

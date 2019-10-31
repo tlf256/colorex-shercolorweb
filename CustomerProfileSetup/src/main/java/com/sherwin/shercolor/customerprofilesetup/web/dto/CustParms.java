@@ -1,10 +1,8 @@
 package com.sherwin.shercolor.customerprofilesetup.web.dto;
 
-import org.owasp.encoder.Encode;
-
 public class CustParms {
 	
-	private String customerId; 
+	private String customerId;
 	private int seqNbr; 
 	private String swuiTitle;
 	private String clrntSysId;
@@ -15,11 +13,7 @@ public class CustParms {
 		return customerId;
 	}
 	public void setCustomerId(String customerId) {
-		if (customerId!=null) {
-			this.customerId = Encode.forHtml(customerId);
-		} else {
-			this.customerId = customerId;
-		}
+		this.customerId = customerId;
 	}
 	public int getSeqNbr() {
 		return seqNbr;
@@ -31,33 +25,25 @@ public class CustParms {
 		return swuiTitle;
 	}
 	public void setSwuiTitle(String swuiTitle) {
-		if (swuiTitle!=null) {
-			this.swuiTitle = Encode.forHtml(swuiTitle);
-		} else {
-			this.swuiTitle = swuiTitle;
-		}
+		this.swuiTitle = swuiTitle;
 	}
 	public String getClrntSysId() {
 		return clrntSysId;
 	}
 	public void setClrntSysId(String clrntSysId) {
-		if (clrntSysId!=null) {
-			this.clrntSysId = Encode.forHtml(clrntSysId);
-		} else {
-			this.clrntSysId = clrntSysId;
-		}
+		this.clrntSysId = clrntSysId;
 	}
 	public String getCdsAdlFld() {
 		return cdsAdlFld;
 	}
 	public void setCdsAdlFld(String cdsAdlFld) {
-		if (cdsAdlFld!=null) {
-			this.cdsAdlFld = Encode.forHtml(cdsAdlFld);
+		if(cdsAdlFld == null) {
+			this.cdsAdlFld = "";
 		} else {
 			this.cdsAdlFld = cdsAdlFld;
 		}
 	}
-	public boolean getActive() {
+	public boolean isActive() {
 		return active;
 	}
 	public void setActive(boolean active) {

@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -28,11 +28,7 @@
 		<div class="col-sm-2"></div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2">
-			<%-- <s:if test="hasActionMessages()">
-			    <s:actionmessage cssClass="alert-danger"/>
-			</s:if> --%>
-		</div>
+		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 	</div>
@@ -141,8 +137,8 @@
 			<label class="form-check-label font-weight-normal" for="CCE">CCE</label><br>
 			<input type="checkbox" id="bac" name="customer.bac" class="form-check-input clrntid" value="BAC"></input>
 			<label class="form-check-label font-weight-normal" for="BAC">BAC</label><br>
-			<input type="checkbox" id="884" name="customer.eef" class="form-check-input clrntid" value="884"></input>
-			<label class="form-check-label font-weight-normal" for="884">884</label><br>
+			<input type="checkbox" id="844" name="customer.eff" class="form-check-input clrntid" value="844"></input>
+			<label class="form-check-label font-weight-normal" for="884">844</label><br>
 		</div>
 		<!-- <div id="clrntsyserror" class="text-danger"></div> -->
 		</div>
@@ -152,9 +148,26 @@
 			<div class="custom-radio ml-1">
 				<input type="radio" id="ccedefault" name="customer.defaultClrntSys" class="mt-1 mb-1" value="cce" /><br>
 				<input type="radio" id="bacdefault" name="customer.defaultClrntSys" class="mt-2 mb-1" value="bac" /><br>
-				<input type="radio" id="884default" name="customer.defaultClrntSys" class="mt-2 mb-1" value="884" /><br>
+				<input type="radio" id="844default" name="customer.defaultClrntSys" class="mt-2 mb-1" value="844" /><br>
 			</div>
 		</div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+			<div id="eulaerror" class="text-danger"></div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row" id="eula">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<s:select label="Activate EULA" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="customer.website" headerValue="None"></s:select>
+			<s:textfield label="Acceptance Code" name="customer.acceptCode" id="acceptcode" requiredLabel="true" />
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
 	<br>

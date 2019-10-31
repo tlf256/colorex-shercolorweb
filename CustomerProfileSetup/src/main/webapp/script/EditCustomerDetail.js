@@ -46,16 +46,6 @@ $(document).ready(function() {
 		$("#newloginrow").addClass("d-none");
 	}
 	
-	/*$("#addnewloginrow").click(function(){
-		if(loginrows > 0){
-			//$("#newloginrow").removeClass("d-none");
-			$("#loginTrans_detail").append($("#newloginrow"));
-			$(this).addClass("d-none");
-		}else{
-			$(this).addClass("d-none");
-		}
-	});*/
-	
 	$(".dltrow").click(function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
 		//window.alert($(".cloned-loginrow").length);
@@ -67,9 +57,6 @@ $(document).ready(function() {
 		}else{
 			input.val("");
 			$(this).parent('td').parent('tr').remove();
-			/*if(!$(".cloned-loginrow").is(":visible")){
-				$("#addnewloginrow").removeClass("d-none");
-			}*/
 		}
 	});
 	
@@ -108,20 +95,18 @@ $(document).ready(function() {
 		$("#cdsadlfld").select();
 	});
 	
+	$("#edt2").click(function(){
+		$("#acceptcode").removeAttr("readonly");
+		$("#acceptcode").focus();
+		$("#acceptcode").select();
+	});
+	
 	$(".edtrow").click(function(){
 		var input = $(this).parent('td').parent('tr').find("input");
 		input.removeAttr("readonly");
 		input.eq(0).focus();
 		input.eq(0).select();
 	});
-	
-	/*$(".truefalse").change(function(){
-		if($(this).prop("checked")==true){
-			$(this).siblings("label").text("true");
-		} else {
-			$(this).siblings("label").text("false");
-		}
-	});*/
 	
 	var jsvalue = String($.trim($("#customerid").text()));
 	var valid;
@@ -171,6 +156,104 @@ $(document).ready(function() {
 		}
 	});
 	
+	$("#acceptcode").on("blur", function(){
+		try{
+			var acceptcode = $.trim($(this).val());
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#eulafile").on("change", function(){
+		try{
+			var eula = $("#eulafile").val();
+			var ext = eula.split('.').pop().toLowerCase();
+			if(eula){
+				if(ext != 'pdf'){
+					throw "Invalid file extension";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#effDate").on("change", function(){
+		try{
+			var effdate = $.trim($(this).val());
+			var eula = $("#eulafile").val();
+			if(eula && !effdate){
+				throw "Please enter an Effective Date";
+			}
+			if(!eula && effdate){
+				throw "Please choose a EULA pdf";
+			}
+			if(effdate){
+				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(effdate)){
+					throw "Please enter valid date in mm/dd/yyyy format";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#expDate").on("change", function(){
+		try{
+			var expdate = $.trim($(this).val());
+			if(expdate){
+				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(expdate)){
+					throw "Please enter valid date in mm/dd/yyyy format";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
 	var logins;
 	var result;
 	
@@ -194,9 +277,6 @@ $(document).ready(function() {
 				}
 			});
 			try{
-				/*if(!keyfld){
-					$(this).parents("tr").find("input:text").val("");
-				}*/
 				if(keyfld.length > 20){
 					throw "Login ID cannot be greater than 20 characters";
 				}
@@ -262,22 +342,6 @@ $(document).ready(function() {
 		"change":function(){
 			$(this).attr("placeholder", "150 Character Limit");
 		}
-		/*try{
-			if($(this).val().length > 150){
-				throw "Account Comment cannot be greater than 150 characters";
-			}
-			valid = true;
-			$("#custediterror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			valid = false;
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-			$("#custediterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).focus();
-		}*/
 		
 	}, ".acctcmmnt");
 	
@@ -288,9 +352,6 @@ $(document).ready(function() {
 				if(scrnlbl.length > 15){
 					throw "Screen Label cannot be greater than 15 characters";
 				}
-				/*if(!scrnlbl && $(this).parents("tr").find("input:text").val()!=""){
-					throw "Please enter a value for Screen Label";
-				}*/
 				if($(this).parents("tr").index()==0 && !$(this).parents("tr").find("input:text").val()){
 					throw "Please enter Job Field information";
 				}
@@ -307,14 +368,7 @@ $(document).ready(function() {
 				$(this).addClass("border-danger");
 				$(this).focus();
 			}
-		}/*,
-		"change":function(){
-			//window.alert(!$(this).val());
-			if(!$(this).val()){
-				$(this).parents("tr").find("input:text").val("");
-				$(this).parents("tr").find("input:checkbox").removeAttr("checked");
-			}
-		}*/
+		}
 	}, ".scrnlbl");
 	
 	$(document).on({
@@ -349,8 +403,8 @@ $(document).ready(function() {
 				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
 					throw "Please choose BAC colorant system before selecting the default";
 				}
-				if($("#884default").is(":checked") && !$("#884").is(":checked")){
-					throw "Please choose 884 colorant system before selecting the default";
+				if($("#844default").is(":checked") && !$("#844").is(":checked")){
+					throw "Please choose 844 colorant system before selecting the default";
 				}
 				valid = true;
 				$("#custediterror").text("");
@@ -377,8 +431,8 @@ $(document).ready(function() {
 				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
 					throw "Please choose BAC colorant system";
 				}
-				if($("#884default").is(":checked") && !$("#884").is(":checked")){
-					throw "Please choose 884 colorant system";
+				if($("#844default").is(":checked") && !$("#844").is(":checked")){
+					throw "Please choose 844 colorant system";
 				}
 				valid = true;
 				$("#custediterror").text("");
@@ -394,9 +448,9 @@ $(document).ready(function() {
 				//$(this).prop("checked", false);
 			}
 		}
-	}, "input:checkbox");
+	}, "input[name^='cust']");
 	
-	$(document).on("click", "#submitchng", function(){
+	$(document).on("click", "#submitchng", function(e){
 		try{
 			if(valid===false){
 				throw "Please fix form error(s):";
@@ -419,14 +473,55 @@ $(document).ready(function() {
 					}
 				}
 			});
+			var acceptcode = $.trim($("#acceptcode").val());
+			var eulaws = $("#eulalist").val();
+			var eula = $("#eulafile").val();
+			var eulatext = $("#eulatext").val();
+			var d = new Date();
+			var dd = String(d.getDate()).padStart(2, '0');
+			var mm = String(d.getMonth() + 1).padStart(2, '0');
+			var yyyy = String(d.getFullYear());
+			var today = mm + "/" + dd + "/" + yyyy;
+			console.log("today's date = " + today);
+			if(eula && !eulatext){
+				throw "Please enter EULA text";
+			}
+			if(!eula && eulatext){
+				throw "Please choose a EULA pdf";
+			}
+			if(eulaws != 'None' && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eulaws == 'None' && acceptcode){
+				throw "Please choose a EULA";
+			}
+			if($("#expDate") != null && $("#expDate").val() != ""){
+				if($("#expDate").val() < $("#effDate").val()){
+					throw "Invalid Expiration Date";
+				}
+			}
 			$("#formerror").text("");
+			return true;
 		}catch(msg){
-			event.preventDefault();
+			e.preventDefault();
 			$("#formerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
 		}
+	});
+	
+	$('#effDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	$('#expDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
 	});
 	
 });

@@ -84,6 +84,7 @@
 		var localhostConfig = null;
 		var localhostSpectroConfig = null;
 		var siteSpectroConfig = null;
+		var configSessionSpectro = "false";
 		var wssCount = 0;
 		var sendingTinterCommand = "false";
 		var sendingSpectroCommand = "false";
@@ -100,6 +101,7 @@
 			console.log("siteSpectroConfig model is "+ siteSpectroConfig.model);
 			console.log("siteSpectroConfig serial is "+ siteSpectroConfig.serial);
 			console.log("siteSpectroConfig port is "+ siteSpectroConfig.port);
+			configSessionSpectro = "true";
 			//localhostSpectroConfig = siteSpectroConfig;
 		</s:if>
 
@@ -818,14 +820,14 @@
 				        		<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Help Menu</a>
 	        						<ul class="dropdown-menu" id="helpMenu">
-	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">1</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Use Customer SherColor Web</a></li>
-	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">2</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up An Accutinter</a></li>
-								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">3</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate An Accutinter</a></li>
-								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">4</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Color Eye</a></li>
-								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">5</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Corob</a></li>
-								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">6</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate A Corob</a></li>
-								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">7</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Dymo Label Printer</a></li>
-								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">8</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Zebra Label Printer</a></li>
+	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Customer_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Use Customer SherColor Web</a></li>
+	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Accutinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up An Accutinter</a></li>
+								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Fluid_Management_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate An Accutinter</a></li>
+								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Color_Eye_Installation.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Color Eye</a></li>
+								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Corob</a></li>
+								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate A Corob</a></li>
+								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Dymo_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Dymo Label Printer</a></li>
+								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Zebra_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Zebra Label Printer</a></li>
 				        			</ul>
 				        			
 	       						</li>
@@ -1071,7 +1073,7 @@
  	 			}
 			}
 			
-			if(localhostSpectroConfig!=null){ 
+			if(localhostSpectroConfig!=null || configSessionSpectro=="true"){ 
 				console.log("localhostSpectroConfig is NOT null");			
 				$('#coloreyeNotify').show(); 
 				if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
@@ -1086,10 +1088,14 @@
 				$('li#spectroGetInfo').hide();
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
-			if($("#startNewJob_siteHasSpectro").val()=="true"){
+			//PSCWEB-330 CSW - Color Eye Status does not display after configuration - BKP - added
+			// an "or" to check if the spectroModel has been set in the session.  If so, perform a config/detect/get calibration.
+			if($("#startNewJob_siteHasSpectro").val()=="true" || "${sessionScope[thisGuid].spectroModel}"!=null) {		
 				ws_spectro = new WSWrapper("coloreye");
 				console.log("ready to read local host spectro config");
 				readLocalhostSpectroConfig();
+			} else {
+				console.log("#startNewJob_siteHasSpectro is false");
 			}
 			//Add code to check days until password expiration.
  			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   

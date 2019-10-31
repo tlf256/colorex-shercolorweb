@@ -1,7 +1,5 @@
 package com.sherwin.shercolor.customerprofilesetup.web.dto;
 
-import org.owasp.encoder.Encode;
-
 public class LoginTrans {
 	
 	private String keyField;
@@ -12,18 +10,14 @@ public class LoginTrans {
 		return keyField;
 	}
 	public void setKeyField(String keyField) {
-		if (keyField!=null) {
-			this.keyField = Encode.forHtml(keyField);
-		} else {
-			this.keyField = keyField;
-		}
+		this.keyField = keyField;
 	}
 	public String getMasterAcctName() {
 		return masterAcctName;
 	}
 	public void setMasterAcctName(String masterAcctName) {
-		if (masterAcctName!=null) {
-			this.masterAcctName = Encode.forHtml(masterAcctName);
+		if(masterAcctName ==null) {
+			this.masterAcctName = "";
 		} else {
 			this.masterAcctName = masterAcctName;
 		}
@@ -32,8 +26,8 @@ public class LoginTrans {
 		return acctComment;
 	}
 	public void setAcctComment(String acctComment) {
-		if (acctComment!=null) {
-			this.acctComment = Encode.forHtml(acctComment);
+		if(acctComment == null) {
+			this.acctComment = "";
 		} else {
 			this.acctComment = acctComment;
 		}

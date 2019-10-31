@@ -5,37 +5,6 @@ $(document).ready(function(){
 	var jsvalue = String($.trim($("#customerid").text()));
 	$("#jobnext-btn").addClass("d-none");
 	
-	/*if(!jsvalue.startsWith("99")){
-		loginrequired();
-	}else{
-		loginoptional();
-	}
-	
-	function loginrequired(){
-		$(".loginreq").show();
-		$(".loginopt").hide();
-	}
-	
-	function loginoptional(){
-		$(".loginopt").show();
-		$(".loginreq").hide();
-	}
-	
-	$(document).on("click", "#yes", function(){
-		loginrequired();
-		$(".cloned-row").find("input:first").focus();
-		$(".cloned-row").find("input:first").select();
-		$("html, body").animate({
-			scrollTop: $("#acctcmt").offset().top
-		}, 2000);
-	});
-	
-	$(document).on("click", "#no", function(){
-		loginoptional();
-		$("#charcount").text("");
-		$(".cloned-row").find("input").val("");
-	});*/
-	
 	$("#loginInfo").on("click", "#btnAdd", function(){
 		$(".cloned-row:last").clone(true).appendTo(".cloned-row:last");
 		$(".cloned-row:last").find("input:first").select();
@@ -62,13 +31,9 @@ $(document).ready(function(){
 			$("#jobnext-btn").show();
 			$("#charcount").text("");
 		}else{
-			//if(jsvalue.startsWith("99")){
-				//$("#no").trigger("click");
-			//}else{
-				$(this).parent().parent().parent().find("input").val("");
-				$(this).parent().parent().parent().find("input:first").select();
-				$(this).parent().parent().parent().find("input:first").focus();
-			//}
+			$(this).parent().parent().parent().find("input").val("");
+			$(this).parent().parent().parent().find("input:first").select();
+			$(this).parent().parent().parent().find("input:first").focus();
 		}
 	});
 	
@@ -79,9 +44,7 @@ $(document).ready(function(){
 	$("#loginInfo").on({
 		"focusin":function(){
 			logins = $(".keyfield").map(function(index){
-				//if(!$(this).is($(".keyfield:last"))){
-					return $(this).val();
-				//}
+				return $(this).val();
 			}).toArray();
 			logins.slice(-1);
 		},
@@ -89,6 +52,7 @@ $(document).ready(function(){
 			$("#jobnext-btn").removeClass("d-none");
 		},
 		"change":function(){
+			$("#jobnext-btn").removeClass("d-none");
 			var keyfld = $.trim($(this).val());
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
@@ -103,9 +67,6 @@ $(document).ready(function(){
 				if(keyfld.length > 20){
 					throw "Login ID cannot be greater than 20 characters";
 				}
-				/*if(!keyfld && $(this).is(":visible")){
-					throw "Please enter a value for Login ID";
-				}*/
 				if($.inArray(keyfld,logins)!=-1){
 					throw "Please enter unique values for Login ID";
 				}
@@ -132,22 +93,12 @@ $(document).ready(function(){
 	var mstraccts;
 	
 	$("#loginInfo").on({
-		/*"focusin":function(){
-			var mstraccts = $(".mstracctnm").map(function(){
-			if(!$(this).is(".mstracctnm:last")){
-				return $.trim($(this).val());
-			}
-		}).toArray();
-		},*/
 		"change":function(){
 			try{
 				var mstracct = $.trim($(this).val());
 				if(mstracct.length > 50){
 					throw "Master Account Name cannot be greater than 50 characters";
 				}
-				/*if($.inArray($.trim($(this).val()),mstraccts)==-1){
-					throw "Master Account Name must match";
-				}*/
 				valid = true;
 				$(this).removeClass("border-danger");
 				$("#loginformerror").text("");

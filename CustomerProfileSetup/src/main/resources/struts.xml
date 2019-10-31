@@ -25,7 +25,6 @@
 			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<param name="updateMode">${updateMode}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -44,9 +43,11 @@
 			<result name="success">/WEB-INF/pages/EditCustomerDetail.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="displayUpdateDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="update">
+		<action name="cancelUpdate" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="cancelUpdate">
 			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
-			<result name="success">/WEB-INF/pages/CustomerDetail.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="updateDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="update">
@@ -57,20 +58,24 @@
 		<action name="displayEdit" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="execute">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
+				<param name="edited">${edited}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/EditCustomerDetail.jsp</result>
 		</action>
 		<action name="displayUpdate" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="execute">
 			<result name="success" type="redirectAction">
-				<param name="actionName">displayUpdateDetail</param>
-				<param name="updateMode">${updateMode}</param>
+				<param name="actionName">displayDetail</param>
+				<param name="edited">${edited}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/EditCustomerDetail.jsp</result>
 		</action>
 		<action name="getCustomerInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="execute">
 			<result name="success">/WEB-INF/pages/LoginIDform.jsp</result>
 			<result name="nologin">/WEB-INF/pages/JobForm.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/CustomerForm.jsp</result>
 		</action>
 		<action name="getLoginInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessLoginAction" method="execute">
 			<result name="success">/WEB-INF/pages/JobForm.jsp</result>
@@ -79,7 +84,6 @@
 		<action name="getJobInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessJobAction" method="execute">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayDetail</param>
-				<param name="updateMode">${updateMode}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -88,12 +92,18 @@
 				<param name="actionName">displayCustomers</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
 		</action>
 		<action name="deleteCustomer" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="delete">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayCustomers</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
 		</action>
 		<action name="resetAction" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="reset">
 			<result name="success" type="redirectAction">
@@ -122,6 +132,18 @@
         <action name="setCustomerInactive" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="setInactive">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayCustomers</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="downloadEula" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessEulaAction" method="execute">
+			<result name="success" type="stream">
+				<param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="eula.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+			<result name="noeula" type="redirectAction">
+				<param name="actionName">displayDetail</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
