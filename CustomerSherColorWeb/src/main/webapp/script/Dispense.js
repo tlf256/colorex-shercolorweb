@@ -32,10 +32,11 @@ $(function(){
             decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
         }else{ 
             console.log("Shotlist empty, dispense not executed.");
-            $('#tinterInProgressTitle').text('Tinter Progress');
+            $('#tinterInProgressTitle').text('Qty Error');
             $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
             $('#progressok').removeClass('d-none');
         }
+        $("#tinterInProgressModal").modal('show');
     });
     
     $('#progressok').click(function(){
@@ -113,7 +114,7 @@ function preDispenseRoutine() {
     }
     else{
         console.log("No values given, dispense not executed.");
-        $('#tinterInProgressTitle').text('Tinter Progress');
+        $('#tinterInProgressTitle').text('Qty Error');
         $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
         $('#progressok').removeClass('d-none');
         $("#tinterInProgressModal").modal('show');
@@ -209,6 +210,7 @@ function preDispenseCheckCallback(){
                 console.log('hide done');
                 $("#tinterWarningListTitle").text("Low Colorant Levels");
                 $("#tinterWarningListModal").modal('show');
+            
                 
                 preDispenseCheckFlag = true;
             } else {
@@ -221,6 +223,7 @@ function preDispenseCheckCallback(){
     if(!preDispenseCheckFlag){
         //Dispensing if shotList contains values
         if(shotList.length > 0){
+            $("#tinterInProgressModal").modal('show');
         	$('#tinterInProgressTitle').text('Dispense in Progress');
             decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
         }else{ 
@@ -279,16 +282,16 @@ function dispenseProgressResp(return_message){
 			 return_message.status == 1)) {
 		//keep updating modal with status
 		//$("#progress-message").text(return_message.errorMessage);
-		$("#tinterErrorList").empty();
-		initErrorList = [];
+		$("#tinterProgressList").empty();
+		tinterErrorList = [];
 		if(return_message.errorList!=null && return_message.errorList[0]!=null){
 			return_message.errorList.forEach(function(item){
-				$("#tinterErrorList").append("<li>" + item.message + "</li>");
-				initErrorList.push(item.message);
+				$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				tinterErrorList.push(item.message);
 			});
 		} else {
-			initErrorList.push(return_message.errorMessage);
-			$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+			tinterErrorList.push(return_message.errorMessage);
+			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
 		console.log(return_message);
 		setTimeout(function(){
@@ -297,11 +300,38 @@ function dispenseProgressResp(return_message){
 		
 	}
 	else{
-		dispenseComplete(return_message);
+		FMXDispenseComplete(return_message);
 		}
 		
 }
-
+function FMXDispenseComplete(return_message){
+    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+        // save a dispense (will bump the counter)
+        getSessionTinterInfo($("#reqGuid").val(),warningCheck);
+        $("#dispenseStatus").text("Last Dispense: Complete");
+        $('#progressok').removeClass('d-none');
+        $('#tinterInProgressTitle').text('Tinter Progress');
+        $('#tinterInProgressMessage').text('');
+        $("#tinterProgressList").empty();
+		tinterErrorList = [];
+		if(return_message.errorList!=null && return_message.errorList[0]!=null){
+			return_message.errorList.forEach(function(item){
+				$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				tinterErrorList.push(item.message);
+			});
+		} else {
+			tinterErrorList.push(return_message.errorMessage);
+			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+		}
+    } else {
+        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage);
+        waitForShowAndHide("#tinterInProgressModal");
+        console.log('hide done');
+        //Show a modal with error message to make sure the user is forced to read it.
+        FMXShowTinterErrorModal("Dispense Error",null,return_message);
+    }
+    sendingDispCommand = "false";
+}
 function dispenseComplete(return_message){
     if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
         // save a dispense (will bump the counter)
@@ -389,9 +419,27 @@ function RecdMessage() {
     //Clearing inputs
     $('.table-bordered input').val('');
 }
-
+function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
+    $("#tinterErrorList").empty();
+    $("#tinterErrorListModal").modal('show');
+    
+    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
+        my_return_message.errorList.forEach(function(item){
+            $("#tinterErrorList").append( '</li>' + item.message + '</li>');
+        });
+    } 
+    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
+    
+    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
+    else $("#tinterErrorListTitle").text("Tinter Error");
+    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
+    else $("#tinterErrorListSummary").text("");
+  
+}
 function showTinterErrorModal(myTitle, mySummary, my_return_message){
     $("#tinterErrorList").empty();
+    $("#tinterErrorListModal").modal('show');
+    
     if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
         my_return_message.errorList.forEach(function(item){
             $("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
@@ -403,7 +451,7 @@ function showTinterErrorModal(myTitle, mySummary, my_return_message){
     else $("#tinterErrorListTitle").text("Tinter Error");
     if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
     else $("#tinterErrorListSummary").text("");
-    $("#tinterErrorListModal").modal('show');
+  
 }
 
 function warningCheck() {

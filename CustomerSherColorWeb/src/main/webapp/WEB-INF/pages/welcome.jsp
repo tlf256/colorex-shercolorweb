@@ -384,36 +384,55 @@
 			// log event
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
-			sendTinterEvent(myGuid, curDate, return_message, null); 
-			waitForShowAndHide('#initTinterInProgressModal');
-			initErrorList = [];
-			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
-				// Detected and no errors from tinter 			
-				// clear init error in session			
-				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
-			} else {
-				if (return_message.errorNumber == -10500 && return_message.commandRC == -10500){
-					// show warnings?	
-					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
-				} else {
-					//Show a modal with error message to make sure the user is forced to read it.
-					$("#tinterErrorList").empty();
-					
-					if(return_message.errorList!=null && return_message.errorList[0]!=null){
-						return_message.errorList.forEach(function(item){
-							$("#tinterErrorList").append("<li>" + item.message + "</li>");
-							initErrorList.push(item.message);
-						});
-					} else {
-						initErrorList.push(return_message.errorMessage);
-						$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
-					}
-					$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-					$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
-					$("#tinterErrorListModal").modal('show');
-					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
-				}
+			if (return_message.errorMessage.indexOf("Initialization Done") == -1 && (return_message.errorNumber >= 0 ||
+					 return_message.status == 1)) {
+				//save				
+				//no need to keep showing $("#initTinterInProgressModal").modal('show');
+				$("#progress-message").text(return_message.errorMessage);
+				console.log(return_message);
 			}
+			
+			else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
+				sendingTinterCommand = "false";
+				// clear init error in session
+				initErrorList = [];
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+	    	
+				sendTinterEvent(myGuid, curDate, return_message, null); 
+			
+				// Detected and no errors from tinter 
+				waitForShowAndHide('#initTinterInProgressModal');
+				
+				// get session for tinter status
+	    		getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
+	    		
+			
+			
+			} else {
+				sendingTinterCommand = "false";
+				initErrorList = [];
+    		// get session for tinter status
+    
+			
+				sendTinterEvent(myGuid, curDate, return_message, null); 
+				waitForShowAndHide('#initTinterInProgressModal');
+				//Show a modal with error message to make sure the user is forced to read it.
+				$("#tinterErrorList").empty();
+				if(return_message.errorList!=null && return_message.errorList[0]!=null){
+					return_message.errorList.forEach(function(item){
+						$("#tinterErrorList").append("<li>" + item.message + "</li>");
+						initErrorList.push(item.message);
+					});
+				} else {
+					initErrorList.push(return_message.errorMessage);
+					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+				}
+				$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
+				$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+				$("#tinterErrorListModal").modal('show');
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+			}
+			getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
     	}
     	function DispenseProgressResp(){
     		$("#progress-message").text(return_message.errorMessage);

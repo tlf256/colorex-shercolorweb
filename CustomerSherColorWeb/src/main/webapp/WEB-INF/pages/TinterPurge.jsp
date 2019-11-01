@@ -72,16 +72,16 @@
 				 return_message.status == 1)) {
 			//keep updating modal with status
 			//$("#progress-message").text(return_message.errorMessage);
-			$("#tinterErrorList").empty();
-			initErrorList = [];
+			$("#tinterProgressList").empty();
+			dispenseErrorList = [];
 			if(return_message.errorList!=null && return_message.errorList[0]!=null){
 				return_message.errorList.forEach(function(item){
-					$("#tinterErrorList").append("<li>" + item.message + "</li>");
-					initErrorList.push(item.message);
+					$("#tinterProgressList").append("<li>" + item.message + "</li>");
+					dispenseErrorList.push(item.message);
 				});
 			} else {
-				initErrorList.push(return_message.errorMessage);
-				$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+				dispenseErrorList.push(return_message.errorMessage);
+				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 			}
 			console.log(return_message);
 			//setTimeout(function(){
@@ -90,11 +90,29 @@
 			
 		}
 		else{
-			purgeComplete(myGuid, curDate,return_message, tedArray);
+			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
 			}
 			
     }
-    function purgeComplete(myGuid, curDate,return_message, tedArray){
+	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
+	    $("#tinterErrorList").empty();
+	    $("#tinterErrorListModal").modal('show');
+	    
+	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
+	        my_return_message.errorList.forEach(function(item){
+	            $("#tinterErrorList").append( '</li>' + item.message + '</li>');
+	        });
+	    } 
+	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
+	    
+	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
+	    else $("#tinterErrorListTitle").text("Tinter Error");
+	    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
+	    else $("#tinterErrorListSummary").text("");
+	  
+	}
+	
+    function purgeComplete(myGuid, curDate,return_message, tedArray, fmx){
         return_message.command = "PurgeAll";
     	sendTinterEvent(myGuid, curDate, return_message, tedArray);
 		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
@@ -118,7 +136,12 @@
 			if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
 			if($("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").removeClass("alert-success");
 			//Show a modal with error message to make sure the user is forced to acknowledge it.
-			showTinterErrorModal(null,null,return_message);
+			if(fmx = "fmx"){
+				FMXShowTinterErrorModal(null,null,return_message);
+			}
+			else{				
+				showTinterErrorModal(null,null,return_message);
+			}
 		}
         }
 
@@ -473,7 +496,7 @@
 							</div>
 							<div class="modal-body">
 								<p id="progress-message" font-size="4">Please wait while the tinter performs Purge All Colorants...</p>
-								<ul class="list-unstyled" id="tinterErrorList">
+								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
 							</div>
 							<div class="modal-footer">
