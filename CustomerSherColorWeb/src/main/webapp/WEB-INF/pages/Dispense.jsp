@@ -192,8 +192,10 @@ input[type=number] {
 								<div class="modal-body">
 									<p id="dispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<ul class="list-unstyled" id="tinterProgressList"></ul>
-								</div>
+									<ul class="list-unstyled" id="tinterProgressList"></ul> 
+								
+									<div class="progress "></div>
+					        	</div>
 								<div class="modal-footer">
 									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>
 								</div>
@@ -210,6 +212,12 @@ input[type=number] {
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
+									
+										
+									<div class="progress "></div>
+										
+								
+					
 									<div>
 										<ul class="p-0" id="tinterErrorList" style="list-style: none;">
 										</ul>
@@ -262,7 +270,10 @@ input[type=number] {
 							</div>
 						</div>
 					</div>	
-		
+				<div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
+								  			aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
+				  <span id="bar-text">33</span>
+				</div>
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>

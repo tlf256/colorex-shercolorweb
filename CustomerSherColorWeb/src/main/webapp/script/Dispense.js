@@ -277,6 +277,7 @@ function FMXDispenseProgress(){
 	ws_tinter.send(json);
 }
 function dispenseProgressResp(return_message){
+	var count = 1;
 	//$("#progress-message").text(return_message.errorMessage);
 	if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
 			 return_message.status == 1)) {
@@ -285,9 +286,25 @@ function dispenseProgressResp(return_message){
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if(return_message.errorList!=null && return_message.errorList[0]!=null){
+			$(".progress").empty();
 			return_message.errorList.forEach(function(item){
-				$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				var colorList = item.message.split(" ");
+				var color= colorList[0];
+				var pct = colorList[1];
+				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				
+				var $clone = $("#bar-0").clone();
+				$clone.attr("id","bar-" + count);
+				$clone.attr("aria-valuenow",pct);
+				$clone.css("width", pct);
+				$clone.css("background-color", "blue");
+				$clone.children("span").text("BU 10%");
+				//$clone.text(item.message);
+				
+				$clone.appendTo(".progress");
+				
 				tinterErrorList.push(item.message);
+				count++;
 			});
 		} else {
 			tinterErrorList.push(return_message.errorMessage);

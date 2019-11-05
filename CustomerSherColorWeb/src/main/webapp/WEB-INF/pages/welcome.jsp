@@ -384,15 +384,17 @@
 			// log event
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
-			if (return_message.errorMessage.indexOf("Initialization Done") == -1 && (return_message.errorNumber >= 0 ||
+			if ((return_message.errorMessage.indexOf("Initialization done") == -1 &&
+					 return_message.errorMessage.indexOf("Initialization Done") == -1 )&& 
+					 (return_message.errorNumber >= 0 ||
 					 return_message.status == 1)) {
-				//save				
-				//no need to keep showing $("#initTinterInProgressModal").modal('show');
+				
 				$("#progress-message").text(return_message.errorMessage);
 				console.log(return_message);
 			}
 			
-			else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
+			else if(return_message.errorMessage.indexOf("Initialization Done") >= 0 ||
+					return_message.errorMessage.indexOf("Initialization done") >= 0){
 				sendingTinterCommand = "false";
 				// clear init error in session
 				initErrorList = [];
