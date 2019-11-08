@@ -41,6 +41,69 @@
 	// now build the dispense formula object
 	ws_tinter = new WSWrapper("tinter");
 	var sendingTinterCommand = "false";
+	var _rgbArr = [];
+	<s:iterator value="canList" status="i">
+	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
+	</s:iterator>
+	function getRGB(colorantCode){
+		var rgb = "";
+		if(colorantCode != null){
+			rgb = _rgbArr[colorantCode];
+		}
+		return rgb;
+	}
+	function buildProgressBars(return_message){
+		var count = 1;
+			$(".progress-wrapper").empty();
+			return_message.errorList.forEach(function(item){
+				var colorList = item.message.split(" ");
+				var color= colorList[0];
+				var pct = colorList[1];
+				//fix bug where we are done, but not all pumps report as 100%
+				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
+						 return_message.status == 0)) {
+					  pct = "100%";
+				  }
+				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				
+				var $clone = $("#progress-0").clone();
+				$clone.attr("id","progress-" + count);
+				var $bar = $clone.children(".progress-bar");
+				$bar.attr("id","bar-" + count);
+				$bar.attr("aria-valuenow",pct);
+				$bar.css("width", pct);
+				$clone.css("display", "block");
+				var color_rgb = getRGB(color);
+	//change color of text based on background color
+				switch(color){
+				case "WHT":
+				case "TW":
+				case "W1":
+					$bar.children("span").css("color", "black");
+					$bar.css("background-color", "#efefef");
+					break;
+				case "OY":
+				case "Y1":
+				case "YGS":
+					$bar.children("span").css("color", "black");
+					$bar.css("background-color", color_rgb);
+					break;
+				default:
+					$bar.css("background-color", color_rgb);
+					$bar.children("span").css("color", "white");
+					break;
+				}
+				
+				
+				$bar.children("span").text(color + " " + pct);
+				console.log("barring " + item.message);
+				//console.log($clone);
+				
+				$clone.appendTo(".progress-wrapper");
+				
+				count++;
+			});
+	}
 	function FMXPurgeProgress(){
 		console.log('before purge status modal show');
 		$("#PurgeInProgressModal").modal('show');
@@ -76,7 +139,8 @@
 			dispenseErrorList = [];
 			if(return_message.errorList!=null && return_message.errorList[0]!=null){
 				return_message.errorList.forEach(function(item){
-					$("#tinterProgressList").append("<li>" + item.message + "</li>");
+					buildProgressBars(return_message);
+						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 					dispenseErrorList.push(item.message);
 				});
 			} else {
@@ -91,6 +155,7 @@
 		}
 		else{
 			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+			$(".progress-wrapper").empty();
 			}
 			
     }
@@ -496,6 +561,7 @@
 							</div>
 							<div class="modal-body">
 								<p id="progress-message" font-size="4">Please wait while the tinter performs Purge All Colorants...</p>
+								<div class="progress-wrapper "></div>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
 							</div>
@@ -531,6 +597,7 @@
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
+								<div class="progress-wrapper "></div>
 								<div>
 									<ul class="list-unstyled" id="tinterErrorList">
 									</ul>
@@ -567,8 +634,17 @@
 		  }
 		//-->
 		</script>
-  
+		<!-- dummy div to clone -->
+		<div id="progress-0" class="progress" style="display:none; margin:10px;">
+	        <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
+					 aria-valuemin="0" aria-valuemax="100" style=" width: 0%; background-color: blue">
+					 <span></span>
+	  		</div>
+	  		<br/>
+		</div>
+			<s:debug/>
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		
 	</body>
+

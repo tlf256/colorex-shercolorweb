@@ -26,8 +26,11 @@
 <script type="text/javascript" charset="utf-8" src="script/Dispense.js"></script>
 <script type="text/javascript">
 var shotList = [];
+var _rgbArr = [];
 <s:iterator value="tinter.canisterList" status="i">
+//DJM not sure what this shotList is here for, but no way I'm deleting it now :) 
 	shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
+	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 </s:iterator>
 </script>
 <style type="text/css">
@@ -194,7 +197,7 @@ input[type=number] {
 									<p id="tinterInProgressMessage" font-size="4"></p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
-									<div class="progress "></div>
+									<div class="progress-wrapper "></div>
 					        	</div>
 								<div class="modal-footer">
 									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>
@@ -214,7 +217,7 @@ input[type=number] {
 								<div class="modal-body">
 									
 										
-									<div class="progress "></div>
+									<div class="progress-wrapper "></div>
 										
 								
 					
@@ -270,10 +273,14 @@ input[type=number] {
 							</div>
 						</div>
 					</div>	
-				<div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
-								  			aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
-				  <span id="bar-text">33</span>
-				</div>
+					<!-- dummy div to clone -->
+					<div id="progress-0" class="progress" style="margin:10px;">
+				        <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
+								 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
+								 <span></span>
+				  		</div>
+				  		<br/>
+					</div>
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>

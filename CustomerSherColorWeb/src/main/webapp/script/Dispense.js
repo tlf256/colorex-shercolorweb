@@ -1,7 +1,9 @@
  //Global Variables
- var sendingDispCommand = "false";
+"use strict"; 
+var sendingDispCommand = "false";
  var ws_tinter = new WSWrapper("tinter");
-
+ var tinterErrorList;
+ var sendingTinterCommand;
 //Document ON-Load
 $(function(){
     getSessionTinterInfo($("#reqGuid").val(),warningCheck);
@@ -36,6 +38,7 @@ $(function(){
             $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
             $('#progressok').removeClass('d-none');
         }
+		$(".progress-wrapper").empty();
         $("#tinterInProgressModal").modal('show');
     });
     
@@ -44,6 +47,13 @@ $(function(){
     });
 });
 
+function getRGB(colorantCode){
+	var rgb = "";
+	if(colorantCode != null){
+		rgb = _rgbArr[colorantCode];
+	}
+	return rgb;
+}
 function preDispenseRoutine() {
     shotList = [];
     let inputFound = false;
@@ -117,6 +127,7 @@ function preDispenseRoutine() {
         $('#tinterInProgressTitle').text('Qty Error');
         $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
         $('#progressok').removeClass('d-none');
+		$(".progress-wrapper").empty();
         $("#tinterInProgressModal").modal('show');
     }
     
@@ -160,6 +171,7 @@ function popupInputError(input, outputMsg){
 function preDispenseCheck(){
     $("#tinterInProgressTitle").text("Colorant Level Check In Progress");
     $("#tinterInProgressMessage").text("Please wait while we Check the Colorant Levels for your tinter...");
+	$(".progress-wrapper").empty();
     $("#tinterInProgressModal").modal('show');
     // TODO Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
     getSessionTinterInfo($("#reqGuid").val(),preDispenseCheckCallback);
@@ -253,6 +265,7 @@ function dispense(){
 	let cmd = "Dispense";
 	let tintermessage = new TinterMessage(cmd,shotList,null,null,null);
 	let json = JSON.stringify(tintermessage);
+	$(".progress-wrapper").empty();
     sendingDispCommand = "true";
     if(ws_tinter && ws_tinter.isReady=="false") {
         console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
@@ -276,36 +289,70 @@ function FMXDispenseProgress(){
 	sendingTinterCommand = "true";
 	ws_tinter.send(json);
 }
-function dispenseProgressResp(return_message){
+function buildProgressBars(return_message){
 	var count = 1;
+		$(".progress-wrapper").empty();
+		return_message.errorList.forEach(function(item){
+			var colorList = item.message.split(" ");
+			var color= colorList[0];
+			var pct = colorList[1];
+			//fix bug where we are done, but not all pumps report as 100%
+			if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
+					 return_message.status == 0)) {
+				  pct = "100%";
+			  }
+			//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+			
+			var $clone = $("#progress-0").clone();
+			$clone.attr("id","progress-" + count);
+			var $bar = $clone.children(".progress-bar");
+			$bar.attr("id","bar-" + count);
+			$bar.attr("aria-valuenow",pct);
+			$bar.css("width", pct);
+			$clone.css("display", "block");
+			var color_rgb = getRGB(color);
+//change color of text based on background color
+			switch(color){
+			case "WHT":
+			case "TW":
+			case "W1":
+				$bar.children("span").css("color", "black");
+				$bar.css("background-color", "#efefef");
+				break;
+			case "OY":
+			case "Y1":
+			case "YGS":
+				$bar.children("span").css("color", "black");
+				$bar.css("background-color", color_rgb);
+				break;
+			default:
+				$bar.css("background-color", color_rgb);
+				$bar.children("span").css("color", "white");
+				break;
+			}
+			
+			
+			$bar.children("span").text(color + " " + pct);
+			console.log("barring " + item.message);
+			//console.log($clone);
+			
+			$clone.appendTo(".progress-wrapper");
+			
+			count++;
+		});
+}
+function dispenseProgressResp(return_message){
+	
 	//$("#progress-message").text(return_message.errorMessage);
 	if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
 			 return_message.status == 1)) {
+		$("#tinterProgressList").empty();
+		 tinterErrorList = [];
+		if(return_message.errorList!=null && return_message.errorList[0]!=null){
 		//keep updating modal with status
 		//$("#progress-message").text(return_message.errorMessage);
-		$("#tinterProgressList").empty();
-		tinterErrorList = [];
-		if(return_message.errorList!=null && return_message.errorList[0]!=null){
-			$(".progress").empty();
-			return_message.errorList.forEach(function(item){
-				var colorList = item.message.split(" ");
-				var color= colorList[0];
-				var pct = colorList[1];
-				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
-				
-				var $clone = $("#bar-0").clone();
-				$clone.attr("id","bar-" + count);
-				$clone.attr("aria-valuenow",pct);
-				$clone.css("width", pct);
-				$clone.css("background-color", "blue");
-				$clone.children("span").text("BU 10%");
-				//$clone.text(item.message);
-				
-				$clone.appendTo(".progress");
-				
-				tinterErrorList.push(item.message);
-				count++;
-			});
+			buildProgressBars(return_message);
+		
 		} else {
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
@@ -316,7 +363,7 @@ function dispenseProgressResp(return_message){
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 		
 	}
-	else{
+	else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber < 0){
 		FMXDispenseComplete(return_message);
 		}
 		
@@ -332,8 +379,9 @@ function FMXDispenseComplete(return_message){
         $("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if(return_message.errorList!=null && return_message.errorList[0]!=null){
+	        buildProgressBars(return_message);
 			return_message.errorList.forEach(function(item){
-				$("#tinterProgressList").append("<li>" + item.message + "</li>");
+			//	$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				tinterErrorList.push(item.message);
 			});
 		} else {
@@ -434,7 +482,7 @@ function RecdMessage() {
     }
 
     //Clearing inputs
-    $('.table-bordered input').val('');
+    $('.table-bordered input:not([type=hidden])').val('');
 }
 function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
     $("#tinterErrorList").empty();
