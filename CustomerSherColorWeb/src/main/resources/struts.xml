@@ -335,46 +335,6 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<!-- 06/24/2019 BXW: New action for when user clicks on the Update Remote Measurements Color Eye menu item -->
-		<action name="spectroManageStoredMeasurementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="display">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/ManageStoredMeasurements.jsp</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
-		<action name="spectroLoadNewStoredMeasurementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="execute">
-			<interceptor-ref name="defaultStack"/>
-	        <interceptor-ref name="json" />
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-				<param name="isAJAX">true</param>
-			</result>
-			<result name="success">/WEB-INF/pages/ManageStoredMeasurements.jsp</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
-		<action name="deleteSpectroRemoteAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="deleteSpectroRemote">
-			<interceptor-ref name="defaultStack"/>
-		    <interceptor-ref name="json" />
-			<result name="success">/WEB-INF/pages/ManageStoredMeasurements.jsp</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
-		<action name="updateSpectroRemoteAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="updateSpectroRemote">
-			<interceptor-ref name="defaultStack"/>
-		    <interceptor-ref name="json" />
-			<result name="success">/WEB-INF/pages/ManageStoredMeasurements.jsp</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
-		<action name="spectroObtainAllRGBColorsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="obtainAllRGBColors">
-			<interceptor-ref name="defaultStack"/>
-	        <interceptor-ref name="json" />
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-				<param name="isAJAX">true</param>
-			</result>
-			<result name="success">/WEB-INF/pages/ManageStoredMeasurements.jsp</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
 		<action name="listProducts" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="listProducts">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
