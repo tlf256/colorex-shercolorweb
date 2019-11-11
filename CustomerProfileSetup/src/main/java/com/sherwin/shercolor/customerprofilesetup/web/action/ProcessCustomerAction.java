@@ -43,6 +43,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			RequestObject reqObj = new RequestObject();
 			
 			reqObj.setNewCustomer(true);
+			reqObj.setCustUnchanged(false);
 			
 			//check for entered account number
 			switch(customer.getAccttype()) {

@@ -35,6 +35,7 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 		try {
 			if(login!=null) {
 				RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+				reqObj.setLoginUnchanged(false);
 				
 				List<LoginTrans> loginList = new ArrayList<LoginTrans>();
 				for(int i = 0; i < login.getKeyField().size(); i++) {

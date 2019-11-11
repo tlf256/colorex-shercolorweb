@@ -23,15 +23,18 @@ public class RequestObject {
 	private List<CustParms> custList;
 	private List<JobFields> jobFieldList;
 	private List<LoginTrans> loginList;
-	private List<CustParms> custResultList;
-	private List<JobFields> jobFieldResultList;
-	private List<LoginTrans> loginResultList;
 	private boolean custEdited;
 	private boolean jobEdited;
 	private boolean loginEdited;
 	private boolean custDeleted;
 	private boolean jobDeleted;
 	private boolean loginDeleted;
+	private boolean custAdded;
+	private boolean jobAdded;
+	private boolean loginAdded;
+	private boolean custUnchanged;
+	private boolean jobUnchanged;
+	private boolean loginUnchanged;
 	private List<String> clrntList;
 	private List<EulaHist> eulaHistList;
 	private List<String> eulaList;
@@ -122,25 +125,6 @@ public class RequestObject {
 	public void setLoginList(List<LoginTrans> loginList) {
 		this.loginList = loginList;
 	}
-	
-	public List<CustParms> getCustResultList() {
-		return custResultList;
-	}
-	public void setCustResultList(List<CustParms> custResultList) {
-		this.custResultList = custResultList;
-	}
-	public List<JobFields> getJobFieldResultList() {
-		return jobFieldResultList;
-	}
-	public void setJobFieldResultList(List<JobFields> jobFieldResultList) {
-		this.jobFieldResultList = jobFieldResultList;
-	}
-	public List<LoginTrans> getLoginResultList() {
-		return loginResultList;
-	}
-	public void setLoginResultList(List<LoginTrans> loginResultList) {
-		this.loginResultList = loginResultList;
-	}
 	public boolean isCustEdited() {
 		return custEdited;
 	}
@@ -176,6 +160,42 @@ public class RequestObject {
 	}
 	public void setLoginDeleted(boolean loginDeleted) {
 		this.loginDeleted = loginDeleted;
+	}
+	public boolean isCustAdded() {
+		return custAdded;
+	}
+	public void setCustAdded(boolean custAdded) {
+		this.custAdded = custAdded;
+	}
+	public boolean isJobAdded() {
+		return jobAdded;
+	}
+	public void setJobAdded(boolean jobAdded) {
+		this.jobAdded = jobAdded;
+	}
+	public boolean isLoginAdded() {
+		return loginAdded;
+	}
+	public void setLoginAdded(boolean loginAdded) {
+		this.loginAdded = loginAdded;
+	}
+	public boolean isCustUnchanged() {
+		return custUnchanged;
+	}
+	public void setCustUnchanged(boolean custUnchanged) {
+		this.custUnchanged = custUnchanged;
+	}
+	public boolean isJobUnchanged() {
+		return jobUnchanged;
+	}
+	public void setJobUnchanged(boolean jobUnchanged) {
+		this.jobUnchanged = jobUnchanged;
+	}
+	public boolean isLoginUnchanged() {
+		return loginUnchanged;
+	}
+	public void setLoginUnchanged(boolean loginUnchanged) {
+		this.loginUnchanged = loginUnchanged;
 	}
 	public List<String> getClrntList() {
 		return clrntList;

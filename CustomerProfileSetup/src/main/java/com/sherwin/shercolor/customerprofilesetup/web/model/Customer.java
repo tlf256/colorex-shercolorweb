@@ -41,7 +41,7 @@ public class Customer {
 	}
 	public void setAccttype(String accttype) {
 		if(accttype != null) {
-			this.accttype = Encode.forHtmlAttribute(accttype);
+			this.accttype = Encode.forHtml(accttype);
 		} else {
 			this.accttype = accttype;
 		}
@@ -71,7 +71,7 @@ public class Customer {
 	}
 	public void setCce(String cce) {
 		if(cce != null) {
-			this.cce = Encode.forHtmlAttribute(cce);
+			this.cce = Encode.forHtml(cce);
 		} else {
 			this.cce = cce;
 		}
@@ -81,7 +81,7 @@ public class Customer {
 	}
 	public void setBac(String bac) {
 		if(bac != null) {
-			this.bac = Encode.forHtmlAttribute(bac);
+			this.bac = Encode.forHtml(bac);
 		} else {
 			this.bac = bac;
 		}
@@ -89,9 +89,9 @@ public class Customer {
 	public String getEff() {
 		return eff;
 	}
-	public void setEef(String eff) {
+	public void setEff(String eff) {
 		if(eff != null) {
-			this.eff = Encode.forHtmlAttribute(eff);
+			this.eff = Encode.forHtml(eff);
 		} else {
 			this.eff = eff;
 		}
@@ -101,7 +101,7 @@ public class Customer {
 	}
 	public void setDefaultClrntSys(String defaultClrntSys) {
 		if(defaultClrntSys != null) {
-			this.defaultClrntSys = Encode.forHtmlAttribute(defaultClrntSys);
+			this.defaultClrntSys = Encode.forHtml(defaultClrntSys);
 		} else {
 			this.defaultClrntSys = defaultClrntSys;
 		}
