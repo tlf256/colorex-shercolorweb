@@ -25,13 +25,12 @@
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Dispense.js"></script>
 <script type="text/javascript">
-var shotList = [];
-var _rgbArr = [];
-<s:iterator value="tinter.canisterList" status="i">
+	<s:iterator value="tinter.canisterList" status="i">
 //DJM not sure what this shotList is here for, but no way I'm deleting it now :) 
-	shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
-	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
-</s:iterator>
+		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
+		_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
+	</s:iterator>
+
 </script>
 <style type="text/css">
 input {

@@ -36,15 +36,29 @@
 			}
 	        
 	    </style>
+	    
 	<script type="text/javascript">
-    
-	// now build the dispense formula object
-	ws_tinter = new WSWrapper("tinter");
+	 //Global Variables
+	"use strict"; 
+	var ws_tinter = new WSWrapper("tinter");
 	var sendingTinterCommand = "false";
 	var _rgbArr = [];
+	var dispenseErrorList = [];
 	<s:iterator value="canList" status="i">
 	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
+
+    function fkey(e){
+    	if(sendingTinterCommand == "true"){
+        e = e || window.event;
+        
+        if (e.code === 'F5') {
+        	abort();
+            console.log(e);
+            e.preventDefault();
+        }
+    }
+}
 	function getRGB(colorantCode){
 		var rgb = "";
 		if(colorantCode != null){
@@ -164,9 +178,14 @@
 	    $("#tinterErrorListModal").modal('show');
 	    
 	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
+	    	if(my_return_message.errorList.length > 0){
+	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
+	    	}
+	    	/*
 	        my_return_message.errorList.forEach(function(item){
 	            $("#tinterErrorList").append( '</li>' + item.message + '</li>');
 	        });
+	        */
 	    } 
 	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
 	    
@@ -176,10 +195,23 @@
 	    else $("#tinterErrorListSummary").text("");
 	  
 	}
-	
+	function showTinterErrorModal(myTitle, mySummary, my_return_message){
+		$("#tinterErrorList").empty();
+		if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
+			my_return_message.errorList.forEach(function(item){
+				$("#tinterErrorList").append("<li>" + item.message + "</li>");
+			});
+		} else {
+			$("#tinterErrorList").append("<li>" + my_return_message.errorMessage + "</li>");
+		}
+		if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
+		else $("#tinterErrorListTitle").text("Tinter Error");
+		if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
+		else $("#tinterErrorListSummary").text("");
+		$("#tinterErrorListModal").modal('show');
+	}
     function purgeComplete(myGuid, curDate,return_message, tedArray, fmx){
-        return_message.command = "PurgeAll";
-    	sendTinterEvent(myGuid, curDate, return_message, tedArray);
+       
 		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 			// show purge
 			//var displayDate = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
@@ -208,8 +240,21 @@
 				showTinterErrorModal(null,null,return_message);
 			}
 		}
-        }
+		 return_message.command = "PurgeAll";
+	    sendTinterEvent(myGuid, curDate, return_message, tedArray);
+    }
+    function abort(){
+    	console.log('before abort');
+    	
+    	
+    	var cmd = "Abort";
+    	var shotList = null;
+    	var configuration = null;
+    	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+    	var json = JSON.stringify(tintermessage);
 
+    	ws_tinter.send(json);
+    }
 	function openNozzle(){
 		var cmd = "OpenNozzle";
 		$("#cleanNozzleButton").prop('disabled', true);
@@ -335,22 +380,33 @@
 		}
 	}
 
-	function showTinterErrorModal(myTitle, mySummary, my_return_message){
-		$("#tinterErrorList").empty();
-		if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-			my_return_message.errorList.forEach(function(item){
-				$("#tinterErrorList").append("<li>" + item.message + "</li>");
-			});
-		} else {
-			$("#tinterErrorList").append("<li>" + my_return_message.errorMessage + "</li>");
-		}
-		if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-		else $("#tinterErrorListTitle").text("Tinter Error");
-		if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
-		else $("#tinterErrorListSummary").text("");
-		$("#tinterErrorListModal").modal('show');
+ 
+
+//     $("nozzleCleanX").click(function(){
+//         $("#cleanNozzleVid").get(0).pause();
+//     });
+    
+
+	//Used to rotate loader icon in modals
+	function rotateIcon(){
+		let n = 0;
+		$('#spinner').removeClass('d-none');
+		let interval = setInterval(function(){
+	    	n += 1;
+	    	if(n >= 60000){
+	            $('#spinner').addClass('d-none');
+	        	clearInterval(interval);
+	        }else{
+	        	$('#spinner').css("transform","rotate(" + n + "deg)");
+	        }
+		},5);
+		
+		$('#purgeInProgressModal').one('hide.bs.modal',function(){
+			$('#spinner').addClass('d-none');
+        	if(interval){clearInterval(interval);}
+		});
 	}
-	
+
 	$(function(){
 		$(document).on("shown.bs.modal", "#purgeInProgressModal", function(event){
 			purge();
@@ -384,36 +440,8 @@
 		$('#purgeInProgressModal').on('show.bs.modal',function(){
 			rotateIcon();
 		});
-
+		jQuery(document).on("keydown",fkey);
 	});
-
-    
-
-//     $("nozzleCleanX").click(function(){
-//         $("#cleanNozzleVid").get(0).pause();
-//     });
-    
-	
-
-	//Used to rotate loader icon in modals
-	function rotateIcon(){
-		let n = 0;
-		$('#spinner').removeClass('d-none');
-		let interval = setInterval(function(){
-	    	n += 1;
-	    	if(n >= 60000){
-	            $('#spinner').addClass('d-none');
-	        	clearInterval(interval);
-	        }else{
-	        	$('#spinner').css("transform","rotate(" + n + "deg)");
-	        }
-		},5);
-		
-		$('#purgeInProgressModal').one('hide.bs.modal',function(){
-			$('#spinner').addClass('d-none');
-        	if(interval){clearInterval(interval);}
-		});
-	}
     
 </script>
 </head>
@@ -642,7 +670,6 @@
 	  		</div>
 	  		<br/>
 		</div>
-			<s:debug/>
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		
