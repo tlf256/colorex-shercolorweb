@@ -44,8 +44,7 @@
 		<div class="row">
 			<div class="col-sm-2"></div>
 		</div>
-
-
+		
 		<s:form action="processJobFieldsAction" validate="true"
 			focusElement="processJobFieldsAction_jobFieldList_0__enteredValue"
 			theme="bootstrap">
@@ -101,7 +100,7 @@
 				</s:else>
 				<div class="col-lg-6 col-md-4 col-sm-1 col-xs-1"></div>
 			</div>
-
+			
 		</s:form>
 	</div>
 
@@ -118,6 +117,7 @@
 				//console.log("enteredValue = " + enteredValue);
 				$(this).val($(this).html(enteredValue).text());
 			 });
+			 
 		 });
 		<!--
 		  function HF_openSherwin() {

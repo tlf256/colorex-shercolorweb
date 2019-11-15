@@ -27,6 +27,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	private List<JobField> jobFieldList;
 	private FormulaInfo displayFormula;
 	private int updateMode;
+	private String errorMessage;
 	
 	@Autowired
 	CustomerService customerService;
@@ -107,6 +108,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			List<String> validateMe = new ArrayList<String>();
+			List<String> jobFieldLabels = new ArrayList<String>();
 			
 			if(debugOn) System.out.println("about to process jobFieldList");
 			if(jobFieldList==null){
@@ -125,16 +127,27 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					if(debugOn) System.out.println("thisField after encoding: " + thisField.getEnteredValue());
 					i++;
 					validateMe.add(thisField.getEnteredValue());
+					jobFieldLabels.add(thisField.getScreenLabel());
 				}
 				
 				if(debugOn) System.out.println("about to call validate");
 				
-				List<SwMessage> messages = customerService.validateCustJobFields(validateMe);
+				List<SwMessage> messages = customerService.validateCustJobFields(jobFieldLabels,validateMe);
 				
 				if(debugOn) System.out.println("back from validate");
 				if(debugOn) System.out.println("message size is " + messages.size());
 				if(messages.size()>0){
 					// TODO process field entry errors
+					int index = 0;
+					for (SwMessage message : messages) {
+						addFieldError(message.getCode(),message.getMessage());
+						if (index==0) {
+							errorMessage = message.getMessage();
+						} else {
+							errorMessage = errorMessage + "\r\n" + message.getMessage();
+						}
+						index++;
+					}
 					retVal = INPUT;
 				} else {
 					// all good
@@ -212,6 +225,13 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	public void setDisplayFormula(FormulaInfo displayFormula) {
 		this.displayFormula = displayFormula;
 	}
-
+	
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
 
 }
