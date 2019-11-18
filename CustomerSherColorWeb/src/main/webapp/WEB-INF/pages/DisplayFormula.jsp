@@ -62,6 +62,7 @@ badge {
 	var dispenseTracker = "Container: " + numberOfDispenses + " out of "
 			+ dispenseQuantity;
 	var printerConfig;
+	var processingDispense = false;
 
 	function prePrintSave() {
 		// save before print
@@ -403,6 +404,7 @@ badge {
 					//Show a modal with error message to make sure the user is forced to read it.
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
+					processingDispense = false;
 					$("#tinterSocketErrorModal").modal('show');
 
 				} else {
@@ -475,6 +477,7 @@ badge {
 						"bumpDispenseCounterAction.action?reqGuid=" + myValue
 								+ "&jsDateString=" + curDate.toString(),
 						function(data) {
+							processingDispense = false;
 							if (data.sessionStatus === "expired") {
 								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 							} else {
@@ -625,19 +628,24 @@ badge {
 				.on(
 						"click",
 						function(event) {
-							event.preventDefault();
-							event.stopPropagation();
-							waitForShowAndHide("#positionContainerModal");
-							$("#tinterInProgressModal").modal('show');
-							rotateIcon();
-							$("#tinterInProgressTitle").text(
-									"Dispense In Progress");
-							$("#tinterInProgressMessage")
-									.text(
-											"Please wait while tinter performs the dispense...");
+							if (processingDispense == false) {
+								processingDispense = true;
+								event.preventDefault();
+								event.stopPropagation();
+								waitForShowAndHide("#positionContainerModal");
+								$("#tinterInProgressModal").modal('show');
+								rotateIcon();
+								$("#tinterInProgressTitle").text(
+										"Dispense In Progress");
+								$("#tinterInProgressMessage")
+										.text(
+												"Please wait while tinter performs the dispense...");
 
-							// Call decrement colorants which will call dispense
-							decrementColorantLevels();
+								// Call decrement colorants which will call dispense
+								decrementColorantLevels();
+							}
+							// else do nothing
+							
 						});
 		$("#formulaUserPrintAction_formulaUserSaveAction").on(
 				"click",
