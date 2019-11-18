@@ -141,12 +141,6 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					int index = 0;
 					for (SwMessage message : messages) {
 						addFieldError(message.getCode(),message.getMessage());
-						if (index==0) {
-							errorMessage = message.getMessage();
-						} else {
-							errorMessage = errorMessage + "\r\n" + message.getMessage();
-						}
-						index++;
 					}
 					retVal = INPUT;
 				} else {
@@ -224,6 +218,14 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 
 	public void setDisplayFormula(FormulaInfo displayFormula) {
 		this.displayFormula = displayFormula;
+	}
+	
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 }
