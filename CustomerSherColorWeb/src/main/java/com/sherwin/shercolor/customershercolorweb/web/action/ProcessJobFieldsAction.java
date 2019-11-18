@@ -225,13 +225,5 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	public void setDisplayFormula(FormulaInfo displayFormula) {
 		this.displayFormula = displayFormula;
 	}
-	
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
 
 }
