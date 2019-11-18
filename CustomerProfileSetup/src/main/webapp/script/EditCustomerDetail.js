@@ -406,6 +406,15 @@ $(document).ready(function() {
 				if($("#844default").is(":checked") && !$("#844").is(":checked")){
 					throw "Please choose 844 colorant system before selecting the default";
 				}
+				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
+					throw "Please choose CCE colorant system";
+				}
+				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
+					throw "Please choose BAC colorant system";
+				}
+				if($("#844default").is(":checked") && !$("#844").is(":checked")){
+					throw "Please choose 844 colorant system";
+				}
 				valid = true;
 				$("#custediterror").text("");
 				$("#formerror").text("");
@@ -420,9 +429,9 @@ $(document).ready(function() {
 				$(this).prop("checked", false);
 			}
 		}
-	}, "input[name='cust.defaultClrntSys']");
+	}, $(".clrntsys"));
 	
-	$(document).on({
+	/*$(document).on({
 		"change":function(){
 			try{
 				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
@@ -448,7 +457,7 @@ $(document).ready(function() {
 				//$(this).prop("checked", false);
 			}
 		}
-	}, "input[name^='cust']");
+	}, $(".clrnts"));*/
 	
 	$(document).on("click", "#submitchng", function(e){
 		try{
@@ -489,7 +498,7 @@ $(document).ready(function() {
 			if(!eula && eulatext){
 				throw "Please choose a EULA pdf";
 			}
-			if(eulaws != 'None' && !acceptcode){
+			if($("#eulalist").is(":visible") && eulaws != 'None' && !acceptcode){
 				throw "Please enter an Acceptance Code";
 			}
 			if(eulaws == 'None' && acceptcode){

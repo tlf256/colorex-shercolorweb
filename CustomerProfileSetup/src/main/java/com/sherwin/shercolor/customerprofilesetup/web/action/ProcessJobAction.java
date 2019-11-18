@@ -33,6 +33,7 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 		try { 
 			if(job!=null) {
 				RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+				reqObj.setJobUnchanged(false);
 				
 				List<JobFields> jobList = new ArrayList<JobFields>();
 				String[] reqlist = new String[10];

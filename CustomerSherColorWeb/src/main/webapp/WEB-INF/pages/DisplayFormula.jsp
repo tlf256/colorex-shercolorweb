@@ -302,9 +302,7 @@ badge {
 	}
 
 	function dispense() {
-		if(printerConfig && printerConfig.printOnDispense){
-			printOnDispenseGetJson(); //new print on dispense
-		}
+		
 		var cmd = "Dispense";
 
 		var tintermessage = new TinterMessage(cmd, shotList, null, null, null);
@@ -495,6 +493,10 @@ badge {
 								var tedArray = [ teDetail ];
 								sendTinterEvent(myGuid, curDate,
 										myReturnMessage, tedArray);
+								
+								if(printerConfig && printerConfig.printOnDispense){
+									printOnDispenseGetJson(); //new print on dispense
+								}
 
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
