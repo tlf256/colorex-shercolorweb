@@ -56,7 +56,10 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				if(custWebParms.isEmpty()) {
 					//first national id created with '99'
-					reqObj.setCustomerId("990001");
+					//reqObj.setCustomerId("990001");
+					// list should not be empty
+					addActionError("Database Error - National customer cannot be created. Please contact administrator.");
+					return INPUT;
 				} else {
 					Object[] idList = custWebParms.toArray();
 					
@@ -83,7 +86,10 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				if(custParms.isEmpty()) {
 					//first international id created with 'INTL'
-					reqObj.setCustomerId("INTL0001");
+					//reqObj.setCustomerId("INTL0001");
+					// list should not be empty
+					addActionError("Database Error - International customer cannot be created. Please contact administrator.");
+					return INPUT;
 				} else {
 					Object[] custIdList = custParms.toArray();
 					
@@ -104,7 +110,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			default:
 				// result not expected
 				System.out.println("String is junk, return to form");
-				
+				addActionError("Error - Unexpected value. Please retry request.");
 				return INPUT;
 				
 			}
@@ -169,7 +175,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
 				} else {
 					//unexpected value
-					addFieldError("eulaerror", "Please select Eula from list");
+					addFieldError("customer.website", "Please select Eula from list");
 					return INPUT;
 				}
 				

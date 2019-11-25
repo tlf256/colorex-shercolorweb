@@ -144,7 +144,8 @@
 		<div id="custDetailError" class="text-danger">
 			<s:property value="sessionMap['error']" />
 		</div>
-		<s:if test="edited">
+		<s:actionerror/>
+		<s:if test="(edited || sessionMap['CustomerDetail'].newCustomer) && !hasActionErrors()">
 			<div class="text-danger"><h6>You must submit this form for changes to take effect!</h6></div>
 		</s:if>
 		<s:form>
