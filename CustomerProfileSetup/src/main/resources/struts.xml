@@ -92,18 +92,14 @@
 				<param name="actionName">displayCustomers</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-			<result name="input" type="redirectAction">
-				<param name="actionName">displayCustomers</param>
-			</result>
+			<result name="input">/WEB-INF/pages/CustomerDetail.jsp</result>
 		</action>
 		<action name="deleteCustomer" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="delete">
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayCustomers</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-			<result name="input" type="redirectAction">
-				<param name="actionName">displayCustomers</param>
-			</result>
+			<result name="input">/WEB-INF/pages/CustomerDetail.jsp</result>
 		</action>
 		<action name="resetAction" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="reset">
 			<result name="success" type="redirectAction">

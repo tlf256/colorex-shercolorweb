@@ -47,6 +47,8 @@
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
 			<div id="formerror" class="text-danger"></div>
 			<div id="custformerror" class="text-danger"></div>
+			<s:actionmessage/>
+			<s:actionerror/>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
