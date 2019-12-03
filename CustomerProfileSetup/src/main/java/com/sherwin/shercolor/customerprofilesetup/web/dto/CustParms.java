@@ -37,7 +37,11 @@ public class CustParms {
 		return cdsAdlFld;
 	}
 	public void setCdsAdlFld(String cdsAdlFld) {
-		this.cdsAdlFld = cdsAdlFld;
+		if(cdsAdlFld == null) {
+			this.cdsAdlFld = "";
+		} else {
+			this.cdsAdlFld = cdsAdlFld;
+		}
 	}
 	public boolean isActive() {
 		return active;

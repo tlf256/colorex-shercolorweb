@@ -7,7 +7,7 @@ import java.util.List;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import com.itextpdf.text.DocumentException;
+
 import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -82,7 +82,7 @@ public class PrintLabelTest2  {
 			"Test Formula", "Comment"};
 	
 	@Test
-	public void testLabel5() throws DocumentException, IOException {
+	public void testLabel5()  {
 		reqObj = GetShercolorFormula(request1, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label5.pdf", reqObj);
@@ -90,7 +90,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel6() throws DocumentException, IOException {
+	public void testLabel6()  {
 		reqObj = GetShercolorFormula(request2, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label6.pdf", reqObj);
@@ -98,7 +98,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel7() throws DocumentException, IOException {
+	public void testLabel7()  {
 		reqObj = GetShercolorFormula(request3, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label7.pdf", reqObj);
@@ -106,7 +106,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel8() throws DocumentException, IOException {
+	public void testLabel8()  {
 		reqObj = GetShercolorFormula(request4, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label8.pdf", reqObj);
@@ -114,7 +114,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel9() throws DocumentException, IOException {
+	public void testLabel9()  {
 		reqObj = GetShercolorFormula(request5, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label9.pdf", reqObj);
@@ -123,7 +123,7 @@ public class PrintLabelTest2  {
 	
 	
 	@Test
-	public void testLabel10() throws DocumentException, IOException {
+	public void testLabel10()  {
 		reqObj = GetShercolorFormula(request6, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label10.pdf", reqObj);
@@ -131,7 +131,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel11() throws DocumentException, IOException {
+	public void testLabel11()  {
 		reqObj = GetShercolorFormula(request7, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label11.pdf", reqObj);
@@ -139,7 +139,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel12() throws DocumentException, IOException {
+	public void testLabel12()  {
 		reqObj = GetShercolorFormula(request8, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label12.pdf", reqObj);
@@ -147,7 +147,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel13() throws DocumentException, IOException {
+	public void testLabel13()  {
 		reqObj = GetShercolorFormula(request9, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label13.pdf", reqObj);
@@ -155,7 +155,7 @@ public class PrintLabelTest2  {
 	}
 	
 	@Test
-	public void testLabel14() throws DocumentException, IOException {
+	public void testLabel14()  {
 		reqObj = GetShercolorFormula(request10, parms1);
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label14.pdf", reqObj);

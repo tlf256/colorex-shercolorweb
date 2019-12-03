@@ -1,7 +1,5 @@
 package com.sherwin.shercolor.customershercolorweb.web.model;
 
-import org.owasp.encoder.Encode;
-
 public class JobField {
 
 	private String screenLabel;
@@ -21,11 +19,7 @@ public class JobField {
 		this.screenLabel = screenLabel;
 	}
 	public void setEnteredValue(String enteredValue) {
-		if (enteredValue!=null) {
-		this.enteredValue = Encode.forHtml(enteredValue);
-		} else {
-			this.enteredValue = enteredValue;
-		}
+		this.enteredValue = enteredValue;
 	}
 	public void setRequiredText(String requiredText) {
 		this.requiredText = requiredText;

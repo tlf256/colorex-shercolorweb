@@ -46,10 +46,6 @@ $(document).ready(function() {
 		$("#newloginrow").addClass("d-none");
 	}
 	
-	//var customername = $("#customername").val();
-	//$("#customername").html(customername);
-	//$("#customername").val($("#customername").text());
-	
 	$(".dltrow").click(function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
 		//window.alert($(".cloned-loginrow").length);
@@ -99,6 +95,12 @@ $(document).ready(function() {
 		$("#cdsadlfld").select();
 	});
 	
+	$("#edt2").click(function(){
+		$("#acceptcode").removeAttr("readonly");
+		$("#acceptcode").focus();
+		$("#acceptcode").select();
+	});
+	
 	$(".edtrow").click(function(){
 		var input = $(this).parent('td').parent('tr').find("input");
 		input.removeAttr("readonly");
@@ -138,6 +140,104 @@ $(document).ready(function() {
 			var cdsadlfld = $.trim($(this).val());
 			if(cdsadlfld.length > 20){
 				throw "Additional info cannot be greater than 20 characters";
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#acceptcode").on("blur", function(){
+		try{
+			var acceptcode = $.trim($(this).val());
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#eulafile").on("change", function(){
+		try{
+			var eula = $("#eulafile").val();
+			var ext = eula.split('.').pop().toLowerCase();
+			if(eula){
+				if(ext != 'pdf'){
+					throw "Invalid file extension";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#effDate").on("change", function(){
+		try{
+			var effdate = $.trim($(this).val());
+			var eula = $("#eulafile").val();
+			if(eula && !effdate){
+				throw "Please enter an Effective Date";
+			}
+			if(!eula && effdate){
+				throw "Please choose a EULA pdf";
+			}
+			if(effdate){
+				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(effdate)){
+					throw "Please enter valid date in mm/dd/yyyy format";
+				}
+			}
+			valid = true;
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#expDate").on("change", function(){
+		try{
+			var expdate = $.trim($(this).val());
+			if(expdate){
+				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(expdate)){
+					throw "Please enter valid date in mm/dd/yyyy format";
+				}
 			}
 			valid = true;
 			$("#custediterror").text("");
@@ -306,6 +406,15 @@ $(document).ready(function() {
 				if($("#844default").is(":checked") && !$("#844").is(":checked")){
 					throw "Please choose 844 colorant system before selecting the default";
 				}
+				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
+					throw "Please choose CCE colorant system";
+				}
+				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
+					throw "Please choose BAC colorant system";
+				}
+				if($("#844default").is(":checked") && !$("#844").is(":checked")){
+					throw "Please choose 844 colorant system";
+				}
 				valid = true;
 				$("#custediterror").text("");
 				$("#formerror").text("");
@@ -320,9 +429,9 @@ $(document).ready(function() {
 				$(this).prop("checked", false);
 			}
 		}
-	}, "input[name='cust.defaultClrntSys']");
+	}, $(".clrntsys"));
 	
-	$(document).on({
+	/*$(document).on({
 		"change":function(){
 			try{
 				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
@@ -348,9 +457,9 @@ $(document).ready(function() {
 				//$(this).prop("checked", false);
 			}
 		}
-	}, "input:checkbox");
+	}, $(".clrnts"));*/
 	
-	$(document).on("click", "#submitchng", function(){
+	$(document).on("click", "#submitchng", function(e){
 		try{
 			if(valid===false){
 				throw "Please fix form error(s):";
@@ -373,14 +482,55 @@ $(document).ready(function() {
 					}
 				}
 			});
+			var acceptcode = $.trim($("#acceptcode").val());
+			var eulaws = $("#eulalist").val();
+			var eula = $("#eulafile").val();
+			var eulatext = $("#eulatext").val();
+			var d = new Date();
+			var dd = String(d.getDate()).padStart(2, '0');
+			var mm = String(d.getMonth() + 1).padStart(2, '0');
+			var yyyy = String(d.getFullYear());
+			var today = mm + "/" + dd + "/" + yyyy;
+			console.log("today's date = " + today);
+			if(eula && !eulatext){
+				throw "Please enter EULA text";
+			}
+			if(!eula && eulatext){
+				throw "Please choose a EULA pdf";
+			}
+			if($("#eulalist").is(":visible") && eulaws != 'None' && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eulaws == 'None' && acceptcode){
+				throw "Please choose a EULA";
+			}
+			if($("#expDate") != null && $("#expDate").val() != ""){
+				if($("#expDate").val() < $("#effDate").val()){
+					throw "Invalid Expiration Date";
+				}
+			}
 			$("#formerror").text("");
+			return true;
 		}catch(msg){
-			event.preventDefault();
+			e.preventDefault();
 			$("#formerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
 		}
+	});
+	
+	$('#effDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	$('#expDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
 	});
 	
 });

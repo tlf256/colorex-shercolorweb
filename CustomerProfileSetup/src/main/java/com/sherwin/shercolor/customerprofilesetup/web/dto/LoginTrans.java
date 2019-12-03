@@ -16,13 +16,21 @@ public class LoginTrans {
 		return masterAcctName;
 	}
 	public void setMasterAcctName(String masterAcctName) {
-		this.masterAcctName = masterAcctName;
+		if(masterAcctName ==null) {
+			this.masterAcctName = "";
+		} else {
+			this.masterAcctName = masterAcctName;
+		}
 	}
 	public String getAcctComment() {
 		return acctComment;
 	}
 	public void setAcctComment(String acctComment) {
-		this.acctComment = acctComment;
+		if(acctComment == null) {
+			this.acctComment = "";
+		} else {
+			this.acctComment = acctComment;
+		}
 	}
 	
 }

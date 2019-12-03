@@ -35,6 +35,7 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 		try {
 			if(login!=null) {
 				RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+				reqObj.setLoginUnchanged(false);
 				
 				List<LoginTrans> loginList = new ArrayList<LoginTrans>();
 				for(int i = 0; i < login.getKeyField().size(); i++) {
@@ -84,11 +85,11 @@ public class ProcessLoginAction extends ActionSupport implements SessionAware {
 	public String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
-			if(escapedString.contains("&amp;") || escapedString.contains("&#38;")) {
+			if(escapedString.contains("&amp;")) {
 				newString = escapedString.replaceAll("&amp;", "&");
 			} else if(escapedString.contains("&#38;")) {
 				newString = escapedString.replaceAll("&#38;", "&");
-			} else if(escapedString.contains("&apos;") || escapedString.contains("&#39;")) {
+			} else if(escapedString.contains("&apos;")) {
 				newString = escapedString.replaceAll("&apos;", "'");
 			} else if(escapedString.contains("&#39;")) {
 				newString = escapedString.replaceAll("&#39;", "'");

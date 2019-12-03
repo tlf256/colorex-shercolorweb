@@ -54,6 +54,9 @@
 			</div>
 			<div class="col-lg-12 col-md-12">
 				<div id="CRUDresult" class="text-danger ml-2"><s:property value="sessionMap['msg']" /></div>
+				<div id="error" class="text-danger ml-2"><s:property value="sessionMap['error']" /></div>
+				<s:actionmessage/>
+				<s:actionerror/>
 				<table id="customer_table" class="table table-striped table-bordered">
 					<thead>
 						<tr>

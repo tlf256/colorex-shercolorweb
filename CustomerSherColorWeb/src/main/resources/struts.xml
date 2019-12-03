@@ -262,6 +262,7 @@
 				<param name="actionName">displayColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+			<result name="input">/WEB-INF/pages/GetJobFields.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="displayJobFieldUpdateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessJobFieldsAction" method="displayupdate">
