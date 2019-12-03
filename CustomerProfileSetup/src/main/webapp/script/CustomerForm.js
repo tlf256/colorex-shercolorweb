@@ -73,78 +73,81 @@ $(document).ready(function() {
 	});
 	
 	var valid = false;
-	var result;
 	
-	$("#ntlacctnbr").on("change", function(){
-		var ntl = $.trim($("#ntlacctnbr").val());
-		$.ajax({
-			url:"ajaxAcctNbrResult.action",
-			data:{acctNbr: ntl},
-			dataType:"json",
-			async:false,
-			success:function(data){
-				result = data.result;
-			}
-		});
-		try{
-			if(!ntl){
-				throw "Please enter an account number";
-			}
-			if(ntl.length!=9) {
-				throw "National account number is 9 digits";
-			}
-			if(isNaN(ntl)) {
-				throw "Account number must be a number";
-			}
-			if(result=="true"){
-				throw "Account Number already exists";
-			}
-			valid = true;
-			$("#ntlaccterror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			valid = false;
-			$("#ntlaccterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).focus();
+	$(document).on({
+		"blur": function(){
+			ntlval = $.trim($("#ntlacctnbr").val());
+			ntl = $("#ntlacctnbr");
+			$.ajax({
+				url:"ajaxAcctNbrResult.action",
+				data:{acctNbr: ntlval},
+				dataType:"json",
+				success:function(data){
+					result = data.result;
+					try{
+						if(!ntlval){
+							throw "Please enter an account number";
+						}
+						if(ntlval.length!=9) {
+							throw "National account number is 9 digits";
+						}
+						if(isNaN(ntlval)) {
+							throw "Account number must be a number";
+						}
+						if(result=="true"){
+							throw "Account Number already exists";
+						}
+						valid = true;
+						$("#ntlaccterror").text("");
+						ntl.removeClass("border-danger");
+					}catch(msg){
+						valid = false;
+						$("#ntlaccterror").text(msg);
+						ntl.addClass("border-danger");
+						ntl.focus();
+					}
+				}
+			});
 		}
-	});
-		
+	}, "#ntlacctnbr");
 	
-	$("#intntlacctnbr").on("change", function(){
-		var intntl = $.trim($("#intntlacctnbr").val());
-		$.ajax({
-			url:"ajaxAcctNbrResult.action",
-			data:{acctNbr: intntl},
-			dataType:"json",
-			async:false,
-			success:function(data){
-				result = data.result;
-			}
-		});
-		try{
-			if(!intntl){
-				throw "Please enter an account number";
-			}
-			if(intntl.length!=7) {
-				throw "International account number is 7 digits";
-			}
-			if(isNaN(intntl)) {
-				throw "Account number must be a number";
-			}
-			if(result=="true"){
-				throw "Account Number already exists";
-			}
-			valid = true;
-			$("#intntlaccterror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			valid = false;
-			$("#intntlaccterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).focus();
+	
+	$(document).on({
+		"blur": function(){
+			intntlval = $.trim($("#intntlacctnbr").val());
+			intntl = $("#intntlacctnbr");
+			$.ajax({
+				url:"ajaxAcctNbrResult.action",
+				data:{acctNbr: intntlval},
+				dataType:"json",
+				success:function(data){
+					result = data.result;
+					try{
+						if(!intntlval){
+							throw "Please enter an account number";
+						}
+						if(intntlval.length!=7) {
+							throw "International account number is 7 digits";
+						}
+						if(isNaN(intntlval)) {
+							throw "Account number must be a number";
+						}
+						if(result=="true"){
+							throw "Account Number already exists";
+						}
+						valid = true;
+						$("#intntlaccterror").text("");
+						intntl.removeClass("border-danger");
+					}catch(msg){
+						valid = false;
+						$("#intntlaccterror").text(msg);
+						intntl.addClass("border-danger");
+						intntl.focus();
+					}
+				}
+			});
 		}
-	});
+	}, "#intntlacctnbr");
 	
 	$("#swuititle").on("blur", function(){
 		var title = $.trim($("#swuititle").val());

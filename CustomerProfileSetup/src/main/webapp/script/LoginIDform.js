@@ -51,42 +51,43 @@ $(document).ready(function(){
 		"focusout":function(){
 			$("#jobnext-btn").removeClass("d-none");
 		},
-		"change":function(){
+		"blur":function(){
 			$("#jobnext-btn").removeClass("d-none");
-			var keyfld = $.trim($(this).val());
+			var keyfldval = $.trim($(this).val());
+			var keyfld = $(this);
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
-				data:{keyfield: keyfld},
+				data:{keyfield: keyfldval},
 				dataType:"json",
 				async:false,
 				success:function(data){
 					result = data.result;
+					try{
+						if(keyfldval.length > 20){
+							throw "Login ID cannot be greater than 20 characters";
+						}
+						if($.inArray(keyfldval,logins)!=-1){
+							throw "Please enter unique values for Login ID";
+						}
+						if(result=="true"){
+							throw "Login ID unavailable";
+						}
+						valid = true;
+						$("#jobnext-btn").show();
+						$("#loginformerror").text("");
+						$("#formerror").text("");
+						keyfld.removeClass("border-danger");
+					}catch(msg){
+						valid = false;
+						keyfld.focus();
+						keyfld.addClass("border-danger");
+						$("#loginformerror").text(msg);
+						$("html, body").animate({
+							scrollTop: $("#required-hidden").offset().top
+						}, 1500);
+					}
 				}
 			});
-			try{
-				if(keyfld.length > 20){
-					throw "Login ID cannot be greater than 20 characters";
-				}
-				if($.inArray(keyfld,logins)!=-1){
-					throw "Please enter unique values for Login ID";
-				}
-				if(result=="true"){
-					throw "Login ID unavailable";
-				}
-				valid = true;
-				$("#jobnext-btn").show();
-				$("#loginformerror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$(this).focus();
-				$(this).addClass("border-danger");
-				$("#loginformerror").text(msg);
-				$("html, body").animate({
-					scrollTop: $("#required-hidden").offset().top
-				}, 1500);
-			}
 		}
 	},".keyfield");
 	
