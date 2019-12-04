@@ -57,138 +57,219 @@ badge {
 }
 </style>
 <script type="text/javascript">
+//global vars
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
 	var dispenseTracker = "Container: " + numberOfDispenses + " out of "
 			+ dispenseQuantity;
 	var printerConfig;
+	var sendingTinterCommand = "false";
+	 var ws_tinter = new WSWrapper("tinter");
+	 var tinterErrorList;
+	 var _rgbArr = [];
+	 
+	// now build the dispense formula object
+		var sendingDispCommand = "false";
 
-	function prePrintSave() {
-		// save before print
-		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
-		if (isNaN(myCtlNbr))
-			myCtlNbr = 0;
-		if (myCtlNbr == 0) {
-			console.log("ctlNbr is zero");
-		}
-		var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
-				.val()));
-		if (isNaN(myDirty))
-			myDirty = 0;
-		if (myDirty > 0) {
-			console.log("dirty is true");
-		}
-		if (myCtlNbr == 0 || myDirty > 0) {
-			//save needed before print
-			// 			$("#tinterInProgressTitle").text("Saving Changes");
-			// 			$("#tinterInProgressMessage").text("Saving Changes before print...");
-			// 			$("#tinterInProgressModal").modal('show');
-
-			var curDate = new Date();
-			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
-			var myGuid = $("#formulaUserPrintAction_reqGuid").val();
-			$
-					.ajax({
-						url : "saveOnPrintAction.action",
-						type : "POST",
-						data : {
-							reqGuid : myGuid,
-							jsDateString : curDate.toString()
-						},
-						datatype : "json",
-						async : true,
-						success : function(data) {
-							if (data.sessionStatus === "expired") {
-								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-							} else {
-								$("#controlNbr").text(data.controlNbr);
-								$("#controlNbrDisplay").show();
-								//    	 				$("#tinterInProgressModal").modal('hide');
-								updateButtonDisplay();
-								showPrintModal();
-								
-							}
-						},
-						error : function(err) {
-							alert("failure: " + err);
-						}
-					});
-
-		} else {
-
-			showPrintModal();
-		}
-	}
-
-	function showPrintModal(){
-		if(printerConfig && printerConfig.model){
-			
-			$("#printLabelPrint").show();
-			$("#printLabelPrint").focus();
-			
-			
-			$("#numLabels").val(printerConfig.numLabels);
-			$("#numLabels").show();
-		}
-		else{
-			$("#printLabelPrint").hide();
-			$("#numLabels").hide();
-		}
-		$("#printLabelModal").modal('show');
-
+		// using strut2 to build shotlist...
+		var shotList = [];
+		<s:iterator value="dispenseFormula" status="clrnt">
+		var color<s:property value="#clrnt.index"/> = new Colorant(
+				"<s:property value="clrntCode"/>", <s:property value="shots"/>,
+				<s:property value="position"/>, <s:property value="uom"/>);
+		shotList.push(color<s:property value="#clrnt.index"/>);
+		</s:iterator>
+		//setup rgb display for progress bars
+		<s:iterator value="tinter.canisterList" status="i">
 		
+				_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
+		</s:iterator>
+
+</script>
+<script type="text/javascript">
+//printer scripts
+function prePrintSave() {
+	// save before print
+	var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
+	if (isNaN(myCtlNbr))
+		myCtlNbr = 0;
+	if (myCtlNbr == 0) {
+		console.log("ctlNbr is zero");
+	}
+	var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
+			.val()));
+	if (isNaN(myDirty))
+		myDirty = 0;
+	if (myDirty > 0) {
+		console.log("dirty is true");
+	}
+	if (myCtlNbr == 0 || myDirty > 0) {
+		//save needed before print
+		// 			$("#tinterInProgressTitle").text("Saving Changes");
+		// 			$("#tinterInProgressMessage").text("Saving Changes before print...");
+		// 			$("#tinterInProgressModal").modal('show');
+
+		var curDate = new Date();
+		$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
+		var myGuid = $("#formulaUserPrintAction_reqGuid").val();
+		$
+				.ajax({
+					url : "saveOnPrintAction.action",
+					type : "POST",
+					data : {
+						reqGuid : myGuid,
+						jsDateString : curDate.toString()
+					},
+					datatype : "json",
+					async : true,
+					success : function(data) {
+						if (data.sessionStatus === "expired") {
+							window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+						} else {
+							$("#controlNbr").text(data.controlNbr);
+							$("#controlNbrDisplay").show();
+							//    	 				$("#tinterInProgressModal").modal('hide');
+							updateButtonDisplay();
+							showPrintModal();
+							
+						}
+					},
+					error : function(err) {
+						alert("failure: " + err);
+					}
+				});
+
+	} else {
+
+		showPrintModal();
+	}
 }
 
-	function printOnDispenseGetJson() {
-		if (printerConfig && printerConfig.model) {
-			var myguid = $("#formulaUserPrintAction_reqGuid").val();
-
-			var myPdf = new pdf(myguid);
-			$("#printerInProgressMessage").text("Printer: In Progress ");
-			var numLabels = null;
-
-			numLabels = printerConfig.numLabels;
-			print(myPdf, numLabels);
-		}
-
+function showPrintModal(){
+	if(printerConfig && printerConfig.model){
+		
+		$("#printLabelPrint").show();
+		$("#printLabelPrint").focus();
+		
+		
+		$("#numLabels").val(printerConfig.numLabels);
+		$("#numLabels").show();
 	}
-	function printButtonClickGetJson() {
-		if (printerConfig && printerConfig.model) {
-			var myguid = $("#formulaUserPrintAction_reqGuid").val();
+	else{
+		$("#printLabelPrint").hide();
+		$("#numLabels").hide();
+	}
+	$("#printLabelModal").modal('show');
 
-			var myPdf = new pdf(myguid);
-			$("#printerInProgressMessage").text("Printer: In Progress ");
-			var numLabels = null;
+	
+}
 
-			numLabels = printerConfig.numLabels;
-			numLabelsVal = $("#numLabels").val();
-			if(numLabelsVal && numLabelsVal !=0){
-				numLabels = numLabelsVal;
+function printOnDispenseGetJson() {
+	if (printerConfig && printerConfig.model) {
+		var myguid = $("#formulaUserPrintAction_reqGuid").val();
+
+		var myPdf = new pdf(myguid);
+		$("#printerInProgressMessage").text("Printer: In Progress ");
+		var numLabels = null;
+
+		numLabels = printerConfig.numLabels;
+		print(myPdf, numLabels);
+	}
+
+}
+function printButtonClickGetJson() {
+	if (printerConfig && printerConfig.model) {
+		var myguid = $("#formulaUserPrintAction_reqGuid").val();
+
+		var myPdf = new pdf(myguid);
+		$("#printerInProgressMessage").text("Printer: In Progress ");
+		var numLabels = null;
+
+		numLabels = printerConfig.numLabels;
+		numLabelsVal = $("#numLabels").val();
+		if(numLabelsVal && numLabelsVal !=0){
+			numLabels = numLabelsVal;
+		}
+		print(myPdf, numLabels);
+	}
+
+}
+
+function printButtonClick() {
+	var myValue = $("#formulaUserPrintAction_reqGuid").val();
+	console.log("calling print window open for print action with guid "
+			+ myValue);
+	window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
+			'Print Label', 'width=500, height=1000');
+}
+function ParsePrintMessage() {
+	var parsed = false;
+	try {
+		if (ws_printer != null && ws_printer.wsmsg != null
+				&& ws_printer.wserror == null) {
+			var return_message = JSON.parse(ws_printer.wsmsg);
+			if(return_message){
+			switch (return_message.command) {
+			case 'Print':
+				parsed = true;
+				ws_printer.wsmsg = null; //set to null so it can't be read twice
+				if (return_message.errorNumber != 0) {
+					// save a dispense (will bump the counter)
+					$("#printerInProgressModal").modal('show');
+					$("#printerInProgressMessage").text(
+							"Print Result: " + return_message.errorMessage);
+					console.log(return_message);
+					//waitForShowAndHide("#tinterInProgressModal");
+				}
+				
+				break;
+			case 'GetConfig':
+				parsed = true;
+				ws_printer.wsmsg = null; //set to null so it can't be read twice
+				if (return_message.errorNumber != 0) {
+					// save a dispense (will bump the counter)
+					$("#printerResponseModal").modal('show');
+					$("#printerResponseMessage").text(
+							"Get Printer Result: "
+									+ return_message.errorMessage);
+					console.log(return_message);
+				} else {
+					printerConfig = return_message.printerConfig;
+
+				}
+				break;
+			default:
+				//Not an response we expected...
+				console
+						.log("Message from different command is junk, throw it out");
 			}
-			print(myPdf, numLabels);
+			} // end switch statement
+		} else {
+			//was hitting this on ws_tinter.wsmsg causing the modal to show.  was designed to show when SWDeviceHandler not installed 
+			//$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
+
+			/* DJM switch to this if 
+			if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
+			$("#printerInProgressMessage").text(
+					ws_printer.wserrormsg);
+			}
+			else {
+				$("#printerInProgressMessage").text(
+						"Unknown error communicating with SWDeviceHandler");
+			}
+			 */
 		}
 
+	} catch (error) {
+		console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
+		console.log("Message is junk, throw it out");
+		//console.log("Junk Message is " + ws_tinter.wsmsg);
 	}
-
-	function printButtonClick() {
-		var myValue = $("#formulaUserPrintAction_reqGuid").val();
-		console.log("calling print window open for print action with guid "
-				+ myValue);
-		window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
-				'Print Label', 'width=500, height=1000');
-	}
-
-	// now build the dispense formula object
-	var sendingDispCommand = "false";
-
-	// using strut2 to build shotlist...
-	var shotList = [];
-	<s:iterator value="dispenseFormula" status="clrnt">
-	var color<s:property value="#clrnt.index"/> = new Colorant(
-			"<s:property value="clrntCode"/>", <s:property value="shots"/>,
-			<s:property value="position"/>, <s:property value="uom"/>);
-	shotList.push(color<s:property value="#clrnt.index"/>);
-	</s:iterator>
+	return parsed;
+}
+</script>
+<script type="text/javascript">
+//callback stuff
 
 	function setDispenseQuantity() {
 		$("#dispenseQuantityInputError").text("");
@@ -301,6 +382,95 @@ badge {
 		}
 	}
 
+
+</script>
+
+<script type="text/javascript">
+	//global variables moved up above
+	//tinter stuff
+
+	    function fkey(e){
+	    	if(sendingTinterCommand == "true"){
+	        e = e || window.event;
+	        
+	        if (e.code === 'F5') {
+	        	abort();
+	            console.log(e);
+	            e.preventDefault();
+	        }
+	    }
+	}
+	function getRGB(colorantCode){
+		var rgb = "";
+		if(colorantCode != null){
+			rgb = _rgbArr[colorantCode];
+		}
+		return rgb;
+	}
+	function buildProgressBars(return_message){
+		var count = 1;
+			$(".progress-wrapper").empty();
+			return_message.errorList.forEach(function(item){
+				var colorList = item.message.split(" ");
+				var color= colorList[0];
+				var pct = colorList[1];
+				//fix bug where we are done, but not all pumps report as 100%
+				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
+						 return_message.status == 0)) {
+					  pct = "100%";
+				  }
+				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				
+				var $clone = $("#progress-0").clone();
+				$clone.attr("id","progress-" + count);
+				var $bar = $clone.children(".progress-bar");
+				$bar.attr("id","bar-" + count);
+				$bar.attr("aria-valuenow",pct);
+				$bar.css("width", pct);
+				$clone.css("display", "block");
+				var color_rgb = getRGB(color);
+	//change color of text based on background color
+				switch(color){
+				case "WHT":
+				case "TW":
+				case "W1":
+					$bar.children("span").css("color", "black");
+					$bar.css("background-color", "#efefef");
+					break;
+				case "OY":
+				case "Y1":
+				case "YGS":
+					$bar.children("span").css("color", "black");
+					$bar.css("background-color", color_rgb);
+					break;
+				default:
+					$bar.css("background-color", color_rgb);
+					$bar.children("span").css("color", "white");
+					break;
+				}
+				
+				
+				$bar.children("span").text(color + " " + pct);
+				console.log("barring " + item.message);
+				//console.log($clone);
+				
+				$clone.appendTo(".progress-wrapper");
+				
+				count++;
+			});
+	}
+	function FMXDispenseProgress(){
+		console.log('before dispense progress send');
+		
+		rotateIcon();
+		var cmd = "DispenseProgress";
+		var shotList = null;
+		var configuration = null;
+		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		var json = JSON.stringify(tintermessage);
+		sendingTinterCommand = "true";
+		ws_tinter.send(json);
+	}
 	function dispense() {
 		if(printerConfig && printerConfig.printOnDispense){
 			printOnDispenseGetJson(); //new print on dispense
@@ -320,71 +490,154 @@ badge {
 		// Send to tinter
 		ws_tinter.send(json);
 	}
-
-	function ParsePrintMessage() {
-		var parsed = false;
-		try {
-			if (ws_printer != null && ws_printer.wsmsg != null
-					&& ws_printer.wserror == null) {
-				var return_message = JSON.parse(ws_printer.wsmsg);
-				if(return_message){
-				switch (return_message.command) {
-				case 'Print':
-					parsed = true;
-					ws_printer.wsmsg = null; //set to null so it can't be read twice
-					if (return_message.errorNumber != 0) {
-						// save a dispense (will bump the counter)
-						$("#printerInProgressModal").modal('show');
-						$("#printerInProgressMessage").text(
-								"Print Result: " + return_message.errorMessage);
-						console.log(return_message);
-						//waitForShowAndHide("#tinterInProgressModal");
-					}
-					
-					break;
-				case 'GetConfig':
-					parsed = true;
-					ws_printer.wsmsg = null; //set to null so it can't be read twice
-					if (return_message.errorNumber != 0) {
-						// save a dispense (will bump the counter)
-						$("#printerResponseModal").modal('show');
-						$("#printerResponseMessage").text(
-								"Get Printer Result: "
-										+ return_message.errorMessage);
-						console.log(return_message);
-					} else {
-						printerConfig = return_message.printerConfig;
-
-					}
-					break;
-				default:
-					//Not an response we expected...
-					console
-							.log("Message from different command is junk, throw it out");
-				}
-				} // end switch statement
+	function dispenseProgressResp(return_message){
+		
+		//$("#progress-message").text(return_message.errorMessage);
+		$("#abort-message").show();
+		if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
+				 return_message.status == 1)) {
+			$("#tinterProgressList").empty();
+			 tinterErrorList = [];
+			if(return_message.errorList!=null && return_message.errorList[0]!=null){
+			//keep updating modal with status
+			//$("#progress-message").text(return_message.errorMessage);
+				buildProgressBars(return_message);
+			
 			} else {
-				//was hitting this on ws_tinter.wsmsg causing the modal to show.  was designed to show when SWDeviceHandler not installed 
-				//$("#printLabelModal").modal('show'); //DJM switch to pdf popup as before
-
-				/* DJM switch to this if 
-				if(ws_printer && ws_printer.wserrormsg!=null && ws_printer.wserrormsg != ""){
-				$("#printerInProgressMessage").text(
-						ws_printer.wserrormsg);
-				}
-				else {
-					$("#printerInProgressMessage").text(
-							"Unknown error communicating with SWDeviceHandler");
-				}
-				 */
+				tinterErrorList.push(return_message.errorMessage);
+				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 			}
-
-		} catch (error) {
-			console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
-			console.log("Message is junk, throw it out");
-			//console.log("Junk Message is " + ws_tinter.wsmsg);
+			console.log(return_message);
+			setTimeout(function(){
+				FMXDispenseProgress();
+			}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+			
 		}
-		return parsed;
+		else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
+			FMXDispenseComplete(return_message);
+			
+			}
+			
+	}
+	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
+	    $("#tinterErrorList").empty();
+	    $("#tinterErrorListModal").modal('show');
+	    
+	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
+	    	if(my_return_message.errorList.length > 0){
+	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
+	    	}
+	    	/*
+	        my_return_message.errorList.forEach(function(item){
+	            $("#tinterErrorList").append( '</li>' + item.message + '</li>');
+	        });
+	        */
+	    } 
+	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
+	    
+	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
+	    else $("#tinterErrorListTitle").text("Tinter Error");
+	    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
+	    else $("#tinterErrorListSummary").text("");
+	  
+	}
+	function showTinterErrorModal(myTitle, mySummary, my_return_message) {
+		$("#tinterErrorList").empty();
+		if (my_return_message.errorList != null
+				&& my_return_message.errorList[0] != null) {
+			my_return_message.errorList.forEach(function(item) {
+				$("#tinterErrorList").append(
+						'<li class="alert alert-danger">' + item.message
+								+ '</li>');
+			});
+		} else {
+			$("#tinterErrorList").append(
+					'<li class="alert alert-danger">'
+							+ my_return_message.errorMessage + '</li>');
+		}
+		if (myTitle != null)
+			$("#tinterErrorListTitle").text(myTitle);
+		else
+			$("#tinterErrorListTitle").text("Tinter Error");
+		if (mySummary != null)
+			$("#tinterErrorListSummary").text(mySummary);
+		else
+			$("#tinterErrorListSummary").text("");
+		$("#tinterErrorListModal").modal('show');
+	}
+	function FMXDispenseComplete(return_message){
+	    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+	        // save a dispense (will bump the counter)
+
+	        $("#tinterInProgressDispenseStatus").text("");
+	        $("#dispenseStatus").text("Last Dispense: Complete ");
+	        rotateIcon();
+	        $('#progressok').removeClass('d-none');
+	        $('#tinterInProgressTitle').text('Tinter Progress');
+	        $('#tinterInProgressMessage').text('');
+	        $("#tinterProgressList").empty();
+			tinterErrorList = [];
+			$(".progress-wrapper").empty();
+		
+			writeDispense(return_message); // will also send tinter event
+			waitForShowAndHide("#tinterInProgressModal");
+	    } else {
+	        $("#tinterInProgressDispenseStatus").text("Last Dispense: "+return_message.errorMessage);
+	        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage );
+	        waitForShowAndHide("#tinterInProgressModal");
+	        console.log('hide done');
+	        //Show a modal with error message to make sure the user is forced to read it.
+	        FMXShowTinterErrorModal("Dispense Error",null,return_message);
+	    }
+	    sendingTinterCommand = "false";
+	}
+	function writeDispense(myReturnMessage) {
+		var myValue = $("#formulaUserPrintAction_reqGuid").val();
+		var curDate = new Date();
+		$
+				.getJSON(
+						"bumpDispenseCounterAction.action?reqGuid=" + myValue
+								+ "&jsDateString=" + curDate.toString(),
+						function(data) {
+							if (data.sessionStatus === "expired") {
+								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+							} else {
+								$("#controlNbr").text(data.controlNbr);
+								$("#controlNbrDisplay").show();
+								$("#qtyDispensed").text(data.qtyDispensed);
+								updateButtonDisplay();
+								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
+								// send tinter event (no blocking here)
+								var myGuid = $(
+										"#formulaUserPrintAction_reqGuid")
+										.val();
+								var teDetail = new TintEventDetail(
+										"ORDER NUMBER",
+										$("#controlNbr").text(), 0);
+								var tedArray = [ teDetail ];
+								sendTinterEvent(myGuid, curDate,
+										myReturnMessage, tedArray);
+
+								if (numberOfDispenses != dispenseQuantity) {
+									numberOfDispenses++;
+									console
+											.log("Dispense Complete: Going to the next container.");
+									preDispenseCheck();
+								}
+							}
+						});
+	}
+	function abort(){
+		console.log('before abort');
+		
+		
+		var cmd = "Abort";
+		var shotList = null;
+		var configuration = null;
+		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		var json = JSON.stringify(tintermessage);
+
+		ws_tinter.send(json);
 	}
 	function RecdMessage() {
 		var printMessageParsed = false;
@@ -430,7 +683,12 @@ badge {
 					var return_message = JSON.parse(ws_tinter.wsmsg);
 					switch (return_message.command) {
 					case 'Dispense':
-						if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
+					case 'DispenseProgress':
+						var tinterModel = $("#tinterModel").val();
+						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
+							dispenseProgressResp(return_message);
+						}
+						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
 								|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 							// save a dispense (will bump the counter)
 							$("#dispenseStatus").text(
@@ -469,67 +727,7 @@ badge {
 		}
 	}
 
-	function writeDispense(myReturnMessage) {
-		var myValue = $("#formulaUserPrintAction_reqGuid").val();
-		var curDate = new Date();
-		$
-				.getJSON(
-						"bumpDispenseCounterAction.action?reqGuid=" + myValue
-								+ "&jsDateString=" + curDate.toString(),
-						function(data) {
-							if (data.sessionStatus === "expired") {
-								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-							} else {
-								$("#controlNbr").text(data.controlNbr);
-								$("#controlNbrDisplay").show();
-								$("#qtyDispensed").text(data.qtyDispensed);
-								updateButtonDisplay();
-								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
-								// send tinter event (no blocking here)
-								var myGuid = $(
-										"#formulaUserPrintAction_reqGuid")
-										.val();
-								var teDetail = new TintEventDetail(
-										"ORDER NUMBER",
-										$("#controlNbr").text(), 0);
-								var tedArray = [ teDetail ];
-								sendTinterEvent(myGuid, curDate,
-										myReturnMessage, tedArray);
 
-								if (numberOfDispenses != dispenseQuantity) {
-									numberOfDispenses++;
-									console
-											.log("Dispense Complete: Going to the next container.");
-									preDispenseCheck();
-								}
-							}
-						});
-	}
-
-	function showTinterErrorModal(myTitle, mySummary, my_return_message) {
-		$("#tinterErrorList").empty();
-		if (my_return_message.errorList != null
-				&& my_return_message.errorList[0] != null) {
-			my_return_message.errorList.forEach(function(item) {
-				$("#tinterErrorList").append(
-						'<li class="alert alert-danger">' + item.message
-								+ '</li>');
-			});
-		} else {
-			$("#tinterErrorList").append(
-					'<li class="alert alert-danger">'
-							+ my_return_message.errorMessage + '</li>');
-		}
-		if (myTitle != null)
-			$("#tinterErrorListTitle").text(myTitle);
-		else
-			$("#tinterErrorListTitle").text("Tinter Error");
-		if (mySummary != null)
-			$("#tinterErrorListSummary").text(mySummary);
-		else
-			$("#tinterErrorListSummary").text("");
-		$("#tinterErrorListModal").modal('show');
-	}
 
 	$(function() {
 
@@ -666,6 +864,7 @@ badge {
 				clearInterval(interval);
 			}
 		});
+		 jQuery(document).on("keydown",fkey); // capture F5
 	}
 </script>
 </head>
@@ -807,6 +1006,7 @@ badge {
 						value="%{#session[reqGuid].displayFormula.clrntSysId}" />
 					<s:hidden name="recDirty" value="%{recDirty}" />
 					<s:hidden name="midCorrection" value="%{midCorrection}" />
+					<s:hidden value="%{tinter.model}" id="tinterModel"></s:hidden>
 				</div>
 				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
 					<s:if test="hasActionMessages()">
@@ -978,32 +1178,30 @@ badge {
 				</div>
 			</div>
 
-			<!-- Tinter In Progress Modal Window -->
-			<div class="modal" aria-labelledby="tinterInProgressModal"
-				aria-hidden="true" id="tinterInProgressModal" role="dialog">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted"
-								style="font-size: 1.5rem;"></i>
-							<h5 class="modal-title" id="tinterInProgressTitle">Dispense
-								In Progress</h5>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
+				<!-- Tinter In Progress Modal Window -->
+				    <div class="modal fade" aria-labelledby="tinterInProgressModal" aria-hidden="true"  id="tinterInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
+									<h5 class="modal-title" id="tinterInProgressTitle">Dispense In Progress</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
+									<p id="tinterInProgressMessage" font-size="4"></p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F5 to abort </p>
+									<ul class="list-unstyled" id="tinterProgressList"></ul> 
+								
+									<div class="progress-wrapper "></div>
+					        	</div>
+								<div class="modal-footer">
+									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>
+								</div>
+							</div>
 						</div>
-						<div class="modal-body">
-							<p id="tinterInProgressMessage" font-size="4"></p>
-						</div>
-						<div class="modal-body">
-							<span class="dispenseNumberTracker mx-auto"
-								style="background-color: #FF0; font-size: 125%;"></span>
-						</div>
-						<div class="modal-footer"></div>
-					</div>
-				</div>
-			</div>
+					</div> 
+				
 
 			<!-- Dispense Error Modal Window -->
 			<div class="modal" aria-labelledby="tinterSocketErrorModal"
@@ -1029,33 +1227,33 @@ badge {
 				</div>
 			</div>
 
-			<!-- Tinter Error List Modal Window -->
-			<div class="modal" aria-labelledby="tinterErrorListModal"
-				aria-hidden="true" id="tinterErrorListModal" role="dialog">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="tinterErrorListTitle">Tinter
-								Error</h5>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div>
-								<ul class="p-0" id="tinterErrorList" style="list-style: none;">
-								</ul>
+				<!-- Tinter Error List Modal Window -->
+				    <div class="modal fade" aria-labelledby="tinterErrorListModal" aria-hidden="true"  id="tinterErrorListModal" role="dialog">
+				    	<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									
+										
+									<div class="progress-wrapper "></div>
+										
+								
+					
+									<div>
+										<ul class="p-0" id="tinterErrorList" style="list-style: none;">
+										</ul>
+									</div>
+									<p id="tinterErrorListSummary" font-size="4"></p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+								</div>
 							</div>
-							<p id="tinterErrorListSummary" font-size="4"></p>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary"
-								id="tinterErrorListOK" data-dismiss="modal" aria-label="Close">OK</button>
-						</div>
-					</div>
-				</div>
-			</div>
+						</div> 
+					</div>			    
 
 			<!-- Tinter Warning List Modal Window -->
 			<div class="modal" aria-labelledby="tinterWarningListModal"
@@ -1176,6 +1374,7 @@ badge {
 				<div class="col-sm-2"></div>
 				<div class="col-sm-8">
 					<s:hidden name="reqGuid" value="%{reqGuid}" />
+
 					<Strong>${sessionScope[thisGuid].displayFormula.deltaEWarning}</Strong>
 				</div>
 			</div>
@@ -1205,8 +1404,14 @@ badge {
 			</div>
 		</s:form>
 	</s:else>
+		<!-- dummy div to clone -->
+	<div id="progress-0" class="progress" style="margin:10px;">
+        <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
+				 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
+				 <span></span>
+  		</div>
+  		<br/>
 	</div>
-
 	<br>
 	<br>
 	<br>

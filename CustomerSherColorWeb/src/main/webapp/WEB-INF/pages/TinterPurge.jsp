@@ -145,6 +145,7 @@
 	}
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		//$("#progress-message").text(return_message.errorMessage);
+		$("#abort-message").show();
 		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 1 ||
 				 return_message.status == 1)) {
 			//keep updating modal with status
@@ -440,6 +441,7 @@
 		$('#purgeInProgressModal').on('show.bs.modal',function(){
 			rotateIcon();
 		});
+		//capture F5 key to abort
 		jQuery(document).on("keydown",fkey);
 	});
     
@@ -588,7 +590,9 @@
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
+							
 								<p id="progress-message" font-size="4">Please wait while the tinter performs Purge All Colorants...</p>
+								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"> Press F5 to abort </p>
 								<div class="progress-wrapper "></div>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
