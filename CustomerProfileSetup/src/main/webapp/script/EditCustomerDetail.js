@@ -255,7 +255,6 @@ $(document).ready(function() {
 	});
 	
 	var logins;
-	var result;
 	
 	$(document).on({
 		"focusin":function(){
@@ -265,40 +264,44 @@ $(document).ready(function() {
 				}
 			}).toArray();
 		},
-		"change":function(){
-			var keyfld = $.trim($(this).val());
+		"blur":function(e){
+			keyfldval = $.trim($(this).val());
+			keyfld = $(this);
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
-				data:{keyfield: keyfld},
+				data:{keyfield: keyfldval},
 				dataType:"json",
-				async:false,
 				success:function(data){
-					result = data.result;
+					var result = data.result;
+					console.log(result);
+					try{
+						if(keyfldval.length > 20){
+							throw "Login ID cannot be greater than 20 characters";
+						}
+						if($.inArray(keyfldval,logins)!=-1){
+							throw "Please enter unique values for Login ID";
+						}
+						if(result=="true" && $.inArray(keyfldval,existinglogins)==-1){
+							throw "Login ID already exists";
+						}
+						valid = true;
+						$("#custediterror").text("");
+						$("#formerror").text("");
+						keyfld.removeClass("border-danger");
+					}catch(msg){
+						valid = false;
+						$("html, body").animate({
+							scrollTop: $(document.body).offset().top
+						}, 1500);
+						$("#custediterror").text(msg);
+						keyfld.addClass("border-danger");
+						keyfld.focus();
+					}
+				},
+				error:function(request, status){
+					alert(status + ": could not validate login ID");
 				}
 			});
-			try{
-				if(keyfld.length > 20){
-					throw "Login ID cannot be greater than 20 characters";
-				}
-				if($.inArray(keyfld,logins)!=-1){
-					throw "Please enter unique values for Login ID";
-				}
-				if(result=="true" && $.inArray(keyfld,existinglogins)==-1){
-					throw "Login ID already exists";
-				}
-				valid = true;
-				$("#custediterror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 1500);
-				$("#custediterror").text(msg);
-				$(this).addClass("border-danger");
-				$(this).focus();
-			}
 		}
 	},".kyfld");
 	
@@ -430,34 +433,6 @@ $(document).ready(function() {
 			}
 		}
 	}, $(".clrntsys"));
-	
-	/*$(document).on({
-		"change":function(){
-			try{
-				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-					throw "Please choose CCE colorant system";
-				}
-				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-					throw "Please choose BAC colorant system";
-				}
-				if($("#844default").is(":checked") && !$("#844").is(":checked")){
-					throw "Please choose 844 colorant system";
-				}
-				valid = true;
-				$("#custediterror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 1500);
-				$("#custediterror").text(msg);
-				$(this).addClass("border-danger");
-				//$(this).prop("checked", false);
-			}
-		}
-	}, $(".clrnts"));*/
 	
 	$(document).on("click", "#submitchng", function(e){
 		try{
