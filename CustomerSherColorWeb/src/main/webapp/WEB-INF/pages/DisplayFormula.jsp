@@ -514,6 +514,9 @@ function ParsePrintMessage() {
 			
 		}
 		else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
+			  if(return_message.errorNumber == 4226){
+			    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+				    }
 			FMXDispenseComplete(return_message);
 			
 			}
@@ -533,6 +536,9 @@ function ParsePrintMessage() {
 	        });
 	        */
 	    } 
+	    if(my_return_message.errorNumber == 4226){
+	    	my_return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+		}
 	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
 	    
 	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
@@ -684,6 +690,7 @@ function ParsePrintMessage() {
 					switch (return_message.command) {
 					case 'Dispense':
 					case 'DispenseProgress':
+					case 'Abort':
 						var tinterModel = $("#tinterModel").val();
 						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
 							dispenseProgressResp(return_message);

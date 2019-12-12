@@ -130,6 +130,9 @@ function dispenseProgressResp(return_message){
 		
 	}
 	else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
+		  if(return_message.errorNumber == 4226){
+		    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+			    }
 		FMXDispenseComplete(return_message);
 		}
 		
@@ -188,10 +191,14 @@ function FMXDispenseComplete(return_message){
 				tinterErrorList.push(item.message);
 			});
 		} else {
+		
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
     } else {
+  	  if(return_message.errorNumber == 4226){
+	    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+		}
         $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage);
         waitForShowAndHide("#tinterInProgressModal");
         console.log('hide done');
@@ -488,6 +495,7 @@ function RecdMessage() {
             switch (return_message.command) {
                 case 'Dispense':
                 case 'DispenseProgress':
+                case 'Abort':
                 	var tinterModel = $("#tinterModel").val();
 					if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
 						dispenseProgressResp(return_message);

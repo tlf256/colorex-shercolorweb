@@ -188,6 +188,9 @@
 	        });
 	        */
 	    } 
+	    if(my_return_message.errorNumber == 4226){
+	    	my_return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+				    }
 	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
 	    
 	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
@@ -330,9 +333,13 @@
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
 						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
+							 if(return_message.errorNumber == 4226){
+							    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+							    }
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
 						else{  
+							 
 							purgeComplete(myGuid, curDate,return_message, tedArray);
 						}
 						break;
