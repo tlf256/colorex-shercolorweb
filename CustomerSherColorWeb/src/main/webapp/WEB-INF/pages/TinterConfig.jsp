@@ -463,6 +463,7 @@
 								return_message.errorMessage);
 						break;
 					}
+					$("#detectErrorMessage").css("white-space", "pre");
 					$("#detectErrorMessage").text(return_message.errorMessage);
 					if (return_message.errorList != undefined) {
 
@@ -713,8 +714,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<p id="progress-message" >Please wait while your
-						tinter initializes...</p>
+					<p id="progress-message" style="white-space:pre-line">Please wait while your tinter initializes...</p>
 				</div>
 				<div class="modal-footer">
 					<!-- 									<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button> -->

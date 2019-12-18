@@ -268,122 +268,7 @@ function ParsePrintMessage() {
 	return parsed;
 }
 </script>
-<script type="text/javascript">
-//callback stuff
 
-	function setDispenseQuantity() {
-		$("#dispenseQuantityInputError").text("");
-		$("#dispenseQuantityInput").val("1");
-		$("#dispenseQuantityInput").attr("value", "1");
-		$("#setDispenseQuantityModal").modal('show');
-		$("#dispenseQuantityInput").select();
-	}
-
-	function preDispenseCheck() {
-		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
-		$("#tinterInProgressMessage")
-				.text(
-						"Please wait while we Check the Colorant Levels for your tinter...");
-		$("#tinterInProgressModal").modal('show');
-		rotateIcon();
-		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#formulaUserPrintAction_reqGuid").val(),
-				preDispenseCheckCallback);
-
-	}
-
-	function preDispenseCheckCallback() {
-		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of "
-				+ dispenseQuantity;
-		$(".dispenseNumberTracker").text(dispenseNumberTracker);
-		// comes from getSessionTinterInfo
-		// check if purge required...
-		var dateFromString = new Date(sessionTinterInfo.lastPurgeDate);
-		var today = new Date();
-		if (dateFromString.getFullYear() < today.getFullYear()
-				|| dateFromString.getMonth() < today.getMonth()
-				|| dateFromString.getDate() < today.getDate()) {
-			$("#tinterErrorList").empty();
-			$("#tinterErrorList").append(
-					'<li class="alert alert-danger">Tinter Purge is Required. Last done on '
-							+ moment(dateFromString).format('ddd MMM DD YYYY')
-							+ '</li>');
-			waitForShowAndHide("#tinterInProgressModal");
-			$("#tinterErrorListModal").modal('show');
-			$("#tinterErrorListTitle").text("Purge Required");
-			$("#tinterErrorListSummary")
-					.text(
-							"Save your formula and go to the SherColor Home page to perform Tinter Purge. ");
-
-		} else {
-			// Check Levels
-			console.log("about to check levels");
-			// Check for STOP! because there is not enough colorant in the tinter
-			var stopList = checkDispenseColorantEmpty(shotList,
-					sessionTinterInfo.canisterList);
-			if (stopList[0] != null) {
-				$("#tinterErrorList").empty();
-				stopList
-						.forEach(function(item) {
-							$("#tinterErrorList").append(
-									'<li class="alert alert-danger">' + item
-											+ '</li>');
-						});
-				//Show it in a modal they can't go on
-				waitForShowAndHide("#tinterInProgressModal");
-				$("#tinterErrorListModal").modal('show');
-				$("#tinterErrorListTitle").text("Colorant Level Too Low");
-				$("#tinterErrorListSummary")
-						.text(
-								"Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
-
-			} else {
-				var warnList = checkDispenseColorantLow(shotList,
-						sessionTinterInfo.canisterList);
-				if (warnList[0] != null) {
-					$("#tinterWarningList").empty();
-					warnList.forEach(function(item) {
-						$("#tinterWarningList").append(
-								'<li class="alert alert-warning">' + item
-										+ '</li>');
-					});
-					//Show in modal, they can say OK to continue
-					waitForShowAndHide("#tinterInProgressModal");
-					$("#tinterWarningListTitle").text("Low Colorant Levels");
-					$("#tinterWarningListModal").modal('show');
-				} else {
-					console.log("about to show verify modal");
-					//OK to verify
-					console.log("in progress shown");
-					waitForShowAndHide("#tinterInProgressModal");
-					console.log("in progress hidden");
-					$("#verifyModal").modal('show');
-					console.log("end of else");
-
-				}
-			} // end colorant level checks
-		} // end purge check
-	}
-
-	function decrementColorantLevels() {
-		console.log("Calling decrementColorantLevels");
-		decrementColorantForDispense(
-				$("#formulaUserPrintAction_reqGuid").val(), shotList,
-				decrementCallback);
-	}
-
-	function decrementCallback(myPassFail) {
-		console.log("checking decrement pass/fail " + myPassFail);
-		if (myPassFail === true) {
-			dispense();
-		} else {
-			//TODO show error on decrement, 
-			waitForShowAndHide("#tinterInProgressModal");
-		}
-	}
-
-
-</script>
 
 <script type="text/javascript">
 	//global variables moved up above
@@ -494,6 +379,7 @@ function ParsePrintMessage() {
 		
 		//$("#progress-message").text(return_message.errorMessage);
 		$("#abort-message").show();
+		$('#progressok').addClass('d-none');  //hide ok button
 		if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
 				 return_message.status == 1)) {
 			$("#tinterProgressList").empty();
@@ -525,6 +411,8 @@ function ParsePrintMessage() {
 	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
 	    $("#tinterErrorList").empty();
 	    $("#tinterErrorListModal").modal('show');
+	    $("#abort-message").hide();
+	    
 	    
 	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
 	    	if(my_return_message.errorList.length > 0){
@@ -572,13 +460,16 @@ function ParsePrintMessage() {
 		$("#tinterErrorListModal").modal('show');
 	}
 	function FMXDispenseComplete(return_message){
+		buildProgressBars(return_message);
+		 $("#abort-message").hide();
+			
 	    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 	        // save a dispense (will bump the counter)
 
 	        $("#tinterInProgressDispenseStatus").text("");
 	        $("#dispenseStatus").text("Last Dispense: Complete ");
 	        rotateIcon();
-	        $('#progressok').removeClass('d-none');
+	        //$('#progressok').removeClass('d-none');
 	        $('#tinterInProgressTitle').text('Tinter Progress');
 	        $('#tinterInProgressMessage').text('');
 	        $("#tinterProgressList").empty();
@@ -873,6 +764,122 @@ function ParsePrintMessage() {
 		});
 		 jQuery(document).on("keydown",fkey); // capture F5
 	}
+</script>
+<script type="text/javascript">
+//callback stuff
+
+	function setDispenseQuantity() {
+		$("#dispenseQuantityInputError").text("");
+		$("#dispenseQuantityInput").val("1");
+		$("#dispenseQuantityInput").attr("value", "1");
+		$("#setDispenseQuantityModal").modal('show');
+		$("#dispenseQuantityInput").select();
+	}
+
+	function preDispenseCheck() {
+		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
+		$("#tinterInProgressMessage")
+				.text(
+						"Please wait while we Check the Colorant Levels for your tinter...");
+		$("#tinterInProgressModal").modal('show');
+		rotateIcon();
+		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
+		getSessionTinterInfo($("#formulaUserPrintAction_reqGuid").val(),
+				preDispenseCheckCallback);
+
+	}
+
+	function preDispenseCheckCallback() {
+		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of "
+				+ dispenseQuantity;
+		$(".dispenseNumberTracker").text(dispenseNumberTracker);
+		// comes from getSessionTinterInfo
+		// check if purge required...
+		var dateFromString = new Date(sessionTinterInfo.lastPurgeDate);
+		var today = new Date();
+		if (dateFromString.getFullYear() < today.getFullYear()
+				|| dateFromString.getMonth() < today.getMonth()
+				|| dateFromString.getDate() < today.getDate()) {
+			$("#tinterErrorList").empty();
+			$("#tinterErrorList").append(
+					'<li class="alert alert-danger">Tinter Purge is Required. Last done on '
+							+ moment(dateFromString).format('ddd MMM DD YYYY')
+							+ '</li>');
+			waitForShowAndHide("#tinterInProgressModal");
+			$("#tinterErrorListModal").modal('show');
+			$("#tinterErrorListTitle").text("Purge Required");
+			$("#tinterErrorListSummary")
+					.text(
+							"Save your formula and go to the SherColor Home page to perform Tinter Purge. ");
+
+		} else {
+			// Check Levels
+			console.log("about to check levels");
+			// Check for STOP! because there is not enough colorant in the tinter
+			var stopList = checkDispenseColorantEmpty(shotList,
+					sessionTinterInfo.canisterList);
+			if (stopList[0] != null) {
+				$("#tinterErrorList").empty();
+				stopList
+						.forEach(function(item) {
+							$("#tinterErrorList").append(
+									'<li class="alert alert-danger">' + item
+											+ '</li>');
+						});
+				//Show it in a modal they can't go on
+				waitForShowAndHide("#tinterInProgressModal");
+				$("#tinterErrorListModal").modal('show');
+				$("#tinterErrorListTitle").text("Colorant Level Too Low");
+				$("#tinterErrorListSummary")
+						.text(
+								"Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
+
+			} else {
+				var warnList = checkDispenseColorantLow(shotList,
+						sessionTinterInfo.canisterList);
+				if (warnList[0] != null) {
+					$("#tinterWarningList").empty();
+					warnList.forEach(function(item) {
+						$("#tinterWarningList").append(
+								'<li class="alert alert-warning">' + item
+										+ '</li>');
+					});
+					//Show in modal, they can say OK to continue
+					waitForShowAndHide("#tinterInProgressModal");
+					$("#tinterWarningListTitle").text("Low Colorant Levels");
+					$("#tinterWarningListModal").modal('show');
+				} else {
+					console.log("about to show verify modal");
+					//OK to verify
+					console.log("in progress shown");
+					waitForShowAndHide("#tinterInProgressModal");
+					console.log("in progress hidden");
+					$("#verifyModal").modal('show');
+					console.log("end of else");
+
+				}
+			} // end colorant level checks
+		} // end purge check
+	}
+
+	function decrementColorantLevels() {
+		console.log("Calling decrementColorantLevels");
+		decrementColorantForDispense(
+				$("#formulaUserPrintAction_reqGuid").val(), shotList,
+				decrementCallback);
+	}
+
+	function decrementCallback(myPassFail) {
+		console.log("checking decrement pass/fail " + myPassFail);
+		if (myPassFail === true) {
+			dispense();
+		} else {
+			//TODO show error on decrement, 
+			waitForShowAndHide("#tinterInProgressModal");
+		}
+	}
+
+
 </script>
 </head>
 <body>
@@ -1203,7 +1210,7 @@ function ParsePrintMessage() {
 									<div class="progress-wrapper "></div>
 					        	</div>
 								<div class="modal-footer">
-									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>
+									<!-- <button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button> -->
 								</div>
 							</div>
 						</div>

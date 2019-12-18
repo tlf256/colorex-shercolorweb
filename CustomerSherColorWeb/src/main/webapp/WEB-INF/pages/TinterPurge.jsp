@@ -177,6 +177,7 @@
 	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
 	    $("#tinterErrorList").empty();
 	    $("#tinterErrorListModal").modal('show');
+	    $("#abort-message").hide();
 	    
 	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
 	    	if(my_return_message.errorList.length > 0){
@@ -215,7 +216,8 @@
 		$("#tinterErrorListModal").modal('show');
 	}
     function purgeComplete(myGuid, curDate,return_message, tedArray, fmx){
-       
+    	 $("#abort-message").hide();
+         
 		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 			// show purge
 			//var displayDate = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
