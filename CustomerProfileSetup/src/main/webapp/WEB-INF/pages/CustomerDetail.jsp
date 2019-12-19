@@ -96,40 +96,76 @@
     </div>
   </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="download_modal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Download EULA</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<div id="eulapdf" class="embed-responsive embed-responsive-4by3">
+			
+		</div>
+      </div>
+      <div class="modal-footer">
+	    <button type="button" id="cancelbtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- including Header -->
 <s:include value="Header.jsp"></s:include>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-3"></div>
-		<div class="col-sm-6">
-			<s:set var="updateMode" value="updateMode" />
-		</div>
-		<div class="col-sm-3"></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-3"></div>
 		<div class="col-sm-6"></div>
 		<div class="col-sm-3"></div>
 	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2"></div>
+		<div class="col-lg-8 col-md-8"></div>
+		<div class="col-lg-2 col-md-2"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2"></div>
+		<div class="col-lg-8 col-md-8">
+		</div>
+		<div class="col-lg-2 col-md-2"></div>
+	</div>
+	<br>
 	<br>
 	<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
-			<s:form>
-				<h3>Customer Information</h3>
-				<s:if test="updateMode">
-					<s:submit id="edit" action="updateDetail" class="btn btn-primary mb-1 mt-5" value="Edit"></s:submit>
-					<s:if test="sessionMap['CustomerDetail'].history">
-						<button type="button" id="inactivate" class="btn btn-danger mb-1 mt-5">Delete</button>
-					</s:if>
-					<s:else>
-						<button type="button" id="delete" class="btn btn-danger mb-1 mt-5">Delete</button>
-					</s:else>
+		<h3>Customer Information</h3><br>
+		<div id="custDetailError" class="text-danger">
+			<s:property value="sessionMap['error']" />
+		</div>
+		<s:actionerror/>
+		<s:if test="(edited || sessionMap['CustomerDetail'].newCustomer) && !hasActionErrors()">
+			<div class="text-danger"><h6>You must submit this form for changes to take effect!</h6></div>
+		</s:if>
+		<s:form>
+			<s:if test="sessionMap['CustomerDetail'].updateMode">
+				
+				<s:if test="sessionMap['CustomerDetail'].uploadedEula">
+					<button id="download" onclick="downloadPdf();return false;" class="btn btn-primary mb-1 mt-5">Download EULA</button>
+				</s:if>
+				<s:submit id="edit" action="updateDetail" class="btn btn-primary mb-1 mt-5" value="Edit"></s:submit>
+				<s:if test="sessionMap['CustomerDetail'].history">
+					<button type="button" id="inactivate" class="btn btn-danger mb-1 mt-5">Delete</button>
 				</s:if>
 				<s:else>
-					<s:submit id="editmode" action="editDetail" class="btn btn-primary mb-1 mt-5" value="Edit Mode"></s:submit>
+					<button type="button" id="delete" class="btn btn-danger mb-1 mt-5">Delete</button>
 				</s:else>
-			</s:form>
+			</s:if>
+			<s:else>
+				<s:submit id="editmode" action="editDetail" class="btn btn-primary mb-1 mt-5" value="Edit Mode"></s:submit>
+			</s:else>
+		</s:form>
 		<table id="customer_detail" class="table table-striped table-bordered">
 			<tr>
 				<td><strong>Customer ID</strong></td>
@@ -169,6 +205,70 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
+	<s:if test="sessionMap['CustomerDetail'].eula != null">
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+				<table id="eula_detail" class="table table-striped table-bordered">
+					<tr>
+						<th>EULA</th>
+						<th>Effective Date</th>
+						<th>Expiration Date</th>
+					</tr>
+					<tr>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].eula.website" />
+						</td>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />
+						</td>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].eula.expirationDate" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	<br>
+	</s:if>
+	<s:if test="sessionMap['CustomerDetail'].eulaHistList != null">
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+				<table id="eulaHist_detail" class="table table-striped table-bordered">
+					<tr>
+						<th>EULA History</th>
+						<th>Type</th>
+						<th>User</th>
+						<th>Date</th>
+						<th>Acceptance Code</th>
+					</tr>
+					<s:iterator var="eula" value="sessionMap['CustomerDetail'].eulaHistList" status="i">
+					<tr>
+						<td>
+							<s:property value="#eula.website" />
+						</td>
+						<td>
+							<s:property value="#eula.actionType" />
+						</td>
+						<td>
+							<s:property value="#eula.actionUser" />
+						</td>
+						<td>
+							<s:property value="#eula.actionTimeStamp" />
+						</td>
+						<td>
+							<s:property value="#eula.acceptanceCode" />
+						</td>
+					</tr>
+					</s:iterator>
+				</table>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	<br>
+	</s:if>
 	<s:if test="!sessionMap['CustomerDetail'].loginList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
@@ -196,8 +296,8 @@
 		</div>
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
-	</s:if>
 	<br>
+	</s:if>
 	<s:if test="!sessionMap['CustomerDetail'].jobFieldList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
@@ -237,12 +337,11 @@
 	<br>
 	<s:form>
 	<div class="row">
-       	<div class="col-lg-2 col-md-2">
-			<%-- <s:hidden name="lookupCustomerId" /> --%>
-			<%-- <s:hidden name="updateMode" /> --%>
-		</div>
+       	<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
-			<button type="button" id="submitbtn" class="btn btn-primary mb-5 mt-2">Submit</button>
+			<s:if test="edited || sessionMap['CustomerDetail'].newCustomer">
+				<button type="button" id="submitbtn" class="btn btn-primary mb-5 mt-2">Submit</button>
+			</s:if>
 			<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel" action="resetAction"/>
 		</div>
 		<div class="col-lg-2 col-md-2"></div>

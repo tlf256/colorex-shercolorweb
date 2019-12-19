@@ -12,7 +12,6 @@ public class Job {
 	private List<String> fieldDefault;
 	private List<String> entryRequired;
 	private List<String> active;
-	private List<JobFields> jobFieldList;
 	
 	public List<String> getScreenLabel() {
 		return screenLabel;
@@ -21,11 +20,7 @@ public class Job {
 		if(screenLabel != null) {
 			List<String> escScreenLabel = new ArrayList<String>();
 			for(String sl : screenLabel) {
-				if(sl != null) {
-					Encode.forHtml(sl.trim());
-				} else {
-					continue;
-				}
+				Encode.forHtml(sl.trim());
 				escScreenLabel.add(sl);
 				this.screenLabel = escScreenLabel;
 			}
@@ -40,11 +35,7 @@ public class Job {
 		if(fieldDefault != null) {
 			List<String> escFieldDefault = new ArrayList<String>();
 			for(String fd : fieldDefault) {
-				if(fd != null) {
-					Encode.forHtml(fd.trim());
-				} else {
-					continue;
-				}
+				Encode.forHtml(fd.trim());
 				escFieldDefault.add(fd);
 				this.fieldDefault = escFieldDefault;
 			}
@@ -59,11 +50,7 @@ public class Job {
 		if(entryRequired != null) {
 			List<String> escEntryRequired = new ArrayList<String>();
 			for(String er : entryRequired) {
-				if(er != null) {
-					Encode.forHtmlAttribute(er.trim());
-				} else {
-					continue;
-				}
+				Encode.forHtml(er.trim());
 				escEntryRequired.add(er);
 				this.entryRequired = escEntryRequired;
 			}
@@ -78,30 +65,13 @@ public class Job {
 		if(active != null) {
 			List<String> escActive = new ArrayList<String>();
 			for(String act : active) {
-				if(act != null) {
-					Encode.forHtmlAttribute(act.trim());
-				} else {
-					continue;
-				}
+				Encode.forHtml(act.trim());
 				escActive.add(act);
-				this.entryRequired = escActive;
+				this.active = escActive;
 			}
 		} else {
 			this.active = active;
 		}
 	}
-	public List<JobFields> getJobFieldList() {
-		return jobFieldList;
-	}
-	public void setJobFieldList(List<JobFields> jobFieldList) {
-		this.jobFieldList = jobFieldList;
-	}
 	
-	public void reset() {
-		this.fieldDefault = null;
-		this.entryRequired = null;
-		this.screenLabel = null;
-		this.active = null;
-		this.jobFieldList = null;
-	}
 }

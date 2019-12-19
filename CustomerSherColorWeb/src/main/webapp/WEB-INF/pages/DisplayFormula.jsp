@@ -63,6 +63,7 @@ badge {
 	var dispenseTracker = "Container: " + numberOfDispenses + " out of "
 			+ dispenseQuantity;
 	var printerConfig;
+	var processingDispense = false;
 	var sendingTinterCommand = "false";
 	 var ws_tinter = new WSWrapper("tinter");
 	 var tinterErrorList;
@@ -357,9 +358,7 @@ function ParsePrintMessage() {
 		ws_tinter.send(json);
 	}
 	function dispense() {
-		if(printerConfig && printerConfig.printOnDispense){
-			printOnDispenseGetJson(); //new print on dispense
-		}
+		
 		var cmd = "Dispense";
 
 		var tintermessage = new TinterMessage(cmd, shotList, null, null, null);
@@ -555,6 +554,7 @@ function ParsePrintMessage() {
 					//Show a modal with error message to make sure the user is forced to read it.
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
+					processingDispense = false;
 					$("#tinterSocketErrorModal").modal('show');
 
 				} else {
@@ -625,6 +625,10 @@ function ParsePrintMessage() {
 		}
 	}
 
+								
+								if(printerConfig && printerConfig.printOnDispense){
+									printOnDispenseGetJson(); //new print on dispense
+								}
 
 
 	$(function() {
@@ -719,19 +723,24 @@ function ParsePrintMessage() {
 				.on(
 						"click",
 						function(event) {
-							event.preventDefault();
-							event.stopPropagation();
-							waitForShowAndHide("#positionContainerModal");
-							$("#tinterInProgressModal").modal('show');
-							rotateIcon();
-							$("#tinterInProgressTitle").text(
-									"Dispense In Progress");
-							$("#tinterInProgressMessage")
-									.text(
-											"Please wait while tinter performs the dispense...");
+							if (processingDispense == false) {
+								processingDispense = true;
+								event.preventDefault();
+								event.stopPropagation();
+								waitForShowAndHide("#positionContainerModal");
+								$("#tinterInProgressModal").modal('show');
+								rotateIcon();
+								$("#tinterInProgressTitle").text(
+										"Dispense In Progress");
+								$("#tinterInProgressMessage")
+										.text(
+												"Please wait while tinter performs the dispense...");
 
-							// Call decrement colorants which will call dispense
-							decrementColorantLevels();
+								// Call decrement colorants which will call dispense
+								decrementColorantLevels();
+							}
+							// else do nothing
+							
 						});
 		$("#formulaUserPrintAction_formulaUserSaveAction").on(
 				"click",
@@ -924,7 +933,7 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-				<s:property value="enteredValue" />
+				<s:property value="enteredValue" escapeHtml="false" />
 				<br>
 			</s:iterator>
 		</div>

@@ -8,6 +8,7 @@ $(document).ready(function() {
 	$("#cdsadlfld").hide();
 	$("#clrnt").hide();
 	$("#loginnext-btn").hide();
+	$("#eula").hide();
 	
 	function natlWdigits(){
 		$("#ntlacct").show();
@@ -16,6 +17,7 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	function intnatlWdigits(){
@@ -25,6 +27,7 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	function acctWOdigits(){
@@ -34,113 +37,117 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#eula").show();
 	}
 	
 	$("#selectedAccttype-0").click(function(){
 		natlWdigits();
 		$("#ntlacctnbr").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#ntlacct").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-1").click(function(){
 		acctWOdigits();
 		$("#swuititle").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#cstmrnm").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-2").click(function(){
 		intnatlWdigits();
 		$("#intntlacctnbr").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#intntlacct").offset().top
+		}, 1000);
 	});
 	
 	$("#selectedAccttype-3").click(function(){
 		acctWOdigits();
 		$("#swuititle").focus();
 		$("html, body").animate({
-			scrollTop: $("#clrnt").offset().top
-		}, 2500);
+			scrollTop: $("#cstmrnm").offset().top
+		}, 1000);
 	});
 	
 	var valid = false;
-	var result;
 	
-	$("#ntlacctnbr").on("change", function(){
-		var ntl = $.trim($("#ntlacctnbr").val());
-		$.ajax({
-			url:"ajaxAcctNbrResult.action",
-			data:{acctNbr: ntl},
-			dataType:"json",
-			async:false,
-			success:function(data){
-				result = data.result;
-			}
-		});
-		try{
-			if(!ntl){
-				throw "Please enter an account number";
-			}
-			if(ntl.length!=9) {
-				throw "National account number is 9 digits";
-			}
-			if(isNaN(ntl)) {
-				throw "Account number must be a number";
-			}
-			if(result=="true"){
-				throw "Account Number already exists";
-			}
-			valid = true;
-			$("#ntlaccterror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			valid = false;
-			$("#ntlaccterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).focus();
+	$(document).on({
+		"blur": function(){
+			ntlval = $.trim($("#ntlacctnbr").val());
+			ntl = $("#ntlacctnbr");
+			$.ajax({
+				url:"ajaxAcctNbrResult.action",
+				data:{acctNbr: ntlval},
+				dataType:"json",
+				success:function(data){
+					result = data.result;
+					try{
+						if(!ntlval){
+							throw "Please enter an account number";
+						}
+						if(ntlval.length!=9) {
+							throw "National account number is 9 digits";
+						}
+						if(isNaN(ntlval)) {
+							throw "Account number must be a number";
+						}
+						if(result=="true"){
+							throw "Account Number already exists";
+						}
+						valid = true;
+						$("#ntlaccterror").text("");
+						ntl.removeClass("border-danger");
+					}catch(msg){
+						valid = false;
+						$("#ntlaccterror").text(msg);
+						ntl.addClass("border-danger");
+						ntl.focus();
+					}
+				}
+			});
 		}
-	});
-		
+	}, "#ntlacctnbr");
 	
-	$("#intntlacctnbr").on("change", function(){
-		var intntl = $.trim($("#intntlacctnbr").val());
-		$.ajax({
-			url:"ajaxAcctNbrResult.action",
-			data:{acctNbr: intntl},
-			dataType:"json",
-			async:false,
-			success:function(data){
-				result = data.result;
-			}
-		});
-		try{
-			if(!intntl){
-				throw "Please enter an account number";
-			}
-			if(intntl.length!=7) {
-				throw "International account number is 7 digits";
-			}
-			if(isNaN(intntl)) {
-				throw "Account number must be a number";
-			}
-			if(result=="true"){
-				throw "Account Number already exists";
-			}
-			valid = true;
-			$("#intntlaccterror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			valid = false;
-			$("#intntlaccterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).focus();
+	
+	$(document).on({
+		"blur": function(){
+			intntlval = $.trim($("#intntlacctnbr").val());
+			intntl = $("#intntlacctnbr");
+			$.ajax({
+				url:"ajaxAcctNbrResult.action",
+				data:{acctNbr: intntlval},
+				dataType:"json",
+				success:function(data){
+					result = data.result;
+					try{
+						if(!intntlval){
+							throw "Please enter an account number";
+						}
+						if(intntlval.length!=7) {
+							throw "International account number is 7 digits";
+						}
+						if(isNaN(intntlval)) {
+							throw "Account number must be a number";
+						}
+						if(result=="true"){
+							throw "Account Number already exists";
+						}
+						valid = true;
+						$("#intntlaccterror").text("");
+						intntl.removeClass("border-danger");
+					}catch(msg){
+						valid = false;
+						$("#intntlaccterror").text(msg);
+						intntl.addClass("border-danger");
+						intntl.focus();
+					}
+				}
+			});
 		}
-	});
+	}, "#intntlacctnbr");
 	
 	$("#swuititle").on("blur", function(){
 		var title = $.trim($("#swuititle").val());
@@ -214,6 +221,41 @@ $(document).ready(function() {
 			$(this).prop("checked", false);
 			//$(this).focus();
 			//$("#loginnext-btn").addClass("d-none");
+		}
+	});
+	
+	$("#acceptcode").on("blur", function(){
+		try{
+			var acceptcode = $.trim($(this).val());
+			var eula = $("#eulalist").val();
+			if(acceptcode.length != 6){
+				throw "Acceptace code is 6 digits";
+			}
+			if(eula && !acceptcode){
+				throw "Please enter an Acceptance Code";
+			}
+			if(eula == 'None' && acceptcode){
+				throw "Please choose a EULA";
+			}
+			valid = true;
+			$("#custformerror").text("");
+			$("#eulaerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			valid = false;
+			
+			$("#eulaerror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+	
+	$("#eulalist").on("change", function(){
+		var ws = $("#eulalist").val();
+		if(ws != "None"){
+			$("#eulahist").removeClass("d-none");
+		} else {
+			$("#eulahist").addClass("d-none");
 		}
 	});
 	

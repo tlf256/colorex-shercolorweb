@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.owasp.encoder.Encode;
 
+import com.sherwin.shercolor.common.domain.Eula;
+
 public class Customer {
 	private String customerId;
 	private String accttype;
@@ -19,7 +21,10 @@ public class Customer {
 	private boolean active;
 	private boolean history;
 	private List<String> clrntList;
-	//private List<CustParms> custList;
+	private String website;
+	private String acceptCode;
+	private boolean activateEula;
+	private byte[] eulapdf;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -36,7 +41,7 @@ public class Customer {
 	}
 	public void setAccttype(String accttype) {
 		if(accttype != null) {
-			this.accttype = Encode.forHtmlAttribute(accttype);
+			this.accttype = Encode.forHtml(accttype);
 		} else {
 			this.accttype = accttype;
 		}
@@ -66,7 +71,7 @@ public class Customer {
 	}
 	public void setCce(String cce) {
 		if(cce != null) {
-			this.cce = Encode.forHtmlAttribute(cce);
+			this.cce = Encode.forHtml(cce);
 		} else {
 			this.cce = cce;
 		}
@@ -76,7 +81,7 @@ public class Customer {
 	}
 	public void setBac(String bac) {
 		if(bac != null) {
-			this.bac = Encode.forHtmlAttribute(bac);
+			this.bac = Encode.forHtml(bac);
 		} else {
 			this.bac = bac;
 		}
@@ -84,9 +89,9 @@ public class Customer {
 	public String getEff() {
 		return eff;
 	}
-	public void setEef(String eff) {
+	public void setEff(String eff) {
 		if(eff != null) {
-			this.eff = Encode.forHtmlAttribute(eff);
+			this.eff = Encode.forHtml(eff);
 		} else {
 			this.eff = eff;
 		}
@@ -96,7 +101,7 @@ public class Customer {
 	}
 	public void setDefaultClrntSys(String defaultClrntSys) {
 		if(defaultClrntSys != null) {
-			this.defaultClrntSys = Encode.forHtmlAttribute(defaultClrntSys);
+			this.defaultClrntSys = Encode.forHtml(defaultClrntSys);
 		} else {
 			this.defaultClrntSys = defaultClrntSys;
 		}
@@ -152,28 +157,39 @@ public class Customer {
 			this.clrntList = clrntList;
 		}
 	}
-	/*public List<CustParms> getCustList() {
-		return custList;
+	public String getWebsite() {
+		return website;
 	}
-	public void setCustList(List<CustParms> custList) {
-		this.custList = custList;
-	}*/
+	public void setWebsite(String website) {
+		if(website != null) {
+			this.website = Encode.forHtml(website.trim());
+		} else {
+			this.website = website;
+		}
+	}
 	
-	public void reset() {
-		this.customerId = "";
-		this.accttype = "";
-		this.ntlacctnbr = "";
-		this.intntlacctnbr = "";
-		this.defaultClrntSys = "";
-		this.cce = "";
-		this.bac = "";
-		this.eff = "";
-		this.defaultClrntSys = "";
-		this.cdsAdlFld = "";
-		this.active = false;
-		this.history = false;
-		this.swuiTitle = "";
-		this.clrntList = null;
-		//this.custList = null;
+	public String getAcceptCode() {
+		return acceptCode;
 	}
+	public void setAcceptCode(String acceptCode) {
+		if(acceptCode != null) {
+			this.acceptCode = Encode.forHtml(acceptCode.trim());
+		} else {
+			this.acceptCode = acceptCode;
+		}
+		
+	}
+	public boolean isActivateEula() {
+		return activateEula;
+	}
+	public void setActivateEula(boolean activateEula) {
+		this.activateEula = activateEula;
+	}
+	public byte[] getEulapdf() {
+		return eulapdf;
+	}
+	public void setEulapdf(byte[] eulapdf) {
+		this.eulapdf = eulapdf;
+	}
+	
 }

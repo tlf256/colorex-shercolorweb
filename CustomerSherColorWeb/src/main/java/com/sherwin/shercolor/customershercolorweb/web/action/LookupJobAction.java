@@ -136,9 +136,9 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			String customerId = reqObj.getCustomerID();
 			
 			CustWebTran webTran = tranHistoryService.readTranHistory(customerId, lookupControlNbr, 1);
-
-			mapCustWebTranToRequestObject(webTran, reqObj);
 			
+			mapCustWebTranToRequestObject(webTran, reqObj);
+						
 			displayFormula = reqObj.getDisplayFormula();
 			
 			// load up can label warnings...

@@ -50,6 +50,7 @@
 	// global vars for tinter
 	var sendingDispCommand = "false";
 	var shotList = [];
+	var processingDispense = false;
 	// global vars for correction
 	var method;
 
@@ -1005,6 +1006,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
+            	processingDispense = false;
 				console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
@@ -1186,17 +1188,20 @@
 	    });
 		
 		$(document).on("click", "#startDispenseButton", function(event){
-			event.preventDefault();
-			event.stopPropagation();
-			waitForShowAndHide("#positionContainerModal");
-			$("#tinterInProgressModal").modal('show');
-			rotateIcon();
-			$("#tinterInProgressTitle").text("Dispense In Progress");
-			$("#tinterInProgressMessage").text("Please wait while tinter performs the dispense...");
-			
-			
-			// Call decrement colorants which will call dispense
-			decrementColorantLevels();
+			if (processingDispense == false) {
+				processingDispense = true
+				event.preventDefault();
+				event.stopPropagation();
+				waitForShowAndHide("#positionContainerModal");
+				$("#tinterInProgressModal").modal('show');
+				rotateIcon();
+				$("#tinterInProgressTitle").text("Dispense In Progress");
+				$("#tinterInProgressMessage").text("Please wait while tinter performs the dispense...");
+				
+				
+				// Call decrement colorants which will call dispense
+				decrementColorantLevels();
+			}
 		});
 		
 		//Hide unnecessary rows onload
