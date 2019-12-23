@@ -2,6 +2,7 @@
  * 
  */
 $(document).ready(function() {
+	
 	$("#ntlacct").hide();
 	$("#intntlacct").hide();
 	$("#cstmrnm").hide();
@@ -9,6 +10,8 @@ $(document).ready(function() {
 	$("#clrnt").hide();
 	$("#loginnext-btn").hide();
 	$("#eula").hide();
+	
+	$("#loginnext-btn").prop("disabled", true);
 	
 	function natlWdigits(){
 		$("#ntlacct").show();
@@ -71,203 +74,175 @@ $(document).ready(function() {
 			scrollTop: $("#cstmrnm").offset().top
 		}, 1000);
 	});
-	
-	var valid = false;
-	
-	$(document).on({
-		"blur": function(){
-			ntlval = $.trim($("#ntlacctnbr").val());
-			ntl = $("#ntlacctnbr");
-			$.ajax({
-				url:"ajaxAcctNbrResult.action",
-				data:{acctNbr: ntlval},
-				dataType:"json",
-				success:function(data){
-					result = data.result;
-					try{
-						if(!ntlval){
-							throw "Please enter an account number";
-						}
-						if(ntlval.length!=9) {
-							throw "National account number is 9 digits";
-						}
-						if(isNaN(ntlval)) {
-							throw "Account number must be a number";
-						}
-						if(result=="true"){
-							throw "Account Number already exists";
-						}
-						valid = true;
-						$("#ntlaccterror").text("");
-						ntl.removeClass("border-danger");
-					}catch(msg){
-						valid = false;
-						$("#ntlaccterror").text(msg);
-						ntl.addClass("border-danger");
-						ntl.focus();
-					}
-				}
-			});
-		}
-	}, "#ntlacctnbr");
-	
-	
-	$(document).on({
-		"blur": function(){
-			intntlval = $.trim($("#intntlacctnbr").val());
-			intntl = $("#intntlacctnbr");
-			$.ajax({
-				url:"ajaxAcctNbrResult.action",
-				data:{acctNbr: intntlval},
-				dataType:"json",
-				success:function(data){
-					result = data.result;
-					try{
-						if(!intntlval){
-							throw "Please enter an account number";
-						}
-						if(intntlval.length!=7) {
-							throw "International account number is 7 digits";
-						}
-						if(isNaN(intntlval)) {
-							throw "Account number must be a number";
-						}
-						if(result=="true"){
-							throw "Account Number already exists";
-						}
-						valid = true;
-						$("#intntlaccterror").text("");
-						intntl.removeClass("border-danger");
-					}catch(msg){
-						valid = false;
-						$("#intntlaccterror").text(msg);
-						intntl.addClass("border-danger");
-						intntl.focus();
-					}
-				}
-			});
-		}
-	}, "#intntlacctnbr");
-	
-	$("#swuititle").on("blur", function(){
-		var title = $.trim($("#swuititle").val());
-		try{
-			if(title.length > 20){
-				throw "Customer Name cannot be greater than 20 characters"
-			} 
-			if(!title){
-				throw "Please enter a Customer Name";
+		
+	$(document).on("blur change", "#ntlacctnbr", function(){
+		var ntlval = $.trim($("#ntlacctnbr").val());
+		var ntl = $("#ntlacctnbr");
+		var result;
+		$.ajax({
+			url:"ajaxAcctNbrResult.action",
+			data:{acctNbr: ntlval},
+			dataType:"json",
+			success:function(data){
+				result = data.result;
+			},
+			error:function(request, status){
+				alert(status + ": could not validate account number. Please retry.");
 			}
-			valid = true;
-			$("#swuititlerror").text("");
+		});
+		try{
+			if(ntl.is(":visible") && ntlval.length!=9){
+				throw "Please enter a 9 digit account number";
+			}
+			if(ntl.is(":visible") && isNaN(ntlval)) {
+				throw "Account number must be a number";
+			}
+			if(ntl.is(":visible") && result=="true"){
+				throw "Account Number already exists";
+			}
+			$(this).removeClass("border-danger");
+			$("#ntlaccterror").text("");
+			$("#formerror").text("");
+		}catch(msg){
+			$(this).addClass("border-danger");
+			$(this).focus();
+			$("#ntlaccterror").text(msg);
+		}
+	});
+		
+	$(document).on("blur change", "#intntlacctnbr", function(){
+		var intntlval = $.trim($("#intntlacctnbr").val());
+		var intntl = $("#intntlacctnbr");
+		var result;
+		$.ajax({
+			url:"ajaxAcctNbrResult.action",
+			data:{acctNbr: intntlval},
+			dataType:"json",
+			success:function(data){
+				result = data.result;
+			},
+			error:function(request, status){
+				alert(status + ": could not validate account number. Please retry.");
+			}
+		});
+		try{
+			if(intntl.is(":visible") && intntlval.length!=7){
+				throw "Please enter a 7 digit account number";
+			}
+			if(intntl.is(":visible") && isNaN(intntlval)) {
+				throw "Account number must be a number";
+			}
+			if(intntl.is(":visible") && result=="true"){
+				throw "Account Number already exists";
+			}
+			$("#intntlaccterror").text("");
+			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
+			$("#intntlaccterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+		
+	$(document).on("blur change", "#swuititle", function(){
+		var title = $.trim($("#swuititle").val());
+		try{
+			if(title.length > 20 || title.length == 0){
+				throw "Please enter a Customer Name not greater than 20 characters"
+			} 
+			$("#swuititlerror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
 			$("#swuititlerror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).focus();
 		}
 	});
-
-	$("#cdsadlfld").on("blur", function(){
+	
+	$(document).on("blur change", "#cdsadlfld", function(){
 		var info = $.trim($("#cdsadlfld").val());
 		try{
 			if(info.length > 20){
 				throw "Additional Info cannot be greater than 20 characters";
 			}
-			valid = true;
 			$("#cdsadlflderror").text("");
+			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		} catch(msg) {
-			valid = false;
 			$("#cdsadlflderror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).focus();
 		}
 	});
 	
-	$(document).on("change", "input:checkbox", function(){
+	$(document).on("change", ".clrntid, .clrntdefault", function(){
 		try{
-			if(($("#ccedefault").is(":checked") && !$("#cce").is(":checked")) || ($("#bacdefault").is(":checked") && !$("#bac").is(":checked")) 
-					|| ($("#844default").is(":checked") && !$("#844").is(":checked"))){
-				throw "Please choose the correct default colorant system";
+			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
+				throw "Please choose CCE colorant system before selecting the default";
 			}
-			valid = true;
-			$("#clrntsyserror").text("");
-		}catch(msg){
-			valid = false;
-			$("#clrntsyserror").text(msg);
-			$(this).focus();
-		}
-	});
-	
-	$(document).on("change", "[name='customer.defaultClrntSys']", function(){
-		try{
-			if($("#ccedefault").is(":checked") && !$("#cce").is(":checked")){
-				throw "Please choose CCE colorant system before selecting it as the default";
-			}
-			if($("#bacdefault").is(":checked") && !$("#bac").is(":checked")){
-				throw "Please choose BAC colorant system before selecting it as the default";
+			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
+				throw "Please choose BAC colorant system before selecting the default";
 			}
 			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system before selecting it as the default";
+				throw "Please choose 844 colorant system before selecting the default";
 			}
-			valid = true;
+			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
+				throw "Please choose CCE colorant system";
+			}
+			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
+				throw "Please choose BAC colorant system";
+			}
+			if($("#844default").is(":checked") && !$("#844").is(":checked")){
+				throw "Please choose 844 colorant system";
+			}
 			$("#clrntsyserror").text("");
-			//$("#loginnext-btn").removeClass("d-none");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+			$("#loginnext-btn").prop("disabled", false);
 		}catch(msg){
-			valid = false;
 			$("#clrntsyserror").text(msg);
+			$(this).addClass("border-danger");
 			$(this).prop("checked", false);
-			//$(this).focus();
-			//$("#loginnext-btn").addClass("d-none");
 		}
 	});
-	
-	$("#acceptcode").on("blur", function(){
+		
+	$(document).on("blur change", "#acceptcode", function(){
 		try{
-			var acceptcode = $.trim($(this).val());
-			var eula = $("#eulalist").val();
-			if(acceptcode.length != 6){
+			var acceptcodeval = $.trim($("#acceptcode").val());
+			if(acceptcodeval.length != 6){
 				throw "Acceptace code is 6 digits";
 			}
-			if(eula && !acceptcode){
-				throw "Please enter an Acceptance Code";
-			}
-			if(eula == 'None' && acceptcode){
-				throw "Please choose a EULA";
-			}
-			valid = true;
-			$("#custformerror").text("");
 			$("#eulaerror").text("");
+			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
-			
 			$("#eulaerror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).focus();
 		}
 	});
 	
-	$("#eulalist").on("change", function(){
-		var ws = $("#eulalist").val();
-		if(ws != "None"){
-			$("#eulahist").removeClass("d-none");
-		} else {
-			$("#eulahist").addClass("d-none");
-		}
-	});
-	
-	$("#loginnext-btn").click(function(){
+	$(document).on("click", "#loginnext-btn", function(){
 		try{
-			if((!$("#cce").is(":checked") && !$("#bac").is(":checked") && !$("#844").is(":checked")) || 
-					(!$("#ccedefault").is(":checked") && !$("#bacdefault").is(":checked") && !$("#844default").is(":checked"))){
-				throw "Please choose colorant system(s) and select a default";
+			if((!$("#CCE").is(":checked") && !$("#BAC").is(":checked") && !$("#844").is(":checked")) || 
+					(!$("#CCEdefault").is(":checked") && !$("#BACdefault").is(":checked") && !$("#844default").is(":checked"))){
+				throw "Please correct the colorant system(s)";
 			}
-			if(valid===false){
-				throw "Please fix form error(s):";
+			var acceptcodeval = $.trim($("#acceptcode").val());
+			var eula = $("#eulalist").val();
+			if(eula != 'None' && !acceptcodeval){
+				throw "Please enter an Acceptance Code";
 			}
+			if(eula == 'None' && acceptcodeval){
+				throw "Please choose a EULA";
+			}
+			if($("#ntlaccterror").text()!="" || $("#intntlaccterror").text()!="" || $("#swuititlerror").text()!="" 
+				|| $("#cdsadlflderror").text()!="" || $("#clrntsyserror").text()!="" || $("#eulaerror").text()!=""){
+				throw "Please fix form error(s)";
+			}
+			$("#formerror").text("");
 		}catch(msg){
 			event.preventDefault();
 			$("#formerror").text(msg);

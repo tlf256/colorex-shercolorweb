@@ -89,24 +89,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			List<String> resultClrntList = new ArrayList<String>();
-			
-			if(reqObj.getClrntList().size() == editclrntlist.size()) {
-				// check if data in edited list and 
-				// original list match
-				for(int i = 0; i < editclrntlist.size(); i++) {
-					if(!editclrntlist.get(i).equals(reqObj.getClrntList().get(i))) {
-						resultClrntList.add(editclrntlist.get(i));
-					}
-				}
-			}
-			
-			if(!resultClrntList.isEmpty()) {
-				reqObj.setClrntList(resultClrntList);
-			} else {
-				reqObj.setClrntList(editclrntlist);
-			}
-			
+			reqObj.setClrntList(editclrntlist);
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
 			reqObj.setActive(cust.isActive());
@@ -139,17 +122,17 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			} else if(reqObj.getCustList().size() > editCustList.size()) {
 				reqObj.setCustDeleted(true);
+				reqObj.setCustList(editCustList);
 			} else if(reqObj.getCustList().size() < editCustList.size()) {
 				reqObj.setCustAdded(true);
+				reqObj.setCustList(editCustList);
 			}
 			
 			if(!resultCustList.isEmpty()) {
-				reqObj.setCustList(resultCustList);
+				reqObj.setCustList(editCustList);
 				reqObj.setCustEdited(true);
 			} else {
-				if(reqObj.isCustAdded() || reqObj.isCustDeleted()) {
-					reqObj.setCustList(editCustList);
-				} else {
+				if(!reqObj.isNewCustomer() && !reqObj.isCustAdded() && !reqObj.isCustDeleted()) {
 					reqObj.setCustUnchanged(true);
 				}
 			}
@@ -257,17 +240,17 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				} else if(reqObj.getLoginList().size() > editLoginList.size()) {
 					reqObj.setLoginDeleted(true);
+					reqObj.setLoginList(editLoginList);
 				} else if(reqObj.getLoginList().size() < editLoginList.size()) {
 					reqObj.setLoginAdded(true);
+					reqObj.setLoginList(editLoginList);
 				}
 				
 				if(!resultLoginList.isEmpty()) {
-					reqObj.setLoginList(resultLoginList);
+					reqObj.setLoginList(editLoginList);
 					reqObj.setLoginEdited(true);
 				} else {
-					if(reqObj.isLoginAdded() || reqObj.isLoginDeleted()) {
-						reqObj.setLoginList(editLoginList);
-					} else {
+					if(!reqObj.isNewCustomer() && !reqObj.isLoginAdded() && !reqObj.isLoginDeleted()) {
 						reqObj.setLoginUnchanged(true);
 					}
 				}
@@ -333,17 +316,17 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				} else if(reqObj.getJobFieldList().size() > editJobList.size()) {
 					reqObj.setJobDeleted(true);
+					reqObj.setJobFieldList(editJobList);
 				} else if(reqObj.getJobFieldList().size() < editJobList.size()) {
 					reqObj.setJobAdded(true);
+					reqObj.setJobFieldList(editJobList);
 				}
 				
 				if(!resultJobList.isEmpty()) {
-					reqObj.setJobFieldList(resultJobList);
+					reqObj.setJobFieldList(editJobList);
 					reqObj.setJobEdited(true);
 				} else {
-					if(reqObj.isJobDeleted() || reqObj.isJobAdded()) {
-						reqObj.setJobFieldList(editJobList);
-					} else {
+					if(!reqObj.isNewCustomer() && !reqObj.isJobAdded() && !reqObj.isJobDeleted()) {
 						reqObj.setJobUnchanged(true);
 					}
 				}
