@@ -118,14 +118,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			List<String> clrntlist = new ArrayList<String>();
 			
 			if(customer.getCce()!=null) {
-				if(customer.getDefaultClrntSys().contains("cce")) {
+				if(customer.getDefaultClrntSys().contains("CCE")) {
 					clrntlist.add(0, "CCE");
 				} else {
 					clrntlist.add("CCE");
 				}
 			}
 			if(customer.getBac()!=null) {
-				if(customer.getDefaultClrntSys().contains("bac")) {
+				if(customer.getDefaultClrntSys().contains("BAC")) {
 					clrntlist.add(0, "BAC");
 				} else {
 					clrntlist.add("BAC");

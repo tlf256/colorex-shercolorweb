@@ -15,19 +15,26 @@ $(document).ready(function() {
 	var b = 0;
 	
 	if(jobrows<10){
-		$("#newjobrow").removeClass("d-none");
-		$("#newjobrow").children("td").eq(0).text(firstclonedjobrow);
+		var firstrow = $("#newjobrow");
+		firstrow.removeClass("d-none");
+		firstrow.children("td").eq(0).text(firstclonedjobrow);
+		firstrow.children("td").eq(3).find("input").attr("value", firstrow.index()-1);
+		firstrow.children("td").eq(4).find("input").attr("value", firstrow.index()-1);
 	}
 	
-	//add unique ids to cloned rows
+	//add cloned job rows
 	while(b<clonedjobrows-1){
 		var clone = $("#newjobrow").clone(true);
 		var rowid = "newjobrow"+b;
+		var lastrow = $("#job_detail").find("tr:last");
 		
 		clone.attr("id", rowid);
 		$("#job_detail").append(clone);
 		$("#"+rowid).find("input").each(function(){
 			$(this).attr("id", $(this).attr("id")+b);
+		});
+		$("#"+rowid).find("input:checkbox").each(function(){
+			$(this).attr("value", lastrow.index());
 		});
 		$("#"+rowid).find("label").each(function(){
 			$(this).attr("for", $(this).attr("for")+b);
@@ -46,7 +53,7 @@ $(document).ready(function() {
 		$("#newloginrow").addClass("d-none");
 	}
 	
-	$(".dltrow").click(function(){	
+	$(document).on("click", ".dltrow", function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
 		//window.alert($(".cloned-loginrow").length);
 		if($(".cloned-loginrow").length==1){ 
@@ -60,14 +67,14 @@ $(document).ready(function() {
 		}
 	});
 	
-	$(".deleterow").click(function(){	
+	$(document).on("click", ".deleterow", function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
 		input.val("");
 		$(this).parent('td').parent('tr').remove();
 	});
 	
-	var a = 0;
-	$(".addrow").click(function(){
+	$(document).on("click", ".addrow", function(){
+		var a = 0;
 		var clone = $("#newloginrow").clone(true);
 		var rowid = "newloginrow"+a;
 		if($("#loginTrans_detail tr").length < 11){
@@ -83,35 +90,32 @@ $(document).ready(function() {
 		a++;
 	});
 	
-	$("#edt").click(function(){
+	$("#edt").on("click", function(){
 		$("#customername").removeAttr("readonly");
 		$("#customername").focus();
 		$("#customername").select();
 	});
 	
-	$("#edt1").click(function(){
+	$("#edt1").on("click", function(){
 		$("#cdsadlfld").removeAttr("readonly");
 		$("#cdsadlfld").focus();
 		$("#cdsadlfld").select();
 	});
 	
-	$("#edt2").click(function(){
+	$("#edt2").on("click", function(){
 		$("#acceptcode").removeAttr("readonly");
 		$("#acceptcode").focus();
 		$("#acceptcode").select();
 	});
 	
-	$(".edtrow").click(function(){
+	$(document).on("click", ".edtrow", function(){
 		var input = $(this).parent('td').parent('tr').find("input");
 		input.removeAttr("readonly");
 		input.eq(0).focus();
 		input.eq(0).select();
 	});
-	
-	var jsvalue = String($.trim($("#customerid").text()));
-	var valid;
-	
-	$("#customername").on("blur", function(){
+		
+	$("#customername").on("blur change", function(){
 		try{
 			var swuititle = $.trim($(this).val());
 			if(swuititle.length > 20){
@@ -120,12 +124,10 @@ $(document).ready(function() {
 			if(!swuititle){
 				throw "Please enter a customer name";
 			}
-			valid = true;
 			$("#custediterror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -134,19 +136,17 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	
-	$("#cdsadlfld").on("blur", function(){
+		
+	$("#cdsadlfld").on("blur change", function(){
 		try{
 			var cdsadlfld = $.trim($(this).val());
 			if(cdsadlfld.length > 20){
 				throw "Additional info cannot be greater than 20 characters";
 			}
-			valid = true;
 			$("#custediterror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -155,19 +155,17 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	
-	$("#acceptcode").on("blur", function(){
+		
+	$("#acceptcode").on("blur change", function(){
 		try{
 			var acceptcode = $.trim($(this).val());
 			if(acceptcode.length != 6){
 				throw "Acceptace code is 6 digits";
 			}
-			valid = true;
 			$("#custediterror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -176,7 +174,7 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	
+		
 	$("#eulafile").on("change", function(){
 		try{
 			var eula = $("#eulafile").val();
@@ -186,12 +184,10 @@ $(document).ready(function() {
 					throw "Invalid file extension";
 				}
 			}
-			valid = true;
 			$("#custediterror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -200,7 +196,7 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	
+		
 	$("#effDate").on("change", function(){
 		try{
 			var effdate = $.trim($(this).val());
@@ -216,12 +212,10 @@ $(document).ready(function() {
 					throw "Please enter valid date in mm/dd/yyyy format";
 				}
 			}
-			valid = true;
 			$("#custediterror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -230,7 +224,7 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	
+		
 	$("#expDate").on("change", function(){
 		try{
 			var expdate = $.trim($(this).val());
@@ -239,12 +233,10 @@ $(document).ready(function() {
 					throw "Please enter valid date in mm/dd/yyyy format";
 				}
 			}
-			valid = true;
 			$("#custediterror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
-			valid = false;
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -264,179 +256,152 @@ $(document).ready(function() {
 				}
 			}).toArray();
 		},
-		"blur":function(e){
-			keyfldval = $.trim($(this).val());
-			keyfld = $(this);
+		"blur change":function(e){
+			var keyfldval = $.trim($(this).val());
+			var keyfld = $(this);
+			var result;
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
 				dataType:"json",
 				success:function(data){
-					var result = data.result;
+					result = data.result;
 					console.log(result);
-					try{
-						if(keyfldval.length > 20){
-							throw "Login ID cannot be greater than 20 characters";
-						}
-						if($.inArray(keyfldval,logins)!=-1){
-							throw "Please enter unique values for Login ID";
-						}
-						if(result=="true" && $.inArray(keyfldval,existinglogins)==-1){
-							throw "Login ID already exists";
-						}
-						valid = true;
-						$("#custediterror").text("");
-						$("#formerror").text("");
-						keyfld.removeClass("border-danger");
-					}catch(msg){
-						valid = false;
-						$("html, body").animate({
-							scrollTop: $(document.body).offset().top
-						}, 1500);
-						$("#custediterror").text(msg);
-						keyfld.addClass("border-danger");
-						keyfld.focus();
-					}
 				},
 				error:function(request, status){
-					alert(status + ": could not validate login ID");
+					alert(status + ": could not validate login ID. Please retry.");
 				}
 			});
+			try{
+				if(keyfldval.length > 20){
+					throw "Login ID cannot be greater than 20 characters";
+				}
+				if($.inArray(keyfldval,logins)!=-1){
+					throw "Please enter unique values for Login ID";
+				}
+				if(result=="true" && $.inArray(keyfldval,existinglogins)==-1){
+					throw "Login ID already exists";
+				}
+				$("#custediterror").text("");
+				$("#formerror").text("");
+				keyfld.removeClass("border-danger");
+			}catch(msg){
+				keyfieldvalid = false;
+				$("html, body").animate({
+					scrollTop: $(document.body).offset().top
+				}, 1500);
+				$("#custediterror").text(msg);
+				keyfld.addClass("border-danger");
+				keyfld.focus();
+			}
 		}
 	},".kyfld");
 	
 	var mstraccts;
 	
-	$(document).on({
-		"change":function(){
-			try{
-				var mstracct = $.trim($(this).val());
-				if(mstracct.length > 50){
-					throw "Master Account Name cannot be greater than 50 characters";
-				}
-				valid = true;
-				$("#custediterror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 1500);
-				$("#custediterror").text(msg);
-				$(this).addClass("border-danger");
-				$(this).focus();
-			}
-		}
-	}, ".mstraccntnm");
-	
-	$(document).on({
-		"keyup":function(){
-			var length = $(this).val().length;
-			var maxlimit = 150;
-			var remaining;
-			if(length > maxlimit){
-				$(this).val($(this).val().substring(0, maxlimit));
-				remaining = maxlimit - length + 1;
-			}else{
-				remaining = maxlimit - length;
-			}
-		},
-		"change":function(){
-			$(this).attr("placeholder", "150 Character Limit");
-		}
-		
-	}, ".acctcmmnt");
-	
-	$(document).on({
-		"blur":function(){
-			try{
-				var scrnlbl = $.trim($(this).val());
-				if(scrnlbl.length > 15){
-					throw "Screen Label cannot be greater than 15 characters";
-				}
-				if($(this).parents("tr").index()==0 && !$(this).parents("tr").find("input:text").val()){
-					throw "Please enter Job Field information";
-				}
-				valid = true;
-				$("#custediterror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 1500);
-				$("#custediterror").text(msg);
-				$(this).addClass("border-danger");
-				$(this).focus();
-			}
-		}
-	}, ".scrnlbl");
-	
-	$(document).on({
-		"blur":function(){
-			try{
-				var flddflt = $.trim($(this).val());
-				if(flddflt.length > 15){
-					throw "Field Default cannot be greater than 15 characters";
-				}
-				valid = true;
-				$("#custediterror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 1500);
-				$("#custediterror").text(msg);
-				$(this).addClass("border-danger");
-				$(this).focus();
-			}
-		}
-	}, ".flddflt");
-	
-	$(document).on({
-		"change":function(){
-			try{
-				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-					throw "Please choose CCE colorant system before selecting the default";
-				}
-				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-					throw "Please choose BAC colorant system before selecting the default";
-				}
-				if($("#844default").is(":checked") && !$("#844").is(":checked")){
-					throw "Please choose 844 colorant system before selecting the default";
-				}
-				if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-					throw "Please choose CCE colorant system";
-				}
-				if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-					throw "Please choose BAC colorant system";
-				}
-				if($("#844default").is(":checked") && !$("#844").is(":checked")){
-					throw "Please choose 844 colorant system";
-				}
-				valid = true;
-				$("#custediterror").text("");
-				$("#formerror").text("");
-				$(this).removeClass("border-danger");
-			}catch(msg){
-				valid = false;
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 1500);
-				$("#custediterror").text(msg);
-				$(this).addClass("border-danger");
-				$(this).prop("checked", false);
-			}
-		}
-	}, $(".clrntsys"));
-	
-	$(document).on("click", "#submitchng", function(e){
+	$(document).on("blur change", ".mstraccntnm", function(){
 		try{
-			if(valid===false){
+			var mstracct = $.trim($(this).val());
+			if(mstracct.length > 50){
+				throw "Master Account Name cannot be greater than 50 characters";
+			}
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+		
+	$(document).on("blur change", ".scrnlbl", function(){
+		try{
+			var scrnlbl = $.trim($(this).val());
+			if(scrnlbl.length > 15){
+				throw "Screen Label cannot be greater than 15 characters";
+			}
+			if($(this).parents("tr").index()==0 && !$(this).parents("tr").find("input:text").val()){
+				throw "Please enter Job Field information";
+			}
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+		
+	$(document).on("blur change", ".flddflt", function(){
+		try{
+			var flddflt = $.trim($(this).val());
+			if(flddflt.length > 15){
+				throw "Field Default cannot be greater than 15 characters";
+			}
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).focus();
+		}
+	});
+		
+	$(document).on("change", ".clrntid, .clrntdefault", function(){
+		try{
+			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
+				throw "Please choose CCE colorant system before selecting the default";
+			}
+			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
+				throw "Please choose BAC colorant system before selecting the default";
+			}
+			if($("#844default").is(":checked") && !$("#844").is(":checked")){
+				throw "Please choose 844 colorant system before selecting the default";
+			}
+			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
+				throw "Please choose CCE colorant system";
+			}
+			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
+				throw "Please choose BAC colorant system";
+			}
+			if($("#844default").is(":checked") && !$("#844").is(":checked")){
+				throw "Please choose 844 colorant system";
+			}
+			$("#custediterror").text("");
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+		}catch(msg){
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).prop("checked", false);
+		}
+	});
+	
+	var d = new Date();
+	var dd = String(d.getDate()).padStart(2, '0');
+	var mm = String(d.getMonth() + 1).padStart(2, '0');
+	var yyyy = String(d.getFullYear());
+	var today = mm + "/" + dd + "/" + yyyy;
+	console.log("today's date = " + today);
+	
+	$(document).on("click", "#submitchng", function(){
+		try{
+			if($("#custediterror").text()!=""){
 				throw "Please fix form error(s):";
 			}
 			$(".scrnlbl").each(function(i){
@@ -461,12 +426,6 @@ $(document).ready(function() {
 			var eulaws = $("#eulalist").val();
 			var eula = $("#eulafile").val();
 			var eulatext = $("#eulatext").val();
-			var d = new Date();
-			var dd = String(d.getDate()).padStart(2, '0');
-			var mm = String(d.getMonth() + 1).padStart(2, '0');
-			var yyyy = String(d.getFullYear());
-			var today = mm + "/" + dd + "/" + yyyy;
-			console.log("today's date = " + today);
 			if(eula && !eulatext){
 				throw "Please enter EULA text";
 			}
@@ -480,14 +439,13 @@ $(document).ready(function() {
 				throw "Please choose a EULA";
 			}
 			if($("#expDate") != null && $("#expDate").val() != ""){
-				if($("#expDate").val() < $("#effDate").val()){
+				if(($("#expDate").val() < $("#effDate").val()) || ($("#expDate").val() <= today)){
 					throw "Invalid Expiration Date";
 				}
 			}
 			$("#formerror").text("");
-			return true;
 		}catch(msg){
-			e.preventDefault();
+			event.preventDefault();
 			$("#formerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top

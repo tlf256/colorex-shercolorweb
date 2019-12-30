@@ -16,6 +16,7 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/JobForm.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/cps.js"></script>
 <title>Job Field Form</title>
 </head>
 <body>
