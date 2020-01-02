@@ -924,7 +924,7 @@
 	    $("#tinterErrorList").empty();
 	    $("#tinterErrorListModal").modal('show');
 	    $("#abort-message").hide();
-	    
+	    processingDispense = false; // allow user to start another dispense after tinter error
 	    
 	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
 	    	if(my_return_message.errorList.length > 0){
@@ -1117,9 +1117,11 @@
 							writeDispense(return_message); // will also send tinter event
 							waitForShowAndHide("#tinterInProgressModal");
 						} else {
+							
 							waitForShowAndHide("#tinterInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
 							showTinterErrorModal("Dispense Error",null,return_message);
+							processingDispense = false; // allow user to start another dispense after tinter error
 							sendingDispCommand = "false";
 							// send tinter event (no blocking here)
 							var curDate = new Date();

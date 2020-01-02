@@ -399,19 +399,18 @@ function ParsePrintMessage() {
 			
 		}
 		else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
-			  if(return_message.errorNumber == 4226){
-			    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
-				    }
-			FMXDispenseComplete(return_message);
-			
+			if(return_message.errorNumber == 4226){
+				return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
 			}
+			FMXDispenseComplete(return_message);	
+		}
 			
 	}
 	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
 	    $("#tinterErrorList").empty();
 	    $("#tinterErrorListModal").modal('show');
 	    $("#abort-message").hide();
-	    
+	    processingDispense = false; // allow user to start another dispense after tinter error
 	    
 	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
 	    	if(my_return_message.errorList.length > 0){
@@ -495,6 +494,7 @@ function ParsePrintMessage() {
 						"bumpDispenseCounterAction.action?reqGuid=" + myValue
 								+ "&jsDateString=" + curDate.toString(),
 						function(data) {
+							processingDispense = false;
 							if (data.sessionStatus === "expired") {
 								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 							} else {
@@ -513,6 +513,10 @@ function ParsePrintMessage() {
 								var tedArray = [ teDetail ];
 								sendTinterEvent(myGuid, curDate,
 										myReturnMessage, tedArray);
+								
+								if(printerConfig && printerConfig.printOnDispense){
+									printOnDispenseGetJson(); //new print on dispense
+								}
 
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
@@ -554,7 +558,7 @@ function ParsePrintMessage() {
 					//Show a modal with error message to make sure the user is forced to read it.
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
-					processingDispense = false;
+					processingDispense = false; // allow user to start another dispense after socket error
 					$("#tinterSocketErrorModal").modal('show');
 
 				} else {
@@ -594,6 +598,7 @@ function ParsePrintMessage() {
 							writeDispense(return_message); // will also send tinter event
 							waitForShowAndHide("#tinterInProgressModal");
 						} else {
+							processingDispense = false; // allow user to start another dispense after tinter error
 							// send tinter event
 							var curDate = new Date();
 							var myGuid = $("#formulaUserPrintAction_reqGuid")
@@ -625,10 +630,6 @@ function ParsePrintMessage() {
 		}
 	}
 
-								
-								if(printerConfig && printerConfig.printOnDispense){
-									printOnDispenseGetJson(); //new print on dispense
-								}
 
 
 	$(function() {
