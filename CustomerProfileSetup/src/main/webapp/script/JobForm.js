@@ -5,44 +5,36 @@ $(document).ready(function(){
 
 	$("#locField").focus();
 	$("#locField").select();
-	
-	var valid;
-	
-	$(".scrnlbl").on({
-		"change":function(){
-			try{
-				var scrnlbl = $.trim($(this).val());
-				if(scrnlbl.length > 15){
-					throw "Screen label cannot be greater than 15 characters";
-				}
-				valid = true;
-				$(this).removeClass("border-danger");
-				$("#jobformerror").text("");
-				$("#formerror").text("");
-			}catch(msg){
-				valid = false;
-				$(this).addClass("border-danger");
-				$(this).focus();
-				$("#jobformerror").text(msg);
-				$("html, body").animate({
-					scrollTop: $(document.body).offset().top
-				}, 2000);
+		
+	$(document).on("blur change", ".scrnlbl", function(){
+		try{
+			var scrnlbl = $.trim($(this).val());
+			if(scrnlbl.length > 15){
+				throw "Screen label cannot be greater than 15 characters";
 			}
+			$(this).removeClass("border-danger");
+			$("#jobformerror").text("");
+			$("#formerror").text("");
+		}catch(msg){
+			$(this).addClass("border-danger");
+			$(this).focus();
+			$("#jobformerror").text(msg);
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 2000);
 		}
 	});
-	
-	$(".flddefault").on("change", function(){
+		
+	$(document).on("blur change", ".flddefault", function(){
 		try{
 			var flddflt = $.trim($(this).val());
 			if(flddflt.length > 15){
 				throw "Default value cannot be greater than 15 characters";
 			}
-			valid = true;
 			$(this).removeClass("border-danger");
 			$("#jobformerror").text("");
 			$("#formerror").text("");
 		}catch(msg){
-			valid = false;
 			$(this).addClass("border-danger");
 			$(this).focus();
 			$("#jobformerror").text(msg);
@@ -52,28 +44,30 @@ $(document).ready(function(){
 		}
 	});
 	
-	$(".required").on("change", function(){
-		try{
-			if($(this).is(":checked") && $(this).parent().parent().find("input:first").val()==""){
-				throw "Screen Label is required";
+	//$(".required").each(function(){
+		$(".required").on("change", function(){
+			try{
+				if($(this).is(":checked") && $(this).parent().parent().find("input:first").val()==""){
+					throw "Screen Label is required";
+				}
+				valid = true;
+				$(this).parent().parent().find("input:first").removeClass("border-danger");
+				$("#jobformerror").text("");
+				$("#formerror").text("");
+			}catch(msg){
+				valid = false;
+				$(this).parent().parent().find("input:first").addClass("border-danger");
+				$("#jobformerror").text(msg);
+				$("html, body").animate({
+					scrollTop: $(document.body).offset().top
+				}, 2000);
 			}
-			valid = true;
-			$(this).parent().parent().find("input:first").removeClass("border-danger");
-			$("#jobformerror").text("");
-			$("#formerror").text("");
-		}catch(msg){
-			valid = false;
-			$(this).parent().parent().find("input:first").addClass("border-danger");
-			$("#jobformerror").text(msg);
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 2000);
-		}
-	});
+		});
+	//});
 	
 	$("#next-btn").click(function(){
 		try{
-			if(valid===false){
+			if($("#jobformerror").text()!=""){
 				throw "Please fix form error(s):";
 			}
 			$(".scrnlbl").each(function(i){

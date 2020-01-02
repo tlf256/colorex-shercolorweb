@@ -16,8 +16,9 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+<%-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script> --%>
 <script type="text/javascript" charset="utf-8" src="script/LoginIDform.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/cps.js"></script>
 <title>Login Form</title>
 </head>
 <body>
@@ -87,7 +88,7 @@
 		<div class="row" id="acctcmt">
 			<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 			<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-				<s:textfield label="Comment" name="login.acctComment" class="acctcomment" id="acctcomm0" placeholder="150 character limit" />
+				<s:textfield label="Comment" name="login.acctComment" class="acctcmmnt" id="acctcomm0" placeholder="150 character limit" />
 			</div>
 			<!-- <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div> -->
 			<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1">
