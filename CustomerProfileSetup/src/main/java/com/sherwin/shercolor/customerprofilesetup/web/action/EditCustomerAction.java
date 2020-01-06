@@ -61,7 +61,11 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			setEdited(true);
 			
 			for(int i = 0; i < cust.getClrntList().size(); i++) {
-				editclrntlist.add(cust.getClrntList().get(i));
+				if(cust.getDefaultClrntSys().contains(cust.getClrntList().get(i))) {
+					editclrntlist.add(0, cust.getClrntList().get(i));
+				} else {
+					editclrntlist.add(cust.getClrntList().get(i));
+				}
 			}
 			if(cust.getCce()!=null) {
 				if(cust.getDefaultClrntSys().contains("cce")) {
@@ -85,32 +89,17 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			List<String> resultClrntList = new ArrayList<String>();
-			
-			if(reqObj.getClrntList().size() == editclrntlist.size()) {
-				// check if data in edited list and 
-				// original list match
-				for(int i = 0; i < editclrntlist.size(); i++) {
-					if(!editclrntlist.get(i).equals(reqObj.getClrntList().get(i))) {
-						resultClrntList.add(editclrntlist.get(i));
-					}
-				}
-			}
-			
-			if(!resultClrntList.isEmpty()) {
-				reqObj.setClrntList(editclrntlist);
-			}
-			
+			reqObj.setClrntList(editclrntlist);
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
 			reqObj.setActive(cust.isActive());
 			
-			for(int i = 0; i < editclrntlist.size(); i++) {
+			for(int i = 0; i < reqObj.getClrntList().size(); i++) {
 				//set values for custwebparms record
 				CustParms newcust = new CustParms();
 				newcust.setCustomerId(reqObj.getCustomerId());
 				newcust.setSwuiTitle(reqObj.getSwuiTitle());
-				newcust.setClrntSysId(editclrntlist.get(i));
+				newcust.setClrntSysId(reqObj.getClrntList().get(i));
 				newcust.setSeqNbr(i+1);
 				newcust.setCdsAdlFld(reqObj.getCdsAdlFld());
 				newcust.setActive(reqObj.isActive());
@@ -131,14 +120,21 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 					index++;
 				}
-			} else {
+			} else if(reqObj.getCustList().size() > editCustList.size()) {
 				reqObj.setCustDeleted(true);
+				reqObj.setCustList(editCustList);
+			} else if(reqObj.getCustList().size() < editCustList.size()) {
+				reqObj.setCustAdded(true);
+				reqObj.setCustList(editCustList);
 			}
 			
 			if(!resultCustList.isEmpty()) {
-				reqObj.setCustResultList(resultCustList);
 				reqObj.setCustList(editCustList);
 				reqObj.setCustEdited(true);
+			} else {
+				if(!reqObj.isNewCustomer() && !reqObj.isCustAdded() && !reqObj.isCustDeleted()) {
+					reqObj.setCustUnchanged(true);
+				}
 			}
 			
 			if(eulafile != null) {
@@ -242,13 +238,21 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 						}
 						index++;
 					}
-				} else {
+				} else if(reqObj.getLoginList().size() > editLoginList.size()) {
 					reqObj.setLoginDeleted(true);
+					reqObj.setLoginList(editLoginList);
+				} else if(reqObj.getLoginList().size() < editLoginList.size()) {
+					reqObj.setLoginAdded(true);
+					reqObj.setLoginList(editLoginList);
 				}
 				
 				if(!resultLoginList.isEmpty()) {
 					reqObj.setLoginList(editLoginList);
 					reqObj.setLoginEdited(true);
+				} else {
+					if(!reqObj.isNewCustomer() && !reqObj.isLoginAdded() && !reqObj.isLoginDeleted()) {
+						reqObj.setLoginUnchanged(true);
+					}
 				}
 				
 			}
@@ -310,14 +314,21 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 						}	
 						index++;
 					}
-				} else {
+				} else if(reqObj.getJobFieldList().size() > editJobList.size()) {
 					reqObj.setJobDeleted(true);
+					reqObj.setJobFieldList(editJobList);
+				} else if(reqObj.getJobFieldList().size() < editJobList.size()) {
+					reqObj.setJobAdded(true);
+					reqObj.setJobFieldList(editJobList);
 				}
 				
 				if(!resultJobList.isEmpty()) {
-					reqObj.setJobFieldResultList(resultJobList);
 					reqObj.setJobFieldList(editJobList);
 					reqObj.setJobEdited(true);
+				} else {
+					if(!reqObj.isNewCustomer() && !reqObj.isJobAdded() && !reqObj.isJobDeleted()) {
+						reqObj.setJobUnchanged(true);
+					}
 				}
 				
 			}

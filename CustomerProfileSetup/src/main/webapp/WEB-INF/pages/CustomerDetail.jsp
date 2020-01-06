@@ -97,7 +97,7 @@
   </div>
 </div>
 <div class="modal fade" tabindex="-1" role="dialog" id="download_modal">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Download EULA</h5>
@@ -106,17 +106,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="container-fluid">
-        	<div class="row">
-			<div class="col-lg-2 col-md-2"></div>
-			<div class="col-lg-8 col-md-8">
-				<div id="eulapdf" class="embed-responsive embed-responsive-4by3">
-					
-				</div>
-			</div>
-			<div class="col-lg-2 col-md-2"></div>
+		<div id="eulapdf" class="embed-responsive embed-responsive-4by3">
+			
 		</div>
-        </div>
       </div>
       <div class="modal-footer">
 	    <button type="button" id="cancelbtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -152,7 +144,8 @@
 		<div id="custDetailError" class="text-danger">
 			<s:property value="sessionMap['error']" />
 		</div>
-		<s:if test="edited">
+		<s:actionerror/>
+		<s:if test="(edited || sessionMap['CustomerDetail'].newCustomer) && !hasActionErrors()">
 			<div class="text-danger"><h6>You must submit this form for changes to take effect!</h6></div>
 		</s:if>
 		<s:form>

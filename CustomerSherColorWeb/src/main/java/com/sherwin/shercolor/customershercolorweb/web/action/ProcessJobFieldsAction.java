@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -74,7 +75,9 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 		try{
 			updateMode=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
 			jobFieldList = reqObj.getJobFieldList();
+			
 			reqObj.setQuantityDispensed(0);
 
 			
@@ -104,6 +107,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			List<String> validateMe = new ArrayList<String>();
+			List<String> jobFieldLabels = new ArrayList<String>();
 			
 			if(debugOn) System.out.println("about to process jobFieldList");
 			if(jobFieldList==null){
@@ -117,18 +121,26 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					if(debugOn) System.out.println("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
+					// encode entered value
+					thisField.setEnteredValue(Encode.forHtml(thisField.getEnteredValue()));
+					if(debugOn) System.out.println("thisField after encoding: " + thisField.getEnteredValue());
 					i++;
 					validateMe.add(thisField.getEnteredValue());
+					jobFieldLabels.add(thisField.getScreenLabel());
 				}
 				
 				if(debugOn) System.out.println("about to call validate");
 				
-				List<SwMessage> messages = customerService.validateCustJobFields(validateMe);
+				List<SwMessage> messages = customerService.validateCustJobFields(jobFieldLabels,validateMe);
 				
 				if(debugOn) System.out.println("back from validate");
 				if(debugOn) System.out.println("message size is " + messages.size());
 				if(messages.size()>0){
 					// TODO process field entry errors
+					int index = 0;
+					for (SwMessage message : messages) {
+						addFieldError(message.getCode(),message.getMessage());
+					}
 					retVal = INPUT;
 				} else {
 					// all good
@@ -206,6 +218,5 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	public void setDisplayFormula(FormulaInfo displayFormula) {
 		this.displayFormula = displayFormula;
 	}
-
 
 }

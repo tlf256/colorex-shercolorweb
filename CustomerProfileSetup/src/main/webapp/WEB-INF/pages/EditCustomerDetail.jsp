@@ -30,6 +30,7 @@
 <script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" data-auto-replace-svg="nest"></script>
 <script type="text/javascript" src="script/EditCustomerDetail.js"></script>
+<script type="text/javascript" src="script/cps.js"></script>
 <title>Edit Customer Detail</title>
 </head>
 <body>
@@ -90,26 +91,26 @@
 				<td><strong>Colorant System</strong></td>
 				<td>
 					<div class="form-check-inline">
-						<div class="form-check" id="clrnts">
+						<div class="form-check">
 							<s:iterator var="list" value="sessionMap['CustomerDetail'].clrntList" status="i">
 								<label for="<s:property value='#list' />" class="form-check-label font-weight-normal">
 									<s:property value="#list" />
 								</label>
-								<input type="checkbox" id="<s:property value='#list' />" name="cust.clrntList" class="form-check-input" 
+								<input type="checkbox" id="<s:property value='#list' />" name="cust.clrntList" class="clrntid form-check-input" 
 									checked="checked" value="<s:property value='#list' />"></input>
 							</s:iterator>
-							<s:if test="'CCE' not in sessionMap['CustomerDetail'].clrntList">
-								<label id="ccelabel" for="CCE" class="form-check-label font-weight-normal">CCE</label>
-								<input type="checkbox" id="CCE" name="cust.cce" class="form-check-input ml-0" value="CCE" />	
-							</s:if>
-							<s:if test="'BAC' not in sessionMap['CustomerDetail'].clrntList">
-								<label id="baclabel" for="BAC" class="form-check-label font-weight-normal">BAC</label>
-								<input type="checkbox" id="BAC" name="cust.bac" class="form-check-input ml-0" value="BAC" />
-							</s:if>
-							<s:if test="'844' not in sessionMap['CustomerDetail'].clrntList">
-								<label id="efflabel" for="844" class="form-check-label font-weight-normal">844</label>
-								<input type="checkbox" id="844" name="cust.eff" class="form-check-input ml-0" value="844" />
-							</s:if>
+						<s:if test="'CCE' not in sessionMap['CustomerDetail'].clrntList">
+							<label id="ccelabel" for="CCE" class="form-check-label font-weight-normal">CCE</label>
+							<input type="checkbox" id="CCE" name="cust.cce" class="clrntid form-check-input ml-0" value="CCE" />
+						</s:if>
+						<s:if test="'BAC' not in sessionMap['CustomerDetail'].clrntList">
+							<label id="baclabel" for="BAC" class="form-check-label font-weight-normal">BAC</label>
+							<input type="checkbox" id="BAC" name="cust.bac" class="clrntid form-check-input ml-0" value="BAC" />
+						</s:if>
+						<s:if test="'844' not in sessionMap['CustomerDetail'].clrntList">
+							<label id="efflabel" for="844" class="form-check-label font-weight-normal">844</label>
+							<input type="checkbox" id="844" name="cust.eff" class="clrntid form-check-input ml-0" value="844" />
+						</s:if>
 						</div>
 					</div>
 				</td>
@@ -123,25 +124,25 @@
 							<label for="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" class="form-check-label font-weight-normal">
 								<s:property value="sessionMap['CustomerDetail'].clrntList[0]" />
 							</label>
-							<input type="radio" id="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" name="cust.defaultClrntSys" class="form-check-input" 
-								checked="checked" value="sessionMap['CustomerDetail'].clrntList[0]"></input>
+							<input type="radio" id="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
+								checked="checked" value="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />"></input>
 							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='CCE'}">
 								<label id="" for="CCEdefault" class="form-check-label font-weight-normal">
 									CCE
 								</label>
-								<input type="radio" id="CCEdefault" name="cust.defaultClrntSys" class="form-check-input ml-0" value="CCE" />
+								<input type="radio" id="CCEdefault" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="CCE" />
 							</s:if>
 							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='BAC'}">
 								<label id="" for="BACdefault" class="form-check-label font-weight-normal">
 									BAC
 								</label>
-								<input type="radio" id="BACdefault" name="cust.defaultClrntSys" class="form-check-input ml-0" value="BAC" />
+								<input type="radio" id="BACdefault" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="BAC" />
 							</s:if>
 							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='844'}">
 								<label id="" for="844default" class="form-check-label font-weight-normal">
 									844
 								</label>
-								<input type="radio" id="844default" name="cust.defaultClrntSys" class="form-check-input ml-0" value="844" />
+								<input type="radio" id="844default" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="844" />
 							</s:if>
 						</div>
 					</div>
@@ -170,7 +171,8 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
-	<s:if test="!sessionMap['CustomerDetail'].uploadedEula && sessionMap['CustomerDetail'].updateMode && sessionMap['CustomerDetail'].eulaHistList != null">
+	<s:if test="!sessionMap['CustomerDetail'].uploadedEula && sessionMap['CustomerDetail'].updateMode && 
+		sessionMap['CustomerDetail'].eulaHistList == null">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
 			<div class="col-lg-8 col-md-8">
@@ -298,7 +300,7 @@
 					<s:textfield class="mstraccntnm" id="mstraccntnm%{#i.index}" name="login.masterAcctName" value="%{#logintrans.masterAcctName}" readonly="true"></s:textfield>
 				</td>
 				<td>
-					<s:textfield class="acctcmmnt" id="acctcmmnt%{#i.index}" name="login.acctComment" value="%{#logintrans.acctComment}" readonly="true"></s:textfield>
+					<s:textfield class="acctcomm" id="acctcmmnt%{#i.index}" name="login.acctComment" value="%{#logintrans.acctComment}" readonly="true"></s:textfield>
 				</td>
 				<td>
 					<button type="button" id="editloginrow<s:property value='%{#i.index}'/>" class="btn btn-primary edtrow" title="Edit row">
@@ -320,7 +322,7 @@
 					<s:textfield class="mstraccntnm" id="master0" name="login.masterAcctName" />
 				</td>
 				<td>
-					<s:textfield class="acctcmmnt" id="comment0" name="login.acctComment" />
+					<s:textfield class="acctcomm" id="comment0" name="login.acctComment" />
 				</td>
 				<td>
 					<button type="button" id="deleteloginrow" class="btn btn-danger dltrow" title="Delete row">
@@ -404,12 +406,12 @@
 				</td>
 				<td>
 					<div class="form-check">
-					<input class="ml-2 mt-4" id="jobreq" type="checkbox" name="job.entryRequired" value="true" title="entry required" />
+					<input class="ml-2 mt-4" id="jobreq" type="checkbox" name="job.entryRequired" title="entry required" />
 					</div>
 				</td>
 				<td>
 					<div class="form-check">
-					<input class="mt-4" id="jobactv" type="checkbox" name="job.active" value="true" title="active" />
+					<input class="mt-4" id="jobactv" type="checkbox" name="job.active" title="active" />
 					</div>
 				</td>
 				<td></td>

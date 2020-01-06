@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
+import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
@@ -79,6 +80,8 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 					reqObj.setProdNbr(item.getProdNbr());
 					reqObj.setSizeCode(item.getSizeCode());
 					reqObj.setSalesNbr(item.getSalesNbr());
+					PosProd posprod = productService.readPosProd(item.getSalesNbr());
+					reqObj.setUpc(posprod.getUpc());
 					//System.out.println("set reqObjprodnbr, sizecode and salesnbr");
 					CdsProd goodProd = productService.readCdsProd(item.getSalesNbr());
 					String[] prepCmt = new String[2];

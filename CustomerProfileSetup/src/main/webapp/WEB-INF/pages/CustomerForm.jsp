@@ -45,17 +45,18 @@
 	<div class="row">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+			<strong>* Denotes Required Field</strong>
 			<div id="formerror" class="text-danger"></div>
-			<div id="custformerror" class="text-danger"></div>
+			<div id="validationerror" class="text-danger"></div>
+			<s:actionmessage/>
+			<s:actionerror/>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
+	<br>
 	<div class="row" id="acctype">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-4 col-md-4 col-sm-2 col-xs-2">
-		<strong>* Denotes Required Field</strong>
-		<br>
-		<br>
 		<strong>Account Type *</strong>
 			<div class="custom-radio ml-1">
 			<input type="radio" id="selectedAccttype-0" name="customer.accttype" class="mt-1 mb-1" value="natlWdigits" />
@@ -82,7 +83,7 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<!-- <div id="ntlaccterror" class="text-danger"></div> -->
-			<s:textfield label="Account Number" name="customer.ntlacctnbr" id="ntlacctnbr" requiredLabel="true" />
+			<s:textfield label="Account Number" name="customer.ntlacctnbr" id="ntlacctnbr" requiredLabel="true" class="req" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
@@ -98,7 +99,7 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<!-- <div id="intntlaccterror" class="text-danger"></div> -->
-			<s:textfield label="Account Number" name="customer.intntlacctnbr" id="intntlacctnbr" requiredLabel="true" />
+			<s:textfield label="Account Number" name="customer.intntlacctnbr" id="intntlacctnbr" requiredLabel="true" class="req" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
@@ -115,7 +116,7 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-4 col-md-4 col-sm-2 col-xs-2">
 			<!-- <div id="swuititlerror" class="text-danger"></div> -->
-			<s:textfield label="Customer Name" name="customer.swuiTitle" id="swuititle" requiredLabel="true" />
+			<s:textfield label="Customer Name" name="customer.swuiTitle" id="swuititle" requiredLabel="true" class="req" />
 			<!-- <div id="cdsadlflderror" class="text-danger"></div> -->
 			<s:textfield label="Additional Info (SherCust Database ID)" name="customer.cdsAdlFld" id="cdsadlfld" />
 		</div>
@@ -133,9 +134,9 @@
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 		<strong>Colorant System *</strong><br>
 		<div class="form-check">
-			<input type="checkbox" id="cce" name="customer.cce" class="form-check-input clrntid" value="CCE"></input>
+			<input type="checkbox" id="CCE" name="customer.cce" class="form-check-input clrntid" value="CCE"></input>
 			<label class="form-check-label font-weight-normal" for="CCE">CCE</label><br>
-			<input type="checkbox" id="bac" name="customer.bac" class="form-check-input clrntid" value="BAC"></input>
+			<input type="checkbox" id="BAC" name="customer.bac" class="form-check-input clrntid" value="BAC"></input>
 			<label class="form-check-label font-weight-normal" for="BAC">BAC</label><br>
 			<input type="checkbox" id="844" name="customer.eff" class="form-check-input clrntid" value="844"></input>
 			<label class="form-check-label font-weight-normal" for="884">844</label><br>
@@ -146,9 +147,9 @@
 			<!-- <div id="defaulterror" class="text-danger"></div> -->
 			<strong>Default *</strong><br>
 			<div class="custom-radio ml-1">
-				<input type="radio" id="ccedefault" name="customer.defaultClrntSys" class="mt-1 mb-1" value="cce" /><br>
-				<input type="radio" id="bacdefault" name="customer.defaultClrntSys" class="mt-2 mb-1" value="bac" /><br>
-				<input type="radio" id="844default" name="customer.defaultClrntSys" class="mt-2 mb-1" value="844" /><br>
+				<input type="radio" id="CCEdefault" name="customer.defaultClrntSys" class="mt-1 mb-1 clrntdefault" value="CCE" /><br>
+				<input type="radio" id="BACdefault" name="customer.defaultClrntSys" class="mt-2 mb-1 clrntdefault" value="BAC" /><br>
+				<input type="radio" id="844default" name="customer.defaultClrntSys" class="mt-2 mb-1 clrntdefault" value="844" /><br>
 			</div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
@@ -165,7 +166,7 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<s:select label="Activate EULA" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="customer.website" headerValue="None"></s:select>
-			<s:textfield label="Acceptance Code" name="customer.acceptCode" id="acceptcode" requiredLabel="true" />
+			<s:textfield label="Acceptance Code" name="customer.acceptCode" id="acceptcode" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>

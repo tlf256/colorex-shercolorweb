@@ -43,6 +43,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			RequestObject reqObj = new RequestObject();
 			
 			reqObj.setNewCustomer(true);
+			reqObj.setCustUnchanged(false);
 			
 			//check for entered account number
 			switch(customer.getAccttype()) {
@@ -55,7 +56,10 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				if(custWebParms.isEmpty()) {
 					//first national id created with '99'
-					reqObj.setCustomerId("990001");
+					//reqObj.setCustomerId("990001");
+					// list should not be empty
+					addActionError("Database Error - National customer cannot be created. Please contact administrator.");
+					return INPUT;
 				} else {
 					Object[] idList = custWebParms.toArray();
 					
@@ -82,7 +86,10 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				
 				if(custParms.isEmpty()) {
 					//first international id created with 'INTL'
-					reqObj.setCustomerId("INTL0001");
+					//reqObj.setCustomerId("INTL0001");
+					// list should not be empty
+					addActionError("Database Error - International customer cannot be created. Please contact administrator.");
+					return INPUT;
 				} else {
 					Object[] custIdList = custParms.toArray();
 					
@@ -103,7 +110,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			default:
 				// result not expected
 				System.out.println("String is junk, return to form");
-				
+				addActionError("Error - Unexpected value. Please retry request.");
 				return INPUT;
 				
 			}
@@ -111,14 +118,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			List<String> clrntlist = new ArrayList<String>();
 			
 			if(customer.getCce()!=null) {
-				if(customer.getDefaultClrntSys().contains("cce")) {
+				if(customer.getDefaultClrntSys().contains("CCE")) {
 					clrntlist.add(0, "CCE");
 				} else {
 					clrntlist.add("CCE");
 				}
 			}
 			if(customer.getBac()!=null) {
-				if(customer.getDefaultClrntSys().contains("bac")) {
+				if(customer.getDefaultClrntSys().contains("BAC")) {
 					clrntlist.add(0, "BAC");
 				} else {
 					clrntlist.add("BAC");
@@ -131,6 +138,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					clrntlist.add("844");
 				}
 			}
+			
+			reqObj.setAccttype(customer.getAccttype());
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
+			reqObj.setClrntList(clrntlist);
+			reqObj.setActive(true);
+			reqObj.setHistory(false);
 			
 			List<CustParms> newcustlist = new ArrayList<CustParms>();
 			
@@ -146,35 +161,27 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				newcustlist.add(newcust);
 			}
 			
-			reqObj.setAccttype(customer.getAccttype());
-			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
-			reqObj.setClrntList(clrntlist);
-			reqObj.setActive(true);
-			reqObj.setHistory(false);
 			reqObj.setCustList(newcustlist);
 			
 			List<EulaHist> ehlist = new ArrayList<EulaHist>();
 			EulaHist eh = new EulaHist();
-	
-			if(customer.getWebsite().equals("SherColor Web EULA")) {
-				Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
-				eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
-				ehlist.add(0, eh);
-				reqObj.setWebsite(sherColorWebEula.getWebSite());
-				reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
-			} else if(customer.getWebsite().equals("None")) {
-				eh = null;
-				ehlist = null;
-			} else {
-				//unexpected value
-				addFieldError("eulaerror", "Please select Eula from list");
-				return INPUT;
-			}
 			
-			reqObj.setEulaHistToActivate(eh);
-			reqObj.setEulaHistList(ehlist);
+			if(!customer.getWebsite().equals("None")) {
+				if(customer.getWebsite().equals("SherColor Web EULA")) {
+					Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
+					eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
+					ehlist.add(0, eh);
+					reqObj.setWebsite(sherColorWebEula.getWebSite());
+					reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
+				} else {
+					//unexpected value
+					addFieldError("customer.website", "Please select Eula from list");
+					return INPUT;
+				}
+				
+				reqObj.setEulaHistToActivate(eh);
+				reqObj.setEulaHistList(ehlist);
+			}
 			
 			sessionMap.put("CustomerDetail", reqObj);	
 			

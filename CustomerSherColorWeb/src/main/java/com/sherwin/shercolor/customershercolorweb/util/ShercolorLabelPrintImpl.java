@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +38,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
+/* Boxable is a library that can be used to easily create tables in pdf documents. http://dhorions.github.io/boxable/
+ * for examples of boxable, go to:  https://github.com/dhorions/boxable/blob/master/src/test/java/be/quodlibet/boxable/TableTest.java
+ */
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
 import be.quodlibet.boxable.HorizontalAlignment;
@@ -335,7 +339,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//Modify input values, replace / and " with -
 			if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
 				reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
-				reqObj.setColorName(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-"));
+				reqObj.setColorName(StringEscapeUtils.unescapeHtml(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-")));
 			}
 
 			// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
@@ -352,7 +356,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//Modify input values, replace / and " with -
 			if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
 				reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
-				reqObj.setColorName(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-"));
+				reqObj.setColorName(StringEscapeUtils.unescapeHtml(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-")));
 			}
 
 			// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
@@ -579,7 +583,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//Modify input values, replace / and " with -
 			if(!listJobField.isEmpty()){
 				for (JobField jobField : listJobField) {
-					jobField.setEnteredValue(jobField.getEnteredValue().replaceAll("\"|\\\\|\\~", "-"));
+					jobField.setEnteredValue(StringEscapeUtils.unescapeHtml(jobField.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
 				}
 			}
 
