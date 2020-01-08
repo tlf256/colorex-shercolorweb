@@ -30,54 +30,56 @@ function getRGB(colorantCode){
 function buildProgressBars(return_message){
 	var count = 1;
 		$(".progress-wrapper").empty();
-		return_message.errorList.forEach(function(item){
-			var colorList = item.message.split(" ");
-			var color= colorList[0];
-			var pct = colorList[1];
-			//fix bug where we are done, but not all pumps report as 100%
-			if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
-					 return_message.status == 0)) {
-				  pct = "100%";
-			  }
-			//$("#tinterProgressList").append("<li>" + item.message + "</li>");
-			
-			var $clone = $("#progress-0").clone();
-			$clone.attr("id","progress-" + count);
-			var $bar = $clone.children(".progress-bar");
-			$bar.attr("id","bar-" + count);
-			$bar.attr("aria-valuenow",pct);
-			$bar.css("width", pct);
-			$clone.css("display", "block");
-			var color_rgb = getRGB(color);
-//change color of text based on background color
-			switch(color){
-			case "WHT":
-			case "TW":
-			case "W1":
-				$bar.children("span").css("color", "black");
-				$bar.css("background-color", "#efefef");
-				break;
-			case "OY":
-			case "Y1":
-			case "YGS":
-				$bar.children("span").css("color", "black");
-				$bar.css("background-color", color_rgb);
-				break;
-			default:
-				$bar.css("background-color", color_rgb);
+		if(Object.keys(return_message.errorList).length > 0){
+			return_message.errorList.forEach(function(item){
+				var colorList = item.message.split(" ");
+				var color= colorList[0];
+				var pct = colorList[1];
+				//fix bug where we are done, but not all pumps report as 100%
+				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
+						return_message.status == 0)) {
+					pct = "100%";
+				}
+				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+
+				var $clone = $("#progress-0").clone();
+				$clone.attr("id","progress-" + count);
+				var $bar = $clone.children(".progress-bar");
+				$bar.attr("id","bar-" + count);
+				$bar.attr("aria-valuenow",pct);
+				$bar.css("width", pct);
+				$clone.css("display", "block");
+				var color_rgb = getRGB(color);
+//				change color of text based on background color
+				switch(color){
+				case "WHT":
+				case "TW":
+				case "W1":
+					$bar.children("span").css("color", "black");
+					$bar.css("background-color", "#efefef");
+					break;
+				case "OY":
+				case "Y1":
+				case "YGS":
+					$bar.children("span").css("color", "black");
+					$bar.css("background-color", color_rgb);
+					break;
+				default:
+					$bar.css("background-color", color_rgb);
 				$bar.children("span").css("color", "white");
 				break;
-			}
-			
-			
-			$bar.children("span").text(color + " " + pct);
-			console.log("barring " + item.message);
-			//console.log($clone);
-			
-			$clone.appendTo(".progress-wrapper");
-			
-			count++;
-		});
+				}
+
+
+				$bar.children("span").text(color + " " + pct);
+				console.log("barring " + item.message);
+				//console.log($clone);
+
+				$clone.appendTo(".progress-wrapper");
+
+				count++;
+			});
+		}
 }
 function FMXDispenseProgress(){
 	console.log('before dispense progress send');

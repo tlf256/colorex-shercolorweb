@@ -811,6 +811,7 @@
 	}
 	function buildProgressBars(return_message){
 		var count = 1;
+		if(Object.keys(return_message.errorList).length > 0){
 			$(".progress-wrapper").empty();
 			return_message.errorList.forEach(function(item){
 				var colorList = item.message.split(" ");
@@ -860,6 +861,7 @@
 				
 				count++;
 			});
+		}
 	}
 	function FMXDispenseProgress(){
 		console.log('before dispense progress send');
@@ -963,6 +965,7 @@
 		$("#tinterErrorListModal").modal('show');
 	}
 	function FMXDispenseComplete(return_message){
+		
 		buildProgressBars(return_message);
 		 $("#abort-message").hide();
 			

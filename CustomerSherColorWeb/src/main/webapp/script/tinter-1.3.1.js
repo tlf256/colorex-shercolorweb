@@ -324,6 +324,11 @@ function TintEventDetail(myType, myName, myQty){
 * @returns
 */
 function sendTinterEvent(myGuid, myDate, myMessage, teDetail){
+	if(myGuid == null){
+		if(reqGuid != null){
+			myGuid=reqGuid;
+		}
+	}
 	//var mydata = {reqGuid:myGuid, tinterMessage:myMessage, tintEventDetail:teDetail};
 	var mydata = {reqGuid:myGuid, eventDate:myDate.toString(), tintEventDetail:teDetail, tinterMessage:myMessage};
 	var jsonIn = JSON.stringify(mydata);
