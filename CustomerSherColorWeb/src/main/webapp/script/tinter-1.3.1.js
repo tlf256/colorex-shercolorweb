@@ -293,6 +293,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata){
 	this.errorSeverity=0;
 	this.errorMessage=0;
 	this.errorList=null;
+	this.statusMessages=null;
 }
 function createUUID() {
     // http://www.ietf.org/rfc/rfc4122.txt
@@ -324,6 +325,7 @@ function TintEventDetail(myType, myName, myQty){
 * @returns
 */
 function sendTinterEvent(myGuid, myDate, myMessage, teDetail){
+/* use global variable if null sent for myGuid*/
 	if(myGuid == null){
 		if(reqGuid != null){
 			myGuid=reqGuid;

@@ -13,7 +13,7 @@ var sendingTinterCommand = "false";
     	if(sendingTinterCommand == "true"){
         e = e || window.event;
         
-        if (e.code === 'F5') {
+        if (e.code === 'F4') {
         	abort();
             console.log(e);
             e.preventDefault();
@@ -30,8 +30,8 @@ function getRGB(colorantCode){
 function buildProgressBars(return_message){
 	var count = 1;
 		$(".progress-wrapper").empty();
-		if(Object.keys(return_message.errorList).length > 0){
-			return_message.errorList.forEach(function(item){
+		if(Object.keys(return_message.statusMessages).length > 0){
+			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
 				var color= colorList[0];
 				var pct = colorList[1];
@@ -119,7 +119,7 @@ function dispenseProgressResp(return_message){
 			 return_message.status == 1)) {
 		$("#tinterProgressList").empty();
 		 tinterErrorList = [];
-		if(return_message.errorList!=null && return_message.errorList[0]!=null){
+		if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 		//keep updating modal with status
 		//$("#progress-message").text(return_message.errorMessage);
 			buildProgressBars(return_message);
@@ -146,8 +146,8 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
     $("#tinterErrorList").empty();
     $("#tinterErrorListModal").modal('show');
     $("#abort-message").hide();
-    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-    	if(my_return_message.errorList.length > 0){
+    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
+    	if(my_return_message.statusMessages.length > 0){
     		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
     	}
     	/*
@@ -166,8 +166,8 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
 }
 function showTinterErrorModal(myTitle, mySummary, my_return_message){
     $("#tinterErrorList").empty();  
-    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-        my_return_message.errorList.forEach(function(item){
+    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
+        my_return_message.statusMessages.forEach(function(item){
             $("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
         });
     } else {
@@ -191,12 +191,13 @@ function FMXDispenseComplete(return_message){
         $('#tinterInProgressMessage').text('');
         $("#tinterProgressList").empty();
 		tinterErrorList = [];
-		if(return_message.errorList!=null && return_message.errorList[0]!=null){
+		if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 	        buildProgressBars(return_message);
-			return_message.errorList.forEach(function(item){
+/* DJM dont think we need this for FMX			return_message.errorList.forEach(function(item){
 			//	$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				tinterErrorList.push(item.message);
 			});
+			*/
 		} else {
 		
 			tinterErrorList.push(return_message.errorMessage);

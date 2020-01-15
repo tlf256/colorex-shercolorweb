@@ -279,7 +279,7 @@ function ParsePrintMessage() {
 	    	if(sendingTinterCommand == "true"){
 	        e = e || window.event;
 	        
-	        if (e.code === 'F5') {
+	        if (e.code === 'F4') {
 	        	abort();
 	            console.log(e);
 	            e.preventDefault();
@@ -297,8 +297,8 @@ function ParsePrintMessage() {
 	function buildProgressBars(return_message) {
 		var count = 1;
 		$(".progress-wrapper").empty();
-		if (Object.keys(return_message.errorList).length > 0) {
-			return_message.errorList
+		if (Object.keys(return_message.statusMessages).length > 0) {
+			return_message.statusMessages
 					.forEach(function(item) {
 						var colorList = item.message.split(" ");
 						var color = colorList[0];
@@ -386,17 +386,18 @@ function ParsePrintMessage() {
 				&& (return_message.errorNumber == 1 || return_message.status == 1)) {
 			$("#tinterProgressList").empty();
 			tinterErrorList = [];
-			if (return_message.errorList != null
-					&& return_message.errorList[0] != null) {
+			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 				//keep updating modal with status
 				//$("#progress-message").text(return_message.errorMessage);
-				buildProgressBars(return_message);
+				if(return_message.statusMessages.length > 0){
+					buildProgressBars(return_message);
+				}
+				
+				} else {
+					tinterErrorList.push(return_message.errorMessage);
+					$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+				}
 
-			} else {
-				tinterErrorList.push(return_message.errorMessage);
-				$("#tinterProgressList").append(
-						"<li>" + return_message.errorMessage + "</li>");
-			}
 			console.log(return_message);
 			setTimeout(function() {
 				FMXDispenseProgress();
@@ -417,11 +418,10 @@ function ParsePrintMessage() {
 		$("#abort-message").hide();
 		processingDispense = false; // allow user to start another dispense after tinter error
 
-		if (my_return_message.errorList != null
-				&& my_return_message.errorList[0] != null) {
-			if (my_return_message.errorList.length > 0) {
-				buildProgressBars(my_return_message); // on an abort, for example, we will have a progress update to do.
-			}
+	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
+	    	if(my_return_message.statusMessages.length > 0){
+	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
+	    	}
 			/*
 			my_return_message.errorList.forEach(function(item){
 			    $("#tinterErrorList").append( '</li>' + item.message + '</li>');
@@ -790,7 +790,7 @@ function ParsePrintMessage() {
 				clearInterval(interval);
 			}
 		});
-		jQuery(document).on("keydown", fkey); // capture F5
+		jQuery(document).on("keydown", fkey); // capture F4
 	}
 </script>
 <script type="text/javascript">
@@ -1232,7 +1232,7 @@ function ParsePrintMessage() {
 								<div class="modal-body">
 									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F5 to abort </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F4 to abort </p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>

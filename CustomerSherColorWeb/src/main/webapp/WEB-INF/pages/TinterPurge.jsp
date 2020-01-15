@@ -52,7 +52,7 @@
     	if(sendingTinterCommand == "true"){
         e = e || window.event;
         
-        if (e.code === 'F5') {
+        if (e.code === 'F4') {
         	abort();
             console.log(e);
             e.preventDefault();
@@ -69,7 +69,7 @@
 	function buildProgressBars(return_message){
 		var count = 1;
 			$(".progress-wrapper").empty();
-			return_message.errorList.forEach(function(item){
+			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
 				var color= colorList[0];
 				var pct = colorList[1];
@@ -152,8 +152,8 @@
 			//$("#progress-message").text(return_message.errorMessage);
 			$("#tinterProgressList").empty();
 			dispenseErrorList = [];
-			if(return_message.errorList!=null && return_message.errorList[0]!=null){
-				return_message.errorList.forEach(function(item){
+			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
+				return_message.statusMessages.forEach(function(item){
 					buildProgressBars(return_message);
 						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 					dispenseErrorList.push(item.message);
@@ -179,8 +179,8 @@
 	    $("#tinterErrorListModal").modal('show');
 	    $("#abort-message").hide();
 	    
-	    if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-	    	if(my_return_message.errorList.length > 0){
+	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
+	    	if(my_return_message.statusMessages.length > 0){
 	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
 	    	}
 	    	/*
@@ -450,7 +450,7 @@
 		$('#purgeInProgressModal').on('show.bs.modal',function(){
 			rotateIcon();
 		});
-		//capture F5 key to abort
+		//capture F4 key to abort
 		jQuery(document).on("keydown",fkey);
 	});
     
@@ -601,7 +601,7 @@
 							<div class="modal-body">
 							
 								<p id="progress-message" font-size="4">Please wait while the tinter performs Purge All Colorants...</p>
-								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"> Press F5 to abort </p>
+								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"> Press F4 to abort </p>
 								<div class="progress-wrapper "></div>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
