@@ -88,6 +88,7 @@
 		var wssCount = 0;
 		var sendingTinterCommand = "false";
 		var sendingSpectroCommand = "false";
+		var detectAttempt = 0;
 
 		<s:if test="%{tinter.model != null && tinter.model != ''}">
 			// setup local host config
@@ -214,7 +215,18 @@
 			sendingTinterCommand = "true";
 	    	ws_tinter.send(json);
 		}
-		
+		function AfterDetectTinterGetStatus(){
+			;
+			var cmd = "InitStatus";
+			$("#initTinterInProgressModal").modal('show');
+			rotateIcon();
+			var shotList = null;
+			var configuration = null;
+			var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+	    	var json = JSON.stringify(tintermessage);
+			sendingTinterCommand = "true";
+	    	ws_tinter.send(json);
+		}		
 		function readLocalhostSpectroConfig(){
 			var cmd = "ReadConfig";
 	    	var clreyemodel = $('#spectroModel').val();
@@ -260,7 +272,7 @@
   		}
 		
 		function readLocalhostConfig(){
-
+			detectAttempt = 0;
 			var cmd = "ReadConfig";
 			var shotList = null;
 			var configuration = null;
@@ -378,9 +390,16 @@
 				}
 			}
     	}
+    	function UnsolicitedDetectResp(return_message){
+      
+        		$("#progress-message").text(return_message.errorMessage);
+				console.log("unsolicited detect resp" + return_message);
+				readLocalhostConfig();
+            	
+        	}
 		function DetectFMXResp(return_message){
 			console.log("Processing FMX Detect Response");
-			var initErrorList;
+			var initErrorList=[];
 			// log event
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
@@ -390,6 +409,27 @@
 					 return_message.status == 1)) {
 				
 				$("#progress-message").text(return_message.errorMessage);
+				if(detectAttempt < 80){
+					setTimeout(
+					  function() 
+					  { //make sure we are not slamming everything
+							AfterDetectTinterGetStatus(); // keep sending init status until you get something.
+					  }, 5000);					detectAttempt++;
+				}
+				else{ // close up shop with this error.
+					sendTinterEvent(myGuid, curDate, return_message, null); 
+					waitForShowAndHide('#initTinterInProgressModal');
+					return_message.errorMessage = "Timeout Waiting for X-Tinter Detect";
+				
+					initErrorList.push(return_message.errorMessage);
+					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+				
+					$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
+					$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+					$("#tinterErrorListModal").modal('show');
+					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+			
+					}
 				console.log(return_message);
 			}
 			
@@ -488,10 +528,13 @@
 				// is result (wsmsg) JSON?
 				var isTintJSON = false;
 				try{
-					if(ws_tinter && ws_tinter.wsmsg!=null){
+					if(ws_tinter && ws_tinter.wsmsg!=null && ws_tinter.wsmsg.length > 0){
 						var return_message=JSON.parse(ws_tinter.wsmsg);
 						isTintJSON = true;
 					}
+					else{
+							console.log("tinter message is blank.  skipping.");
+						}
 				}
 				catch(error){
                     console.log("Caught error is = " + error);
@@ -559,10 +602,20 @@
 							var todayYYYYMMDD = YYYY+MM+DD;
 							console.log("Compare " + todayYYYYMMDD + " to " + return_message.lastInitDate);
 							if (todayYYYYMMDD>return_message.lastInitDate){
+								detectTinter();
+							}
+							//DJMif (todayYYYYMMDD>return_message.lastInitDate){
+								// detect is not from today, redo
+								//detectTinter();
+								
+							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.indexOf("FM X") >= 0){
+									DetectFMXResp(return_message);
+							} 
+							else if (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
 								detectTinter();
 								
-							} else {				
+							}else {				
 								// current detect, see if there were errors			}
 								if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 									// Detected and no errors from tinter 
@@ -613,20 +666,24 @@
 							break;
 						case 'Detect':
 						case 'Init':
-							console.log("recd detect or init response for " + localhostConfig.model);
-							if(localhostConfig.model.indexOf("COROB") >= 0 || localhostConfig.model.indexOf("Corob") >= 0|| localhostConfig.model.indexOf("SIMULATOR") >= 0){
-								DetectCorobResp(return_message);
-								sendingTinterCommand = "false";
-					    		// get session for tinter status
-					    		getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
-							}
-							else if(localhostConfig.model.indexOf("FM X") >= 0){
-								DetectFMXResp(return_message);
+							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.length > 0){
+								console.log("recd detect or init response for " + localhostConfig.model);
+								if(localhostConfig.model.indexOf("COROB") >= 0 || localhostConfig.model.indexOf("Corob") >= 0|| localhostConfig.model.indexOf("SIMULATOR") >= 0){
+									DetectCorobResp(return_message);
+									sendingTinterCommand = "false";
+						    		// get session for tinter status
+						    		getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 								}
-							else{
-								DetectFMResp(return_message);								
+								else if(localhostConfig.model.indexOf("FM X") >= 0){
+									DetectFMXResp(return_message);
+									}
+								else{
+									DetectFMResp(return_message);								
+								}
 							}
-				    	
+							else{
+								UnsolicitedDetectResp(return_message);
+								}
 							break;
 						default:
 							//Not a response for our command...
