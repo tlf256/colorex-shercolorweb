@@ -485,12 +485,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
-							<s:if test="%{#sessionScope[thisGuid].tinter.model=='FM XPROTINT' || #sessionScope[thisGuid].tinter.model=='FM XSMART'  }">
-					
-								<p class="lead">1. Thoroughly Clean Nozzle with the Cleaning Tool</p>
-								<p class="lead">2. Clean and Moisten Humidifier Sponge Before Purging</p>
-								<p class="lead">3. Position Container and click Purge button to start purge colorants</p>
-								<p></p>
+						        <s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
+									<p class="lead">1. Thoroughly Clean Nozzle with the Cleaning Tool</p>
+									<p class="lead">2. Clean and Moisten Humidifier Sponge Before Purging</p>
+									<p class="lead">3. Position Container and click Purge button to start purge colorants</p>
+									<p></p>
 								</s:if>
 								<p class="lead" id="lastPurgeText">Last purge was done on <s:property value="lastPurgeDate"/> by <s:property value="lastPurgeUser"/></p>
 								<p></p>
@@ -533,8 +532,7 @@
 		    	</div>
 				<br>	
 				<br>	
-				<s:if test="%{#sessionScope[thisGuid].tinter.model=='FM XPROTINT' || #sessionScope[thisGuid].tinter.model=='FM XSMART'  }">
-				
+				<s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
 					<div class="row">
 						<div class="col-sm-3">
 						</div>
