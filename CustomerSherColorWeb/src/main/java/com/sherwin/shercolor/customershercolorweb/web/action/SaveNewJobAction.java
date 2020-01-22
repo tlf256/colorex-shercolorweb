@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -81,6 +82,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			}
 
 			custWebTran.setLastTranDate(localeDateTime);
+			custWebTran = unescapeJobFields(custWebTran);
 
 			//logger.info("determine saveNew or update. controlNbr is " + custWebTran.getControlNbr());
 			if(custWebTran.getControlNbr()>0){
@@ -448,6 +450,22 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 				custWebTran.setOrigClrntAmt8(origTran.getClrntAmt8());
 			}
 		}
+		return custWebTran;
+	}
+	
+	public CustWebTran unescapeJobFields(CustWebTran custWebTran) {
+		
+		custWebTran.setJobField01(StringEscapeUtils.unescapeHtml(custWebTran.getJobField01()));
+		custWebTran.setJobField02(StringEscapeUtils.unescapeHtml(custWebTran.getJobField02()));
+		custWebTran.setJobField03(StringEscapeUtils.unescapeHtml(custWebTran.getJobField03()));
+		custWebTran.setJobField04(StringEscapeUtils.unescapeHtml(custWebTran.getJobField04()));
+		custWebTran.setJobField05(StringEscapeUtils.unescapeHtml(custWebTran.getJobField05()));
+		custWebTran.setJobField06(StringEscapeUtils.unescapeHtml(custWebTran.getJobField06()));
+		custWebTran.setJobField07(StringEscapeUtils.unescapeHtml(custWebTran.getJobField07()));
+		custWebTran.setJobField08(StringEscapeUtils.unescapeHtml(custWebTran.getJobField08()));
+		custWebTran.setJobField09(StringEscapeUtils.unescapeHtml(custWebTran.getJobField09()));
+		custWebTran.setJobField10(StringEscapeUtils.unescapeHtml(custWebTran.getJobField10()));
+		
 		return custWebTran;
 	}
 	

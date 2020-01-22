@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebTinterEvents;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 public class ProcessTinterPurgeAction extends ActionSupport implements SessionAware, LoginRequired  {
@@ -26,6 +28,7 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 	private String lastPurgeUser;
 	
 	private TinterInfo tinter;
+	private List<TinterCanister> canList;
 	
 	@Autowired
 	TinterService tinterService;
@@ -36,6 +39,7 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			TinterInfo tinter = reqObj.getTinter();
+			setCanList(tinter.getCanisterList()); // fill it up!
 			//already there from stamp tinter session... tinter.setAutoNozzleCover(tinterService.hasAutoNozzleCover(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr()));
 			
 			CustWebTinterEvents lastPurge = tinterService.getLastPurgeDateAndUser(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
@@ -101,6 +105,14 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 
 	public TinterInfo getTinter() {
 		return tinter;
+	}
+
+	public List<TinterCanister> getCanList() {
+		return canList;
+	}
+
+	public void setCanList(List<TinterCanister> canList) {
+		this.canList = canList;
 	}
 
 

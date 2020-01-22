@@ -45,7 +45,8 @@
 	var myModelList = null;
 	var reqGuid = "${reqGuid}";
 	var initStarted = 0;
-
+	var detectAttempt = 0;
+	
 	function buildEcal() {
 		var dt_array1 = [];
 		<s:iterator value="myEcalList">
@@ -123,6 +124,7 @@
 	};
 
 	function init() {
+		detectAttempt = 0;
 		if(initStarted == 0){
 			initStarted = 1;
 			var command = "Detect"; //TODO change back to detect
@@ -389,15 +391,28 @@
 		 */
 
 	});
-
+	function AfterDetectTinterGetStatus(){
+		;
+		var cmd = "InitStatus";
+		rotateIcon();
+		var shotList = null;
+		var configuration = null;
+		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+    	var json = JSON.stringify(tintermessage);
+		sendingTinterCommand = "true";
+    	ws_tinter.send(json);
+	}		
 	function RecdMessage() {
 		var model = $('#modelSelect').val();
 			if(model.indexOf("COROB") >= 0 || model.indexOf("Corob") >= 0|| model.indexOf("SIMULATOR") >= 0){
 			RecdMessageCorob();
 		}
+		else if(model.indexOf("FM X") >= 0){
+			RecdMessageFMX();
+		}
 		else{
 			RecdMessageFM();
-			}
+		}
 	}
 	function RecdMessageCorob() {
 		var curDate = new Date();
@@ -463,6 +478,7 @@
 								return_message.errorMessage);
 						break;
 					}
+					$("#detectErrorMessage").css("white-space", "pre");
 					$("#detectErrorMessage").text(return_message.errorMessage);
 					if (return_message.errorList != undefined) {
 
@@ -475,6 +491,125 @@
 					}
 				}
 				sendTinterEvent(reqGuid, curDate, return_message,null);
+				break;
+			default:
+				//Not an response we expected...
+				console
+						.log("Message from different command is junk, throw it out");
+			}
+			
+		}
+	}
+	function RecdMessageFMX() {
+		var curDate = new Date();
+		console.log("Received FMX Message");
+		//parse the spectro
+		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
+				console.log(ws_tinter.wsmsg);
+				console.log("isReady is " + ws_tinter.isReady + "BTW");
+				//Show a modal with error message to make sure the user is forced to read it.
+				$("#configError").text(ws_tinter.wserrormsg);
+				$("#configErrorModal").modal('show');			
+		} else {
+
+		
+			var return_message = JSON.parse(ws_tinter.wsmsg);
+			switch (return_message.command) {
+
+			case 'Config':
+				if (return_message.errorNumber == 0) {
+					init();
+					$("#detectInProgressModal").modal('show');
+					rotateIcon();
+				} else {
+					$("#configError").text(return_message.errorMessage);
+					$("#configErrorModal").modal('show');
+				}
+				sendTinterEvent(reqGuid, curDate, return_message,null);
+				break;
+			case 'Detect':
+			case 'Init':
+			case 'InitStatus':
+				//status = 1, means, still trying serial ports so still in progress.
+				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) &&
+						 (return_message.errorNumber >= 0 ||
+						 return_message.status == 1)) {
+					 	//save		
+					$("#progress-message").text(return_message.errorMessage);
+					if(detectAttempt < 80){
+						setTimeout(
+							  function() 
+							  { //make sure we are not slamming everything
+									AfterDetectTinterGetStatus(); // keep sending init status until you get something.
+							  }, 5000);
+
+						detectAttempt++;
+					}
+					else{ // close up shop with this error.
+						//sendTinterEvent(myGuid, curDate, return_message, null); 
+						waitForShowAndHide('#detectInProgressModal');
+						return_message.errorMessage = "Timeout Waiting for X-Tinter Detect";
+						return_message.errorNumber = -1;
+					
+						
+						$("#detectErrorList").append("<li>" + return_message.errorMessage + "</li>");
+					
+						$("#errorModalTitle").text("Tinter Detect and Initialization Failed");
+						$("#detectErrorMessage").text("Issues need to be resolved before you try to dispense formulas.");
+						$("#detectErrorModal").modal('show');
+					
+				
+						}
+					//console.log(return_message.errorMessage);
+				}
+				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
+					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
+					
+					
+					waitForShowAndHide("#detectInProgressModal");
+		           
+					$("#detectStatusModal").modal('show');
+					
+					$("#detectStatus") 
+							.text(
+									"Tinter Detected. Config Complete. Click to continue");
+				}
+				else {
+					
+					waitForShowAndHide("#detectInProgressModal");
+		           
+					$("#detectErrorModal").modal('show');
+					
+					switch (return_message.errorNumber) {
+					case -10500:
+					case -3084:
+						$("#errorModalTitle")
+								.text(
+										"Tinter Detected. Config Complete....with errors.");
+						$("#detectErrorMessage").text(
+								return_message.errorMessage);
+						break;
+					default:
+						$("#errorModalTitle").text(
+								"Tinter Init Error(s)  ")
+						$("#detectErrorMessage").text(
+								return_message.errorMessage);
+						break;
+					}
+					$("#detectErrorMessage").text(return_message.errorMessage);
+					if (return_message.errorList != undefined) {
+
+						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
+							var error = return_message.errorList[i];
+							var errorText = "<li>" + error.num + "\t"
+									+ error.message + "</li>";
+							$("#detectErrorList").append(errorText);
+						}
+					}
+				}
+				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
+					sendTinterEvent(reqGuid, curDate, return_message,null);
+				}
 				break;
 			default:
 				//Not an response we expected...
@@ -713,8 +848,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<p id="progress-message" >Please wait while your
-						tinter initializes...</p>
+					<p id="progress-message" style="white-space:pre-line">Please wait while your tinter initializes...</p>
 				</div>
 				<div class="modal-footer">
 					<!-- 									<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button> -->
