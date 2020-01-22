@@ -234,12 +234,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					result = customerService.deleteAllCustWebParms(existingRecords);
 					if(!result) {
 						addActionError("Error - Unable to update CustWebParms record(s)");
-						return INPUT;
 					}
 					saveOrUpdateCwp = true;
 				} else {
 					addActionError("Error - Unable to create customer. Customer ID already exists");
-					return INPUT;
 				}
 			}
 			
@@ -284,12 +282,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					result = customerService.deleteAllCustWebJobFields(existingJobs);
 					if(!result) {
 						addActionError("Error - Unable to update CustWebJobFields record(s)");
-						return INPUT;
 					}
 					saveOrUpdateCwjf = true;
 				} else {
 					addActionError("Error - Unable to change CustWebJobFields record(s)");
-					return INPUT;
 				}
 			}
 			
@@ -315,12 +311,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						result = customerService.deleteAllCustWebLoginTrans(existingLogins);
 						if(!result) {
 							addActionError("Error - Unable to update CustWebLoginTransform record(s)");
-							return INPUT;
 						}
 						saveOrUpdateCwlt = true;
 					} else {
 						addActionError("Error - Unable to change CustWebLoginTransform record(s)");
-						return INPUT;
 					}
 				}
 			}
@@ -334,7 +328,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				
 				if(!result) {
 					addActionError("Error - Unable to save CustWeb Data");
-					return INPUT;
 				}
 			}
 			
@@ -374,21 +367,18 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						result = customerService.deleteAllCustWebParms(existingRecords);
 						if(!result) {
 							addActionError("Error - Unable to delete CustWebParms record(s)");
-							return INPUT;
 						}
 					}
 					if(!existingLogins.isEmpty()) {
 						result = customerService.deleteAllCustWebLoginTrans(existingLogins);
 						if(!result) {
 							addActionError("Error - Unable to delete CustWebLoginTransform record(s)");
-							return INPUT;
 						}
 					}
 					if(!existingJobfields.isEmpty()) {
 						result = customerService.deleteAllCustWebJobFields(existingJobfields);
 						if(!result) {
 							addActionError("Error - Unable to delete CustWebJobFields record(s)");
-							return INPUT;
 						}
 					}
 					// check for toactivate record
@@ -404,7 +394,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						
 						if(!result) {
 							addActionError("Error - Unable to delete EulaHist TOACTIVATE record");
-							return INPUT;
 						}
 					}
 					// check for eula pdf record
@@ -412,7 +401,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						result = eulaService.deleteEula(reqObj.getEula());
 						if(!result) {
 							addActionError("Error - Unable to delete Eula record");
-							return INPUT;
 						}
 					}
 					

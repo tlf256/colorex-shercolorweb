@@ -59,7 +59,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					//reqObj.setCustomerId("990001");
 					// list should not be empty
 					addActionError("Database Error - National customer cannot be created. Please contact administrator.");
-					return INPUT;
 				} else {
 					Object[] idList = custWebParms.toArray();
 					
@@ -89,7 +88,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					//reqObj.setCustomerId("INTL0001");
 					// list should not be empty
 					addActionError("Database Error - International customer cannot be created. Please contact administrator.");
-					return INPUT;
 				} else {
 					Object[] custIdList = custParms.toArray();
 					

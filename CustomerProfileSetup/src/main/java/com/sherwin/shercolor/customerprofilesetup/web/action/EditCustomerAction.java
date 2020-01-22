@@ -143,7 +143,6 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				
 				if(activeEula.getCustomerId() != null) {
 					addFieldError("custediterror", "EULA for " + activeEula.getCustomerId() + " already exists");
-					return INPUT;
 				}
 				
 				byte[] filebytes = readBytesFromFile(eulafile);
@@ -179,7 +178,6 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					} else {
 						//unexpected value
 						addFieldError("custediterror", "Please select Eula from list");
-						return INPUT;
 					}
 					
 					reqObj.setEulaHistToActivate(eh);
@@ -255,6 +253,8 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				}
 				
+			} else {
+				reqObj.setLoginUnchanged(true);
 			}
 			
 			if(job!=null) {
@@ -331,6 +331,8 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				}
 				
+			} else {
+				reqObj.setJobUnchanged(true);
 			}
 			
 			sessionMap.put("CustomerDetail", reqObj);
