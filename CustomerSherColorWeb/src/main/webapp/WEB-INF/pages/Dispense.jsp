@@ -25,10 +25,12 @@
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Dispense.js"></script>
 <script type="text/javascript">
-var shotList = [];
-<s:iterator value="tinter.canisterList" status="i">
-	shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
-</s:iterator>
+	<s:iterator value="tinter.canisterList" status="i">
+//DJM not sure what this shotList is here for, but no way I'm deleting it now :) 
+		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
+		_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
+	</s:iterator>
+
 </script>
 <style type="text/css">
 input {
@@ -104,6 +106,7 @@ input[type=number] {
 						<div class="col-sm-3">
 							<s:set var="thisGuid" value="reqGuid" />
 							<s:hidden value="%{thisGuid}" id="reqGuid"></s:hidden>
+							<s:hidden value="%{tinter.model}" id="tinterModel"></s:hidden>
 						</div>
 					</div>
 					<br>
@@ -191,7 +194,11 @@ input[type=number] {
 								<div class="modal-body">
 									<p id="dispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-								</div>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F4 to abort </p>
+									<ul class="list-unstyled" id="tinterProgressList"></ul> 
+								
+									<div class="progress-wrapper "></div>
+					        	</div>
 								<div class="modal-footer">
 									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>
 								</div>
@@ -208,6 +215,12 @@ input[type=number] {
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
+									
+										
+									<div class="progress-wrapper "></div>
+										
+								
+					
 									<div>
 										<ul class="p-0" id="tinterErrorList" style="list-style: none;">
 										</ul>
@@ -260,7 +273,14 @@ input[type=number] {
 							</div>
 						</div>
 					</div>	
-		
+					<!-- dummy div to clone -->
+					<div id="progress-0" class="progress" style="margin:10px;">
+				        <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
+								 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
+								 <span></span>
+				  		</div>
+				  		<br/>
+					</div>
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>

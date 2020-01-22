@@ -104,34 +104,66 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 					// yuk case statement for now, find a better place to store and retrieve this
 					switch(colorant.getClrntCode()){
 					case "B1":
+					case "LB":
+					case "BLK":
 						canister.setRgbHex("#000000");
 						break;
 					case "G2":
+					case "PG":
+					case "TGR":
 						canister.setRgbHex("#009933");
 						break;
 					case "L1":
+					case "PB":
+					case "TBL":
 						canister.setRgbHex("#0000ff");
 						break;
 					case "N1":
+					case "BU":
 						canister.setRgbHex("#996633");
 						break;
 					case "R2":
+					case "RO":
+					case "ROX":
 						canister.setRgbHex("#990000");
 						break;
 					case "R3":
+					case "MAG":
+					case "QV":
 						canister.setRgbHex("#ff3399");
 						break;
 					case "R4":
+					case "QR":
+					case "RED":
 						canister.setRgbHex("#ff0000");
 						break;
 					case "Y1":
+					case "OY":
 						canister.setRgbHex("#ffff00");
 						break;
 					case "Y3":
+					case "YO":
+					case "YOX":
 						canister.setRgbHex("#ffcc00");
 						break;
 					case "W1":
+					case "TW":
+					case "WHT":
 						canister.setRgbHex("#ffffff");
+						break;
+					case "MY":
+						canister.setRgbHex("#ffcc00");
+						break;
+					case "UO":
+					case "YRS":
+						canister.setRgbHex("#ff8000");
+						break;
+					case "YGS":
+						canister.setRgbHex("#dfff00");
+						break;
+					
+					case "ORN":
+						canister.setRgbHex("#c54e1b");
 						break;
 					default:
 						canister.setRgbHex("#000000"); // black

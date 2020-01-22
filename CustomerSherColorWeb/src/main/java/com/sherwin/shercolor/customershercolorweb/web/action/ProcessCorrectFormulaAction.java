@@ -84,6 +84,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	@Autowired
 	ProductService productService;
 
+	TinterInfo tinter = null;
+	
 	public String display(){
 		String retVal;
 		
@@ -96,7 +98,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 			
 			sessionHasTinter = false;
-			TinterInfo tinter = reqObj.getTinter();
+			tinter = reqObj.getTinter();
 			if(tinter!=null && tinter.getModel()!=null && !tinter.getModel().isEmpty()) sessionHasTinter = true;
 			
 			correctionHistory = new ArrayList<CorrectionStep>();
@@ -567,6 +569,14 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 	public String getMaxLoadType() {
 		return maxLoadType;
+	}
+
+	public TinterInfo getTinter() {
+		return tinter;
+	}
+
+	public void setTinter(TinterInfo tinter) {
+		this.tinter = tinter;
 	}
 
 
