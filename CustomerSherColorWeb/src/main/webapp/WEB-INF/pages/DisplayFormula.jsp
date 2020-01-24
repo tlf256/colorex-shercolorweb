@@ -472,8 +472,9 @@ function ParsePrintMessage() {
 		$("#tinterErrorListModal").modal('show');
 	}
 	function FMXDispenseComplete(return_message) {
-
-		buildProgressBars(return_message);
+		if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
+			buildProgressBars(return_message);
+		}
 		$("#abort-message").hide();
 
 		if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
