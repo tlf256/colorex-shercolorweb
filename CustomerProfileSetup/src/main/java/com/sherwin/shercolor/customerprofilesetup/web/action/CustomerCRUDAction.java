@@ -191,9 +191,12 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			boolean saveOrUpdateCwp = false;
 			boolean saveOrUpdateCwjf = false;
 			boolean saveOrUpdateCwlt = false;
+			boolean addOrDeleteCwp = false;
+			boolean addOrDeleteCwjf = false;
+			boolean addOrDeleteCwlt = false;
 			
 			if(!reqObj.isCustUnchanged()) {
-				
+				logger.info("CustWebParms records have been modified or need to be created");
 				//get date
 				Date sqlDate = new Date(System.currentTimeMillis());
 				//map session values to custwebparms domain object
@@ -224,20 +227,18 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					customerList.add(custWebParms);
 				}
 				
-				if(reqObj.isNewCustomer() || reqObj.isCustEdited()) {
-					//create new CustWebParms records
-					saveOrUpdateCwp = true;
-				} else if(reqObj.isCustDeleted() || reqObj.isCustAdded()) {
+				if(reqObj.isCustDeleted() || reqObj.isCustAdded()) {
 					// customer already exists and
-					// one or more (not all) records have been deleted or added
+					// one or more records have been deleted or added
 					// delete existing records, then recreate CustWebParms records
-					result = customerService.deleteAllCustWebParms(existingRecords);
-					if(!result) {
-						addActionError("Error - Unable to update CustWebParms record(s)");
-					}
+					addOrDeleteCwp = true;
 					saveOrUpdateCwp = true;
+					logger.info("CustWebParms record has been added or deleted");
 				} else {
-					addActionError("Error - Unable to create customer. Customer ID already exists");
+					// if there haven't been any records added or deleted
+					// and the data has been changed or it is a new
+					// customer, then save or update
+					saveOrUpdateCwp = true;
 				}
 			}
 			
@@ -251,15 +252,17 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				//eh.setAcceptanceCode(ac);
 				
 				eulaService.createEulaHist(eh);
+				logger.info("Created EulaHist TOACTIVATE record");
 			}
 			
 			// create eula pdf
 			if(reqObj.getEula() != null) {
 				eulaService.createEula(reqObj.getEula());
+				logger.info("Created Eula record");
 			}
 			
 			if(!reqObj.isJobUnchanged()) {
-				
+				logger.info("CustWebJobFields records have been modified or need to be created");
 				// map model object to domain object
 				for(JobFields job : reqObj.getJobFieldList()) {
 					CustWebJobFields custWebJobs = new CustWebJobFields();
@@ -272,25 +275,22 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					jobList.add(custWebJobs);
 				}
 				
-				if(reqObj.isNewCustomer() || reqObj.isJobEdited()) {
-					// if customer does not have existing records
-					// or existing records can be updated
-					saveOrUpdateCwjf = true;
-				} else if(reqObj.isJobAdded() || reqObj.isJobDeleted()) {
+				if(reqObj.isJobAdded() || reqObj.isJobDeleted()) {
 					// one or more records have been deleted or added
 					// delete existing records, then recreate CustWebJobFields records
-					result = customerService.deleteAllCustWebJobFields(existingJobs);
-					if(!result) {
-						addActionError("Error - Unable to update CustWebJobFields record(s)");
-					}
+					addOrDeleteCwjf = true;
 					saveOrUpdateCwjf = true;
+					logger.info("CustWebJobFields records have been added or deleted");
 				} else {
-					addActionError("Error - Unable to change CustWebJobFields record(s)");
+					// if there haven't been any records added or deleted
+					// and the data has been changed or it is a new
+					// customer, then save or update
+					saveOrUpdateCwjf = true;
 				}
 			}
 			
 			if(!reqObj.isLoginUnchanged()) {
-				
+				logger.info("CustWebLoginTransform records have been modified or need to be created");
 				if(reqObj.getLoginList() != null) {
 					//map session values to custweblogintransform domain object
 					for(LoginTrans login : reqObj.getLoginList()) {
@@ -301,34 +301,47 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						custWebLogin.setAcctComment(login.getAcctComment());
 						loginList.add(custWebLogin);
 					}
-					if(reqObj.isNewCustomer() || reqObj.isLoginEdited()) {
-						//create login transform records
-						saveOrUpdateCwlt = true;
-					} else if(reqObj.isLoginAdded() || reqObj.isLoginDeleted()) {
+					if(reqObj.isLoginAdded() || reqObj.isLoginDeleted()) {
 						// one or more records have been deleted
 						// delete existing records, then
 						// recreate CustWebLoginTransform records
-						result = customerService.deleteAllCustWebLoginTrans(existingLogins);
-						if(!result) {
-							addActionError("Error - Unable to update CustWebLoginTransform record(s)");
-						}
+						addOrDeleteCwlt = true;
 						saveOrUpdateCwlt = true;
+						logger.info("CustWebLoginTransform records have been added or deleted");
 					} else {
-						addActionError("Error - Unable to change CustWebLoginTransform record(s)");
+						// if there haven't been any records added or deleted
+						// and the data has been changed or it is a new
+						// customer, then save or update
+						saveOrUpdateCwlt = true;
 					}
 				}
 			}
 			
-			if(saveOrUpdateCwp || saveOrUpdateCwjf || saveOrUpdateCwlt) {
-				if(!saveOrUpdateCwp) customerList = null;
-				if(!saveOrUpdateCwjf) jobList = null;
-				if(!saveOrUpdateCwlt) loginList = null;
+			if(!addOrDeleteCwp) existingRecords = null;
+			if(!addOrDeleteCwjf) existingJobs = null;
+			if(!addOrDeleteCwlt) existingLogins = null;
+			if(!saveOrUpdateCwp) customerList = null;
+			if(!saveOrUpdateCwjf) jobList = null;
+			if(!saveOrUpdateCwlt) loginList = null;
+			
+			if(addOrDeleteCwp || addOrDeleteCwjf || addOrDeleteCwlt) {
+				// delete, then save or update all records
+				result = modifyCustWebData(customerList, jobList, loginList, existingRecords, existingJobs, existingLogins);
+				logger.info("Result of modification of CustomerSherColor Web customer data is " + result);
+				if(!result) {
+					addActionError("Error - Unable to modify CustWeb Data");
+				}
 				
+			} else if((saveOrUpdateCwp || saveOrUpdateCwjf || saveOrUpdateCwlt) && 
+					(!addOrDeleteCwp && !addOrDeleteCwjf && !addOrDeleteCwlt)) {
+				// save or update all records
 				result = customerService.saveOrUpdateAllCustWebData(customerList, jobList, loginList);
-				
+				logger.info("Result of creation of CustomerSherColor Web customer data is " + result);
 				if(!result) {
 					addActionError("Error - Unable to save CustWeb Data");
 				}
+			} else {
+				addActionError("Error - CustWeb Data has not been modified or created");
 			}
 			
 			sessionMap.clear();
@@ -465,6 +478,18 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 		}
 		return ehlist;
+	}
+	
+	public boolean modifyCustWebData(List<CustWebParms> custList, List<CustWebJobFields> jobFieldsList, List<CustWebLoginTransform> loginList,
+			List<CustWebParms> existingParmsList, List<CustWebJobFields> existingJFList, List<CustWebLoginTransform> existingLoginList) {
+		boolean result = false;
+		
+		result = customerService.deleteAllCustWebData(existingParmsList, existingJFList, existingLoginList);
+		
+		result = customerService.saveOrUpdateAllCustWebData(custList, jobFieldsList, loginList);
+		
+		return result;
+		
 	}
 	
 	public String allowCharacters(String escapedString) {
