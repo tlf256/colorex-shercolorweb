@@ -409,7 +409,7 @@
 					 return_message.status == 1)) {
 				
 				$("#progress-message").text(return_message.errorMessage);
-				if(detectAttempt < 80){
+				if(detectAttempt < 85){
 					setTimeout(
 					  function() 
 					  { //make sure we are not slamming everything
