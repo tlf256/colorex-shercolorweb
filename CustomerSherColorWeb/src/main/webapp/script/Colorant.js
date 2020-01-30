@@ -235,19 +235,22 @@ $(function(){
 
 });
 function move(position){
-	var cmd = "MoveToFill";
-	$("#moveInProgressModal").modal('show');
-	rotateIcon();
-	var shotList = [];
-	shotList.push(new Colorant(null, 1, position,0));
-	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
-	var json = JSON.stringify(tintermessage);
-	sendingTinterCommand = "true";
-	if(ws_tinter!=null && ws_tinter.isReady=="false") {
-		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
-		ws_tinter = new WSWrapper("tinter");
+	var tinterModel = $("#colorantLevels_tinterModel").val();
+	if(tinterModel.startsWith("FM X")){ // only rotate FM XTinter.
+		var cmd = "MoveToFill";
+		$("#moveInProgressModal").modal('show');
+		rotateIcon();
+		var shotList = [];
+		shotList.push(new Colorant(null, 1, position,0));
+		var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
+		var json = JSON.stringify(tintermessage);
+		sendingTinterCommand = "true";
+		if(ws_tinter!=null && ws_tinter.isReady=="false") {
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			ws_tinter = new WSWrapper("tinter");
+		}
+		ws_tinter.send(json);
 	}
-	ws_tinter.send(json);
 }
 function moveComplete(myGuid, curDate,return_message){
 	sendTinterEvent(myGuid, curDate, return_message, null);
