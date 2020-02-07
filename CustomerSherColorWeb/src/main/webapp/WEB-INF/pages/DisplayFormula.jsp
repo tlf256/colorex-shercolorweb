@@ -296,8 +296,10 @@ function ParsePrintMessage() {
 	
 	function buildProgressBars(return_message) {
 		var count = 1;
+		var keys=[];
 		$(".progress-wrapper").empty();
-		if (Object.keys(return_message.statusMessages).length > 0) {
+		keys = Object.keys(return_message.statusMessages);
+		if (keys !=null && keys.length > 0) {
 			return_message.statusMessages
 					.forEach(function(item) {
 						var colorList = item.message.split(" ");
@@ -389,7 +391,7 @@ function ParsePrintMessage() {
 			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 				//keep updating modal with status
 				//$("#progress-message").text(return_message.errorMessage);
-				if(return_message.statusMessages.length > 0){
+				if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
 					buildProgressBars(return_message);
 				}
 				
@@ -470,8 +472,9 @@ function ParsePrintMessage() {
 		$("#tinterErrorListModal").modal('show');
 	}
 	function FMXDispenseComplete(return_message) {
-
-		buildProgressBars(return_message);
+		if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
+			buildProgressBars(return_message);
+		}
 		$("#abort-message").hide();
 
 		if ((return_message.errorNumber == 0 && return_message.commandRC == 0)

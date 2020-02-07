@@ -812,8 +812,10 @@
 	}
 	function buildProgressBars(return_message){
 		var count = 1;
-		if(Object.keys(return_message.statusMessages).length > 0){
-			$(".progress-wrapper").empty();
+		var keys=[];
+		$(".progress-wrapper").empty();
+		keys = Object.keys(return_message.statusMessages);
+		if (keys !=null && keys.length > 0) {
 			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
 				var color= colorList[0];
@@ -1117,9 +1119,7 @@
 					case 'Dispense':
 					case 'DispenseProgress':
 					case 'Abort':
-			    		
-						 
-						var tinterModel = $("#tinterModel").val();
+						var tinterModel = sessionTinterInfo.model; 
 						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
 							dispenseProgressResp(return_message);
 						}
@@ -1362,7 +1362,6 @@
  						<s:hidden name="stepStatus" value="OPEN"/>
  						<s:hidden name="acceptedContNbr" value="%{acceptedContNbr}"/>
  						<s:hidden name="mergeCorrWithStartingForm" value="%{mergeCorrWithStartingForm}"/>
- 						<s:hidden name="tinter.model" id="tinterModel" value="%{tinter.model}"></s:hidden>
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">

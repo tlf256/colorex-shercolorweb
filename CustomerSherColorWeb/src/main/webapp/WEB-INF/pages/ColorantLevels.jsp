@@ -47,7 +47,8 @@
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
 		<s:set var="thisGuid" value="reqGuid" />
-		
+		<s:hidden id="colorantLevels_tinterModel"   value="%{tinter.model}"/>
+		<!-- ${sessionScope[thisGuid].tinter.model} />		-->
 		<div class="container-fluid">
 			<br>
 			<div class="row">
