@@ -1,3 +1,7 @@
+//Global Variables
+ var sendingTinterCommand = "false";
+ var ws_tinter = new WSWrapper("tinter");
+
 $(function(){
     //Initial method calls
     warningCheck();
@@ -24,7 +28,15 @@ $(function(){
         var idSubstr = $(this).attr('id').substring(0, 5);
         var curRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[0]);
         var maxRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[1]);
-        var str = {"updateType" : idSubstr,"selectedRowPosition" : $('#key', this).attr('value'), "reqGuid" : $('#reqGuid').val() };
+        var position = $('#key', this).attr('value');
+        
+        var str = {
+        		"updateType" : idSubstr,
+        		"selectedRowPosition" : position,
+        		"reqGuid" : $('#reqGuid').val()
+        		};
+        //move in to position
+        move($('#key', this).attr('value'));
         if(idSubstr == "addqt"){
             console.log("in add function");
             if((curRowAmt + 32.0) <= maxRowAmt){
@@ -55,8 +67,9 @@ $(function(){
                 });
             }
             else{
-                $('#addmsg').text('Cannot add one full quart, please use Set Full.');
-                $('#addModal').modal('show');
+            	FMXShowTinterErrorModal("Colorant Level Error", "Cannot add one full quart, please use Set Full.", null);
+               // $('#addmsg').text('Cannot add one full quart, please use Set Full.');
+               // $('#addModal').modal('show');
             } 
         }
         else if(idSubstr == "subqt"){
@@ -122,6 +135,9 @@ $(function(){
                 $('#addmsg').text('Container is full.');
                 $('#addModal').modal('show');
             } 
+        }
+        else if(idSubstr = "moveT"){
+        	//move function is called first for any button press
         }
         else console.log("Condition failed");
     });
@@ -218,3 +234,145 @@ $(function(){
     }
 
 });
+function move(position){
+	var tinterModel = $("#colorantLevels_tinterModel").val();
+	if(tinterModel.startsWith("FM X")){ // only rotate FM XTinter.
+		var cmd = "MoveToFill";
+		$("#moveInProgressModal").modal('show');
+		rotateIcon();
+		var shotList = [];
+		shotList.push(new Colorant(null, 1, position,0));
+		var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
+		var json = JSON.stringify(tintermessage);
+		sendingTinterCommand = "true";
+		if(ws_tinter!=null && ws_tinter.isReady=="false") {
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			ws_tinter = new WSWrapper("tinter");
+		}
+		ws_tinter.send(json);
+	}
+}
+function moveComplete(myGuid, curDate,return_message){
+	sendTinterEvent(myGuid, curDate, return_message, null);
+    waitForShowAndHide("#moveInProgressModal");
+	if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+		// show success message in alert area
+		$("#tinterAlertList").empty();
+		$("#tinterAlertList").append("<li>Move Complete</li>");
+		if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
+		if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
+		if(!$("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").addClass("alert-success");
+	} else {
+		
+		$("#tinterAlertList").empty();
+		$("#tinterAlertList").append("<li>Purge Failed:" + return_message.errorMessage + "</li>");
+		if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
+		if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
+		if($("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").removeClass("alert-success");
+		//Show a modal with error message to make sure the user is forced to acknowledge it.
+	
+		FMXShowTinterErrorModal(null,null,return_message);
+		
+	}
+}
+
+
+function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
+	
+	 $("#tinterErrorList").empty();
+	 var counter = 0;
+	 var id = setInterval(checkTinterCommand, 200);
+   
+	 function checkTinterCommand(){
+			if(sendingTinterCommand == "false" || counter > 10000){
+				clearInterval(id);
+				 $("#tinterErrorListModal").modal('show');
+			}
+			else {
+				counter +=200;
+			}
+		}
+   
+    
+    if(my_return_message != null && my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
+        my_return_message.errorList.forEach(function(item){
+            $("#tinterErrorList").append( '</li>' + item.message + '</li>');
+        });
+    } 
+    if(my_return_message != null){
+    	$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
+    }
+    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
+    else $("#tinterErrorListTitle").text("Tinter Error");
+    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
+    else $("#tinterErrorListSummary").text("");
+  
+}
+//Used to rotate loader icon in modals
+function rotateIcon(){
+	let n = 0;
+	let status = document.getElementById('dispenseStatus');
+	console.log(status);
+	$('#spinner').removeClass('d-none');
+	if(status){
+		let interval = setInterval(function(){
+	    	n += 1;
+	    	if(n >= 60000 || status.textContent.indexOf("Complete") >= 0){
+	            $('#spinner').addClass('d-none');
+	        	clearInterval(interval);
+	        }else{
+	        	$('#spinner').css("transform","rotate(" + n + "deg)");
+	        }
+		},5);
+	}
+}
+function RecdMessage() {
+	
+	var initErrorList = [];
+	console.log("Received Message");
+	var curDate = new Date();
+	var myGuid = $('#reqGuid').val();
+	//console.log("Message is " + ws_tinter.wsmsg);
+	if(ws_tinter && ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg != ""){
+		if(sendingTinterCommand == "true"){
+			// received an error from WSWrapper so we won't get any JSON result (probably no SWDeviceHandler)
+			// If we are sending a ReadConfig command don't show any error (localhost has no devices)
+			// If we are sending a Detect command, show as detect error
+			//TODO Show a modal with error message to make sure the user is forced to read it.
+//				$("#detectError").text(ws_tinter.wserrormsg);
+//				$("#detectErrorModal").modal('show');
+		} else {
+			console.log("Received unsolicited error " + ws_tinter.wserrormsg);
+			// so far this only happens when SWDeviceHandler is not running on localhost and when we created a new
+			// ws wrapper it raises an error while the page is intially loaded.  For now wait until the command is 
+			// sent to show the error (not everybody has a tinter)
+		}
+	} else {
+		// is result (wsmsg) JSON?
+		var isTintJSON = false;
+		try{
+			if(ws_tinter && ws_tinter.wsmsg!=null){
+				var return_message=JSON.parse(ws_tinter.wsmsg);
+				isTintJSON = true;
+			}
+		}
+		catch(error){
+            console.log("Caught error is = " + error);
+			console.log("Message is junk, throw it out");
+			//console.log("Junk Message is " + ws_tinter.wsmsg);
+		}
+		if(isTintJSON){
+			switch (return_message.command) {
+				case 'MoveToFill':
+					sendingTinterCommand = "false";
+					moveComplete(myGuid,curDate,return_message,null);
+					break;
+				default:
+					//Not an response we expected...
+					console.log("Message from different command is junk, throw it out");
+			}
+		} else {
+			console.log("Message is junk, throw it out");
+		}
+	}
+}

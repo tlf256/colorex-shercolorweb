@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -125,7 +126,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					thisField.setEnteredValue(Encode.forHtml(thisField.getEnteredValue()));
 					if(debugOn) System.out.println("thisField after encoding: " + thisField.getEnteredValue());
 					i++;
-					validateMe.add(thisField.getEnteredValue());
+					validateMe.add(StringEscapeUtils.unescapeHtml(thisField.getEnteredValue()));
 					jobFieldLabels.add(thisField.getScreenLabel());
 				}
 				

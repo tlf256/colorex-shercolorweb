@@ -59,7 +59,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					//reqObj.setCustomerId("990001");
 					// list should not be empty
 					addActionError("Database Error - National customer cannot be created. Please contact administrator.");
-					return INPUT;
 				} else {
 					Object[] idList = custWebParms.toArray();
 					
@@ -89,7 +88,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					//reqObj.setCustomerId("INTL0001");
 					// list should not be empty
 					addActionError("Database Error - International customer cannot be created. Please contact administrator.");
-					return INPUT;
 				} else {
 					Object[] custIdList = custParms.toArray();
 					
@@ -118,14 +116,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			List<String> clrntlist = new ArrayList<String>();
 			
 			if(customer.getCce()!=null) {
-				if(customer.getDefaultClrntSys().contains("cce")) {
+				if(customer.getDefaultClrntSys().contains("CCE")) {
 					clrntlist.add(0, "CCE");
 				} else {
 					clrntlist.add("CCE");
 				}
 			}
 			if(customer.getBac()!=null) {
-				if(customer.getDefaultClrntSys().contains("bac")) {
+				if(customer.getDefaultClrntSys().contains("BAC")) {
 					clrntlist.add(0, "BAC");
 				} else {
 					clrntlist.add("BAC");

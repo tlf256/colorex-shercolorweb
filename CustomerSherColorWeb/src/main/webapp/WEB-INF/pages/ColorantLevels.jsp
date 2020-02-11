@@ -47,7 +47,8 @@
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
 		<s:set var="thisGuid" value="reqGuid" />
-		
+		<s:hidden id="colorantLevels_tinterModel"   value="%{tinter.model}"/>
+		<!-- ${sessionScope[thisGuid].tinter.model} />		-->
 		<div class="container-fluid">
 			<br>
 			<div class="row">
@@ -103,6 +104,12 @@
 						        <td id="quarts<s:property value="%{#i.index}"/>"><s:property value="curQt"/>/<s:property value="maxQt"/></td>
 						        <td class="actions">
 						        	<div class="btn-group-vertical mybuttongroup p-1" role="group">
+						        		<s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
+							        	<button type="button" class="btn btn-light btn-sm border" id="moveto<s:property value="%{#i.index}"/>">
+							        	  <s:hidden name="key" value="%{position}" id="key"/>
+										  <span class="fa fa-arrow-circle-o-right" aria-hidden="true"></span>&nbsp;Move To&nbsp;&nbsp;
+										</button>
+										</s:if>
 							        	<button type="button" class="btn btn-light btn-sm border" id="addqt<s:property value="%{#i.index}"/>">
 							        	  <s:hidden name="key" value="%{position}" id="key"/>
 										  <span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Quart
@@ -113,7 +120,7 @@
 										</button>
 										<button type="button" class="btn btn-light btn-sm border" id="setfl<s:property value="%{#i.index}"/>">
 										  <s:hidden name="key" value="%{position}" id="key"/>
-										  <span class="fa fa-upload" aria-hidden="true"></span>&nbsp;&nbsp;Set Full
+										  <span class="fa fa-upload" aria-hidden="true"></span>&nbsp;&nbsp;Set Full &nbsp;&nbsp;
 										</button>
 									</div>
 						        </td>
@@ -183,7 +190,64 @@
 		      </div>
 		    </div>
 		  </div>
-		  
+		  			    <!-- Move in Progress Modal Window -->
+			    <div class="modal fade" aria-labelledby="moveInProgressModal" aria-hidden="true"  id="moveInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
+								<h5 class="modal-title">Moving Carousel</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<p id="progress-message" font-size="4">Please wait while the tinter carousel rotates...</p>
+								<ul class="list-unstyled" id="tinterProgressList">
+										</ul>
+							</div>
+							<div class="modal-footer">
+							</div>
+						</div>
+					</div>
+				</div>			    
+
+			    <!-- Tinter Socket Error Modal Window -->
+			    <div class="modal fade" aria-labelledby="tinterSocketErrorModal" aria-hidden="true"  id="tinterSocketErrorModal" role="dialog">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Tinter Error</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<p id="tinterSocketError" font-size="4"></p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" >Close</button>
+							</div>
+						</div>
+					</div>
+				</div>			    
+			    <!-- Tinter ErrorList Modal Window -->
+			    <div class="modal fade" aria-labelledby="tinterErrorListModal" aria-hidden="true"  id="tinterErrorListModal" role="dialog">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<div>
+									<ul class="list-unstyled" id="tinterErrorList">
+									</ul>
+								</div>
+								<p id="tinterErrorListSummary" font-size="4"></p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+							</div>
+						</div>
+					</div>
+				</div>			    
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 	</body>
