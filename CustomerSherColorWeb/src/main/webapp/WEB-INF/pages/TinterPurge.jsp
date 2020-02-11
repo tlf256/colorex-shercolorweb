@@ -68,7 +68,10 @@
 	}
 	function buildProgressBars(return_message){
 		var count = 1;
-			$(".progress-wrapper").empty();
+		var keys=[];
+		$(".progress-wrapper").empty();
+		keys = Object.keys(return_message.statusMessages);
+		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
 				var color= colorList[0];
@@ -117,6 +120,7 @@
 				
 				count++;
 			});
+		}
 	}
 	function FMXPurgeProgress(){
 		console.log('before purge status modal show');

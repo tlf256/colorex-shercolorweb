@@ -37,14 +37,14 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 		String retVal=null;
 		
 		try{
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid); // when this is null during config we have issues.
 			TinterInfo tinter = reqObj.getTinter();
 			
 			System.out.println("inside excute of TinterEvent. Tinter is... " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 			CustWebTinterEvents tintEvent = new CustWebTinterEvents();
 			tintEvent.setCustomerId(reqObj.getCustomerID());
 			tintEvent.setClrntSysId(tinter.getClrntSysId());
-			tintEvent.setTinterModel(tinter.getModel());
+			tintEvent.setTinterModel(tinter.getModel());  // when this is null during config we have issues or we have previous model
 			tintEvent.setTinterSerialNbr(tinter.getSerialNbr());
 			
 			
