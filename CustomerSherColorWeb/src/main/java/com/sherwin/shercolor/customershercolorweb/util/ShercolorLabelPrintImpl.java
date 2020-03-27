@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.util;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +20,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
@@ -70,10 +73,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	RequestObject reqObj;
   
 	// Set all fonts to bold temporarily to resolve light printing issue.
-	//PDFont courierBold 	= PDType1Font.COURIER_BOLD;
-	PDFont courierBold 	= PDType1Font.HELVETICA_BOLD;
+	//PDFont fontBold 	= PDType1Font.COURIER_BOLD;
+	PDFont fontBold 	= PDType1Font.HELVETICA_BOLD;
+	
+	PDFont unicode = null; 
 	
 
+
+	
 
 	private static float WIDTH = 144f;
 
@@ -145,6 +152,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 	}
 
+	
+	
 	private void createTableCell(Row<PDPage> row,int  rowHeight, float cellWidth, int fontSize, HorizontalAlignment cellAlign) {
 
 
@@ -638,7 +647,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			createBarcode(content);
 			String barCodeChars = String.format("%08d-%03d",reqObj.getControlNbr(), 1);
-			addCenteredText(content,barCodeChars,courierBold,8,page,4.0f);
+			addCenteredText(content,barCodeChars,fontBold,8,page,4.0f);
 
 			content.close();
 			document.addPage( page );
@@ -656,12 +665,47 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			logger.error(re.getMessage());
 		}
 	}
-
+	private PDFont getUnicodeFont() { 
+		PDFont font=null;
+		if(getUnicode() == null) { //only get font once and read it into memory
+			File f = new File("c:\\Windows\\Fonts\\l_10646.ttf"); // Lucida Sans Unicode
+			if(!f.exists()) {
+				f = new File("c:\\Windows\\Fonts\\ARIALUNI.TTF"); // Arial Unicode
+			}
+			if(f.exists()) {
+				try {
+					font = PDType0Font.load(document,f);
+				} catch (IOException e) {
+					logger.error(e);
+				}
+			}
+			else {
+				font = fontBold;
+			}
+			setUnicode(font);
+		}
+		return unicode;
+	}
+	private boolean hasUnicode(String string) {
+		boolean ret = false;
+		for (char ch : string.toCharArray()) {
+			if(!CharUtils.isAscii(ch)){
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
 	private void cellSettings(Cell<PDPage> cell, int fontSize, float cellHeight )
 	{
 
-		cell.setFontBold(courierBold);
-		cell.setFont(courierBold);
+		String text = cell.getText();
+		
+		if(hasUnicode(cell.getText())){
+			fontBold = getUnicodeFont();
+		}
+		cell.setFontBold(fontBold);
+		cell.setFont(fontBold);
 
 		cell.setFontSize(fontSize);
 
@@ -722,7 +766,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		row.setHeaderRow(true);
 
 		Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
-		cell.setFontBold(courierBold);
+		cell.setFontBold(fontBold);
 		cell.setFontSize(fontSize);
 		cell.setValign(VerticalAlignment.MIDDLE);
 		//cell.setHeight(cellHeight);
@@ -746,8 +790,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		row.setHeaderRow(false);
 
 		Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
-		cell.setFontBold(courierBold);
-		cell.setFont(courierBold);
+		cell.setFontBold(fontBold);
+		cell.setFont(fontBold);
 		cell.setFontSize(fontSize);
 		cell.setValign(VerticalAlignment.MIDDLE);
 		//cell.setHeight(cellHeight);
@@ -875,5 +919,16 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	float getStringWidth(String text, PDFont font, int fontSize) throws IOException {
 		return font.getStringWidth(text) * fontSize / 1000F;
 	}
-
+	public PDFont getFontBold() {
+		return fontBold;
+	}
+	public void setFontBold(PDFont fontBold) {
+		this.fontBold = fontBold;
+	}
+	public PDFont getUnicode() {
+		return unicode;
+	}
+	public void setUnicode(PDFont unicode) {
+		this.unicode = unicode;
+	}
 }
