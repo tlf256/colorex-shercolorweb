@@ -49,7 +49,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	
 	public String execute(){
 		String retVal = null;
-		System.out.println("Inside SaveNewJobAction execute");
+		logger.debug("Inside SaveNewJobAction execute");
 		CustWebTran custWebTran = new CustWebTran();
 		
 		try {
@@ -148,29 +148,29 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	}
 
 	public String saveOnPrint(){
-		System.out.println("inside action to saveOnPrint");
+		logger.debug("inside action to saveOnPrint");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
-		System.out.println("inside action about to execute");
+		logger.debug("inside action about to execute");
 		String retVal = this.execute();
-		System.out.println("inside action back from execute");
+		logger.debug("inside action back from execute");
 		
 		return retVal;
 	}
 	
 	public String bumpDispense(){
 		// add 1 to quantityDispensed and put back in map for execute to do it's thing
-		System.out.println("inside action to bumpDispense");
+		logger.debug("inside action to bumpDispense");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		qtyDispensed = reqObj.getQuantityDispensed();   //for ajax call to read
 		qtyDispensed++;
-		System.out.println("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
+		logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
 		reqObj.setQuantityDispensed(qtyDispensed);
 		sessionMap.put(reqGuid, reqObj);
 
-		System.out.println("inside action about to execute");
+		logger.debug("inside action about to execute");
 		String retVal = this.execute();
-		System.out.println("inside action back from execute");
+		logger.debug("inside action back from execute");
 		
 		return retVal;
 	}
@@ -178,7 +178,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public String mergeCorrWithStartForm(){
 		String retVal;
 
-		System.out.println("Inside mergeCorrWithStartForm");
+		logger.debug("Inside mergeCorrWithStartForm");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		//last container in the correction process, merge this cycle with current formula
 		FormulaInfo currentFormula = reqObj.getDisplayFormula();
@@ -194,11 +194,11 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 				if(acceptedCorr.getUnitNbr()!=prevAcceptedContNbr) acceptedFormula.clear();
 				List<FormulaIngredient> stepIngredientList = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(acceptedCorr);
 				for(FormulaIngredient addIngr : stepIngredientList){
-					System.out.println("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
+					logger.debug("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
 					boolean merged = false;
 					for(FormulaIngredient totaledIngr : acceptedFormula){
 						if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-							System.out.println("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
+							logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
 							totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
 							merged = true;
 						}
@@ -213,11 +213,11 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		if(acceptedFormula.size()>0) {
 			List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
 			for(FormulaIngredient addIngr : acceptedFormula){
-				System.out.println("looking to add " + addIngr.getTintSysId() + " to currentFormula");
+				logger.debug("looking to add " + addIngr.getTintSysId() + " to currentFormula");
 				boolean merged = false;
 				for(FormulaIngredient totaledIngr : currentIngredients){
 					if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-						System.out.println("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
+						logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
 						totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
 						merged = true;
 					}
@@ -248,9 +248,9 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			reqObj.setDisplayFormula(currentFormula);
 			sessionMap.put(reqGuid, reqObj);
 			//write it to DB (tran) by triggering savecorrmerge
-			System.out.println("inside saveTranMergeWithCorr about to execute");
+			logger.debug("inside saveTranMergeWithCorr about to execute");
 			retVal = this.execute();
-			System.out.println("inside saveTranMergeWithCorr back from execute");
+			logger.debug("inside saveTranMergeWithCorr back from execute");
 		} else {
 			retVal = ERROR;
 		}
@@ -260,7 +260,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	}
 	
 	private CustWebTran mapRequestObjectToCustWebTranObject(RequestObject reqObj, CustWebTran origTran){
-		System.out.println("Inside SaveNewJobAction mapRequestObjectToCustWebTranObject");
+		logger.debug("Inside SaveNewJobAction mapRequestObjectToCustWebTranObject");
 		CustWebTran custWebTran = new CustWebTran();
 		custWebTran.setCustomerId(reqObj.getCustomerID());
 		custWebTran.setControlNbr(reqObj.getControlNbr());

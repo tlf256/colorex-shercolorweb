@@ -97,6 +97,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				if(webTran.isDeleted()) {
 					continue;
 				} else {
+					logger.debug("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr());
 					JobHistoryInfo job = new JobHistoryInfo();
 					job.setClrntSysId(webTran.getClrntSysId());
 					job.setColorId(webTran.getColorId());

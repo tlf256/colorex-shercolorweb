@@ -55,7 +55,7 @@ public class ListDealerCustomerOrdDtlAction extends ActionSupport implements Ses
 		List<CustWebTran>			listCustWebTran = new ArrayList<CustWebTran>();
 		RequestObject reqObj 		= (RequestObject) sessionMap.get(reqGuid);
 		lookupCustomerId			= reqObj.getCustomerID();
-		System.out.println("Request GuId is -> " + reqGuid + " Dealer Id is -> " + lookupCustomerId +
+		logger.debug("Request GuId is -> " + reqGuid + " Dealer Id is -> " + lookupCustomerId +
 				" Customer Id is -> " + lookupDlrCustId + "  Control Nbr is -> " + lookupControlNbr);
 		
 		try{

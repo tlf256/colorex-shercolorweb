@@ -95,7 +95,7 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 					validationMsgs = formulationService.validateFormulation(displayFormula);
 					
 					for(SwMessage item2:validationMsgs) {
-						System.out.println("in loop to add validation msgs");
+						logger.debug("in loop to add validation msgs");
 						addActionMessage(item2.getMessage());
 					}
 					

@@ -24,7 +24,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	 */
 	
 	private static final long serialVersionUID = 1L;
-	private final static Logger log = LogManager.getLogger(EcalAction.class);
+	private final static Logger logger = LogManager.getLogger(EcalAction.class);
 
 	@Autowired
 	EcalService service;
@@ -63,7 +63,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	}
 	
 	public String SelectEcal(){
-		System.out.println("selecting ecal for " + filename);
+		logger.debug("selecting ecal for " + filename);
 		CustWebEcal cal = service.selectEcal(filename);	
 		if(cal != null){			
 			setData(cal.getData());
@@ -72,7 +72,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	}
 
 	public String SelectGData(){
-		System.out.println("selecting gdata for " + colorantid);
+		logger.debug("selecting gdata for " + colorantid);
 		CustWebEcal cal = service.selectGData(colorantid);	
 		if(cal != null){			
 			setData(cal.getData());
@@ -81,16 +81,16 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	}
 	
 	public String UploadEcal(){
-		System.out.println("inside EcalAction");
+		logger.debug("inside EcalAction");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		System.out.println("inside EcalAction, got reqObj, now getting tinter");
+		logger.debug("inside EcalAction, got reqObj, now getting tinter");
 		tinter = reqObj.getTinter();
-		System.out.println("inside Ecal, got tinter, returning success");
+		logger.debug("inside Ecal, got tinter, returning success");
 
 		//TODO get last Config date info to be shown on screen...
 
 		// setup tinter stuff if needed
-		if(tinter==null) System.out.println("inside ProcessConfigAction_display and tinter object is null");
+		if(tinter==null) logger.error("inside ProcessConfigAction_display and tinter object is null");
 		
 		CustWebEcal ecal = new CustWebEcal();
 		ecal.setCustomerid(reqObj.getCustomerID());
@@ -102,12 +102,10 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 		ecal.setFilename(this.getFilename());
 		ecal.setData(this.getData());
 		if(this.getData()!=null){
-			System.out.println("Upload Ecal size=" + this.getData().length);
-			log.info("Upload Ecal size=" + this.getData().length);
+			logger.info("Upload Ecal size=" + this.getData().length);
 		}
 		else{
-			System.out.println("Data array is null");
-			log.error("Upload Ecal data array is null");
+			logger.error("Upload Ecal data array is null");
 			return ERROR;
 		}
 		service.uploadEcal(ecal);
@@ -115,16 +113,16 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	}
 
 	public String display(){
-		System.out.println("inside EcalAction");
+		logger.debug("inside EcalAction");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		System.out.println("inside EcalAction, got reqObj, now getting tinter");
+		logger.debug("inside EcalAction, got reqObj, now getting tinter");
 		tinter = reqObj.getTinter();
-		System.out.println("inside Ecal, got tinter, returning success");
+		logger.debug("inside Ecal, got tinter, returning success");
 
 		//TODO get last Config date info to be shown on screen...
 
 		// setup tinter stuff if needed
-		if(tinter==null) System.out.println("inside EcalAction_display and tinter object is null");
+		if(tinter==null) logger.error("inside EcalAction_display and tinter object is null");
 		
 		//get List of Ecals
 		if(reqObj.getCustomerID()!=null && tinter !=null){
@@ -139,7 +137,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 			this.setEcalList(service.getEcalsByCustomer(customerID));
 		}
 		//get List of Template Cals
-		System.out.println("CustomerID=" +reqObj.getCustomerID());
+		logger.debug("CustomerID=" +reqObj.getCustomerID());
 
 		return SUCCESS;
 	}

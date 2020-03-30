@@ -135,12 +135,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 
 		catch(IOException ie) {
-			System.out.println("IOException: " + ie.getMessage() + ie.getCause() + ie.getStackTrace());
 			logger.error(ie.getMessage());
+			logger.error(ie);
 		}
 		catch(RuntimeException re){
-			System.out.println("RuntimeException: " + re.getMessage() + re.getCause() + re.getStackTrace());
 			logger.error(re.getMessage());
+			logger.error(re);
 		}
 
 	}
@@ -169,7 +169,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -645,15 +644,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 
 		catch(IOException ie) {
-			System.out.println("Failed in " + errorLocation);
-			System.out.println("IOException: " + ie.getMessage() + ie.getCause() + ie.getStackTrace());
 			logger.error(ie.getMessage());
+			logger.error(ie);
 		}
 		catch(RuntimeException re){
-			System.out.println("Failed in " + errorLocation);
-			System.out.println("RuntimeException: " + re.getMessage() + re.getCause() + re.getStackTrace());
-			re.printStackTrace();
 			logger.error(re.getMessage());
+			logger.error(re);
 		}
 	}
 
@@ -857,7 +853,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		} else if (rotation == 0 || rotation == 360 || rotation == 180) {
 			isLandscape = false;
 		} else {
-			System.out.println("Can only handle pages that are rotated in 90 degree steps. This page is rotated  " + rotation + " degrees. Will treat the page as in portrait format");
+			logger.error("Can only handle pages that are rotated in 90 degree steps. This page is rotated  " + rotation + " degrees. Will treat the page as in portrait format");
 			isLandscape = false;
 		}
 		return isLandscape;
