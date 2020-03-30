@@ -25,133 +25,187 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 
 	@Autowired
 	TinterService tinterService;
-	
+
 	static Logger logger = LogManager.getLogger(TinterEventAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String eventDate;
 	private List<Map<String,Object>> tintEventDetail;
+	public List<Map<String, Object>> getTintEventDetail() {
+		return tintEventDetail;
+	}
+
 	private Map<String,Object> tinterMessage;
 
+	
+
+	private CustWebTinterEvents tintEvent = new CustWebTinterEvents();
+
+	private TinterInfo newTinter; 
+
+	public TinterInfo getNewTinter() {
+		return newTinter;
+	}
+	public void setNewTinter(TinterInfo newTinter) {
+		this.newTinter = newTinter;
+	}
+	public String configure() {
+		if(sessionMap !=null && reqGuid != null) {
+
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid); // when this is null during config we have issues.
+			if(reqObj != null) {
+				tintEvent.setCustomerId(reqObj.getCustomerID());
+			}
+			else {
+				tintEvent.setCustomerId("NA");
+			}
+		}
+		else {
+			tintEvent.setCustomerId("NA");
+		}
+
+		
+
+		tintEvent.setClrntSysId(newTinter.getClrntSysId());
+		tintEvent.setTinterModel(newTinter.getModel());  // when this is null during config we have issues or we have previous model
+		tintEvent.setTinterSerialNbr(newTinter.getSerialNbr());
+		
+		
+		String retVal = processTinterEvent();
+		return retVal;
+
+
+	}
+	public void getItemsFromSession() {
+		if(sessionMap !=null) {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid); // when this is null during config we have issues.
+			if(reqGuid != null) {
+				TinterInfo tinter = reqObj.getTinter();
+				if(tinter != null) {
+					logger.info("inside excute of TinterEvent. Tinter is... " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+
+					tintEvent.setCustomerId(reqObj.getCustomerID());
+					tintEvent.setClrntSysId(tinter.getClrntSysId());
+					tintEvent.setTinterModel(tinter.getModel());  // when this is null during config we have issues or we have previous model
+					tintEvent.setTinterSerialNbr(tinter.getSerialNbr());
+				}
+			}
+		}
+	}
+	private String processTinterEvent() {
+		String retVal=null;
+
+		Date stampDate;
+		if(eventDate==null){
+			logger.info("TinterEvent date is null.  Using current date and time");
+			stampDate = new Date();
+		} else {
+			logger.info("TinterEvent date is " + eventDate.toString());
+			SimpleDateFormat jsdf = new SimpleDateFormat("EE MMM d y H:m:s 'GMT'Z (zz)");
+			try {
+				stampDate = jsdf.parse(eventDate);
+			} catch (Exception e) {
+				stampDate = new Date();
+			}
+		}
+		tintEvent.setDateTime(stampDate);
+
+		List<CustWebTinterEventsDetail> tedList = new ArrayList<CustWebTinterEventsDetail>();
+		if(tintEventDetail!=null){
+			for(Map<String,Object> item : tintEventDetail){
+				CustWebTinterEventsDetail ted = new CustWebTinterEventsDetail();
+				if(item.get("type")!=null) ted.setType(item.get("type").toString());
+				if(item.get("name")!=null) ted.setName(item.get("name").toString());
+				if(item.get("qty")!=null) ted.setQty(Integer.parseInt(item.get("qty").toString()));
+				if(ted.getName()!=null && ted.getType()!=null){
+					tedList.add(ted);
+				}
+			}
+		}
+
+		//Now we process message to get function(command), error status, severity, error number, error message
+		//there is a catch here though, an alternate errorList may appear in the JSON that overrides the error number and error message in the JSON
+		//so we will merge the two together
+		List<SwMessage> errorList = new ArrayList<SwMessage>();
+		if(tinterMessage!=null){
+			// Map tinterMessage items to TinterEvent class
+			if(tinterMessage.get("command")!=null){
+				tintEvent.setFunction(tinterMessage.get("command").toString());
+			}
+			//Build errorList array when errorNumber is not 0
+			String sev;
+			if(tinterMessage.get("errorNumber")!=null){
+				int errorNbr = Integer.parseInt(tinterMessage.get("errorNumber").toString());
+				if(errorNbr!=0){
+					//tintEvent.setErrorNumber(String.valueOf(errorNbr));
+					//if(tinterMessage.get("errorMessage")!=null) tintEvent.setErrorMessage(tinterMessage.get("errorMessage").toString());
+					//if(tinterMessage.get("errorSeverity")!=null) tintEvent.setErrorSeverity(tinterMessage.get("errorSeverity").toString());
+					tintEvent.setErrorStatus("1");
+
+					if(tinterMessage.get("errorSeverity")!=null) sev = tinterMessage.get("errorSeverity").toString();
+					else {
+						//severity not set by sender, figure it out by error number
+						if(errorNbr!=-10500) sev = "1" ;
+						else sev = "2";
+					}
+					tintEvent.setErrorSeverity(sev);
+
+					SwMessage addError = new SwMessage();
+					addError.setCode(String.valueOf(errorNbr));
+					if(tinterMessage.get("errorMessage")!=null) addError.setMessage(tinterMessage.get("errorMessage").toString());
+					errorList.add(addError);
+
+					// now process errorList from JSON
+					if(tinterMessage.get("errorList")!=null){
+						@SuppressWarnings("unchecked")
+						List<Map<String,Object>> jsonErrorList = (List<Map<String,Object>>) tinterMessage.get("errorList");
+						for(Map<String,Object> jsonError : jsonErrorList){
+							SwMessage anotherError = new SwMessage();
+							if(jsonError.get("num")!=null) anotherError.setCode(jsonError.get("num").toString());
+							if(jsonError.get("message")!=null) anotherError.setMessage(jsonError.get("message").toString());
+							errorList.add(anotherError);
+						}
+					}// end errorList not null
+				} else {
+					tintEvent.setErrorStatus("0");
+				} // end error number is 0
+			}
+		}
+
+		List<SwMessage> writeErrorList = new ArrayList<SwMessage>();
+		if(errorList.size()>0){
+			// loop ErrorList and write out multiple events that are the same except severity/error number/error message
+			for(SwMessage addError : errorList){
+				tintEvent.setErrorNumber(addError.getCode());
+				tintEvent.setErrorMessage(addError.getMessage());
+				List<SwMessage> oneWriteeErrorList = tinterService.writeTinterEventAndDetail(tintEvent, tedList);
+				writeErrorList.addAll(oneWriteeErrorList);
+			}
+
+		} else {
+			writeErrorList = tinterService.writeTinterEventAndDetail(tintEvent, tedList);
+		}
+		// call tinter service to write tinter event and its details
+		if(writeErrorList!=null && writeErrorList.size()>0){
+			retVal = ERROR;
+		} else {
+			retVal = SUCCESS;
+		}
+		return retVal;
+	}
 	public String execute(){
 		String retVal=null;
-		
+
 		try{
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid); // when this is null during config we have issues.
-			TinterInfo tinter = reqObj.getTinter();
-			
-			logger.debug("inside excute of TinterEvent. Tinter is... " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
-			CustWebTinterEvents tintEvent = new CustWebTinterEvents();
-			tintEvent.setCustomerId(reqObj.getCustomerID());
-			tintEvent.setClrntSysId(tinter.getClrntSysId());
-			tintEvent.setTinterModel(tinter.getModel());  // when this is null during config we have issues or we have previous model
-			tintEvent.setTinterSerialNbr(tinter.getSerialNbr());
-			
-			
-			Date stampDate;
-			if(eventDate==null){
-				logger.debug("Event date is null");
-				stampDate = new Date();
-			} else {
-				logger.debug("Event date is " + eventDate.toString());
-				SimpleDateFormat jsdf = new SimpleDateFormat("EE MMM d y H:m:s 'GMT'Z (zz)");
-				try {
-					stampDate = jsdf.parse(eventDate);
-				} catch (Exception e) {
-					stampDate = new Date();
-				}
-			}
-			tintEvent.setDateTime(stampDate);
-			
-			List<CustWebTinterEventsDetail> tedList = new ArrayList<CustWebTinterEventsDetail>();
-			if(tintEventDetail!=null){
-				for(Map<String,Object> item : tintEventDetail){
-					CustWebTinterEventsDetail ted = new CustWebTinterEventsDetail();
-					if(item.get("type")!=null) ted.setType(item.get("type").toString());
-					if(item.get("name")!=null) ted.setName(item.get("name").toString());
-					if(item.get("qty")!=null) ted.setQty(Integer.parseInt(item.get("qty").toString()));
-					if(ted.getName()!=null && ted.getType()!=null){
-						tedList.add(ted);
-					}
-				}
-			}
-			
-			//Now we process message to get function(command), error status, severity, error number, error message
-			//there is a catch here though, an alternate errorList may appear in the JSON that overrides the error number and error message in the JSON
-			//so we will merge the two together
-			List<SwMessage> errorList = new ArrayList<SwMessage>();
-			if(tinterMessage!=null){
-				// Map tinterMessage items to TinterEvent class
-				if(tinterMessage.get("command")!=null){
-					tintEvent.setFunction(tinterMessage.get("command").toString());
-				}
-				//Build errorList array when errorNumber is not 0
-				String sev;
-				if(tinterMessage.get("errorNumber")!=null){
-					int errorNbr = Integer.parseInt(tinterMessage.get("errorNumber").toString());
-					if(errorNbr!=0){
-						//tintEvent.setErrorNumber(String.valueOf(errorNbr));
-						//if(tinterMessage.get("errorMessage")!=null) tintEvent.setErrorMessage(tinterMessage.get("errorMessage").toString());
-						//if(tinterMessage.get("errorSeverity")!=null) tintEvent.setErrorSeverity(tinterMessage.get("errorSeverity").toString());
-						tintEvent.setErrorStatus("1");
-						
-						if(tinterMessage.get("errorSeverity")!=null) sev = tinterMessage.get("errorSeverity").toString();
-						else {
-							//severity not set by sender, figure it out by error number
-							if(errorNbr!=-10500) sev = "1" ;
-							else sev = "2";
-						}
-						tintEvent.setErrorSeverity(sev);
-						
-						SwMessage addError = new SwMessage();
-						addError.setCode(String.valueOf(errorNbr));
-						if(tinterMessage.get("errorMessage")!=null) addError.setMessage(tinterMessage.get("errorMessage").toString());
-						errorList.add(addError);
+			getItemsFromSession();
+			retVal = processTinterEvent();
 
-						// now process errorList from JSON
-						if(tinterMessage.get("errorList")!=null){
-							@SuppressWarnings("unchecked")
-							List<Map<String,Object>> jsonErrorList = (List<Map<String,Object>>) tinterMessage.get("errorList");
-							for(Map<String,Object> jsonError : jsonErrorList){
-								SwMessage anotherError = new SwMessage();
-								if(jsonError.get("num")!=null) anotherError.setCode(jsonError.get("num").toString());
-								if(jsonError.get("message")!=null) anotherError.setMessage(jsonError.get("message").toString());
-								errorList.add(anotherError);
-							}
-						}// end errorList not null
-					} else {
-						tintEvent.setErrorStatus("0");
-					} // end error number is 0
-				}
-			}
-
-			List<SwMessage> writeErrorList = new ArrayList<SwMessage>();
-			if(errorList.size()>0){
-				// loop ErrorList and write out multiple events that are the same except severity/error number/error message
-				for(SwMessage addError : errorList){
-					tintEvent.setErrorNumber(addError.getCode());
-					tintEvent.setErrorMessage(addError.getMessage());
-					List<SwMessage> oneWriteeErrorList = tinterService.writeTinterEventAndDetail(tintEvent, tedList);
-					writeErrorList.addAll(oneWriteeErrorList);
-				}
-
-			} else {
-				writeErrorList = tinterService.writeTinterEventAndDetail(tintEvent, tedList);
-			}
-			// call tinter service to write tinter event and its details
-			if(writeErrorList!=null && writeErrorList.size()>0){
-				retVal = ERROR;
-			} else {
-				retVal = SUCCESS;
-			}
-			
-			
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			e.printStackTrace();
 			retVal = ERROR;
 		}
-		
+
 		return retVal;
 	}
 
@@ -171,13 +225,21 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 		this.tintEventDetail = tintEventDetail;
 	}
 
+	
+	public String getEventDate() {
+		return eventDate;
+	}
 	public void setTinterMessage(Map<String, Object> tinterMessage) {
 		this.tinterMessage = tinterMessage;
+	}
+	
+	public Map<String, Object> getTinterMessage() {
+		return tinterMessage;
 	}
 
 	public void setEventDate(String eventDate) {
 		this.eventDate = Encode.forHtml(eventDate);
 	}
-	
+
 
 }
