@@ -106,7 +106,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 
 			
 			//call the formulation service
-			System.out.println(reqObj.getColorType());
+			logger.debug(reqObj.getColorType());
 			if(reqObj.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")){
 				theFormula = formulationService.formulate(oeRequest, custWebParms);
 			} else {

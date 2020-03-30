@@ -35,7 +35,7 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 	}
 
 	public CorrectionInfo getCorrectionInfo(RequestObject reqObj, List<CustWebTranCorr> tranCorrList){
-		System.out.println("Inside CorrBuilder.getCorrInfo");
+		logger.trace("Inside CorrBuilder.getCorrInfo");
 		CorrectionInfo correction = new CorrectionInfo();
 		List<DispenseItem> dispenseItemList = new ArrayList<DispenseItem>();;
 		List<DispenseItem> openDispItemList = new ArrayList<DispenseItem>();;

@@ -18,14 +18,12 @@ public class StringToByteArrayConverter extends StrutsTypeConverter{
 			int len = value.length;
 			if(len > 0){
 				byte[] byte_arr = new byte[len];
-				System.out.println("Length of data is: " + value.length);
 				for(i=0; i < len; i++ ){
 					byte_arr[i] = Byte.parseByte(value[i]);
 				}
 				return byte_arr;
 			}
 		}
-		System.out.println("No data received");
 		return null;
 
 	}

@@ -57,8 +57,7 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 
 				} catch (Exception e) {
 					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-					e.printStackTrace();
-					System.out.println("error creating incrHdr");
+					logger.error(e);
 				}
 				
 				//Creating sorted canisterList for display
@@ -79,15 +78,15 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 					}
 				} catch (Exception e) {
 					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-					e.printStackTrace();
-					System.out.println("error pre-sorting CanisterList");
+					logger.error(e);
+
 				}
 			}
-			else System.out.println("reqGuid is empty");
+			else logger.error("reqGuid is empty");
 		}
 		catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-			e.printStackTrace();
+			logger.error(e);
 			return ERROR;
 		}
 		
@@ -114,13 +113,13 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 				return SUCCESS;
 			}
 			else {
-				System.out.println("Conversion failed.");
+				logger.error("formulaService.convertIncrToShots - Conversion failed.");
 				return ERROR;
 			}
 		}
 		catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			e.printStackTrace();
+			logger.error(e);
 			return ERROR;
 		}
 	}

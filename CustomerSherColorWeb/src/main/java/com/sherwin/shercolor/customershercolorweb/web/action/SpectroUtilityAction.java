@@ -27,16 +27,16 @@ public class SpectroUtilityAction extends ActionSupport  implements SessionAware
 		String retVal=null;
 		
 		try{
-			System.out.println("inside SpectroUtilityAction stampSession. getting map for reqGuid = " + reqGuid);
+			logger.debug("inside SpectroUtilityAction stampSession. getting map for reqGuid = " + reqGuid);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
-			System.out.println("inside SpectroUtilityAction stampSession. creating spectro info ");
+			logger.debug("inside SpectroUtilityAction stampSession. creating spectro info ");
 			SpectroInfo theSpectro = new SpectroInfo();
-			System.out.println("inside SpectroUtilityAction stampSession. setting Spectro as " + spectroModel + " " + spectroSerial);
+			logger.debug("inside SpectroUtilityAction stampSession. setting Spectro as " + spectroModel + " " + spectroSerial);
 			theSpectro.setModel(spectroModel);
 			theSpectro.setSerialNbr(spectroSerial);
 			reqObj.setSpectro(theSpectro);
-			System.out.println("inside SpectroUtilityAction stampSession. putting map for reqGuid = " + reqGuid);
+			logger.debug("inside SpectroUtilityAction stampSession. putting map for reqGuid = " + reqGuid);
 			sessionMap.put(reqGuid, reqObj);
 			
 			retVal = SUCCESS;
