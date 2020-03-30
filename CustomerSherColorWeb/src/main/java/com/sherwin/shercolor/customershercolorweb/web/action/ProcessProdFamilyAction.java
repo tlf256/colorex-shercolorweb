@@ -56,11 +56,11 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 		
 		try {
 			//break up the requested color base
-			//System.out.println("in ProcessProdFamilyAction Execute");
+			//logger.debug("in ProcessProdFamilyAction Execute");
 			String[] selectedSplit = new String[3];
 			selectedSplit = selectedProdFamily.split(Character.toString((char) 31));
 			selectedProdNbr = selectedSplit[1].trim();
-			//System.out.println("selectedProdNbr=" + selectedProdNbr);
+			//logger.debug("selectedProdNbr=" + selectedProdNbr);
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
@@ -70,11 +70,11 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 			
 			for(FormulaInfo item:oldFormula.getFormulas()) {
 				if (item.getProdNbr().equals(selectedProdNbr)) {
-					//System.out.println(" got a formulaInfo match for selectedProdNbr=" + selectedProdNbr);
+					//logger.debug(" got a formulaInfo match for selectedProdNbr=" + selectedProdNbr);
 					displayFormula = formulationService.scaleFormulaByPercent(item, reqObj.getPercentageFactor());
-					//System.out.println("scaled Formula, and got a displayFormula");
-					//System.out.println("deltaE warning is " + displayFormula.getDeltaEWarning());
-					//System.out.println("deltaE over dark is" + displayFormula.getDeltaEOverDarkThin());
+					//logger.debug("scaled Formula, and got a displayFormula");
+					//logger.debug("deltaE warning is " + displayFormula.getDeltaEWarning());
+					//logger.debug("deltaE over dark is" + displayFormula.getDeltaEOverDarkThin());
 					reqObj.setDisplayFormula(displayFormula); 
 					//12-12-2016*BKP*Also reset the product and sales numbers and their associated info.
 					reqObj.setProdNbr(item.getProdNbr());
@@ -82,13 +82,13 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 					reqObj.setSalesNbr(item.getSalesNbr());
 					PosProd posprod = productService.readPosProd(item.getSalesNbr());
 					reqObj.setUpc(posprod.getUpc());
-					//System.out.println("set reqObjprodnbr, sizecode and salesnbr");
+					//logger.debug("set reqObjprodnbr, sizecode and salesnbr");
 					CdsProd goodProd = productService.readCdsProd(item.getSalesNbr());
 					String[] prepCmt = new String[2];
 					
 
 					if (goodProd!=null) {
-						//System.out.println("got goodprod and its not null");
+						//logger.debug("got goodprod and its not null");
 						prepCmt = goodProd.getPrepComment().split("-");
 						reqObj.setFinish(goodProd.getFinish());
 						reqObj.setKlass(goodProd.getKlass());
@@ -112,9 +112,9 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 						reqObj.setQuality("");
 					}
 					reqObj.setSizeText(productService.getSizeText(reqObj.getSizeCode()));
-					//System.out.println("ready to validate and set validationmessages");
+					//logger.debug("ready to validate and set validationmessages");
 					validationMsgs = formulationService.validateFormulation(displayFormula);
-					//System.out.println("back from validation");
+					//logger.debug("back from validation");
 					for(SwMessage item2:validationMsgs) {
 						addActionMessage(item2.getMessage());
 					}
@@ -123,11 +123,10 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	
 		
 			sessionMap.put(reqGuid, reqObj);
-			//System.out.println("put reqObj back in session");
+			//logger.debug("put reqObj back in session");
 			
 			return returnStatus;
 		} catch (Exception e) {
-			System.out.println("in ProcessProdFamilyAction Execute ERROR");
 			logger.error(e.getMessage());
 			return ERROR;
 		}
@@ -182,7 +181,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 					if (firstFormula.isEmpty()) {
 						firstFormula = theKey;
 					}
-					//System.out.println("colorProdFamilies2.get(0) = " + colorProdFamilies2.get("0"));
+					//logger.debug("colorProdFamilies2.get(0) = " + colorProdFamilies2.get("0"));
 					hashCntr = hashCntr + 1;
 				}
 		     return SUCCESS;
