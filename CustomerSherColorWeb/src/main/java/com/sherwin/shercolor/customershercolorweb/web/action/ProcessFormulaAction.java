@@ -106,10 +106,10 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			if(tinter!=null && tinter.getModel()!=null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
 				sessionHasTinter = true;
 				// Setup Tinter Colorant Dispense Info for Formula being displayed
-				System.out.println("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+				logger.debug("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
-				System.out.println("back from tinterService");
+				logger.debug("back from tinterService");
 				if(colorantMap!=null && !colorantMap.isEmpty()){
 
 					//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
@@ -117,24 +117,24 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
 							addActionMessage(Encode.forHtml("The selected Job is missing Colorant - " + ingr.getTintSysId() + ". Cannot load Job."));
-							System.out.println("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
+							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
 							return "errormsg";
 						}
 					}
 
-					System.out.println("colorant map is not null");
+					logger.debug("colorant map is not null");
 					if(dispenseFormula==null) dispenseFormula = new ArrayList<DispenseItem>();
 					else dispenseFormula.clear();
 
 					for(FormulaIngredient ingr : displayFormula.getIngredients()){
-						System.out.println("pulling map info for " + ingr.getTintSysId());
+						logger.debug("pulling map info for " + ingr.getTintSysId());
 						DispenseItem addItem = new DispenseItem();
 						addItem.setClrntCode(ingr.getTintSysId());
-						System.out.println(addItem.getClrntCode());
+						logger.debug(addItem.getClrntCode());
 						addItem.setShots(ingr.getShots());
-						System.out.println(addItem.getShots());
+						logger.debug(addItem.getShots());
 						addItem.setUom(ingr.getShotSize());
-						System.out.println(addItem.getUom());
+						logger.debug(addItem.getUom());
 						addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
 						dispenseFormula.add(addItem);
 					}
@@ -142,7 +142,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 					retVal = SUCCESS;
 
 				} else {
-					System.out.println("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+					logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 					retVal = ERROR;
 				}
 			} else {

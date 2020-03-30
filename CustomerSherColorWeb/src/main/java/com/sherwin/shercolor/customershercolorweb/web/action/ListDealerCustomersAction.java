@@ -36,7 +36,7 @@ public class ListDealerCustomersAction extends ActionSupport implements SessionA
 	public String display() {
 		List<CustWebDealerCust> listCustWebDealerCust;
 		CustWebDealer				custWebDealer;
-		System.out.println("Request GuId is -> " + reqGuid);
+		logger.debug("Request GuId is -> " + reqGuid);
 		RequestObject reqObj 		= (RequestObject) sessionMap.get(reqGuid);
 		customerId					= reqObj.getCustomerID();
 		try{

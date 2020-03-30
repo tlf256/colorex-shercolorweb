@@ -38,7 +38,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 				RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 				tinter = reqObj.getTinter();
 			}
-			else System.out.println("reqGuid is empty");
+			else logger.error("reqGuid is empty");
 		}
 		catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
@@ -50,7 +50,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 	
 	public String update() {
 		try {
-			System.out.println("updateType is " + getUpdateType() + " at beginning of method.");
+			logger.debug("updateType is " + getUpdateType() + " at beginning of method.");
 			//Setting up colorList object
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			tinter = reqObj.getTinter();
@@ -58,18 +58,18 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 			//Testing to see if both lists are acceptable
 			
 			if (custWebColorantsTxtList.isEmpty() && !tinter.getCanisterList().isEmpty()) {
-				System.out.println("passed condition");
+				logger.debug("passed condition");
 				for(TinterCanister canister : tinter.getCanisterList()) {
 					
 					switch (getUpdateType()) {
 					case "setAllFull":
-						System.out.println("In setAllFull");
-						System.out.println("canister amount = " + canister.getCurrentClrntAmount());
+						logger.debug("In setAllFull");
+						logger.debug("canister amount = " + canister.getCurrentClrntAmount());
 						
 						//Testing to see if canister object amount < max amount
 						
 						if(canister.getCurrentClrntAmount() < canister.getMaxCanisterFill()) {
-							System.out.println("in loop");
+							logger.debug("in loop");
 							CustWebColorantsTxt temp = new CustWebColorantsTxt();
 							temp.setCustomerId(reqObj.getCustomerID());
 							temp.setClrntCode(canister.getClrntCode());
@@ -85,13 +85,13 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 							custWebColorantsTxtList.add(temp);
 							tinterService.updateColorantLevels(custWebColorantsTxtList);
 						}
-						else System.out.println("Canister object current amount full or empty.");
+						else logger.debug("Canister object current amount full or empty.");
 						break;
 						
 					case "setfl":
-						System.out.println("In setOneFull");
-						System.out.println("canister amount = " + canister.getCurrentClrntAmount());
-						System.out.println("selectedRowPosition is " + selectedRowPosition);
+						logger.debug("In setOneFull");
+						logger.debug("canister amount = " + canister.getCurrentClrntAmount());
+						logger.debug("selectedRowPosition is " + selectedRowPosition);
 						//Testing to see when on the correct row according to key and canister values are acceptable for subtraction
 						
 						if(canister.getCurrentClrntAmount() <= canister.getMaxCanisterFill() && canister.getCurrentClrntAmount() >= 0){
@@ -99,7 +99,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 							//Using the key to assure update of ONLY the selected canister/colorant.
 							
 							if(Integer.parseInt(selectedRowPosition) == canister.getPosition()) {
-								System.out.println("in loop");
+								logger.debug("in loop");
 								CustWebColorantsTxt temp = new CustWebColorantsTxt();
 								temp.setCustomerId(reqObj.getCustomerID());
 								temp.setClrntCode(canister.getClrntCode());
@@ -115,20 +115,20 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 								custWebColorantsTxtList.add(temp);
 								tinterService.updateColorantLevels(custWebColorantsTxtList);
 							}
-							else System.out.println("Canister does not match the key.");
+							else logger.error("Canister does not match the key.");
 						}
-						else System.out.println("Canister object current amount full or empty.");
+						else logger.debug("Canister object current amount full or empty.");
 						break;
 						
 					case "addqt":
-						System.out.println("In addQuart");
-						System.out.println("canister amount = " + canister.getCurrentClrntAmount());
-						System.out.println("selectedRowPosition is " + selectedRowPosition);
+						logger.debug("In addQuart");
+						logger.debug("canister amount = " + canister.getCurrentClrntAmount());
+						logger.debug("selectedRowPosition is " + selectedRowPosition);
 						//Testing to see when on the correct row according to key and canister values are acceptable for addition
 						
 						if(Integer.parseInt(selectedRowPosition) == canister.getPosition() && canister.getCurrentClrntAmount() <= canister.getMaxCanisterFill() && canister.getCurrentClrntAmount() >= 0){
 							if((canister.getCurrentClrntAmount() + 32.0d) <= canister.getMaxCanisterFill()){
-								System.out.println("in loop");
+								logger.debug("in loop");
 								CustWebColorantsTxt temp = new CustWebColorantsTxt();
 								temp.setCustomerId(reqObj.getCustomerID());
 								temp.setClrntCode(canister.getClrntCode());
@@ -144,20 +144,20 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 								custWebColorantsTxtList.add(temp);
 								tinterService.updateColorantLevels(custWebColorantsTxtList);
 							}
-							else System.out.println("Incrementing by this amount will result in a current colorant amount that exceeds the Max Fill amount.");
+							else logger.error("Incrementing by this amount will result in a current colorant amount that exceeds the Max Fill amount.");
 						}
-						else System.out.println("Canister object current amount full or empty.");
+						else logger.debug("Canister object current amount full or empty.");
 						break;
 						
 					case "subqt":
-						System.out.println("In subQuart");
-						System.out.println("canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
-						System.out.println("selectedRowPosition is " + selectedRowPosition);
+						logger.debug("In subQuart");
+						logger.debug("canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
+						logger.debug("selectedRowPosition is " + selectedRowPosition);
 						//Testing to see when on the correct row according to key and canister values are acceptable for subtraction
 						
 						if(Integer.parseInt(selectedRowPosition) == canister.getPosition() && canister.getCurrentClrntAmount() <= canister.getMaxCanisterFill() && canister.getCurrentClrntAmount() >= 0){
 							if((canister.getCurrentClrntAmount() - 32.0d) >= 0){
-								System.out.println("in loop");
+								logger.debug("in loop");
 								CustWebColorantsTxt temp = new CustWebColorantsTxt();
 								temp.setCustomerId(reqObj.getCustomerID());
 								temp.setClrntCode(canister.getClrntCode());
@@ -167,30 +167,29 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 								temp.setPosition(canister.getPosition());
 								temp.setFillAlarmLevel(canister.getFillAlarmLevel());
 								temp.setMaxCanisterFill(canister.getMaxCanisterFill());
-								System.out.println("before sub canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
+								logger.debug("before sub canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
 								canister.setCurrentClrntAmount(canister.getCurrentClrntAmount() - 32.0d);
-								System.out.println("after sub canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
+								logger.debug("after sub canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
 								temp.setCurrentClrntAmount(canister.getCurrentClrntAmount());
-								System.out.println("temp canister amt after update = " + temp.getCurrentClrntAmount());
+								logger.debug("temp canister amt after update = " + temp.getCurrentClrntAmount());
 								temp.setFillStopLevel(canister.getFillStopLevel());
 								custWebColorantsTxtList.add(temp);
 								tinterService.updateColorantLevels(custWebColorantsTxtList);
 							}
-							else System.out.println("Decrementing by this amount will result in a negative current colorant amount.");
+							else logger.error("Decrementing by this amount will result in a negative current colorant amount.");
 						}
-						else System.out.println("Canister object current amount full or empty.");
+						else logger.debug("Canister object current amount full or empty.");
 						break;
 
 					default:
 						logger.error("Invalid updateType given, updateType = " + getUpdateType());
-						System.out.println("method failed");
 						return ERROR;
 					}
 				}
 			}
 			else {
 				custWebColorantsTxtList.clear();
-				System.out.println("Cleared list, retry action.");
+				logger.debug("Cleared list, retry action.");
 			}
 			
 			//return setallfull if setAllFull function is called to reload the page, otherwise no reload.
@@ -201,7 +200,6 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 			
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-			System.out.println("method failed");
 			return ERROR;
 		}
 	}	

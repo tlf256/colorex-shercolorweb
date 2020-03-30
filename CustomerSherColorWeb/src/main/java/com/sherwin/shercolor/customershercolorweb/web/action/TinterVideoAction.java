@@ -29,11 +29,11 @@ public class TinterVideoAction extends ActionSupport  implements SessionAware, L
 
 		try{
 
-			System.out.println("Inside getCLeanNozzle video action");
+			logger.debug("Inside getCLeanNozzle video action");
 			
 			inputStream = new DataInputStream( new FileInputStream(new File("/web_apps/server/shercolor/deploy/nozzle open.mp4")));
 
-			System.out.println("returning success");
+			logger.debug("returning success");
 			
 		     return SUCCESS;
 		} catch (Exception e) {

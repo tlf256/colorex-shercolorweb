@@ -240,6 +240,4 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 	public void setEventDate(String eventDate) {
 		this.eventDate = Encode.forHtml(eventDate);
 	}
-
-
 }
