@@ -539,11 +539,11 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	}
 
 	public void setColorId(String colorId) {
-		this.colorId = Encode.forHtml(colorId);
+		this.colorId = colorId;
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public List<JobField> getJobFields() {

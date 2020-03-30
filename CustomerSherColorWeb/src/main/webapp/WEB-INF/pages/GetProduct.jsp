@@ -60,7 +60,7 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue"/><br>
 					</s:iterator>	
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">

@@ -112,11 +112,11 @@
 			 var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
 			 txtBox.focus();
 			 
-			 $(".entval").each(function(){
+			 /*$(".entval").each(function(){
 				var enteredValue = $(this).val();
 				//console.log("enteredValue = " + enteredValue);
 				$(this).val($(this).html(enteredValue).text());
-			 });
+			 });*/
 			 
 		 });
 		<!--

@@ -163,12 +163,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	public void parseColorData(String colorData) {
 
-		try {
-			colorData = URLDecoder.decode(colorData,"UTF-8");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing
 		} 
@@ -245,7 +239,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				//TO DO
 				colorComp = "CUSTOM";
 				colorID   = "MANUAL";
-				colorName = Encode.forHtml(partialColorNameOrId.trim());
+				colorName = partialColorNameOrId.trim();
 				if (colorName.isEmpty()) {
 					colorName = "COLOR";
 				}
@@ -255,7 +249,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				if (selectedCoTypes.equalsIgnoreCase("CUSTOMMATCH")) {
 					colorComp = "CUSTOM";
 					colorID   = "MATCH";
-					colorName = Encode.forHtml(partialColorNameOrId.trim());
+					colorName = partialColorNameOrId.trim();
 					if (colorName.isEmpty()) {
 						colorName = "COLOR";
 					}
@@ -267,14 +261,12 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					// when the user quickly enters in a numnber and does a next operation before
 					// the auto complete gets triggered
 					if (colorData.equals("")) {
-						colorData = Encode.forHtml(partialColorNameOrId.trim());
+						colorData = partialColorNameOrId.trim();
 					}
 					// Following method call should be able to cover all conditionals previously
 					// implemented here
 					
 					parseColorData(colorData);
-					colorID = HtmlUtils.htmlUnescape(colorID);
-					colorComp = HtmlUtils.htmlUnescape(colorComp);
 					
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						colorType = "SHERWIN-WILLIAMS";
@@ -511,7 +503,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setColorID(String colorID) {
-		this.colorID = Encode.forHtml(colorID);
+		this.colorID = colorID;
 	}
 
 	public String getColorName() {
@@ -519,7 +511,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public String getReqGuid() {

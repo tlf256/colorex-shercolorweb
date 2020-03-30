@@ -110,7 +110,7 @@
 								<tr class="border-bottom-1 border-dark">
 									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
-										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue" escapeHtml="false"/></span></td>
+										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue" /></span></td>
 									</s:iterator>
 									<td><s:property value="#job.colorId" /></td>
 									<td><s:property value="#job.colorName" /></td>
