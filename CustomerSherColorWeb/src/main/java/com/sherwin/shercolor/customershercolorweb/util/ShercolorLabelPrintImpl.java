@@ -134,32 +134,24 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			}
 			// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
 			// Save the results and ensure that the document is properly closed:
-			
+
 			document.save(filename);
-			document.close();
 		}
 
 		catch(IOException ie) {
-			ie.printStackTrace();
+			logger.error(ie.getMessage());
 			logger.error(ie);
-			try {
-				document.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 		}
 		catch(RuntimeException re){
-			System.out.println("RuntimeException: " + re.getMessage() + re.getCause() + re.getStackTrace());
 			logger.error(re.getMessage());
+			logger.error(re);
 		}
 		finally {
 			try {
 				document.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 
@@ -191,8 +183,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error(e1);
 		}
 
 
@@ -236,7 +227,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellWidth = 50;
 			cell = row.createCell(cellWidth, "", HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 			cellSettings(cell,fontSize,rowHeight );
-
+			
 			errorLocation = "Order Number & Blank Line";
 			fontSize = 7;
 			rowHeight = 7;
@@ -246,7 +237,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			Cell<PDPage> cell2 = row.createCell(cellWidth, "Order # " + 
 					Integer.toString(reqObj.getControlNbr()), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 			cellSettings(cell2,fontSize,rowHeight);
-
+			
 			//-------------------------------------------------------------------
 			row = table.createRow(rowHeight);
 
@@ -258,7 +249,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//  createLabelCustOrdProdData(row," ", fontSize, rowHeight,cellWidth, "left");
 			Cell<PDPage> cell7 = row.createCell(cellWidth, "", HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 			cellSettings(cell7,fontSize,rowHeight );
-
+		
 			//----------------------------------------------------------------------------------------------------------
 			errorLocation = "Use & Class";
 			// 01/20/2017 - Begin Use and Class
@@ -273,7 +264,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			boolean drawContent = true;
 			boolean drawLines = false;
 
-
+			
 			//----------------------------------------------------------------------------------------
 			// Use Interior/Exterior
 
@@ -288,7 +279,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellWidth = 70;
 			Cell<PDPage> klass = row.createCell(cellWidth, reqObj.getKlass(), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 			cellSettings(klass,fontSize,rowHeight);
-
+			
 			//-----------------------------------------------------------------------------------------
 			// 01/20/2017 - Quality and Composite - Begin.
 			errorLocation = "Quality & Composite";
@@ -325,7 +316,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			Cell<PDPage> composite = row.createCell(cellWidth, reqObj.getComposite(), HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 			cellSettings(composite,fontSize,rowHeight );
 			//----------------------------------------------------------------------------------------------------
-
+	
 			// 01/20/2017 - End Quality and Composite
 
 			errorLocation = "Finish & Tinter Type";
@@ -392,7 +383,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			fontSize = 10;
 			rowHeight=12;
 			cellWidth=100f;
-
+	
 			row = table.createRow(rowHeight);
 			Cell<PDPage> color = row.createCell(cellWidth, reqObj.getColorID() + " " + reqObj.getColorName(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 			cellSettings(color,fontSize,rowHeight );
@@ -500,7 +491,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 					lineCtr++;
 				}
-				 */
+				*/
 			}
 			tbl2.draw();
 			//***********************************************************************************
@@ -535,13 +526,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//---------------------------------------------------------------------------------------
 			rowHeight = 8;
 			fontSize = 8;
-
+			
 			cellWidth = 50;
 			Row<PDPage> prodNumRow = prodInfoMsgTable.createRow(rowHeight);
 			Cell<PDPage> prodNumCell = prodNumRow.createCell(cellWidth, reqObj.getProdNbr(), HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 			cellSettings(prodNumCell,fontSize,rowHeight );
 
-
+			
 			fontSize = 8;
 			rowHeight = 8;
 			cellWidth = 50;
@@ -562,7 +553,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellWidth=100f;
 			row = prodInfoMsgTable.createRow(rowHeight);
 
-
+		
 			int messageCount = 0;
 			if (partMessage != null){
 				row = prodInfoMsgTable.createRow(rowHeight);
@@ -570,7 +561,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				cellSettings(partCell,fontSize,rowHeight );
 				messageCount++;
 			}
-
+			
 			List<SwMessage> listSwMessages = reqObj.getCanLabelMsgs();
 			if(listSwMessages != null && listSwMessages.size() > 0){
 				// Process each instance of the message list objects - maximum 3 messages.
@@ -599,7 +590,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				cellSettings(msgCell,fontSize,rowHeight );
 				messageCount++;
 			}
-			 */
+			*/
 			//------------------------------djm-------------------------
 			List<JobField> listJobField = reqObj.getJobFieldList();
 
@@ -666,18 +657,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			content.close();
 			document.addPage( page );
 		}
-
 		catch(IOException ie) {
-			System.out.println("Failed in " + errorLocation);
-			System.out.println("IOException: " + ie.getMessage() + ie.getCause() + ie.getStackTrace());
-			ie.printStackTrace();
 			logger.error(ie.getMessage());
+			logger.error(ie);
 		}
 		catch(RuntimeException re){
-			System.out.println("Failed in " + errorLocation);
-			System.out.println("RuntimeException: " + re.getMessage() + re.getCause() + re.getStackTrace());
-			re.printStackTrace();
 			logger.error(re.getMessage());
+			logger.error(re);
 		}
 	}
 
@@ -928,7 +914,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		} else if (rotation == 0 || rotation == 360 || rotation == 180) {
 			isLandscape = false;
 		} else {
-			System.out.println("Can only handle pages that are rotated in 90 degree steps. This page is rotated  " + rotation + " degrees. Will treat the page as in portrait format");
+			logger.error("Can only handle pages that are rotated in 90 degree steps. This page is rotated  " + rotation + " degrees. Will treat the page as in portrait format");
 			isLandscape = false;
 		}
 		return isLandscape;
