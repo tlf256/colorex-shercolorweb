@@ -72,8 +72,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	String filename;
 	RequestObject reqObj;
 
-	// Set all fonts to bold temporarily to resolve light printing issue.
-	//PDFont fontBold 	= PDType1Font.COURIER_BOLD;
+	// Set all fonts to bold  to resolve light printing issue.
+	
 	final PDFont helvetica    = PDType1Font.HELVETICA_BOLD;
 	PDFont fontBold 	= helvetica;
 	PDFont unicode = null; //font to use for unicode chars
@@ -944,10 +944,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//solaris
 			File f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
 			if(!f.exists()) {
-				f = new File("c:\\Windows\\Fonts\\l_10646.ttff"); // Lucida Sans Unicode
+				f = new File("c:\\Windows\\Fonts\\l_10646.ttf"); // Lucida Sans Unicode
 			}
 			if(!f.exists()) {
-				f = new File("c:\\Windows\\Fonts\\ARIALUNI.TTFf"); // Arial Unicode
+				f = new File("c:\\Windows\\Fonts\\ARIALUNI.TTF"); // Arial Unicode
 			}
 			if(f.exists()) {
 				try {
