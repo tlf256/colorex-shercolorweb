@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -682,17 +683,25 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	 * replace unicode chars with '#' in case font was 
 	 * avail to print said char.
 	 */
-	String replaceUnicode(String string) {
+	String replaceUnicode(String input) {
 		String retString="";
-		for (char ch : string.toCharArray()) {
-			if(!CharUtils.isAscii(ch)){
-				retString += "#";
-			}
-			else {
-				retString += ch;
-			}
+		StringBuilder sb = new StringBuilder(input.length());
+		int count = 0;
+		for (Character c : input.toCharArray()) {
+			
+		    if (!CharUtils.isAscii(c)) {
+		        if((count % 2)==0){
+		        sb.append('#');
+		        }
+		        count++;
+		    } else {
+		        sb.append(c);
+		    }
 		}
-		return retString;
+	
+	
+		return sb.toString();
+	
 	}
 	void cellSettings(Cell<PDPage> cell, int fontSize, float cellHeight )
 	{
