@@ -652,7 +652,7 @@
 	
 	function validateReason(invalidFlag){
 		//validate reason text
-		if($('#reason').val().match(/[a-zA-Z0-9]{2,}/) === null){
+		if($('#reason').val().split(' ').join('').match(/[a-zA-Z0-9]{2,}/) === null){
 			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
 			console.log("Invalid entries detected.");
 			$('#reason').attr("data-toggle", "popover");
