@@ -48,8 +48,8 @@ public class TestSherColorLabel {
 
 		PDFont fontBold = testClass.getUnicode();
 		String name = fontBold.getName();
-		System.out.println(name);
-		assertEquals("DejaVuSansMono-Bold",name);
+		boolean check = (name.contentEquals("LucidaSansUnicode") || (name.contentEquals("DejaVuSansMono-Bold"))) ;
+		assertTrue(check);
 	}
 	@Test 
 	public void testCellSettings1() {
