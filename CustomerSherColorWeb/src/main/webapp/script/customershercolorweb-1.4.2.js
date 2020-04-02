@@ -1,23 +1,38 @@
-$( function() { //document onload
-	
+var timeoutWarning, timeoutExpire;
+
+function startTimeoutTimers(){
 	//Session Timeout Message after 25 minutes
-	setTimeout(function(){  
+	var t1 = setTimeout(function(){  
 		$('#sessionModalBody').text('Your session will expire in 5 minutes, if you would like to extend your session please click Extend.');
 //		$('#sessionModalButton').attr('onclick','window.location="' + $('#currentActionURL').val() + '";');
 		$('#sessionModalButton').attr('onclick','window.location.reload();');
 		$('#sessionModalButton').text('Extend');
 		$('#sessionModal').modal('show');
 	},1500000);
-//	},30000); //testing
-	
+//	},30000); //testing timer 30 seconds
+
 	//Session Expiration Message after 30 minutes
-	setTimeout(function(){ 
+	var t2 = setTimeout(function(){ 
 		$('#sessionModalBody').text('Your session has expired. If you would like to re-login, click Login.');
 		$('#sessionModalButton').attr('onclick','window.location="' + $('#sherLinkURL').val() + '";');
 		$('#sessionModalButton').text('Login');
 		if($('#sessionModal').css('display') === 'none'){$('#sessionModal').modal('show');}
 	},1800000);
-//	},60000); //testing
+//	},60000); //testing 1 minute
+
+	timeoutWarning = t1;
+	timeoutExpire = t2;
+}
+
+function stopTimeoutTimers(timeoutWarning, timeoutExpire) {
+	window.clearTimeout(timeoutWarning);
+	window.clearTimeout(timeoutExpire);
+}
+
+
+$( function() { //document onload
+	
+	startTimeoutTimers();
 	
 	//Current Date
 	$('#currentYear').text((new Date()).getFullYear());
@@ -28,7 +43,6 @@ $( function() { //document onload
     });
 
 });
-
 
 //Use this method for hiding any BS4 Modal - will hide modal if transition takes longer than 2 seconds
 function waitForShowAndHide(showString){
@@ -49,7 +63,7 @@ function waitForShowAndHide(showString){
 
 //Will return an object containing browser name & version
 function getBrowser(){
-    var ua= navigator.userAgent, tem, 
+	var ua= navigator.userAgent, tem, 
     M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
         tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
