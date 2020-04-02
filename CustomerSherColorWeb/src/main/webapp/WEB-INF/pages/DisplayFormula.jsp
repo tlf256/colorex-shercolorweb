@@ -419,7 +419,7 @@ function ParsePrintMessage() {
 		$("#tinterErrorListModal").modal('show');
 		$("#abort-message").hide();
 		processingDispense = false; // allow user to start another dispense after tinter error
-		startTimeoutTimers();
+		startSessionTimeoutTimers();
 	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
 	    	if(my_return_message.statusMessages.length > 0){
 	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
@@ -515,7 +515,7 @@ function ParsePrintMessage() {
 								+ "&jsDateString=" + curDate.toString(),
 						function(data) {
 							processingDispense = false;
-							startTimeoutTimers();
+							startSessionTimeoutTimers();
 							if (data.sessionStatus === "expired") {
 								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 							} else {
@@ -581,7 +581,7 @@ function ParsePrintMessage() {
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
 					processingDispense = false; // allow user to start another dispense after socket error
-					startTimeoutTimers();
+					startSessionTimeoutTimers();
 					
 					$("#tinterSocketErrorModal").modal('show');
 
@@ -626,7 +626,7 @@ function ParsePrintMessage() {
 							waitForShowAndHide("#tinterInProgressModal");
 						} else {
 							processingDispense = false; // allow user to start another dispense after tinter error
-							startTimeoutTimers();
+							startSessionTimeoutTimers();
 							// send tinter event
 							var curDate = new Date();
 							var myGuid = $("#formulaUserPrintAction_reqGuid")
@@ -752,7 +752,7 @@ function ParsePrintMessage() {
 						function(event) {
 							if (processingDispense == false) {
 								processingDispense = true;
-								stopTimeoutTimers(timeoutWarning, timeoutExpire);
+								stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
 								event.preventDefault();
 								event.stopPropagation();
 								waitForShowAndHide("#positionContainerModal");

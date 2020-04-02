@@ -1,6 +1,6 @@
 var timeoutWarning, timeoutExpire;
 
-function startTimeoutTimers(){
+function startSessionTimeoutTimers(){
 	//Session Timeout Message after 25 minutes
 	var t1 = setTimeout(function(){  
 		$('#sessionModalBody').text('Your session will expire in 5 minutes, if you would like to extend your session please click Extend.');
@@ -24,7 +24,7 @@ function startTimeoutTimers(){
 	timeoutExpire = t2;
 }
 
-function stopTimeoutTimers(timeoutWarning, timeoutExpire) {
+function stopSessionTimeoutTimers(timeoutWarning, timeoutExpire) {
 	window.clearTimeout(timeoutWarning);
 	window.clearTimeout(timeoutExpire);
 }
@@ -32,7 +32,7 @@ function stopTimeoutTimers(timeoutWarning, timeoutExpire) {
 
 $( function() { //document onload
 	
-	startTimeoutTimers();
+	startSessionTimeoutTimers();
 	
 	//Current Date
 	$('#currentYear').text((new Date()).getFullYear());
