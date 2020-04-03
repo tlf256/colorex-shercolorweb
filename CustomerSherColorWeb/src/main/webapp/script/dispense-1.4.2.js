@@ -148,6 +148,7 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
     $("#tinterErrorList").empty();
     $("#tinterErrorListModal").modal('show');
     $("#abort-message").hide();
+    startSessionTimeoutTimers();
     if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
     	if(my_return_message.statusMessages.length > 0){
     		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
@@ -222,6 +223,7 @@ function dispenseComplete(return_message){
 	return_message.command = "Dispense";
 	var teDetail = new TintEventDetail("DISPENSE USER", sessionTinterInfo.lastPurgeUser, 0);
     var tedArray = [teDetail];
+    let curDate = new Date();
     sendTinterEvent($('#reqGuid').val(), curDate, return_message, tedArray); 
     if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
         // save a dispense (will bump the counter)
@@ -238,6 +240,7 @@ function dispenseComplete(return_message){
         showTinterErrorModal("Dispense Error",null,return_message);
     }
     sendingTinterCommand = "false";
+    startSessionTimeoutTimers();
 }
 function abort(){
 	console.log('before abort');
@@ -255,7 +258,6 @@ function RecdMessage() {
     console.log("Received Message");
     
     //Send the tinter event
-    let curDate = new Date();
     if(ws_tinter){
     	console.log("Message is " + ws_tinter.wsmsg);
         console.log("isReady is " + ws_tinter.isReady + "BTW");
@@ -272,6 +274,7 @@ function RecdMessage() {
             $("#tinterSocketError").text(ws_tinter.wserrormsg);
             $('#progressok').removeClass('d-none');
             waitForShowAndHide("#tinterInProgressModal");
+            startSessionTimeoutTimers();
         	console.log('hide done');
         	$("#tinterSocketErrorModal").modal('show');
         } else {
@@ -504,6 +507,7 @@ function preDispenseCheckCallback(){
         if(shotList.length > 0){
             $("#tinterInProgressModal").modal('show');
         	$('#tinterInProgressTitle').text('Dispense in Progress');
+        	stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
             decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
         }else{ 
             console.log("Shotlist empty, dispense not executed.");
@@ -590,6 +594,7 @@ $(function(){
     $('#tinterWarningListOK').click(function(event){
     	//Dispensing if shotList contains values
         if(shotList.length > 0){
+        	stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
             decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
         }else{ 
             console.log("Shotlist empty, dispense not executed.");
