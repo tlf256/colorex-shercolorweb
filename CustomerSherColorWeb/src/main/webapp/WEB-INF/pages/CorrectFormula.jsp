@@ -22,7 +22,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
@@ -652,7 +652,7 @@
 	
 	function validateReason(invalidFlag){
 		//validate reason text
-		if($('#reason').val().match(/[a-zA-Z0-9]{2,}/) === null){
+		if($('#reason').val().split(' ').join('').match(/[a-zA-Z0-9]{2,}/) === null){
 			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
 			console.log("Invalid entries detected.");
 			$('#reason').attr("data-toggle", "popover");
