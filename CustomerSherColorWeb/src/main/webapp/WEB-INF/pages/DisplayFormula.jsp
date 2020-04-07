@@ -24,7 +24,7 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/CustomerSherColorWeb.js"></script>
+	src="script/customershercolorweb-1.4.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
@@ -419,7 +419,7 @@ function ParsePrintMessage() {
 		$("#tinterErrorListModal").modal('show');
 		$("#abort-message").hide();
 		processingDispense = false; // allow user to start another dispense after tinter error
-
+		startSessionTimeoutTimers();
 	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
 	    	if(my_return_message.statusMessages.length > 0){
 	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
@@ -505,6 +505,7 @@ function ParsePrintMessage() {
 		}
 		sendingTinterCommand = "false";
 	}
+		
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#formulaUserPrintAction_reqGuid").val();
 		var curDate = new Date();
@@ -514,6 +515,7 @@ function ParsePrintMessage() {
 								+ "&jsDateString=" + curDate.toString(),
 						function(data) {
 							processingDispense = false;
+							startSessionTimeoutTimers();
 							if (data.sessionStatus === "expired") {
 								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 							} else {
@@ -579,6 +581,8 @@ function ParsePrintMessage() {
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
 					processingDispense = false; // allow user to start another dispense after socket error
+					startSessionTimeoutTimers();
+					
 					$("#tinterSocketErrorModal").modal('show');
 
 				} else {
@@ -622,6 +626,7 @@ function ParsePrintMessage() {
 							waitForShowAndHide("#tinterInProgressModal");
 						} else {
 							processingDispense = false; // allow user to start another dispense after tinter error
+							startSessionTimeoutTimers();
 							// send tinter event
 							var curDate = new Date();
 							var myGuid = $("#formulaUserPrintAction_reqGuid")
@@ -747,6 +752,7 @@ function ParsePrintMessage() {
 						function(event) {
 							if (processingDispense == false) {
 								processingDispense = true;
+								stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
 								event.preventDefault();
 								event.stopPropagation();
 								waitForShowAndHide("#positionContainerModal");
@@ -1460,7 +1466,7 @@ function ParsePrintMessage() {
 	<br>
 	<br>
 	<br>
-
+	
 	<script>
 	<!--
 		function HF_openSherwin() {
@@ -1799,7 +1805,7 @@ function ParsePrintMessage() {
 				$("#formulaPrint").removeClass("btn-secondary");
 		}
 	</script>
-
+	
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>
