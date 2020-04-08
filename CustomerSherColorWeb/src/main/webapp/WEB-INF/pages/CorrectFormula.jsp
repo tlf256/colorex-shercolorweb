@@ -76,6 +76,7 @@
 			
 			// load colorant into dropdown menu for Manual Add
 			console.log("loading colorant dropdown");
+			
 			$("#clrntList").empty();
 			sessionTinterInfo.canisterList.sort(function(a,b){
 				var nameA = a.clrntName;
@@ -490,6 +491,7 @@
 		newRow = newRow + '</tr>';
 		$("#formulaAdditions > tbody:last-child").append(newRow);
 		$('html,body').animate({scrollTop: $("#formulaAdditions > tbody:last-child").offset().top -= 80});
+		rebuildColorantList();
 	}
 
 	function percentAddClick(){
@@ -532,12 +534,38 @@
     					$("#formulaAdditions > tbody:last-child").append(newRow);
     					$('#pct').text('');
     					$('#percentPrompt').toggle();
-    					
     				});
+    				rebuildColorantList();
             	}
 			},
 			error: function(err){
 				alert("failure: " + err);
+			}
+		});
+	}
+	
+	function rebuildColorantList() {
+		$("#clrntList").empty();
+		sessionTinterInfo.canisterList.sort(function(a,b){
+			var nameA = a.clrntName;
+			var nameB = b.clrntName;
+			if (nameA < nameB) return -1;
+			if (nameA > nameB) return 1;
+			return 0;
+		});
+		sessionTinterInfo.canisterList.forEach(function(can){
+			var clrntIdentifier = can.clrntCode + '-' + can.clrntName;
+			var clrntAdded = false;
+			// check if already added into the table
+			$('#formulaAdditions > tbody tr').each(function(){
+	            var clrntInRow = $(this).find('#clrntString').text();
+	            if (clrntInRow == clrntIdentifier){
+	            	clrntAdded = true;
+	            } 
+			});
+			if(can.clrntCode!="NA" && !clrntAdded){
+				var link = '<li class="dropdown-item"><a class="dropdown-item" href="#" onclick="addManClrnt(\''+clrntIdentifier+'\')">'+clrntIdentifier+'</a></li>';
+				$("#clrntList").append(link);
 			}
 		});
 	}
