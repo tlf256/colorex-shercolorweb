@@ -169,6 +169,12 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	public void parseColorData(String colorData) {
+		
+		try {
+			colorData = URLDecoder.decode(colorData,"UTF-8");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing

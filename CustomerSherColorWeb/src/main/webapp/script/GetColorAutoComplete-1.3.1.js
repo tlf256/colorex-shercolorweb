@@ -20,7 +20,7 @@ $(document).ready(function() {
 		autoFocus : true,
 		source : function(request, response){
 			var colorNameOrId = encodeURIComponent(request.term);
-			console.log("encoded partialColorNameOrId - " + colorNameOrId);
+			//console.log("encoded partialColorNameOrId - " + colorNameOrId);
 			$.ajax({	
 				url : "listColors.action",
 				dataType : "json",
@@ -37,7 +37,7 @@ $(document).ready(function() {
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
                 	else{
-                		$("#colorData").attr("value",JSON.stringify(data));
+                		$("#colorData").attr("value",encodeURIComponent(JSON.stringify(data)));
                 		//console.log(data);
                 		console.log($("#colorData").attr("value"));
                 		response(data.slice(0,100));
