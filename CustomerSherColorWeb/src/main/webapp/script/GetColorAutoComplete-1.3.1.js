@@ -3,8 +3,8 @@ $(document).ready(function() {
 	//Disable autoFocus for Custom Manual or Custom Match selections
 	$('input[type=radio]').change(function() {
         if(this.value.match(/^CUSTOM/)) {
-        	$( "#partialColorNameOrId" ).autocomplete( "option", "autoFocus", false );
-        	console.log("false");
+        	$( "#partialColorNameOrId" ).autocomplete( "option", "disabled", true );
+        	console.log("disabled");
         }
         else{
         	$( "#partialColorNameOrId" ).autocomplete( "option", "autoFocus", true );
@@ -19,10 +19,12 @@ $(document).ready(function() {
 		delay : 500,
 		autoFocus : true,
 		source : function(request, response){
+			var colorNameOrId = encodeURIComponent(request.term);
+			console.log("encoded partialColorNameOrId - " + colorNameOrId);
 			$.ajax({	
 				url : "listColors.action",
 				dataType : "json",
-				data : {"partialColorNameOrId" : request.term, "selectedCoType" : $('input:radio[name=selectedCoTypes]:checked').val(), "reqGuid" : $('#reqGuid').val() },
+				data : {"partialColorNameOrId" : colorNameOrId, "selectedCoType" : $('input:radio[name=selectedCoTypes]:checked').val(), "reqGuid" : $('#reqGuid').val() },
 //				success : function(data){
 //					response: ($.map(data, function(v,i){
 //                        return {

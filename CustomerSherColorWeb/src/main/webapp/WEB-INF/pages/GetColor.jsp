@@ -23,14 +23,44 @@
 		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
+				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
+					selectedValue = $("[id^=selectedCoTypes]:checked").val();
+					//console.log("selected value - " + selectedValue);
+					
 					if(this.checked) {
 						$('.form-control-feedback, .help-block').remove();
 						$('.has-feedback').removeClass('has-error has-feedback');
 						$('#partialColorNameOrId').val('');
 				    }
+					
 				});
+				
+				//validate partialColorNameOrId if custom manual or custom match
+				//prevent special characters < or > from being entered
+				$('#partialColorNameOrId').on('keypress', function(){
+					if(selectedValue == "CUSTOM" || selectedValue == "CUSTOMMATCH"){
+						try{
+							if(event.key == ">" || event.key == "<"){
+								//console.log("< or > keypress");
+								throw "Special characters \"<\" or \">\" not allowed";
+							}
+							
+							if($(document).find('#errortxt')){
+								$(document).find('#errortxt').remove();
+							}
+						} catch(msg){
+							event.preventDefault();
+							if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
+								$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+								$(document).find('#errortxt').text(msg);
+							}
+						}
+					}
+				});
+				
 			});
+			
 		</script>
 	</head>
 	
@@ -120,7 +150,7 @@
 							<s:hidden name="colorData" id="colorData" value=""/>
 						</div>
 						<div class="col-lg-8 col-md-8 col-sm-10">
-							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="Enter Color Name or Number" placeholder="Choose color type, then enter color name or number here" size="30" maxlength="30" cssStyle="font-size: 16px;" autofocus="autofocus"  />
+							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="Enter Color Name or Number" placeholder="Choose color type, then enter color name or number here" size="30" maxlength="15" cssStyle="font-size: 16px;" autofocus="autofocus"  />
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1">
 						</div>

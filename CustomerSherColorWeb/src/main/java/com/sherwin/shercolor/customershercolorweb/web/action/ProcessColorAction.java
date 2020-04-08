@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -100,6 +101,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	public String listColors() {
 		
 		try {
+			
+			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
+			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
 
 			if (selectedCoType.equals("SW")) {
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
@@ -116,6 +120,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
 			logger.error(e.getMessage());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return SUCCESS;

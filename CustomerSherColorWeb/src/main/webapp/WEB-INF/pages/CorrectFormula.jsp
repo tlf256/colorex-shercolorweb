@@ -651,8 +651,8 @@
 	}
 	
 	function validateReason(invalidFlag){
-		//validate reason text
-		if($('#reason').val().match(/[a-zA-Z0-9]{2,}/) === null){
+		//validate reason text, check for length
+		if($('#reason').val().length < 2 || $('#reason').val().length > 100){
 			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
 			console.log("Invalid entries detected.");
 			$('#reason').attr("data-toggle", "popover");
@@ -1217,6 +1217,31 @@
 			}
 		});
 		
+		// keep < and > characters out of reason input
+		$(document).on({
+			'keypress':function(){
+				try{
+					if(event.key == ">" || event.key == "<"){
+						throw "Special characters \"<\" or \">\" not allowed";
+					}
+					if($(document).find('#errortxt')){
+						$(document).find('#errortxt').remove();
+					}
+				} catch(msg){
+					event.preventDefault();
+					if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
+						$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+						$(document).find('#errortxt').text(msg)
+					}
+				}
+			},
+			'blur':function(){
+				if($(document).find('#errortxt')){
+					$(document).find('#errortxt').remove();
+				}
+			}
+		}, '#reason');
+		
 		//Hide unnecessary rows onload
 		var dupText = [];
 		var cycle = <s:property value="%{cycle}"/>;
@@ -1453,7 +1478,7 @@
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
 							<h5 class="text-primary"><strong>Add Colorant to Container #<span id="currentCont">1</span></strong></h5>
-							<p><strong>Reason: </strong><input type="text" class="form-control btn-block" id="reason" placeholder="Enter reason for correction"/></p>
+							<p><strong>Reason: </strong><input type="text" class="form-control btn-block" id="reason" placeholder="Enter reason for correction" maxlength="100" /></p>
 							<table>
 							<tr>
 							<td style="width: 20%;">
