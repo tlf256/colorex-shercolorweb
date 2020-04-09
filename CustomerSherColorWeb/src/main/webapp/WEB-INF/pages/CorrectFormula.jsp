@@ -664,7 +664,7 @@
 	}
 	
 	function validateCorrectionList(invalidFlag, correctionList){
-		//validate reason text
+		// validate correction list values
 		if(correctionList === undefined || correctionList.length == 0){
 			$('html,body').animate({scrollTop: $('#formulaAdditions').offset().top -= 80});
 			console.log("Invalid entries detected.");
@@ -675,7 +675,30 @@
 			$('#formulaAdditions').popover('toggle');
 			$('.popover').addClass('popover-danger');
 			return true;
-		}else{return false;}
+		}else{
+			// make sure colorants in the list aren't all zeroed out
+			var allZeroes = true;
+			correctionList.forEach(function(row){
+				row.incrArray.forEach(function(item){
+					if (item != 0){
+						allZeroes = false;
+					}
+				});
+			});
+			if (allZeroes){
+				$('html,body').animate({scrollTop: $('#formulaAdditions').offset().top -= 80});
+				console.log("Invalid entries detected.");
+				$('#formulaAdditions').attr("data-toggle", "popover");
+				$('#formulaAdditions').attr("data-placement","top");
+				$('#formulaAdditions').attr("data-content", "Addition must be set, values cannot all be zero");
+				$('#formulaAdditions').popover({trigger : 'manual'});
+				$('#formulaAdditions').popover('toggle');
+				$('.popover').addClass('popover-danger');
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
 	
 	function validateReason(invalidFlag){
@@ -1280,7 +1303,7 @@
 		});
 		
 		//Popover closing functionality	
-	    $('#reason,#formulaAdditions,#percentAdd,#manualAdd').on( 'click' , function(event){
+	    $('#reason,#formulaAdditions,#percentAdd,#manualAdd,#cancelAdd').on( 'click' , function(event){
 	    	$('.popover').each(function(){
 	            $(this).popover('toggle');
 	            $('input[data-toggle="popover"]').each(function(){
