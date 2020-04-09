@@ -501,7 +501,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	}
 
 	public void setReason(String reason) {
-		this.reason = Encode.forHtml(reason);
+		this.reason = reason;
 	}
 
 	public void setJsDateString(String jsDateString) {

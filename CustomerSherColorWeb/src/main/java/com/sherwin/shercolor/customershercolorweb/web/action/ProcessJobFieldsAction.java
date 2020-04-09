@@ -122,11 +122,10 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					logger.debug("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
-					// encode entered value
-					thisField.setEnteredValue(Encode.forHtml(thisField.getEnteredValue()));
-					logger.debug("thisField after encoding: " + thisField.getEnteredValue());
+					thisField.setEnteredValue(thisField.getEnteredValue());
+					
 					i++;
-					validateMe.add(StringEscapeUtils.unescapeHtml(thisField.getEnteredValue()));
+					validateMe.add(thisField.getEnteredValue());
 					jobFieldLabels.add(thisField.getScreenLabel());
 				}
 				

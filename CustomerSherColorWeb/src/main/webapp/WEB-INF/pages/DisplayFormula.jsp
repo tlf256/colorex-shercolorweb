@@ -801,6 +801,7 @@ function ParsePrintMessage() {
 		});
 		jQuery(document).on("keydown", fkey); // capture F4
 	}
+	
 </script>
 <script type="text/javascript">
 //callback stuff
@@ -916,7 +917,6 @@ function ParsePrintMessage() {
 		}
 	}
 
-
 </script>
 </head>
 <body>
@@ -961,7 +961,7 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-				<s:property value="enteredValue" escapeHtml="false" />
+				<s:property value="enteredValue" />
 				<br>
 			</s:iterator>
 		</div>
@@ -984,7 +984,7 @@ function ParsePrintMessage() {
 			<strong>Color ID:</strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-			${sessionScope[thisGuid].colorID}</div>
+			<s:property value="#session[reqGuid].colorID" /></div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 	<div class="row">
@@ -993,7 +993,7 @@ function ParsePrintMessage() {
 			<strong>Color Name:</strong>
 		</div>
 		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-			${sessionScope[thisGuid].colorName}<br>
+			<s:property value="#session[reqGuid].colorName" /><br>
 			<div class="card card-body sw-bg-main"></div>
 		</div>
 		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
