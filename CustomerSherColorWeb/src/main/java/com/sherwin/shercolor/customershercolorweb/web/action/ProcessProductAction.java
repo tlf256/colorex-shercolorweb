@@ -267,7 +267,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setPartialProductNameOrId(String partialProductNameOrId) {
-		this.partialProductNameOrId = Encode.forHtml(partialProductNameOrId);
+		this.partialProductNameOrId = partialProductNameOrId;
 	}
 	
 	public ProductService getProductService() {
@@ -303,7 +303,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setColorID(String colorID) {
-		this.colorID = Encode.forHtml(colorID);
+		this.colorID = colorID;
 	}
 
 	public String getColorComp() {
@@ -319,7 +319,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public String getReqGuid() {
