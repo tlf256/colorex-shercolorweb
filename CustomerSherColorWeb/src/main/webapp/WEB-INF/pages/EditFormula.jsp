@@ -160,6 +160,43 @@
 			if($('#adjByPercentVisible').val() === 'true'){
 				$('#adjByPct').hide();
 			}
+			
+			//validate colorId and colorName fields
+			//prevent special characters < or > from being entered
+			$(document).on({
+				'keypress':function(){
+					try{
+						if(event.key == ">" || event.key == "<"){
+							throw "Special characters \"<\" or \">\" not allowed";
+						}
+						
+						if($(document).find('#errortxt')){
+							$('input[name^="color"]').each(function(){
+								$(this).parents().find('#errortxt').remove();
+								$(this).removeClass('border-danger');
+							});
+						}
+					} catch(msg){
+						event.preventDefault();
+						if($(this).is('input[name="colorId"]')){
+							$('.errormsg').eq(0).append('<div id="errortxt" class="text-danger"></div>');
+						} else {
+							$('.errormsg').eq(1).append('<div id="errortxt" class="text-danger"></div>');
+						}
+						$(this).parents('.row').find('#errortxt').text(msg)
+						$(this).addClass('border-danger');	
+					}
+				},
+				'blur': function(){
+					if($(document).find('#errortxt')){
+						$('input[name^="color"]').each(function(){
+							$(this).parents().find('#errortxt').remove();
+							$(this).removeClass('border-danger');
+						});
+					}
+				}
+			}, '[name="colorId"], [name="colorName"]');
+			
 		});
 		
 		</script>
@@ -245,12 +282,11 @@
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue" /><br>
 					</s:iterator>	
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
 					</div>
-				</div>
 <br>
 			<s:form action="MfUserNextAction" validate="true"  theme="bootstrap" id="form">
 				<div class="row">
@@ -272,9 +308,9 @@
 						<strong>Color ID:</strong>
 					</div>
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
-						<s:textfield name="colorId" size="10" maxlength="10" />
+						<s:textfield name="colorId" size="20" maxlength="10" />
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0">
+					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
 					</div>
 				</div>
 				<div class="row">
@@ -284,10 +320,10 @@
 						<strong>Color Name:</strong>
 					</div>
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
-						<s:textfield name="colorName" size="20" maxlength="20" />
+						<s:textfield name="colorName" size="20" maxlength="30" />
 						<div class="card card-body sw-bg-main"></div>
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0">
+					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
 					</div>
 				</div>
 				<div class="row">
