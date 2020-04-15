@@ -54,9 +54,11 @@
 		}
 		
 		function addWarningPopoverForClearedColorant(selector,colorantItem){
+			var safeTintSysId = encodeURIComponent(colorantItem.tintSysId.toString());
+			var safeName = encodeURIComponent(colorantItem.name.toString());
 			$(selector).attr("data-toggle", "popover");
 			$(selector).attr("data-placement","left");
-			$(selector).attr("data-content", "Colorant " + colorantItem.tintSysId + "-" + colorantItem.name +" removed due to percent calculation");
+			$(selector).attr("data-content", "Colorant " + safeTintSysId + "-" + safeName + " removed due to percent calculation");
 			$(selector).popover({trigger : 'manual'});
 			$(selector).popover('toggle');
 			$('.popover').addClass('popover-warning');
@@ -90,7 +92,6 @@
 					success: function (data) {
 						
 						//console.log(data);		
-						
 						if(data.sessionStatus === "expired"){
 		            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 		            	}
@@ -98,7 +99,7 @@
 		            		
 							// walk through result formula
 							data.displayFormula.ingredients.forEach(function(item, i){
-								console.log(item);
+								//console.log(item);
 								if(item.increment.every(allZero)){
 									
 									//clear zero increment colorant
@@ -106,9 +107,11 @@
 									addWarningPopoverForClearedColorant('#form_ingredientList_' + i + '__selectedColorant',item);
 								}else{
 									for (let x = 0; x < item.increment.length; x++) {
-										console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
+										var safeTintSysId = encodeURIComponent(item.tintSysId.toString());
+										var safeName = encodeURIComponent(item.name.toString());
+										//console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
 										$('#form_ingredientList_' + i + '__selectedColorant option:selected').attr('selected',false);
-										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ item.tintSysId + '-'+ item.name + '"]').attr('selected',true);
+										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ safeName + '"]').attr('selected',true);
 										$('#form_ingredientList_' + i + '__increments_' + x + '_').val(item.increment[x]);
 									}
 								}
@@ -136,10 +139,11 @@
 		}
 		
 		function clearColorant(index){
-			$('#form_ingredientList_' + index + '__selectedColorant option:selected').attr('selected',false);
-			$('#form_ingredientList_' + index + '__selectedColorant option[value="-1"]').attr('selected',true);
+			var safeIndex = encodeURIComponent(index);
+			$('#form_ingredientList_' + safeIndex + '__selectedColorant option:selected').attr('selected',false);
+			$('#form_ingredientList_' + safeIndex + '__selectedColorant option[value="-1"]').attr('selected',true);
 			for (var x = 0; x < 4; x++) {
-				$('#form_ingredientList_' + index + '__increments_' + x + '_').val('0');
+				$('#form_ingredientList_' + safeIndex + '__increments_' + x + '_').val('0');
 			}
 		} 
 		

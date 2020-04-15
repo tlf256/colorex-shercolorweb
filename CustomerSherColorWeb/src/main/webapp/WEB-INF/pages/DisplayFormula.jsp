@@ -1373,7 +1373,7 @@ function ParsePrintMessage() {
 						<div class="modal-body">
 							<div class="embed-responsive embed-responsive-1by1">
 								<embed
-									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>"
+									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>"
 									frameborder="0" class="embed-responsive-item">
 							</div>
 

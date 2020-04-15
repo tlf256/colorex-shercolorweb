@@ -118,7 +118,7 @@ input[type=number] {
 									<div class="d-flex flex-row justify-content-around">
 									<div class="p-2 mr-3" style="width: 10rem;">
 										<span class="badge badge-secondary" style="font-size: 1.2rem;">Dispense</span>
-										<h5 class="text-primary mt-3"><strong><s:property value="tinter.model"/></strong></h5>
+										<h5 class="text-primary mt-3"><strong><s:property value="tinter.model" escapeHtml="true"/></strong></h5>
 									</div>
 									<div class="p-2">
 										<div class="alert alert-warning text-center">
