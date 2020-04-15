@@ -109,7 +109,6 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				
 				long startJob = System.currentTimeMillis();
 				String clrntSysId = webTran.getClrntSysId();
-				System.out.println("Processing Job " + counter + "/" + tranHistory.size());
 				
 				logger.debug("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr());
 				JobHistoryInfo job = new JobHistoryInfo();
