@@ -102,7 +102,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			FormulaConversion gicConverter = formulationService.buildFormulaConversion("GIC");
 			
 			//int index= 0;
-			System.out.println("# of Webtran objects in tranHistory: " + tranHistory.size());
+			logger.info("# of Webtran objects in tranHistory: " + tranHistory.size());
 			int counter = 0;
 			
 			for (CustWebTran webTran : tranHistory) {
@@ -159,11 +159,11 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		
 		} catch (HibernateException he) {
 			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
-			System.out.println("End ERROR (Hibernate Exception) - LookupJobAction: display");
+			logger.debug("End ERROR (Hibernate Exception) - LookupJobAction: display");
 			return ERROR;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			System.out.println("End ERROR (Exception) - LookupJobAction: display");
+			logger.debug("End ERROR (Exception) - LookupJobAction: display");
 			return ERROR;
 		}
 		
