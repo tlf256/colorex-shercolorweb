@@ -152,7 +152,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			}
 			long endAction = System.currentTimeMillis();
 			double actionTime = endAction-startAction;
-			logger.debug("LookupJobAction: Average Job Processing Time: " + (jobTimeAverage/100) + " ms)" );
+			logger.debug("LookupJobAction: Average Job Processing Time: " + (jobTimeAverage/tranHistory.size()) + " ms)" );
 			logger.debug("LookupJobAction: display - Time Spent: " + (actionTime/1000) + " seconds");	
 			return SUCCESS;
 				
