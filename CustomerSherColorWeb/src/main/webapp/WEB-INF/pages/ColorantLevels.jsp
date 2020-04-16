@@ -59,7 +59,7 @@
 						<div class="row">
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3">
 								<span class="badge badge-secondary" style="font-size: 1.2rem;">Colorant Levels</span>
-								<h5 class="text-primary mt-3"><strong><s:property value="tinter.model"></s:property></strong></h5>
+								<h5 class="text-primary mt-3"><strong><s:property value="tinter.model" escapeHtml="true"></s:property></strong></h5>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-8 col-6">
 								<div class="alert alert-warning">

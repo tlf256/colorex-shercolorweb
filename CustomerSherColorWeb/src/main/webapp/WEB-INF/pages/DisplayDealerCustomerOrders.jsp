@@ -62,10 +62,10 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><s:property value="custWebDealerCustDto.customerId" /></td>
+							<td><s:property value="custWebDealerCustDto.customerId" escapeHtml="true" /></td>
 							<td><s:property value="custWebDealerCustDto.dealerName" /></td>
 							<td><s:property value="custWebDealerCustDto.homeStore" /></td>
-							<td><s:property value="custWebDealerCustDto.comments" /></td>
+							<td><s:property value="custWebDealerCustDto.comments" escapeHtml="true" /></td>
 						</tr>
 					</tbody>
 				</table>

@@ -591,7 +591,7 @@ function decrementColorantForDispense(myGuid, myShotList, callback) {
         	else{
         		//Check result of decrement
     			var passfail = data.adjustedColorantLevels;
-    			console.log("decrement passfail is " + passfail);
+    			//console.log("decrement passfail is " + passfail);
     			if(typeof callback == 'function'){
     				callback(passfail);
     			}
