@@ -29,7 +29,7 @@ public class LookupJobActionTest extends StrutsSpringTestCase {
 	@Test
 	public void testLookupJobsAction() {
 		System.out.println("Start Lookup Jobs Action Test");
-		reqObj.setCustomerID("400000000");
+		reqObj.setCustomerID("CCF");
 
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
