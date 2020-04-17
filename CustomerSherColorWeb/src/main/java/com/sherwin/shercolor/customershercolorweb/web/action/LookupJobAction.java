@@ -101,9 +101,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			FormulaConversion eightConverter = formulationService.buildFormulaConversion("844");
 			FormulaConversion gicConverter = formulationService.buildFormulaConversion("GIC");
 			
-			//int index= 0;
 			logger.info("# of Webtran objects in tranHistory: " + tranHistory.size());
-			int counter = 0;
 			
 			for (CustWebTran webTran : tranHistory) {
 				
@@ -141,6 +139,20 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 					job.setNumberOfColorants(0);
 				} else {
 					job.setNumberOfColorants(job.getRecipe().size());
+					String formulaDisplay = ""; 
+					for (FormulaIngredient ingredient : job.getRecipe()) {
+						int[] increments = ingredient.getIncrement();
+						String ingredientDisplay = 
+								ingredient.getTintSysId() + ": " +
+								increments[0] + ", " +
+								increments[1] + ", " +
+								increments[2] + ", " +
+								increments[3] + " | ";
+						formulaDisplay += ingredientDisplay;
+						
+					}
+					
+					job.setFormulaDisplay(formulaDisplay.substring(0,formulaDisplay.length()-3));
 				}
 				
 				job.setJobFieldList(processJobFields(custWebJobFields, webTran));
@@ -148,12 +160,11 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				
 				long endJob = System.currentTimeMillis();
 				jobTimeAverage += endJob-startJob;
-
 			}
 			long endAction = System.currentTimeMillis();
 			double actionTime = endAction-startAction;
 			logger.debug("LookupJobAction: Average Job Processing Time: " + (jobTimeAverage/tranHistory.size()) + " ms)" );
-			logger.debug("LookupJobAction: display - Time Spent: " + (actionTime/1000) + " seconds");	
+			logger.debug("LookupJobAction: display - Time Spent: " + (actionTime/1000) + " seconds");
 			return SUCCESS;
 				
 		
