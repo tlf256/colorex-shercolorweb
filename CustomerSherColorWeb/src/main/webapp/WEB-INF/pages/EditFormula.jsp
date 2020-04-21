@@ -109,9 +109,11 @@
 									for (let x = 0; x < item.increment.length; x++) {
 										var safeTintSysId = encodeURIComponent(item.tintSysId.toString());
 										var safeName = encodeURIComponent(item.name.toString());
+										var name = safeName.replace(/%20/g, " ");
+										console.log("tintSysId: " + safeTintSysId + " name: " + name);
 										//console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
 										$('#form_ingredientList_' + i + '__selectedColorant option:selected').attr('selected',false);
-										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ safeName + '"]').attr('selected',true);
+										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ name + '"]').attr('selected',true);
 										$('#form_ingredientList_' + i + '__increments_' + x + '_').val(item.increment[x]);
 									}
 								}
