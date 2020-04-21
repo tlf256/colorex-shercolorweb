@@ -109,9 +109,12 @@
 									for (let x = 0; x < item.increment.length; x++) {
 										var safeTintSysId = encodeURIComponent(item.tintSysId.toString());
 										var safeName = encodeURIComponent(item.name.toString());
+										//var tintSysId = safeTintSysId.replace(/%20/g, " ");
+										var name = safeName.replace(/%20/g, " ");
+										console.log("tintSysId: " + safeTintSysId + " name: " + name);
 										//console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
 										$('#form_ingredientList_' + i + '__selectedColorant option:selected').attr('selected',false);
-										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ safeName + '"]').attr('selected',true);
+										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ name + '"]').attr('selected',true);
 										$('#form_ingredientList_' + i + '__increments_' + x + '_').val(item.increment[x]);
 									}
 								}
@@ -140,10 +143,10 @@
 		
 		function clearColorant(index){
 			var safeIndex = encodeURIComponent(index);
-			$('#form_ingredientList_' + safeIndex + '__selectedColorant option:selected').attr('selected',false);
-			$('#form_ingredientList_' + safeIndex + '__selectedColorant option[value="-1"]').attr('selected',true);
+			$('#form_ingredientList_' + index + '__selectedColorant option:selected').attr('selected',false);
+			$('#form_ingredientList_' + index + '__selectedColorant option[value="-1"]').attr('selected',true);
 			for (var x = 0; x < 4; x++) {
-				$('#form_ingredientList_' + safeIndex + '__increments_' + x + '_').val('0');
+				$('#form_ingredientList_' + index + '__increments_' + x + '_').val('0');
 			}
 		} 
 		
