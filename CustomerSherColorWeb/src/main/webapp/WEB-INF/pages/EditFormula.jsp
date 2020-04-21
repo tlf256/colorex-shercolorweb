@@ -293,6 +293,7 @@
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
 					</div>
+				</div>
 <br>
 			<s:form action="MfUserNextAction" validate="true"  theme="bootstrap" id="form">
 				<div class="row">
