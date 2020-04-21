@@ -143,10 +143,10 @@
 		
 		function clearColorant(index){
 			var safeIndex = encodeURIComponent(index);
-			$('#form_ingredientList_' + index + '__selectedColorant option:selected').attr('selected',false);
-			$('#form_ingredientList_' + index + '__selectedColorant option[value="-1"]').attr('selected',true);
+			$('#form_ingredientList_' + safeIndex + '__selectedColorant option:selected').attr('selected',false);
+			$('#form_ingredientList_' + safeIndex + '__selectedColorant option[value="-1"]').attr('selected',true);
 			for (var x = 0; x < 4; x++) {
-				$('#form_ingredientList_' + index + '__increments_' + x + '_').val('0');
+				$('#form_ingredientList_' + safeIndex + '__increments_' + x + '_').val('0');
 			}
 		} 
 		
