@@ -109,7 +109,6 @@
 									for (let x = 0; x < item.increment.length; x++) {
 										var safeTintSysId = encodeURIComponent(item.tintSysId.toString());
 										var safeName = encodeURIComponent(item.name.toString());
-										//var tintSysId = safeTintSysId.replace(/%20/g, " ");
 										var name = safeName.replace(/%20/g, " ");
 										console.log("tintSysId: " + safeTintSysId + " name: " + name);
 										//console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
