@@ -79,9 +79,9 @@
 				canister4, canister5, canister6, canister7, canister8,
 				canister9, canister10, canister11 ];
 		configuration = new Configuration(
-				"<s:property value="tinter.clrntSysId"/>",
-				"<s:property value="tinter.model"/>",
-				"<s:property value="tinter.serialNbr"/>", canister_layout);
+				"<s:property value="tinter.clrntSysId" escapeHtml="true"/>",
+				"<s:property value="tinter.model" escapeHtml="true"/>",
+				"<s:property value="tinter.serialNbr" escapeHtml="true"/>", canister_layout);
 
 	}
 	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout) {

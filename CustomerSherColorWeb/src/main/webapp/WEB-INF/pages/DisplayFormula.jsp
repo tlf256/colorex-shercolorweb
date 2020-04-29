@@ -802,6 +802,7 @@ function ParsePrintMessage() {
 		});
 		jQuery(document).on("keydown", fkey); // capture F4
 	}
+	
 </script>
 <script type="text/javascript">
 //callback stuff
@@ -934,6 +935,7 @@ function setFormSubmitting() { formSubmitting = true; };
         });
     };
 
+
 </script>
 </head>
 <body>
@@ -978,7 +980,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-				<s:property value="enteredValue" escapeHtml="false" />
+				<s:property value="enteredValue" />
 				<br>
 			</s:iterator>
 		</div>
@@ -1001,7 +1003,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			<strong>Color ID:</strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-			${sessionScope[thisGuid].colorID}</div>
+			<s:property value="#session[reqGuid].colorID" /></div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 	<div class="row">
@@ -1010,7 +1012,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			<strong>Color Name:</strong>
 		</div>
 		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-			${sessionScope[thisGuid].colorName}<br>
+			<s:property value="#session[reqGuid].colorName" /><br>
 			<div class="card card-body sw-bg-main"></div>
 		</div>
 		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
@@ -1390,7 +1392,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						<div class="modal-body">
 							<div class="embed-responsive embed-responsive-1by1">
 								<embed
-									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>"
+									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>"
 									frameborder="0" class="embed-responsive-item">
 							</div>
 

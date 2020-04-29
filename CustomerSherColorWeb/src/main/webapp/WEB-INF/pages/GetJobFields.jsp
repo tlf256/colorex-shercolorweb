@@ -72,10 +72,10 @@
 						<%-- 							</s:else> --%>
 
 					</div>
-					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+					<div class="col-lg-5 col-md-3 col-sm-1 col-xs-1" id="errormsg">
 						<strong><s:property value="requiredText" /></strong>
 					</div>
-					<div class="col-lg-5 col-md-3 col-sm-1 col-xs-1"></div>
+					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
 				</div>
 			</s:iterator>
 
@@ -112,12 +112,40 @@
 			 var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
 			 txtBox.focus();
 			 
-			 $(".entval").each(function(){
-				var enteredValue = $(this).val();
-				//console.log("enteredValue = " + enteredValue);
-				$(this).val($(this).html(enteredValue).text());
-			 });
-			 
+			//validate jobFields enteredValue
+			//prevent special characters < or > from being entered
+			$(document).on({
+				'keypress':function(){
+					try{
+						if(event.key == ">" || event.key == "<"){
+							throw "Special characters \"<\" or \">\" not allowed";
+						}
+						
+						if($(document).find('#errortxt')){
+							$('.entval').each(function(){
+								$(this).parents().find('#errortxt').remove();
+								$(this).removeClass('border-danger');
+							});
+						}
+					} catch(msg){
+						event.preventDefault();
+						if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
+							$(this).parents('.row').find('#errormsg').append('<div id="errortxt" class="text-danger"></div>');
+							$(this).parents('.row').find('#errortxt').text(msg)
+							$(this).addClass('border-danger');
+						}
+					}
+				},
+				'blur': function(){
+					if($(document).find('#errortxt')){
+						$('.entval').each(function(){
+							$(this).parents().find('#errortxt').remove();
+							$(this).removeClass('border-danger');
+						});
+					}
+				}
+			}, '.entval');
+			
 		 });
 		<!--
 		  function HF_openSherwin() {

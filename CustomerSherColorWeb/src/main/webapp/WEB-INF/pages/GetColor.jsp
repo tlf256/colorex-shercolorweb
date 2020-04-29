@@ -23,14 +23,44 @@
 		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
+				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
+					selectedValue = $("[id^=selectedCoTypes]:checked").val();
+					//console.log("selected value - " + selectedValue);
+					
 					if(this.checked) {
 						$('.form-control-feedback, .help-block').remove();
 						$('.has-feedback').removeClass('has-error has-feedback');
 						$('#partialColorNameOrId').val('');
 				    }
+					
 				});
+				
+				//validate partialColorNameOrId if custom manual or custom match
+				//prevent special characters < or > from being entered
+				$('#partialColorNameOrId').on('keypress', function(){
+					if(selectedValue == "CUSTOM" || selectedValue == "CUSTOMMATCH"){
+						try{
+							if(event.key == ">" || event.key == "<"){
+								//console.log("< or > keypress");
+								throw "Special characters \"<\" or \">\" not allowed";
+							}
+							
+							if($(document).find('#errortxt')){
+								$(document).find('#errortxt').remove();
+							}
+						} catch(msg){
+							event.preventDefault();
+							if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
+								$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+								$(document).find('#errortxt').text(msg);
+							}
+						}
+					}
+				});
+				
 			});
+			
 		</script>
 	</head>
 	
@@ -71,7 +101,7 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue" /><br>
 					</s:iterator>	
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">

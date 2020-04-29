@@ -2,24 +2,47 @@ var jobTable;
 
 $(document).ready(function() {
 	jobTable = $('#job_table').DataTable({
+		columns: [
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			{
+				"render": function(data, type, row){
+					return data.split(" | ").join("<br/>");
+				}
+			},
+			null,
+			null,
+		],
 		dom: 'ifBrtp',
 		buttons : [
 			{ extend: 'copy',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,14]
+            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
             	},
             },
 			{ extend: 'csv',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,14]
+            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
             	},
             },
 			{ extend: 'excel',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,14]
+            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
             	},
             },
             { extend: 'print',

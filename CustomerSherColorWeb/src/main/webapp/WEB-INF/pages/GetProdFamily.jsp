@@ -152,7 +152,7 @@
 			</s:form>
 			<script>
 			$(document).ready(function() {
-				var firstFormula = '<s:property value="firstFormula"/>';
+				var firstFormula = '<s:property value="firstFormula" escapeHtml="true"/>';
 				$('#prodFambly').on('change',function(){
 				    if( $(this).val()===firstFormula){
 					    $("#frstFormula").show()

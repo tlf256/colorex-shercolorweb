@@ -349,7 +349,7 @@
 			  });
 			  
 			  $("#printEulaModal").on('show.bs.modal', function(){
-					$("#eulapdf").html('<embed src="printEulaAction.action?reqGuid=<s:property value="reqGuid"/>" frameborder="0" class="embed-responsive-item"></embed>');
+					$("#eulapdf").html('<embed src="printEulaAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>" frameborder="0" class="embed-responsive-item"></embed>');
 			  });
 		});
 		<!--
