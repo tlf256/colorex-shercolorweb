@@ -207,7 +207,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		
 		try {
 			// list all products in autocomplete search because the custom manual option does not have primary base types
-			if (colorType == "CUSTOM") {
+			if (colorType.equals("CUSTOM")) {
 				/* 09/06/2017 - New Active Products Search. */
 				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
 			} else {
