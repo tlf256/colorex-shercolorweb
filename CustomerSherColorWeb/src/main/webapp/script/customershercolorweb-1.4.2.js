@@ -5,7 +5,11 @@ function startSessionTimeoutTimers(){
 	var t1 = setTimeout(function(){  
 		$('#sessionModalBody').text('Your session will expire in 5 minutes, if you would like to extend your session please click Extend.');
 //		$('#sessionModalButton').attr('onclick','window.location="' + $('#currentActionURL').val() + '";');
-		$('#sessionModalButton').attr('onclick','window.location.reload();');
+		if (typeof formSubmitting !== 'undefined' && typeof setFormSubmitting() === 'function'){
+			$('#sessionModalButton').attr('onclick','setFormSubmitting(); window.location.reload();');
+		} else {
+			$('#sessionModalButton').attr('onclick','window.location.reload();');
+		}	
 		$('#sessionModalButton').text('Extend');
 		$('#sessionModal').modal('show');
 	},1500000);
@@ -14,7 +18,11 @@ function startSessionTimeoutTimers(){
 	//Session Expiration Message after 30 minutes
 	var t2 = setTimeout(function(){ 
 		$('#sessionModalBody').text('Your session has expired. If you would like to re-login, click Login.');
-		$('#sessionModalButton').attr('onclick','window.location="' + $('#sherLinkURL').val() + '";');
+		if (typeof formSubmitting !== 'undefined' && typeof setFormSubmitting() === 'function'){
+			$('#sessionModalButton').attr('onclick','setFormSubmitting(); window.location="' + $('#sherLinkURL').val() + '";');
+		} else {
+			$('#sessionModalButton').attr('onclick','window.location="' + $('#sherLinkURL').val() + '";');
+		}
 		$('#sessionModalButton').text('Login');
 		if($('#sessionModal').css('display') === 'none'){$('#sessionModal').modal('show');}
 	},1800000);

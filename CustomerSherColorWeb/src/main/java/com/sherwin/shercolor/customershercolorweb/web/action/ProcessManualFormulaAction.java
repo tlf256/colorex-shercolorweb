@@ -282,7 +282,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 						retVal = INPUT;
 					}
 				}
-			}// end looping ManualIgredients and checking positive integers enteres
+			}// end looping ManualIgredients and checking positive integers entered
 
 			// second part of basic entry processing, make a list of ingredients entered and populate ingredient objects
 			if(retVal.equalsIgnoreCase(SUCCESS)){
