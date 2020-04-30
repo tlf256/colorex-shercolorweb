@@ -102,7 +102,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					reqObj.getDisplayMsgs().add(statusMsg);
 					//addActionMessage("Successfully Updated Job Number " + custWebTran.getControlNbr());
 					sessionMap.put(reqGuid, reqObj);
-					recDirty = 1;
+					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
 					logger.error("Received updateTranTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
