@@ -37,6 +37,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	private int controlNbr;
 	private int qtyDispensed;
 	private String jsDateString;
+	private int recDirty;
 	
 	private int cycle; //correction cycle
 	
@@ -101,6 +102,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					reqObj.getDisplayMsgs().add(statusMsg);
 					//addActionMessage("Successfully Updated Job Number " + custWebTran.getControlNbr());
 					sessionMap.put(reqGuid, reqObj);
+					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
 					logger.error("Received updateTranTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
@@ -124,6 +126,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					//addActionMessage("Successfully Saved as Job Number " + custWebTran.getControlNbr());
 					sessionMap.put(reqGuid, reqObj);
 					this.controlNbr = custWebTran.getControlNbr(); //for ajax call to read
+					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
 					logger.error("Received saveNewTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
@@ -495,6 +498,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	public void setCycle(int cycle) {
 		this.cycle = cycle;
+	}
+
+	public int getRecDirty() {
+		return recDirty;
+	}
+
+	public void setRecDirty(int recDirty) {
+		this.recDirty = recDirty;
 	}
 
 }

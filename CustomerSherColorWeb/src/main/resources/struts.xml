@@ -822,6 +822,7 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayFormulaAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="recDirty">${recDirty}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
