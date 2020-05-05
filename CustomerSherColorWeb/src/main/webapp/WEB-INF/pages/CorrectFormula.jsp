@@ -1270,25 +1270,28 @@
 		
 		// keep < and > characters out of reason input
 		$(document).on({
-			'keypress':function(){
+			'keypress blur':function(){
 				try{
 					if(event.key == ">" || event.key == "<"){
 						throw "Special characters \"<\" or \">\" not allowed";
 					}
-					if($(document).find('#errortxt')){
-						$(document).find('#errortxt').remove();
+					if($(this).val().includes(">") || $(this).val().includes("<")){
+						throw "Invalid entry. Please remove these characters: < >";
 					}
-				} catch(msg){
-					event.preventDefault();
-					if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
-						$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
-						$(document).find('#errortxt').text(msg)
-					}
-				}
-			},
-			'blur':function(){
-				if($(document).find('#errortxt')){
 					$(document).find('#errortxt').remove();
+					$(':button').attr('disabled', false);
+				} catch(msg){
+					if(event.type=="keypress"){
+						event.preventDefault();
+					}
+					if(!$(document).find('#errortxt').is(':visible')){
+						$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+					}
+					$(document).find('#errortxt').text(msg);
+					if(event.type=="blur"){
+						$(this).focus();
+						$(':button').attr('disabled', true);
+					}
 				}
 			}
 		}, '#reason');

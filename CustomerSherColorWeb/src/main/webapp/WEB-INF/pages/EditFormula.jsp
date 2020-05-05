@@ -170,35 +170,36 @@
 			//validate colorId and colorName fields
 			//prevent special characters < or > from being entered
 			$(document).on({
-				'keypress':function(){
+				'keypress blur':function(){
 					try{
 						if(event.key == ">" || event.key == "<"){
 							throw "Special characters \"<\" or \">\" not allowed";
 						}
-						
-						if($(document).find('#errortxt')){
-							$('input[name^="color"]').each(function(){
-								$(this).parents().find('#errortxt').remove();
-								$(this).removeClass('border-danger');
-							});
+						if($(this).val().includes("<") || $(this).val().includes(">")){
+							throw "Invalid entry. Please remove these characters: < >";
 						}
-					} catch(msg){
-						event.preventDefault();
-						if($(this).is('input[name="colorId"]')){
-							$('.errormsg').eq(0).append('<div id="errortxt" class="text-danger"></div>');
-						} else {
-							$('.errormsg').eq(1).append('<div id="errortxt" class="text-danger"></div>');
-						}
-						$(this).parents('.row').find('#errortxt').text(msg)
-						$(this).addClass('border-danger');	
-					}
-				},
-				'blur': function(){
-					if($(document).find('#errortxt')){
 						$('input[name^="color"]').each(function(){
 							$(this).parents().find('#errortxt').remove();
 							$(this).removeClass('border-danger');
 						});
+						$('input:submit').attr('disabled', false);
+					} catch(msg){
+						if(event.type=="keypress"){
+							event.preventDefault();
+						}
+						if(!$(document).find('#errortxt').is(':visible')){
+							if($(this).is('input[name="colorId"]')){
+								$('.errormsg').eq(0).append('<div id="errortxt" class="text-danger"></div>');
+							} else {
+								$('.errormsg').eq(1).append('<div id="errortxt" class="text-danger"></div>');
+							}
+						}
+						$(this).parents('.row').find('#errortxt').text(msg)
+						$(this).addClass('border-danger');
+						if(event.type=="blur"){
+							$(this).focus();
+							$('input:submit').attr('disabled', true);
+						}
 					}
 				}
 			}, '[name="colorId"], [name="colorName"]');
