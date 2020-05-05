@@ -1279,7 +1279,7 @@
 						throw "Invalid entry. Please remove these characters: < >";
 					}
 					$(document).find('#errortxt').remove();
-					$('input:submit').attr('disabled', false);
+					$(':button').attr('disabled', false);
 				} catch(msg){
 					if(event.type=="keypress"){
 						event.preventDefault();
@@ -1290,7 +1290,7 @@
 					$(document).find('#errortxt').text(msg);
 					if(event.type=="blur"){
 						$(this).focus();
-						$('input:submit').attr('disabled', true);
+						$(':button').attr('disabled', true);
 					}
 				}
 			}
