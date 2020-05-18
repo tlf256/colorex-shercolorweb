@@ -133,7 +133,10 @@ function prePrintSave() {
 							//    	 				$("#tinterInProgressModal").modal('hide');
 							updateButtonDisplay();
 							showPrintModal();
-							
+							var saveActionDirty = parseInt(data.recDirty);
+							if (!isNaN(saveActionDirty)){
+								$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+							}
 						}
 					},
 					error : function(err) {
