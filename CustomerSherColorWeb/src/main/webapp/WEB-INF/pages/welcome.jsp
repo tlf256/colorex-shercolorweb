@@ -19,9 +19,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -93,12 +93,12 @@
 		<s:if test="%{tinter.model != null && tinter.model != ''}">
 			// setup local host config
 			var canister_layout = null;
-			localhostConfig = new Configuration("<s:property value="tinter.clrntSysId"/>","<s:property value="tinter.model"/>","<s:property value="tinter.serialNbr"/>",canister_layout);
+			localhostConfig = new Configuration("<s:property value="tinter.clrntSysId" escapeHtml="true"/>","<s:property value="tinter.model" escapeHtml="true"/>","<s:property value="tinter.serialNbr" escapeHtml="true"/>",canister_layout);
 		</s:if>
 		
 		<s:if test="%{spectro.model != null && spectro.model != ''}">
 		// setup local host config			
-			siteSpectroConfig = new SpectroConfig("<s:property value="spectro.model"/>","<s:property value="spectro.serialNbr"/>","USB");
+			siteSpectroConfig = new SpectroConfig("<s:property value="spectro.model" escapeHtml="true"/>","<s:property value="spectro.serialNbr" escapeHtml="true"/>","USB");
 			console.log("siteSpectroConfig model is "+ siteSpectroConfig.model);
 			console.log("siteSpectroConfig serial is "+ siteSpectroConfig.serial);
 			console.log("siteSpectroConfig port is "+ siteSpectroConfig.port);

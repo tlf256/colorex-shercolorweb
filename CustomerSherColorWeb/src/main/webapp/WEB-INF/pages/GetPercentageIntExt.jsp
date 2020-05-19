@@ -18,8 +18,8 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/BasicFieldValidator.js"></script>
 		<script type="text/javascript" src="script/PctCancel.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />

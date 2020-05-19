@@ -24,10 +24,10 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/CustomerSherColorWeb.js"></script>
+	src="script/customershercolorweb-1.4.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
@@ -68,6 +68,7 @@ badge {
 	 var ws_tinter = new WSWrapper("tinter");
 	 var tinterErrorList;
 	 var _rgbArr = [];
+	 var formSubmitting = false;
 	 
 	// now build the dispense formula object
 		var sendingDispCommand = "false";
@@ -132,7 +133,10 @@ function prePrintSave() {
 							//    	 				$("#tinterInProgressModal").modal('hide');
 							updateButtonDisplay();
 							showPrintModal();
-							
+							var saveActionDirty = parseInt(data.recDirty);
+							if (!isNaN(saveActionDirty)){
+								$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+							}
 						}
 					},
 					error : function(err) {
@@ -419,7 +423,7 @@ function ParsePrintMessage() {
 		$("#tinterErrorListModal").modal('show');
 		$("#abort-message").hide();
 		processingDispense = false; // allow user to start another dispense after tinter error
-
+		startSessionTimeoutTimers();
 	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
 	    	if(my_return_message.statusMessages.length > 0){
 	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
@@ -505,6 +509,7 @@ function ParsePrintMessage() {
 		}
 		sendingTinterCommand = "false";
 	}
+		
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#formulaUserPrintAction_reqGuid").val();
 		var curDate = new Date();
@@ -514,6 +519,7 @@ function ParsePrintMessage() {
 								+ "&jsDateString=" + curDate.toString(),
 						function(data) {
 							processingDispense = false;
+							startSessionTimeoutTimers();
 							if (data.sessionStatus === "expired") {
 								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 							} else {
@@ -579,6 +585,8 @@ function ParsePrintMessage() {
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
 					processingDispense = false; // allow user to start another dispense after socket error
+					startSessionTimeoutTimers();
+					
 					$("#tinterSocketErrorModal").modal('show');
 
 				} else {
@@ -622,6 +630,7 @@ function ParsePrintMessage() {
 							waitForShowAndHide("#tinterInProgressModal");
 						} else {
 							processingDispense = false; // allow user to start another dispense after tinter error
+							startSessionTimeoutTimers();
 							// send tinter event
 							var curDate = new Date();
 							var myGuid = $("#formulaUserPrintAction_reqGuid")
@@ -747,6 +756,7 @@ function ParsePrintMessage() {
 						function(event) {
 							if (processingDispense == false) {
 								processingDispense = true;
+								stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
 								event.preventDefault();
 								event.stopPropagation();
 								waitForShowAndHide("#positionContainerModal");
@@ -795,6 +805,7 @@ function ParsePrintMessage() {
 		});
 		jQuery(document).on("keydown", fkey); // capture F4
 	}
+	
 </script>
 <script type="text/javascript">
 //callback stuff
@@ -904,11 +915,28 @@ function ParsePrintMessage() {
 		console.log("checking decrement pass/fail " + myPassFail);
 		if (myPassFail === true) {
 			dispense();
+			$("#formulaUserPrintAction_recDirty").val(0);
 		} else {
 			//TODO show error on decrement, 
 			waitForShowAndHide("#tinterInProgressModal");
 		}
 	}
+
+function setFormSubmitting() { formSubmitting = true; };
+    
+    window.onload = function() {
+    window.addEventListener("beforeunload", function (e) {
+            var recDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+            // let the user navigate away from the page
+            if (formSubmitting || recDirty == 0) {
+                return undefined;
+            }
+            // confirmation dialog
+            e.preventDefault();
+            // chrome requires returnValue to be set
+            e.returnValue = ''; 
+        });
+    };
 
 
 </script>
@@ -955,7 +983,7 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-				<s:property value="enteredValue" escapeHtml="false" />
+				<s:property value="enteredValue" />
 				<br>
 			</s:iterator>
 		</div>
@@ -978,7 +1006,7 @@ function ParsePrintMessage() {
 			<strong>Color ID:</strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-			${sessionScope[thisGuid].colorID}</div>
+			<s:property value="#session[reqGuid].colorID" /></div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 	<div class="row">
@@ -987,7 +1015,7 @@ function ParsePrintMessage() {
 			<strong>Color Name:</strong>
 		</div>
 		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-			${sessionScope[thisGuid].colorName}<br>
+			<s:property value="#session[reqGuid].colorName" /><br>
 			<div class="card card-body sw-bg-main"></div>
 		</div>
 		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
@@ -1120,20 +1148,20 @@ function ParsePrintMessage() {
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 					<button type="button" class="btn btn-primary" id="formulaDispense"
-						onclick="setDispenseQuantity()" autofocus="autofocus">Dispense</button>
-					<s:submit cssClass="btn btn-secondary" value="Save"
+						onclick="setFormSubmitting; setDispenseQuantity()" autofocus="autofocus">Dispense</button>
+					<s:submit cssClass="btn btn-secondary" value="Save" onclick="setFormSubmitting();"
 						action="formulaUserSaveAction" autofocus="autofocus" />
 					<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
 					<button type="button" class="btn btn-secondary" id="formulaPrint"
 						onclick="prePrintSave();return false;">Print</button>
-					<s:submit cssClass="btn btn-secondary" value="Edit Formula"
+					<s:submit cssClass="btn btn-secondary" value="Edit Formula" onclick="setFormSubmitting();"
 						action="formulaUserEditAction" />
-					<s:submit cssClass="btn btn-secondary" value="Correct"
+					<s:submit cssClass="btn btn-secondary" value="Correct" onclick="setFormSubmitting();"
 						action="formulaUserCorrectAction" />
 					<s:submit cssClass="btn btn-secondary" value="Copy to New Job"
 						action="displayJobFieldUpdateAction" />
 					<s:submit cssClass="btn btn-secondary pull-right" value="Next Job"
-						action="userCancelAction" />
+                        action="userCancelAction" onclick="return promptToSave();" />
 				</div>
 				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 			</div>
@@ -1367,7 +1395,7 @@ function ParsePrintMessage() {
 						<div class="modal-body">
 							<div class="embed-responsive embed-responsive-1by1">
 								<embed
-									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>"
+									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>"
 									frameborder="0" class="embed-responsive-item">
 							</div>
 
@@ -1401,6 +1429,29 @@ function ParsePrintMessage() {
 					</div>
 				</div>
 			</div>
+			
+						    <!-- added by edo78r for PCSWEB-168 - 4/24/2020 -->
+		<!-- Prompt To Save Modal -->	    
+		<div class="modal" aria-labelledby="promptToSaveModal" aria-hidden="true"  id="promptToSaveModal" role="dialog">
+	    	<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Continue To Next Job</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="skipConfirmText" font-size="4">Do you want to save the formula before continuing to the Next Job?</p>
+					</div>
+					<div class="modal-footer">
+						<s:submit cssClass="btn btn-primary" value="Yes" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="No" onclick="setFormSubmitting();" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="Cancel"/>
+					</div>
+				</div>
+			</div>
+		</div>
+			
 		</s:form>
 	</s:if>
 	<s:else>
@@ -1438,11 +1489,11 @@ function ParsePrintMessage() {
 
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-primary" value="No"
+					<s:submit cssClass="btn btn-primary" value="No" onclick="setFormSubmitting();"
 						action="deltaENoAction" autofocus="autofocus" />
 				</div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-secondary" value="Yes"
+					<s:submit cssClass="btn btn-secondary" value="Yes" onclick="setFormSubmitting();"
 						action="deltaEYesAction" />
 				</div>
 
@@ -1460,7 +1511,7 @@ function ParsePrintMessage() {
 	<br>
 	<br>
 	<br>
-
+	
 	<script>
 	<!--
 		function HF_openSherwin() {
@@ -1539,7 +1590,7 @@ function ParsePrintMessage() {
 					$("#formulaDispense").show();
 					btnCount += 1;
 					makeDispensePrimary();
-					// has it been disensed?
+					// has it been dispensed?
 					var myint = parseInt($.trim($("#qtyDispensed").text()));
 					if (isNaN(myint))
 						myint = 0;
@@ -1556,6 +1607,13 @@ function ParsePrintMessage() {
 								.show();
 						$("#formulaUserPrintAction_formulaUserCorrectAction")
 								.show();
+						console.log("Value of Dirty is");
+						console
+								.log(">>"
+								+ $
+												.trim($(
+														"#formulaUserPrintAction_recDirty")
+														.val()) + "<<"); 
 						btnCount += 2;
 					} else {
 						console.log("qDisped is zero");
@@ -1798,8 +1856,27 @@ function ParsePrintMessage() {
 			if ($("#formulaPrint").hasClass("btn-secondary"))
 				$("#formulaPrint").removeClass("btn-secondary");
 		}
+		
+		function promptToSave(){
+	        var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+	        if (isNaN(myDirty)){
+	            myDirty = 0;
+	        }
+	       
+	        if (myDirty == 0) {
+	            console.log("dirty is false");
+	            return true;
+	        }
+	        else
+	       {
+	            console.log("dirty is true");
+	            $("#promptToSaveModal").modal('show');
+	            return false;
+	        }
+	    }
+		
 	</script>
-
+	
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>

@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -59,7 +59,7 @@
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue" /><br>
 					</s:iterator>	
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
@@ -86,7 +86,7 @@
 					<strong>Color ID:</strong>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
-					${sessionScope[thisGuid].colorID}
+					<s:property value="#session[reqGuid].colorID" />
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
 				</div>
@@ -98,7 +98,7 @@
 					<strong>Color Name:</strong>
 				</div>
 				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-					${sessionScope[thisGuid].colorName}<br>
+					<s:property value="#session[reqGuid].colorName" /><br>
 					<div class="card card-body sw-bg-main"></div>
 				</div>
 				<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2">

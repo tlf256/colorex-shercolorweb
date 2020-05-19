@@ -22,9 +22,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -76,6 +76,7 @@
 			
 			// load colorant into dropdown menu for Manual Add
 			console.log("loading colorant dropdown");
+			
 			$("#clrntList").empty();
 			sessionTinterInfo.canisterList.sort(function(a,b){
 				var nameA = a.clrntName;
@@ -490,6 +491,7 @@
 		newRow = newRow + '</tr>';
 		$("#formulaAdditions > tbody:last-child").append(newRow);
 		$('html,body').animate({scrollTop: $("#formulaAdditions > tbody:last-child").offset().top -= 80});
+		rebuildColorantList();
 	}
 
 	function percentAddClick(){
@@ -532,12 +534,38 @@
     					$("#formulaAdditions > tbody:last-child").append(newRow);
     					$('#pct').text('');
     					$('#percentPrompt').toggle();
-    					
     				});
+    				rebuildColorantList();
             	}
 			},
 			error: function(err){
 				alert("failure: " + err);
+			}
+		});
+	}
+	
+	function rebuildColorantList() {
+		$("#clrntList").empty();
+		sessionTinterInfo.canisterList.sort(function(a,b){
+			var nameA = a.clrntName;
+			var nameB = b.clrntName;
+			if (nameA < nameB) return -1;
+			if (nameA > nameB) return 1;
+			return 0;
+		});
+		sessionTinterInfo.canisterList.forEach(function(can){
+			var clrntIdentifier = can.clrntCode + '-' + can.clrntName;
+			var clrntAdded = false;
+			// check if already added into the table
+			$('#formulaAdditions > tbody tr').each(function(){
+	            var clrntInRow = $(this).find('#clrntString').text();
+	            if (clrntInRow == clrntIdentifier){
+	            	clrntAdded = true;
+	            } 
+			});
+			if(can.clrntCode!="NA" && !clrntAdded){
+				var link = '<li class="dropdown-item"><a class="dropdown-item" href="#" onclick="addManClrnt(\''+clrntIdentifier+'\')">'+clrntIdentifier+'</a></li>';
+				$("#clrntList").append(link);
 			}
 		});
 	}
@@ -636,7 +664,7 @@
 	}
 	
 	function validateCorrectionList(invalidFlag, correctionList){
-		//validate reason text
+		// validate correction list values
 		if(correctionList === undefined || correctionList.length == 0){
 			$('html,body').animate({scrollTop: $('#formulaAdditions').offset().top -= 80});
 			console.log("Invalid entries detected.");
@@ -647,12 +675,35 @@
 			$('#formulaAdditions').popover('toggle');
 			$('.popover').addClass('popover-danger');
 			return true;
-		}else{return false;}
+		}else{
+			// make sure colorants in the list aren't all zeroed out
+			var allZeroes = true;
+			correctionList.forEach(function(row){
+				row.incrArray.forEach(function(item){
+					if (item != 0){
+						allZeroes = false;
+					}
+				});
+			});
+			if (allZeroes){
+				$('html,body').animate({scrollTop: $('#formulaAdditions').offset().top -= 80});
+				console.log("Invalid entries detected.");
+				$('#formulaAdditions').attr("data-toggle", "popover");
+				$('#formulaAdditions').attr("data-placement","top");
+				$('#formulaAdditions').attr("data-content", "Addition must be set, values cannot all be zero");
+				$('#formulaAdditions').popover({trigger : 'manual'});
+				$('#formulaAdditions').popover('toggle');
+				$('.popover').addClass('popover-danger');
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
 	
 	function validateReason(invalidFlag){
-		//validate reason text
-		if($('#reason').val().match(/[a-zA-Z0-9]{2,}/) === null){
+		//validate reason text, check for length
+		if($('#reason').val().length < 2 || $('#reason').val().length > 100){
 			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
 			console.log("Invalid entries detected.");
 			$('#reason').attr("data-toggle", "popover");
@@ -1217,6 +1268,34 @@
 			}
 		});
 		
+		// keep < and > characters out of reason input
+		$(document).on({
+			'keypress blur':function(){
+				try{
+					if(event.key == ">" || event.key == "<"){
+						throw "Special characters \"<\" or \">\" not allowed";
+					}
+					if($(this).val().includes(">") || $(this).val().includes("<")){
+						throw "Invalid entry. Please remove these characters: < >";
+					}
+					$(document).find('#errortxt').remove();
+					$(':button').attr('disabled', false);
+				} catch(msg){
+					if(event.type=="keypress"){
+						event.preventDefault();
+					}
+					if(!$(document).find('#errortxt').is(':visible')){
+						$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+					}
+					$(document).find('#errortxt').text(msg);
+					if(event.type=="blur"){
+						$(this).focus();
+						$(':button').attr('disabled', true);
+					}
+				}
+			}
+		}, '#reason');
+		
 		//Hide unnecessary rows onload
 		var dupText = [];
 		var cycle = <s:property value="%{cycle}"/>;
@@ -1252,7 +1331,7 @@
 		});
 		
 		//Popover closing functionality	
-	    $('#reason,#formulaAdditions,#percentAdd,#manualAdd').on( 'click' , function(event){
+	    $('#reason,#formulaAdditions,#percentAdd,#manualAdd,#cancelAdd').on( 'click' , function(event){
 	    	$('.popover').each(function(){
 	            $(this).popover('toggle');
 	            $('input[data-toggle="popover"]').each(function(){
@@ -1453,7 +1532,7 @@
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
 							<h5 class="text-primary"><strong>Add Colorant to Container #<span id="currentCont">1</span></strong></h5>
-							<p><strong>Reason: </strong><input type="text" class="form-control btn-block" id="reason" placeholder="Enter reason for correction"/></p>
+							<p><strong>Reason: </strong><input type="text" class="form-control btn-block" id="reason" placeholder="Enter reason for correction" maxlength="100" /></p>
 							<table>
 							<tr>
 							<td style="width: 20%;">

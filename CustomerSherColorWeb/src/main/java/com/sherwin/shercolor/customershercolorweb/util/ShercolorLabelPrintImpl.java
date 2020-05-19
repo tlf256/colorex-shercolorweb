@@ -2,13 +2,16 @@ package com.sherwin.shercolor.customershercolorweb.util;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +21,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
@@ -68,11 +72,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	PDDocument document = new PDDocument();
 	String filename;
 	RequestObject reqObj;
-  
-	// Set all fonts to bold temporarily to resolve light printing issue.
-	//PDFont courierBold 	= PDType1Font.COURIER_BOLD;
-	PDFont courierBold 	= PDType1Font.HELVETICA_BOLD;
+
+	// Set all fonts to bold  to resolve light printing issue.
 	
+	final PDFont helvetica    = PDType1Font.HELVETICA_BOLD;
+	PDFont fontBold 	= helvetica;
+	PDFont unicode = null; //font to use for unicode chars
+
 
 
 	private static float WIDTH = 144f;
@@ -131,19 +137,28 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// Save the results and ensure that the document is properly closed:
 
 			document.save(filename);
-			document.close();
 		}
 
 		catch(IOException ie) {
-			System.out.println("IOException: " + ie.getMessage() + ie.getCause() + ie.getStackTrace());
 			logger.error(ie.getMessage());
+			logger.error(ie);
 		}
 		catch(RuntimeException re){
-			System.out.println("RuntimeException: " + re.getMessage() + re.getCause() + re.getStackTrace());
 			logger.error(re.getMessage());
+			logger.error(re);
+		}
+		finally {
+			try {
+				document.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				logger.error(e);
+			}
 		}
 
 	}
+
+
 
 	private void createTableCell(Row<PDPage> row,int  rowHeight, float cellWidth, int fontSize, HorizontalAlignment cellAlign) {
 
@@ -169,8 +184,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error(e1);
 		}
 
 
@@ -383,6 +397,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			row = table.createRow(rowHeight);
 			Cell<PDPage> formulaType = row.createCell(cellWidth, reqObj.getDisplayFormula().getSourceDescr(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 			cellSettings(formulaType,fontSize,rowHeight );
+			//table.setDrawDebug(true); // draws gridlines
 			table.draw();
 			//************************************************************************************
 			//---------------------------------------------------------------------------------------------------------
@@ -620,14 +635,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					}
 				}
 			}	
-/*			while (jobCount < 5){
+			/*			while (jobCount < 5){
 				fontSize = 7;
 				rowHeight=8;
 				Cell<PDPage> enteredCell = row.createCell(cellWidth, " ", HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
 				cellSettings(enteredCell,fontSize,rowHeight );
 				jobCount++;
 			}
-			*/
+			 */
 			prodInfoMsgTable.draw();
 			//******************************************************************************************
 			//====================================================================================================
@@ -638,30 +653,81 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			createBarcode(content);
 			String barCodeChars = String.format("%08d-%03d",reqObj.getControlNbr(), 1);
-			addCenteredText(content,barCodeChars,courierBold,8,page,4.0f);
+			addCenteredText(content,barCodeChars,fontBold,8,page,4.0f);
 
 			content.close();
 			document.addPage( page );
 		}
-
 		catch(IOException ie) {
-			System.out.println("Failed in " + errorLocation);
-			System.out.println("IOException: " + ie.getMessage() + ie.getCause() + ie.getStackTrace());
 			logger.error(ie.getMessage());
+			logger.error(ie);
 		}
 		catch(RuntimeException re){
-			System.out.println("Failed in " + errorLocation);
-			System.out.println("RuntimeException: " + re.getMessage() + re.getCause() + re.getStackTrace());
-			re.printStackTrace();
 			logger.error(re.getMessage());
+			logger.error(re);
 		}
 	}
 
-	private void cellSettings(Cell<PDPage> cell, int fontSize, float cellHeight )
+	boolean hasUnicode(String string) {
+		boolean ret = false;
+		for (char ch : string.toCharArray()) {
+			if(!CharUtils.isAscii(ch)){
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	/* 
+	 * function to check string for unicode chars and 
+	 * replace unicode chars with '#' in case font was 
+	 * avail to print said char.
+	 */
+	String replaceUnicode(String input) {
+		String retString="";
+		StringBuilder sb = new StringBuilder(input.length());
+		int count = 0;
+		for (Character c : input.toCharArray()) {
+			
+		    if (!CharUtils.isAscii(c)) {
+		        if((count % 2)==0){
+		        sb.append('#');
+		        }
+		        count++;
+		    } else {
+		        sb.append(c);
+		    }
+		}
+	
+	
+		return sb.toString();
+	
+	}
+	void cellSettings(Cell<PDPage> cell, int fontSize, float cellHeight )
 	{
 
-		cell.setFontBold(courierBold);
-		cell.setFont(courierBold);
+		String text = cell.getText();
+
+		//get new font if unicode text found.
+		//if font not available replace unicode chars with '#'
+		//if no unicode chars, just use helvetica
+		if(text!=null && text.length()>0) {
+			if(hasUnicode(text)){
+				fontBold = getUnicode();
+				if(fontBold == null) {
+					fontBold = helvetica;
+					cell.setText(replaceUnicode(text));
+				}
+			}
+			else {
+				fontBold = helvetica;
+			}
+		}
+		else { //null case, must have helvetica to avoid error.
+			fontBold = helvetica;
+		}
+		cell.setFontBold(fontBold);
+		cell.setFont(fontBold);
 
 		cell.setFontSize(fontSize);
 
@@ -722,7 +788,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		row.setHeaderRow(true);
 
 		Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
-		cell.setFontBold(courierBold);
+		cell.setFontBold(fontBold);
 		cell.setFontSize(fontSize);
 		cell.setValign(VerticalAlignment.MIDDLE);
 		//cell.setHeight(cellHeight);
@@ -746,8 +812,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		row.setHeaderRow(false);
 
 		Cell<PDPage> cell = row.createCell(cellWidth,cellValue);
-		cell.setFontBold(courierBold);
-		cell.setFont(courierBold);
+		cell.setFontBold(fontBold);
+		cell.setFont(fontBold);
 		cell.setFontSize(fontSize);
 		cell.setValign(VerticalAlignment.MIDDLE);
 		//cell.setHeight(cellHeight);
@@ -786,7 +852,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 		return table;
 	}
-	
+
 	private void createBarcode(PDPageContentStream content ){
 		try {
 			String barCodeChars = String.format("%08d-%03d",reqObj.getControlNbr(), 1);
@@ -799,7 +865,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			e.printStackTrace();
 		}
 	}
-	
+
 	private  BufferedImage geBufferedImageForCode128Bean(String barcodeString) {
 		Code128Bean code128Bean = new Code128Bean();
 		final int dpi = 150;
@@ -848,7 +914,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		content.endText();
 		// content.close();
 	}
-	
+
 	boolean isLandscape(PDPage page) {
 		int rotation = page.getRotation();
 		final boolean isLandscape;
@@ -857,7 +923,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		} else if (rotation == 0 || rotation == 360 || rotation == 180) {
 			isLandscape = false;
 		} else {
-			System.out.println("Can only handle pages that are rotated in 90 degree steps. This page is rotated  " + rotation + " degrees. Will treat the page as in portrait format");
+			logger.error("Can only handle pages that are rotated in 90 degree steps. This page is rotated  " + rotation + " degrees. Will treat the page as in portrait format");
 			isLandscape = false;
 		}
 		return isLandscape;
@@ -875,5 +941,36 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	float getStringWidth(String text, PDFont font, int fontSize) throws IOException {
 		return font.getStringWidth(text) * fontSize / 1000F;
 	}
+	public PDFont getFontBold() {
+		return fontBold;
+	}
+	public void setFontBold(PDFont fontBold) {
+		this.fontBold = fontBold;
+	}
+	public PDFont getUnicode() {
+		PDFont unicodeFont=null;
+		if(unicode == null) { //only get font once and read it into memory
+			//solaris
+			File f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
+			if(!f.exists()) {
+				f = new File("c:\\Windows\\Fonts\\l_10646.ttf"); // Lucida Sans Unicode
+			}
+			if(!f.exists()) {
+				f = new File("c:\\Windows\\Fonts\\ARIALUNI.TTF"); // Arial Unicode
+			}
+			if(f.exists()) {
+				try {
+					unicodeFont = PDType0Font.load(document,f);
+					setUnicode(unicodeFont);
+				} catch (IOException e) {
+					logger.error(e);
+				}
+			}
+		}
 
+		return unicode;
+	}
+	public void setUnicode(PDFont unicode) {
+		this.unicode = unicode;
+	}
 }

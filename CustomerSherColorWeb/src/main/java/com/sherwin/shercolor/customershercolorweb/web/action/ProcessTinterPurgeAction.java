@@ -49,7 +49,7 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 				tinter.setLastPurgeDate(jsdf.format(lastPurge.getDateTime()));
 				tinter.setLastPurgeUser(lastPurge.getEventDetails());
 //				SimpleDateFormat df = new SimpleDateFormat("E mon dd yyyy 'at' hh.mm.ss a");
-				System.out.println("About to format date" + lastPurge.getDateTime().toString());
+				logger.debug("About to format date" + lastPurge.getDateTime().toString());
 				SimpleDateFormat dfDisplay = new SimpleDateFormat("E MMM dd yyyy 'at' hh:mm a");
 				lastPurgeDate = dfDisplay.format(lastPurge.getDateTime());
 				lastPurgeUser = tinter.getLastPurgeUser();

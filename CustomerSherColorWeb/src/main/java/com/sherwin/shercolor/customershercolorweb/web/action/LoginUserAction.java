@@ -215,12 +215,12 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		Date currentDate = new Date();
 		
 		try {
-			//System.out.println("currentDate is " + currentDate);
-			//System.out.println("changePasswordDate is " + changePasswordDate);
+			//logger.debug("currentDate is " + currentDate);
+			//logger.debug("changePasswordDate is " + changePasswordDate);
 			long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
-			//System.out.println("diffInMillies is " + diffInMillies);
+			//logger.debug("diffInMillies is " + diffInMillies);
 		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-		    //System.out.println("diff is " + diff);
+		    //logger.debug("diff is " + diff);
 		    returnDays = (int) diff;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
@@ -311,7 +311,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 						isStoreEmp = false;
 					}
 					changePasswordDate = theUserRec.getChangePassword();
-					//System.out.println("changePasswordDate is " + changePasswordDate);
+					//logger("changePasswordDate is " + changePasswordDate);
 					return true;
 				} else {
 					firstName = "";

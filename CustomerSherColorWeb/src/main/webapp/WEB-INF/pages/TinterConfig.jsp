@@ -29,9 +29,9 @@
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 
-<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 
 
@@ -79,9 +79,9 @@
 				canister4, canister5, canister6, canister7, canister8,
 				canister9, canister10, canister11 ];
 		configuration = new Configuration(
-				"<s:property value="tinter.clrntSysId"/>",
-				"<s:property value="tinter.model"/>",
-				"<s:property value="tinter.serialNbr"/>", canister_layout);
+				"<s:property value="tinter.clrntSysId" escapeHtml="true"/>",
+				"<s:property value="tinter.model" escapeHtml="true"/>",
+				"<s:property value="tinter.serialNbr" escapeHtml="true"/>", canister_layout);
 
 	}
 	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout) {
@@ -291,7 +291,52 @@
 		$("#frmSubmit").submit(); // action to save colorants txt and move to welcome page. // TODO.  This works for simulator.  Do we want to keep this?
 
 	});
-
+	/***
+	* @param myGuid - Session Guid from page (i.e. reqGuid) 
+	* @param myMessage - TinterMessage object
+	* @param teDetail - array of TintEventDetail
+	* @param myConfig - Configuration object (canister_layout not required) 
+	* @returns
+	*/
+	function sendTinterEventConfig(myGuid, myDate, myMessage, teDetail){
+	/* use global variable if null sent for myGuid*/
+		if(myGuid == null){
+			if(reqGuid != null){
+				myGuid=reqGuid;
+			}
+		}
+		var colorant = $('#selectClrntSysId').val();
+		var model = $('#modelSelect').val();
+		var serial = $('#tSerialNbr').val();
+		/*tinter.setClrntSysId("CCE");
+		tinter.setModel("COROB UNITTEST");
+		tinter.setSerialNbr("TESTSERIAL");
+		*/
+		var tinter = {
+				clrntSysId:colorant,
+				model:model,
+				serialNbr:serial
+					  };
+		//var mydata = {reqGuid:myGuid, tinterMessage:myMessage, tintEventDetail:teDetail};
+		var mydata = {reqGuid:myGuid, eventDate:myDate.toString(), newTinter:tinter,tintEventDetail:teDetail, tinterMessage:myMessage};
+		var jsonIn = JSON.stringify(mydata);
+		console.log("Logging Tinter Event " + jsonIn);
+		$.ajax({
+			url: "logTinterEventConfigAction.action",
+			contentType : "application/json; charset=utf-8",
+			type: "POST",
+			data: jsonIn,
+			datatype : "json",
+			success: function (data) {
+				if(data.sessionStatus === "expired"){
+	        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	        	}
+	        	else{
+	        		//Handle success after checking expiration
+	        	}
+			}
+		});
+	}
 	function GetModelsForColorant(colorantId_obj) {
 		var modellist = null;
 		var colorantId = colorantId_obj.value;
@@ -440,7 +485,7 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			case 'Detect':
 			case 'Init':
@@ -490,7 +535,7 @@
 						}
 					}
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			default:
 				//Not an response we expected...
@@ -525,7 +570,7 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			case 'Detect':
 			case 'Init':
@@ -608,7 +653,7 @@
 					}
 				}
 				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
-					sendTinterEvent(reqGuid, curDate, return_message,null);
+					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
 			default:
@@ -644,7 +689,7 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			case 'Detect':
 			case 'Init':
@@ -701,7 +746,7 @@
 					}
 				}
 				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
-					sendTinterEvent(reqGuid, curDate, return_message,null);
+					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
 			default:

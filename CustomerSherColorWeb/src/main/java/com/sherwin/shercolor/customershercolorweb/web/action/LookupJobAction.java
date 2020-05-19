@@ -17,6 +17,7 @@ import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.domain.FormulaConversion;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
@@ -68,6 +69,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	
 	public String display() {
 		
+		long startAction = System.currentTimeMillis();
+		double jobTimeAverage = 0;
 		try {
 			jobFieldList = new ArrayList<JobField>();
 			List<CustWebJobFields> custWebJobFields;
@@ -89,44 +92,92 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-			tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
+			tranHistory = tranHistoryService.getActiveCustomerJobs(reqObj.getCustomerID(),false);
 			jobHistory = new ArrayList<JobHistoryInfo>();
 			
-			//int index= 0;
-			for (CustWebTran webTran : tranHistory) {
-				if(webTran.isDeleted()) {
-					continue;
-				} else {
-					JobHistoryInfo job = new JobHistoryInfo();
-					job.setClrntSysId(webTran.getClrntSysId());
-					job.setColorId(webTran.getColorId());
-					job.setColorName(webTran.getColorName());
-					job.setControlNbr(webTran.getControlNbr());
-					job.setProdNbr(webTran.getProdNbr());
-					job.setQuantityDispensed(webTran.getQuantityDispensed());
-					job.setRgbHex(webTran.getRgbHex());
-					job.setSizeCode(webTran.getSizeCode());
-					job.setRecipe(getDefaultRecipeInfo(webTran));
-					if (job.getRecipe().isEmpty()) {
-						job.setNumberOfColorants(0);
-					} else {
-						job.setNumberOfColorants(job.getRecipe().size());
-					}
-					job.setJobFieldList(getJobFields(webTran));
-					jobHistory.add(job);
-				}
-				//index++;
-			}
+			//Obtain ClrntSys Profiles for each colorant system;
+			FormulaConversion cceConverter = formulationService.buildFormulaConversion("CCE");
+			FormulaConversion bacConverter = formulationService.buildFormulaConversion("BAC");
+			FormulaConversion eightConverter = formulationService.buildFormulaConversion("844");
+			FormulaConversion gicConverter = formulationService.buildFormulaConversion("GIC");
 			
-				return SUCCESS;
+			logger.info("# of Webtran objects in tranHistory: " + tranHistory.size());
+			
+			for (CustWebTran webTran : tranHistory) {
+				
+				long startJob = System.currentTimeMillis();
+				String clrntSysId = webTran.getClrntSysId();
+				
+				logger.debug("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr());
+				JobHistoryInfo job = new JobHistoryInfo();
+				job.setClrntSysId(clrntSysId);
+				job.setColorId(webTran.getColorId());
+				job.setColorName(webTran.getColorName());
+				job.setControlNbr(webTran.getControlNbr());
+				job.setProdNbr(webTran.getProdNbr());
+				job.setQuantityDispensed(webTran.getQuantityDispensed());
+				job.setRgbHex(webTran.getRgbHex());
+				job.setSizeCode(webTran.getSizeCode());
+				
+				switch (clrntSysId) {
+					case "CCE":
+						job.setRecipe(getDefaultRecipeInfo(webTran, cceConverter));
+						break;
+					case "BAC":
+						job.setRecipe(getDefaultRecipeInfo(webTran, bacConverter));
+						break;
+					case "844":
+						job.setRecipe(getDefaultRecipeInfo(webTran, eightConverter));
+						break;
+					case "GIC":
+						job.setRecipe(getDefaultRecipeInfo(webTran, gicConverter));
+						break;
+				}
+				
+				
+				if (job.getRecipe().isEmpty()) {
+					job.setNumberOfColorants(0);
+				} else {
+					job.setNumberOfColorants(job.getRecipe().size());
+					String formulaDisplay = ""; 
+					for (FormulaIngredient ingredient : job.getRecipe()) {
+						int[] increments = ingredient.getIncrement();
+						String ingredientDisplay = 
+								ingredient.getTintSysId() + ": " +
+								increments[0] + ", " +
+								increments[1] + ", " +
+								increments[2] + ", " +
+								increments[3] + " | ";
+						formulaDisplay += ingredientDisplay;
+						
+					}
+					
+					job.setFormulaDisplay(formulaDisplay.substring(0,formulaDisplay.length()-3));
+				}
+				
+				job.setJobFieldList(processJobFields(custWebJobFields, webTran));
+				jobHistory.add(job);
+				
+				long endJob = System.currentTimeMillis();
+				jobTimeAverage += endJob-startJob;
+			}
+			long endAction = System.currentTimeMillis();
+			double actionTime = endAction-startAction;
+			logger.debug("LookupJobAction: Average Job Processing Time: " + (jobTimeAverage/tranHistory.size()) + " ms)" );
+			logger.debug("LookupJobAction: display - Time Spent: " + (actionTime/1000) + " seconds");
+			return SUCCESS;
+				
 		
 		} catch (HibernateException he) {
 			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.debug("End ERROR (Hibernate Exception) - LookupJobAction: display");
 			return ERROR;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.debug("End ERROR (Exception) - LookupJobAction: display");
 			return ERROR;
 		}
+		
 	}
 	
 	public String execute(){
@@ -189,8 +240,24 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		FormulaInfo formula = new FormulaInfo();
 		List<FormulaIngredient> recipe = new ArrayList<FormulaIngredient>();
 		
-		recipe = getDefaultRecipeInfo(webTran);
-		
+		switch (webTran.getClrntSysId()) {
+		case "CCE":
+			FormulaConversion cceConverter = formulationService.buildFormulaConversion("CCE");
+			recipe = getDefaultRecipeInfo(webTran, cceConverter);
+			break;
+		case "BAC":
+			FormulaConversion bacConverter = formulationService.buildFormulaConversion("BAC");
+			recipe = getDefaultRecipeInfo(webTran, bacConverter);
+			break;
+		case "844":
+			FormulaConversion eightConverter = formulationService.buildFormulaConversion("844");
+			recipe = getDefaultRecipeInfo(webTran, eightConverter);
+			break;
+		case "GIC":
+			FormulaConversion gicConverter = formulationService.buildFormulaConversion("GIC");
+			recipe = getDefaultRecipeInfo(webTran, gicConverter);
+			break;
+		}
 		
 		formula.setIngredients(recipe);
 		formula.setAverageDeltaE(webTran.getAverageDeltaE());
@@ -332,7 +399,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		this.displayFormula = displayFormula;
 	}
 	
-	protected List<FormulaIngredient> getDefaultRecipeInfo(CustWebTran webTran){
+	protected List<FormulaIngredient> getDefaultRecipeInfo(CustWebTran webTran, FormulaConversion formulaConverter){
 		
 		List<FormulaIngredient> recipe = new ArrayList<FormulaIngredient>();
 		
@@ -402,8 +469,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		}
 		// Complete formulaInfo with following two fields
 		if (!recipe.isEmpty()) {
-			formulationService.fillIngredientInfoFromTintSysId(recipe);
-			formulationService.convertShotsToIncr(recipe);
+			formulationService.fillIngredientInfoFromTintSysId(recipe, formulaConverter);
+			formulationService.convertShotsToIncr(recipe, formulaConverter);
 		}
 		
 		return recipe;
@@ -411,7 +478,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	protected List<JobField> getJobFields(CustWebTran webTran){
 		List<CustWebJobFields> CustWebJobFields = customerService.getCustJobFields(webTran.getCustomerId());
+		List<JobField> jobFields = processJobFields(CustWebJobFields, webTran);
+		
+		return jobFields;
+	}
+	
+	protected List<JobField> processJobFields(List<CustWebJobFields> CustWebJobFields, CustWebTran webTran){
 		List<JobField> jobFields = new ArrayList<JobField>();
+		
 		int ctr = 0;
 		for(CustWebJobFields thisJobField : CustWebJobFields){
 			ctr++;

@@ -100,11 +100,11 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 	public String saveNewSpectro(){
 		CustWebDevices custWebDev = new CustWebDevices();
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		System.out.println("Begin Saving CustWebDevice.");
+		logger.debug("Begin Saving CustWebDevice.");
 		
 		if(reqObj !=null) {
-			System.out.println("request object getSpectro getMmodel is " + reqObj.getSpectro().getModel());
-			System.out.println("request object  getSpectroMmodel is " + reqObj.getSpectroModel());
+			logger.debug("request object getSpectro getMmodel is " + reqObj.getSpectro().getModel());
+			logger.debug("request object  getSpectroMmodel is " + reqObj.getSpectroModel());
 			custWebDev.setCustomerId(reqObj.getCustomerID());
 			custWebDev.setSerialNbr(reqObj.getSpectro().getSerialNbr());
 			custWebDev.setDeviceModel(reqObj.getSpectro().getModel());
@@ -113,20 +113,20 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 
 			if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
 					&& custWebDev.getDeviceModel() != null){
-				System.out.println("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
+				logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
 				SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
-				System.out.println("back from saveCustDevice without error");
+				logger.debug("back from saveCustDevice without error");
 				if(returnMessage!=null){
 					//save if new customer id otherwise do nothing.  If error return error
 					addActionError("Config not complete.  Critical DB error saving color eye device data.  Please try again.  Call support if this persists.");
 					return ERROR;
 				}
-				System.out.println("made it past returnMessage check");
+				logger.debug("made it past returnMessage check");
 				siteHasSpectro = true;
 				spectro = new SpectroInfo();
 				spectro.setSerialNbr(custWebDev.getSerialNbr());
 				spectro.setModel(custWebDev.getDeviceModel());
-				System.out.println("set the spectro object");
+				logger.debug("set the spectro object");
 			}
 			else {
 				addActionError("Invalid Color Eye data - customer, model type or serial number is black");

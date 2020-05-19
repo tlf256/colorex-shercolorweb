@@ -43,7 +43,7 @@ public class ListDealerCustomerOrdersAction extends ActionSupport implements Ses
 		List<CustWebDealerCustOrd> listCustWebDealerCustOrd;
 		CustWebDealer				custWebDealer;
 		CustWebDealerCust			custWebDealerCust;
-		System.out.println("Request GuId is -> " + reqGuid + " lookup Cust Id is -> " + lookupCustomerId
+		logger.debug("Request GuId is -> " + reqGuid + " lookup Cust Id is -> " + lookupCustomerId
 				+ " lookup DlrCustid is -> " + lookupDlrCustId);
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		lookupCustomerId 	= reqObj.getCustomerID();

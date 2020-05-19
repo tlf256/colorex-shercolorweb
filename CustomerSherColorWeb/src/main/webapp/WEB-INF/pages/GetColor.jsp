@@ -19,18 +19,57 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
+				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
+					selectedValue = $("[id^=selectedCoTypes]:checked").val();
+					//console.log("selected value - " + selectedValue);
+					
 					if(this.checked) {
 						$('.form-control-feedback, .help-block').remove();
 						$('.has-feedback').removeClass('has-error has-feedback');
 						$('#partialColorNameOrId').val('');
 				    }
+					
 				});
+				
+				//validate partialColorNameOrId if custom manual or custom match
+				//prevent special characters < or > from being entered
+				$(document).on({
+					'keypress blur': function(){
+						if(selectedValue == "CUSTOM" || selectedValue == "CUSTOMMATCH"){
+							try{
+								if(event.key == ">" || event.key == "<"){
+									//console.log("< or > keypress");
+									throw "Special characters \"<\" or \">\" not allowed";
+								}
+								if($(this).val().includes(">") || $(this).val().includes("<")){
+									throw "Invalid entry. Please remove these characters: < >";
+								}
+								$(document).find('#errortxt').remove();
+								$('input:submit').attr('disabled', false);
+							} catch(msg){
+								if(event.type=="keypress"){
+									event.preventDefault();
+								}
+								if(!$(document).find('#errortxt').is(':visible')){
+									$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+								}
+								$(document).find('#errortxt').text(msg);
+								if(event.type=="blur"){
+									$(this).focus();
+									$('input:submit').attr('disabled', true);
+								}
+							}
+						}
+					}
+				}, '#partialColorNameOrId');
+				
 			});
+			
 		</script>
 	</head>
 	
@@ -71,7 +110,7 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue" /><br>
 					</s:iterator>	
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
