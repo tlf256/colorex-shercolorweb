@@ -26,6 +26,22 @@
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
 	        }
+	        .chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
 	    </style>
 	</head>
 	
@@ -97,9 +113,9 @@
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 					<strong>Color Name:</strong>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
 					<s:property value="#session[reqGuid].colorName" /><br>
-					<div class="card card-body sw-bg-main"></div>
+					<div class="chip sw-bg-main mt-1"></div>
 				</div>
 				<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2">
 				</div>

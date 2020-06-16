@@ -244,6 +244,23 @@
 			.popover-body{
 				color: white;
 			}
+			.chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
+			
 	    </style>
 	</head>
 	
@@ -324,14 +341,14 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
 						<strong>Color Name:</strong>
 					</div>
-					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 mb-1">
 						<s:textfield name="colorName" size="20" maxlength="30" />
-						<div class="card card-body sw-bg-main"></div>
+						<div class="chip sw-bg-main"></div>
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
+					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-3 errormsg">
 					</div>
 				</div>
 				<div class="row">
