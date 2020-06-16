@@ -118,7 +118,8 @@
 						<s:hidden name="guid1" id="guid1" value="%{guid1}"/>
 						<s:password name="userPass" id="userPass" label="New Password:" placeholder="Enter password here" size="30" maxlength="30"></s:password>
 		    			<s:password name="userPassConfirm" id="userPassConfirm" label="Confirm:" placeholder="Confirm password here" size="30" maxlength="30"></s:password>
-		    			<s:submit cssClass="btn btn-primary btn-lg active" id="LoginFocus" autofocus="autofocus" value="Reset Password" action="passwordChangeAction"/>
+		    			<s:submit cssClass="btn btn-primary pull-left btn-lg active" id="LoginFocus" autofocus="autofocus" value="Reset Password" action="passwordChangeAction"/>
+		    			<s:submit cssClass="btn btn-secondary pull-right btn-lg" id="cancelChange" value="Cancel" action="cancelPasswordChangeAction"/>
 		    		</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
 					</div>	
