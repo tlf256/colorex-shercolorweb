@@ -44,7 +44,9 @@ function buildProgressBars(return_message){
 				}
 				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 
-				var $clone = $("#progress-0").clone();
+				var $clone = $("#progress-0")
+								.removeClass('d-none')
+								.clone();
 				$clone.attr("id","progress-" + count);
 				var $bar = $clone.children(".progress-bar");
 				$bar.attr("id","bar-" + count);
