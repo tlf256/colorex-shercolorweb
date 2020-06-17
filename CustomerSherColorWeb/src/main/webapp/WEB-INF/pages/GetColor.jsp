@@ -20,13 +20,18 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.3.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
 				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
 					selectedValue = $("[id^=selectedCoTypes]:checked").val();
 					//console.log("selected value - " + selectedValue);
+					if (selectedValue === "COMPET"){
+						$('#colorCompanies').removeClass('d-none');
+					} else {
+						$('#colorCompanies').addClass('d-none');
+					}
 					
 					if(this.checked) {
 						$('.form-control-feedback, .help-block').remove();
@@ -145,7 +150,17 @@
 						<div class="col-lg-2 col-md-2 col-sm-1">
 						</div>
 				</div>
+				<div class="row mt-sm-2 d-none" id="colorCompanies">
+					<div class="col-lg-2 col-md-2 col-sm-2">
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-6">
+						<s:select label="Company Name" id="companiesList" list="colorCompanies"  />
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-4">
+					</div>
+				</div>
 				<br>
+
 	<%-- 			<div class="row">
 					<div class="col-sm-3">
 					</div>
