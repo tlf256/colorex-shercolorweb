@@ -155,6 +155,13 @@
 			  return element === 0;
 		}
 		
+		
+		// let user override the warning message 
+		function setOverride(){
+			$("input[name='userWarningOverride']").val("true"); 
+		}
+		
+		
 		$(function(){
 			moveDown('#source_row');
 			
@@ -438,6 +445,33 @@
 					</div>
 				</s:if>
 				<s:if test="hasActionMessages()">
+					<div class="warningModalWrapper">
+						<div class="modal fade" aria-labelledby="actionMsgModal" aria-hidden="true"  id="actionMsgModal" role="dialog">
+					    	<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Do you want to override the warning?</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+									</div>
+									<div class="modal-body">
+										<s:actionmessage style="color:black; background-color:#FAFF98; border-color:#FAFF98"/>
+									</div>
+									<div class="modal-footer">
+										<s:submit cssClass="btn btn-primary" id="overrideWarning" value="Yes" onclick="setOverride();" action="MfUserNextAction"/>
+										<button type="button" class="btn btn-secondary" id="cancelWarning" data-dismiss="modal" aria-label="Close" >Cancel</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<s:hidden name="userWarningOverride" value="false" /> 
+						<s:iterator value="previousWarningMessages" status="stat">
+							<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
+						</s:iterator>
+					</div>
+					<script>
+						$(function(){ $("#actionMsgModal").modal('show'); });
+					</script>
+					<!-- 
 					<div class="row mb-4" id="alertmsg">
 	            		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>
@@ -453,6 +487,7 @@
 						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
 			    		</div>
 					</div>
+					 -->
 				</s:if>
 			    <div id="table_row" class="row mb-3">
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
