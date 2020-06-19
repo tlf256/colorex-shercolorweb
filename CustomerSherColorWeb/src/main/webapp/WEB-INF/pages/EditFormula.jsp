@@ -212,8 +212,14 @@
 			}, '[name="colorId"], [name="colorName"]');
 			
 		});
-		
 		</script>
+		
+		<s:if test="hasActionMessages()">
+			<script>
+				$(function(){ $("#actionMsgModal").modal('show'); });
+			</script>
+		</s:if>
+		
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
@@ -468,27 +474,8 @@
 							<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
 						</s:iterator>
 					</div>
-					<script>
-						$(function(){ $("#actionMsgModal").modal('show'); });
-					</script>
-					<!-- 
-					<div class="row mb-4" id="alertmsg">
-	            		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-						</div>
-						<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" style="background-color:#FAFF98">
-							<s:actionmessage escape="false" style="color:black;background-color:#FAFF98;border-color:#FAFF98"/>
-							<span style="text-indent:8px">
-								<s:checkbox name="userWarningOverride" label="Check this box and click Next to Override of Warning(s)" />
-							</span>
-							<s:iterator value="previousWarningMessages" status="stat">
-								<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
-							</s:iterator>
-						</div>
-						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
-			    		</div>
-					</div>
-					 -->
 				</s:if>
+				
 			    <div id="table_row" class="row mb-3">
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>	
