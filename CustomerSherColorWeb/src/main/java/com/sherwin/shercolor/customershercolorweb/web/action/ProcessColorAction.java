@@ -64,6 +64,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	private String selectedCoType;
 	private String selectedCoTypes;
+	private String selectedCompany;
 	private String partialColorNameOrId; 
 	private List<autoComplete> options;
 	
@@ -77,6 +78,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private static final String COMPETITIVE = "Competitive";
 	private static final String CUSTOM = "Custom Manual";
 	private static final String CUSTOMMATCH = "Custom Match";
+	
+	private ArrayList<String> colorCompanies;
 	
 	public ProcessColorAction(){
 		
@@ -109,7 +112,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
 			} else {
 				if (selectedCoType.equals("COMPET")) {
-					options = mapToOptions(colorMastService.autocompleteCompetitiveColor(partialColorNameOrId.toUpperCase()), "COMPET");
+					if (selectedCompany.equals("ALL")){
+						options = mapToOptions(colorMastService.autocompleteCompetitiveColor(partialColorNameOrId.toUpperCase()), "COMPET");
+					} else {
+						options = mapToOptions(colorMastService.autocompleteCompetitiveColorByCompany(partialColorNameOrId.toUpperCase(), selectedCompany), "COMPET");
+					}
 				} else {
 					options = new ArrayList<autoComplete>();
 					options.add(new autoComplete("MANUAL","MANUAL"));
@@ -394,6 +401,17 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				 //No device, so remove the Custom Match option from cotypes.
 				 cotypes.remove("CUSTOMMATCH");
 			 }
+			 
+			 colorCompanies = new ArrayList<String>();
+			 colorCompanies.add("ALL");
+			 
+			 String [] colorCompaniesArray = colorMastService.listColorCompanies();
+			 for (String company : colorCompaniesArray) {
+				 if (!company.equals("SHERWIN-WILLIAMS")){
+					 colorCompanies.add(company);
+				 }
+			 }
+			 
 		     return SUCCESS;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -549,6 +567,22 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 	public void setColorService(ColorService colorService) {
 		this.colorService = colorService;
+	}
+
+	public ArrayList<String> getColorCompanies() {
+		return colorCompanies;
+	}
+
+	public void setColorCompanies(ArrayList<String> colorCompanies) {
+		this.colorCompanies = colorCompanies;
+	}
+	
+	public String getSelectedCompany() {
+		return selectedCompany;
+	}
+	
+	public void setSelectedCompany(String selectedCompany) {
+		this.selectedCompany = selectedCompany;
 	}
 
 }
