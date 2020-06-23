@@ -314,6 +314,15 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 						} else {
 							defaultCoTypeValue = "COMPET";
 						}
+						// repopulate company dropdown 
+						colorCompanies = new ArrayList<String>();
+						colorCompanies.add("ALL");
+						String [] colorCompaniesArray = colorMastService.listColorCompanies();
+						for (String company : colorCompaniesArray) {
+							if (!company.equals("SHERWIN-WILLIAMS")){
+								colorCompanies.add(company);
+							}
+						}
 						return INPUT;
 					} else {
 						//validated successfully, call a read and set ThisColor
