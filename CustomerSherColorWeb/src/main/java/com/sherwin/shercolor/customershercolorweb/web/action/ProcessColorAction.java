@@ -535,7 +535,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setColorComp(String colorComp) {
-		this.colorComp = Encode.forHtml(colorComp);
+		this.colorComp = colorComp;
 	}
 
 	public String getColorID() {
