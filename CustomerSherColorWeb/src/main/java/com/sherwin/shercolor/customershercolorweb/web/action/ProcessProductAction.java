@@ -254,6 +254,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setIntExt("");
 			reqObj.setValidationWarning(false);
 			reqObj.setValidationWarningSalesNbr("");
+			reqObj.setClosestSwColorId("");
+			reqObj.setClosestSwColorName("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		} catch (Exception e) {

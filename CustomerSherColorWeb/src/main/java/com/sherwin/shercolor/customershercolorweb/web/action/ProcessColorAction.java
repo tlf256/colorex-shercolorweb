@@ -56,7 +56,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String colorName;
 	
 	private String intBases;
-	
 	private String extBases;
 	
 	//This will be passed in from a customer parms record - but in the interim, default to SW.
@@ -249,6 +248,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		String primerId = null;
 		Boolean vinylColor = false;
 		String colorType = "";
+		String closestSwColorName = null;
+		String closestSwColorId = null;
+		CdsColorMast closestSwColor = null;
+				
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -350,11 +353,16 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 						setIntBases(StringUtils.join(baseList, ','));
 						setExtBases(StringUtils.join(baseList, ','));
 					}
-
+					
+					// get closest SW color if user picked a competitive one, or comes back null if no close match found
+					if (selectedCoTypes.equalsIgnoreCase("COMPET")) {
+						closestSwColor = colorService.findClosestSwColor(thisColor.getColorComp(), thisColor.getColorId());	
+						if (closestSwColor != null) {
+							closestSwColorName = closestSwColor.getColorName();
+							closestSwColorId = closestSwColor.getColorId();
+						}
+					}
 				} //end else (not Custom Match)
-				
-
-				
 			} // end else (not Manual)
 			
 			//set the successful information into the request object.
@@ -367,6 +375,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setPrimerId(primerId);
 			reqObj.setColorVinylOnly(vinylColor);
 			reqObj.setColorType(colorType);
+			if (closestSwColor != null) {
+				reqObj.setClosestSwColorName(closestSwColorName);
+				reqObj.setClosestSwColorId(closestSwColorId);
+			} else {
+				reqObj.setClosestSwColorName("");
+				reqObj.setClosestSwColorId("");
+			}
 			sessionMap.put(reqGuid, reqObj);
 			if (colorType.equals("CUSTOMMATCH")) {
 				return "measure";
