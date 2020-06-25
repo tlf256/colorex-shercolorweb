@@ -102,6 +102,9 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="chip sw-bg-main mt-1"></div>
+					<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+						<em>Closest SW color is <br><s:property value="#session[reqGuid].closestSwColorId" /> - <s:property value="#session[reqGuid].closestSwColorName" /></em>
+					</s:if>
 				</div>
 			</div>
 			<div class="row">

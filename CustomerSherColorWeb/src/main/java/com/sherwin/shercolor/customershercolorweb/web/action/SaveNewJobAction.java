@@ -237,6 +237,9 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 				// change to custom and replace color id with word Manual
 				reqObj.setColorComp("CUSTOM");
 				reqObj.setColorID("MANUAL");
+				// empty out SW color match if it was set
+				reqObj.setClosestSwColorId("");
+				reqObj.setClosestSwColorName("");
 			}
 			if(reqObj.isVinylExclude()){
 				currentFormula.setSource("MANV");
