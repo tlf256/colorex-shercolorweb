@@ -29,7 +29,6 @@
 		  	
 		  	function InitializeMeasureScreen() {
 	  		    console.log("InitializeMeasureScreen");
-	  	  		$(".swmeasure").hide();
 	  	  		$(".error").hide();
 	  		}
 		  	
@@ -62,7 +61,6 @@
 	  	  	function DisplayError() {
 				$('#measureColorModal').modal('hide')
 	  		  	console.log("DisplayError")
-		  		$(".swmeasure").hide();
 		  		$(".error").show();
 		  		$(".cancel").removeClass('d-none');
 	  		}
@@ -73,7 +71,6 @@
 	  	  	}
 	  	  	
 	  	  	function calibrate(){
-	  	  		$(".swmeasure").hide();
 	  	  		$(".calibrate").removeClass('d-none');
 	  	  		$('.init').hide();
 	  	  		setTimeout(function(){
