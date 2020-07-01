@@ -115,11 +115,14 @@
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 						<strong>Color Name:</strong>
 					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 mb-1">
+ 					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 mb-1">
 						<s:property value="#session[reqGuid].colorName" /><br>
 						<div class="chip sw-bg-main mt-1"></div>
+						<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+							<em>Closest SW color is <br><s:property value="#session[reqGuid].closestSwColorId" /> - <s:property value="#session[reqGuid].closestSwColorName" /></em>
+						</s:if>
 					</div>
-					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2">
+					<div class="col-lg-5 col-md-4 col-sm-4 col-xs-2">
 					</div>
 				</div>
 				<div class="row">
@@ -128,10 +131,10 @@
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 						<strong>Interior Bases:</strong>
 					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
 						${sessionScope[thisGuid].intBases}<br>
 					</div>
-					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2">
+					<div class="col-lg-5 col-md-4 col-sm-4 col-xs-2">
 					</div>
 				</div>
 				<div class="row">
@@ -140,10 +143,10 @@
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 						<strong>Exterior Bases:</strong>
 					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
 						${sessionScope[thisGuid].extBases}<br>
 					</div>
-					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2">
+					<div class="col-lg-5 col-md-4 col-sm-4 col-xs-2">
 					</div>
 				</div>
 

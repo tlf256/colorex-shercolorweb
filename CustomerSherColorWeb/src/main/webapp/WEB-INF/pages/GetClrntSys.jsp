@@ -116,6 +116,9 @@
 				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
 					<s:property value="#session[reqGuid].colorName" /><br>
 					<div class="chip sw-bg-main mt-1"></div>
+					<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+						<em>Closest SW color is <br><s:property value="#session[reqGuid].closestSwColorId" /> - <s:property value="#session[reqGuid].closestSwColorName" /></em>
+					</s:if>
 				</div>
 				<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2">
 				</div>

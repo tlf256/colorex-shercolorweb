@@ -80,6 +80,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				// change to custom and replace color id with word Manual
 				reqObj.setColorComp("CUSTOM");
 				reqObj.setColorID("MANUAL");
+				// empty out SW color match if it was set
+				reqObj.setClosestSwColorId("");
+				reqObj.setClosestSwColorName("");
 			}
 			 
 			colorId = reqObj.getColorID();

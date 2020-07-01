@@ -68,6 +68,8 @@ public class RequestObject {
 	private SpectroInfo spectro;
 	private int daysUntilPasswdExpire;
 	private boolean printerConfigured;  //printer configured through SWDeviceHandler
+	private String closestSwColorName;
+	private String closestSwColorId;
 
 	public String getColorComp() {
 		return colorComp;
@@ -396,6 +398,8 @@ public class RequestObject {
 		this.upc = "";
 		this.quantityDispensed = 0;
 		this.daysUntilPasswdExpire = 90;
+		this.closestSwColorName = "";
+		this.closestSwColorId = "";
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -468,6 +472,18 @@ public class RequestObject {
 	}
 	public void setPrinterConfigured(boolean printerConfigured) {
 		this.printerConfigured = printerConfigured;
+	}
+	public String getClosestSwColorName() {
+		return closestSwColorName;		
+	}
+	public void setClosestSwColorName(String closestSwColorName) {
+		this.closestSwColorName = closestSwColorName;		
+	}
+	public String getClosestSwColorId() {
+		return closestSwColorId;		
+	}
+	public void setClosestSwColorId(String closestSwColorId) {
+		this.closestSwColorId = closestSwColorId;		
 	}
 	
 	
