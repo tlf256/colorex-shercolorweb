@@ -29,9 +29,6 @@
 		  	
 		  	function InitializeMeasureScreen() {
 	  		    console.log("InitializeMeasureScreen");
-	  		  	$(".calibrate").hide();
-	  	  		$(".swmeasure").hide();
-	  	  		$(".cancel").hide();
 	  	  		$(".error").hide();
 	  		}
 		  	
@@ -50,8 +47,8 @@
 			    var json = JSON.stringify(spectromessage);
 			    ws_coloreye.send(json);
 		  		$(".calibrate").hide();
+		  		$('.init').hide();
 		  		$(".swmeasure").show();
-		  		$(".cancel").show();
 	  		}
 	  	  	
 	  	  	function GoodMeasure(measCurve) {
@@ -62,13 +59,10 @@
 	  		}
  	  	
 	  	  	function DisplayError() {
-		  	  	$('#spectroCalModal').modal().hide();
-				$('.modal-backdrop').remove();
+				$('#measureColorModal').modal('hide')
 	  		  	console.log("DisplayError")
-		  		$(".swmeasure").hide();
-		  		$(".calsuccess").hide();
 		  		$(".error").show();
-		  		$(".cancel").show();
+		  		$(".cancel").removeClass('d-none');
 	  		}
 	  	  	
 	  	  	function RecdError() {
@@ -77,11 +71,16 @@
 	  	  	}
 	  	  	
 	  	  	function calibrate(){
-	  	  		$(".swmeasure").hide();
-	  	  		$(".calibrate").show();
+	  	  		$(".calibrate").removeClass('d-none');
+	  	  		$('.init').hide();
 	  	  		setTimeout(function(){
 					$("#calibrateForm").submit();
 	  	  		}, 1000);
+	  	  	}
+	  	  	
+	  	  	function cancelMeasure(){
+		  	  	$("#errmsg").text('Color measurement terminated');
+		  		DisplayError();
 	  	  	}
 	  	  	
 	  	  
@@ -99,6 +98,7 @@
 	  			switch (return_message.command) {
 	  				case 'GetCalStatusMinUntilCalExpiration':
 	  					if (return_message.responseMessage.match(/^OK/)) {
+	  						$('#measureColorModal').modal('show');
 	  						SWMeasure();
 	  					} else {
 	  						calibrate();
@@ -171,47 +171,26 @@
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-6">
-						<h2 class="calibrate">Initializing calibration...</h2>
-						<h2 class="swmeasure">1. Position the Color Eye target window on top of the Sample.</h2>
+						<h2 class="calibrate d-none">Initializing calibration...</h2>
+						<h2 class="init">Communicating with Color-Eye...</h2>
 					</div>
 					<div class="col-sm-3"></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-6">
-						<h2 class="swmeasure">2. Press the instrument firmly down until the next prompt appears.</h2>
+						
 					</div>
 					<div class="col-sm-3"></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-6">
-						<h2 class="swmeasure"></h2>
 	            		<h2 class="error" id="errmsg"></h2>
 					</div>
 					<div class="col-sm-3"></div>
 				</div>
-				<div class="row">
-					<div class="col-sm-3"></div>
-					<div class="col-sm-6">
-						<h2 class="swmeasure">Note: the two status lights on the instrument should change</h2>
-					</div>
-					<div class="col-sm-3"></div>
-				</div>
-				<div class="row">
-					<div class="col-sm-3"></div>
-					<div class="col-sm-6">
-						<h2 class="swmeasure">from red to green on successful measurement.</h2>
-					</div>
-					<div class="col-sm-3"></div>
-				</div>
-				<div class="row">
-					<div class="col-sm-3"></div>
-					<div class="col-sm-6">
-						<h2 class="swmeasure"></h2>
-					</div>
-					<div class="col-sm-3"></div>
-				</div>
+				<br>
 				<br>
 				<br>
 				<div class="row">
@@ -220,14 +199,78 @@
 					<div class="col-sm-4">
 					</div>
 					<div class="col-sm-5">
-						<div class="cancel">
+						<div class="cancel d-none">
 							<s:submit cssClass="btn btn-secondary center-block" value="Cancel" action="userCancelAction"/>
 						</div>
 					</div>
 		    	</div>
 			</div>
 		</s:form>
-		
+		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="measureColorModal" data-backdrop="static">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h2 class="modal-title ml-3">Measure Color</h2>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelMeasure()">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-1"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="swmeasure">1. Position the Color Eye target window on top of the Sample.</h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="swmeasure">2. Press the instrument firmly down until the next prompt appears.</h3>
+ 	            		</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="swmeasure"></h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="swmeasure">Note: the two status lights on the instrument should change from red to green on successful measurement.</h5>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="swmeasure"></h5>
+						</div>
+					</div>
+				</div>
+		      </div>
+		      <div class="modal-footer">
+			       <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelMeasure()">Close</button>
+			  </div>
+		    </div>
+		  </div>
+		</div>
 		<br>
 		<br>
 		<br>
