@@ -574,6 +574,7 @@
 									$('li#colorantLevels').show();
 									$('li#dispenseColorants').show();
 									$('li#tinterEcal').show();
+									$('li#tinterRemove').show();
 									if(localhostConfig!=null && localhostConfig.model!=null && localhostConfig.model!=""){
 										//TODO check lastInit for tinter, if needed go detect
 										checkTinterStatus();
@@ -684,6 +685,24 @@
 							else{
 								UnsolicitedDetectResp(return_message);
 								}
+							break;
+						case 'Config':
+							console.log("Processing return message for unconfig");
+							// check for errors and notify user
+							// of tinter removal and/or if any errors occurred
+							if(return_message.errorNumber == 0){
+								$('#removeTinterTxt').html('<h5>' + return_message.errorMessage + '.</h5');
+								$('#closeModal').attr('disabled', false);
+								deleteTinterOnConfigSuccess();
+							} else {
+								$('#removeTinterTxt').html('<h5>Tinter removal error:<br><span class="text-danger">' + return_message.errorMessage + '</span></h5>');
+								$('#closeModal').attr('disabled', false);
+							}
+							
+							// log tinter event
+							var curDate = new Date();
+							var myGuid = $( "#startNewJob_reqGuid" ).val();
+							sendTinterEvent(myGuid, curDate, return_message, null);
 							break;
 						default:
 							//Not a response for our command...
@@ -906,6 +925,51 @@
 				$("#unsupportedBrowserModal").modal('show');
 			}
 		}
+		
+		function configStandaloneResp(return_message){
+			console.log("Processing config standalone response");
+		}
+		
+		function showRemoveTinterModal(){
+			$('#removeTinterTxt').html('<h5><strong>'+ sessionTinterInfo.model +':</strong> <strong>'+ 
+					sessionTinterInfo.serialNbr +'</strong></h5><h6>Tinter will be removed from the system.<br>Are you sure?</h6>');
+			$('#removeTinterModal').modal('show');
+		}
+		
+		function unconfig_tinter(){
+			var command = "Config";
+			var configuration = new Configuration(null, "Standalone", null,	null);
+			var tinterMessage = new TinterMessage(command, null, configuration, null, null);
+			var json = JSON.stringify(tinterMessage);
+	
+			if (ws_tinter && ws_tinter.isReady == "false") {
+				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+				ws_tinter = new WSWrapper("tinter");
+			}
+			ws_tinter.send(json);
+		}
+		
+		function removeTinter(){
+			console.log("Removing tinterconfig");
+			$('#removeTinterTxt').html('<h5>Removing tinter...</h5>');
+			$('#rmTinter').hide();
+			$('#closeModal').removeClass('btn-secondary');
+			$('#closeModal').addClass('btn-primary');
+			$('#closeModal').text('OK');
+			$('#closeModal').attr('disabled', true);
+			
+			setTimeout(function(){
+				unconfig_tinter();
+			}, 1000);
+		}
+		
+		function deleteTinterOnConfigSuccess(){
+			$('#removeTinterModal').on('hide.bs.modal', function (e) {
+				// delete tinter from custWebDevices
+				// regardless of tinterconfig.conf deletion
+				window.location.href = "removeTinter?reqGuid=${reqGuid}";
+			});
+		}
 
 	</script>
   </head>
@@ -943,6 +1007,7 @@
 								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=detectTinter();><span class='fa fa-retweet pr-1'></span> Initialize Tinter</a></li>
 								        <li id="tinterEcal"><a class="dropdown-item" tabindex="-1" href='<s:url action="ecalManagerAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>' ><span class='fa fa-exchange pr-1'></span> Calibration Manager</a></li>
 										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Add New Tinter</a></li>
+										<li id="tinterRemove"><a class="dropdown-item" tabindex="-1" href="#" onclick="showRemoveTinterModal();"><span class='fa fa-eject pr-1'></span> Remove Tinter</a></li>
 				        			</ul>
 	       						</li>
 	       						<li class="dropdown-item dropdown-submenu">
@@ -1159,7 +1224,25 @@
 								</div>
 							</div>
 						</div>
-					</div>	    
+					</div>
+					<!-- Remove Tinter Modal -->
+				    <div class="modal fade" aria-labelledby="removeTinterModal" aria-hidden="true"  id="removeTinterModal" role="dialog">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="">Remove Tinter</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<div id="removeTinterTxt"></div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" id="rmTinter" class="btn btn-danger" onclick="removeTinter();">Yes</button>
+									<button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal" aria-label="Close" >No</button>
+								</div>
+							</div>
+						</div>
+					</div>
 					</s:form>
 				</div>
 				<div class="col-xl-4 col-lg-3 col-sm-1 col-xs-0">
@@ -1188,6 +1271,7 @@
 				$('li#colorantLevels').show();
 				$('li#dispenseColorants').show();
 				$('li#tinterEcal').show();
+				$('li#tinterRemove').show();
 			} else {
 				console.log("session DOES NOT HAVE tinter");
 				$('#tinterNotify').hide(); 
@@ -1198,6 +1282,7 @@
 				$('li#colorantLevels').hide();
 				$('li#dispenseColorants').hide();
 				$('li#tinterEcal').hide();
+				$('li#tinterRemove').hide();
 			}
 			//reread last detect from websocket if new session or flag is set from previous init.
  			if( ($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasTinter").val()=="true") || $("#startNewJob_reReadLocalHostTinter").val()=="true" ) {
@@ -1241,6 +1326,7 @@
 			if (daysUntilPwdExpire <= 7 && $("#startNewJob_newSession").val()=="true") {
 				$('#passwordExpirationModal').modal('show');
 			}
+			
 		});
 		</script>
 		<script>
