@@ -86,7 +86,6 @@
 	  	  	
 	  	  	function checkWsIsReady(){
 	  	  		var coloreyeStatus;
-	  	  		var n = 0;
 	  	  		var interval = setInterval(function(){
 	  	  			console.log("ws ready state: " + coloreyeStatus);
   	  				if($('#measureColorModal').is(':visible')){
