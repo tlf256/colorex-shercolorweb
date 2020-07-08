@@ -94,7 +94,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			//convert the comma-delimited measuredCurve string to a BigDecimal array
 			strCurveArray = measuredCurve.split(",");
 			for (int i=0; i < 40; i++) {
-				curveArray[i] = new BigDecimal(strCurveArray[i]);
+				curveArray[i] = new BigDecimal(strCurveArray[i].trim());
 			}
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
