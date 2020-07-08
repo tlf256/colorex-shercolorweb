@@ -688,16 +688,11 @@
 							break;
 						case 'Config':
 							console.log("Processing return message for unconfig");
-							// check for errors and notify user
-							// of tinter removal and/or if any errors occurred
-							if(return_message.errorNumber == 0){
-								$('#removeTinterTxt').html('<h5>' + return_message.errorMessage + '.</h5');
-								$('#closeModal').attr('disabled', false);
-								deleteTinterOnConfigSuccess();
-							} else {
-								$('#removeTinterTxt').html('<h5>Tinter removal error:<br><span class="text-danger">' + return_message.errorMessage + '</span></h5>');
-								$('#closeModal').attr('disabled', false);
-							}
+							// notify user of tinter removal or if any errors occurred
+							$('#initTinterInProgressModal #spinner').addClass('d-none');
+							$('#initTinterInProgressModal .modal-body').text(return_message.errorMessage + ".");
+							$('#initTinterInProgressModal .modal-footer').html(
+									'<button type="button" class="btn btn-primary" id="closeModal" onclick="deleteTinter();">OK</button>');
 							
 							// log tinter event
 							var curDate = new Date();
@@ -951,24 +946,22 @@
 		
 		function removeTinter(){
 			console.log("Removing tinterconfig");
-			$('#removeTinterTxt').html('<h5>Removing tinter...</h5>');
-			$('#rmTinter').hide();
-			$('#closeModal').removeClass('btn-secondary');
-			$('#closeModal').addClass('btn-primary');
-			$('#closeModal').text('OK');
-			$('#closeModal').attr('disabled', true);
+			$('#removeTinterModal').modal('hide');
+			$('#initTinterInProgressModal').modal('show');
+			$('#initTinterInProgressModal .modal-title').text('Remove Tinter Status');
+			$('#initTinterInProgressModal .modal-body').text('Removing tinter...');
+			rotateIcon();
 			
 			setTimeout(function(){
 				unconfig_tinter();
 			}, 1000);
 		}
 		
-		function deleteTinterOnConfigSuccess(){
-			$('#removeTinterModal').on('hide.bs.modal', function (e) {
-				// delete tinter from custWebDevices
-				// regardless of tinterconfig.conf deletion
-				window.location.href = "removeTinter?reqGuid=${reqGuid}";
-			});
+		function deleteTinter(){
+			$('#initTinterInProgressModal').modal('hide');
+			// delete tinter from custWebDevices
+			// regardless of tinterconfig.conf deletion
+			window.location.href = "removeTinter?reqGuid=${reqGuid}";
 		}
 
 	</script>
