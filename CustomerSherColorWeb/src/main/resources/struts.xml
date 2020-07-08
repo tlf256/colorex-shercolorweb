@@ -978,6 +978,19 @@
 			<result name="error">/WEB-INF/pages/TinterConfig.jsp</result>
 
 		</action>
+		<action name="removeTinter"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.RemoveTinterAction"
+			method="execute">
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 	
 
 		<action name="selectECal"
