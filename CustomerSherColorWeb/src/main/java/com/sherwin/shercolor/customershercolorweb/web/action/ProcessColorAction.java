@@ -23,6 +23,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebSpectroRemote;
 import com.sherwin.shercolor.common.exception.SherColorException;
 import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorMastService;
@@ -56,7 +57,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String colorName;
 	
 	private String intBases;
-	
 	private String extBases;
 	
 	//This will be passed in from a customer parms record - but in the interim, default to SW.
@@ -78,8 +78,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private static final String COMPETITIVE = "Competitive";
 	private static final String CUSTOM = "Custom Manual";
 	private static final String CUSTOMMATCH = "Custom Match";
+	private static final String SAVEDMEASURE = "Saved Ci62 Measurement";
 	
 	private ArrayList<String> colorCompanies;
+	
+	private List<CustWebSpectroRemote> savedMeasurements;
+	private String measuredCurve;
+	private String measuredName;
 	
 	public ProcessColorAction(){
 		
@@ -88,7 +93,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		cotypes.put("COMPET",COMPETITIVE);
 		cotypes.put("CUSTOM",CUSTOM);
 		cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
-		
+		cotypes.put("SAVEDMEASURE", SAVEDMEASURE);		
 	}
 	
 	//return company type list for radio options
@@ -249,6 +254,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		String primerId = null;
 		Boolean vinylColor = false;
 		String colorType = "";
+		String closestSwColorName = null;
+		String closestSwColorId = null;
+		CdsColorMast closestSwColor = null;
+				
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -265,88 +274,108 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				}
 				colorType = "CUSTOM";
 				
+			} else if (selectedCoTypes.equalsIgnoreCase("CUSTOMMATCH")) {
+				colorComp = "CUSTOM";
+				colorID   = "MATCH";
+				colorName = partialColorNameOrId.trim();
+				if (colorName.isEmpty()) {
+					colorName = "COLOR";
+				}
+				colorType = "CUSTOMMATCH";
+
+			} else if (selectedCoTypes.equalsIgnoreCase("SAVEDMEASURE")) {
+				colorComp = "CUSTOM";
+				colorID   = "MATCH";
+				colorName = measuredName;
+				if (colorName.isEmpty()) {
+					colorName = "COLOR";
+				}
+				colorType = "SAVEDMEASURE";
 			} else {
-				if (selectedCoTypes.equalsIgnoreCase("CUSTOMMATCH")) {
-					colorComp = "CUSTOM";
-					colorID   = "MATCH";
-					colorName = partialColorNameOrId.trim();
-					if (colorName.isEmpty()) {
-						colorName = "COLOR";
-					}
-					colorType = "CUSTOMMATCH";
-
+					
+				// This conditional helps prevent times where colorData doesn't get populated
+				// when the user quickly enters in a numnber and does a next operation before
+				// the auto complete gets triggered
+				if (colorData.equals("")) {
+					colorData = partialColorNameOrId.trim();
+				}
+				// Following method call should be able to cover all conditionals previously
+				// implemented here
+				
+				parseColorData(colorData);
+				
+				if (selectedCoTypes.equalsIgnoreCase("SW")) {
+					colorType = "SHERWIN-WILLIAMS";
 				} else {
-					
-					// This conditional helps prevent times where colorData doesn't get populated
-					// when the user quickly enters in a numnber and does a next operation before
-					// the auto complete gets triggered
-					if (colorData.equals("")) {
-						colorData = partialColorNameOrId.trim();
+					colorType = "COMPETITIVE";
+				}
+				
+				// Try getting an RGB value for the object.
+				ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
+				if (colorCoord != null) {
+					rgbHex = colorCoord.getRgbHex();
+				}
+//				setThisColor(colorMastService.read(colorComp, colorID));
+				
+				//We should have thisColor set.  Or not.  If not, throw a validation error?
+
+				List<SwMessage> errlist = colorMastService.validate(colorComp, colorID);
+				if (errlist.size()>0) {
+					for(SwMessage item:errlist) {
+						addFieldError("partialColorNameOrId", item.getMessage());
 					}
-					// Following method call should be able to cover all conditionals previously
-					// implemented here
-					
-					parseColorData(colorData);
-					
+					//PSCWEB-159 - set the default radio button based on SW vs Competitive
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
-						colorType = "SHERWIN-WILLIAMS";
+						defaultCoTypeValue = "SW";
 					} else {
-						colorType = "COMPETITIVE";
+						defaultCoTypeValue = "COMPET";
 					}
-					
-					// Try getting an RGB value for the object.
-					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
-					if (colorCoord != null) {
-						rgbHex = colorCoord.getRgbHex();
-					}
-	//				setThisColor(colorMastService.read(colorComp, colorID));
-					
-					//We should have thisColor set.  Or not.  If not, throw a validation error?
-	
-					List<SwMessage> errlist = colorMastService.validate(colorComp, colorID);
-					if (errlist.size()>0) {
-						for(SwMessage item:errlist) {
-							addFieldError("partialColorNameOrId", item.getMessage());
+					// repopulate company dropdown 
+					colorCompanies = new ArrayList<String>();
+					colorCompanies.add("ALL");
+					String [] colorCompaniesArray = colorMastService.listColorCompanies();
+					for (String company : colorCompaniesArray) {
+						if (!company.equals("SHERWIN-WILLIAMS")){
+							colorCompanies.add(company);
 						}
-						//PSCWEB-159 - set the default radio button based on SW vs Competitive
-						if (selectedCoTypes.equalsIgnoreCase("SW")) {
-							defaultCoTypeValue = "SW";
-						} else {
-							defaultCoTypeValue = "COMPET";
-						}
-						return INPUT;
-					} else {
-						//validated successfully, call a read and set ThisColor
-						//also set primerId and vinylColor fields.
-						thisColor = colorMastService.read(colorComp, colorID);
-						this.setColorName(thisColor.getColorName());
-						primerId = thisColor.getPrimerId();
-						vinylColor = thisColor.getIsVinylSiding();
 					}
-					
-					baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+					return INPUT;
+				} else {
+					//validated successfully, call a read and set ThisColor
+					//also set primerId and vinylColor fields.
+					thisColor = colorMastService.read(colorComp, colorID);
+					this.setColorName(thisColor.getColorName());
+					primerId = thisColor.getPrimerId();
+					vinylColor = thisColor.getIsVinylSiding();
+				}
+				
+				baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+				setIntBases(StringUtils.join(baseList, ','));
+				
+				baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+				setExtBases(StringUtils.join(baseList, ','));
+				
+				//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
+				//call the autobase routine.
+				if (intBases==null && extBases==null) {
+					//call autobase
+					String custID = (String) reqObj.getCustomerID();
+					CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
+					String custProdComp = bobo.getProdComp();
+					baseList = colorBaseService.GetAutoBase(thisColor.getColorComp(), thisColor.getColorId(), custProdComp );
 					setIntBases(StringUtils.join(baseList, ','));
-					
-					baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
 					setExtBases(StringUtils.join(baseList, ','));
-					
-					//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
-					//call the autobase routine.
-					if (intBases==null && extBases==null) {
-						//call autobase
-						String custID = (String) reqObj.getCustomerID();
-						CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
-						String custProdComp = bobo.getProdComp();
-						baseList = colorBaseService.GetAutoBase(thisColor.getColorComp(), thisColor.getColorId(), custProdComp );
-						setIntBases(StringUtils.join(baseList, ','));
-						setExtBases(StringUtils.join(baseList, ','));
+				}
+				
+				// get closest SW color if user picked a competitive one, or comes back null if no close match found
+				if (selectedCoTypes.equalsIgnoreCase("COMPET")) {
+					closestSwColor = colorService.findClosestSwColor(thisColor.getColorComp(), thisColor.getColorId());	
+					if (closestSwColor != null) {
+						closestSwColorName = closestSwColor.getColorName();
+						closestSwColorId = closestSwColor.getColorId();
 					}
-
-				} //end else (not Custom Match)
-				
-
-				
-			} // end else (not Manual)
+				}
+			} 
 			
 			//set the successful information into the request object.
 			reqObj.setColorComp(colorComp);
@@ -358,9 +387,18 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setPrimerId(primerId);
 			reqObj.setColorVinylOnly(vinylColor);
 			reqObj.setColorType(colorType);
+			if (closestSwColor != null) {
+				reqObj.setClosestSwColorName(closestSwColorName);
+				reqObj.setClosestSwColorId(closestSwColorId);
+			} else {
+				reqObj.setClosestSwColorName("");
+				reqObj.setClosestSwColorId("");
+			}
 			sessionMap.put(reqGuid, reqObj);
 			if (colorType.equals("CUSTOMMATCH")) {
 				return "measure";
+			} else if (colorType.equals("SAVEDMEASURE")) {
+				return "savedMeasure";
 			} else {
 				return SUCCESS;
 			}
@@ -400,6 +438,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			 if (reqObj.getSpectro().getSerialNbr()==null) {
 				 //No device, so remove the Custom Match option from cotypes.
 				 cotypes.remove("CUSTOMMATCH");
+			 }
+			 
+			 // load saved Ci62 remote measurements
+			 String customerId = reqObj.getCustomerID();
+			 savedMeasurements = customerService.getCustWebSpectroRemotes(customerId);
+			 if (savedMeasurements.size() == 0) {
+				 cotypes.remove("SAVEDMEASURE");
 			 }
 			 
 			 colorCompanies = new ArrayList<String>();
@@ -526,7 +571,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setColorComp(String colorComp) {
-		this.colorComp = Encode.forHtml(colorComp);
+		this.colorComp = colorComp;
 	}
 
 	public String getColorID() {
@@ -583,6 +628,30 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	public void setSelectedCompany(String selectedCompany) {
 		this.selectedCompany = selectedCompany;
+	}
+
+	public List<CustWebSpectroRemote> getSavedMeasurements() {
+		return savedMeasurements;
+	}
+
+	public void setSavedMeasurements(List<CustWebSpectroRemote> savedMeasurements) {
+		this.savedMeasurements = savedMeasurements;
+	}
+
+	public String getMeasuredCurve() {
+		return measuredCurve;
+	}
+
+	public void setMeasuredCurve(String measuredCurve) {
+		this.measuredCurve = measuredCurve;
+	}
+	
+	public String getMeasuredName() {
+		return measuredName;
+	}
+
+	public void setMeasuredName(String measuredName) {
+		this.measuredName = measuredName;
 	}
 
 }
