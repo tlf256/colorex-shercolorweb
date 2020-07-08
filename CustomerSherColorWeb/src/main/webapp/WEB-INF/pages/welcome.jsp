@@ -921,10 +921,6 @@
 			}
 		}
 		
-		function configStandaloneResp(return_message){
-			console.log("Processing config standalone response");
-		}
-		
 		function showRemoveTinterModal(){
 			$('#removeTinterTxt').html('<h5><strong>'+ sessionTinterInfo.model +':</strong> <strong>'+ 
 					sessionTinterInfo.serialNbr +'</strong></h5><h6>Tinter will be removed from the system.<br>Are you sure?</h6>');
