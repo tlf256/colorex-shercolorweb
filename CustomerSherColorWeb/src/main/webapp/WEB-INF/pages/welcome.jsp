@@ -690,7 +690,7 @@
 							console.log("Processing return message for unconfig");
 							// notify user of tinter removal or if any errors occurred
 							$('#initTinterInProgressModal #spinner').addClass('d-none');
-							$('#initTinterInProgressModal .modal-body').text(return_message.errorMessage + ".");
+							$('#initTinterInProgressModal .modal-body').text("Tinter removed.");
 							$('#initTinterInProgressModal .modal-footer').html(
 									'<button type="button" class="btn btn-primary" id="closeModal" onclick="deleteTinter();">OK</button>');
 							
