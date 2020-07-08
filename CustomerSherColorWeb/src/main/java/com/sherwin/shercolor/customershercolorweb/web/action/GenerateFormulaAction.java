@@ -114,7 +114,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 					theFormula = formulationService.prodFamilyFormulate(oeRequest, custWebParms);
 					
 				} else {
-					if (reqObj.getColorType().equalsIgnoreCase("CUSTOMMATCH")) {
+					if (reqObj.getColorType().equalsIgnoreCase("CUSTOMMATCH") || reqObj.getColorType().equalsIgnoreCase("SAVEDMEASURE")) {
 						//set the curve from the requestObject
 						double[] dblCurve = new double[40];
 						for (int x=0; x<40; x++) {

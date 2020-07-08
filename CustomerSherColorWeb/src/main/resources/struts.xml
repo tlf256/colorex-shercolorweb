@@ -410,6 +410,11 @@
 				<param name="reqGuid">${reqGuid}</param>
 				<!-- <param name="measureColor">${measureColor}</param> -->
 			</result>
+			<result name="savedMeasure" type="redirectAction">
+				<param name="actionName">MeasureColorNextAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="measuredCurve">${measuredCurve}</param>
+			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
