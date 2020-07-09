@@ -42,6 +42,7 @@
 	  	  
 	  	  	function SWMeasure() {
 	  		  	console.log("SWMeasure")
+	  		  	checkWsIsReady();
   	    		var clreyemodel = $('#spectroModel').val();
 				var spectromessage = new SpectroMessage('SWMeasure',clreyemodel);
 			    var json = JSON.stringify(spectromessage);
@@ -59,8 +60,8 @@
 	  		}
  	  	
 	  	  	function DisplayError() {
-				$('#measureColorModal').modal('hide')
-	  		  	console.log("DisplayError")
+				$('#measureColorModal').modal('hide');
+	  		  	console.log("DisplayError");
 		  		$(".error").show();
 		  		$(".cancel").removeClass('d-none');
 	  		}
@@ -79,8 +80,25 @@
 	  	  	}
 	  	  	
 	  	  	function cancelMeasure(){
-		  	  	$("#errmsg").text('Color measurement terminated');
+	  	  		$("#errmsg").text('Color measurement terminated');
 		  		DisplayError();
+	  	  	}
+	  	  	
+	  	  	function checkWsIsReady(){
+	  	  		var coloreyeStatus;
+	  	  		var interval = setInterval(function(){
+	  	  			console.log("ws ready state: " + coloreyeStatus);
+  	  				if($('#measureColorModal').is(':visible')){
+	  	  				coloreyeStatus = ws_coloreye.isReady;
+		  	  			if(coloreyeStatus === "false"){
+		  	  				$('#measureColorModal').modal('hide');
+		  	  				$("#errmsg").text('Connection timeout');
+		  	  				DisplayError();
+		  	  			}
+  	  				} else {
+  	  					clearInterval(interval);
+  	  				}
+	  	  		}, 1000);
 	  	  	}
 	  	  	
 	  	  

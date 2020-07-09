@@ -33,10 +33,8 @@
 			$(".whitecal").hide();
 			$(".blackcal").hide();
 			$(".greenmeas").hide();
-			$(".error").hide();
-			$(".calsuccess").hide();
-			$(".calincomplete").hide();
-			$(".done").hide();
+			$('#closeModal').hide();
+			$('#spectroCalModal').modal('show');
 		}
 
 		function GetCalSteps() {
@@ -62,6 +60,7 @@
 			$(".blackcal").hide();
 			$(".greenmeas").hide();
 			$(".whitecal").show();
+			$('#closeModal').show();
 		}
 
 		function CalibrateBlack() {
@@ -78,6 +77,7 @@
 			$(".whitecal").hide();
 			$(".greenmeas").hide();
 			$(".blackcal").show();
+			$('#closeModal').show();
 		}
 
 		function MeasureGreen() {
@@ -94,40 +94,39 @@
 			$(".whitecal").hide();
 			$(".blackcal").hide();
 			$(".greenmeas").show();
+			$('#closeModal').show();
 		}
 
 		function DisplayError() {
-			$('#spectroCalModal').modal().hide();
-			$('.modal-backdrop').remove();
+			$('#spectroCalModal').modal('hide');
 		  	console.log("DisplayError")
 		  	calibrate_step = "DisplayError";
 		  	
-			$(".calsuccess").hide();
-			$(".calincomplete").hide();
-			$(".error").show();
-			$(".done").show();
+			$(".calsuccess").addClass('d-none');
+			$(".calincomplete").addClass('d-none');
+			$(".error").removeClass('d-none');
+			$(".done").removeClass('d-none');
 		}
 			  	  	  	
 		function CalibrateSuccess() {
-			$('#spectroCalModal').modal().hide();
-			$('.modal-backdrop').remove();
+			$('#spectroCalModal').modal('hide');
 			console.log("CalibrateSuccess")
 		  	calibrate_step = "CalibrateSuccess";
 		  	
-			$(".calincomplete").hide();
-			$(".error").hide();
-			$(".calsuccess").show();
-			$(".done").show();
+			$(".calincomplete").addClass('d-none');
+			$(".error").addClass('d-none');
+			$(".calsuccess").removeClass('d-none');
+			$(".done").removeClass('d-none');
 		}
 		
 		function CalibrateIncomplete() {
 			console.log("CalibrateIncomplete")
 		  	calibrate_step = "CalibrateIncomplete";
 		  	
-			$(".calsuccess").hide();
-			$(".error").hide();
-			$(".calincomplete").show();
-			$(".done").show();
+			$(".calsuccess").addClass('d-none');
+			$(".error").addClass('d-none');
+			$(".calincomplete").removeClass('d-none');
+			$(".done").removeClass('d-none');
 		}
 		  	
 		function RecdMessage() {
@@ -187,8 +186,6 @@
 			
 			var cntr = 1;
 			
-			$('#spectroCalModal').modal().show();
-			
 			InitializeCalibrationScreen();
 
 			console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
@@ -232,9 +229,9 @@
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-6">
-						<h2 class="error">A Calibration Error has occurred:</h2>
-		 	            <h2 class="calsuccess">Successful Calibration</h2>
-		 	            <h2 class="calincomplete">Cancel Calibration?</h2>
+						<h2 class="error d-none">A Calibration Error has occurred:</h2>
+		 	            <h2 class="calsuccess d-none">Successful Calibration</h2>
+		 	            <h2 class="calincomplete d-none">Cancel Calibration?</h2>
 					</div>
 					<div class="col-sm-3"></div>
 				</div>
@@ -257,10 +254,10 @@
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-4">
-						<div class="calincomplete">
+						<div class="calincomplete d-none">
 							<s:submit class="btn btn-primary" id="calibrate" value="Calibrate" action="spectroCalibrateAction"></s:submit>
 						</div>
-						<div class="calsuccess">
+						<div class="calsuccess d-none">
 						<s:if test="measureColor">
 							<s:submit cssClass="btn btn-primary" value="Next" action="measureColorReturnAction"/>
 						</s:if>
@@ -270,20 +267,20 @@
 						</div>
 					</div>
 					<div class="col-sm-5">
-						<div class="done">
+						<div class="done d-none">
 							<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
 						</div>
 					</div>
 				</div>
 			</div>
 		</s:form>
-		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="spectroCalModal">
+		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="spectroCalModal" data-backdrop="static">
 		  <div class="modal-dialog modal-lg">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light clearfix">
 		        <h2 class="modal-title ml-3">Calibrate Color Eye</h2>
 		        <span class="dot d-none" id="calcrcl"></span>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CalibrateIncomplete()">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CalibrateIncomplete();">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
@@ -362,7 +359,7 @@
 				</div>
 		      </div>
 		      <div class="modal-footer">
-			       <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CalibrateIncomplete()">Close</button>
+			       <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal" onclick="CalibrateIncomplete();">Close</button>
 			  </div>
 		    </div>
 		  </div>
