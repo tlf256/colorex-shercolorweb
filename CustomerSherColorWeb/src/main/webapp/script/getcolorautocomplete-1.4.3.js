@@ -18,6 +18,8 @@ $(document).ready(function() {
 		minLength : 3,
 		delay : 500,
 		autoFocus : true,
+		// displays the autocomplete list above the textfield rather than below it
+		position: { my: "left bottom", at: "left top"},
 		source : function(request, response){
 			var colorNameOrId = encodeURIComponent(request.term);
 			//console.log("encoded partialColorNameOrId - " + colorNameOrId);
