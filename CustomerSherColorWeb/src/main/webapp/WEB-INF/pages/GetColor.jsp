@@ -41,6 +41,11 @@
 			background: #FFFF99;
 			cursor: pointer;
 			}
+		.ui-autocomplete {
+		    max-height: 300px;
+		    overflow-y: auto;
+		    overflow-x: hidden;
+		}
 		</style>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
