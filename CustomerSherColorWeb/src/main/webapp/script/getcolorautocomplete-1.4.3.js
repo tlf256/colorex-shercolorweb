@@ -18,6 +18,8 @@ $(document).ready(function() {
 		minLength : 3,
 		delay : 500,
 		autoFocus : true,
+		// displays the autocomplete list above the textfield if there isn't room for it below
+		position: { collision: "flip" },
 		source : function(request, response){
 			var colorNameOrId = encodeURIComponent(request.term);
 			//console.log("encoded partialColorNameOrId - " + colorNameOrId);
