@@ -160,9 +160,7 @@
 		  					if(data.sessionStatus === "expired"){
 		  	               		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 		  	            	} else{		  	                	
-		  	      				hexList = data.hexList;
-		  	                	//console.log(hexList);
-		  	                	
+		  	      				hexList = data.hexList;		  	                	
 		  	                	$('#loadMeasurementsButton').prop('disabled',false);
 		  			  			$('#loadMeasurementsButton').prop("title","Load new remote measurements.");
 
@@ -186,21 +184,22 @@
 	 		
 	 		var measurementTable =  $('#measurement_table').DataTable();
 			var dates = [];
-			///console.log("NUMBER OF ROWS: " + measurementTable.data().count()/9);
 			for (index = 0; index < measurementTable.data().count()/9; index++){
 				dates.push(measurementTable.row(index).data()[2]);
-  				///console.log("DATE AT INDEX " + index + ": " + dates[index]);
 			}
   			dateList = dates;
-  			///console.log("All DATES: " + dateList);
 			var isDupe = false;
 		  	new_measurements_table = $('#new_spectro_measurements_table')
 		  	.DataTable(
 		  		{
-		  			"scrollY" : "500px",
+		  			"emptyTable" : "No measurements available",
+		  			"scrollY" : '50vh',
 		  			scrollCollapse : true,
 		  			data : measurementsJson,
-		  			dom : 'rt',
+		  			dom: 'ifBrtp',
+		  			"pagingType": "full",
+		  			"scrollX": true,
+		  			"paginate": false,
 		  			columns : [
 		  				{
 		  					//data: 'addMeasurement'
@@ -227,9 +226,7 @@
 		  					//rgbList Chip
 		  					"render" : function(
 		  							data, type, row, meta) {
-		  							//return '<span style="width: 40px; height: 40px; border-radius: 50%; border: .5px solid black; float: left; "></span>';
 		  							return '<span class="chip p-0" style="background:' + rgbList[meta.row] + '"></span>';
-		  							//return '<span></span>';
 		  					}
 		  				},
 		  				{
@@ -251,7 +248,6 @@
 		  					"render" : function(
 		  							data, type, row,meta) {
 		  						var dateTime = moment(row.sampleDateTime).format('DD/MMM/YY hh:mm:ss A');
-		  						
 		  							return dateTime ;
 		  					}
 		  				},

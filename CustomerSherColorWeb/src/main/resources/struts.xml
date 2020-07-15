@@ -1102,7 +1102,7 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<!-- 06/24/2019 BXW: New action for when user clicks on the Update Remote Measurements Color Eye menu item -->
+		<!-- 06/24/2019 BXW: New actions for managing the stored spectro measurements -->
 		<action name="spectroManageStoredMeasurementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1149,6 +1149,14 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<!-- 07/13/2020 - BXW: New actions for verifying/setting the default spectro settings -->
+		<action name="spectroVerifyDefaultSettingsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.VerifyDefaultSpectroSettingsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/VerifyDefaultSpectroSettings.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 	</package>

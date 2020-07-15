@@ -988,10 +988,9 @@
 	<%-- 									<li><a href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog'></span> Configure</a></li> --%>
 									    <li id="spectroCalibrate"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCalibrateAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-bullseye pr-1'></span> Calibrate</a></li>
 										
-										<!-- 6/24/2019 BXW: This menu item has been added to incorporate new Ci62 functionality, may need to update the logic
-									    					behind when this item is shown if a user has never configured a Ci62 in the past  -->
+										<!-- 6/24/2019 BXW: This menu item has been added to incorporate new Ci62 functionality, -->
 									    <li id="spectroManageStoredMeasurements" class="d-none"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroManageStoredMeasurementsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-edit'></span>  Manage Remote Measurements</a></li>
-										
+										<li id="spectroVerifyDefaultSettings"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroVerifyDefaultSettingsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-check-square-o'></span>  Verify Default Spectro Settings</a></li>
 										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> Color Eye Information</a></li>
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
 				        			</ul>
@@ -1327,12 +1326,14 @@
 				if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
 				$('li#spectroCalibrate').show();
 				$('li#spectroGetInfo').show();
+				$('li#spectroVerifyDefaultSettings').show();
 			} else {
 				console.log("localhostSpectroConfig is null");
 				$('#coloreyeNotify').hide(); 
 				if(!$('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').addClass('d-none');}
 				$('li#spectroCalibrate').hide();
 				$('li#spectroGetInfo').hide();
+				$('li#spectroVerifyDefaultSettings').hide;
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
 			//PSCWEB-330 CSW - Color Eye Status does not display after configuration - BKP - added
