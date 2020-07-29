@@ -222,36 +222,44 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					}
 				}
 				
-				List<LoginTrans> resultLoginList = new ArrayList<LoginTrans>();
-				
-				if(reqObj.getLoginList().size() == editLoginList.size()) {
-					int index = 0;
-					// check if data in edited list and 
-					// original list match
-					for(LoginTrans lt1 : editLoginList) {
-						LoginTrans lt2 = reqObj.getLoginList().get(index);
-						if(!lt1.getKeyField().equals(lt2.getKeyField()) || !lt1.getMasterAcctName().equals(lt2.getMasterAcctName())
-								|| !lt1.getAcctComment().equals(lt2.getAcctComment())) {
-							resultLoginList.add(lt1);
+				if(reqObj.getLoginList() != null) {
+					// customer had login ids previously set
+					List<LoginTrans> resultLoginList = new ArrayList<LoginTrans>();
+					
+					if(reqObj.getLoginList().size() == editLoginList.size()) {
+						int index = 0;
+						// check if data in edited list and 
+						// original list match
+						for(LoginTrans lt1 : editLoginList) {
+							LoginTrans lt2 = reqObj.getLoginList().get(index);
+							if(!lt1.getKeyField().equals(lt2.getKeyField()) || !lt1.getMasterAcctName().equals(lt2.getMasterAcctName())
+									|| !lt1.getAcctComment().equals(lt2.getAcctComment())) {
+								resultLoginList.add(lt1);
+							}
+							index++;
 						}
-						index++;
+					} else if(reqObj.getLoginList().size() > editLoginList.size()) {
+						reqObj.setLoginDeleted(true);
+						reqObj.setLoginList(editLoginList);
+					} else if(reqObj.getLoginList().size() < editLoginList.size()) {
+						reqObj.setLoginAdded(true);
+						reqObj.setLoginList(editLoginList);
 					}
-				} else if(reqObj.getLoginList().size() > editLoginList.size()) {
-					reqObj.setLoginDeleted(true);
-					reqObj.setLoginList(editLoginList);
-				} else if(reqObj.getLoginList().size() < editLoginList.size()) {
-					reqObj.setLoginAdded(true);
+					
+					if(!resultLoginList.isEmpty()) {
+						reqObj.setLoginDeleted(true);
+						reqObj.setLoginList(editLoginList);
+						reqObj.setLoginEdited(true);
+					} else {
+						if(!reqObj.isNewCustomer() && !reqObj.isLoginAdded() && !reqObj.isLoginDeleted()) {
+							reqObj.setLoginUnchanged(true);
+						}
+					}
+				} else {
+					// customer did not have any previous login ids set
 					reqObj.setLoginList(editLoginList);
 				}
 				
-				if(!resultLoginList.isEmpty()) {
-					reqObj.setLoginList(editLoginList);
-					reqObj.setLoginEdited(true);
-				} else {
-					if(!reqObj.isNewCustomer() && !reqObj.isLoginAdded() && !reqObj.isLoginDeleted()) {
-						reqObj.setLoginUnchanged(true);
-					}
-				}
 				
 			} else {
 				reqObj.setLoginUnchanged(true);
