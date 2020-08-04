@@ -83,28 +83,41 @@
 	    }
 	    
 	    function SetAllToMatch() {
+	    	var transformMode = settingsTable.find("#defaultTransformMode").text();
+	    	var calTimeOut = settingsTable.find("#defaultCalTimeOut").text();
+	    	var measTrigMode = settingsTable.find("#defaultMeasTrigMode").text();
+	    	var reflValueMode = settingsTable.find("#defaultReflValueMode").text();
+	    	var beeperVolume = settingsTable.find("#defaultBeeperVolume").text();
+	    	var guiMode = settingsTable.find("#defaultGUIMode").text();
+	    	var sampleStorage = settingsTable.find("#defaultSampleStorage").text();
 	    	
 	    	settingsTable.find("#matchTransformMode").removeClass(notMatch);
 	    	settingsTable.find("#matchTransformMode").addClass(match);
+	    	settingsTable.find("#spectroTransformMode").text(transformMode);
 	    	
 	    	settingsTable.find("#matchCalTimeOut").removeClass(notMatch);
 			settingsTable.find("#matchCalTimeOut").addClass(match);
-	    	
+			settingsTable.find("#spectroCalTimeOut").text(calTimeOut);
+			
 			settingsTable.find("#matchMeasTrigMode").removeClass(notMatch);
 			settingsTable.find("#matchMeasTrigMode").addClass(match);
-	    	
+			settingsTable.find("#spectroMeasTrigMode").text(measTrigMode);
+			
 			settingsTable.find("#matchReflValueMode").removeClass(notMatch);
 			settingsTable.find("#matchReflValueMode").addClass(match);
-	    	
+			settingsTable.find("#spectroReflValueMode").text(reflValueMode);
+
 			settingsTable.find("#matchBeeperVolume").removeClass(notMatch);
 			settingsTable.find("#matchBeeperVolume").addClass(match);
-	    	
+			settingsTable.find("#spectroBeeperVolume").text(beeperVolume);
+			
 			settingsTable.find("#matchGUIMode").removeClass(notMatch);
 			settingsTable.find("#matchGUIMode").addClass(match);
-	    	
+			settingsTable.find("#spectroGUIMode").text(guiMode);
+			
 			settingsTable.find("#matchSampleStorage").removeClass(notMatch);
 			settingsTable.find("#matchSampleStorage").addClass(match);
-		    
+			settingsTable.find("#spectroSampleStorage").text(sampleStorage);
 			
 	    }
 	    
