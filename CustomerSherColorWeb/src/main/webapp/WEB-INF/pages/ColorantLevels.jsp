@@ -63,7 +63,7 @@
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-8 col-6">
 								<div class="alert alert-warning">
-								  <strong>Note: </strong>Shake the colorant for 30 seconds. Do not fill any canister past the top of it's agitator paddle.
+								  <strong>Note: </strong>Shake the colorant for 30 seconds. Do not fill any canister past the top of its agitator paddle.
 								</div>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3 text-center">

@@ -71,7 +71,7 @@
 					<div class="col-sm-2">
 					</div>
 					<div class="col-sm-8">
-						<h2>2.  Double click on the setup.exe to install the SWDeviceHandler as a service.</h2>
+						<h2>2.  Double click on the SWDHSetup.exe to install the SWDeviceHandler as a service.</h2>
 					</div>
 				</div>
 				<div class="row">
