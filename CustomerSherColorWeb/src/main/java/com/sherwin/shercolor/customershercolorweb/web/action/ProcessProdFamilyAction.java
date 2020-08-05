@@ -51,15 +51,10 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	
 	public String execute() {
 		//wherein we formulate!
-		String selectedProdNbr = "";
+		String selectedProdNbr = selectedProdFamily;
 
-		
 		try {
-			//break up the requested color base
 			//logger.debug("in ProcessProdFamilyAction Execute");
-			String[] selectedSplit = new String[3];
-			selectedSplit = selectedProdFamily.split(Character.toString((char) 31));
-			selectedProdNbr = selectedSplit[1].trim();
 			//logger.debug("selectedProdNbr=" + selectedProdNbr);
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -164,11 +159,11 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 						theComment = "Best Performance";
 						bothFormulas.add(item);
 					}
-					theValue = item.getProdNbr() + " " 
-							+ theQuality  + " "
-							+ theBase + " " 
-							+ dffmt.format(item.getAverageDeltaE()) + " " 
-							+ item.getContrastRatioThick() + " "
+					theValue = item.getProdNbr() + "-" 
+							+ theQuality  + "-"
+							+ theBase + "-" 
+							+ dffmt.format(item.getAverageDeltaE()) + "-" 
+							+ item.getContrastRatioThick() + "-"
 							+ theComment;
 					theKey = hashCntr + Character.toString((char) 31)  + item.getProdNbr() + Character.toString((char) 31) + " " 
 							+ theQuality + Character.toString((char) 31) + " "
