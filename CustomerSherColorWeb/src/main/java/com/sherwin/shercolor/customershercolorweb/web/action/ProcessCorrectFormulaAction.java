@@ -187,7 +187,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			retVal = SUCCESS;
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			errorMessage = "Exepction thrown!, Percent Addition Calculation Failed";
+			errorMessage = "Exception thrown! Percent Addition Calculation Failed";
 			retVal = ERROR;
 		}
 
@@ -235,7 +235,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 							ingredientList.add(addMe);
 						} else {
 							retVal = ERROR;
-							errorMessage = "Bad Colorant Increments!, Colorant Increment Conversion Failed.";
+							errorMessage = "Bad Colorant Increments! Colorant Increment Conversion Failed.";
 						}
 					} // end for each correctionList
 					if(retVal==null || !retVal.equals(ERROR)){
@@ -266,7 +266,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 						} else {
 							logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
-							errorMessage = "No Colorants!, Colorant Increment Conversion Failed.";
+							errorMessage = "No Colorants! Colorant Increment Conversion Failed.";
 							retVal = ERROR;
 						}
 						retVal = SUCCESS;
@@ -275,13 +275,13 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 				} else {
 					// empty list passed in
 					logger.debug("inside convertFormulaToDispenseItems: correctionList is empty");
-					errorMessage = "No Colorants!, Colorant Increment Conversion Failed.";
+					errorMessage = "No Colorants! Colorant Increment Conversion Failed.";
 					retVal = ERROR;
 				}
 			} else {
 				// null list passed in
 				logger.debug("inside convertFormulaToDispenseItems: correctionList is null");
-				errorMessage = "No Colorants!, Colorant Increment Conversion Failed.";
+				errorMessage = "No Colorants! Colorant Increment Conversion Failed.";
 				retVal = ERROR;
 			}
 
@@ -290,7 +290,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
-			errorMessage = "Exepction thrown!, Colorant Increment Conversion Failed.";
+			errorMessage = "Exception thrown! Colorant Increment Conversion Failed.";
 		}
 
 		return retVal;
@@ -402,7 +402,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
-			errorMessage = "Exepction thrown, Write Failed";
+			errorMessage = "Exception thrown, Write Failed";
 		}
 
 		return retVal;
@@ -439,7 +439,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			}
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			errorMessage = "Exepction thrown!, Post Container as Accepted Failed";
+			errorMessage = "Exception thrown! Post Container as Accepted Failed";
 			retVal = ERROR;
 		}
 

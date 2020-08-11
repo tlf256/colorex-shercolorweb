@@ -857,6 +857,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="stampSessionSpectroAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroUtilityAction" method="stampSession">
 			<result name="loginRedirect" type="redirectAction">
