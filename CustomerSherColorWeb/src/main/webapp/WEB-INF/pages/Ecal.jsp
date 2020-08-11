@@ -165,6 +165,12 @@
 		var curDate = new Date();
 	
 		sendTinterEvent(reqGuid, curDate, return_message, null); 
+		// update canister layout if tinter is corob custom
+		if(return_message.configuration != null && return_message.configuration.model != null 
+				&& return_message.configuration.model.includes("COROB CUSTOM")){
+			updateColorantsTxt(reqGuid, return_message, false, null);
+		}
+		
 		if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 			// Detected and no errors from tinter 
             waitForShowAndHide("#initTinterInProgressModal");
