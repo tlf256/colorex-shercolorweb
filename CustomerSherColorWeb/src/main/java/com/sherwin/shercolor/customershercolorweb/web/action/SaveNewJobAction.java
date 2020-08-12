@@ -161,18 +161,25 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	}
 	
 	public String bumpDispense(){
-		// add 1 to quantityDispensed and put back in map for execute to do it's thing
-		logger.debug("inside action to bumpDispense");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		qtyDispensed = reqObj.getQuantityDispensed();   //for ajax call to read
-		qtyDispensed++;
-		logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
-		reqObj.setQuantityDispensed(qtyDispensed);
-		sessionMap.put(reqGuid, reqObj);
+		String retVal = null;
+		try {
+			// add 1 to quantityDispensed and put back in map for execute to do it's thing
+			logger.debug("inside action to bumpDispense");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			qtyDispensed = reqObj.getQuantityDispensed();   //for ajax call to read
+			qtyDispensed++;
+			logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
+			reqObj.setQuantityDispensed(qtyDispensed);
+			sessionMap.put(reqGuid, reqObj);
 
-		logger.debug("inside action about to execute");
-		String retVal = this.execute();
-		logger.debug("inside action back from execute");
+			logger.debug("inside action about to execute");
+			retVal = this.execute();
+			logger.debug("inside action back from execute");
+		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			e.printStackTrace();
+			retVal = ERROR;
+		}
 		
 		return retVal;
 	}

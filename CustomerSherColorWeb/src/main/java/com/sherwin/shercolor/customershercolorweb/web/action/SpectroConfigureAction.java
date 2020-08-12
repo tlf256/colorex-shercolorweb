@@ -129,7 +129,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 				logger.debug("set the spectro object");
 			}
 			else {
-				addActionError("Invalid Color Eye data - customer, model type or serial number is black");
+				addActionError("Invalid Color Eye data - customer, model type or serial number is blank");
 				return ERROR;
 			}
 

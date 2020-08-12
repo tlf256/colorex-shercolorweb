@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Enter Job Info</title>
+		<title>SWDeviceHandler Troubleshooting</title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">

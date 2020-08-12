@@ -857,6 +857,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="stampSessionSpectroAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroUtilityAction" method="stampSession">
 			<result name="loginRedirect" type="redirectAction">
@@ -910,6 +911,16 @@
 			<result name="error" type="json"></result>
 		</action>
 		<action name="logTinterEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterEventAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateColorantsTxtAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateColorantsTxtAction" method="execute">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
 			<result name="loginRedirect" type="redirectAction">

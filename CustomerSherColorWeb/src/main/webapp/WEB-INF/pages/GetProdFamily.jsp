@@ -18,9 +18,19 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.3.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/BasicFieldValidator.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+		<style type="text/css">
+			.table-hover tbody tr:hover{
+				background: #FFFF99;
+				cursor: pointer;
+			}
+		</style>
 	</head>
 	
 	<body>
@@ -34,141 +44,138 @@
 				<div class="col-sm-6">
 				</div>
 				<div class="col-sm-3">
-
 				</div>
 			</div>
+			<br>
 			<br>
 			<div class="row">
 				<div class="col-sm-2">
 				</div>
 			</div>
-
-	
 			<s:form id="GetProdFamily" action="GetProductFamilyAction" validate="true" focusElement="prodFambly" theme="bootstrap">
-			<div class="row">
-						<div class="col-sm-2">
-							<s:hidden name="reqGuid" value="%{reqGuid}"/>
-						</div>
-	            		<div class="col-sm-4">
-	            			<s:select id="prodFambly" label="Better Performance Found in Different Base" 
-	            				headerKey="-1" headerValue="Confirm Product"
-								list="colorProdFamilies" name="selectedProdFamily"
-								autofocus="autofocus" required="required" />
-						</div>
+				<div class="row">
+					<div class="col-sm-2">
+						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+						<s:hidden id="selectedProdFamily" name="selectedProdFamily" />
+					</div>
+					<div class="col-sm-2">
+						<s:set var="reqGuid" value="reqGuid" />
+					</div>
 				</div>
 				<div class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-						</div>
+					<div class="col-sm-1">
+					</div>
+					<div class="col-sm-10">
+						<h5>Better Performance Found in Different Base</h5>
+					</div>
 				</div>
-				<div id="frstFormula" style="display: none;">
-					<div  class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).clrntSysId}*COLORANT</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[0]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[1]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[2]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[3]}</Strong>
-						</div>
-					</div>
-					<s:iterator value="bothFormulas.get(0).ingredients">	
-						<div class="row">
-							<div class="col-sm-2">
-							</div>
-							<div class="col-sm-2">
-								<s:property value="tintSysId"/>-<s:property value="name"/> 
-							</div>
-							<s:iterator value="increment" status="stat">
-								<div class="col-sm-1" align="center">
-									<s:property value="top"/>
-								</div>
-							</s:iterator>
-							</div>
-				    </s:iterator>
-			</div>
-			<div id="scndFormula" style="display: none;">
 				<div class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).clrntSysId}*COLORANT</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[0]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[1]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[2]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[3]}</Strong>
-						</div>
+					<div class="col-sm-1">
 					</div>
-	
-	    			<s:iterator value="bothFormulas.get(1).ingredients">	
-						<div class="row">
-							<div class="col-sm-2">
-							</div>
-							<div class="col-sm-2">
-								<s:property value="tintSysId"/>-<s:property value="name"/> 
-							</div>
-							<s:iterator value="increment" status="stat">
-								<div class="col-sm-1" align="center">
-									<s:property value="top"/>
-								</div>
-							</s:iterator>
-							</div>
-				    </s:iterator>
+					<div class="col-sm-10">
+					</div>
 				</div>
 				<br>
+				<div id="prodFamily" class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+					<table id="prodFamily_table" class="table table-striped table-bordered">
+						<caption style="caption-side:top;">Choose Product</caption>
+						<thead>
+							<tr>
+								<th></th>
+								<th>Product</th>
+								<th>Quality</th>
+								<th>Base</th>
+								<th>Delta-E</th>
+								<th>Contrast Ratio</th>
+								<th>Comment</th>
+								<th>Formula</th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator var="set" value="colorProdFamilies.entrySet()" status="i">
+								<tr class="border-bottom-1 border-dark">
+									<td><input type="radio" class="prodFamRadio" name="prodFamily" /></td>
+									<s:iterator var="item" value="#set.value.split('-')">
+										<td class="prodDetail">
+											<s:property />
+										</td>
+									</s:iterator>
+									<td>
+										<s:iterator value="#session[reqGuid].formResponse.getFormulas().get(#i.index)">
+											<div class="row">
+												<div class="col-sm-5">
+													<strong><s:property value="clrntSysId"/>*COLORANT</strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[0]"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[1]"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[2]"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[3]"/></strong>
+												</div>
+											</div>
+										</s:iterator>
+										<s:iterator value="bothFormulas.get(#i.index).ingredients" status="i">
+											<div class="row">
+												<div class="col-sm-5">
+													<s:property value="tintSysId"/>-<s:property value="name"/> 
+												</div>
+												<s:iterator value="increment" status="stat">
+													<div class="col-sm-1" align="center">
+														<s:property value="top"/>
+													</div>
+												</s:iterator>
+											</div>
+										</s:iterator>
+									</td>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
 				<br>
 				<div class="row">
-						<div class="col-sm-2">
-						</div>	
-						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="Next" action="prodFamilyUserNextAction"/>
-						</div>
-						<div class="col-sm-2">	
-						</div>
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
-			    		</div>
+					<div class="col-sm-1">
+					</div>	
+					<div class="col-sm-10">
+						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="Next" action="prodFamilyUserNextAction"/>
+		    			<s:submit cssClass="btn btn-secondary pull-right mr-3" value="Cancel" action="userCancelAction"/>
+		    		</div>
 		    	</div>
 			</s:form>
+			<br>
 			<script>
 			$(document).ready(function() {
-				var firstFormula = '<s:property value="firstFormula" escapeHtml="true"/>';
-				$('#prodFambly').on('change',function(){
-				    if( $(this).val()===firstFormula){
-					    $("#frstFormula").show()
-					    $("#scndFormula").hide()
-				    }
-				    else{
-				    	if( $(this).val()===-1){
-						    $("#frstFormula").hide()
-						    $("#scndFormula").hide()
-				    	}
-				    	else {
-						    $("#frstFormula").hide()
-						    $("#scndFormula").show()
-				    	}
-				    }
-				});
+				var prodTable = $('#prodFamily_table').DataTable({
+					dom: 'rtp',
+			        "language": {
+			        	"emptyTable" : "No products found"
+			        },
+			        "ordering": true,
+			        "order": [ 5, 'asc' ],
+			        "paginate": false,
+			        "pagingType": "full",
+			    });
+				
+				$('#prodFamily_table').addClass('table-hover');
+				
+				$('#prodFamily_table tbody').on('click','tr',function(event){
+			    	var prodNbr = prodTable.row(this).data()[1];
+			    	var index = prodTable.row(this).index();
+			    	console.log("row index " + index);
+			    	console.log("prod number " + prodNbr);
+			    	$("#selectedProdFamily").val(prodNbr);
+			    	$(".prodFamRadio:eq("+index+")").prop('checked', true);
+			    });
 			});
 
 			</script>
