@@ -338,19 +338,9 @@
 			  	var rowIds = $('#new_spectro_measurements_table :input[type="hidden"]').map(function(){return $(this).val();}).get();
 			  	var textFieldIndex = 0;
 			  	for (i = 0; i < measurementList.length; i++){
-			  		console.log("==============================================================");
-			  		console.log("CURRENT INDEX: " + i);
-			  		console.log("ROW ID: " + rowIds[i]);
-			  		console.log("INPUT CHECKBOX: " + inputCheckbox[i]);
-			  		console.log("SAMPLE NAME: " + inputTextFields[textFieldIndex]);
-			  		console.log("SAMPLE DESCR: " + inputTextFields[textFieldIndex + 1]);
-			  		console.log("==============================================================");
 			  		measurementList[rowIds[i]].addMeasurement = inputCheckbox[i];
 			  		measurementList[rowIds[i]].sampleName = inputTextFields[textFieldIndex];
 			  		measurementList[rowIds[i]].sampleDescr = inputTextFields[textFieldIndex + 1];
-			  		//measurementList[i].addMeasurement = inputCheckbox[i];
-			  		//measurementList[i].sampleName = inputTextFields[textFieldIndex + 1];
-			  		//measurementList[i].sampleDescr = inputTextFields[textFieldIndex + 1];
 			  		textFieldIndex = textFieldIndex + 2;
 			  	}
 			  	
