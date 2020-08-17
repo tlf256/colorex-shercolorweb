@@ -153,7 +153,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 			retVal = INPUT;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 
@@ -186,7 +186,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			errorMessage = "Exception thrown! Percent Addition Calculation Failed";
 			retVal = ERROR;
 		}
@@ -288,7 +288,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 			errorMessage = "Exception thrown! Colorant Increment Conversion Failed.";
 		}
@@ -400,7 +400,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			}
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 			errorMessage = "Exception thrown, Write Failed";
 		}
@@ -438,7 +438,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 				errorMessage = "Missing Status, Post Container as Accepted Failed";
 			}
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			errorMessage = "Exception thrown! Post Container as Accepted Failed";
 			retVal = ERROR;
 		}
