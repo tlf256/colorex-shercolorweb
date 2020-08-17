@@ -135,11 +135,11 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			}
 
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error(he.getMessage() + ": ", he);
 			he.printStackTrace();
 			retVal = ERROR;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -176,7 +176,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			retVal = this.execute();
 			logger.debug("inside action back from execute");
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -186,87 +186,91 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	
 	public String mergeCorrWithStartForm(){
 		String retVal;
-
-		logger.debug("Inside mergeCorrWithStartForm");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		//last container in the correction process, merge this cycle with current formula
-		FormulaInfo currentFormula = reqObj.getDisplayFormula();
-		
-		//get dispensed correction formula for the cycle
-		List<CustWebTranCorr> acceptedCorrThisCycle = tranHistoryService.getAcceptedCorrectionsForCycle(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(),cycle);
-
-		//Build accepted formula, may be several steps
-		int prevAcceptedContNbr = 0;
-		List<FormulaIngredient> acceptedFormula = new ArrayList<FormulaIngredient>();
-		for(CustWebTranCorr acceptedCorr : acceptedCorrThisCycle){
-			if(acceptedCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
-				if(acceptedCorr.getUnitNbr()!=prevAcceptedContNbr) acceptedFormula.clear();
-				List<FormulaIngredient> stepIngredientList = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(acceptedCorr);
-				for(FormulaIngredient addIngr : stepIngredientList){
-					logger.debug("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
+		try {
+			logger.debug("Inside mergeCorrWithStartForm");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			//last container in the correction process, merge this cycle with current formula
+			FormulaInfo currentFormula = reqObj.getDisplayFormula();
+			
+			//get dispensed correction formula for the cycle
+			List<CustWebTranCorr> acceptedCorrThisCycle = tranHistoryService.getAcceptedCorrectionsForCycle(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(),cycle);
+	
+			//Build accepted formula, may be several steps
+			int prevAcceptedContNbr = 0;
+			List<FormulaIngredient> acceptedFormula = new ArrayList<FormulaIngredient>();
+			for(CustWebTranCorr acceptedCorr : acceptedCorrThisCycle){
+				if(acceptedCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
+					if(acceptedCorr.getUnitNbr()!=prevAcceptedContNbr) acceptedFormula.clear();
+					List<FormulaIngredient> stepIngredientList = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(acceptedCorr);
+					for(FormulaIngredient addIngr : stepIngredientList){
+						logger.debug("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
+						boolean merged = false;
+						for(FormulaIngredient totaledIngr : acceptedFormula){
+							if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
+								logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
+								totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
+								merged = true;
+							}
+						}
+						if(!merged) acceptedFormula.add(addIngr);
+					}
+					prevAcceptedContNbr = acceptedCorr.getUnitNbr();
+				}
+			}
+			
+			//Build accepted formula with current formula
+			if(acceptedFormula.size()>0) {
+				List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
+				for(FormulaIngredient addIngr : acceptedFormula){
+					logger.debug("looking to add " + addIngr.getTintSysId() + " to currentFormula");
 					boolean merged = false;
-					for(FormulaIngredient totaledIngr : acceptedFormula){
+					for(FormulaIngredient totaledIngr : currentIngredients){
 						if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
 							logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
 							totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
 							merged = true;
 						}
 					}
-					if(!merged) acceptedFormula.add(addIngr);
+					if(!merged) currentIngredients.add(addIngr);
 				}
-				prevAcceptedContNbr = acceptedCorr.getUnitNbr();
-			}
-		}
-		
-		//Build accepted formula with current formula
-		if(acceptedFormula.size()>0) {
-			List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
-			for(FormulaIngredient addIngr : acceptedFormula){
-				logger.debug("looking to add " + addIngr.getTintSysId() + " to currentFormula");
-				boolean merged = false;
-				for(FormulaIngredient totaledIngr : currentIngredients){
-					if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-						logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
-						totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
-						merged = true;
-					}
-				}
-				if(!merged) currentIngredients.add(addIngr);
-			}
-			formulationService.convertShotsToIncr(currentIngredients);
-			currentFormula.setIngredients(currentIngredients);
-		}
-		
-		//Update DB (tranCorr) set merged to true
-		SwMessage updateResult = tranHistoryService.updateTranCorrectionMerged(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle);
-		if(updateResult==null){
-			if(!reqObj.getColorComp().equalsIgnoreCase("CUSTOM")){
-				// change to custom and replace color id with word Manual
-				reqObj.setColorComp("CUSTOM");
-				reqObj.setColorID("MANUAL");
-				// empty out SW color match if it was set
-				reqObj.setClosestSwColorId("");
-				reqObj.setClosestSwColorName("");
-			}
-			if(reqObj.isVinylExclude()){
-				currentFormula.setSource("MANV");
-				currentFormula.setSourceDescr("CUSTOM MANUAL VINYL SAFE MATCH");
-			} else {
-				currentFormula.setSource("MAN");
-				currentFormula.setSourceDescr("CUSTOM MANUAL MATCH");
+				formulationService.convertShotsToIncr(currentIngredients);
+				currentFormula.setIngredients(currentIngredients);
 			}
 			
-			//Stuff it back in reqObj
-			reqObj.setDisplayFormula(currentFormula);
-			sessionMap.put(reqGuid, reqObj);
-			//write it to DB (tran) by triggering savecorrmerge
-			logger.debug("inside saveTranMergeWithCorr about to execute");
-			retVal = this.execute();
-			logger.debug("inside saveTranMergeWithCorr back from execute");
-		} else {
+			//Update DB (tranCorr) set merged to true
+			SwMessage updateResult = tranHistoryService.updateTranCorrectionMerged(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle);
+			if(updateResult==null){
+				if(!reqObj.getColorComp().equalsIgnoreCase("CUSTOM")){
+					// change to custom and replace color id with word Manual
+					reqObj.setColorComp("CUSTOM");
+					reqObj.setColorID("MANUAL");
+					// empty out SW color match if it was set
+					reqObj.setClosestSwColorId("");
+					reqObj.setClosestSwColorName("");
+				}
+				if(reqObj.isVinylExclude()){
+					currentFormula.setSource("MANV");
+					currentFormula.setSourceDescr("CUSTOM MANUAL VINYL SAFE MATCH");
+				} else {
+					currentFormula.setSource("MAN");
+					currentFormula.setSourceDescr("CUSTOM MANUAL MATCH");
+				}
+				
+				//Stuff it back in reqObj
+				reqObj.setDisplayFormula(currentFormula);
+				sessionMap.put(reqGuid, reqObj);
+				//write it to DB (tran) by triggering savecorrmerge
+				logger.debug("inside saveTranMergeWithCorr about to execute");
+				retVal = this.execute();
+				logger.debug("inside saveTranMergeWithCorr back from execute");
+			} else {
+				retVal = ERROR;
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+			e.printStackTrace();
 			retVal = ERROR;
 		}
-		
 		return retVal;
 		
 	}
