@@ -167,7 +167,8 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 					&& this.getNewtinter().getSerialNbr().length()>1){
 				logger.info("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
 				logger.debug("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
-					if(tinterService.conditionalSaveColorantsTxt(colorantsTxtList) < 0){
+					// create records if they don't already exist, and colorant code may be different than expected because of layout update
+					if(tinterService.conditionalSaveColorantsTxtByPosition(colorantsTxtList) < 0){
 						//save if new customer id otherwise do nothing.  If error return error
 						addActionError("Config not complete.  Critical DB error saving colorants txt.  Please try again.  Call support if this persists.");
 						return ERROR;
