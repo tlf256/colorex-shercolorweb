@@ -268,6 +268,12 @@
 		  				},
 		  				{
 		  					data: 'spectroSerialNbr'
+		  				},
+		  				{
+		  					"render" : function(
+		  							data, type, row,meta) {
+		  						return '<input type="hidden" class="rowId" name="rowId" style="display:none" value="' + meta.row + '">';
+		  					}
 		  				}
 		  			]
 		  		});
@@ -329,12 +335,12 @@
 		  		
 				var inputCheckbox = $('#new_spectro_measurements_table :input[type="checkbox"]').map(function(){return $(this).prop('checked');}).get();
 			  	var inputTextFields = $('#new_spectro_measurements_table :text').map(function(){return $(this).val();}).get();
+			  	var rowIds = $('#new_spectro_measurements_table :input[type="hidden"]').map(function(){return $(this).val();}).get();
 			  	var textFieldIndex = 0;
 			  	for (i = 0; i < measurementList.length; i++){
-			  		
-			  		measurementList[i].addMeasurement = inputCheckbox[i];
-			  		measurementList[i].sampleName = inputTextFields[textFieldIndex];
-			  		measurementList[i].sampleDescr = inputTextFields[textFieldIndex + 1];
+			  		measurementList[rowIds[i]].addMeasurement = inputCheckbox[i];
+			  		measurementList[rowIds[i]].sampleName = inputTextFields[textFieldIndex];
+			  		measurementList[rowIds[i]].sampleDescr = inputTextFields[textFieldIndex + 1];
 			  		textFieldIndex = textFieldIndex + 2;
 			  	}
 			  	
@@ -584,6 +590,7 @@
 										<th>Description</th>
 										<th>Spectro Model</th>
 										<th>Spectro Serial Number</th>
+										<th style="display:none">
 									</tr>
 								</thead>
 								<tbody></tbody>

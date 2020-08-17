@@ -920,6 +920,16 @@
 			<result name="success" type="json"></result>
 			<result name="error" type="json"></result>
 		</action>
+		<action name="updateColorantsTxtAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateColorantsTxtAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
 		<action name="getNozzleVideoAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterVideoAction" method="getCleanNozzle">
 			<result name="success" type="stream">
 				<param name="contentType">${vidContentType}</param>
