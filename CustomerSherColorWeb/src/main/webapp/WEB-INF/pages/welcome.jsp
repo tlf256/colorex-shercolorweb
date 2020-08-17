@@ -206,7 +206,12 @@
 		}
 
 		function detectTinter(){
-			$("#initTinterInProgressModal").modal('show');
+			// show layout update progress modal if the call is a result of choosing Update Layout in menu
+			if (layoutUpdateChosen){
+				$("#layoutUpdateInProgressModal").modal('show');
+			} else {
+				$("#initTinterInProgressModal").modal('show');
+			}
 			rotateIcon();
 			var cmd = "Detect";
 			var shotList = null;
@@ -217,7 +222,6 @@
 	    	ws_tinter.send(json);
 		}
 		function AfterDetectTinterGetStatus(){
-			;
 			var cmd = "InitStatus";
 			$("#initTinterInProgressModal").modal('show');
 			rotateIcon();
@@ -361,7 +365,9 @@
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			sendTinterEvent(myGuid, curDate, return_message, null); 
-			waitForShowAndHide('#initTinterInProgressModal');
+			// hide whichever in progress modal was shown when detect command went out
+			$('#initTinterInProgressModal').modal('hide');
+			$('#layoutUpdateInProgressModal').modal('hide');
 			
 			/* if tinter is corob custom, update canister layout. If user chose this through the menu, 
 			show layout modal and reset flag, otherwise show any detect/init errors */
@@ -412,7 +418,7 @@
 			// build canister layout graphic 
 			data.tinterCanisterList.forEach(function(item){
 				// clone dummy div, update info and add to modal
-				var $clone = $("#progress-0").removeClass('d-none').clone();
+				var $clone = $("#progress-0").clone().removeClass('d-none');
 				$clone.attr("id","progress-" + count);
 				var $bar = $clone.children(".progress-bar");
 				$bar.attr("id","bar-" + count);
@@ -453,7 +459,7 @@
 				$clone.appendTo(".progress-wrapper");
 				count++;
 			})
-			// show modal with updated canister layout
+			// show the updated canister layout graphic
 			$("#updatedCanisterLayoutModal").modal('show');
 		}
 		
@@ -956,21 +962,28 @@
 		//Used to rotate loader icon in modals
 		function rotateIcon(){
 			let n = 0;
+			var spinner = $('#spinner');
+			var modal = $('#initTinterInProgressModal');
+			if (layoutUpdateChosen){
+				spinner = $('#layoutUpdateSpinner');
+				modal = $('#layoutUpdateInProgressModal');
+			}
+			
 			console.log(status);
-			$('#spinner').removeClass('d-none');
+			spinner.removeClass('d-none');
 			let interval = setInterval(function(){
 		    	n += 1;
 		    	if(n >= 60000){
-		            $('#spinner').addClass('d-none');
+		            spinner.addClass('d-none');
 		        	clearInterval(interval);
 		        }else{
-		        	$('#spinner').css("transform","rotate(" + n + "deg)");
+		        	spinner.css("transform","rotate(" + n + "deg)");
 		        }
 			},5);
 			
-			$('#initTinterInProgressModal').one('hide.bs.modal',function(){
-				$('#spinner').addClass('d-none');
+			modal.on('hidden.bs.modal',function(){
 	        	if(interval){clearInterval(interval);}
+	        	spinner.addClass('d-none');
 			});
 		}
 		
@@ -1036,7 +1049,7 @@
 			// regardless of tinterconfig.conf deletion
 			window.location.href = "removeTinter?reqGuid=${reqGuid}";
 		}
-
+		
 	</script>
   </head>
 		    
@@ -1219,7 +1232,7 @@
 										<div class="progress-wrapper"></div>
 									</div>
 									<br>
-									<p>Canister levels are set to full. Please fill your canisters to the top of the agitator paddles.</p>
+									<p>CorobTECH must be closed for your changes to have saved. Canister levels are set to full. Please fill your canisters to the top of the agitator paddles.</p>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-primary" id="updatedCanisterLayoutOK" data-dismiss="modal" aria-label="Close" >OK</button>
@@ -1262,6 +1275,24 @@
 								</div>
 								<div class="modal-body">
 									<p id="progress-message" font-size="4">Please wait while we detect and initialize the tinter...</p>
+								</div>
+								<div class="modal-footer">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Tinter Canister Layout Update in Progress Modal Window -->
+				    <div class="modal fade" aria-labelledby="layoutUpdateInProgressModal" aria-hidden="true"  id="layoutUpdateInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<i id="layoutUpdateSpinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
+									<h5 class="modal-title">Tinter Detection and Layout Update</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<p id="progress-message" font-size="4">Please ensure that CorobTECH is closed in order to save your changes to the canister layout. Please wait while we detect and initialize the tinter...</p>
 								</div>
 								<div class="modal-footer">
 								</div>
@@ -1359,6 +1390,13 @@
 // 				e.stopPropagation();
 // 				e.preventDefault();
 // 			});
+
+			// keep modal scrolling in case you have two modals open at the same time or one takes too long to close before another opens
+			$('.modal').on("hidden.bs.modal", function (e) { 
+		        if ($('.modal:visible').length) { 
+		            $('body').addClass('modal-open');
+		        }
+		    });
 			
 			$.ajax({
 		  		url: "spectroObtainAllStoredMeasurements.action",

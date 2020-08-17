@@ -354,6 +354,10 @@ function sendTinterEvent(myGuid, myDate, myMessage, teDetail){
 
 function updateColorantsTxt(myGuid, myMessage, layoutUpdateChosen, callback){
 	var colorantsTxtList = myMessage.custWebColorantsTxtList;
+	var colorantSystem = myMessage.configuration.colorantSystem;
+	var tinterModel = myMessage.configuration.model;
+	var tinterSerial = myMessage.configuration.serial;
+	
 	/* use global variable if null sent for myGuid*/
 	if(myGuid == null){
 		if(reqGuid != null){
@@ -361,15 +365,15 @@ function updateColorantsTxt(myGuid, myMessage, layoutUpdateChosen, callback){
 		}
 	}
 	if (colorantsTxtList != null && colorantsTxtList.length){
-		var mydata = {reqGuid:myGuid, colorantsTxtList: colorantsTxtList};
-		var jsonIn = JSON.stringify(mydata);
+		var params = {reqGuid:myGuid, colorantsTxtList:colorantsTxtList, colorantSystem:colorantSystem, tinterModel:tinterModel, tinterSerial:tinterSerial};
+		var jsonIn = JSON.stringify(params);
 		console.log("Logging UpdateColorants event: " + jsonIn);
 		$.ajax({
 			url: "updateColorantsTxtAction.action",
-			contentType : "application/json; charset=utf-8",
+			contentType: "application/json; charset=utf-8",
 			type: "POST",
 			data: jsonIn,
-			datatype : "json",
+			datatype: "json",
 			success: function (data) {
 				if(data.sessionStatus === "expired"){
 	        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
