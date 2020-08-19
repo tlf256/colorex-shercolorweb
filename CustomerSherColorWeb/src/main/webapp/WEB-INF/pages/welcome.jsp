@@ -366,8 +366,11 @@
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			sendTinterEvent(myGuid, curDate, return_message, null); 
 			// hide whichever in progress modal was shown when detect command went out
-			$('#initTinterInProgressModal').modal('hide');
-			$('#layoutUpdateInProgressModal').modal('hide');
+			if (layoutUpdateChosen){
+				waitForShowAndHide('#layoutUpdateInProgressModal');
+			} else {
+				waitForShowAndHide('#initTinterInProgressModal');
+			}
 			
 			/* if tinter is corob custom, update canister layout. If user chose this through the menu, 
 			show layout modal and reset flag, otherwise show any detect/init errors */
@@ -459,8 +462,10 @@
 				$clone.appendTo(".progress-wrapper");
 				count++;
 			})
-			// show the updated canister layout graphic
-			$("#updatedCanisterLayoutModal").modal('show');
+			// pause to give the other modal time to close, then show the updated canister layout graphic
+			setTimeout(function() { 
+				$("#updatedCanisterLayoutModal").modal('show');
+			}, 500);
 		}
 		
 		
@@ -981,7 +986,7 @@
 		        }
 			},5);
 			
-			modal.on('hidden.bs.modal',function(){
+			modal.on('hide.bs.modal',function(){
 	        	if(interval){clearInterval(interval);}
 	        	spinner.addClass('d-none');
 			});
@@ -1163,7 +1168,7 @@
 			     		<li class="nav-item"><span class='navbar-text'>Logged in as ${sessionScope[thisGuid].firstName} ${sessionScope[thisGuid].lastName}</span></li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
-			     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
+						<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
 			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />">Logout <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
 			     	</ul>
 			   </div><!--/.nav-collapse -->
@@ -1391,13 +1396,6 @@
 // 				e.preventDefault();
 // 			});
 
-			// keep modal scrolling in case you have two modals open at the same time or one takes too long to close before another opens
-			$('.modal').on("hidden.bs.modal", function (e) { 
-		        if ($('.modal:visible').length) { 
-		            $('body').addClass('modal-open');
-		        }
-		    });
-			
 			$.ajax({
 		  		url: "spectroObtainAllStoredMeasurements.action",
 		  		type: "POST",
