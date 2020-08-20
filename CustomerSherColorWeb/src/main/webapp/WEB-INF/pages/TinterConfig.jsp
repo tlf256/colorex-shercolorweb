@@ -536,7 +536,10 @@
 					}
 				}
 				sendTinterEventConfig(reqGuid, curDate, return_message,null);
-				updateColorantsTxt(reqGuid, return_message, false, null);
+				if(return_message.configuration != null && return_message.configuration.model != null 
+						&& return_message.configuration.model.includes("COROB CUSTOM")){
+					updateColorantsTxt(reqGuid, return_message, false, null);
+				}
 				break;
 			default:
 				//Not an response we expected...

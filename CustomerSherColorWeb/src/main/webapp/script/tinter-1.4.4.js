@@ -353,42 +353,44 @@ function sendTinterEvent(myGuid, myDate, myMessage, teDetail){
 }
 
 function updateColorantsTxt(myGuid, myMessage, layoutUpdateChosen, callback){
-	var colorantsTxtList = myMessage.custWebColorantsTxtList;
-	var colorantSystem = myMessage.configuration.colorantSystem;
-	var tinterModel = myMessage.configuration.model;
-	var tinterSerial = myMessage.configuration.serial;
+	if (myMessage.configuration != null){
+		var colorantSystem = myMessage.configuration.colorantSystem;
+		var tinterModel = myMessage.configuration.model;
+		var tinterSerial = myMessage.configuration.serial;
+		var colorantsTxtList = myMessage.custWebColorantsTxtList;
 	
-	/* use global variable if null sent for myGuid*/
-	if(myGuid == null){
-		if(reqGuid != null){
-			myGuid=reqGuid;
-		}
-	}
-	if (colorantsTxtList != null && colorantsTxtList.length){
-		var params = {reqGuid:myGuid, colorantsTxtList:colorantsTxtList, colorantSystem:colorantSystem, tinterModel:tinterModel, tinterSerial:tinterSerial};
-		var jsonIn = JSON.stringify(params);
-		console.log("Logging UpdateColorants event: " + jsonIn);
-		$.ajax({
-			url: "updateColorantsTxtAction.action",
-			contentType: "application/json; charset=utf-8",
-			type: "POST",
-			data: jsonIn,
-			datatype: "json",
-			success: function (data) {
-				if(data.sessionStatus === "expired"){
-	        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-	        	}
-	        	else{
-	        		/* show the updated canister layout modal if user chose that menu item 
-	        		 * (as opposed to some other reason for a detect message being sent)*/
-	        		if (layoutUpdateChosen){
-	        			if(typeof callback == 'function'){
-		    				callback(data);
-		    			}
-	        		}
-	        	}
+		/* use global variable if null sent for myGuid*/
+		if(myGuid == null){
+			if(reqGuid != null){
+				myGuid=reqGuid;
 			}
-		});
+		}
+		if (colorantsTxtList != null && colorantsTxtList.length){
+			var params = {reqGuid:myGuid, colorantsTxtList:colorantsTxtList, colorantSystem:colorantSystem, tinterModel:tinterModel, tinterSerial:tinterSerial};
+			var jsonIn = JSON.stringify(params);
+			console.log("Logging UpdateColorants event: " + jsonIn);
+			$.ajax({
+				url: "updateColorantsTxtAction.action",
+				contentType: "application/json; charset=utf-8",
+				type: "POST",
+				data: jsonIn,
+				datatype: "json",
+				success: function (data) {
+					if(data.sessionStatus === "expired"){
+		        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		        	}
+		        	else{
+		        		/* show the updated canister layout modal if user chose that menu item 
+		        		 * (as opposed to some other reason for a detect message being sent)*/
+		        		if (layoutUpdateChosen){
+		        			if(typeof callback == 'function'){
+			    				callback(data);
+			    			}
+		        		}
+		        	}
+				}
+			});
+		}
 	}
 }
 
