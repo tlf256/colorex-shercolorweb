@@ -32,30 +32,24 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 	static Logger logger = LogManager.getLogger(UpdateColorantsTxtAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
+	private String colorantSystem; 
+	private String tinterModel; 
+	private String tinterSerial;
 	private ArrayList<CustWebColorantsTxt> colorantsTxtList;
 	private ArrayList<TinterCanister> tinterCanisterList;
 	
 	
 	public String execute(){
 		String retVal = null;
-		String customerId = null; 
-		String colorantSystem = null; 
-		String tinterModel = null; 
-		String tinterSerial = null;
+		String customerId = null;
 		tinterCanisterList = new ArrayList<TinterCanister>();
 		Map<String, String> rgbHexList = buildRgbHexList();
 		
-		// get tinter data from session
+		// get data from session
 		if(sessionMap != null) {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			if(reqObj != null) {
 				customerId = reqObj.getCustomerID();
-				TinterInfo tinter = reqObj.getTinter();
-				if (tinter != null) {
-					colorantSystem = tinter.getClrntSysId();
-					tinterModel = tinter.getModel();
-					tinterSerial = tinter.getSerialNbr();
-				}
 			}
 		}
 		List<CdsClrnt> colorantList = colorantService.getColorantList(colorantSystem);
@@ -109,7 +103,7 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 					RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 					if(reqObj != null) {
 						TinterInfo tinter = reqObj.getTinter();
-						if (tinter != null) {
+						if (tinter != null && tinter.getCanisterList() != null) {
 							tinter.setCanisterList(tinterCanisterList);
 						}
 					}
@@ -178,6 +172,30 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 
 	public void setReqGuid(String reqGuid) {
 		this.reqGuid = reqGuid;
+	}
+	
+	public String getColorantSystem() {
+		return colorantSystem;
+	}
+
+	public void setColorantSystem(String colorantSystem) {
+		this.colorantSystem = colorantSystem;
+	}
+	
+	public String getTinterModel() {
+		return tinterModel;
+	}
+
+	public void setTinterModel(String tinterModel) {
+		this.tinterModel = tinterModel;
+	}
+	
+	public String getTinterSerial() {
+		return tinterSerial;
+	}
+
+	public void setTinterSerial(String tinterSerial) {
+		this.tinterSerial = tinterSerial;
 	}
 
 	public ArrayList<CustWebColorantsTxt> getColorantsTxtList() {

@@ -536,6 +536,7 @@
 					}
 				}
 				sendTinterEventConfig(reqGuid, curDate, return_message,null);
+				updateColorantsTxt(reqGuid, return_message, false, null);
 				break;
 			default:
 				//Not an response we expected...
