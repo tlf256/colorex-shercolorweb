@@ -79,7 +79,7 @@
 				<div id="prodFamily" class="row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-10">
-					<table id="prodFamily_table" class="table table-striped table-bordered">
+					<table id="prodFamily_table" class="table table-striped table-bordered m-0">
 						<caption style="caption-side:top;">Choose Product</caption>
 						<thead>
 							<tr>
@@ -94,18 +94,19 @@
 							</tr>
 						</thead>
 						<tbody>
-							<s:iterator var="set" value="colorProdFamilies.entrySet()" status="i">
+							<s:iterator var="entry" value="colorProdFamilies.entrySet()" status="i">
+								<s:set var="index" value="%{#i.index}" />
 								<tr class="border-bottom-1 border-dark">
 									<td><input type="radio" class="prodFamRadio" name="prodFamily" /></td>
-									<s:iterator var="item" value="#set.value.split('-')">
+									<s:iterator var="item" value="colorProdFamilies[colorProdFamilies2[#index]].split('-')">
 										<td class="prodDetail">
 											<s:property />
 										</td>
 									</s:iterator>
-									<td>
-										<s:iterator value="#session[reqGuid].formResponse.getFormulas().get(#i.index)">
+									<td class="pr-0">
+										<s:iterator value="#session[reqGuid].formResponse.getFormulas().get(#index)">
 											<div class="row">
-												<div class="col-sm-5">
+												<div class="col-sm-6">
 													<strong><s:property value="clrntSysId"/>*COLORANT</strong>
 												</div>
 												<div class="col-sm-1" align="center">
@@ -122,14 +123,14 @@
 												</div>
 											</div>
 										</s:iterator>
-										<s:iterator value="bothFormulas.get(#i.index).ingredients" status="i">
+										<s:iterator value="bothFormulas.get(#index).ingredients">
 											<div class="row">
-												<div class="col-sm-5">
+												<div class="col-sm-6">
 													<s:property value="tintSysId"/>-<s:property value="name"/> 
 												</div>
 												<s:iterator value="increment" status="stat">
 													<div class="col-sm-1" align="center">
-														<s:property value="top"/>
+														<s:property />
 													</div>
 												</s:iterator>
 											</div>
@@ -161,7 +162,7 @@
 			        	"emptyTable" : "No products found"
 			        },
 			        "ordering": true,
-			        "order": [ 5, 'asc' ],
+			        "order": [ 4, 'asc' ],
 			        "paginate": false,
 			        "pagingType": "full",
 			    });
