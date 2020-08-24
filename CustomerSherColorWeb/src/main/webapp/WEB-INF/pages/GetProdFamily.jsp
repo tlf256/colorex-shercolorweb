@@ -98,7 +98,7 @@
 								<s:set var="index" value="%{#i.index}" />
 								<tr class="border-bottom-1 border-dark">
 									<td><input type="radio" class="prodFamRadio" name="prodFamily" /></td>
-									<s:iterator var="item" value="colorProdFamilies[colorProdFamilies2[#index]].split('-')">
+									<s:iterator var="item" value="colorProdFamilies[#index]">
 										<td class="prodDetail">
 											<s:property />
 										</td>
