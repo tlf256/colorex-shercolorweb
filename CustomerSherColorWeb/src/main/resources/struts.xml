@@ -553,6 +553,13 @@
 			<result name="input">/WEB-INF/pages/GetPercentageFormulaBookBase.jsp</result>
 			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
 		</action>
+		<action name="prodFamilyUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProdFamilyAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="formulateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.GenerateFormulaAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

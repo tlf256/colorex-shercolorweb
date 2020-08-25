@@ -145,12 +145,17 @@
 				</div>
 				<br>
 				<div class="row">
-					<div class="col-sm-1">
-					</div>	
-					<div class="col-sm-10">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-2">
 						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="Next" action="prodFamilyUserNextAction"/>
-		    			<s:submit cssClass="btn btn-secondary pull-right mr-3" value="Cancel" action="userCancelAction"/>
-		    		</div>
+					</div>
+					<div class="col-sm-2">
+						<s:submit cssClass="btn btn-secondary" value="Back" action="prodFamilyUserBackAction"/>
+					</div>
+					<div class="col-sm-6">
+						<s:submit cssClass="btn btn-secondary pull-right mr-3" value="Cancel" action="userCancelAction"/>
+					</div>
+					<div class="col-sm-1"></div>
 		    	</div>
 			</s:form>
 			<br>

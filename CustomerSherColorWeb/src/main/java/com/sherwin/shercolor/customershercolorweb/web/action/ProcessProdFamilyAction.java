@@ -47,6 +47,23 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	
 	}
 	
+	// User hit the backup button on the "Better Performance Found in Different Base" page
+		public String backItUp() {
+			try {
+
+				RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+				//reset colorant system and vinyl safe setting.
+				reqObj.setClrntSys("");
+				reqObj.setVinylExclude(false);
+				reqObj.setLightSource("");
+				sessionMap.put(reqGuid, reqObj);
+			    return SUCCESS;
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				return ERROR;
+			}
+		}
+		
 	public String execute() {
 		//wherein we formulate!
 		String selectedProdNbr = selectedProdFamily;
