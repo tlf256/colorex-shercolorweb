@@ -171,7 +171,8 @@
 				
 				$('#prodFamily_table tbody').on('click','tr',function(event){
 			    	var prodNbr = prodTable.row(this).data()[1];
-			    	var index = prodTable.row(this).index();
+			    	// table has been sorted by Delta-E value, so grab the updated row position
+			    	var index = prodTable.rows( { order: 'applied' } ).nodes().indexOf(this);
 			    	console.log("row index " + index);
 			    	console.log("prod number " + prodNbr);
 			    	$("#selectedProdFamily").val(prodNbr);
