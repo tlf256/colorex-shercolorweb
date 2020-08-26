@@ -1080,10 +1080,17 @@ function setFormSubmitting() { formSubmitting = true; };
 		<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
 	</div>
 	<s:if 
-		test="%{#session[reqGuid].displayFormula.averageDeltaE < 1
-		|| #session[reqGuid].displayFormula.deltaEWarning == '' 
-		|| #session[reqGuid].displayFormula.deltaEWarning == null
-	}">
+		test="%{
+		#session[reqGuid].displayFormula.deltaEWarning == null ||
+		#session[reqGuid].displayFormula.deltaEWarning == '' ||
+		(
+		#session[reqGuid].displayFormula.deltaEs[0] < 1 &&
+		#session[reqGuid].displayFormula.deltaEs[1] < 1 &&
+		#session[reqGuid].displayFormula.deltaEs[2] < 1
+		)
+		 
+		
+		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
 			<div class="row">
