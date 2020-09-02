@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-import org.springframework.web.util.HtmlUtils;
+
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -33,7 +31,6 @@ import com.sherwin.shercolor.common.validation.ColorValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import com.sun.prism.impl.Disposer.Record;
 
 
 
@@ -131,7 +128,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		catch (SherColorException e){
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -403,7 +400,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				return SUCCESS;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			return ERROR;
 		}
 	}
@@ -426,7 +423,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			return ERROR;
 		}
 	}
@@ -459,7 +456,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			 
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			return ERROR;
 		}
 	}
