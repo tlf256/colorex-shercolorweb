@@ -39,17 +39,7 @@
 			    var json = JSON.stringify(spectromessage);
 			    ws_coloreye.send(json);
 	  		}
-	  	  	
-	  	  	function CheckAndDumpMeasurement() {
-	  	  	console.log("CheckAndDumpMeasurement")
-  		  	checkWsIsReady();
-	    		var clreyemodel = $('#spectroModel').val();
-			var spectromessage = new SpectroMessage('CheckAndDumpMeasurement',clreyemodel);
-		    var json = JSON.stringify(spectromessage);
-		    ws_coloreye.send(json);
-
-	  	  	}
-	  	  	
+	  	  
 	  	  	function SWMeasure() {
 	  		  	console.log("SWMeasure")
 	  		  	checkWsIsReady();
@@ -127,13 +117,10 @@
 	  				case 'GetCalStatusMinUntilCalExpiration':
 	  					if (return_message.responseMessage.match(/^OK/)) {
 	  						$('#measureColorModal').modal('show');
-	  						CheckAndDumpMeasurement();
 	  						SWMeasure();
 	  					} else {
 	  						calibrate();
 	  					}
-	  					break;
-	  				case 'CheckAndDumpMeasurement':
 	  					break;
 	  				case 'SWMeasure':
 	  					if (return_message.responseMessage=="") {
