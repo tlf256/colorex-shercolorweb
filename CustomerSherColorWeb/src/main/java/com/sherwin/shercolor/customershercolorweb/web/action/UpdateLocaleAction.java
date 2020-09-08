@@ -9,7 +9,6 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.util.domain.LocaleContainer;
 
 
