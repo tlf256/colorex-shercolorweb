@@ -10,11 +10,65 @@
 	   <div class="collapse navbar-collapse" id="navbarContent">
 	   		<s:set var="thisGuid" value="reqGuid" />
 	     	<ul class="navbar-nav ml-auto">
-	     		<li class="nav-item"><span class='navbar-text'>Logged in as ${sessionScope[thisGuid].firstName} ${sessionScope[thisGuid].lastName}</span></li>
+	     		<li class="nav-item"><span class='navbar-text'>
+	     			<s:text name="global.loggedInAsFirstNameLastName">
+	     				<s:param>${sessionScope[thisGuid].firstName}</s:param>
+	     				<s:param>${sessionScope[thisGuid].lastName}</s:param>
+					</s:text></span>
+	     		</li>
 	     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 	     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
+	     		<li class="nav-item p-2 pl-3 pr-3 d-none"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
+	     		<li class="nav-item d-none"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+					    <option value="en_US">English</option>
+					    <option value="es_ES">Español</option>
+				    </select>
+				</li>
 	     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-	     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />">Logout <span class='fa fa-sign-out'></span></a></li> 
+	     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />"><s:text name="global.logout"/> <span class='fa fa-sign-out'></span></a></li> 
 	     	</ul> 
 	   </div><!--/.nav-collapse -->
 </nav>
+
+<script type="text/javascript">
+//update user's language preference
+function updateLanguage(){
+	var selectedLang = $("select[id='languageList'] option:selected").val();
+	console.log(selectedLang);
+	
+	$.ajax({
+		url : "updateLocale.action",
+		type : "POST",
+		data : {
+			request_locale : selectedLang,
+		},
+		datatype : "json",
+		async : true,
+		success : function(data) {
+			if (data.sessionStatus === "expired") {
+				window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+			} else {
+				// reload page to update the language
+				location.reload();
+			}
+		},
+		error : function(err) {
+			alert("failure: " + err);
+		}
+	});
+}
+
+$(document).ready(function() {
+    // update dropdown to display the language that the user picked if they have done so
+    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+    if (userLanguage != null && userLanguage != ""){
+	    $("#languageList").val(userLanguage);
+    } else {
+    	$("#languageList").val("en_US");
+    }
+});
+
+</script>
+
+
+

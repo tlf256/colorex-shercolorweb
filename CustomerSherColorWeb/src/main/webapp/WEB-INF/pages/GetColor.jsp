@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Choose Color</title>
+		<title><s:text name="getColor.chooseColor"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -86,10 +86,10 @@
 							try{
 								if(event.key == ">" || event.key == "<"){
 									//console.log("< or > keypress");
-									throw "Special characters \"<\" or \">\" not allowed";
+									throw '<s:text name="global.noLtOrGt"/>'; 
 								}
 								if($(this).val().includes(">") || $(this).val().includes("<")){
-									throw "Invalid entry. Please remove these characters: < >";
+									throw '<s:text name="global.invalidEntryLtGt"/>';
 								}
 								$(document).find('#errortxt').remove();
 								$('input:submit').attr('disabled', false);
@@ -129,9 +129,22 @@
 				var measurementCurve;
 				var measurementRgbHex;
 				
+				// internationalize the datatable; null here defaults to english, otherwise update url
+				var langUrl = null;
+				console.log("${session['WW_TRANS_I18N_LOCALE']}");
+				
+				switch("${session['WW_TRANS_I18N_LOCALE']}"){
+				case("es_ES"):
+					langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json";
+					break;
+				}
+				
 				measuresTable = $('#measuresTable').DataTable({
 					"paginate": false,
-			        "scrollY" : 400
+			        "scrollY" : 400,
+			        "language" : {
+			        	"url" : langUrl
+			        }
 				});
 				
 				$("#measuresTable").addClass("table-hover");
@@ -194,7 +207,7 @@
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<strong><s:property value="screenLabel"/>:</strong><br>
+						<strong><s:property value="screenLabel"/><s:text name="global.colonDelimiter"/></strong><br>
 					</s:iterator>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
@@ -212,7 +225,7 @@
 						</div>
 	            		<div class="col-lg-8 col-md-8 col-sm-10">
 	            			<div class="form-group">
-	            				<strong>Color Type:</strong>
+	            				<strong><s:text name="getColor.colorTypeColon"/></strong>
 	            				<div class="controls">
 	            					<s:iterator value="cotypes" status="i">
 		            					<div class="form-check">
@@ -238,7 +251,7 @@
 					<div class="col-lg-2 col-md-2 col-sm-2">
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-6">
-						<s:select label="Company Name" id="companiesList" list="colorCompanies"  />
+						<s:select label="%{getText('getColor.companyName')}" id="companiesList" list="colorCompanies"  />
 					</div>
 					<div class="col-lg-6 col-md-6 col-sm-4">
 					</div>
@@ -250,15 +263,15 @@
 					<div id="table-wrapper" class="col-lg-10 col-md-12">
 						<div>
 							<div style="text-align: center">
-								<h5>Choose Color</h5>
+								<h5><s:text name="getColor.chooseColor"/></h5>
 							</div>
 							<table id="measuresTable" class="table table-striped table-bordered">
 								<thead>
 									<tr>
 										<th></th>								
-										<th>Color Name</th>
-										<th>Date/Time</th>
-										<th>Description</th>
+										<th><s:text name="global.colorName"/></th>
+										<th><s:text name="global.dateTime"/></th>
+										<th><s:text name="global.description"/></th>
 										<th style="display:none"></th>
 										<th style="display:none"></th>
 										<th style="display:none"></th>
@@ -274,7 +287,7 @@
 											<td class="description"><s:property value="#measurement.sampleDescr" /></td>
 											<td class="spectroModel" style="display:none"><s:property value="#measurement.model" /></td>
 											<td class="spectroSerial" style="display:none"><s:property value="#measurement.serialNbr" /></td>
-											<td class="curve" style="display:none"><s:property value="#measurement.measuredCurve" /></td>
+											<td class="curve" style="display:none"><s:property value="%{curvesList[#outer.index]}" /></td>
 											<td class="rgbHex" style="display:none"><s:property value="#measurement.rgbHex"/></td>
 										</tr>
 									</s:iterator>
@@ -302,7 +315,9 @@
 							<s:hidden name="colorData" id="colorData" value=""/>
 						</div>
 						<div class="col-lg-8 col-md-8 col-sm-10">
-							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="Enter Color Name or Number" placeholder="Choose color type, then enter color name or number here" size="30" maxlength="30" cssStyle="font-size: 16px;" autofocus="autofocus"  />
+							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="%{getText('getColor.enterColorNameOrNumber')}" 
+								placeholder="%{getText('getColor.chooseColorType')}" size="30" maxlength="30" 
+								cssStyle="font-size: 16px;" autofocus="autofocus"  />
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1">
 						</div>
@@ -311,11 +326,11 @@
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>	
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3" id="nextBtnDiv">
-							<s:submit cssClass="btn btn-primary" value="Next" action="colorUserNextAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="colorUserNextAction"/>
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
-							<s:submit cssClass="btn btn-secondary" action="colorUserBackAction" value="Back" />
-							<s:submit cssClass="btn btn-secondary pull-right" value="Cancel" action="userCancelAction"/>
+							<s:submit cssClass="btn btn-secondary" action="colorUserBackAction" value="%{getText('global.back')}" />
+							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">	
 			    		</div>
@@ -327,32 +342,32 @@
 				  <div class="modal-dialog" role="document">
 				    <div class="modal-content">
 				      <div class="modal-header" style="padding: 20px">
-				        <h5 class="modal-title">Remote Measurement</h5>
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				        <h5 class="modal-title"><s:text name="getColor.remoteMeasurement"/></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}">
 				          <span aria-hidden="true">&times;</span>
 				        </button>
 				      </div>
 				      <div class="modal-body" style="padding: 20px">
 				        <div class="row">
 							<div class="col-6">
-								<span style="font-weight: bold">Color Name:</span>
+								<span style="font-weight: bold"><s:text name="global.colorNameColon"/></span>
 								<p id="measurementName"></p>
-								<span style="font-weight: bold">Description:</span>
+								<span style="font-weight: bold"><s:text name="global.descriptionColon"/></span>
 								<p id="measurementDescription"></p>
 								<span class="chip p-0" id="spectroColorChip"></span>
 							</div>
 							<div class="col-6">
-								<span style="font-weight:bold">Date/Time: </span><p id="spectroDateInfo"></p>
-								<span style="font-weight:bold">Model: </span><p id="spectroModelInfo"></p>
-								<span style="font-weight:bold">Serial Number: </span><p id="spectroSerialNumber"></p>
+								<span style="font-weight:bold"><s:text name="global.dateTimeColon"/></span><p id="spectroDateInfo"></p>
+								<span style="font-weight:bold"><s:text name="global.modelColon"/></span><p id="spectroModelInfo"></p>
+								<span style="font-weight:bold"><s:text name="global.serialNumberColon"/></span><p id="spectroSerialNumber"></p>
 								<s:hidden name="measuredCurve" id="measuredCurve" value=""/>
 								<s:hidden name="measuredName" id="measuredName" value=""/>
 							</div>		        
 				        </div>
 				      </div>
 				      <div class="modal-footer">
-				      		<s:submit cssClass="btn btn-primary" action="colorUserNextAction" value="Next" autofocus="autofocus"/>
-					        <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				      		<s:submit cssClass="btn btn-primary" action="colorUserNextAction" value="%{getText('global.next')}" autofocus="autofocus"/>
+					        <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
 				      </div>
 				    </div>
 				  </div>

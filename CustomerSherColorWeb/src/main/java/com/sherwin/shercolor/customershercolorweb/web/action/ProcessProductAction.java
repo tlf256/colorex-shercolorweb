@@ -40,13 +40,13 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String colorName;
 	private String salesNbr;
 	private String reqGuid;
-	private static final String OVERRIDEWARNMSG = "Click Next to override and continue.";
+	private String OVERRIDEWARNMSG;
 	
 	public String execute() {
 		
 		 try {
-			 
 			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			 OVERRIDEWARNMSG = getText("processProductAction.clickNext");
 			 
 			 //validate the product - need call to productService once complete
 			 
@@ -184,7 +184,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setValidationWarning(false);
 			reqObj.setValidationWarningSalesNbr("");
 			sessionMap.put(reqGuid, reqObj);
-		     return SUCCESS;
+		    return SUCCESS;
+		     
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return ERROR;
