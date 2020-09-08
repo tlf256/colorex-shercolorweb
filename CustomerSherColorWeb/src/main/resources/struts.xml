@@ -428,6 +428,10 @@
 				<param name="actionName">displayJobFieldsAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+			<result name="restart" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="MeasureColorNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="execute">
