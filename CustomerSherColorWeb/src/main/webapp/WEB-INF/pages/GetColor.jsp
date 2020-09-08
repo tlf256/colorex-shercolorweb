@@ -328,7 +328,8 @@
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3" id="nextBtnDiv">
 							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="colorUserNextAction"/>
 						</div>
-						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">	
+						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
+							<s:submit cssClass="btn btn-secondary" action="colorUserBackAction" value="%{getText('global.back')}" />
 							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">	
