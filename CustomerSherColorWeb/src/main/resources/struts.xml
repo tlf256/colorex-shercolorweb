@@ -5,6 +5,8 @@
 <struts>
 	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
 	<constant name="struts.devMode" value="true" />
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.custom.i18n.resources" value="global" />
 	<constant name="struts.objectFactory" value="spring" />
 	<constant name="struts.mapper.action.prefix.enabled" value="true" />
 	<package name="default" namespace="/" extends="struts-default,json-default">
@@ -1176,6 +1178,9 @@
 			</result>
 			<result name="success">/WEB-INF/pages/VerifyDefaultSpectroSettings.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
+			<result name="success" type="json"></result>
 		</action>
 	</package>
 </struts>

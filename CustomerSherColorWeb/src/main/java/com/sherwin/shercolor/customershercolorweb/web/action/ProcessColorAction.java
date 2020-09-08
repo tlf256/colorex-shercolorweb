@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,32 +69,58 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String partialColorNameOrId; 
 	private List<autoComplete> options;
 	
-	private Map<String, String> cotypes;
+	private Map<String, String> cotypes = new LinkedHashMap<String, String>();
+	private ArrayList<String> colorCompanies = new ArrayList<String>();
 	
 	private String message;
 	
 	private String defaultCoTypeValue = "SW";
 	
-	private static final String SW = "Sherwin-Williams";
-	private static final String COMPETITIVE = "Competitive";
-	private static final String CUSTOM = "Custom Manual";
-	private static final String CUSTOMMATCH = "Custom Match";
-	private static final String SAVEDMEASURE = "Saved Ci62 Measurement";
-	
-	private ArrayList<String> colorCompanies;
+	private String SW;
+	private String COMPETITIVE;
+	private String CUSTOM;
+	private String CUSTOMMATCH;
+	private String SAVEDMEASURE;
 	
 	private List<CustWebSpectroRemote> savedMeasurements;
+	private List<String> curvesList;
 	private String measuredCurve;
 	private String measuredName;
 	
-	public ProcessColorAction(){
-		
-		cotypes = new LinkedHashMap<String, String>();
-		cotypes.put("SW",SW);
-		cotypes.put("COMPET",COMPETITIVE);
-		cotypes.put("CUSTOM",CUSTOM);
-		cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
-		cotypes.put("SAVEDMEASURE", SAVEDMEASURE);		
+	
+	public void buildCotypesMap() {
+		try {
+			SW = getText("processColorAction.SherwinWilliams");
+			COMPETITIVE = getText("processColorAction.competitive");
+			CUSTOM = getText("processColorAction.customManual");
+			CUSTOMMATCH = getText("processColorAction.customMatch");
+			SAVEDMEASURE = getText("processColorAction.savedCi62Measurement");
+			
+			cotypes.put("SW",SW);
+			cotypes.put("COMPET",COMPETITIVE);
+			cotypes.put("CUSTOM",CUSTOM);
+			cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
+			cotypes.put("SAVEDMEASURE", SAVEDMEASURE);
+			
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if (reqObj.getSpectro().getSerialNbr()==null) {
+				 //No  device, so remove the Custom Match option from cotypes.
+				 cotypes.remove("CUSTOMMATCH");
+			 }
+			 // load saved Ci62 remote measurements for the Saved Measure option
+			 String customerId = reqObj.getCustomerID();
+			 savedMeasurements = customerService.getCustWebSpectroRemotes(customerId);
+			 if (savedMeasurements.size() == 0) {
+				 cotypes.remove("SAVEDMEASURE");
+			 }
+			 curvesList = new ArrayList<String>();
+			 for (CustWebSpectroRemote measure : savedMeasurements) {
+				 String curve = Arrays.toString(measure.getMeasuredCurve()).replace("[", "").replace("]", "");
+				 curvesList.add(curve);
+			 }
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 	}
 	
 	//return company type list for radio options
@@ -117,14 +144,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
 			} else {
 				if (selectedCoType.equals("COMPET")) {
-					if (selectedCompany.equals("ALL")){
+					if (selectedCompany.equals(getText("processColorAction.all"))){
 						options = mapToOptions(colorMastService.autocompleteCompetitiveColor(partialColorNameOrId.toUpperCase()), "COMPET");
 					} else {
 						options = mapToOptions(colorMastService.autocompleteCompetitiveColorByCompany(partialColorNameOrId.toUpperCase(), selectedCompany), "COMPET");
 					}
 				} else {
 					options = new ArrayList<autoComplete>();
-					options.add(new autoComplete("MANUAL","MANUAL"));
+					options.add(new autoComplete(getText("processColorAction.manual"),"MANUAL"));
 				}
 			}
 		}
@@ -294,7 +321,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			} else {
 					
 				// This conditional helps prevent times where colorData doesn't get populated
-				// when the user quickly enters in a numnber and does a next operation before
+				// when the user quickly enters in a number and does a next operation before
 				// the auto complete gets triggered
 				if (colorData.equals("")) {
 					colorData = partialColorNameOrId.trim();
@@ -330,15 +357,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					} else {
 						defaultCoTypeValue = "COMPET";
 					}
-					// repopulate company dropdown 
-					colorCompanies = new ArrayList<String>();
-					colorCompanies.add("ALL");
-					String [] colorCompaniesArray = colorMastService.listColorCompanies();
-					for (String company : colorCompaniesArray) {
-						if (!company.equals("SHERWIN-WILLIAMS")){
-							colorCompanies.add(company);
-						}
-					}
+					// repopulate company dropdown and color type list
+					buildCompaniesList();
+					buildCotypesMap();
 					return INPUT;
 				} else {
 					//validated successfully, call a read and set ThisColor
@@ -432,37 +453,32 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	public String display() {
-
-		 try {
-			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			 if (reqObj.getSpectro().getSerialNbr()==null) {
-				 //No device, so remove the Custom Match option from cotypes.
-				 cotypes.remove("CUSTOMMATCH");
-			 }
+		try {
+			buildCotypesMap();
+			buildCompaniesList();
 			 
-			 // load saved Ci62 remote measurements
-			 String customerId = reqObj.getCustomerID();
-			 savedMeasurements = customerService.getCustWebSpectroRemotes(customerId);
-			 if (savedMeasurements.size() == 0) {
-				 cotypes.remove("SAVEDMEASURE");
-			 }
-			 
-			 colorCompanies = new ArrayList<String>();
-			 colorCompanies.add("ALL");
-			 
-			 String [] colorCompaniesArray = colorMastService.listColorCompanies();
-			 for (String company : colorCompaniesArray) {
-				 if (!company.equals("SHERWIN-WILLIAMS")){
-					 colorCompanies.add(company);
-				 }
-			 }
-			 
-		     return SUCCESS;
+		    return SUCCESS;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return ERROR;
 		}
 	}
+	
+	public void buildCompaniesList() {
+		try {
+			colorCompanies.add(getText("processColorAction.all")); 
+			 
+			String [] colorCompaniesArray = colorMastService.listColorCompanies();
+			for (String company : colorCompaniesArray) {
+				if (!company.equals("SHERWIN-WILLIAMS")){
+					colorCompanies.add(company);
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+	}
+	
 	
 	public List<autoComplete> getOptions() {
 		return options;
@@ -637,7 +653,15 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	public void setSavedMeasurements(List<CustWebSpectroRemote> savedMeasurements) {
 		this.savedMeasurements = savedMeasurements;
 	}
+	
+	public List<String> getCurvesList() {
+		return curvesList;
+	}
 
+	public void setCurvesList(List<String> curvesList) {
+		this.curvesList = curvesList;
+	}
+	
 	public String getMeasuredCurve() {
 		return measuredCurve;
 	}
@@ -645,7 +669,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	public void setMeasuredCurve(String measuredCurve) {
 		this.measuredCurve = measuredCurve;
 	}
-	
 	public String getMeasuredName() {
 		return measuredName;
 	}

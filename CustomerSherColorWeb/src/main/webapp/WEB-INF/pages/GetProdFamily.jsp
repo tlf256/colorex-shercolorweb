@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Better Performance With Different Base</title>
+		<title><s:text name="getProdFamily.betterPerformanceWithDifferentBase"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -66,7 +66,7 @@
 					<div class="col-sm-1">
 					</div>
 					<div class="col-sm-10">
-						<h5>Better Performance Found in Different Base</h5>
+						<h5><s:text name="getProdFamily.betterPerformanceFoundinDifferentBase"/></h5>
 					</div>
 				</div>
 				<div class="row">
@@ -80,17 +80,17 @@
 					<div class="col-sm-1"></div>
 					<div class="col-sm-10">
 					<table id="prodFamily_table" class="table table-striped table-bordered m-0">
-						<caption style="caption-side:top;">Choose Product</caption>
+						<caption style="caption-side:top;"><s:text name="global.chooseProduct"/></caption>
 						<thead>
 							<tr>
 								<th></th>
-								<th>Product</th>
-								<th>Quality</th>
-								<th>Base</th>
-								<th>Delta-E</th>
-								<th>Contrast Ratio</th>
-								<th>Comment</th>
-								<th>Formula</th>
+								<th><s:text name="global.product"/></th>
+								<th><s:text name="getProdFamily.quality"/></th>
+								<th><s:text name="getProdFamily.base"/></th>
+								<th><s:text name="getProdFamily.deltaE"/></th>
+								<th><s:text name="getProdFamily.contrastRatio"/></th>
+								<th><s:text name="global.comment"/></th>
+								<th><s:text name="global.formula"/></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -107,7 +107,7 @@
 										<s:iterator value="#session[reqGuid].formResponse.getFormulas().get(#index)">
 											<div class="row">
 												<div class="col-sm-6">
-													<strong><s:property value="clrntSysId"/>*COLORANT</strong>
+													<strong><s:property value="clrntSysId"/>*<s:text name="global.colorant"/></strong>
 												</div>
 												<div class="col-sm-1" align="center">
 													<strong><s:property value="incrementHdr[0]"/></strong>
@@ -147,13 +147,13 @@
 				<div class="row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-2">
-						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="Next" action="prodFamilyUserNextAction"/>
+						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.next')}" action="prodFamilyUserNextAction"/>
 					</div>
 					<div class="col-sm-2">
-						<s:submit cssClass="btn btn-secondary" value="Back" action="prodFamilyUserBackAction"/>
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="prodFamilyUserBackAction"/>
 					</div>
 					<div class="col-sm-6">
-						<s:submit cssClass="btn btn-secondary pull-right mr-3" value="Cancel" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary pull-right mr-3" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1"></div>
 		    	</div>
@@ -164,7 +164,7 @@
 				var prodTable = $('#prodFamily_table').DataTable({
 					dom: 'rtp',
 			        "language": {
-			        	"emptyTable" : "No products found"
+			        	"emptyTable" : '<s:text name="getProdFamily.noProductsFound"/>'
 			        },
 			        "ordering": true,
 			        "order": [ 4, 'asc' ],
