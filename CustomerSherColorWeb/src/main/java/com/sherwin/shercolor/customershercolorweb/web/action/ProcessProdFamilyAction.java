@@ -146,7 +146,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 		CdsProd theCdsProd;
 		String theQuality = "";
 		String theBase    = "";
-		String theComment = "comment";
+		String theComment = getText("global.comment");
 		DecimalFormat dffmt = new DecimalFormat("###.##");
 		 try {
 				colorProdFamilies = new HashMap<Integer, List<String>>();
@@ -165,12 +165,12 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 						 theQuality = "";
 						 theBase    = "";
 					}
-					if (theComment.equals("Best Performance")) {
-						theComment = "Product Entered";
+					if (theComment.equals(getText("processProdFamilyAction.bestPerformance"))) {
+						theComment = getText("processProdFamilyAction.productEntered");
 						bothFormulas.add(item);
 					}
-					if (theComment.equals("comment")) {
-						theComment = "Best Performance";
+					if (theComment.equals(getText("global.comment"))) {
+						theComment = getText("processProdFamilyAction.bestPerformance");
 						bothFormulas.add(item);
 					}
 					
@@ -278,11 +278,11 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 		if (sizeCode==null) {
 			sizeText = "";
 		} else if (sizeCode.equals("14")) {
-			sizeText = "QT";
+			sizeText = getText("processProdFamilyAction.qt");
 		} else if (sizeCode.equals("16")) {
-			sizeText = "GAL";
+			sizeText = getText("processProdFamilyAction.gal");
 		} else if (sizeCode.equals("20")) {
-			sizeText = "5GAL";
+			sizeText = getText("processProdFamilyAction.5Gal");
 		}
 		
 		return sizeText;

@@ -122,7 +122,7 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			// report an error.  If one, we don't want to display the page, just continue forward
 			//using the only colorant system available.  If multiple, we want to display the page.
 			if (selectClrntSysIds.size()==0) {
-				addFieldError("clrntSys","No applicable colorant systems available");
+				addFieldError("clrntSys", getText("processClrntSysAction.noApplicableClrntSysAvail"));
 				return NONE;
 			} else if (selectClrntSysIds.size()==1) {
 				reqObj.setClrntSys(selectClrntSysIds.get(0));
