@@ -509,9 +509,7 @@ function ParsePrintMessage() {
 			$("#tinterProgressList").empty();
 			tinterErrorList = [];
 			$(".progress-wrapper").empty();
-
 			writeDispense(return_message); // will also send tinter event
-			waitForShowAndHide("#tinterInProgressModal");
 		} else {
 			$("#tinterInProgressDispenseStatus").text(
 					"Last Dispense: " + return_message.errorMessage);
@@ -558,11 +556,10 @@ function ParsePrintMessage() {
 										&& printerConfig.printOnDispense) {
 									printOnDispenseGetJson(); //new print on dispense
 								}
-
+								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
-									console
-											.log("Dispense Complete: Going to the next container.");
+									console.log("Dispense Complete: Going to the next container.");
 									preDispenseCheck();
 								}
 							}
@@ -642,7 +639,6 @@ function ParsePrintMessage() {
 							$("#dispenseStatus").text(
 									"Last Dispense: Complete ");
 							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
 						} else {
 							processingDispense = false; // allow user to start another dispense after tinter error
 							startSessionTimeoutTimers();
