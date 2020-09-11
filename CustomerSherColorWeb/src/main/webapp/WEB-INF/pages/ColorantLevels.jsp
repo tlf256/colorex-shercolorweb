@@ -18,9 +18,9 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.4.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/Colorant.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<s:hidden value="%{thisGuid}" id="reqGuid"></s:hidden>
@@ -59,11 +59,11 @@
 						<div class="row">
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3">
 								<span class="badge badge-secondary" style="font-size: 1.2rem;">Colorant Levels</span>
-								<h5 class="text-primary mt-3"><strong><s:property value="tinter.model"></s:property></strong></h5>
+								<h5 class="text-primary mt-3"><strong><s:property value="tinter.model" escapeHtml="true"></s:property></strong></h5>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-8 col-6">
 								<div class="alert alert-warning">
-								  <strong>Note: </strong>Shake the colorant for 30 seconds. Do not fill any canister past the top of it's agitator paddle.
+								  <strong>Note: </strong>Shake the colorant for 30 seconds. Do not fill any canister past the top of its agitator paddle.
 								</div>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3 text-center">

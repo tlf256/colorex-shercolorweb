@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.4.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script>
 		function moveDown(selector){
@@ -54,9 +54,11 @@
 		}
 		
 		function addWarningPopoverForClearedColorant(selector,colorantItem){
+			var safeTintSysId = encodeURIComponent(colorantItem.tintSysId.toString());
+			var safeName = encodeURIComponent(colorantItem.name.toString());
 			$(selector).attr("data-toggle", "popover");
 			$(selector).attr("data-placement","left");
-			$(selector).attr("data-content", "Colorant " + colorantItem.tintSysId + "-" + colorantItem.name +" removed due to percent calculation");
+			$(selector).attr("data-content", "Colorant " + safeTintSysId + "-" + safeName + " removed due to percent calculation");
 			$(selector).popover({trigger : 'manual'});
 			$(selector).popover('toggle');
 			$('.popover').addClass('popover-warning');
@@ -90,7 +92,6 @@
 					success: function (data) {
 						
 						//console.log(data);		
-						
 						if(data.sessionStatus === "expired"){
 		            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 		            	}
@@ -98,7 +99,7 @@
 		            		
 							// walk through result formula
 							data.displayFormula.ingredients.forEach(function(item, i){
-								console.log(item);
+								//console.log(item);
 								if(item.increment.every(allZero)){
 									
 									//clear zero increment colorant
@@ -106,9 +107,13 @@
 									addWarningPopoverForClearedColorant('#form_ingredientList_' + i + '__selectedColorant',item);
 								}else{
 									for (let x = 0; x < item.increment.length; x++) {
-										console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
+										var safeTintSysId = encodeURIComponent(item.tintSysId.toString());
+										var safeName = encodeURIComponent(item.name.toString());
+										var name = safeName.replace(/%20/g, " ");
+										console.log("tintSysId: " + safeTintSysId + " name: " + name);
+										//console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
 										$('#form_ingredientList_' + i + '__selectedColorant option:selected').attr('selected',false);
-										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ item.tintSysId + '-'+ item.name + '"]').attr('selected',true);
+										$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ name + '"]').attr('selected',true);
 										$('#form_ingredientList_' + i + '__increments_' + x + '_').val(item.increment[x]);
 									}
 								}
@@ -136,10 +141,11 @@
 		}
 		
 		function clearColorant(index){
-			$('#form_ingredientList_' + index + '__selectedColorant option:selected').attr('selected',false);
-			$('#form_ingredientList_' + index + '__selectedColorant option[value="-1"]').attr('selected',true);
+			var safeIndex = encodeURIComponent(index);
+			$('#form_ingredientList_' + safeIndex + '__selectedColorant option:selected').attr('selected',false);
+			$('#form_ingredientList_' + safeIndex + '__selectedColorant option[value="-1"]').attr('selected',true);
 			for (var x = 0; x < 4; x++) {
-				$('#form_ingredientList_' + index + '__increments_' + x + '_').val('0');
+				$('#form_ingredientList_' + safeIndex + '__increments_' + x + '_').val('0');
 			}
 		} 
 		
@@ -148,6 +154,13 @@
 		function allZero(element, index, array) {
 			  return element === 0;
 		}
+		
+		
+		// let user override the warning message 
+		function setOverride(){
+			$("input[name='userWarningOverride']").val("true"); 
+		}
+		
 		
 		$(function(){
 			moveDown('#source_row');
@@ -160,9 +173,53 @@
 			if($('#adjByPercentVisible').val() === 'true'){
 				$('#adjByPct').hide();
 			}
+			
+			//validate colorId and colorName fields
+			//prevent special characters < or > from being entered
+			$(document).on({
+				'keypress blur':function(){
+					try{
+						if(event.key == ">" || event.key == "<"){
+							throw "Special characters \"<\" or \">\" not allowed";
+						}
+						if($(this).val().includes("<") || $(this).val().includes(">")){
+							throw "Invalid entry. Please remove these characters: < >";
+						}
+						$('input[name^="color"]').each(function(){
+							$(this).parents().find('#errortxt').remove();
+							$(this).removeClass('border-danger');
+						});
+						$('input:submit').attr('disabled', false);
+					} catch(msg){
+						if(event.type=="keypress"){
+							event.preventDefault();
+						}
+						if(!$(document).find('#errortxt').is(':visible')){
+							if($(this).is('input[name="colorId"]')){
+								$('.errormsg').eq(0).append('<div id="errortxt" class="text-danger"></div>');
+							} else {
+								$('.errormsg').eq(1).append('<div id="errortxt" class="text-danger"></div>');
+							}
+						}
+						$(this).parents('.row').find('#errortxt').text(msg)
+						$(this).addClass('border-danger');
+						if(event.type=="blur"){
+							$(this).focus();
+							$('input:submit').attr('disabled', true);
+						}
+					}
+				}
+			}, '[name="colorId"], [name="colorName"]');
+			
 		});
-		
 		</script>
+		
+		<s:if test="hasActionMessages()">
+			<script>
+				$(function(){ $("#actionMsgModal").modal('show'); });
+			</script>
+		</s:if>
+		
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
@@ -200,6 +257,23 @@
 			.popover-body{
 				color: white;
 			}
+			.chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
+			
 	    </style>
 	</head>
 	
@@ -245,7 +319,7 @@
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue" /><br>
 					</s:iterator>	
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
@@ -272,22 +346,22 @@
 						<strong>Color ID:</strong>
 					</div>
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
-						<s:textfield name="colorId" size="10" maxlength="10" />
+						<s:textfield name="colorId" size="20" maxlength="10" />
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0">
+					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
 						<strong>Color Name:</strong>
 					</div>
-					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
-						<s:textfield name="colorName" size="20" maxlength="20" />
-						<div class="card card-body sw-bg-main"></div>
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 mb-1">
+						<s:textfield name="colorName" size="20" maxlength="30" />
+						<div class="chip sw-bg-main"></div>
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0">
+					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-3 errormsg">
 					</div>
 				</div>
 				<div class="row">
@@ -377,22 +451,31 @@
 					</div>
 				</s:if>
 				<s:if test="hasActionMessages()">
-					<div class="row mb-4" id="alertmsg">
-	            		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+					<div class="warningModalWrapper">
+						<div class="modal fade" aria-labelledby="actionMsgModal" aria-hidden="true"  id="actionMsgModal" role="dialog">
+					    	<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Do you want to override the warning?</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+									</div>
+									<div class="modal-body">
+										<s:actionmessage style="color:black; background-color:#FAFF98; border-color:#FAFF98"/>
+									</div>
+									<div class="modal-footer">
+										<s:submit cssClass="btn btn-primary" id="overrideWarning" value="Yes" onclick="setOverride();" action="MfUserNextAction"/>
+										<button type="button" class="btn btn-secondary" id="cancelWarning" data-dismiss="modal" aria-label="Close" >Cancel</button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" style="background-color:#FAFF98">
-							<s:actionmessage escape="false" style="color:black;background-color:#FAFF98;border-color:#FAFF98"/>
-							<span style="text-indent:8px">
-								<s:checkbox name="userWarningOverride" label="Check this box and click Next to Override of Warning(s)" />
-							</span>
-							<s:iterator value="previousWarningMessages" status="stat">
-								<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
-							</s:iterator>
-						</div>
-						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
-			    		</div>
+						<s:hidden name="userWarningOverride" value="false" /> 
+						<s:iterator value="previousWarningMessages" status="stat">
+							<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
+						</s:iterator>
 					</div>
 				</s:if>
+				
 			    <div id="table_row" class="row mb-3">
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>	

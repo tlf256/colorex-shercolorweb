@@ -80,6 +80,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				// change to custom and replace color id with word Manual
 				reqObj.setColorComp("CUSTOM");
 				reqObj.setColorID("MANUAL");
+				// empty out SW color match if it was set
+				reqObj.setClosestSwColorId("");
+				reqObj.setClosestSwColorName("");
 			}
 			 
 			colorId = reqObj.getColorID();
@@ -282,7 +285,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 						retVal = INPUT;
 					}
 				}
-			}// end looping ManualIgredients and checking positive integers enteres
+			}// end looping ManualIgredients and checking positive integers entered
 
 			// second part of basic entry processing, make a list of ingredients entered and populate ingredient objects
 			if(retVal.equalsIgnoreCase(SUCCESS)){
@@ -538,11 +541,11 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	}
 
 	public void setColorId(String colorId) {
-		this.colorId = Encode.forHtml(colorId);
+		this.colorId = colorId;
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public List<JobField> getJobFields() {

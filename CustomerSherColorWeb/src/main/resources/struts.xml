@@ -5,6 +5,8 @@
 <struts>
 	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
 	<constant name="struts.devMode" value="true" />
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.custom.i18n.resources" value="global" />
 	<constant name="struts.objectFactory" value="spring" />
 	<constant name="struts.mapper.action.prefix.enabled" value="true" />
 	<package name="default" namespace="/" extends="struts-default,json-default">
@@ -131,6 +133,18 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">loginAction</param>
 				<param name="guid1">${guid1}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="cancelPasswordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAction" method="cancel">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -287,6 +301,7 @@
 			<result name="input">/WEB-INF/pages/GetJobFields.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		
 		<action name="displayColorAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -398,8 +413,27 @@
 				<param name="reqGuid">${reqGuid}</param>
 				<!-- <param name="measureColor">${measureColor}</param> -->
 			</result>
+			<result name="savedMeasure" type="redirectAction">
+				<param name="actionName">MeasureColorNextAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="measuredCurve">${measuredCurve}</param>
+			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="colorUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayJobFieldsAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="restart" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="MeasureColorNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="execute">
@@ -461,13 +495,6 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
-		<action name="colorUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="backItUp">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/welcome.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="productUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="backItUp">
@@ -534,6 +561,13 @@
 			</result>
 			<result name="input">/WEB-INF/pages/GetPercentageFormulaBookBase.jsp</result>
 			<result name="error">/WEB-INF/pages/FormulationError.jsp</result>
+		</action>
+		<action name="prodFamilyUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProdFamilyAction" method="backItUp">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="formulateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.GenerateFormulaAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -822,6 +856,7 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">displayFormulaAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="recDirty">${recDirty}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -838,6 +873,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="stampSessionSpectroAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroUtilityAction" method="stampSession">
 			<result name="loginRedirect" type="redirectAction">
@@ -891,6 +927,16 @@
 			<result name="error" type="json"></result>
 		</action>
 		<action name="logTinterEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterEventAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateColorantsTxtAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateColorantsTxtAction" method="execute">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
 			<result name="loginRedirect" type="redirectAction">
@@ -964,6 +1010,19 @@
 			<result name="input">/WEB-INF/pages/TinterConfig.jsp</result>
 			<result name="error">/WEB-INF/pages/TinterConfig.jsp</result>
 
+		</action>
+		<action name="removeTinter"
+			class="com.sherwin.shercolor.customershercolorweb.web.action.RemoveTinterAction"
+			method="execute">
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/welcome.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 	
 
@@ -1069,6 +1128,66 @@
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<!-- 06/24/2019 BXW: New actions for managing the stored spectro measurements -->
+		<action name="spectroManageStoredMeasurementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ManageStoredMeasurements.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroObtainAllStoredMeasurements" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="obtainAllStoredMeasurements">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroSaveNewMeasurementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="saveNewSpectroRemotes">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="deleteSpectroRemoteAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="deleteSpectroRemote">
+			<interceptor-ref name="defaultStack"/>
+		    <interceptor-ref name="json" />
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="updateSpectroRemoteAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="updateSpectroRemote">
+			<interceptor-ref name="defaultStack"/>
+		    <interceptor-ref name="json" />
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="spectroObtainAllRGBColorsAction" 
+				class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction"
+			 	method="obtainAllRGBColors">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<!-- 07/13/2020 - BXW: New actions for verifying/setting the default spectro settings -->
+		<action name="spectroVerifyDefaultSettingsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.VerifyDefaultSpectroSettingsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/VerifyDefaultSpectroSettings.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
+			<result name="success" type="json"></result>
 		</action>
 	</package>
 </struts>

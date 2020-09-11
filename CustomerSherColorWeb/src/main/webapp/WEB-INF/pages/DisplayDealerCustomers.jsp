@@ -63,10 +63,10 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><s:property value="custWebDealerDto.customerId" /></td>
-							<td><s:property value="custWebDealerDto.dealerName" /></td>
-							<td><s:property value="custWebDealerDto.homeStore" /></td>
-							<td><s:property value="custWebDealerDto.comments" /></td>
+							<td><s:property value="custWebDealerDto.customerId" escapeHtml="true" /></td>
+							<td><s:property value="custWebDealerDto.dealerName" escapeHtml="true" /></td>
+							<td><s:property value="custWebDealerDto.homeStore" escapeHtml="true" /></td>
+							<td><s:property value="custWebDealerDto.comments" escapeHtml="true" /></td>
 						</tr>
 					</tbody>
 				</table>

@@ -18,7 +18,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 
 	
 	<style>
@@ -197,36 +197,29 @@
 			<br>
 			<!-- Display first EULA section, which is always present -->
 			<div class="row">
-				<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">
+				<div class="col-lg-3 col-md-3 col-xs-2 col-xs-0">
 					
 				</div>
-				<div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
-					Before accessing SherColor Web Based Color Formulation System for the first time, you must read and accept the license agreement.  Please enter the agreement code provided to you by your Sherwin-Williams representative.
+				<div class="col-lg-7 col-md-6 col-sm-8 col-xs-12">
+					<p>Before accessing SherColor Web Based Color Formulation System for the first time, you must read and accept the license agreement. </p>  
+					<p>Please enter the agreement code provided to you by your Sherwin Williams representative here: </p>
 				</div>
-				<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">
+				<div class="col-lg-2 col-md-3 col-xs-2 col-xs-0">
 
 				</div>
 			</div>
  			<s:form action="startEulaAction" method="post" align="center" theme="bootstrap" >  
 				<div class="row">
-					<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">
-							
+					<div class="col-lg-3 col-md-3 col-xs-2 col-xs-0">	
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
-						<s:textfield id="eulaAgreementCode" name="eulaAgreementCode" />
+					<div class="col-lg-5 col-md-6 col-sm-6 col-xs-9">
+						<s:textfield id="eulaAgreementCode" name="eulaAgreementCode" autofocus="autofocus" />
 					</div>
-					<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">				
-	 				</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">
-						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+						<s:submit cssClass="btn btn-primary btn-med pull-left" id="startEulaFocus" value="Continue" action="startEulaAction"/> 
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
-						<s:submit cssClass="btn btn-primary btn-lg pull-left" id="startEulaFocus" autofocus="autofocus" value="Continue" action="startEulaAction"/> 
-					</div>
-					<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">	
-								
+					<div class="col-lg-2 col-md-1 col-xs-2 col-xs-0">
+						<s:hidden name="reqGuid" value="%{reqGuid}"/>			
 	 				</div>
 				</div>
 			</s:form> 

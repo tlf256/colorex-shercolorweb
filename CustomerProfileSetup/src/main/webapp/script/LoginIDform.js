@@ -66,7 +66,7 @@ $(document).ready(function(){
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
 				dataType:"json",
-				//async:false,
+				async:false,
 				success:function(data){
 					result = data.result;
 				},
@@ -101,7 +101,7 @@ $(document).ready(function(){
 	
 	var mstraccts;
 	
-	$(document).on("blur change", ".mstracctnm", function(){
+	$(document).on("blur", ".mstracctnm", function(){
 		try{
 			var mstracct = $.trim($(this).val());
 			if(mstracct.length > 50){

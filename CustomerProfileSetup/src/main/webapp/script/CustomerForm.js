@@ -75,7 +75,7 @@ $(document).ready(function() {
 		}, 1000);
 	});
 		
-	$(document).on("blur change", "#ntlacctnbr", function(){
+	$(document).on("blur", "#ntlacctnbr", function(){
 		var ntlval = $.trim($("#ntlacctnbr").val());
 		var ntl = $("#ntlacctnbr");
 		var result;
@@ -83,6 +83,7 @@ $(document).ready(function() {
 			url:"ajaxAcctNbrResult.action",
 			data:{acctNbr: ntlval},
 			dataType:"json",
+			async: false,
 			success:function(data){
 				result = data.result;
 			},
@@ -110,7 +111,7 @@ $(document).ready(function() {
 		}
 	});
 		
-	$(document).on("blur change", "#intntlacctnbr", function(){
+	$(document).on("blur", "#intntlacctnbr", function(){
 		var intntlval = $.trim($("#intntlacctnbr").val());
 		var intntl = $("#intntlacctnbr");
 		var result;
@@ -118,8 +119,10 @@ $(document).ready(function() {
 			url:"ajaxAcctNbrResult.action",
 			data:{acctNbr: intntlval},
 			dataType:"json",
+			async: false,
 			success:function(data){
 				result = data.result;
+				console.log("result = " + result);
 			},
 			error:function(request, status){
 				alert(status + ": could not validate account number. Please retry.");
@@ -145,7 +148,7 @@ $(document).ready(function() {
 		}
 	});
 		
-	$(document).on("blur change", "#swuititle", function(){
+	$(document).on("blur", "#swuititle", function(){
 		var title = $.trim($("#swuititle").val());
 		try{
 			if(title.length > 20 || title.length == 0){
@@ -161,7 +164,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	$(document).on("blur change", "#cdsadlfld", function(){
+	$(document).on("blur", "#cdsadlfld", function(){
 		var info = $.trim($("#cdsadlfld").val());
 		try{
 			if(info.length > 20){
@@ -208,7 +211,7 @@ $(document).ready(function() {
 		}
 	});
 		
-	$(document).on("blur change", "#acceptcode", function(){
+	$(document).on("blur", "#acceptcode", function(){
 		try{
 			var acceptcodeval = $.trim($("#acceptcode").val());
 			if(acceptcodeval.length != 6){

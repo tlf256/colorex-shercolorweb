@@ -40,13 +40,13 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String colorName;
 	private String salesNbr;
 	private String reqGuid;
-	private static final String OVERRIDEWARNMSG = "Click Next to override and continue.";
+	private String OVERRIDEWARNMSG;
 	
 	public String execute() {
 		
 		 try {
-			 
 			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			 OVERRIDEWARNMSG = getText("processProductAction.clickNext");
 			 
 			 //validate the product - need call to productService once complete
 			 
@@ -184,7 +184,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setValidationWarning(false);
 			reqObj.setValidationWarningSalesNbr("");
 			sessionMap.put(reqGuid, reqObj);
-		     return SUCCESS;
+		    return SUCCESS;
+		     
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return ERROR;
@@ -192,11 +193,28 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 	
 	public String listProducts() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		String intBases = reqObj.getIntBases();
+		String extBases = reqObj.getExtBases();
+		String colorType = reqObj.getColorType();
+		String intBasesList[] = {""};
+		String extBasesList[] = {""};
+		if (intBases != null) {	
+			intBasesList = intBases.split(",");
+		}
+		if (extBases != null) { 
+			extBasesList = extBases.split(",");
+		}
 		
 		try {
-//			setOptions(mapToOptions(productService.productAutocompleteBoth(partialProductNameOrId.toUpperCase())));
-			/* 09/06/2017 - New Active Products Search. */
-			setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
+			// list all products in autocomplete search because the custom manual option does not have primary base types
+			if (colorType.equals("CUSTOM")) {
+				/* 09/06/2017 - New Active Products Search. */
+				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
+			} else {
+				/* 04/14/2020 - Filter by Compatible Base Products Search */
+				setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList)));
+			}
 		}
 		catch (SherColorException e){
 			logger.error(e.getMessage());
@@ -237,6 +255,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setIntExt("");
 			reqObj.setValidationWarning(false);
 			reqObj.setValidationWarningSalesNbr("");
+			reqObj.setClosestSwColorId("");
+			reqObj.setClosestSwColorName("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		} catch (Exception e) {
@@ -267,7 +287,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setPartialProductNameOrId(String partialProductNameOrId) {
-		this.partialProductNameOrId = Encode.forHtml(partialProductNameOrId);
+		this.partialProductNameOrId = partialProductNameOrId;
 	}
 	
 	public ProductService getProductService() {
@@ -303,7 +323,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setColorID(String colorID) {
-		this.colorID = Encode.forHtml(colorID);
+		this.colorID = colorID;
 	}
 
 	public String getColorComp() {
@@ -319,7 +339,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public String getReqGuid() {

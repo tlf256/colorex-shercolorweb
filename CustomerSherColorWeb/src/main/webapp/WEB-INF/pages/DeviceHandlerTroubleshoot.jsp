@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Enter Job Info</title>
+		<title>SWDeviceHandler Troubleshooting</title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 	</head>
 	
 	<body>

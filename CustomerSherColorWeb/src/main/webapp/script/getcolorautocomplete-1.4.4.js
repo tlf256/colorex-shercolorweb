@@ -1,14 +1,16 @@
 $(document).ready(function() {
 
 	//Disable autoFocus for Custom Manual or Custom Match selections
-	$('input[type=radio]').change(function() {
+	$('input[type=radio]').change(function(event) {
         if(this.value.match(/^CUSTOM/)) {
-        	$( "#partialColorNameOrId" ).autocomplete( "option", "autoFocus", false );
-        	console.log("false");
+        	$( "#partialColorNameOrId" ).autocomplete( "option", "disabled", true );
+        	//console.log("disabled");
         }
         else{
+        	$( "#partialColorNameOrId" ).autocomplete( "enable");
+        	//console.log("enabled");
         	$( "#partialColorNameOrId" ).autocomplete( "option", "autoFocus", true );
-        	console.log("true");
+        	//console.log("true");
         }
     });
 	
@@ -18,11 +20,20 @@ $(document).ready(function() {
 		minLength : 3,
 		delay : 500,
 		autoFocus : true,
+		// displays the autocomplete list above the textfield if there isn't room for it below
+		position: { collision: "flip" },
 		source : function(request, response){
+			var colorNameOrId = encodeURIComponent(request.term);
+			//console.log("encoded partialColorNameOrId - " + colorNameOrId);
+			var selectedCompany = $("select[id='companiesList'] option:selected").val();
 			$.ajax({	
 				url : "listColors.action",
 				dataType : "json",
-				data : {"partialColorNameOrId" : request.term, "selectedCoType" : $('input:radio[name=selectedCoTypes]:checked').val(), "reqGuid" : $('#reqGuid').val() },
+				data : {"partialColorNameOrId" : colorNameOrId, 
+						"selectedCoType" : $('input:radio[name=selectedCoTypes]:checked').val(), 
+						"reqGuid" : $('#reqGuid').val(), 
+						"selectedCompany" : selectedCompany 
+						},
 //				success : function(data){
 //					response: ($.map(data, function(v,i){
 //                        return {
@@ -37,7 +48,7 @@ $(document).ready(function() {
                 	else{
                 		$("#colorData").attr("value",encodeURIComponent(JSON.stringify(data)));
                 		//console.log(data);
-                		console.log($("#colorData").attr("value"));
+                		//console.log($("#colorData").attr("value"));
                 		response(data.slice(0,100));
                 	}
 				}

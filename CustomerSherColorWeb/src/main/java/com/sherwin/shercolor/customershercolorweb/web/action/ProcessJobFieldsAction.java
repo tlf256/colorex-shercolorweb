@@ -63,7 +63,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		
@@ -91,7 +91,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		
@@ -122,11 +122,10 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					logger.debug("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
-					// encode entered value
-					thisField.setEnteredValue(Encode.forHtml(thisField.getEnteredValue()));
-					logger.debug("thisField after encoding: " + thisField.getEnteredValue());
+					thisField.setEnteredValue(thisField.getEnteredValue());
+					
 					i++;
-					validateMe.add(StringEscapeUtils.unescapeHtml(thisField.getEnteredValue()));
+					validateMe.add(thisField.getEnteredValue());
 					jobFieldLabels.add(thisField.getScreenLabel());
 				}
 				
@@ -155,7 +154,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			} // end else jobFieldList is not null
 			
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		
@@ -179,7 +178,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			}
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		return retVal;

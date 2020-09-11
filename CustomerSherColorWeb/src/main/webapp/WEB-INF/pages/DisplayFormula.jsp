@@ -24,17 +24,14 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.2.js"></script>
+	src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.4.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
-	background-color: ${sessionScope[thisGuid].rgbHex
-}
-
-;
+	background-color: ${sessionScope[thisGuid].rgbHex};
 }
 #dispenseQuantityInputError {
 	font-weight: bold;
@@ -55,6 +52,22 @@ badge {
 	margin-left: 3px;
 	margin-right: 3px;
 }
+.chip {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 10px;
+  min-height: 10px;
+  height: 52px;
+  width: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
 </style>
 <script type="text/javascript">
 //global vars
@@ -68,6 +81,7 @@ badge {
 	 var ws_tinter = new WSWrapper("tinter");
 	 var tinterErrorList;
 	 var _rgbArr = [];
+	 var formSubmitting = false;
 	 
 	// now build the dispense formula object
 		var sendingDispCommand = "false";
@@ -132,7 +146,10 @@ function prePrintSave() {
 							//    	 				$("#tinterInProgressModal").modal('hide');
 							updateButtonDisplay();
 							showPrintModal();
-							
+							var saveActionDirty = parseInt(data.recDirty);
+							if (!isNaN(saveActionDirty)){
+								$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+							}
 						}
 					},
 					error : function(err) {
@@ -312,7 +329,9 @@ function ParsePrintMessage() {
 						}
 						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 
-						var $clone = $("#progress-0").clone();
+						var $clone = $("#progress-0")
+										.removeClass('d-none')
+										.clone();
 						$clone.attr("id", "progress-" + count);
 						var $bar = $clone.children(".progress-bar");
 						$bar.attr("id", "bar-" + count);
@@ -801,6 +820,7 @@ function ParsePrintMessage() {
 		});
 		jQuery(document).on("keydown", fkey); // capture F4
 	}
+	
 </script>
 <script type="text/javascript">
 //callback stuff
@@ -910,11 +930,28 @@ function ParsePrintMessage() {
 		console.log("checking decrement pass/fail " + myPassFail);
 		if (myPassFail === true) {
 			dispense();
+			$("#formulaUserPrintAction_recDirty").val(0);
 		} else {
 			//TODO show error on decrement, 
 			waitForShowAndHide("#tinterInProgressModal");
 		}
 	}
+
+function setFormSubmitting() { formSubmitting = true; };
+    
+    window.onload = function() {
+    window.addEventListener("beforeunload", function (e) {
+            var recDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+            // let the user navigate away from the page
+            if (formSubmitting || recDirty == 0) {
+                return undefined;
+            }
+            // confirmation dialog
+            e.preventDefault();
+            // chrome requires returnValue to be set
+            e.returnValue = ''; 
+        });
+    };
 
 
 </script>
@@ -961,7 +998,7 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-				<s:property value="enteredValue" escapeHtml="false" />
+				<s:property value="enteredValue" />
 				<br>
 			</s:iterator>
 		</div>
@@ -984,7 +1021,7 @@ function ParsePrintMessage() {
 			<strong>Color ID:</strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-			${sessionScope[thisGuid].colorID}</div>
+			<s:property value="#session[reqGuid].colorID" /></div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 	<div class="row">
@@ -992,11 +1029,14 @@ function ParsePrintMessage() {
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 			<strong>Color Name:</strong>
 		</div>
-		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-			${sessionScope[thisGuid].colorName}<br>
-			<div class="card card-body sw-bg-main"></div>
+		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
+			<s:property value="#session[reqGuid].colorName" /><br>
+			<div class="chip sw-bg-main mt-1"></div>
+			<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+				<em>Closest SW color is <br><s:property value="#session[reqGuid].closestSwColorId" /> - <s:property value="#session[reqGuid].closestSwColorName" /></em>
+			</s:if>
 		</div>
-		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
+		<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2"></div>
 	</div>
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1039,9 +1079,18 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
 	</div>
-
-	<s:if
-		test="%{#session[reqGuid].displayFormula.deltaEWarning == '' || #session[reqGuid].displayFormula.deltaEWarning == null}">
+	<s:if 
+		test="%{
+		#session[reqGuid].displayFormula.deltaEWarning == null ||
+		#session[reqGuid].displayFormula.deltaEWarning == '' ||
+		(
+		#session[reqGuid].displayFormula.deltaEs[0] < 1 &&
+		#session[reqGuid].displayFormula.deltaEs[1] < 1 &&
+		#session[reqGuid].displayFormula.deltaEs[2] < 1
+		)
+		 
+		
+		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
 			<div class="row">
@@ -1126,23 +1175,26 @@ function ParsePrintMessage() {
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 					<button type="button" class="btn btn-primary" id="formulaDispense"
-						onclick="setDispenseQuantity()" autofocus="autofocus">Dispense</button>
-					<s:submit cssClass="btn btn-secondary" value="Save"
+						onclick="setFormSubmitting; setDispenseQuantity()" autofocus="autofocus">Dispense</button>
+					<s:submit cssClass="btn btn-secondary" value="Save" onclick="setFormSubmitting();"
 						action="formulaUserSaveAction" autofocus="autofocus" />
 					<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
 					<button type="button" class="btn btn-secondary" id="formulaPrint"
 						onclick="prePrintSave();return false;">Print</button>
-					<s:submit cssClass="btn btn-secondary" value="Edit Formula"
+					<s:submit cssClass="btn btn-secondary" value="Edit Formula" onclick="setFormSubmitting();"
 						action="formulaUserEditAction" />
-					<s:submit cssClass="btn btn-secondary" value="Correct"
+					<s:submit cssClass="btn btn-secondary" value="Correct" onclick="setFormSubmitting();"
 						action="formulaUserCorrectAction" />
 					<s:submit cssClass="btn btn-secondary" value="Copy to New Job"
 						action="displayJobFieldUpdateAction" />
 					<s:submit cssClass="btn btn-secondary pull-right" value="Next Job"
-						action="userCancelAction" />
+                        action="userCancelAction" onclick="return promptToSave();" />
 				</div>
 				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 			</div>
+		</div>
+		<!-- Including footer -->
+		<s:include value="Footer.jsp"></s:include>
 
 			<!-- Set Dispense Quantity Modal Window -->
 			<div class="modal" aria-labelledby="setDispenseQuantityModal"
@@ -1373,7 +1425,7 @@ function ParsePrintMessage() {
 						<div class="modal-body">
 							<div class="embed-responsive embed-responsive-1by1">
 								<embed
-									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid"/>"
+									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>"
 									frameborder="0" class="embed-responsive-item">
 							</div>
 
@@ -1407,6 +1459,29 @@ function ParsePrintMessage() {
 					</div>
 				</div>
 			</div>
+			
+						    <!-- added by edo78r for PCSWEB-168 - 4/24/2020 -->
+		<!-- Prompt To Save Modal -->	    
+		<div class="modal" aria-labelledby="promptToSaveModal" aria-hidden="true"  id="promptToSaveModal" role="dialog">
+	    	<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Continue To Next Job</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="skipConfirmText" font-size="4">Do you want to save the formula before continuing to the Next Job?</p>
+					</div>
+					<div class="modal-footer">
+						<s:submit cssClass="btn btn-primary" value="Yes" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="No" onclick="setFormSubmitting();" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="Cancel"/>
+					</div>
+				</div>
+			</div>
+		</div>
+			
 		</s:form>
 	</s:if>
 	<s:else>
@@ -1444,11 +1519,11 @@ function ParsePrintMessage() {
 
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-primary" value="No"
+					<s:submit cssClass="btn btn-primary" value="No" onclick="setFormSubmitting();"
 						action="deltaENoAction" autofocus="autofocus" />
 				</div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-secondary" value="Yes"
+					<s:submit cssClass="btn btn-secondary" value="Yes" onclick="setFormSubmitting();"
 						action="deltaEYesAction" />
 				</div>
 
@@ -1456,7 +1531,7 @@ function ParsePrintMessage() {
 		</s:form>
 	</s:else>
 		<!-- dummy div to clone -->
-	<div id="progress-0" class="progress" style="margin:10px;">
+	<div id="progress-0" class="progress d-none" style="margin:10px;">
         <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
 				 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
 				 <span></span>
@@ -1545,7 +1620,7 @@ function ParsePrintMessage() {
 					$("#formulaDispense").show();
 					btnCount += 1;
 					makeDispensePrimary();
-					// has it been disensed?
+					// has it been dispensed?
 					var myint = parseInt($.trim($("#qtyDispensed").text()));
 					if (isNaN(myint))
 						myint = 0;
@@ -1562,6 +1637,13 @@ function ParsePrintMessage() {
 								.show();
 						$("#formulaUserPrintAction_formulaUserCorrectAction")
 								.show();
+						console.log("Value of Dirty is");
+						console
+								.log(">>"
+								+ $
+												.trim($(
+														"#formulaUserPrintAction_recDirty")
+														.val()) + "<<"); 
 						btnCount += 2;
 					} else {
 						console.log("qDisped is zero");
@@ -1804,9 +1886,25 @@ function ParsePrintMessage() {
 			if ($("#formulaPrint").hasClass("btn-secondary"))
 				$("#formulaPrint").removeClass("btn-secondary");
 		}
+		
+		function promptToSave(){
+	        var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+	        if (isNaN(myDirty)){
+	            myDirty = 0;
+	        }
+	       
+	        if (myDirty == 0) {
+	            console.log("dirty is false");
+	            return true;
+	        }
+	        else
+	       {
+	            console.log("dirty is true");
+	            $("#promptToSaveModal").modal('show');
+	            return false;
+	        }
+	    }
+		
 	</script>
-	
-	<!-- Including footer -->
-	<s:include value="Footer.jsp"></s:include>
 </body>
 </html>

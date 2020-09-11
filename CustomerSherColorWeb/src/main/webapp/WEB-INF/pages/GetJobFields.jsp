@@ -25,7 +25,7 @@
 	src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.2.js"></script>
+	src="script/customershercolorweb-1.4.5.js"></script>
 </head>
 
 <body>
@@ -72,10 +72,10 @@
 						<%-- 							</s:else> --%>
 
 					</div>
-					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+					<div class="col-lg-5 col-md-3 col-sm-1 col-xs-1" id="errormsg">
 						<strong><s:property value="requiredText" /></strong>
 					</div>
-					<div class="col-lg-5 col-md-3 col-sm-1 col-xs-1"></div>
+					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
 				</div>
 			</s:iterator>
 
@@ -112,12 +112,39 @@
 			 var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
 			 txtBox.focus();
 			 
-			 $(".entval").each(function(){
-				var enteredValue = $(this).val();
-				//console.log("enteredValue = " + enteredValue);
-				$(this).val($(this).html(enteredValue).text());
-			 });
-			 
+			//validate jobFields enteredValue
+			//prevent special characters < or > from being entered
+			$(document).on({
+				'keypress blur':function(){
+					try{
+						if(event.key == ">" || event.key == "<"){
+							throw "Special characters \"<\" or \">\" not allowed";
+						}
+						if($(this).val().includes(">") || $(this).val().includes("<")){
+							throw "Invalid entry. Please remove these characters: < >";
+						}
+						$('.entval').each(function(){
+							$(this).parents('.row').find('#errortxt').remove();
+							$(this).removeClass('border-danger');
+						});
+						$('input:submit').attr('disabled', false);
+					} catch(msg){
+						if(event.type=="keypress"){
+							event.preventDefault();
+						}
+						if(!$(document).find('#errortxt').is(':visible')){
+							$(this).parents('.row').find('#errormsg').append('<div id="errortxt" class="text-danger"></div>');
+						}
+						$(this).parents('.row').find('#errortxt').text(msg)
+						$(this).addClass('border-danger');
+						if(event.type=="blur"){
+							$(this).focus();
+							$('input:submit').attr('disabled', true);
+						}
+					}
+				}
+			}, '.entval');
+			
 		 });
 		<!--
 		  function HF_openSherwin() {
