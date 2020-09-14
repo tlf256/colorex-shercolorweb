@@ -23,7 +23,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -495,7 +495,7 @@
 									<p class="lead">3. Position Container and click Purge button to start purge colorants</p>
 									<p></p>
 								</s:if>
-								<p class="lead" id="lastPurgeText">Last purge was done on <s:property value="lastPurgeDate"/> by <s:property value="lastPurgeUser"/></p>
+								<p class="lead" id="lastPurgeText">Last purge was done on <s:property value="lastPurgeDate" escapeHtml="true"/> by <s:property value="lastPurgeUser" escapeHtml="true"/></p>
 								<p></p>
 							</div>
 						</div>

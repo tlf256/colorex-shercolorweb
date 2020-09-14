@@ -31,7 +31,7 @@
 
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 
 
@@ -79,9 +79,9 @@
 				canister4, canister5, canister6, canister7, canister8,
 				canister9, canister10, canister11 ];
 		configuration = new Configuration(
-				"<s:property value="tinter.clrntSysId"/>",
-				"<s:property value="tinter.model"/>",
-				"<s:property value="tinter.serialNbr"/>", canister_layout);
+				"<s:property value="tinter.clrntSysId" escapeHtml="true"/>",
+				"<s:property value="tinter.model" escapeHtml="true"/>",
+				"<s:property value="tinter.serialNbr" escapeHtml="true"/>", canister_layout);
 
 	}
 	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout) {

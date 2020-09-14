@@ -115,33 +115,32 @@
 			//validate jobFields enteredValue
 			//prevent special characters < or > from being entered
 			$(document).on({
-				'keypress':function(){
+				'keypress blur':function(){
 					try{
 						if(event.key == ">" || event.key == "<"){
 							throw "Special characters \"<\" or \">\" not allowed";
 						}
-						
-						if($(document).find('#errortxt')){
-							$('.entval').each(function(){
-								$(this).parents().find('#errortxt').remove();
-								$(this).removeClass('border-danger');
-							});
+						if($(this).val().includes(">") || $(this).val().includes("<")){
+							throw "Invalid entry. Please remove these characters: < >";
 						}
-					} catch(msg){
-						event.preventDefault();
-						if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
-							$(this).parents('.row').find('#errormsg').append('<div id="errortxt" class="text-danger"></div>');
-							$(this).parents('.row').find('#errortxt').text(msg)
-							$(this).addClass('border-danger');
-						}
-					}
-				},
-				'blur': function(){
-					if($(document).find('#errortxt')){
 						$('.entval').each(function(){
-							$(this).parents().find('#errortxt').remove();
+							$(this).parents('.row').find('#errortxt').remove();
 							$(this).removeClass('border-danger');
 						});
+						$('input:submit').attr('disabled', false);
+					} catch(msg){
+						if(event.type=="keypress"){
+							event.preventDefault();
+						}
+						if(!$(document).find('#errortxt').is(':visible')){
+							$(this).parents('.row').find('#errormsg').append('<div id="errortxt" class="text-danger"></div>');
+						}
+						$(this).parents('.row').find('#errortxt').text(msg)
+						$(this).addClass('border-danger');
+						if(event.type=="blur"){
+							$(this).focus();
+							$('input:submit').attr('disabled', true);
+						}
 					}
 				}
 			}, '.entval');

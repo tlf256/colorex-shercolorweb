@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.2.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
 				var selectedValue;
@@ -38,26 +38,35 @@
 				
 				//validate partialColorNameOrId if custom manual or custom match
 				//prevent special characters < or > from being entered
-				$('#partialColorNameOrId').on('keypress', function(){
-					if(selectedValue == "CUSTOM" || selectedValue == "CUSTOMMATCH"){
-						try{
-							if(event.key == ">" || event.key == "<"){
-								//console.log("< or > keypress");
-								throw "Special characters \"<\" or \">\" not allowed";
-							}
-							
-							if($(document).find('#errortxt')){
+				$(document).on({
+					'keypress blur': function(){
+						if(selectedValue == "CUSTOM" || selectedValue == "CUSTOMMATCH"){
+							try{
+								if(event.key == ">" || event.key == "<"){
+									//console.log("< or > keypress");
+									throw "Special characters \"<\" or \">\" not allowed";
+								}
+								if($(this).val().includes(">") || $(this).val().includes("<")){
+									throw "Invalid entry. Please remove these characters: < >";
+								}
 								$(document).find('#errortxt').remove();
-							}
-						} catch(msg){
-							event.preventDefault();
-							if(!$(document).find('#errortxt') || $(document).find('#errortxt').text() == ''){
-								$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+								$('input:submit').attr('disabled', false);
+							} catch(msg){
+								if(event.type=="keypress"){
+									event.preventDefault();
+								}
+								if(!$(document).find('#errortxt').is(':visible')){
+									$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
+								}
 								$(document).find('#errortxt').text(msg);
+								if(event.type=="blur"){
+									$(this).focus();
+									$('input:submit').attr('disabled', true);
+								}
 							}
 						}
 					}
-				});
+				}, '#partialColorNameOrId');
 				
 			});
 			

@@ -62,10 +62,10 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><s:property value="custWebDealerCustDto.customerId" /></td>
+							<td><s:property value="custWebDealerCustDto.customerId" escapeHtml="true" /></td>
 							<td><s:property value="custWebDealerCustDto.dealerName" /></td>
 							<td><s:property value="custWebDealerCustDto.homeStore" /></td>
-							<td><s:property value="custWebDealerCustDto.comments" /></td>
+							<td><s:property value="custWebDealerCustDto.comments" escapeHtml="true" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -82,10 +82,10 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><s:property value="custWebDealerCustOrdDto.dlrCustId" /></td>
-							<td><s:property value="custWebDealerCustOrdDto.controlNbr" /></td>
+							<td><s:property value="custWebDealerCustOrdDto.dlrCustId" escapeHtml="true" /></td>
+							<td><s:property value="custWebDealerCustOrdDto.controlNbr" escapeHtml="true" /></td>
 							<td><s:property value="custWebDealerCustOrdDto.custorderNbr" /></td>
-							<td><s:property value="custWebDealerCustOrdDto.comments" /></td>
+							<td><s:property value="custWebDealerCustOrdDto.comments" escapeHtml="true" /></td>
 						</tr>
 					</tbody>
 				</table>
