@@ -4,20 +4,28 @@
 <%-- <s:hidden name="currentActionURL" value="%{currentAction}" /> --%>
 <input type="hidden" name="sherLinkURL" value="${sessionScope[thisGuid].sherLinkURL}" id="sherLinkURL">
 
+<script type="text/javascript">
+var i18n = [];
+i18n['global.yourSessionExpiresInFiveMin'] = '<s:text name="global.yourSessionExpiresInFiveMin"/>';
+i18n['global.extend'] = '<s:text name="global.extend"/>';
+i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionExpiredClickLogin"/>';
+i18n['global.login'] = '<s:text name="global.login"/>';
+</script>
+
 <div class="modal fade" aria-labelledby="sessionModal" aria-hidden="true"  id="sessionModal" role="dialog">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-      	<h5 class="modal-title">Session Expiration</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+      	<h5 class="modal-title"><s:text name="footer.sessionExpiration"/></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <p id="sessionModalBody">Your session will expire in 5 minutes, if you would like to extend your session please click Extend.</p>
+        <p id="sessionModalBody"><s:text name="global.yourSessionExpiresInFiveMin"/></p>
       </div>
       <div class="modal-footer">
 <%--       	<button id="sessionModalButton" type="button" class="btn btn-success active" onclick="window.location='<s:property value="currentActionURL"/>';" data-dismiss="modal" aria-label="Close" >Extend</button> --%>
-        <button id="sessionModalButton" type="button" class="btn btn-success active" onclick="window.location.reload();" data-dismiss="modal" aria-label="Close" >Extend</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close" >Close</button>
+        <button id="sessionModalButton" type="button" class="btn btn-success active" onclick="window.location.reload();" data-dismiss="modal" aria-label="%{getText('global.extend')}" ><s:text name="global.extend"/></button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="%{getText('global.close')}" ><s:text name="global.close"/></button>
       </div>
     </div>
   </div>
@@ -28,9 +36,10 @@
 	<div class="container text-center">
 		<p class="text-muted">
  			<a href="javascript:HF_openSherwin()"><font>www.sherwin-williams.com</font></a> |
-			<a href="javascript:HF_openPrivacy()"><font>Privacy Statement</font></a> |
-			<a href="javascript:HF_openLegal()"><font>Legal Notice</font></a> |
-			&copy; <span id="currentYear"></span> The Sherwin-Williams Company
+			<a href="javascript:HF_openPrivacy()"><font><s:text name="footer.privacyStatement"/></font></a> |
+			<a href="javascript:HF_openLegal()"><font><s:text name="footer.legalNotice"/></font></a> |
+			&copy; <s:text name="footer.theSherwinWilliamsCompany"><s:param><span id="currentYear"></span></s:param>
+					</s:text><!--<span id="currentYear"></span> The Sherwin-Williams Company-->
   		</p>
 	</div>
 </div>

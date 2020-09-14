@@ -20,12 +20,28 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
 	        }
+	        .chip {
+	          position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
 	    </style>
 	</head>
 
@@ -79,13 +95,13 @@
 					${sessionScope[thisGuid].colorName}
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mb-1">
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-4">
-					<div class="card card-body sw-bg-main"></div>
+					<div class="chip sw-bg-main mt-1"></div>
 				</div>
 			</div>
 			<div class="row">

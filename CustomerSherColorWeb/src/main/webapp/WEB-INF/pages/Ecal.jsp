@@ -22,9 +22,9 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.4.js"></script>
 
 
 
@@ -165,6 +165,12 @@
 		var curDate = new Date();
 	
 		sendTinterEvent(reqGuid, curDate, return_message, null); 
+		// update canister layout if tinter is corob custom
+		if(return_message.configuration != null && return_message.configuration.model != null 
+				&& return_message.configuration.model.includes("COROB CUSTOM")){
+			updateColorantsTxt(reqGuid, return_message, false, null);
+		}
+		
 		if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 			// Detected and no errors from tinter 
             waitForShowAndHide("#initTinterInProgressModal");

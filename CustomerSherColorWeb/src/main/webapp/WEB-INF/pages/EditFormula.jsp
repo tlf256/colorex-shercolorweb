@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.4.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script>
 		function moveDown(selector){
@@ -155,6 +155,13 @@
 			  return element === 0;
 		}
 		
+		
+		// let user override the warning message 
+		function setOverride(){
+			$("input[name='userWarningOverride']").val("true"); 
+		}
+		
+		
 		$(function(){
 			moveDown('#source_row');
 			
@@ -205,8 +212,14 @@
 			}, '[name="colorId"], [name="colorName"]');
 			
 		});
-		
 		</script>
+		
+		<s:if test="hasActionMessages()">
+			<script>
+				$(function(){ $("#actionMsgModal").modal('show'); });
+			</script>
+		</s:if>
+		
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
@@ -244,6 +257,23 @@
 			.popover-body{
 				color: white;
 			}
+			.chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
+			
 	    </style>
 	</head>
 	
@@ -324,14 +354,14 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
 						<strong>Color Name:</strong>
 					</div>
-					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 mb-1">
 						<s:textfield name="colorName" size="20" maxlength="30" />
-						<div class="card card-body sw-bg-main"></div>
+						<div class="chip sw-bg-main"></div>
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
+					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-3 errormsg">
 					</div>
 				</div>
 				<div class="row">
@@ -421,22 +451,31 @@
 					</div>
 				</s:if>
 				<s:if test="hasActionMessages()">
-					<div class="row mb-4" id="alertmsg">
-	            		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+					<div class="warningModalWrapper">
+						<div class="modal fade" aria-labelledby="actionMsgModal" aria-hidden="true"  id="actionMsgModal" role="dialog">
+					    	<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Do you want to override the warning?</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+									</div>
+									<div class="modal-body">
+										<s:actionmessage style="color:black; background-color:#FAFF98; border-color:#FAFF98"/>
+									</div>
+									<div class="modal-footer">
+										<s:submit cssClass="btn btn-primary" id="overrideWarning" value="Yes" onclick="setOverride();" action="MfUserNextAction"/>
+										<button type="button" class="btn btn-secondary" id="cancelWarning" data-dismiss="modal" aria-label="Close" >Cancel</button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" style="background-color:#FAFF98">
-							<s:actionmessage escape="false" style="color:black;background-color:#FAFF98;border-color:#FAFF98"/>
-							<span style="text-indent:8px">
-								<s:checkbox name="userWarningOverride" label="Check this box and click Next to Override of Warning(s)" />
-							</span>
-							<s:iterator value="previousWarningMessages" status="stat">
-								<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
-							</s:iterator>
-						</div>
-						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
-			    		</div>
+						<s:hidden name="userWarningOverride" value="false" /> 
+						<s:iterator value="previousWarningMessages" status="stat">
+							<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
+						</s:iterator>
 					</div>
 				</s:if>
+				
 			    <div id="table_row" class="row mb-3">
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>	

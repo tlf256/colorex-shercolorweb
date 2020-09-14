@@ -18,7 +18,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 	</head>
 	<body>
 <!-- Fixed navbar -->
@@ -118,7 +118,8 @@
 						<s:hidden name="guid1" id="guid1" value="%{guid1}"/>
 						<s:password name="userPass" id="userPass" label="New Password:" placeholder="Enter password here" size="30" maxlength="30"></s:password>
 		    			<s:password name="userPassConfirm" id="userPassConfirm" label="Confirm:" placeholder="Confirm password here" size="30" maxlength="30"></s:password>
-		    			<s:submit cssClass="btn btn-primary btn-lg active" id="LoginFocus" autofocus="autofocus" value="Reset Password" action="passwordChangeAction"/>
+		    			<s:submit cssClass="btn btn-primary pull-left btn-lg active" id="LoginFocus" autofocus="autofocus" value="Reset Password" action="passwordChangeAction"/>
+		    			<s:submit cssClass="btn btn-secondary pull-right btn-lg" id="cancelChange" value="Cancel" action="cancelPasswordChangeAction"/>
 		    		</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
 					</div>	

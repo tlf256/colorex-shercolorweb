@@ -24,17 +24,14 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.2.js"></script>
+	src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.4.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
-	background-color: ${sessionScope[thisGuid].rgbHex
-}
-
-;
+	background-color: ${sessionScope[thisGuid].rgbHex};
 }
 #dispenseQuantityInputError {
 	font-weight: bold;
@@ -54,6 +51,22 @@ badge {
 .btn {
 	margin-left: 3px;
 	margin-right: 3px;
+}
+.chip {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 10px;
+  min-height: 10px;
+  height: 52px;
+  width: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.125);
 }
 </style>
 <script type="text/javascript">
@@ -316,7 +329,9 @@ function ParsePrintMessage() {
 						}
 						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 
-						var $clone = $("#progress-0").clone();
+						var $clone = $("#progress-0")
+										.removeClass('d-none')
+										.clone();
 						$clone.attr("id", "progress-" + count);
 						var $bar = $clone.children(".progress-bar");
 						$bar.attr("id", "bar-" + count);
@@ -494,9 +509,7 @@ function ParsePrintMessage() {
 			$("#tinterProgressList").empty();
 			tinterErrorList = [];
 			$(".progress-wrapper").empty();
-
 			writeDispense(return_message); // will also send tinter event
-			waitForShowAndHide("#tinterInProgressModal");
 		} else {
 			$("#tinterInProgressDispenseStatus").text(
 					"Last Dispense: " + return_message.errorMessage);
@@ -543,11 +556,10 @@ function ParsePrintMessage() {
 										&& printerConfig.printOnDispense) {
 									printOnDispenseGetJson(); //new print on dispense
 								}
-
+								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
-									console
-											.log("Dispense Complete: Going to the next container.");
+									console.log("Dispense Complete: Going to the next container.");
 									preDispenseCheck();
 								}
 							}
@@ -627,7 +639,6 @@ function ParsePrintMessage() {
 							$("#dispenseStatus").text(
 									"Last Dispense: Complete ");
 							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
 						} else {
 							processingDispense = false; // allow user to start another dispense after tinter error
 							startSessionTimeoutTimers();
@@ -1014,11 +1025,14 @@ function setFormSubmitting() { formSubmitting = true; };
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 			<strong>Color Name:</strong>
 		</div>
-		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
 			<s:property value="#session[reqGuid].colorName" /><br>
-			<div class="card card-body sw-bg-main"></div>
+			<div class="chip sw-bg-main mt-1"></div>
+			<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+				<em>Closest SW color is <br><s:property value="#session[reqGuid].closestSwColorId" /> - <s:property value="#session[reqGuid].closestSwColorName" /></em>
+			</s:if>
 		</div>
-		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
+		<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2"></div>
 	</div>
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1061,9 +1075,18 @@ function setFormSubmitting() { formSubmitting = true; };
 		</div>
 		<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
 	</div>
-
-	<s:if
-		test="%{#session[reqGuid].displayFormula.deltaEWarning == '' || #session[reqGuid].displayFormula.deltaEWarning == null}">
+	<s:if 
+		test="%{
+		#session[reqGuid].displayFormula.deltaEWarning == null ||
+		#session[reqGuid].displayFormula.deltaEWarning == '' ||
+		(
+		#session[reqGuid].displayFormula.deltaEs[0] < 1 &&
+		#session[reqGuid].displayFormula.deltaEs[1] < 1 &&
+		#session[reqGuid].displayFormula.deltaEs[2] < 1
+		)
+		 
+		
+		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
 			<div class="row">
@@ -1165,6 +1188,9 @@ function setFormSubmitting() { formSubmitting = true; };
 				</div>
 				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 			</div>
+		</div>
+		<!-- Including footer -->
+		<s:include value="Footer.jsp"></s:include>
 
 			<!-- Set Dispense Quantity Modal Window -->
 			<div class="modal" aria-labelledby="setDispenseQuantityModal"
@@ -1501,7 +1527,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		</s:form>
 	</s:else>
 		<!-- dummy div to clone -->
-	<div id="progress-0" class="progress" style="margin:10px;">
+	<div id="progress-0" class="progress d-none" style="margin:10px;">
         <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
 				 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
 				 <span></span>
@@ -1876,8 +1902,5 @@ function setFormSubmitting() { formSubmitting = true; };
 	    }
 		
 	</script>
-	
-	<!-- Including footer -->
-	<s:include value="Footer.jsp"></s:include>
 </body>
 </html>

@@ -140,19 +140,19 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 
 		catch(IOException ie) {
-			logger.error(ie.getMessage());
-			logger.error(ie);
+			logger.error(ie.getMessage() + ": ", ie);
+			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage());
-			logger.error(re);
+			logger.error(re.getMessage() + ": ", re);
+			//logger.error(re);
 		}
 		finally {
 			try {
 				document.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				logger.error(e);
+				logger.error(e.getMessage() + ": ", e);
 			}
 		}
 
@@ -184,7 +184,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1);
+			logger.error(e1.getMessage() + ": ", e1);
 		}
 
 
@@ -659,12 +659,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage());
-			logger.error(ie);
+			logger.error(ie.getMessage() + ": ", ie);
+			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage());
-			logger.error(re);
+			logger.error(re.getMessage() + ": ", re);
+			//logger.error(re);
 		}
 	}
 
@@ -685,60 +685,66 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	 */
 	String replaceUnicode(String input) {
 		String retString="";
-		StringBuilder sb = new StringBuilder(input.length());
-		int count = 0;
-		for (Character c : input.toCharArray()) {
-			
-		    if (!CharUtils.isAscii(c)) {
-		        if((count % 2)==0){
-		        sb.append('#');
-		        }
-		        count++;
-		    } else {
-		        sb.append(c);
-		    }
+		try {
+			StringBuilder sb = new StringBuilder(input.length());
+			int count = 0;
+			for (Character c : input.toCharArray()) {
+				
+			    if (!CharUtils.isAscii(c)) {
+			        if((count % 2)==0){
+			        sb.append('#');
+			        }
+			        count++;
+			    } else {
+			        sb.append(c);
+			    }
+			}
+			retString = sb.toString();
+		} catch(Exception e) {
+			logger.error(e.getMessage() + ": ", e);
 		}
 	
-	
-		return sb.toString();
+		return retString;
 	
 	}
 	void cellSettings(Cell<PDPage> cell, int fontSize, float cellHeight )
 	{
-
-		String text = cell.getText();
-
-		//get new font if unicode text found.
-		//if font not available replace unicode chars with '#'
-		//if no unicode chars, just use helvetica
-		if(text!=null && text.length()>0) {
-			if(hasUnicode(text)){
-				fontBold = getUnicode();
-				if(fontBold == null) {
+		try {
+			String text = cell.getText();
+	
+			//get new font if unicode text found.
+			//if font not available replace unicode chars with '#'
+			//if no unicode chars, just use helvetica
+			if(text!=null && text.length()>0) {
+				if(hasUnicode(text)){
+					fontBold = getUnicode();
+					if(fontBold == null) {
+						fontBold = helvetica;
+						cell.setText(replaceUnicode(text));
+					}
+				}
+				else {
 					fontBold = helvetica;
-					cell.setText(replaceUnicode(text));
 				}
 			}
-			else {
+			else { //null case, must have helvetica to avoid error.
 				fontBold = helvetica;
 			}
+			cell.setFontBold(fontBold);
+			cell.setFont(fontBold);
+	
+			cell.setFontSize(fontSize);
+	
+			//	cell.setHeight(cellHeight); // DJM setting the height seems to make everything not print.
+	
+	
+			cell.setLeftPadding(0);
+			cell.setRightPadding(0);
+			cell.setTopPadding(0);
+			cell.setBottomPadding(0);
+		} catch(Exception e) {
+			logger.error(e.getMessage() + ": ", e);
 		}
-		else { //null case, must have helvetica to avoid error.
-			fontBold = helvetica;
-		}
-		cell.setFontBold(fontBold);
-		cell.setFont(fontBold);
-
-		cell.setFontSize(fontSize);
-
-		//	cell.setHeight(cellHeight); // DJM setting the height seems to make everything not print.
-
-
-		cell.setLeftPadding(0);
-		cell.setRightPadding(0);
-		cell.setTopPadding(0);
-		cell.setBottomPadding(0);
-
 
 
 	}
@@ -758,6 +764,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 		}
 		return table;
@@ -779,6 +786,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 		}
 		return table;
@@ -848,6 +856,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 		}
 		return table;
@@ -862,6 +871,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			content.drawImage(pdImage, 20, 12, 100, 15);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 		}
 	}
@@ -882,6 +892,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			canvas1.finish();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 		}
 		return canvas1.getBufferedImage();
@@ -963,7 +974,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					unicodeFont = PDType0Font.load(document,f);
 					setUnicode(unicodeFont);
 				} catch (IOException e) {
-					logger.error(e);
+					logger.error(e.getMessage() + ": ", e);
 				}
 			}
 		}

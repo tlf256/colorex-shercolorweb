@@ -19,9 +19,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.4.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -89,6 +89,7 @@
 		var sendingTinterCommand = "false";
 		var sendingSpectroCommand = "false";
 		var detectAttempt = 0;
+		var layoutUpdateChosen = false;
 
 		<s:if test="%{tinter.model != null && tinter.model != ''}">
 			// setup local host config
@@ -203,20 +204,24 @@
 			sendingTinterCommand = "true";
 	    	ws_tinter.send(json);
 		}
-		
+
 		function detectTinter(){
-			$("#initTinterInProgressModal").modal('show');
+			// show layout update progress modal if the call is a result of choosing Update Layout in menu
+			if (layoutUpdateChosen){
+				$("#layoutUpdateInProgressModal").modal('show');
+			} else {
+				$("#initTinterInProgressModal").modal('show');
+			}
 			rotateIcon();
 			var cmd = "Detect";
 			var shotList = null;
 			var configuration = null;
-			var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-	    	var json = JSON.stringify(tintermessage);
+			var tintermessage = new TinterMessage(cmd,null,null,null,null);
+			var json = JSON.stringify(tintermessage);
 			sendingTinterCommand = "true";
 	    	ws_tinter.send(json);
 		}
 		function AfterDetectTinterGetStatus(){
-			;
 			var cmd = "InitStatus";
 			$("#initTinterInProgressModal").modal('show');
 			rotateIcon();
@@ -360,36 +365,110 @@
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			sendTinterEvent(myGuid, curDate, return_message, null); 
-			waitForShowAndHide('#initTinterInProgressModal');
-			initErrorList = [];
-			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
-				// Detected and no errors from tinter 			
-				// clear init error in session			
-				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+			// hide whichever in progress modal was shown when detect command went out
+			if (layoutUpdateChosen){
+				waitForShowAndHide('#layoutUpdateInProgressModal');
 			} else {
-				if (return_message.errorNumber == -10500 && return_message.commandRC == -10500){
-					// show warnings?	
+				waitForShowAndHide('#initTinterInProgressModal');
+			}
+			
+			/* if tinter is corob custom, update canister layout. If user chose this through the menu, 
+			show layout modal and reset flag, otherwise show any detect/init errors */
+			if(return_message.configuration != null && return_message.configuration.model != null 
+					&& return_message.configuration.model.includes("COROB CUSTOM")){
+				updateColorantsTxt(myGuid, return_message, layoutUpdateChosen, showUpdatedLayout);
+			}
+			if (layoutUpdateChosen){
+				layoutUpdateChosen = false;
+			} else {
+				initErrorList = [];
+				if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+					// Detected and no errors from tinter 			
+					// clear init error in session			
 					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 				} else {
-					//Show a modal with error message to make sure the user is forced to read it.
-					$("#tinterErrorList").empty();
-					
-					if(return_message.errorList!=null && return_message.errorList[0]!=null){
-						return_message.errorList.forEach(function(item){
-							$("#tinterErrorList").append("<li>" + item.message + "</li>");
-							initErrorList.push(item.message);
-						});
+					if (return_message.errorNumber == -10500 && return_message.commandRC == -10500){
+						// show warnings?	
+						saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 					} else {
-						initErrorList.push(return_message.errorMessage);
-						$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+						//Show a modal with error message to make sure the user is forced to read it.
+						$("#tinterErrorList").empty();
+						
+						if(return_message.errorList!=null && return_message.errorList[0]!=null){
+							return_message.errorList.forEach(function(item){
+								$("#tinterErrorList").append("<li>" + item.message + "</li>");
+								initErrorList.push(item.message);
+							});
+						} else {
+							initErrorList.push(return_message.errorMessage);
+							$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+						}
+						$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
+						$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+						$("#tinterErrorListModal").modal('show');
+						saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 					}
-					$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-					$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
-					$("#tinterErrorListModal").modal('show');
-					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 				}
 			}
     	}
+		
+		function showUpdatedLayout(data){
+			$(".progress-wrapper").empty();
+			var count = 1;
+			// make sure list is in numerical order by tank position 
+			data.tinterCanisterList.sort(function(a,b) {return Number(a.position) - Number(b.position)});
+			
+			// build canister layout graphic 
+			data.tinterCanisterList.forEach(function(item){
+				// clone dummy div, update info and add to modal
+				var $clone = $("#progress-0").clone().removeClass('d-none');
+				$clone.attr("id","progress-" + count);
+				var $bar = $clone.children(".progress-bar");
+				$bar.attr("id","bar-" + count);
+				$bar.css("width", "100%");
+				$clone.css("display", "block");
+				$bar.children("span").text( item.position + " - " + item.clrntCode + " " + item.maxCanisterFill + " oz");
+				var color_rgb = item.rgbHex;
+				
+				// if rgbHex value wasn't set (probably an NA canister), show as blank  
+				if (color_rgb == null || color_rgb == ""){
+					$bar.css("background-color", "#ffffff");
+					$bar.children("span").css("color", "black");
+					if (item.clrntCode == "NA"){
+						$bar.children("span").text(item.position + " - Not in use");
+					}
+				} else {
+					//set up text and background color
+					switch(item.clrntCode){
+					case "WHT":
+					case "TW":
+					case "W1":
+						$bar.css("background-color", "#efefef");
+						$bar.children("span").css("color", "black");
+						break;
+					case "OY":
+					case "Y1":
+					case "YGS":
+						$bar.css("background-color", color_rgb);
+						$bar.children("span").css("color", "black");
+						break;
+					default:
+						$bar.css("background-color", color_rgb);
+						$bar.children("span").css("color", "white");
+						break;
+					}
+				}
+				
+				$clone.appendTo(".progress-wrapper");
+				count++;
+			})
+			// pause to give the other modal time to close, then show the updated canister layout graphic
+			setTimeout(function() { 
+				$("#updatedCanisterLayoutModal").modal('show');
+			}, 500);
+		}
+		
+		
     	function UnsolicitedDetectResp(return_message){
       
         		$("#progress-message").text(return_message.errorMessage);
@@ -574,9 +653,15 @@
 									$('li#colorantLevels').show();
 									$('li#dispenseColorants').show();
 									$('li#tinterEcal').show();
+									$('li#tinterRemove').show();
+									
 									if(localhostConfig!=null && localhostConfig.model!=null && localhostConfig.model!=""){
 										//TODO check lastInit for tinter, if needed go detect
 										checkTinterStatus();
+										// only show the update layout option if tinter model is corob custom
+										if (localhostConfig.model.includes("COROB CUSTOM")){
+											$('li#updateCanisterLayout').show();
+										}
 									}
 								}
 							}
@@ -607,7 +692,7 @@
 							//DJMif (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
 								//detectTinter();
-								
+							
 							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.indexOf("FM X") >= 0){
 									DetectFMXResp(return_message);
 							} 
@@ -684,6 +769,19 @@
 							else{
 								UnsolicitedDetectResp(return_message);
 								}
+							break;
+						case 'Config':
+							console.log("Processing return message for unconfig");
+							// notify user of tinter removal or if any errors occurred
+							$('#initTinterInProgressModal #spinner').addClass('d-none');
+							$('#initTinterInProgressModal .modal-body').text("Tinter removed.");
+							$('#initTinterInProgressModal .modal-footer').html(
+									'<button type="button" class="btn btn-primary" id="closeModal" onclick="deleteTinter();">OK</button>');
+							
+							// log tinter event
+							var curDate = new Date();
+							var myGuid = $( "#startNewJob_reqGuid" ).val();
+							sendTinterEvent(myGuid, curDate, return_message, null);
 							break;
 						default:
 							//Not a response for our command...
@@ -783,6 +881,10 @@
 								if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
 								$('#coloreyeNotify').show();
 								$('li#spectroCalibrate').show();
+								var colorEyeModel = localhostSpectroConfig.model;
+				  				if(colorEyeModel === "Ci62+SWW" || colorEyeModel === "Ci62+SWS"){
+				  					$('#spectroManageStoredMeasurements').removeClass('d-none');
+				  				}
 								$('li#spectroGetInfo').show();
 								$("#coloreyeStatusList").append("<li><strong>Comm Status:</strong> CONNECTED</li>");
 								console.log("ready to get spctro calibration status as we received a Detect");
@@ -865,21 +967,28 @@
 		//Used to rotate loader icon in modals
 		function rotateIcon(){
 			let n = 0;
+			var spinner = $('#spinner');
+			var modal = $('#initTinterInProgressModal');
+			if (layoutUpdateChosen){
+				spinner = $('#layoutUpdateSpinner');
+				modal = $('#layoutUpdateInProgressModal');
+			}
+			
 			console.log(status);
-			$('#spinner').removeClass('d-none');
+			spinner.removeClass('d-none');
 			let interval = setInterval(function(){
 		    	n += 1;
 		    	if(n >= 60000){
-		            $('#spinner').addClass('d-none');
+		            spinner.addClass('d-none');
 		        	clearInterval(interval);
 		        }else{
-		        	$('#spinner').css("transform","rotate(" + n + "deg)");
+		        	spinner.css("transform","rotate(" + n + "deg)");
 		        }
 			},5);
 			
-			$('#initTinterInProgressModal').one('hide.bs.modal',function(){
-				$('#spinner').addClass('d-none');
+			modal.on('hide.bs.modal',function(){
 	        	if(interval){clearInterval(interval);}
+	        	spinner.addClass('d-none');
 			});
 		}
 		
@@ -906,7 +1015,46 @@
 				$("#unsupportedBrowserModal").modal('show');
 			}
 		}
-
+		
+		function showRemoveTinterModal(){
+			$('#removeTinterTxt').html('<h5><strong>'+ sessionTinterInfo.model +':</strong> <strong>'+ 
+					sessionTinterInfo.serialNbr +'</strong></h5><h6>Tinter will be removed from the system.<br>Are you sure?</h6>');
+			$('#removeTinterModal').modal('show');
+		}
+		
+		function unconfig_tinter(){
+			var command = "Config";
+			var configuration = new Configuration(null, "Standalone", null,	null);
+			var tinterMessage = new TinterMessage(command, null, configuration, null, null);
+			var json = JSON.stringify(tinterMessage);
+	
+			if (ws_tinter && ws_tinter.isReady == "false") {
+				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+				ws_tinter = new WSWrapper("tinter");
+			}
+			ws_tinter.send(json);
+		}
+		
+		function removeTinter(){
+			console.log("Removing tinterconfig");
+			$('#removeTinterModal').modal('hide');
+			$('#initTinterInProgressModal').modal('show');
+			$('#initTinterInProgressModal .modal-title').text('Remove Tinter Status');
+			$('#initTinterInProgressModal .modal-body').text('Removing tinter...');
+			rotateIcon();
+			
+			setTimeout(function(){
+				unconfig_tinter();
+			}, 1000);
+		}
+		
+		function deleteTinter(){
+			$('#initTinterInProgressModal').modal('hide');
+			// delete tinter from custWebDevices
+			// regardless of tinterconfig.conf deletion
+			window.location.href = "removeTinter?reqGuid=${reqGuid}";
+		}
+		
 	</script>
   </head>
 		    
@@ -930,6 +1078,10 @@
 	<%-- 								    </c:if>  --%>
 	<%-- 									<li><a href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog'></span> Configure</a></li> --%>
 									    <li id="spectroCalibrate"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCalibrateAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-bullseye pr-1'></span> Calibrate</a></li>
+										
+										<!-- 6/24/2019 BXW: This menu item has been added to incorporate new Ci62 functionality, -->
+									    <li id="spectroManageStoredMeasurements" class="d-none"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroManageStoredMeasurementsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-edit'></span>  Manage Remote Measurements</a></li>
+										<li id="spectroVerifyDefaultSettings"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroVerifyDefaultSettingsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-check-square-o'></span>  Verify Default Spectro Settings</a></li>
 										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> Color Eye Information</a></li>
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
 				        			</ul>
@@ -938,11 +1090,13 @@
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Tinter Menu</a>
 	        						<ul class="dropdown-menu" id="tintermenu">
 								    	<li id="tinterPurge"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterPurgeAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-tint pr-2'></span> Purge</a></li>
+								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> Update Canister Layout</a></li>
 				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> Colorant Levels</a></li>
 				        				<li id="dispenseColorants"><a class="dropdown-item" tabindex="-1" href='<s:url action="displayDispenseColorantsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-random pr-1'></span>  Dispense Colorants</a></li>
 								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=detectTinter();><span class='fa fa-retweet pr-1'></span> Initialize Tinter</a></li>
 								        <li id="tinterEcal"><a class="dropdown-item" tabindex="-1" href='<s:url action="ecalManagerAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>' ><span class='fa fa-exchange pr-1'></span> Calibration Manager</a></li>
 										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Add New Tinter</a></li>
+										<li id="tinterRemove"><a class="dropdown-item" tabindex="-1" href="#" onclick="showRemoveTinterModal();"><span class='fa fa-eject pr-1'></span> Remove Tinter</a></li>
 				        			</ul>
 	       						</li>
 	       						<li class="dropdown-item dropdown-submenu">
@@ -1014,7 +1168,7 @@
 			     		<li class="nav-item"><span class='navbar-text'>Logged in as ${sessionScope[thisGuid].firstName} ${sessionScope[thisGuid].lastName}</span></li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
-			     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
+						<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
 			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />">Logout <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
 			     	</ul>
 			   </div><!--/.nav-collapse -->
@@ -1025,7 +1179,7 @@
 	
 	<body>
 		<div class="container-fluid">
-		<div class="row mt-5">
+			<div class="row mt-5">
 				<div class="col-lg-2 col-md-2 col-xs-2 col-xs-0">
 					
 				</div>
@@ -1070,6 +1224,34 @@
 							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="Lookup Existing Job" action="listJobsAction"/>
 				    	</div>  
 			    	
+			    	<!-- Updated Canister Layout Modal Window -->
+				    <div class="modal fade" aria-labelledby="updatedCanisterLayoutModal" aria-hidden="true"  id="updatedCanisterLayoutModal" role="dialog">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="updatedCanisterLayoutTitle">Updated Canister Layout</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<div>
+										<div class="progress-wrapper"></div>
+									</div>
+									<br>
+									<p>CorobTECH must be closed for your changes to have saved. Canister levels are set to full. Please fill your canisters to the top of the agitator paddles.</p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" id="updatedCanisterLayoutOK" data-dismiss="modal" aria-label="Close" >OK</button>
+								</div>
+							</div>
+						</div>
+					</div>	
+					<div id="progress-0" class="progress d-none" style="margin:10px;">
+						<div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
+								 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue; text-align: left">
+								 <span style="padding-left: 45%"></span>
+				  		</div>
+					</div>
+					
 				    <!-- Check Tinter Status in Progress Modal Window -->
 				    <div class="modal fade" aria-labelledby="checkTinterStatusInProgressModal" aria-hidden="true"  id="checkTinterStatusInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
 				    	<div class="modal-dialog" role="document">
@@ -1098,6 +1280,24 @@
 								</div>
 								<div class="modal-body">
 									<p id="progress-message" font-size="4">Please wait while we detect and initialize the tinter...</p>
+								</div>
+								<div class="modal-footer">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Tinter Canister Layout Update in Progress Modal Window -->
+				    <div class="modal fade" aria-labelledby="layoutUpdateInProgressModal" aria-hidden="true"  id="layoutUpdateInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<i id="layoutUpdateSpinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
+									<h5 class="modal-title">Tinter Detection and Layout Update</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<p id="progress-message" font-size="4">Please ensure that CorobTECH is closed in order to save your changes to the canister layout. Please wait while we detect and initialize the tinter...</p>
 								</div>
 								<div class="modal-footer">
 								</div>
@@ -1159,7 +1359,25 @@
 								</div>
 							</div>
 						</div>
-					</div>	    
+					</div>
+					<!-- Remove Tinter Modal -->
+				    <div class="modal fade" aria-labelledby="removeTinterModal" aria-hidden="true"  id="removeTinterModal" role="dialog">
+				    	<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="">Remove Tinter</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									<div id="removeTinterTxt"></div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" id="rmTinter" class="btn btn-danger" onclick="removeTinter();">Yes</button>
+									<button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal" aria-label="Close" >No</button>
+								</div>
+							</div>
+						</div>
+					</div>
 					</s:form>
 				</div>
 				<div class="col-xl-4 col-lg-3 col-sm-1 col-xs-0">
@@ -1178,6 +1396,30 @@
 // 				e.preventDefault();
 // 			});
 
+			$.ajax({
+		  		url: "spectroObtainAllStoredMeasurements.action",
+		  		type: "POST",
+		  		data: {
+		  			reqGuid : "${reqGuid}"
+		  		},
+		  		dataType: "json",
+		  		async: true,
+		  		success: function (data) {
+		  			if(data.sessionStatus === "expired"){
+		  	        	window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		  	        } else{
+		  				if(data.measurementTable.length > 0){
+		  					$('#spectroManageStoredMeasurements').removeClass('d-none');
+		  				} else {
+		  					$('#spectroManageStoredMeasurements').addClass('d-none');
+		  				}
+		  	   								
+					}
+		  		},
+		  		error: function(err){
+		  			console.log(JSON.stringify(err));
+		  		}
+		  	});
 			//localhostConfig will be set if they have returned to landing page and have a tinter attached
 			if($("#startNewJob_sessionHasTinter").val()=="true"){
 				console.log("session has tinter");
@@ -1188,6 +1430,7 @@
 				$('li#colorantLevels').show();
 				$('li#dispenseColorants').show();
 				$('li#tinterEcal').show();
+				$('li#tinterRemove').show();
 			} else {
 				console.log("session DOES NOT HAVE tinter");
 				$('#tinterNotify').hide(); 
@@ -1198,6 +1441,13 @@
 				$('li#colorantLevels').hide();
 				$('li#dispenseColorants').hide();
 				$('li#tinterEcal').hide();
+				$('li#tinterRemove').hide();
+			}
+			// only show the update layout option if tinter model is corob custom
+			if (localhostConfig != null && localhostConfig.model != null && localhostConfig.model.includes("COROB CUSTOM")){
+				$('li#updateCanisterLayout').show();
+			} else {
+				$('li#updateCanisterLayout').hide();
 			}
 			//reread last detect from websocket if new session or flag is set from previous init.
  			if( ($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasTinter").val()=="true") || $("#startNewJob_reReadLocalHostTinter").val()=="true" ) {
@@ -1219,12 +1469,14 @@
 				if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
 				$('li#spectroCalibrate').show();
 				$('li#spectroGetInfo').show();
+				$('li#spectroVerifyDefaultSettings').show();
 			} else {
 				console.log("localhostSpectroConfig is null");
 				$('#coloreyeNotify').hide(); 
 				if(!$('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').addClass('d-none');}
 				$('li#spectroCalibrate').hide();
 				$('li#spectroGetInfo').hide();
+				$('li#spectroVerifyDefaultSettings').hide;
 			}
 			//if($("#startNewJob_newSession").val()=="true" && $("#startNewJob_siteHasSpectro").val()=="true"){
 			//PSCWEB-330 CSW - Color Eye Status does not display after configuration - BKP - added
@@ -1241,6 +1493,7 @@
 			if (daysUntilPwdExpire <= 7 && $("#startNewJob_newSession").val()=="true") {
 				$('#passwordExpirationModal').modal('show');
 			}
+			
 		});
 		</script>
 		<script>

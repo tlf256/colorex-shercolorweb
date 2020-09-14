@@ -68,10 +68,9 @@
 		</s:form>
 		<div class="center-text-parent">
 			<p class="text-center sw-textbox" >
-				If you have questions about your assigned username and password, call
-				1-800-566-2997 or send an email to <a
-					href="mailto:sherlink@sherwin.com">sherlink@sherwin.com</a> and a
-				SherLink Representative will assist you.
+				If you have questions about your assigned username and password, call 1-800-566-2997 or send an email to <a
+					href="mailto:shercolor@sherwin.com">shercolor@sherwin.com</a> and a
+				SherColor Representative will assist you.
 			</p>
 		</div>
 	</div>

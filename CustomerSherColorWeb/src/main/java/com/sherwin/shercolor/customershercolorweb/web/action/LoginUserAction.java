@@ -83,6 +83,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		int loginAttemptCnt = 0;
 		int sleepSeconds = 0;
 		int sleepPower = 0;
+		boolean isDisabledLogin = false;
 		HttpServletRequest request = ServletActionContext.getRequest();
 		Pattern pattern = Pattern.compile("[A-Za-z0-9_]+");
 		
@@ -131,6 +132,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				
 				// Is Login Active
 				if (isloginActive(userId) != true) {
+					isDisabledLogin = true;
 					if (logger.isDebugEnabled())
 						logger.debug("authentication failed, inactive login  -> " + Encode.forHtml(userId));
 					throw new Exception("Login failed. This login has been disabled.");
@@ -200,7 +202,11 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				logger.info("sleeping for " + sleepSeconds + " seconds after login failure attempt " + loginAttemptCnt); 
 				TimeUnit.SECONDS.sleep(sleepSeconds);
 				sessionMap.put("sher-link-login-attempt", loginAttemptCnt);
-				addFieldError("userId","Login/password combination failed. Please retry your request.");
+				if (isDisabledLogin) {
+					addFieldError("userId","Too many failed login attempts. Please contact shercolor@sherwin.com for required action.");
+				} else {
+					addFieldError("userId","Login/password combination failed. Please retry your request.");
+				}
 				return INPUT;
 			}			
 		} catch (Exception e) {

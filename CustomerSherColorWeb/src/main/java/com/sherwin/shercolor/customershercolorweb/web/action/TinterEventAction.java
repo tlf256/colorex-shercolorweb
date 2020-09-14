@@ -63,15 +63,24 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 		else {
 			tintEvent.setCustomerId("NA");
 		}
+		
+		String retVal = null;
 
-		
+		try {
 
-		tintEvent.setClrntSysId(newTinter.getClrntSysId());
-		tintEvent.setTinterModel(newTinter.getModel());  // when this is null during config we have issues or we have previous model
-		tintEvent.setTinterSerialNbr(newTinter.getSerialNbr());
+			tintEvent.setClrntSysId(newTinter.getClrntSysId());
+			tintEvent.setTinterModel(newTinter.getModel());  // when this is null during config we have issues or we have previous model
+			tintEvent.setTinterSerialNbr(newTinter.getSerialNbr());
+			
+			
+			retVal = processTinterEvent();
 		
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+			e.printStackTrace();
+			retVal = ERROR;
+		}
 		
-		String retVal = processTinterEvent();
 		return retVal;
 
 
@@ -201,7 +210,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			retVal = processTinterEvent();
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 	</head>
 	
 	<body>
@@ -71,7 +71,7 @@
 					<div class="col-sm-2">
 					</div>
 					<div class="col-sm-8">
-						<h2>2.  Double click on the setup.exe to install the SWDeviceHandler as a service.</h2>
+						<h2>2.  Double click on the SWDHSetup.exe to install the SWDeviceHandler as a service.</h2>
 					</div>
 				</div>
 				<div class="row">
