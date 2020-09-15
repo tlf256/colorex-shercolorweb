@@ -68,8 +68,8 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 				lastPurgeTime = dfDisplayTime.format(lastPurge.getDateTime());
 				lastPurgeUser = tinter.getLastPurgeUser();
 			} else {
-				lastPurgeDate = "Not Available";
-				lastPurgeTime = "Not Available";
+				lastPurgeDate = getText("processTinterPurgeAction.notAvailable");
+				lastPurgeTime = getText("processTinterPurgeAction.notAvailable");
 				lastPurgeUser = "";
 			}
 			
@@ -125,10 +125,6 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 		return currentUser;
 	}
 	
-	public void setCurrentUser(String currentUser) {
-		this.currentUser = currentUser;
-	}
-
 	public String getLastPurgeDate() {
 		return lastPurgeDate;
 	}
