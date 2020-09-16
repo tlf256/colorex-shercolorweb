@@ -868,8 +868,8 @@
 							// save config info to sesssion on app server
 							saveSpectroConfigToSession(spectro_return_message.spectroConfig.model,spectro_return_message.spectroConfig.serial);
 							//update the spectro popover
-							$("#coloreyeStatusList").append("<li><strong>Model:</strong> " + localhostSpectroConfig.model + "</li>");
-							$("#coloreyeStatusList").append("<li><strong>S/N:</strong> " + localhostSpectroConfig.serial + "</li>");
+							$("#coloreyeStatusList").append('<li><strong><s:text name="global.modelColon"/></strong> ' + localhostSpectroConfig.model + "</li>");
+							$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.serialNbrColon"/></strong> ' + localhostSpectroConfig.serial + "</li>");
 							
 							//now detect the spectro and see if it is connected.
 							console.log("ready to detect spctro as we received a ReadConfig");
