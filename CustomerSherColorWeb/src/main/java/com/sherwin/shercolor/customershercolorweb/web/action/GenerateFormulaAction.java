@@ -130,6 +130,9 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				}
 				
 			}
+			
+			// get SwMessages from the FormulationResponse
+			List<SwMessage> swmsgList = theFormula.getMessages();
 			 
 			//save the returned formula in the session using the guid for later display.
 			if (theFormula.getFormulas().size() > 0) {
@@ -162,7 +165,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				//and post the validation message list to the request object for use in printing.
 				reqObj.setDisplayMsgs(validationMsgs);
 				
-				List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(displayFormula);
+				List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(displayFormula, swmsgList);
 				reqObj.setCanLabelMsgs(canLabelMsgs);
 				
 			}
@@ -179,7 +182,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 			sessionMap.put(reqGuid, reqObj);
 			return theFormula.getStatus().toLowerCase();
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			return ERROR;
 		}
 	}
