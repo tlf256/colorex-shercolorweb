@@ -350,8 +350,8 @@
 						initErrorList.push(return_message.errorMessage);
 						$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 					}
-					$("#tinterErrorListTitle").text("%{getText('global.tinterDetectandInitializationFailed')}");
-					$("#tinterErrorListSummary").text("%{getText('global.resolveIssuesBeforeDispense')}");
+					$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+					$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 					$("#tinterErrorListModal").modal('show');
 					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 				}
@@ -403,8 +403,8 @@
 							initErrorList.push(return_message.errorMessage);
 							$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 						}
-						$("#tinterErrorListTitle").text("%{getText('global.tinterDetectandInitializationFailed')}");
-						$("#tinterErrorListSummary").text("%{getText('global.resolveIssuesBeforeDispense')}");
+						$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+						$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 						$("#tinterErrorListModal").modal('show');
 						saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 					}
@@ -503,8 +503,8 @@
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				
-					$("#tinterErrorListTitle").text("%{getText('global.tinterDetectandInitializationFailed')}");
-					$("#tinterErrorListSummary").text("%{getText('global.resolveIssuesBeforeDispense')}");
+					$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+					$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 					$("#tinterErrorListModal").modal('show');
 					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 			
@@ -548,8 +548,8 @@
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				}
-				$("#tinterErrorListTitle").text("%{getText('global.tinterDetectandInitializationFailed')}");
-				$("#tinterErrorListSummary").text("%{getText('global.resolveIssuesBeforeDispense')}");
+				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 				$("#tinterErrorListModal").modal('show');
 				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 			}
@@ -641,7 +641,7 @@
 									$("#tinterErrorList").empty();
 									$("#tinterErrorList").append('<li><s:text name="welcome.ifTinterPleaseRedo"/></li>');
 									//Show it in a modal they can't go on
-									$("#tinterErrorListTitle").text("%{getText('welcome.tinterConfigurationError')}");
+									$("#tinterErrorListTitle").text('<s:text name="welcome.tinterConfigurationError"/>');
 									$("#tinterErrorListSummary").text("");
 									$("#tinterErrorListModal").modal('show');
 								} else {
@@ -719,8 +719,8 @@
 										} else {
 											$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 										}
-										$("#tinterErrorListTitle").text("%{getText('welcome.priorTinterInitializationSuccessfulwithWarnings')}");
-										$("#tinterErrorListSummary").text("%{getText('welcome.priorAttemptAtInitialization')}");
+										$("#tinterErrorListTitle").text('<s:text name="welcome.priorTinterInitializationSuccessfulwithWarnings"/>');
+										$("#tinterErrorListSummary").text('<s:text name="welcome.priorAttemptAtInitialization"/>');
 										$("#tinterErrorListModal").modal('show');
 										
 										initErrorList = [];
@@ -738,8 +738,8 @@
 											$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 											initErrorList.push(return_message.errorMessage);
 										}
-										$("#tinterErrorListTitle").text("%{getText('welcome.priorTinterInitializationSuccessfulwithWarnings')}");
-										$("#tinterErrorListSummary").text("%{getText('welcome.priorAttemptAtInitialization')}");
+										$("#tinterErrorListTitle").text('<s:text name="welcome.priorTinterInitializationSuccessfulwithWarnings"/>');
+										$("#tinterErrorListSummary").text('<s:text name="welcome.priorAttemptAtInitialization"/>');
 										$("#tinterErrorListModal").modal('show');
 										//Also update session to show error in status area
 										saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
