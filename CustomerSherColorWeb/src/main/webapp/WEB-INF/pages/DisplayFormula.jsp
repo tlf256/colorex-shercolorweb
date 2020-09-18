@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Formula</title>
+<title><s:text name="global.formula"/></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -73,8 +73,7 @@ badge {
 //global vars
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
-	var dispenseTracker = "Container: " + numberOfDispenses + " out of "
-			+ dispenseQuantity;
+	var dispenseTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
 	var printerConfig;
 	var processingDispense = false;
 	var sendingTinterCommand = "false";
@@ -187,7 +186,7 @@ function printOnDispenseGetJson() {
 		var myguid = $("#formulaUserPrintAction_reqGuid").val();
 
 		var myPdf = new pdf(myguid);
-		$("#printerInProgressMessage").text("Printer: In Progress ");
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
 
 		numLabels = printerConfig.numLabels;
@@ -200,7 +199,7 @@ function printButtonClickGetJson() {
 		var myguid = $("#formulaUserPrintAction_reqGuid").val();
 
 		var myPdf = new pdf(myguid);
-		$("#printerInProgressMessage").text("Printer: In Progress ");
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
 
 		numLabels = printerConfig.numLabels;
@@ -218,7 +217,7 @@ function printButtonClick() {
 	console.log("calling print window open for print action with guid "
 			+ myValue);
 	window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
-			'Print Label', 'width=500, height=1000');
+			'<s:text name="displayFormula.printLabel"/>', 'width=500, height=1000');
 }
 function ParsePrintMessage() {
 	var parsed = false;
@@ -235,7 +234,7 @@ function ParsePrintMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerInProgressModal").modal('show');
 					$("#printerInProgressMessage").text(
-							"Print Result: " + return_message.errorMessage);
+							'<s:text name="displayFormula.printResultColon"/>' + return_message.errorMessage);
 					console.log(return_message);
 					//waitForShowAndHide("#tinterInProgressModal");
 				}
@@ -248,7 +247,7 @@ function ParsePrintMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerResponseModal").modal('show');
 					$("#printerResponseMessage").text(
-							"Get Printer Result: "
+							'<s:text name="displayFormula.getPrinterResult"/>'
 									+ return_message.errorMessage);
 					console.log(return_message);
 				} else {
@@ -394,7 +393,7 @@ function ParsePrintMessage() {
 					.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
-		$("#dispenseStatus").text("Last Dispense: In Progress ");
+		$("#dispenseStatus").text('<s:text name="global.lastDispenseInProgress"/>');
 		// Send to tinter
 		ws_tinter.send(json);
 	}
@@ -427,7 +426,7 @@ function ParsePrintMessage() {
 		} else if (return_message.errorMessage.indexOf("done") > 0
 				|| return_message.errorNumber != 0) {
 			if (return_message.errorNumber == 4226) {
-				return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+				return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>'
 			}
 			FMXDispenseComplete(return_message);
 		}
@@ -450,7 +449,7 @@ function ParsePrintMessage() {
 			 */
 		}
 		if (my_return_message.errorNumber == 4226) {
-			my_return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+			my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>'
 		}
 		$("#tinterErrorList").append(
 				'<li class="alert alert-danger">'
@@ -459,7 +458,7 @@ function ParsePrintMessage() {
 		if (myTitle != null)
 			$("#tinterErrorListTitle").text(myTitle);
 		else
-			$("#tinterErrorListTitle").text("Tinter Error");
+			$("#tinterErrorListTitle").text('<s:text name="global.tinterError"/>');
 		if (mySummary != null)
 			$("#tinterErrorListSummary").text(mySummary);
 		else
@@ -483,7 +482,7 @@ function ParsePrintMessage() {
 		if (myTitle != null)
 			$("#tinterErrorListTitle").text(myTitle);
 		else
-			$("#tinterErrorListTitle").text("Tinter Error");
+			$("#tinterErrorListTitle").text('<s:text name="global.tinterError"/>');
 		if (mySummary != null)
 			$("#tinterErrorListSummary").text(mySummary);
 		else
@@ -501,10 +500,10 @@ function ParsePrintMessage() {
 			// save a dispense (will bump the counter)
 
 			$("#tinterInProgressDispenseStatus").text("");
-			$("#dispenseStatus").text("Last Dispense: Complete ");
+			$("#dispenseStatus").text('<s:text name="global.lastDispenseComplete"/>');
 			rotateIcon();
 			//$('#progressok').removeClass('d-none');
-			$('#tinterInProgressTitle').text('Tinter Progress');
+			$('#tinterInProgressTitle').text('<s:text name="global.tinterProgress"/>');
 			$('#tinterInProgressMessage').text('');
 			$("#tinterProgressList").empty();
 			tinterErrorList = [];
@@ -512,13 +511,13 @@ function ParsePrintMessage() {
 			writeDispense(return_message); // will also send tinter event
 		} else {
 			$("#tinterInProgressDispenseStatus").text(
-					"Last Dispense: " + return_message.errorMessage);
+					'<s:text name="global.lastDispense"/>' + return_message.errorMessage);
 			$("#dispenseStatus").text(
-					"Last Dispense: " + return_message.errorMessage);
+					'<s:text name="global.lastDispense"/>' + return_message.errorMessage);
 			waitForShowAndHide("#tinterInProgressModal");
 			console.log('hide done');
 			//Show a modal with error message to make sure the user is forced to read it.
-			FMXShowTinterErrorModal("Dispense Error", null, return_message);
+			FMXShowTinterErrorModal('<s:text name="global.dispenseError"/>', null, return_message);
 		}
 		sendingTinterCommand = "false";
 	}
@@ -559,7 +558,7 @@ function ParsePrintMessage() {
 								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
-									console.log("Dispense Complete: Going to the next container.");
+									console.log('<s:text name="global.dispenseCompleteNextContainer"/>');
 									preDispenseCheck();
 								}
 							}
@@ -592,7 +591,7 @@ function ParsePrintMessage() {
 					// received an error from WSWrapper so we won't get any JSON result
 					// Since we are sending a dispense command, show as dispense error
 					$("#dispenseStatus").text(
-							"Last Dispense: " + ws_tinter.wserrormsg);
+							'<s:text name="global.lastDispense"/>' + ws_tinter.wserrormsg);
 					//Show a modal with error message to make sure the user is forced to read it.
 					$("#tinterSocketError").text(ws_tinter.wserrormsg);
 					waitForShowAndHide("#tinterInProgressModal");
@@ -637,7 +636,7 @@ function ParsePrintMessage() {
 								|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 							// save a dispense (will bump the counter)
 							$("#dispenseStatus").text(
-									"Last Dispense: Complete ");
+									'<s:text name="global.lastDispenseComplete"/>');
 							writeDispense(return_message); // will also send tinter event
 						} else {
 							processingDispense = false; // allow user to start another dispense after tinter error
@@ -652,11 +651,11 @@ function ParsePrintMessage() {
 							sendTinterEvent(myGuid, curDate, return_message,
 									tedArray);
 							$("#dispenseStatus").text(
-									"Last Dispense: "
+									'<s:text name="global.lastDispense"/>'
 											+ return_message.errorMessage);
 							waitForShowAndHide("#tinterInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Dispense Error", null,
+							showTinterErrorModal('<s:text name="global.dispenseError"/>', null,
 									return_message);
 						}
 						sendingDispCommand = "false";
@@ -713,7 +712,7 @@ function ParsePrintMessage() {
 								$("#positionContainerModal").modal('show');
 							} else {
 								$("#verifyScanInputError").text(
-										"Product Scanned does not match order");
+										'<s:text name="displayFormula.productScannedDoesNotMatch"/>');
 								$("#verifyScanInput").select();
 							}
 						});
@@ -751,7 +750,7 @@ function ParsePrintMessage() {
 												+ quantity);
 								$("#dispenseQuantityInputError")
 										.text(
-												"Invalid input: Please enter a number of containers from 1 to 999");
+												'<s:text name="displayFormula.invalidInput"/>');
 								$("#dispenseQuantityInput").select();
 							}
 						});
@@ -774,10 +773,10 @@ function ParsePrintMessage() {
 								$("#tinterInProgressModal").modal('show');
 								rotateIcon();
 								$("#tinterInProgressTitle").text(
-										"Dispense In Progress");
+										'<s:text name="global.dispenseInProgress"/>');
 								$("#tinterInProgressMessage")
 										.text(
-												"Please wait while tinter performs the dispense...");
+												'<s:text name="global.pleaseWaitTinterDispense"/>');
 
 								// Call decrement colorants which will call dispense
 								decrementColorantLevels();
@@ -830,10 +829,10 @@ function ParsePrintMessage() {
 	}
 
 	function preDispenseCheck() {
-		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
+		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
 		$("#tinterInProgressMessage")
 				.text(
-						"Please wait while we Check the Colorant Levels for your tinter...");
+						'<s:text name="global.pleaseWaitClrntLevelCheck"/>');
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
@@ -843,8 +842,7 @@ function ParsePrintMessage() {
 	}
 
 	function preDispenseCheckCallback() {
-		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of "
-				+ dispenseQuantity;
+		dispenseNumberTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
 		$(".dispenseNumberTracker").text(dispenseNumberTracker);
 		// comes from getSessionTinterInfo
 		// check if purge required...
@@ -855,15 +853,15 @@ function ParsePrintMessage() {
 				|| dateFromString.getDate() < today.getDate()) {
 			$("#tinterErrorList").empty();
 			$("#tinterErrorList").append(
-					'<li class="alert alert-danger">Tinter Purge is Required. Last done on '
-							+ moment(dateFromString).format('ddd MMM DD YYYY')
-							+ '</li>');
+					'<li class="alert alert-danger"><s:text name="global.tinterPurgeIsRequiredLastDoneOnDate">'
+							+ '<s:param>'+ moment(dateFromString).format('ddd MMM DD YYYY')
+							+ '</s:param></s:text></li>');
 			waitForShowAndHide("#tinterInProgressModal");
 			$("#tinterErrorListModal").modal('show');
-			$("#tinterErrorListTitle").text("Purge Required");
+			$("#tinterErrorListTitle").text('<s:text name="global.purgeRequired"/>');
 			$("#tinterErrorListSummary")
 					.text(
-							"Save your formula and go to the SherColor Home page to perform Tinter Purge. ");
+							'<s:text name="global.saveGoHomeToPurge"/>');
 
 		} else {
 			// Check Levels
@@ -882,10 +880,10 @@ function ParsePrintMessage() {
 				//Show it in a modal they can't go on
 				waitForShowAndHide("#tinterInProgressModal");
 				$("#tinterErrorListModal").modal('show');
-				$("#tinterErrorListTitle").text("Colorant Level Too Low");
+				$("#tinterErrorListTitle").text('<s:text name="global.colorantLevelTooLow"/>');
 				$("#tinterErrorListSummary")
 						.text(
-								"Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
+								'<s:text name="global.saveFillGoHomeToUpdateClrnts"/>');
 
 			} else {
 				var warnList = checkDispenseColorantLow(shotList,
@@ -899,7 +897,7 @@ function ParsePrintMessage() {
 					});
 					//Show in modal, they can say OK to continue
 					waitForShowAndHide("#tinterInProgressModal");
-					$("#tinterWarningListTitle").text("Low Colorant Levels");
+					$("#tinterWarningListTitle").text('<s:text name="global.lowColorantLevels"/>');
 					$("#tinterWarningListModal").modal('show');
 				} else {
 					console.log("about to show verify modal");
@@ -978,7 +976,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		</s:else>
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Job Number:</strong>
+			<strong><s:text name="global.jobNumber"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8" id="controlNbr">
 			${sessionScope[thisGuid].controlNbr}</div>
@@ -1005,7 +1003,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Color Company:</strong>
+			<strong><s:text name="global.colorCompanyColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].colorComp}</div>
@@ -1014,7 +1012,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Color ID:</strong>
+			<strong><s:text name="global.colorIdColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:property value="#session[reqGuid].colorID" /></div>
@@ -1023,13 +1021,18 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Color Name:</strong>
+			<strong><s:text name="global.colorNameColon"/></strong>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
 			<s:property value="#session[reqGuid].colorName" /><br>
 			<div class="chip sw-bg-main mt-1"></div>
 			<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
-				<em>Closest SW color is <br><s:property value="#session[reqGuid].closestSwColorId" /> - <s:property value="#session[reqGuid].closestSwColorName" /></em>
+				<em>
+					<s:text name="global.closestSWColorIs">
+	 					<s:param><s:property value="#session[reqGuid].closestSwColorId" /></s:param>
+						<s:param><s:property value="#session[reqGuid].closestSwColorName" /></s:param>
+					</s:text>
+				</em>
 			</s:if>
 		</div>
 		<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2"></div>
@@ -1037,7 +1040,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Sales Number:</strong>
+			<strong><s:text name="global.salesNumberColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].salesNbr}<br>
@@ -1047,7 +1050,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Product Number:</strong>
+			<strong><s:text name="global.productNumberColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].prodNbr} -
@@ -1057,7 +1060,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Product Descr:</strong>
+			<strong><s:text name="global.productDescrColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].intExt} ${sessionScope[thisGuid].quality}
@@ -1118,7 +1121,7 @@ function setFormSubmitting() { formSubmitting = true; };
 					<table class="table">
 						<thead>
 							<tr>
-								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*COLORANT</strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*<s:text name="global.colorant"/></strong></th>
 								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</strong></th>
 								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[1]}</strong></th>
 								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[2]}</strong></th>
@@ -1146,7 +1149,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="row" id="dispenseInfoRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong>Qty Dispensed: </strong> <span
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
 						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
@@ -1158,7 +1161,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="row" id="dispenseInfoRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong>Qty Dispensed: </strong> <span
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
 							class="dispenseInfo d-none badge badge-secondary"
 							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
 						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
@@ -1171,19 +1174,19 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 					<button type="button" class="btn btn-primary" id="formulaDispense"
-						onclick="setFormSubmitting; setDispenseQuantity()" autofocus="autofocus">Dispense</button>
-					<s:submit cssClass="btn btn-secondary" value="Save" onclick="setFormSubmitting();"
+						onclick="setFormSubmitting; setDispenseQuantity()" autofocus="autofocus"><s:text name="global.dispense"/></button>
+					<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" onclick="setFormSubmitting();"
 						action="formulaUserSaveAction" autofocus="autofocus" />
 					<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
 					<button type="button" class="btn btn-secondary" id="formulaPrint"
-						onclick="prePrintSave();return false;">Print</button>
-					<s:submit cssClass="btn btn-secondary" value="Edit Formula" onclick="setFormSubmitting();"
+						onclick="prePrintSave();return false;"><s:text name="global.print"/></button>
+					<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" onclick="setFormSubmitting();"
 						action="formulaUserEditAction" />
-					<s:submit cssClass="btn btn-secondary" value="Correct" onclick="setFormSubmitting();"
+					<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}" onclick="setFormSubmitting();"
 						action="formulaUserCorrectAction" />
-					<s:submit cssClass="btn btn-secondary" value="Copy to New Job"
+					<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 						action="displayJobFieldUpdateAction" />
-					<s:submit cssClass="btn btn-secondary pull-right" value="Next Job"
+					<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
                         action="userCancelAction" onclick="return promptToSave();" />
 				</div>
 				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -1199,8 +1202,7 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="modal-content">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Enter Number of Containers to
-									Dispense</h5>
+								<h5 class="modal-title"><s:text name="displayFormula.enterNumberofContainersToDispense"/></h5>
 								<button type="button" class="close" data-dismiss="modal"
 									aria-label="Close">
 									<span aria-hidden="true">&times;</span>
@@ -1213,7 +1215,7 @@ function setFormSubmitting() { formSubmitting = true; };
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary"
-									data-dismiss="modal" id="setDispenseQuantityButton">Next</button>
+									data-dismiss="modal" id="setDispenseQuantityButton"><s:text name="global.next"/></button>
 							</div>
 						</div>
 					</div>
@@ -1227,7 +1229,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Scan Product to Verify Dispense</h5>
+							<h5 class="modal-title"><s:text name="displayFormula.scanProductToVerifyDispense"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1243,7 +1245,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								data-dismiss="modal" id="verifyButton">Verify</button>
+								data-dismiss="modal" id="verifyButton"><s:text name="displayFormula.verify"/></button>
 						</div>
 					</div>
 				</div>
@@ -1255,15 +1257,14 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Prepare for Dispense</h5>
+							<h5 class="modal-title"><s:text name="global.prepareforDispense"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
-							<p font-size="4">Position Container and Click Start Dispense
-								when Ready</p>
+							<p font-size="4"><s:text name="global.positionContainerandClickStartDispensewhenReady"/></p>
 						</div>
 						<div class="modal-body">
 							<span class="dispenseNumberTracker mx-auto"
@@ -1271,7 +1272,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								id="startDispenseButton">Start Dispense</button>
+								id="startDispenseButton"><s:text name="global.startDispense"/></button>
 						</div>
 					</div>
 				</div>
@@ -1283,13 +1284,13 @@ function setFormSubmitting() { formSubmitting = true; };
 							<div class="modal-content">
 								<div class="modal-header">
 									<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title" id="tinterInProgressTitle">Dispense In Progress</h5>
+									<h5 class="modal-title" id="tinterInProgressTitle"><s:text name="global.dispenseInProgress"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
 									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F4 to abort </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>
@@ -1308,7 +1309,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Dispense Error</h5>
+							<h5 class="modal-title"><s:text name="global.dispenseError"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1320,7 +1321,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
 								id="tinterSocketErrorButton" data-dismiss="modal"
-								aria-label="Close">Close</button>
+								aria-label="Close"><s:text name="global.close"/></button>
 						</div>
 					</div>
 				</div>
@@ -1331,7 +1332,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				    	<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
+									<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
@@ -1348,7 +1349,7 @@ function setFormSubmitting() { formSubmitting = true; };
 									<p id="tinterErrorListSummary" font-size="4"></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div> 
@@ -1360,8 +1361,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="tinterWarningListTitle">Tinter
-								Error</h5>
+							<h5 class="modal-title" id="tinterWarningListTitle"><s:text name="global.tinterError"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1372,15 +1372,14 @@ function setFormSubmitting() { formSubmitting = true; };
 								<ul class="p-0" id="tinterWarningList" style="list-style: none;">
 								</ul>
 							</div>
-							<p id="tinterWarningListSummary" font-size="4">Click OK to
-								continue or Cancel to return to formula page.</p>
+							<p id="tinterWarningListSummary" font-size="4"><s:text name="global.clickOKtoContinue"/></p>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								id="tinterWarningListOK" data-dismiss="modal" aria-label="Close">OK</button>
+								id="tinterWarningListOK" data-dismiss="modal" aria-label="Close"><s:text name="global.ok"/></button>
 							<button type="button" class="btn btn-secondary"
 								id="tinterWarningListCancel" data-dismiss="modal"
-								aria-label="Close">Cancel</button>
+								aria-label="Close"><s:text name="global.cancel"/></button>
 						</div>
 					</div>
 				</div>
@@ -1392,8 +1391,7 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="modal-content">
 						<div class="modal-header">
 							<!-- 	<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i> -->
-							<h5 class="modal-title" id="printerInProgressTitle">Label
-								Printer Error</h5>
+							<h5 class="modal-title" id="printerInProgressTitle"><s:text name="displayFormula.labelPrinterError"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1412,7 +1410,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog modal-md">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="printLabelTitle">Print Label</h5>
+							<h5 class="modal-title" id="printLabelTitle"><s:text name="displayFormula.printLabel"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1429,7 +1427,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						<div class="modal-footer">
 							<div class="col-xs-6">
 								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()">Print</button>
+									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
 							</div>
 							<div class="col-xs-4">
 								
@@ -1449,7 +1447,7 @@ function setFormSubmitting() { formSubmitting = true; };
 							</div>
 							 <div class="col-xs-2 ">
 								<button type="button" class="btn btn-secondary"
-								id="printLabelClose" data-dismiss="modal" aria-label="Close">Close</button>
+								id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
 						</div>
 						</div>
 					</div>
@@ -1462,17 +1460,17 @@ function setFormSubmitting() { formSubmitting = true; };
 	    	<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Continue To Next Job</h5>
+						<h5 class="modal-title"><s:text name="displayFormula.continueToNextJob"/></h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
-						<p id="skipConfirmText" font-size="4">Do you want to save the formula before continuing to the Next Job?</p>
+						<p id="skipConfirmText" font-size="4"><s:text name="displayFormula.saveFormula"/></p>
 					</div>
 					<div class="modal-footer">
-						<s:submit cssClass="btn btn-primary" value="Yes" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
-						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="No" onclick="setFormSubmitting();" action="userCancelAction"/>
-						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="Cancel"/>
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.yes')}" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="%{getText('global.no')}" onclick="setFormSubmitting();" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="%{getText('global.cancel')}"/>
 					</div>
 				</div>
 			</div>
@@ -1506,7 +1504,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			<div class="row">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
-					<strong>Still Use (Yes/No)?</strong>
+					<strong><s:text name="displayFormula.stillUse"/></strong>
 				</div>
 			</div>
 			<br>
@@ -1515,11 +1513,11 @@ function setFormSubmitting() { formSubmitting = true; };
 
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-primary" value="No" onclick="setFormSubmitting();"
+					<s:submit cssClass="btn btn-primary" value="%{getText('global.no')}" onclick="setFormSubmitting();"
 						action="deltaENoAction" autofocus="autofocus" />
 				</div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-secondary" value="Yes" onclick="setFormSubmitting();"
+					<s:submit cssClass="btn btn-secondary" value="%{getText('global.yes')}" onclick="setFormSubmitting();"
 						action="deltaEYesAction" />
 				</div>
 
