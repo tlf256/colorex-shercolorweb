@@ -953,7 +953,7 @@
 				<div class="modal-footer">
 					<button id="detectStatusClose" type="button"
 						class="btn btn-primary" id="detectStatusButton"
-						data-dismiss="modal" aria-label="%{getText('global.close')}"><s:text name="global.continue"/></button>
+						data-dismiss="modal" aria-label="%{getText('global.continue')}"><s:text name="global.continue"/></button>
 				</div>
 			</div>
 		</div>
