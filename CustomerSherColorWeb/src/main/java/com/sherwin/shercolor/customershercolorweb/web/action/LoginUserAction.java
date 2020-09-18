@@ -203,9 +203,9 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				TimeUnit.SECONDS.sleep(sleepSeconds);
 				sessionMap.put("sher-link-login-attempt", loginAttemptCnt);
 				if (isDisabledLogin) {
-					addFieldError("userId","Too many failed login attempts. Please contact shercolor@sherwin.com for required action.");
+					addFieldError("userId",getText("loginUserAction.tooManyFailedAttempts"));//"Too many failed login attempts. Please contact shercolor@sherwin.com for required action.");
 				} else {
-					addFieldError("userId","Login/password combination failed. Please retry your request.");
+					addFieldError("userId",getText("loginUserAction.loginPasswordFailed"));//"Login/password combination failed. Please retry your request.");
 				}
 				return INPUT;
 			}			

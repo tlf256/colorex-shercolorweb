@@ -69,12 +69,12 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			//the password confirmation match.
 			if (!userPass.equals(userPassConfirm)) {
 				logger.error("passwords do not match");
-				addActionMessage("Passwords do not match");
+				addActionMessage(getText("passwordAction.passwordsDoNotMatch"));
 				returnStatus = INPUT;
 			} else {
 			if (!swLoginValidator.validatePassword(userPass)) {	
 				logger.error("password does not validate rules");
-				addActionMessage("Password does not meet all validation rules");
+				addActionMessage(getText("passwordAction.passwordDoesNotMeetAllValidationRules"));
 				returnStatus = INPUT;
 			} else {		
 				//call the SsoHelper and see what its response is now.
