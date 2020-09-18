@@ -93,7 +93,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			}
 		}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 			returnStatus = ERROR;
 		}

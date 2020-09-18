@@ -52,6 +52,9 @@
 		    border: .5px solid black;
 		    float: left;
 			}
+			.no-display {
+				display: none;
+			}
 	    </style>
 	    
 	    <script type="text/javascript">
@@ -270,6 +273,7 @@
 		  					data: 'spectroSerialNbr'
 		  				},
 		  				{
+		  					className: "no-display",
 		  					"render" : function(
 		  							data, type, row,meta) {
 		  						return '<input type="hidden" class="rowId" name="rowId" style="display:none" value="' + meta.row + '">';
