@@ -89,7 +89,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
 			if(corrInfo.getCorrStatus().equalsIgnoreCase("MIDUNIT") || corrInfo.getCorrStatus().equalsIgnoreCase("MIDCYCLE")){
 				midCorrection = true;
-				addActionMessage(Encode.forHtml("The Formula is Currently Being Corrected. Please Complete the Correction Cycle before taking other actions."));
+				addActionMessage(getText("processFormulaAction.currentlyBeingCorrected"));
 			} else {
 				midCorrection = false;
 			}
@@ -116,7 +116,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 					for(FormulaIngredient ingr : displayFormula.getIngredients()){
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
-							addActionMessage(Encode.forHtml("The selected Job is missing Colorant - " + ingr.getTintSysId() + ". Cannot load Job."));
+							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()}));
 							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
 							return "errormsg";
 						}
