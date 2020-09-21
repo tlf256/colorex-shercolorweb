@@ -99,8 +99,7 @@ public class RemoveTinterAction extends ActionSupport implements SessionAware, L
 		cwte.setErrorStatus("1");
 		cwte.setErrorSeverity("0");
 		cwte.setErrorNumber("-1");
-		cwte.setErrorMessage("Could not delete tinter " + reqObj.getTinter().getModel() + 
-				": " + reqObj.getTinter().getSerialNbr() + " from CustWebColorantsTxt");
+		cwte.setErrorMessage(getText("removeTinterAction.couldNotDeleteTinter", new String[] {reqObj.getTinter().getModel(), reqObj.getTinter().getSerialNbr()}));
 		
 		List<SwMessage> writeErrorList = tinterService.writeTinterEventAndDetail(cwte, cwteList);
 		

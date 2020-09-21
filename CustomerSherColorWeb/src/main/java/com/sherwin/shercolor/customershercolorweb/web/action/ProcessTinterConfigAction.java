@@ -32,6 +32,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	private String clrntSysId;
 	private String tinterModel;
 	private String tinterSerialNbr;
+	private String noDefaultCalibrationError;
 	//to send back canister list
 	private TinterInfo newtinter;
 
@@ -53,6 +54,9 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 	public String AjaxGetCanisterList(){
 		logger.debug("inside getCanisterList and reqGuid is " + reqGuid);
+		// set up internationalized error string in case it is needed
+		noDefaultCalibrationError = getText("tinterConfig.couldNotFindDefaultCalib", new String[] {this.getClrntSysId(), getTinterModel()});
+		
 		if(newtinter !=null){
 
 			logger.debug("newtinter:" + newtinter.getModel());
@@ -150,7 +154,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		List<CustWebColorantsTxt> colorantsTxtList = (List<CustWebColorantsTxt>) sessionMap.get("colorantsTxtList");
 		if(colorantsTxtList ==null) {
 			logger.error("ColorantsTxt is null");
-			addActionError("Session variable colorantsTxt was null.  Please try again.");
+			addActionError(getText("processTinterConfigAction.nullClrntsTxt"));
 			return INPUT;
 		}
 		else{
@@ -170,14 +174,14 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 					// create records if they don't already exist, and colorant code may be different than expected because of layout update
 					if(tinterService.conditionalSaveColorantsTxtByPosition(colorantsTxtList) < 0){
 						//save if new customer id otherwise do nothing.  If error return error
-						addActionError("Config not complete.  Critical DB error saving colorants txt.  Please try again.  Call support if this persists.");
+						addActionError(getText("processTinterConfigAction.configNotCompleteColorantsTxt"));
 						return ERROR;
 					}
 					
 				
 			}
 			else {
-				addActionError("Invalid Serial Number:" + this.getNewtinter().getSerialNbr());
+				addActionError(getText("processTinterConfigAction.invalidSerialNbr", new String[]{this.getNewtinter().getSerialNbr()}));
 				return INPUT;
 			}
 		}
@@ -315,6 +319,14 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 	public boolean isReReadLocalHostTinter() {
 		return reReadLocalHostTinter;
+	}
+
+	public String getNoDefaultCalibrationError() {
+		return noDefaultCalibrationError;
+	}
+
+	public void setNoDefaultCalibrationError(String noDefaultCalibrationError) {
+		this.noDefaultCalibrationError = noDefaultCalibrationError;
 	}
 
 
