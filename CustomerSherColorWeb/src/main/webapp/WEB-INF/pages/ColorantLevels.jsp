@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Colorant Levels</title>
+		<title><s:text name="global.colorantLevels"/></title>
 		<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -58,12 +58,12 @@
 					<div class="card card-body bg-light mb-4">
 						<div class="row">
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3">
-								<span class="badge badge-secondary" style="font-size: 1.2rem;">Colorant Levels</span>
+								<span class="badge badge-secondary" style="font-size: 1.2rem;"><s:text name="global.colorantLevels"/></span>
 								<h5 class="text-primary mt-3"><strong><s:property value="tinter.model" escapeHtml="true"></s:property></strong></h5>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-8 col-6">
 								<div class="alert alert-warning">
-								  <strong>Note: </strong>Shake the colorant for 30 seconds. Do not fill any canister past the top of its agitator paddle.
+								  <strong><s:text name="global.noteColon"/> </strong><s:text name="colorantLevels.shakeColorantMsg"/>
 								</div>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3 text-center">
@@ -71,24 +71,24 @@
 									<s:param name="reqGuid" value="%{thisGuid}"/>
 									<s:param name="updateType">setAllFull</s:param>
 								</s:url>
-								<a href="<s:property value="setFullURL"/>" class="btn btn-primary" id="setallfull" style="margin-top: 10px; margin-left: 30px;">Set All Full</a>
+								<a href="<s:property value="setFullURL"/>" class="btn btn-primary" id="setallfull" style="margin-top: 10px; margin-left: 30px;"><s:text name="colorantLevels.setAllFull"/></a>
 								<s:url var="cancelURL" action="userCancelAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-								<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel" style="margin-top: 10px;margin-left: 30px;">Done</a>
+								<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel" style="margin-top: 10px;margin-left: 30px;"><s:text name="global.done"/></a>
 							</div>
 						</div>
 					</div>	
 					<ul class="nav nav-tabs d-none">
-					  <li class="nav-item"><p data-toggle="tab" class="nav-link active bg-light show mb-0"><strong>Low Colorant Warnings </strong><span id="warnCount" class="badge badge-warning" style="background-color: #f0ad4e;">0</span></p></li>
+					  <li class="nav-item"><p data-toggle="tab" class="nav-link active bg-light show mb-0"><strong><s:text name="colorantLevels.lowColorantWarnings"/> </strong><span id="warnCount" class="badge badge-warning" style="background-color: #f0ad4e;">0</span></p></li>
 					</ul>
 					  <table class="table table-bordered table-sm">
 					    <thead>
 					      <tr>
-					      	<th class="bg-light" style="width: 10%;">Position</th>
-					        <th class="bg-light" style="width: 10%;">Color</th>
-					        <th class="bg-light" style="width: 10%;">Ounces (Current / Max)</th>
-					        <th class="bg-light" style="width: 10%;">Quarts (Current / Max)</th>
-					        <th class="bg-light" style="width: 10%;">Actions</th>
-					        <th class="bg-light" style="width: 50%;">Container Level</th>
+					      	<th class="bg-light" style="width: 10%;"><s:text name="colorantLevels.position"/></th>
+					        <th class="bg-light" style="width: 10%;"><s:text name="colorantLevels.color"/></th>
+					        <th class="bg-light" style="width: 10%;"><s:text name="colorantLevels.ouncesCurrentMax"/></th>
+					        <th class="bg-light" style="width: 10%;"><s:text name="colorantLevels.quartsCurrentMax"/></th>
+					        <th class="bg-light" style="width: 10%;"><s:text name="colorantLevels.actions"/></th>
+					        <th class="bg-light" style="width: 50%;"><s:text name="colorantLevels.containerLevel"/></th>
 					      </tr>
 					    </thead>
 					    <tbody>
@@ -107,27 +107,27 @@
 						        		<s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
 							        	<button type="button" class="btn btn-light btn-sm border" id="moveto<s:property value="%{#i.index}"/>">
 							        	  <s:hidden name="key" value="%{position}" id="key"/>
-										  <span class="fa fa-arrow-circle-o-right" aria-hidden="true"></span>&nbsp;Move To&nbsp;&nbsp;
+										  <span class="fa fa-arrow-circle-o-right" aria-hidden="true"></span>&nbsp;<s:text name="colorantLevels.moveTo"/>&nbsp;&nbsp;
 										</button>
 										</s:if>
 							        	<button type="button" class="btn btn-light btn-sm border" id="addqt<s:property value="%{#i.index}"/>">
 							        	  <s:hidden name="key" value="%{position}" id="key"/>
-										  <span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Quart
+										  <span class="fa fa-plus" aria-hidden="true"></span>&nbsp;<s:text name="colorantLevels.addQuart"/>
 										</button>
 										<button type="button" class="btn btn-light btn-sm border" id="subqt<s:property value="%{#i.index}"/>">
 										  <s:hidden name="key" value="%{position}" id="key"/>
-										  <span class="fa fa-minus" aria-hidden="true"></span>&nbsp;Sub Quart
+										  <span class="fa fa-minus" aria-hidden="true"></span>&nbsp;<s:text name="colorantLevels.subQuart"/>
 										</button>
 										<button type="button" class="btn btn-light btn-sm border" id="setfl<s:property value="%{#i.index}"/>">
 										  <s:hidden name="key" value="%{position}" id="key"/>
-										  <span class="fa fa-upload" aria-hidden="true"></span>&nbsp;&nbsp;Set Full &nbsp;&nbsp;
+										  <span class="fa fa-upload" aria-hidden="true"></span>&nbsp;&nbsp;<s:text name="colorantLevels.setFull"/> &nbsp;&nbsp;
 										</button>
 									</div>
 						        </td>
 					        	<td class="level" id="level<s:property value="%{#i.index}"/>">
 					        		<div class="row">
 					        			<div class="col-xl-12 mb-2">
-						        			<div id='warningdiv' class="pull-left"><span class='badge badge-warning warning d-none' id='warning'>Warning - Colorant Low</span></div>
+						        			<div id='warningdiv' class="pull-left"><span class='badge badge-warning warning d-none' id='warning'><s:text name="global.warningClrntLow"/></span></div>
 											<span class="hfive badge bg-white ml-auto mb-1 pull-right" id="<s:property value="%{#i.index}"/>" style="font-size: 1rem;"><s:property value="percent"/>%</span><s:hidden name="fillAlarm" value="%{fillAlarmLevel}" cssClass="fillAlarm"/>
 					        			</div>
 					        		</div>
@@ -162,14 +162,14 @@
 		    <div class="modal-dialog modal-sm">
 		      <div class="modal-content">
 		        <div class="modal-header">
-		        <h6 class="modal-title">Message</h6>
-		          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+		        <h6 class="modal-title"><s:text name="colorantLevels.message"/></h6>
+		          <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 		        </div>
 		        <div class="modal-body">
-		          <p id="addmsg">Container is full.</p>
+		          <p id="addmsg"><s:text name="global.containerFull"/></p>
 		        </div>
 		        <div class="modal-footer">
-		          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close" >Close</button>
+		          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="%{getText('global.close')}" ><s:text name="global.close"/></button>
 		        </div>
 		      </div>
 		    </div>
@@ -178,14 +178,14 @@
 		    <div class="modal-dialog modal-sm">
 		      <div class="modal-content">
 		        <div class="modal-header">
-		        <h6 class="modal-title">Message</h6>
-		          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+		        <h6 class="modal-title"><s:text name="colorantLevels.message"/></h6>
+		          <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 		        </div>
 		        <div class="modal-body">
-		          <p id="submsg">Container is empty.</p>
+		          <p id="submsg"><s:text name="colorantLevels.containerEmpty"/></p>
 		        </div>
 		        <div class="modal-footer">
-		          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close" >Close</button>
+		          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="%{getText('global.close')}" ><s:text name="global.close"/></button>
 		        </div>
 		      </div>
 		    </div>
@@ -196,11 +196,11 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-								<h5 class="modal-title">Moving Carousel</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="colorantLevels.movingCarousel"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
-								<p id="progress-message" font-size="4">Please wait while the tinter carousel rotates...</p>
+								<p id="progress-message" font-size="4"><s:text name="colorantLevels.pleaseWaitCarouselRotates"/></p>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
 							</div>
@@ -215,14 +215,14 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Tinter Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="global.tinterError"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<p id="tinterSocketError" font-size="4"></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" >Close</button>
+								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="%{getText('global.close')}"><s:text name="global.close"/></button>
 							</div>
 						</div>
 					</div>
@@ -232,8 +232,8 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<div>
@@ -243,7 +243,7 @@
 								<p id="tinterErrorListSummary" font-size="4"></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="%{getText('global.ok')}" ><s:text name="global.ok"/></button>
 							</div>
 						</div>
 					</div>
