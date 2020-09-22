@@ -53,7 +53,7 @@ function updateLanguage(){
 			}
 		},
 		error : function(err) {
-			alert("failure: " + err);
+			alert('<s:text name="global.failureColon"/>' + err);
 		}
 	});
 }

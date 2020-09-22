@@ -8,7 +8,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>End User License Agreement</title>
+		<title><s:text name="global.endUserLicenseAgreement"/></title>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
@@ -134,6 +134,44 @@
 				}
 			}
 		}
+		
+		
+		//update user's language preference
+		function updateLanguage(){
+			var selectedLang = $("select[id='languageList'] option:selected").val();
+			console.log(selectedLang);
+			
+			$.ajax({
+				url : "updateLocale.action",
+				type : "POST",
+				data : {
+					request_locale : selectedLang,
+				},
+				datatype : "json",
+				async : true,
+				success : function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						// reload page to update the language
+						location.reload();
+					}
+				},
+				error : function(err) {
+					alert('<s:text name="global.failureColon"/>' + err);
+				}
+			});
+		}
+
+		$(document).ready(function() {
+		    // update dropdown to display the language that the user picked if they have done so
+		    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+		    if (userLanguage != null && userLanguage != ""){
+			    $("#languageList").val(userLanguage);
+		    } else {
+		    	$("#languageList").val("en_US");
+		    }
+		});
 
 	</script>
   </head>
@@ -158,11 +196,22 @@
 <!-- 			      	</ul> -->
 			   		<s:set var="thisGuid" value="reqGuid" />
 			     	<ul class="navbar-nav ml-auto">
-			     		<li class="nav-item"><span class='navbar-text'>Logged in as ${sessionScope[thisGuid].firstName} ${sessionScope[thisGuid].lastName}</span></li>
+			     		<li class="nav-item"><span class='navbar-text'>
+				     		<s:text name="global.loggedInAsFirstNameLastName">
+			     				<s:param>${sessionScope[thisGuid].firstName}</s:param>
+			     				<s:param>${sessionScope[thisGuid].lastName}</s:param>
+							</s:text></span>
+			     		</li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
+			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
+			     		<li class="nav-item"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+							    <option value="en_US">English</option>
+							    <option value="es_ES">Español</option>
+						    </select>
+						</li>
 			     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />">Logout <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
+			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />"><s:text name="global.logout"/> <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
 			     	</ul>
 			   </div><!--/.nav-collapse -->
 		</nav>
@@ -201,8 +250,8 @@
 					
 				</div>
 				<div class="col-lg-7 col-md-6 col-sm-8 col-xs-12">
-					<p>Before accessing SherColor Web Based Color Formulation System for the first time, you must read and accept the license agreement. </p>  
-					<p>Please enter the agreement code provided to you by your Sherwin Williams representative here: </p>
+					<p><s:text name="showEula.mustAccept"/> </p>  
+					<p><s:text name="showEula.pleaseEnterAgreementCode"/> </p>
 				</div>
 				<div class="col-lg-2 col-md-3 col-xs-2 col-xs-0">
 
@@ -216,7 +265,7 @@
 						<s:textfield id="eulaAgreementCode" name="eulaAgreementCode" autofocus="autofocus" />
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-						<s:submit cssClass="btn btn-primary btn-med pull-left" id="startEulaFocus" value="Continue" action="startEulaAction"/> 
+						<s:submit cssClass="btn btn-primary btn-med pull-left" id="startEulaFocus" value="%{getText('global.continue')}" action="startEulaAction"/> 
 					</div>
 					<div class="col-lg-2 col-md-1 col-xs-2 col-xs-0">
 						<s:hidden name="reqGuid" value="%{reqGuid}"/>			
@@ -241,14 +290,14 @@
 					    	<div class="modal-dialog" role="document">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h5 class="modal-title" id="unsupportedBrowserTitle">Unsupported Browser</h5>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+										<h5 class="modal-title" id="unsupportedBrowserTitle"><s:text name="global.unsupportedBrowser"/></h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-danger" role="alert" id="wsserror">You are currently using an unsupported browser, if you are using a <strong>Tinter</strong> or <strong>Color-Eye</strong>, please use <strong>Google Chrome</strong> (Version 43 and above) in order to assure proper Tinter/Color-Eye communication.</div>
+										<div class="alert alert-danger" role="alert" id="wsserror"><s:text name="global.currentlyUsingUnsupportedBrowser"/></div>
 									</div>
 									<div class="modal-footer">
-										<button type="button" class="btn btn-success" id="unsupportedBrowserOK" data-dismiss="modal" aria-label="Close" >OK</button>
+										<button type="button" class="btn btn-success" id="unsupportedBrowserOK" data-dismiss="modal" aria-label="%{getText('global.ok')}" ><s:text name="global.ok"/></button>
 									</div>
 								</div>
 							</div>
