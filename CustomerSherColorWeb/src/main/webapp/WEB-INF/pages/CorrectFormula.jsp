@@ -46,7 +46,6 @@
 		}
 		</style>
 	<script type="text/javascript">
-
 	// global vars for tinter
 	var sendingDispCommand = "false";
 	var shotList = [];
@@ -304,7 +303,7 @@
     					// Error Tell the user
     					console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (skipConfirmClick).</li>');
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSkipConfirm" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
     					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
@@ -539,7 +538,7 @@
             	}
 			},
 			error: function(err){
-				alert("failure: " + err);
+				alert('<s:text name="global.failurePlusErr"><s:param>' + err + '</s:param></s:text>');
 			}
 		});
 	}
@@ -654,7 +653,7 @@
 	            },
 	            error: function(textStatus, errorThrown ) {
 	                console.log("JSON dispense failed here");
-	                console.log(textStatus + "" + errorThrown);
+	                console.log(textStatus + " " + errorThrown);
 	            }
 	        });
 		}
@@ -690,7 +689,7 @@
 				console.log("Invalid entries detected.");
 				$('#formulaAdditions').attr("data-toggle", "popover");
 				$('#formulaAdditions').attr("data-placement","top");
-				$('#formulaAdditions').attr("data-content", 's:text name="correctFormula.additionSetNotAllZero" />');
+				$('#formulaAdditions').attr("data-content", '<s:text name="correctFormula.additionSetNotAllZero" />');
 				$('#formulaAdditions').popover({trigger : 'manual'});
 				$('#formulaAdditions').popover('toggle');
 				$('.popover').addClass('popover-danger');
@@ -749,7 +748,7 @@
 					$("#fillWarningListTitle").text('<s:text name="correctFormula.warningExceedsProductLimit" />');
 				} else {
 					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.estMaxClrnt"><s:param>' + $("#maxClrntLoad").text() + '</s:param></s:text></li>');
-					$("#fillWarningList").append('<li class="alert alert-warning"><stext name="correctFormula.currentClrntLoadContainer"><s:param>' + $("#currClrntLoad").text() + '</s:param></s:text></li>');
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.currentClrntLoadContainer"><s:param>' + $("#currClrntLoad").text() + '</s:param></s:text></li>');
 					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.exceedMaxLimit"><s:param>' + ozEntered + '</s:param></s:text></li>');
 					$("#fillWarningListTitle").text('<s:text name="correctFormula.warningExceedsContainerLimit" />');
 				}
@@ -1046,8 +1045,8 @@
 			writeDispense(return_message); // will also send tinter event
 			waitForShowAndHide("#tinterInProgressModal");
 	    } else {
-	        $("#tinterInProgressDispenseStatus").text('<s:text name="correctFormula.lastDispensePlusError" /><s:param>'+return_message.errorMessage+'</s:param></s:text>');
-	        $("#dispenseStatus").text('<s:text name="correctFormula.lastDispensePlusError" /><s:param>'+return_message.errorMessage+'</s:param></s:text>');
+	        $("#tinterInProgressDispenseStatus").text('<s:text name="correctFormula.lastDispensePlusError"><s:param>'+return_message.errorMessage+'</s:param></s:text>');
+	        $("#dispenseStatus").text('<s:text name="correctFormula.lastDispensePlusError"><s:param>'+return_message.errorMessage+'</s:param></s:text>');
 	        waitForShowAndHide("#tinterInProgressModal");
 	        console.log('hide done');
 	        //Show a modal with error message to make sure the user is forced to read it.
@@ -1107,9 +1106,9 @@
             },
             error: function(textStatus, errorThrown ) {
                 console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                console.log(textStatus + " " + errorThrown);
 				// Error Tell the user
-				console.log("Write Failed!" + data.errorMessage);
+				console.log("Write Failed! " + data.errorMessage);
 				$("#tinterErrorList").empty();
 				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedToCallAction" /></li>');
 				$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -1133,7 +1132,7 @@
 	function RecdMessage() {
 		console.log("Received Message");
 		//parse the spectro
-		console.log("isReady is " + ws_tinter.isReady + "BTW");
+		console.log("isReady is " + ws_tinter.isReady + " BTW");
 		if(ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg!=""){
 			if(sendingDispCommand == "true"){
 				// received an error from WSWrapper so we won't get any JSON result
@@ -1387,8 +1386,8 @@
 							<tr>
 								<td style="width: 20%;">
  									<h5 class="text-primary"><strong><s:text name="correctFormula.startingFormula"></s:text></strong></h5>
-									<p><strong><s:text name="global.jobNumber"></s:text></strong><span id="controlNbr">${sessionScope[thisGuid].controlNbr}</span></p>
-									<p><strong><s:text name="correctFormula.containersColon"></s:text></strong><span id="quantityDispensed">${sessionScope[thisGuid].quantityDispensed}</span></p>
+									<p><strong><s:text name="global.jobNumber"></s:text> </strong><span id="controlNbr">${sessionScope[thisGuid].controlNbr}</span></p>
+									<p><strong><s:text name="correctFormula.containersColon"></s:text> </strong><span id="quantityDispensed">${sessionScope[thisGuid].quantityDispensed}</span></p>
 								</td>
 								<td style="width: 50%;">
 									<table id="origFormula" class="table">
@@ -1414,10 +1413,10 @@
 									</table>
 								</td>
 								<td style="width: 30%;" class="pl-5">
- 									<h5 class="text-primary"><strong>Colorant Fill Levels</strong></h5>
-									<p><strong><s:text name="correctFormula.maximumLoadOzColon"></s:text></strong><span id="maxClrntLoad"><s:property value="maxClrntLoad"/></span></p>
-									<p><strong><s:text name="correctFormula.currentLoadOzColon"></s:text></strong><span id="currClrntLoad"><s:property value="currClrntLoad"/></span></p>
-									<p><strong><s:text name="correctFormula.availableFillOzColon"></s:text></strong><span id="clrntSpaceAvail"><s:property value="clrntSpaceAvail"/></span></p>
+ 									<h5 class="text-primary"><strong><s:text name="correctFormula.colorantFillLevels"></s:text></strong></h5>
+									<p><strong><s:text name="correctFormula.maximumLoadOzColon"></s:text> </strong><span id="maxClrntLoad"><s:property value="maxClrntLoad"/></span></p>
+									<p><strong><s:text name="correctFormula.currentLoadOzColon"></s:text> </strong><span id="currClrntLoad"><s:property value="currClrntLoad"/></span></p>
+									<p><strong><s:text name="correctFormula.availableFillOzColon"></s:text> </strong><span id="clrntSpaceAvail"><s:property value="clrntSpaceAvail"/></span></p>
 									<s:hidden name="maxLoadType" value="%{maxLoadType}"/>
 								</td>
 							</tr>
@@ -1554,7 +1553,7 @@
 								</s:text></strong>
 							</h5>
 							<p><strong><s:text name="correctFormula.reasonColon"></s:text></strong>
-								<input type="text" class="form-control btn-block" id="reason" placeholder="%{getText('correctFormula.enterCorrectionReason')}" maxlength="100" />
+								<s:textfield class="form-control btn-block" id="reason" placeholder="%{getText('correctFormula.enterCorrectionReason')}" maxlength="100" />
 							</p>
 							<table>
 							<tr>
@@ -1591,7 +1590,7 @@
 							<td style="width: 15%;">
 							<div id="percentPrompt" data-toggle="collapse" class="p-4">
 								<div class="form-group">
-									<input type="text" class="number-only form-control input-sm" id="pct" placeholder="%{getText('correctFormula.enterPercent')}">
+									<s:textfield class="number-only form-control input-sm" id="pct" placeholder="%{getText('correctFormula.enterPercent')}" />
 								</div>
 								<button type="button" class="btn btn-secondary btn-sm" id="percentOk" onclick="percentConfirmClick()">
 									<span class="fa fa-check"></span>
@@ -1665,7 +1664,7 @@
 								<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"><s:text name="global.pressF4ToAbort"></s:text></p>
 								<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
-								<div class="progress-wrapper "></div>
+								<div class="progress-wrapper"></div>
 							</div>
 							<div class="modal-footer">
 							</div>
