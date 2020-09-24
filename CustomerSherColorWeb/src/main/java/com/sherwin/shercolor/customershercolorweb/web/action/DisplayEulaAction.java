@@ -72,7 +72,7 @@ public class DisplayEulaAction extends ActionSupport  implements SessionAware, L
 		//will be customer specific (still need to define this part.)
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		if (!eulaAgreementCode.equals(target.getAcceptanceCode("CUSTOMERSHERCOLORWEB", reqObj.getCustomerID()))) {
-			addFieldError("eulaAgreementCode",getText("displayEulaAction.agreementCodeIncorrect"));
+			addFieldError("eulaAgreementCode", getText("displayEulaAction.agreementCodeIncorrect"));
 			return INPUT;
 		}
 		
