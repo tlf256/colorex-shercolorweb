@@ -9,7 +9,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<!-- 6/24/2019 BXW: This page has been created to mimic the Update Remote Measurements spectro utility
 							menu item on the Store/Customer PCs. -->		
-		<title>Manage Remote Measurements</title>
+		<title><s:text name="global.manageRemoteMeasurements"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -82,10 +82,10 @@
 					try{
 						if(event.key == ">" || event.key == "<"){
 							//console.log("< or > keypress");
-							throw "Special characters \"<\" or \">\" not allowed";
+							throw '<s:text name="global.notLtOrGt"/>';
 						}
 						if($(this).val().includes(">") || $(this).val().includes("<")){
-							throw "Invalid entry. Please remove these characters: < >";
+							throw '<s:text name="global.invalidEntryLtGt"/>';
 						}
 						$(document).find('#errortxt').remove();
 						$('input:submit').attr('disabled', false);
@@ -139,7 +139,7 @@
 		  	case 'RetrieveAllStoredMeasurements':
 		  		if (return_message.errorMessage!="") {
 		  			$('#notConnectedWarning').removeClass('d-none');
-		  			$('#loadMeasurementsButton').prop("title","Ci62 Color-Eye not detected. Cannot load new measurements.");
+		  			$('#loadMeasurementsButton').prop("title",'<s:text name="manageStoredMeasurements.ci62NotDetected2"/>');
 		  		} else {
 		  			myGuid = "${reqGuid}";
 		  			measurementsJSON = return_message.storedMeasurements;
@@ -165,12 +165,12 @@
 		  	            	} else{		  	                	
 		  	      				hexList = data.hexList;		  	                	
 		  	                	$('#loadMeasurementsButton').prop('disabled',false);
-		  			  			$('#loadMeasurementsButton').prop("title","Load new remote measurements.");
+		  			  			$('#loadMeasurementsButton').prop("title",'<s:text name="manageStoredMeasurements.loadNewMeasurements"/>');
 
 		  	            	}
 		  				},
 		  				error: function(err){
-		  					alert("failure: " + JSON.stringify(err));
+		  					alert('<s:text name="global.failurePlusErr"><s:param>'+ JSON.stringify(err) +'</s:param></s:text>');
 		  					console.log(JSON.stringify(err));
 		  				}
 		  			});
@@ -178,7 +178,7 @@
 		  			break;
 		  		default:
 		  		//Not an response we expected...
-		  		  	DisplayMsg(2,"Unexpected call to " + return_message.command);
+		  		  	DisplayMsg(2,'<s:text name="global.unexpectedCallToErr"><s:param>'+ return_message.command +'</s:param></s:text>');
 		  	}
 		  	  	
 		}
@@ -195,7 +195,7 @@
 		  	new_measurements_table = $('#new_spectro_measurements_table')
 		  	.DataTable(
 		  		{
-		  			"emptyTable" : "No measurements available",
+		  			"emptyTable" : '<s:text name="displaystoredmeasurements.noMeasurementsAvailable"/>',
 		  			"scrollY" : '50vh',
 		  			scrollCollapse : true,
 		  			data : measurementsJson,
@@ -237,7 +237,7 @@
 		  					"render" : function(
 		  							data, type, row,meta) {
 		  						if (isDupe == true) {
-		  							return '<input type="text" class="sampleName" name="sampleName" style="width:95%" value="DUPLICATE" disabled>';
+		  							return '<input type="text" class="sampleName" name="sampleName" style="width:95%" value="<s:text name="manageStoredMeasurements.duplicate"/>" disabled>';
 		  						} else if (row.sampleName === '<00>') {
 		  							return '<input type="text" class="sampleName validateEntry" name="sampleName" style="width:95%" value="" maxlength="30">'
 		  						} else {
@@ -259,7 +259,7 @@
 		  					"render" : function(
 		  							data, type, row,meta) {
 		  						if (isDupe == true) {
-		  							return '<input type="text" class="sampleDescr" name="sampleDescr" style="width:95%" value="This is a duplicate of an existing entry" disabled>';
+		  							return '<input type="text" class="sampleDescr" name="sampleDescr" style="width:95%" value="<s:text name="manageStoredMeasurements.duplicateOfExistingEntry"/>" disabled>';
 		  						} else {
 		  							return '<input type="text" class="sampleDescr validateEntry" name="sampleDescr" style="width:95%" value="" maxlength="50">';
 		  						}
@@ -305,12 +305,12 @@
 		  			newMeasurements[i].sampleDescr,
 		  			newMeasurements[i].model,
 		  			newMeasurements[i].serialNbr,
-		  			'<button type="button" id="deleterow" class="btn btn-danger dltrow" title="Delete job"><i class="far fa-trash-alt"></i></button>',
+		  			'<button type="button" id="deleterow" class="btn btn-danger dltrow" title="%{getText(\'manageStoredMeasurements.deleteStoredMeasurement\')}"><i class="far fa-trash-alt"></i></button>',
 		  			sampleCurve,
 		  			newMeasurements[i].RGBHex
 		  		]).draw();
 		  	}
-		  	DisplayMsg(1,"( " + savedColors + " ) has been saved successfully");
+		  	DisplayMsg(1,'<s:text name="manageStoredMeasurements.successfulSave"><s:param>'+ savedColors +'</s:param></s:text>');
 		}
 	 	
 		
@@ -375,7 +375,7 @@
 			         		}
 			  		},
 			  		error: function(err){
-			  			DisplayMsg(2,"Error: Unable to save new measurements.")
+			  			DisplayMsg(2,'<s:text name="manageStoredMeasurements.unableToSaveMeas"/>')
 			  		}
 			  	});
 			  		
@@ -413,11 +413,11 @@
 					datatype : "json",
 		  			async: true,
 					success:function(data){
-						DisplayMsg(1,"The color ( " + colorName + " ) has been deleted successfully");
+						DisplayMsg(1,'<s:text name="manageStoredMeasurements.successfulDelete"><s:param>'+ colorName +'</s:param></s:text>');
 					
 					},
 					error:function(err){
-						DisplayMsg(2,"Error: The color ( " + colorName + " ) was unable to be deleted");
+						DisplayMsg(2,'<s:text name="manageStoredMeasurements.unableToDeleteColorName"><s:param>'+ colorName +'</s:param></s:text>');
 					}
 					
 				});
@@ -471,10 +471,10 @@
 						updatedRow[1] = colorName;
 						updatedRow[3] = description;
 						$("#measurement_table").dataTable().fnUpdate(updatedRow,editRow,undefined,false);
-						DisplayMsg(1,"The color ( " + colorName + " ) has been updated successfully");
+						DisplayMsg(1,'<s:text name="manageStoredMeasurements.successfulUpdate"><s:param>'+ colorName +'</s:param></s:text>');
 					},
 					error:function(err){
-						DisplayMsg(2,"Error: ( " + colorName + " ) was unable to be updated");
+						DisplayMsg(2,'<s:text name="manageStoredMeasurements.unableToUpdateColorName"><s:param>'+ colorName +'</s:param></s:text>');
 					}
 					
 				});
@@ -504,7 +504,7 @@
 			<div class="row">
 			<div class="col-sm-1"></div>
 			<div class="col-sm-10 mb-2	">
-				<h1>Manage Remote Measurements</h1>
+				<h1><s:text name="global.manageRemoteMeasurements"/></h1>
 			</div>
 			<div class="col-sm-1"></div>
 			</div>
@@ -513,18 +513,18 @@
 				<div class="col-sm-10">
 					<h6 id="successmsg" class="text-success d-none"></h6>
 					<h6 id="errmsg" class="text-danger d-none"></h6>
-					<div id="notConnectedWarning" class="alert-warning p-2 d-none">Ci62 Color-Eye not detected! Unable to load new remote measurements.</div>
+					<div id="notConnectedWarning" class="alert-warning p-2 d-none"><s:text name="manageStoredMeasurements.ci62NotDetected1"/></div>
 <!--  ------------- Spectro Measurement Table ---------------------------------------------------------------------------------- -->
 					<table id="measurement_table" class="table table-striped table-bordered" style="width:100%">
 						<thead>
 							<tr>
 								<th></th>								
-								<th>Color Name</th>
-								<th>Date/Time</th>
-								<th>Description</th>
-								<th>Spectro Model</th>
-								<th>Spectro Serial Number</th>
-								<th>Delete</th>
+								<th><s:text name="global.colorName"/></th>
+								<th><s:text name="global.dateTime"/></th>
+								<th><s:text name="global.description"/></th>
+								<th><s:text name="manageStoredMeasurements.spectroModel"/></th>
+								<th><s:text name="manageStoredMeasurements.spectroSerialNumber"/></th>
+								<th><s:text name="global.delete"/></th>
 								<th style="display:none"></th>
 								<th style="display:none"></th>
 							</tr>
@@ -539,7 +539,7 @@
 									<td><s:property value="#measurement.model" /></td>
 									<td><s:property value="#measurement.serialNbr" /></td>
 									<td>
-										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="Delete job">
+										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="%{getText('manageStoredMeasurements.deleteRemoteMeasurements')}">
 											<i class="far fa-trash-alt"></i>
 										</button>
 									</td>
@@ -563,11 +563,11 @@
 				<div class="col-sm-1"></div>
 				<div class="col-6"></div>
 				<div class="col-2">
-					<button type="button" id="loadMeasurementsButton" class="btn btn-secondary mb-5 mt-2 mx-1" title="Currently loading remote measurements from the Color-Eye">Load Measurements</button>
+					<button type="button" id="loadMeasurementsButton" class="btn btn-secondary mb-5 mt-2 mx-1" title="%{getText('manageStoredMeasurements.currentLoadingRemoteMeas')}"><s:text name="manageStoredMeasurements.loadMeasurements"/></button>
 					<script>$('#loadMeasurementsButton').prop('disabled',true);</script>
 				</div>
 				<div class= "col-2">
-					<s:submit cssClass="btn btn-secondary mb-5 mt-2 mx-1" value="Cancel" action="userCancelAction"/>
+					<s:submit cssClass="btn btn-secondary mb-5 mt-2 mx-1" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				</div>
 				<div class="col-sm-1"></div>
 			</div>
@@ -580,20 +580,20 @@
 				<div class="modal-dialog modal-dialog-cu" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Load New Measurements</h5>
+							<h5 class="modal-title"><s:text name="manageStoredMeasurements.loadNewMeasurements"/></h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div class="modal-body modal-body-cu">
 							<table id="new_spectro_measurements_table" class="table table-striped table-bordered" style="width: 100%">
 								<thead>
 									<tr>
-										<th>Add</th>
+										<th><s:text name="manageStoredMeasurements.add"/></th>
 										<th></th>
-										<th>Color Name</th>
-										<th>Date/Time</th>
-										<th>Description</th>
-										<th>Spectro Model</th>
-										<th>Spectro Serial Number</th>
+										<th><s:text name="global.colorName"/></th>
+										<th><s:text name="global.dateTime"/></th>
+										<th><s:text name="global.description"/></th>
+										<th><s:text name="manageStoredMeasurements.spectroModel"/></th>
+										<th><s:text name="manageStoredMeasurements.spectroSerialNumber"/></th>
 										<th style="display:none">
 									</tr>
 								</thead>
@@ -602,8 +602,8 @@
 							</table> 
 						</div>
 						<div class="modal-footer">
-							<button type="button" id="saveNewMeasurements" class="btn btn-primary mb-5 mt-2 mx-1">Save</button>
-							<button type="button" id="cancelLoadMeasurements" class="btn btn-secondary mb-5 mt-2 mx-1">Cancel</button>
+							<button type="button" id="saveNewMeasurements" class="btn btn-primary mb-5 mt-2 mx-1"><s:text name="global.save"/></button>
+							<button type="button" id="cancelLoadMeasurements" class="btn btn-secondary mb-5 mt-2 mx-1"><s:text name="global.cancel"/></button>
 						</div>
 					</div>
 				</div>
@@ -616,17 +616,17 @@
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title text-danger">Delete Stored Measurement</h5>
+		        <h5 class="modal-title text-danger"><s:text name="manageStoredMeasurements.deleteRemoteMeasurement"/></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
 		      <div class="modal-body">
-		        <h6>Are you sure you want to delete this measurement?</h6>
+		        <h6><s:text name="manageStoredMeasurements.areYouSureMeasureDelete"/></h6>
 		      </div>
 		      <div class="modal-footer">
-			  	<button type="button" id="confirmDelete" class="btn btn-danger" data-dismiss="modal">Yes</button>
-			  	<button type="button" id="cancelDelete" class="btn btn-secondary" data-dismiss="modal">No</button>
+			  	<button type="button" id="confirmDelete" class="btn btn-danger" data-dismiss="modal"><s:text name="global.yes"/></button>
+			  	<button type="button" id="cancelDelete" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.no"/></button>
 		      </div>
 		    </div>
 		  </div>
@@ -639,7 +639,7 @@
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title">Edit Stored Measurement</h5>
+		        <h5 class="modal-title"><s:text name="manageStoredMeasurements.editRemoteMeasurement"/></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
@@ -647,16 +647,16 @@
 		      <div class="modal-body" style="height: 50%">
 		        <div class="row">
 					<div class="col-6">
-						<span style="font-weight: bold">Color Name:</span>
+						<span style="font-weight: bold"><s:text name="global.colorNameColon"/></span>
 						<input type="text" id="editSampleName" class="validateEntry" name="editSampleName" maxlength="30" style="width:95%" value="">
 						<br><br>
-						<span style="font-weight: bold">Description:</span>
+						<span style="font-weight: bold"><s:text name="global.descriptionColon"/></span>
 						<textarea type="text" id="editSampleDescription" class="validateEntry" name="editSampleDescription" maxlength="50" style="width:95%; height: 45%"></textarea>
 					</div>
 					<div class="col-6">
-					<span style="font-weight:bold">Date/Time: </span><p id="spectroDateInfo"></p>
-					<span style="font-weight:bold">Model: </span><p id="spectroModelInfo"></p>
-					<span style="font-weight:bold">Serial Number: </span><p id="spectroSerialNumber"></p>
+					<span style="font-weight:bold"><s:text name="global.dateTimeColon"/> </span><p id="spectroDateInfo"></p>
+					<span style="font-weight:bold"><s:text name="global.modelColon"/> </span><p id="spectroModelInfo"></p>
+					<span style="font-weight:bold"><s:text name="global.serialNumberColon"/> </span><p id="spectroSerialNumber"></p>
 					<span class="chip p-0" id="spectroColorChip"></span>
 
 					</div>		        
@@ -664,8 +664,8 @@
 		      </div>
 		      <div class="modal-footer">
 		      <s:form>
-			        <button type="button" id="confirmEdit" class="btn btn-primary" data-dismiss="modal">Save</button>
-			        <button type="button" id="cancelEdit" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button type="button" id="confirmEdit" class="btn btn-primary" data-dismiss="modal"><s:text name="global.save"/></button>
+			        <button type="button" id="cancelEdit" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
 		       </s:form>
 		      </div>
 		    </div>
