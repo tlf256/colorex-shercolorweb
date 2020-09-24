@@ -109,7 +109,7 @@ function dispense(){
         ws_tinter = new WSWrapper("tinter");
     }
     $("#dispError").text("");
-    $("#dispenseStatus").text("Last Dispense: In Progress ");
+    $("#dispenseStatus").text(i18n['global.lastDispenseInProgress']);
     rotateIcon();
     // Send to tinter
     ws_tinter.send(json);
@@ -140,7 +140,7 @@ function dispenseProgressResp(return_message){
 	}
 	else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
 		  if(return_message.errorNumber == 4226){
-		    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+		    	return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry']
 			    }
 		FMXDispenseComplete(return_message);
 		}
@@ -164,7 +164,7 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
     $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
     
     if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-    else $("#tinterErrorListTitle").text("Tinter Error");
+    else $("#tinterErrorListTitle").text(i18n['global.tinterError']);
     if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
     else $("#tinterErrorListSummary").text("");
   
@@ -179,7 +179,7 @@ function showTinterErrorModal(myTitle, mySummary, my_return_message){
         $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
     }
     if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-    else $("#tinterErrorListTitle").text("Tinter Error");
+    else $("#tinterErrorListTitle").text(i18n['global.tinterError']);
     if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
     else $("#tinterErrorListSummary").text("");
     $("#tinterErrorListModal").modal('show');
@@ -190,9 +190,9 @@ function FMXDispenseComplete(return_message){
     if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
         // save a dispense (will bump the counter)
         getSessionTinterInfo($("#reqGuid").val(),warningCheck);
-        $("#dispenseStatus").text("Last Dispense: Complete");
+        $("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
         $('#progressok').removeClass('d-none');
-        $('#tinterInProgressTitle').text('Tinter Progress');
+        $('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
         $('#tinterInProgressMessage').text('');
         $("#tinterProgressList").empty();
 		tinterErrorList = [];
@@ -210,13 +210,13 @@ function FMXDispenseComplete(return_message){
 		}
     } else {
   	  if(return_message.errorNumber == 4226){
-	    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+	    	return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry']
 		}
-        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage);
+        $("#dispenseStatus").text(i18n['global.lastDispense']+return_message.errorMessage);
         waitForShowAndHide("#tinterInProgressModal");
         console.log('hide done');
         //Show a modal with error message to make sure the user is forced to read it.
-        FMXShowTinterErrorModal("Dispense Error",null,return_message);
+        FMXShowTinterErrorModal(i18n['global.dispenseError'],null,return_message);
     }
     sendingTinterCommand = "false";
 }
@@ -230,16 +230,16 @@ function dispenseComplete(return_message){
     if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
         // save a dispense (will bump the counter)
         getSessionTinterInfo($("#reqGuid").val(),warningCheck);
-        $("#dispenseStatus").text("Last Dispense: Complete");
+        $("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
         $('#progressok').removeClass('d-none');
-        $('#tinterInProgressTitle').text('Tinter Progress');
+        $('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
         $('#tinterInProgressMessage').text('');
     } else {
-        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage);
+        $("#dispenseStatus").text(i18n['global.lastDispense']+return_message.errorMessage);
         waitForShowAndHide("#tinterInProgressModal");
         console.log('hide done');
         //Show a modal with error message to make sure the user is forced to read it.
-        showTinterErrorModal("Dispense Error",null,return_message);
+        showTinterErrorModal(i18n['global.dispenseError'],null,return_message);
     }
     sendingTinterCommand = "false";
     startSessionTimeoutTimers();
@@ -271,7 +271,7 @@ function RecdMessage() {
         if(sendingTinterCommand == "true"){
             // received an error from WSWrapper so we won't get any JSON result
             // Since we are sending a dispense command, show as dispense error
-            $("#dispenseStatus").text("Last Dispense: "+ws_tinter.wserrormsg);
+            $("#dispenseStatus").text(i18n['global.lastDispense']+ws_tinter.wserrormsg);
             //Show a modal with error message to make sure the user is forced to read it.
             $("#tinterSocketError").text(ws_tinter.wserrormsg);
             $('#progressok').removeClass('d-none');
@@ -390,14 +390,14 @@ function preDispenseRoutine() {
 	                        });
 	                    }else {console.log("Row increments empty or incomplete.");}
             		}else {console.log("Invalid inputs found"); invalidInput = true;}
-                }else {popupInputError($rowInputs[0],"Cannot dispense more than 8 colorants per dispense. Please re-try with less than 8 colorants.");}
+                }else {popupInputError($rowInputs[0],i18n['dispense.cannotDispenseMoreThanEight']);}
             }
         });
     }
     else{
         console.log("No values given, dispense not executed.");
-        $('#tinterInProgressTitle').text('Qty Error');
-        $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
+        $('#tinterInProgressTitle').text(i18n['dispense.qtyError']);
+        $('#tinterInProgressMessage').text(i18n['dispense.noValuesEntered']);
         $('#progressok').removeClass('d-none');
 		$(".progress-wrapper").empty();
         $("#tinterInProgressModal").modal('show');
@@ -418,7 +418,7 @@ function validateInput(inputTextArray) {
     inputTextArray.each(function(){
         if(this.value  && this.value  !== ""){
             if(this.value.match(/^[0-9]\d{0,1}$/) === null){
-            	popupInputError(this,"Input must be a positive whole number between 0-99, please re-enter.");
+            	popupInputError(this,i18n['global.positiveNbr']);
             	result = false;
             }
         }
@@ -441,8 +441,8 @@ function popupInputError(input, outputMsg){
 }
 
 function preDispenseCheck(){
-    $("#tinterInProgressTitle").text("Colorant Level Check In Progress");
-    $("#tinterInProgressMessage").text("Please wait while we Check the Colorant Levels for your tinter...");
+    $("#tinterInProgressTitle").text(i18n['global.colorantLevelCheckInProgress']);
+    $("#tinterInProgressMessage").text(i18n['global.pleaseWaitClrntLevelCheck']);
 	$(".progress-wrapper").empty();
     $("#tinterInProgressModal").modal('show');
     // TODO Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
@@ -458,10 +458,10 @@ function preDispenseCheckCallback(){
     let today = new Date();
     if (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() || dateFromString.getDate()<today.getDate()){
         $("#tinterErrorList").empty();
-        $("#tinterErrorList").append('<li class="alert alert-danger">Tinter Purge is Required. Last done on ' + moment(dateFromString).format('ddd MMM DD YYYY') + "</li>");
+        $("#tinterErrorList").append('<li class="alert alert-danger">' + i18n['displayFormula.tinterPurgeIsRequiredLastDoneOn'] + " " + moment(dateFromString).format('ddd MMM DD YYYY') + '</li>');
         waitForShowAndHide("#tinterInProgressModal");
-        $("#tinterErrorListTitle").text("Purge Required");
-        $("#tinterErrorListSummary").text("Go to the SherColor Home page to perform Tinter Purge. ");
+        $("#tinterErrorListTitle").text(i18n['global.purgeRequired']);
+        $("#tinterErrorListSummary").text(i18n['global.goHomeToPurge']);
         $("#tinterErrorListModal").modal('show');
         
         preDispenseCheckFlag = true;
@@ -477,8 +477,8 @@ function preDispenseCheckCallback(){
             });
             //Show it in a modal they can't go on
             waitForShowAndHide("#tinterInProgressModal");
-            $("#tinterErrorListTitle").text("Colorant Level Too Low");
-            $("#tinterErrorListSummary").text("Fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
+            $("#tinterErrorListTitle").text(i18n['global.colorantLevelTooLow']);
+            $("#tinterErrorListSummary").text(i18n['dispense.fillEmptyCanister']);
             $("#tinterErrorListModal").modal('show');
             
             preDispenseCheckFlag = true;
@@ -492,7 +492,7 @@ function preDispenseCheckCallback(){
                 //Show in modal, they can say OK to continue
                 waitForShowAndHide("#tinterInProgressModal");
                 console.log('hide done');
-                $("#tinterWarningListTitle").text("Low Colorant Levels");
+                $("#tinterWarningListTitle").text(i18n['global.lowColorantLevels']);
                 $("#tinterWarningListModal").modal('show');
             
                 
@@ -508,13 +508,13 @@ function preDispenseCheckCallback(){
         //Dispensing if shotList contains values
         if(shotList.length > 0){
             $("#tinterInProgressModal").modal('show');
-        	$('#tinterInProgressTitle').text('Dispense in Progress');
+        	$('#tinterInProgressTitle').text(i18n['global.dispenseInProgress']);
         	stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
             decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
         }else{ 
             console.log("Shotlist empty, dispense not executed.");
-            $('#tinterInProgressTitle').text('Tinter Progress');
-            $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
+            $('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
+            $('#tinterInProgressMessage').text(i18n['dispense.noValuesEntered']);
             $('#progressok').removeClass('d-none');
         }
     }
@@ -600,8 +600,8 @@ $(function(){
             decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
         }else{ 
             console.log("Shotlist empty, dispense not executed.");
-            $('#tinterInProgressTitle').text('Qty Error');
-            $('#tinterInProgressMessage').text('No values entered. Please enter values to dispense colorant.');
+            $('#tinterInProgressTitle').text(i18n['dispense.qtyError']);
+            $('#tinterInProgressMessage').text(i18n['dispense.noValuesEntered']);
             $('#progressok').removeClass('d-none');
         }
 		$(".progress-wrapper").empty();
