@@ -17,9 +17,19 @@ i18n['colorant.purgeFailedColon'] = '<s:text name="colorant.purgeFailedColon"/>'
 i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionExpiredClickLogin"/>';
 i18n['global.containerFull'] = '<s:text name="global.containerFull"/>';
 i18n['global.extend'] = '<s:text name="global.extend"/>';
+i18n['global.failure'] = '<s:text name="global.failure"/>';
 i18n['global.login'] = '<s:text name="global.login"/>';
+i18n['global.notLoggedInReqGuidNotFound'] = '<s:text name="global.notLoggedInReqGuidNotFound"/>'
 i18n['global.tinterError'] = '<s:text name="global.tinterError"/>';
 i18n['global.yourSessionExpiresInFiveMin'] = '<s:text name="global.yourSessionExpiresInFiveMin"/>';
+i18n['tinter.clrntIsLowWarning'] = '<s:text name="tinter.clrntIsLowWarning"/>';
+i18n['tinter.couldNotFindCalibFiles'] = '<s:text name="tinter.couldNotFindCalibFiles" />';
+i18n['tinter.couldNotFindCalibForColorant'] = '<s:text name="tinter.couldNotFindCalibForColorant"/>';
+i18n['tinter.couldNotFindCalibTemplate'] = '<s:text name="tinter.couldNotFindCalibTemplate"/>';
+i18n['tinter.couldNotFindDefaultGdata'] = '<s:text name="tinter.couldNotFindDefaultGdata"/>';
+i18n['tinter.couldNotFindGdata'] = '<s:text name="tinter.couldNotFindGdata"/>';
+i18n['tinter.errorClrntEmpty'] = '<s:text name="tinter.errorClrntEmpty"/>';
+i18n['tinter.notEnoughClrntToDisp'] = '<s:text name="tinter.notEnoughClrntToDisp"/>';
 
 </script>
 
