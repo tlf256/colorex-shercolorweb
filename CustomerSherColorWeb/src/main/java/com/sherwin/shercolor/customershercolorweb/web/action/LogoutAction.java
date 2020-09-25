@@ -74,7 +74,7 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 			
 				
 			//logger.info("in logoutAction.execute - end, sherLinkURL is " + sherLinkURL);
-			loMessage = "You have been logged out.";
+			loMessage = getText("global.youHaveBeenLoggedOut");// 
 			return returnStatus; 
 		     
 		} catch (Exception e) {

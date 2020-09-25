@@ -118,7 +118,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 				logger.debug("back from saveCustDevice without error");
 				if(returnMessage!=null){
 					//save if new customer id otherwise do nothing.  If error return error
-					addActionError("Config not complete.  Critical DB error saving color eye device data.  Please try again.  Call support if this persists.");
+					addActionError(getText("global.configNotComplete"));
 					return ERROR;
 				}
 				logger.debug("made it past returnMessage check");
@@ -129,7 +129,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 				logger.debug("set the spectro object");
 			}
 			else {
-				addActionError("Invalid Color Eye data - customer, model type or serial number is blank");
+				addActionError(getText("spectroConfigureAction.invalidColorEyeData"));
 				return ERROR;
 			}
 

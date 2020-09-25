@@ -97,7 +97,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					reqObj.setLastTranDate(custWebTran.getLastTranDate());
 					reqObj.setInitTranDate(custWebTran.getInitTranDate());
 					SwMessage statusMsg = new SwMessage();
-					statusMsg.setMessage("Successfully Updated Job Number " + custWebTran.getControlNbr());
+					statusMsg.setMessage(getText("saveNewJobAction.successfullyUpdated",new String[] { String.valueOf(custWebTran.getControlNbr())}));//"Successfully Updated Job Number " + custWebTran.getControlNbr());
 					if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
 					reqObj.getDisplayMsgs().add(statusMsg);
 					//addActionMessage("Successfully Updated Job Number " + custWebTran.getControlNbr());
@@ -120,7 +120,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					reqObj.setLastTranDate(custWebTran.getLastTranDate());
 					reqObj.setInitTranDate(custWebTran.getInitTranDate());
 					SwMessage statusMsg = new SwMessage();
-					statusMsg.setMessage("Successfully Saved as Job Number " + custWebTran.getControlNbr());
+					statusMsg.setMessage(getText("saveNewJobAction.successfullySaved",new String[] { String.valueOf(custWebTran.getControlNbr())}));//"Successfully Updated Job Number " + custWebTran.getControlNbr());
 					if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
 					reqObj.getDisplayMsgs().add(statusMsg);
 					//addActionMessage("Successfully Saved as Job Number " + custWebTran.getControlNbr());

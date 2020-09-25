@@ -151,9 +151,8 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				if (!defaultClrntSys.equals(reqObj.getClrntSys())) {
 					SwMessage csMsg = new SwMessage();
 					csMsg.setCode("NONDFLTCLRNTSYS");
-					csMsg.setMessage("Formula requires " + reqObj.getClrntSys() 
-							+ " colorant system.  Your site must have " + reqObj.getClrntSys() 
-							+ " tinting system to complete the paint formula.");
+					csMsg.setMessage(getText("generateFormulaAction.formulaRequiresClrntSys", 
+							new String[] {reqObj.getClrntSys(),reqObj.getClrntSys()}));
 					csMsg.setSeverity(Level.WARN);
 					validationMsgs.add(csMsg);
 				}
