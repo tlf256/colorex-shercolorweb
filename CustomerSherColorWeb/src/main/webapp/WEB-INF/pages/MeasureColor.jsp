@@ -80,7 +80,7 @@
 	  	  	}
 	  	  	
 	  	  	function cancelMeasure(){
-	  	  		$("#errmsg").text('Color measurement terminated');
+	  	  		$("#errmsg").text(<s:text name='measureColor.colormeasurementterminated'/>);
 		  		DisplayError();
 	  	  	}
 	  	  	
@@ -92,7 +92,7 @@
 	  	  				coloreyeStatus = ws_coloreye.isReady;
 		  	  			if(coloreyeStatus === "false"){
 		  	  				$('#measureColorModal').modal('hide');
-		  	  				$("#errmsg").text('Connection timeout');
+		  	  				$("#errmsg").text(<s:text name='measureColor.connectionTimeout'/>);
 		  	  				DisplayError();
 		  	  			}
   	  				} else {
@@ -108,7 +108,7 @@
 	  		  	console.log("Message is " + ws_coloreye.wsmsg);
 	  		  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
 	  		  	if (ws_coloreye.wserrormsg != "") {
-		  		  	$("#errmsg").text("WebSocketError " + ws_coloreye.wserrormsg);
+		  		  	$("#errmsg").text('<s:text name="global.webSocketErrorPlusErr"><s:param>' + ws_coloreye.wserrormsg + '</s:param></s:text>');
 	  		  		DisplayError();
 	  		  		return;
 	  		  	}
@@ -146,8 +146,9 @@
 	  					break;
   					default:
   						//Not an response we expected...
-  						$("#errmsg").text("Unexpected call to " + return_message.command);
-		  		  		DisplayError();
+  						$("#errmsg").text('<s:text name="global.unexpectedCallToErr"><s:param>' + return_message.command + '</s:param></s:text>');
+  						
+  		  		  		DisplayError();
 	  			}
 	  		  	
 	  	  	}
@@ -189,8 +190,8 @@
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-6">
-						<h2 class="calibrate d-none">Initializing calibration...</h2>
-						<h2 class="init">Communicating with Color-Eye...</h2>
+						<h2 class="calibrate d-none"><s:text name="measureColor.initializingCalibration"/></h2>
+						<h2 class="init"><s:text name="measureColor.commWithColorEye"/></h2>
 					</div>
 					<div class="col-sm-3"></div>
 				</div>
@@ -218,7 +219,7 @@
 					</div>
 					<div class="col-sm-5">
 						<div class="cancel d-none">
-							<s:submit cssClass="btn btn-secondary center-block" value="Cancel" action="userCancelAction"/>
+							<s:submit cssClass="btn btn-secondary center-block" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 					</div>
 		    	</div>
@@ -229,7 +230,7 @@
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
 		        <h2 class="modal-title ml-3">Measure Color</h2>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelMeasure()">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" onclick="cancelMeasure()">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
@@ -241,7 +242,7 @@
 					<div class="row">
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
-	            			<h3 class="swmeasure">1. Position the Color Eye target window on top of the Sample.</h3>
+	            			<h3 class="swmeasure"><s:text name="measureColor.positionColorEye"/></h3>
 						</div>
 					</div>
 					<div class="row">
@@ -251,7 +252,7 @@
 					<div class="row">
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
-	            			<h3 class="swmeasure">2. Press the instrument firmly down until the next prompt appears.</h3>
+	            			<h3 class="swmeasure"><s:text name="measureColor.pressFirmly"/></h3>
  	            		</div>
 					</div>
 					<div class="row">
@@ -272,7 +273,7 @@
 					<div class="row">
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
-	            			<h5 class="swmeasure">Note: the two status lights on the instrument should change from red to green on successful measurement.</h5>
+	            			<h5 class="swmeasure"><s:text name="measureColor.statusLightsShouldChangeRedToGreen"/></h5>
 						</div>
 					</div>
 					<div class="row">
@@ -284,7 +285,7 @@
 				</div>
 		      </div>
 		      <div class="modal-footer">
-			       <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelMeasure()">Close</button>
+			       <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelMeasure()"><s:text name="global.close"/></button>
 			  </div>
 		    </div>
 		  </div>
