@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.4.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -435,7 +435,7 @@
 					$bar.css("background-color", "#ffffff");
 					$bar.children("span").css("color", "black");
 					if (item.clrntCode == "NA"){
-						$bar.children("span").text(item.position + " - " + "%{getText('welcome.notInUse')}");
+						$bar.children("span").text(item.position + " - " + '<s:text name="welcome.notInUse"/>');
 					}
 				} else {
 					//set up text and background color

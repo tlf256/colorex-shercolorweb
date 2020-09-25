@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Dispense Colorants</title>
+<title><s:text name="global.dispenseColorants"/></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -22,8 +22,8 @@
 <script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.4.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.3.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.5.js"></script>
 <script type="text/javascript">
 	<s:iterator value="tinter.canisterList" status="i">
 //DJM not sure what this shotList is here for, but no way I'm deleting it now :) 
@@ -117,28 +117,28 @@ input[type=number] {
 							<div class="card card-body bg-light mb-3">
 									<div class="d-flex flex-row justify-content-around">
 									<div class="p-2 mr-3" style="width: 10rem;">
-										<span class="badge badge-secondary" style="font-size: 1.2rem;">Dispense</span>
+										<span class="badge badge-secondary" style="font-size: 1.2rem;"><s:text name="global.dispense"/></span>
 										<h5 class="text-primary mt-3"><strong><s:property value="tinter.model" escapeHtml="true"/></strong></h5>
 									</div>
 									<div class="p-2">
 										<div class="alert alert-warning text-center">
-										  	<p class="m-0"><strong>Note:</strong> Only enter whole positive numbers into fields ranging from 0-99 and dispense a maximum of 8 Colorants per dispense.</p>
+										  	<p class="m-0"><strong><s:text name="global.noteColon"/></strong> <s:text name="dispense.onlyWholePositiveNbrs"/></p>
 										</div>
 									</div>
 									<div class="p-2 ml-3">
 										<s:url var="dispenseURL" action="executeDispenseColorantsAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-										<button class="btn btn-primary mr-4" id="dispense">Dispense</button>
+										<button class="btn btn-primary mr-4" id="dispense"><s:text name="global.dispense"/></button>
 									</div>
 									<div class="p-2">
 										<s:url var="cancelURL" action="userCancelAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-										<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel">Done</a>
+										<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel"><s:text name="global.done"/></a>
 									</div>
 								</div>
 							</div>	
 							  <table class="table table-bordered table-sm">
 							    <thead>
 							      <tr>
-							        <th class="bg-light" style="width: 60%;">Color</th>
+							        <th class="bg-light" style="width: 60%;"><s:text name="colorantLevels.color"/></th>
 							        <th class="bg-light text-center" id="oz" style="width: 10%;"><s:property value="incrHdr[0]"/></th>
 							        <th class="bg-light text-center" id="three-two" style="width: 10%;"><s:property value="incrHdr[1]"/></th>
 							        <th class="bg-light text-center" id="six-four" style="width: 10%;"><s:property value="incrHdr[2]"/></th>
@@ -156,7 +156,7 @@ input[type=number] {
 										        <p><s:property value="clrntName"/></p>
 											</div>
 											<div class="col-xl-2" style="padding-left: 0px;">
-												<div id="warningdiv" style="margin-top: 5px;"><span class="badge badge-warning d-none" id="warning<s:property value="clrntCode"/>">Warning - Colorant Low</span></div>
+												<div id="warningdiv" style="margin-top: 5px;"><span class="badge badge-warning d-none" id="warning<s:property value="clrntCode"/>"><s:text name="global.warningClrntLow"/></span></div>
 												<strong id="pos" class="d-none"><s:property value="position"/></strong>
 											</div>
 											<div class="col-xl-9">
@@ -188,19 +188,19 @@ input[type=number] {
 							<div class="modal-content">
 								<div class="modal-header">
 									<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title" id="tinterInProgressTitle">Dispense In Progress</h5>
+									<h5 class="modal-title" id="tinterInProgressTitle"><s:text name="global.dispenseInProgress"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
 									<p id="dispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F4 to abort </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>
 					        	</div>
 								<div class="modal-footer">
-									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button id="progressok" type="button" class="btn btn-primary d-none" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div>
@@ -211,7 +211,7 @@ input[type=number] {
 				    	<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
+									<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
@@ -228,7 +228,7 @@ input[type=number] {
 									<p id="tinterErrorListSummary" font-size="4"></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div> 
@@ -239,7 +239,7 @@ input[type=number] {
 				    	<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="tinterWarningListTitle">Tinter Error</h5>
+									<h5 class="modal-title" id="tinterWarningListTitle"><s:text name="global.tinterError"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
@@ -247,10 +247,10 @@ input[type=number] {
 										<ul class="p-0" id="tinterWarningList" style="list-style: none;">
 										</ul>
 									</div>
-									<p id="tinterWarningListSummary" font-size="4">Click OK to continue.</p>
+									<p id="tinterWarningListSummary" font-size="4"><s:text name="dispense.clickOK"/></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div>
@@ -261,14 +261,14 @@ input[type=number] {
 				    	<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title">Dispense Error</h5>
+									<h5 class="modal-title"><s:text name="global.dispenseError"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
 									<p id="tinterSocketError" font-size="4"></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" >Close</button>
+									<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" ><s:text name="global.close"/></button>
 								</div>
 							</div>
 						</div>

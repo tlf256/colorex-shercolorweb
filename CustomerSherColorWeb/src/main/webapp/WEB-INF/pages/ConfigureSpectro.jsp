@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Configure Color Eye</title>
+<title><s:text name="configureSpectro.configureColorEye" /></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -192,7 +192,7 @@
 	  					break;
   					default:
   						//Not an response we expected...
-  						$("#errmsg").text("Unexpected call to " + return_message.command);
+  						$("#errmsg").text("<s:text name='global.unexpectedCallToErr'><s:param>" + return_message.command + "</s:param></s:text>");
 		  		  		DisplayError();
 	  			}
 	  		  }	
@@ -254,7 +254,7 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="form-group">
-           				<strong>Color Eye Model</strong>
+           				<strong><s:text name="configureSpectro.colorEyeModel" /></strong>
            				<div class="controls">
            					<s:iterator value="spectrotypes" status="i">
             					<div class="form-check">
@@ -297,7 +297,7 @@
 				<div class="col-sm-8">
 					<h2 class="success"></h2>
 					<h2 class="error"></h2>
-					<h2 class="pleasewait">1. Connect the color eye</h2>
+					<h2 class="pleasewait"><s:text name="configureSpectro.connectColorEye" /></h2>
 				</div>
 
 			</div>
@@ -306,10 +306,9 @@
 
 				<div class="col-sm-2"></div>
 				<div class="col-sm-8">
-					<h2 class="success">Color Eye Configuration Successful</h2>
+					<h2 class="success"><s:text name="configureSpectro.colorEyeConfigurationSuccessful" /></h2>
 					<h2 class="error" id="errmsg"></h2>
-					<h2 class="pleasewait">2. Select the appropriate color eye
-						model</h2>
+					<h2 class="pleasewait"><s:text name="configureSpectro.selectColorEye" /></h2>
 				</div>
 
 			</div>
@@ -320,7 +319,7 @@
 				<div class="col-sm-8">
 					<h2 class="success"></h2>
 					<h2 class="error"></h2>
-					<h2 class="pleasewait">3. Click Next</h2>
+					<h2 class="pleasewait"><s:text name="configureSpectro.clickNext" /></h2>
 				</div>
 
 			</div>
@@ -337,13 +336,13 @@
 				<div class="col-sm-2"></div>
 				<div class="col-sm-4">
 					<s:submit cssClass="btn btn-primary center-block btn-lg"
-						id="configureButton" value="Next" />
+						id="configureButton" value="%{getText('global.next')}" />
 					<s:submit cssClass="btn btn-primary center-block btn-lg"
-						id="nextButton" value="Next" action="spectroSaveAction" />
+						id="nextButton" value="%{getText('global.next')}" action="spectroSaveAction" />
 				</div>
 				<div class="col-sm-4">
 					<s:submit cssClass="btn btn-secondary center-block btn-lg"
-						id="cancelButton" value="Cancel" action="userCancelAction" />
+						id="cancelButton" value="%{getText('global.cancel')}" action="userCancelAction" />
 				</div>
 
 			</div>
@@ -354,20 +353,19 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Confirm Color Eye Configuration</h5>
+							<h5 class="modal-title"><s:text name="configureSpectro.confirmColorEyeConfiguration" /></h5>
 							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
+								aria-label="%{getText('global.close')}">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
 							<p font-size="4" id="confirmmsg"></p>
-							<p font-size="4" id="confirmmsg2">Continue with
-								Configuration?</p>
+							<p font-size="4" id="confirmmsg2"><s:text name="configureSpectro.continueWithConfig" /></p>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								id="configureOverrideButton">Confirm</button>
+								id="configureOverrideButton"><s:text name="configureSpectro.confirm" /></button>
 						</div>
 					</div>
 				</div>
@@ -378,10 +376,9 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="detectErrorTitle">Color Eye
-								Error</h5>
+							<h5 class="modal-title" id="detectErrorTitle"><s:text name="configureSpectro.colorEyeError" /></h5>
 							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
+								aria-label="%{getText('global.close')}">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
@@ -390,11 +387,11 @@
 						</div>
 						<div class="modal-footer">
 							<s:submit cssClass="btn btn-primary" id="detectErrorTroubleShoot"
-								value="Troubleshoot" action="swdhTroubleshootAction" />
+								value="%{getText('global.troubleshoot')}" action="swdhTroubleshootAction" />
 							<s:submit cssClass="btn btn-success" id="detectErrorInstall"
-								value="Install" action="swdhInstallAction" />
+								value="%{getText('global.install')}" action="swdhInstallAction" />
 							<button type="button" class="btn btn-secondary"
-								id="configErrorButton" data-dismiss="modal" aria-label="Close">Close</button>
+								id="configErrorButton" data-dismiss="modal" aria-label="%{getText('global.close')}"><s:text name="global.close" /></button>
 							<!-- 									<button type="button" class="btn btn-primary" id="detectErrorTroubleShoot" data-dismiss="modal" aria-label="Close" >Troubleshoot</button> -->
 							<!-- 									<button type="button" class="btn btn-secondary" id="detectErrorInstall" data-dismiss="modal" aria-label="Close" >Install</button> -->
 						</div>
