@@ -58,7 +58,7 @@
 			var safeName = encodeURIComponent(colorantItem.name.toString());
 			$(selector).attr("data-toggle", "popover");
 			$(selector).attr("data-placement","left");
-			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"></s:text>');
+			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"><s:param>'+ safeTintSysId +'-'+ safeName +'</s:param></s:text>');
 			$(selector).popover({trigger : 'manual'});
 			$(selector).popover('toggle');
 			$('.popover').addClass('popover-warning');
@@ -120,7 +120,8 @@
 							});
 							
 							//Show adjustment info alert
-							$('#adj-info').text(data.percentFormulaMsg);
+							var pct = $('#pct').val()
+							$('#adj-info').text('<s:text name="editFormula.pctOfFormula"><s:param>'+ pct +'</s:param></s:text>');
 							$('#adj_info_row').show();
 							
 							//clear remaining colorants

@@ -8,7 +8,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Logged Out</title>
+<title><s:text name="global.loggedOut"/></title>
 <link rel=StyleSheet href="${pageContext.request.contextPath}/css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="${pageContext.request.contextPath}/css/bootstrapxtra.css" type="text/css">
 <link rel=StyleSheet href="${pageContext.request.contextPath}/js/smoothness/jquery-ui.css" type="text/css">
@@ -43,7 +43,7 @@
 
 			<div class="form-row">
 				<s:submit cssClass="btn btn-primary btn-lg btn-block active"
-					id="LoginFocus" autofocus="autofocus" value="Log In Again"
+					id="LoginFocus" autofocus="autofocus" value="%{getText('loggedOut.logInAgain')}"
 					action="loginAgainAction" />
 
 			</div>

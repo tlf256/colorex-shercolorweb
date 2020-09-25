@@ -24,6 +24,7 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 	private String reqGuid;
 	private int controlNbr;
 	private String result;
+	private String deleteSuccessMsg;
 	
 	@Autowired
 	TranHistoryService tranHistoryService;
@@ -45,7 +46,7 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 			}
 			
 			sessionMap.put(reqGuid, reqObj);
-			
+			deleteSuccessMsg = getText("displayJobs.deletedSuccessfully", new String[] {String.valueOf(controlNbr)});
 			result = "success";
 			
 			return SUCCESS;
@@ -96,6 +97,10 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	public String getDeleteSuccessMsg() {
+		return deleteSuccessMsg;
 	}
 
 }

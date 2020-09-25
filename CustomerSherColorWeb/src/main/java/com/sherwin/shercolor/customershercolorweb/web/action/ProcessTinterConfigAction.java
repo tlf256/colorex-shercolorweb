@@ -32,7 +32,6 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	private String clrntSysId;
 	private String tinterModel;
 	private String tinterSerialNbr;
-	private String noDefaultCalibrationError;
 	//to send back canister list
 	private TinterInfo newtinter;
 
@@ -53,9 +52,8 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 
 	public String AjaxGetCanisterList(){
+
 		logger.debug("inside getCanisterList and reqGuid is " + reqGuid);
-		// set up internationalized error string in case it is needed
-		noDefaultCalibrationError = getText("tinterConfig.couldNotFindDefaultCalib", new String[] {this.getClrntSysId(), getTinterModel()});
 		
 		if(newtinter !=null){
 
@@ -320,15 +318,6 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	public boolean isReReadLocalHostTinter() {
 		return reReadLocalHostTinter;
 	}
-
-	public String getNoDefaultCalibrationError() {
-		return noDefaultCalibrationError;
-	}
-
-	public void setNoDefaultCalibrationError(String noDefaultCalibrationError) {
-		this.noDefaultCalibrationError = noDefaultCalibrationError;
-	}
-
 
 
 }

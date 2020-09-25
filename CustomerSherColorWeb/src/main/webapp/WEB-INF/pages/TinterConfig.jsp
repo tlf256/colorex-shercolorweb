@@ -84,7 +84,7 @@
 				"<s:property value="tinter.serialNbr" escapeHtml="true"/>", canister_layout);
 
 	}
-	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout, noDefaultCalibError) {
+	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout) {
 		var canister_layout = [];
 		for (var i = 0, len = mycanister_layout.length; i < len; i++) {
 			var code = mycanister_layout[i].clrntCode;
@@ -117,8 +117,8 @@
 			ws_tinter.send(json);
 		}
 		else{
-			$("#configError").text(noDefaultCalibError);
-			$("#configErrorModal").modal('show');	
+				$("#configError").text('<s:text name="tinterConfig.couldNotFindDefaultCalib"><s:param>'+ mycolorantid +'</s:param><s:param>'+ mymodel +'</s:param></s:text>');
+				$("#configErrorModal").modal('show');	
 			}
 
 	};
@@ -171,8 +171,7 @@
     								config_tinter(objs.newtinter.clrntSysId,
     										objs.newtinter.model,
     										objs.newtinter.serialNbr,
-    										objs.newtinter.canisterList,
-    										objs.noDefaultCalibrationError);
+    										objs.newtinter.canisterList);
     							} else {
 
     								alert('<s:text name="tinterConfig.invalidResponseFromServer"/>');
@@ -182,9 +181,8 @@
                         	}
 						},
 						error : function() {
-
-							alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"/>'
-									+ " " + $("[name='newtinter.clrntSysId']").value);
+							var clrntSysId = $("[name='newtinter.clrntSysId']").val();
+							alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + clrntSysId + '</s:param></s:text>');
 						}
 					});
 		} else {
@@ -340,8 +338,8 @@
 	}
 	function GetModelsForColorant(colorantId_obj) {
 		var modellist = null;
-		var colorantId = colorantId_obj.value;
-
+		var colorantId = colorantId_obj.val();
+		
 		$
 				.ajax({
 					url : "GetTinterModelsAction",
@@ -366,7 +364,7 @@
 					error : function() {
 						modellist = [ '<s:text name="tinterConfig.couldNotFindTinterModels"/>'
 								+ " " + colorantId ];
-						alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"/>' + " " + colorantId);
+						alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + colorantId + '</s:param></s:text>');
 					}
 				});
 

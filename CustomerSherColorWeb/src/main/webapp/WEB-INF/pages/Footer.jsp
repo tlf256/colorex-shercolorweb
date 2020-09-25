@@ -6,6 +6,8 @@
 
 <script type="text/javascript">
 var i18n = [];
+i18n['basicFieldValidator.yourDataInputIsInvalid'] = '<s:text name="basicFieldValidator.yourDataInputIsInvalid"/>';
+i18n['basicFieldValidator.pleaseEnterData'] = '<s:text name="basicFieldValidator.pleaseEnterData"/>';
 i18n['colorant.cannotAddOneFullQuart'] = '<s:text name="colorant.cannotAddOneFullQuart"/>';
 i18n['colorant.colorantLevelError'] = '<s:text name="colorant.colorantLevelError"/>';
 i18n['colorant.errorAddingQuart'] = '<s:text name="colorant.errorAddingQuart"/>';
@@ -14,13 +16,18 @@ i18n['colorant.errorSubtractingQuart'] = '<s:text name="colorant.errorSubtractin
 i18n['colorant.lessThanOneQuart'] = '<s:text name="colorant.lessThanOneQuart"/>';
 i18n['colorant.moveComplete'] = '<s:text name="colorant.moveComplete"/>';
 i18n['colorant.purgeFailedColon'] = '<s:text name="colorant.purgeFailedColon"/>';
+i18n['displayJobs.noJobsAvailable'] = '<s:text name="displayJobs.noJobsAvailable"/>';
+i18n['displayStoredMeasurements.noMeasurementsAvailable'] = '<s:text name="displayStoredMeasurements.noMeasurementsAvailable"/>';
 i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionExpiredClickLogin"/>';
 i18n['global.containerFull'] = '<s:text name="global.containerFull"/>';
 i18n['global.extend'] = '<s:text name="global.extend"/>';
 i18n['global.login'] = '<s:text name="global.login"/>';
+i18n['global.notLoggedInReqGuidNotFound'] = '<s:text name="global.notLoggedInReqGuidNotFound"/>';
 i18n['global.tinterError'] = '<s:text name="global.tinterError"/>';
 i18n['global.yourSessionExpiresInFiveMin'] = '<s:text name="global.yourSessionExpiresInFiveMin"/>';
-
+i18n['printer.couldNotFindDefaultPdf'] = '<s:text name="printer.couldNotFindDefaultPdf"/>';
+i18n['printer.couldNotGeneratePdf'] = '<s:text name="printer.couldNotGeneratePdf"/>';
+i18n['wSWrapper.undefinedConnectionError'] = '<s:text name="wSWrapper.undefinedConnectionError"/>';
 </script>
 
 <div class="modal fade" aria-labelledby="sessionModal" aria-hidden="true"  id="sessionModal" role="dialog">

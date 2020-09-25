@@ -94,7 +94,7 @@ $(document).ready(function() {
             }
         ],*/
         "language": {
-        	"emptyTable" : "No jobs available"
+        	"emptyTable" : i18n['displayJobs.noJobsAvailable']
         },
         "ordering": true,
         "order": [ 0, 'desc' ],
@@ -162,16 +162,18 @@ $(document).ready(function() {
 			data:{"controlNbr": controlNbr, "reqGuid": reqGuid},
 			type: "POST",
 			dataType:"json",
-			success:function(){
+			success:function(data){
 				console.log("Success");
+				if (data != null){
+					$('#dltmsg').removeClass('d-none');
+					$('#dltmsg').text(data.deleteSuccessMsg);
+				}
 			},
 			error:function(request, status, error){
 				console.log("Error: " + status + " (" + error + ")");
 			}
 		});
     	jobTable.row(deleteRow).remove().draw();
-    	$('#dltmsg').removeClass('d-none');
-    	$('#dltmsg').text("Job " + controlNbr + " deleted successfully");
     });
     
 });

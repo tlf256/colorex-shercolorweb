@@ -60,7 +60,8 @@
 							<s:hidden name="reqGuid" value="%{reqGuid}"/>
 						</div>
 						<div class="col-sm-2">
-							<s:textfield name="percentOfFormula" id="percentOfFormula" label="%{getText('global.percentOfFormula')}" size="10" maxlength="3" cssStyle="font-size: 16px;"  onkeypress="return isNumber(event)" required="true"  />
+							<s:textfield name="percentOfFormula" id="percentOfFormula" label="%{getText('global.percentOfFormula')}" size="10" maxlength="3" cssStyle="font-size: 16px;"  
+								onkeypress="return isNumber(event)" required="true" oninvalid="this.setCustomValidity('%{getText('global.pleaseFillOutThisField')}');" oninput="setCustomValidity('')" />
 						</div>
 				</div>
 			
