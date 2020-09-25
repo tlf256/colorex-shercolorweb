@@ -74,7 +74,7 @@ function ParsePrinterMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerResponseModal").modal('show');
 					$("#printerResponseMessage").text(
-							"Get Printer Result: " + return_message.errorMessage);
+							"%{getText('printerConfig.getPrinterResultWithErrorMsg')}" + return_message.errorMessage);
 					console.log(return_message);
 				}
 				else{
@@ -86,7 +86,7 @@ function ParsePrinterMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerResponseModal").modal('show');
 					$("#printerResponseMessage").text(
-							"Get Printer Result: " + return_message.errorMessage);
+							"%{getText('printerConfig.getPrinterResultWithErrorMsg')}" + return_message.errorMessage);
 					console.log(return_message);
 				}
 				else{
@@ -99,7 +99,7 @@ function ParsePrinterMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerResponseModal").modal('show');
 					$("#printerResponseMessage").text(
-							"Set Printer Config Result: " + return_message.errorMessage);
+							"%{getText('printerConfig.setPrinterResultWithErrorMsg')}" + return_message.errorMessage);
 					console.log(return_message);
 					//waitForShowAndHide("#tinterInProgressModal");
 				}
@@ -244,9 +244,9 @@ input[type=number] {
 			
 		<div class="form-label-group">
 
-				<label class="sw-label" for="autoPrintCheck">Auto Print on Dispense</label>
+				<label class="sw-label" for="autoPrintCheck"><s:text name="printerConfig.autoPrintOnDispense"/></label>
 				<input type="checkbox" id="autoPrintCheck" name="autoPrintCheck" >
-				<label class="sw-label" for="selectPrinterModel">Number of Labels</label>
+				<label class="sw-label" for="selectPrinterModel"><s:text name="printerConfig.numberOfLabels"/></label>
 				<select id="numLabels" name="numLabels" >
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -267,10 +267,10 @@ input[type=number] {
 
 				<input type="button" class="btn btn-lg btn-primary btn-block"
 					id="btn_printerConfig" data-toggle="modal" onclick="ConfigClick()"
-					 value="Save" />
+					 value="%{getText('global.save')}" />
 
 				<s:submit cssClass="btn btn-lg btn-secondary btn-block"
-					value="Cancel" action="userCancelAction" />
+					value="%{getText('global.cancel')}" action="userCancelAction" />
 
 
 			</div>
@@ -294,10 +294,11 @@ input[type=number] {
 					<div class="modal-content">
 						<div class="modal-header">
 							<!-- 	<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i> -->
-							<h5 class="modal-title" id="printerResponseTitle">Label
-								Printer Response</h5>
+							<h5 class="modal-title" id="printerResponseTitle">
+							   <s:text name="printerConfig.labelPrinterResponse"/>
+							</h5>
 							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
+								aria-label="%{getText('global.close')}">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
@@ -314,7 +315,7 @@ input[type=number] {
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Configuration Error</h5>
+					<h5 class="modal-title"><s:text name="global.configurationError"/></h5>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -333,10 +334,10 @@ input[type=number] {
 						<s:param name="reqGuid" value="%{thisGuid}" />
 					</s:url>
 					<a href="<s:property value="troubleshootURL"/>"
-						class="btn btn-primary">Troubleshoot</a> <a
-						href="<s:property value="installURL"/>" class="btn btn-success">Install</a>
+						class="btn btn-primary"><s:text name="global.troubleshoot"/></a> <a
+						href="<s:property value="installURL"/>" class="btn btn-success"><s:text name="global.install"/></a>
 					<button type="button" class="btn btn-secondary"
-						id="configErrorButton" data-dismiss="modal" aria-label="Close">Close</button>
+						id="configErrorButton" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
 				</div>
 			</div>
 		</div>

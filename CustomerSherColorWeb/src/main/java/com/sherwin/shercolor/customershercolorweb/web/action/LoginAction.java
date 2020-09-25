@@ -234,7 +234,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
 				 if (origReqObj==null) {
 					 logger.info("DEBUG origReqObj is null - probably a session timeout");
-					 loMessage = "Your session has expired.";
+					 loMessage = getText("global.yourSessionHasExpired");
 					 return LOGIN;
 				 }
 				 acct = origReqObj.getCustomerID();
