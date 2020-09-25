@@ -43,7 +43,7 @@ function WSWrapper(devicecontext) {
             console.log("event type: " + evt.type);
             console.log("event code: " + evt.code);
             if (evt.data==null) {
-            	self.wserrormsg = "Undefined Connection Error - confirm SWDeviceHandler service has been installed and is running";
+            	self.wserrormsg = i18n['wSWrapper.undefinedConnectionError']; 
             	self.isReady = "false";
             } else {
             	self.wserrormsg = evt.data;
