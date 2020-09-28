@@ -80,7 +80,7 @@
 	  	  	}
 	  	  	
 	  	  	function cancelMeasure(){
-	  	  		$("#errmsg").text(<s:text name='measureColor.colormeasurementterminated'/>);
+	  	  		$("#errmsg").text('<s:text name="measureColor.colormeasurementterminated"/>');
 		  		DisplayError();
 	  	  	}
 	  	  	
@@ -92,7 +92,7 @@
 	  	  				coloreyeStatus = ws_coloreye.isReady;
 		  	  			if(coloreyeStatus === "false"){
 		  	  				$('#measureColorModal').modal('hide');
-		  	  				$("#errmsg").text(<s:text name='measureColor.connectionTimeout'/>);
+		  	  				$("#errmsg").text('<s:text name="measureColor.connectionTimeout"/>');
 		  	  				DisplayError();
 		  	  			}
   	  				} else {
@@ -229,7 +229,7 @@
 		  <div class="modal-dialog modal-lg">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
-		        <h2 class="modal-title ml-3">Measure Color</h2>
+		        <h2 class="modal-title ml-3"><s:text name="measureColor.measureColor"/></h2>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" onclick="cancelMeasure()">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
