@@ -144,7 +144,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				reqObj.setDisplayFormula(theFormula.getFormulas().get(0));
 				displayFormula = theFormula.getFormulas().get(0);
 				// check for warnings and set those as well.
-				validationMsgs = formulationService.validateFormulation(displayFormula);
+				validationMsgs = formulationService.validateFormulation(displayFormula, swmsgList);
 				
 				//PSCWEB-101 - if the colorant system used does not match the customer's default colorant system,
 				//             add a warning.

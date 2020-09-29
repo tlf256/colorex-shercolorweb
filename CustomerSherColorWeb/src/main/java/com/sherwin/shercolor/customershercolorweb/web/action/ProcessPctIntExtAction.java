@@ -93,7 +93,7 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 			
 			return returnStatus;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -103,7 +103,7 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
