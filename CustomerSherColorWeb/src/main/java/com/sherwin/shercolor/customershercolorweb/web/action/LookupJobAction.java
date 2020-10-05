@@ -215,7 +215,9 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setLineNbr(webTran.getLineNbr());
 		reqObj.setColorType(webTran.getColorType());
 		reqObj.setColorComp(webTran.getColorComp());
+		if (webTran.getColorId()==null) {webTran.setColorId("");}
 		reqObj.setColorID(webTran.getColorId());
+		if (webTran.getColorName()==null) {webTran.setColorName("");}
 		reqObj.setColorName(webTran.getColorName());
 		reqObj.setPrimerId(webTran.getPrimerId());
 		reqObj.setRgbHex(webTran.getRgbHex());
@@ -328,10 +330,12 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		CdsProd cdsProd = productService.readCdsProd(webTran.getSalesNbr());
 		if(cdsProd!=null){
 			reqObj.setBase(cdsProd.getBase());
+			if(cdsProd.getComposite()==null) {cdsProd.setComposite("");}
 			reqObj.setComposite(cdsProd.getComposite());
 			reqObj.setFinish(cdsProd.getFinish());
 			reqObj.setIntExt(cdsProd.getIntExt());
 			reqObj.setKlass(cdsProd.getKlass());
+			if(cdsProd.getQuality()==null) {cdsProd.setQuality("");}
 			reqObj.setQuality(cdsProd.getQuality());
 		}
 		

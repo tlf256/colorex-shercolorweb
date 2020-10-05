@@ -1083,9 +1083,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		#session[reqGuid].displayFormula.deltaEWarning == null ||
 		#session[reqGuid].displayFormula.deltaEWarning == '' ||
 		(
-		#session[reqGuid].displayFormula.deltaEs[0] < 1 &&
-		#session[reqGuid].displayFormula.deltaEs[1] < 1 &&
-		#session[reqGuid].displayFormula.deltaEs[2] < 1
+		#session[reqGuid].displayFormula.averageDeltaE < 1
 		)
 		 
 		

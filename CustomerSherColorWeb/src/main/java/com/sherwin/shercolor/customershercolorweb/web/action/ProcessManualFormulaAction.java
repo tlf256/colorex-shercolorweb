@@ -220,8 +220,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			recDirty=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			logger.debug("successfully read reqObj");
-
+			if (colorId==null) {colorId="";}
 			reqObj.setColorID(colorId);
+			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
 			// Fill in more display formula attributes
 			reqObj.getDisplayFormula().setSalesNbr(reqObj.getSalesNbr());
