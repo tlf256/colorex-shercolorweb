@@ -962,7 +962,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		PDFont unicodeFont=null;
 		if(unicode == null) { //only get font once and read it into memory
 			//solaris
-			File f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
+			File f = new File("/usr/share/fonts/TrueType/arphic-uming/uming.ttf");
+			if(!f.exists()) {
+				 f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
+			}
 			if(!f.exists()) {
 				f = new File("c:\\Windows\\Fonts\\l_10646.ttf"); // Lucida Sans Unicode
 			}
