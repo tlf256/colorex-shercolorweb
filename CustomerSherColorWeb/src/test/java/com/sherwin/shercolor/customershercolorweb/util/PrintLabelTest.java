@@ -1,5 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.List;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Test;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
@@ -164,7 +167,12 @@ public class PrintLabelTest  {
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label26.pdf", reqObj);
 	}
-	
+	@Test
+	public void testGetUnicode() {
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
+		PDFont unicodeFont = printLabel.getUnicode();
+		assertNotNull(unicodeFont);
+	}
 	private RequestObject BuildReqObject(String label[],  String formula[], String message[], String job[]){
 		reqObj.setGuid("test");
 		reqObj.setColorComp(label[1]);
