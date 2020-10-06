@@ -398,7 +398,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			Cell<PDPage> formulaType = row.createCell(cellWidth, reqObj.getDisplayFormula().getSourceDescr(), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 			cellSettings(formulaType,fontSize,rowHeight );
 			//table.setDrawDebug(true); // draws gridlines
-			table.draw();
+			try {
+				table.draw();
+			}
+			catch(java.lang.IllegalArgumentException ex) {
+				logger.error(ex.getMessage() + ": ", ex);
+			}
 			//************************************************************************************
 			//---------------------------------------------------------------------------------------------------------
 			//====================================================================================================
@@ -494,7 +499,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				}
 				*/
 			}
-			tbl2.draw();
+			try {
+				tbl2.draw();
+			}
+			catch(java.lang.IllegalArgumentException ex) {
+				logger.error(ex.getMessage() + ": ", ex);
+			}
 			//***********************************************************************************
 			//====================================================================================================
 			// Product Information
@@ -643,7 +653,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				jobCount++;
 			}
 			 */
-			prodInfoMsgTable.draw();
+			try {
+				prodInfoMsgTable.draw();
+			}
+			catch(java.lang.IllegalArgumentException ex) {
+				logger.error(ex.getMessage() + ": ", ex);
+			}
+		
 			//******************************************************************************************
 			//====================================================================================================
 			// Bar Code and Order and Line Numbers (part of bar code).
@@ -962,6 +978,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		PDFont unicodeFont=null;
 		if(unicode == null) { //only get font once and read it into memory
 			//solaris
+			
 			File f = new File("/usr/share/fonts/TrueType/arphic-uming/uming.ttf");
 			if(!f.exists()) {
 				 f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
