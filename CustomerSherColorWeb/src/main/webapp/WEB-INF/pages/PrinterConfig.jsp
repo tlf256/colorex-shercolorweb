@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Printer Config</title>
+<title><s:text name="printerConfig.printerConfig"/></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -45,6 +45,7 @@ function ConfigClick(){
 	config = new PrinterConfig(model,serial,printOnDispense,numLabels);
 	setPrinterConfig(config);
 	$("#frmSubmit").submit();
+	
 }
 /*
  *fill form based on what was read from SWDeviceHandler
@@ -227,15 +228,15 @@ input[type=number] {
 			validate="true" theme="bootstrap">
 			<div class="text-center mb-4">
 
-				<h1 class="h3 mb-3 font-weight-normal">Configure Printer</h1>
+				<h1 class="h3 mb-3 font-weight-normal"><s:text name="printerConfig.configurePrinter"/></h1>
 				
 			</div>
 
 			<div class="form-label-group">
 
-				<label class="sw-label" for="selectPrinterModel">Printer Model</label>
+				<label class="sw-label" for="selectPrinterModel"><s:text name="printerConfig.printerModel"/></label>
 				<select id="selectPrinterModel" name="printerModel" >
-					<option value="-1">Select Printer</option>
+					<option value="-1"><s:text name="printerConfig.selectPrinter"/></option>
 				
 				 </select>
 
@@ -243,7 +244,6 @@ input[type=number] {
 			</div>
 			
 		<div class="form-label-group">
-
 				<label class="sw-label" for="autoPrintCheck"><s:text name="printerConfig.autoPrintOnDispense"/></label>
 				<input type="checkbox" id="autoPrintCheck" name="autoPrintCheck" >
 				<label class="sw-label" for="selectPrinterModel"><s:text name="printerConfig.numberOfLabels"/></label>
@@ -265,7 +265,7 @@ input[type=number] {
 			
 			<div class="form-row">
 
-				<input type="button" class="btn btn-lg btn-primary btn-block"
+				<s:submit class="btn btn-lg btn-primary btn-block"
 					id="btn_printerConfig" data-toggle="modal" onclick="ConfigClick()"
 					 value="%{getText('global.save')}" />
 
