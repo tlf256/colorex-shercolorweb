@@ -167,12 +167,7 @@ public class PrintLabelTest  {
 		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
 		printLabel.CreateLabelPdf("label26.pdf", reqObj);
 	}
-	@Test
-	public void testGetUnicode() {
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
-		PDFont unicodeFont = printLabel.getUnicode();
-		assertNotNull(unicodeFont);
-	}
+	
 	private RequestObject BuildReqObject(String label[],  String formula[], String message[], String job[]){
 		reqObj.setGuid("test");
 		reqObj.setColorComp(label[1]);

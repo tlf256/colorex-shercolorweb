@@ -47,10 +47,10 @@ public class TestSherColorLabel {
 	public void testGetUnicode() {
 
 		PDFont fontBold = testClass.getUnicode();
-		String name = fontBold.getName();
-		boolean check = (name.contentEquals("LucidaSansUnicode") || (name.contentEquals("DejaVuSansMono-Bold"))) ;
-		assertTrue(check);
+		
+		assertNotNull(fontBold);
 	}
+	
 	@Test 
 	public void testCellSettings1() {
 		int fontSize = 10;
