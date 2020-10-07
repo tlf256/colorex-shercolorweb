@@ -558,7 +558,7 @@ function ParsePrintMessage() {
 								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
-									console.log('<s:text name="global.dispenseCompleteNextContainer"/>');
+									console.log("Dispense Complete: Going to the next container.");
 									preDispenseCheck();
 								}
 							}

@@ -461,7 +461,7 @@ function preDispenseCheckCallback(){
         $("#tinterErrorList").append('<li class="alert alert-danger">' + i18n['displayFormula.tinterPurgeIsRequiredLastDoneOn'] + " " + moment(dateFromString).format('ddd MMM DD YYYY') + '</li>');
         waitForShowAndHide("#tinterInProgressModal");
         $("#tinterErrorListTitle").text(i18n['global.purgeRequired']);
-        $("#tinterErrorListSummary").text(i18n['global.goHomeToPurge']);
+        $("#tinterErrorListSummary").text(i18n['dispense.goHomeToPurge']);
         $("#tinterErrorListModal").modal('show');
         
         preDispenseCheckFlag = true;

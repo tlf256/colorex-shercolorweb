@@ -262,14 +262,14 @@
 				<div class="d-flex flex-row ">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-10">
-						<h2 class="text-success d-none"><s:text name="verifyDefaultSpectro"/></h2>
+						<h2 class="text-success d-none"><s:text name="verifyDefaultSpectroSettings.deviceSettings"/></h2>
 						<br>
 						<table id="device_settings_table" class="table table-bordered d-none" style="width:100%">
 							<thead>
 								<tr>
 									<th><s:text name="global.description"/></th>
 									<th id="spectroName"></th>
-									<th><s:text name="verifyDefaultSpectroSettings.deviceSettings"/></th>
+									<th><s:text name="verifyDefaultSpectroSettings.sherwinDefault"/></th>
 									<th><s:text name="verifyDefaultSpectroSettings.match"/></th>
 								</tr>
 								<tr class="odd-row">

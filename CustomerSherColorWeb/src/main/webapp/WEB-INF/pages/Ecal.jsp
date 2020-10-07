@@ -138,7 +138,7 @@
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				}
 				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
-				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssueBeforeDispense"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 				
 				
 				//Show alerts in main alert section in middle of screen
@@ -710,7 +710,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title"><s:text name="global.calibrationTransferError"/></h5>
+					<h5 class="modal-title"><s:text name="ecal.calibrationTransferError"/></h5>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
