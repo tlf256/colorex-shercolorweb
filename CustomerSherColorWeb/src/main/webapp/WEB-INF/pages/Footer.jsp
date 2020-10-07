@@ -18,6 +18,7 @@ i18n['colorant.moveComplete'] = '<s:text name="colorant.moveComplete"/>';
 i18n['colorant.purgeFailedColon'] = '<s:text name="colorant.purgeFailedColon"/>';
 i18n['dispense.cannotDispenseMoreThanEight'] = '<s:text name="dispense.cannotDispenseMoreThanEight"/>';
 i18n['dispense.fillEmptyCanister'] = '<s:text name="dispense.fillEmptyCanister"/>';
+i18n['dispense.goHomeToPurge'] = '<s:text name="dispense.goHomeToPurge"/>';
 i18n['dispense.noValuesEntered'] = '<s:text name="dispense.noValuesEntered"/>';
 i18n['dispense.qtyError'] = '<s:text name="dispense.qtyError"/>';
 i18n['displayFormula.tinterPurgeIsRequiredLastDoneOn'] = '<s:text name="displayFormula.tinterPurgeIsRequiredLastDoneOn"/>';
@@ -32,7 +33,6 @@ i18n['global.dispenseInProgress'] = '<s:text name="global.dispenseInProgress"/>'
 i18n['global.extend'] = '<s:text name="global.extend"/>';
 i18n['global.failure'] = '<s:text name="global.failure"/>';
 i18n['global.login'] = '<s:text name="global.login"/>';
-i18n['global.goHomeToPurge'] = '<s:text name="global.goHomeToPurge"/>';
 i18n['global.lastDispense'] = '<s:text name="global.lastDispense"/>';
 i18n['global.lastDispenseComplete'] = '<s:text name="global.lastDispenseComplete"/>';
 i18n['global.lastDispenseInProgress'] = '<s:text name="global.lastDispenseInProgress"/>';
@@ -42,7 +42,7 @@ i18n['global.notLoggedInReqGuidNotFound'] = '<s:text name="global.notLoggedInReq
 i18n['global.pleaseWaitClrntLevelCheck'] = '<s:text name="global.pleaseWaitClrntLevelCheck"/>';
 i18n['global.positiveNbr'] = '<s:text name="global.positiveNbr"/>';
 i18n['global.purgeRequired'] = '<s:text name="global.purgeRequired"/>';
-i18n['global.tinterDriverBusyReinitAndRetry'] = '<s:text name="global.tinterDriverBusyReinitRetry"/>';
+i18n['global.tinterDriverBusyReinitAndRetry'] = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 i18n['global.tinterError'] = '<s:text name="global.tinterError"/>';
 i18n['global.tinterProgress'] = '<s:text name="global.tinterProgress"/>';
 i18n['global.yourSessionExpiresInFiveMin'] = '<s:text name="global.yourSessionExpiresInFiveMin"/>';

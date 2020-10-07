@@ -82,7 +82,7 @@
 					try{
 						if(event.key == ">" || event.key == "<"){
 							//console.log("< or > keypress");
-							throw '<s:text name="global.notLtOrGt"/>';
+							throw '<s:text name="global.noLtOrGt"/>';
 						}
 						if($(this).val().includes(">") || $(this).val().includes("<")){
 							throw '<s:text name="global.invalidEntryLtGt"/>';
@@ -195,7 +195,7 @@
 		  	new_measurements_table = $('#new_spectro_measurements_table')
 		  	.DataTable(
 		  		{
-		  			"emptyTable" : '<s:text name="displaystoredmeasurements.noMeasurementsAvailable"/>',
+		  			"emptyTable" : '<s:text name="displayStoredMeasurements.noMeasurementsAvailable"/>',
 		  			"scrollY" : '50vh',
 		  			scrollCollapse : true,
 		  			data : measurementsJson,

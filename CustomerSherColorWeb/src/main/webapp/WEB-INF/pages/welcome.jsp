@@ -1055,6 +1055,43 @@
 			window.location.href = "removeTinter?reqGuid=${reqGuid}";
 		}
 		
+		//update user's language preference
+		function updateLanguage(){
+			var selectedLang = $("select[id='languageList'] option:selected").val();
+			console.log(selectedLang);
+			
+			$.ajax({
+				url : "updateLocale.action",
+				type : "POST",
+				data : {
+					request_locale : selectedLang,
+				},
+				datatype : "json",
+				async : true,
+				success : function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						// reload page to update the language
+						location.reload();
+					}
+				},
+				error : function(err) {
+					alert('<s:text name="global.failureColon"/>' + err);
+				}
+			});
+		}
+
+		$(document).ready(function() {
+		    // update dropdown to display the language that the user picked if they have done so
+		    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+		    if (userLanguage != null && userLanguage != ""){
+			    $("#languageList").val(userLanguage);
+		    } else {
+		    	$("#languageList").val("en_US");
+		    }
+		});
+		
 	</script>
   </head>
 		    
@@ -1175,6 +1212,12 @@
 						</li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
+			     		<li class="nav-item p-2 pl-3 pr-3 d-none"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
+			     		<li class="nav-item d-none"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+							    <option value="en_US">English</option>
+							    <option value="es_ES">Español</option>
+						    </select>
+						</li>
 						<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
 			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />"><s:text name="global.logout"/> <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
 			     	</ul>
@@ -1300,11 +1343,11 @@
 							<div class="modal-content">
 								<div class="modal-header">
 									<i id="layoutUpdateSpinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title"><s:text name="welcome.tinterDetectAndLayoutUpdate"/></h5>
+									<h5 class="modal-title"><s:text name="welcome.tinterDetectionAndLayoutUpdate"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
-									<p id="progress-message" font-size="4"><s:text name="welcome.corobTECHIsCLosedToSaveLayout"/></p>
+									<p id="progress-message" font-size="4"><s:text name="welcome.corobTECHIsClosedToSaveLayout"/></p>
 								</div>
 								<div class="modal-footer">
 								</div>
