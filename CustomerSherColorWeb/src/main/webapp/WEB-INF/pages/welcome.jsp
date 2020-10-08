@@ -1361,9 +1361,8 @@
 								</div>
 								<div class="modal-body">
 									<div class="alert alert-danger" role="alert" id="pswexperror">
-										<s:text name="global.loggedInAsFirstNameLastName">
-	 										<s:param>${sessionScope[thisGuid].firstName}</s:param>
-											<s:param>${sessionScope[thisGuid].lastName}</s:param>
+										<s:text name="welcome.yourPasswordDueToExpire">
+	 										<s:param>${sessionScope[thisGuid].daysUntilPasswdExpire}</s:param>
 										</s:text>
 										
 									</div>
