@@ -105,11 +105,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 	public String cancel() {
 		try {
 			
-			if(whereFrom.equals("USERCHANGE")) {
-				return SUCCESS;
-			} else {
-				return "login";
-			}
+			return SUCCESS;
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

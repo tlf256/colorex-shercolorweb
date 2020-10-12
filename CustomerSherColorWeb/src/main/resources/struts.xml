@@ -140,7 +140,6 @@
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
 			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
-			<result name="login">/WEB-INF/pages/LoggedOut.jsp</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">loginAction</param>
 				<param name="guid1">${guid1}</param>
