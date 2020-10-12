@@ -116,6 +116,7 @@
 					</div>	
 					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 						<s:hidden name="guid1" id="guid1" value="%{guid1}"/>
+						<s:hidden name="whereFrom" value="%{whereFrom}"/>
 						<s:password name="userPass" id="userPass" label="%{getText('changePassword.newPasswordColon')}" placeholder="%{getText('changePassword.enterPasswordHere')}" size="30" maxlength="30"></s:password>
 		    			<s:password name="userPassConfirm" id="userPassConfirm" label="%{getText('changePassword.confirmColon')}" placeholder="%{getText('changePassword.confirmPassword')}" size="30" maxlength="30"></s:password>
 		    			<s:submit cssClass="btn btn-primary pull-left btn-lg active" id="LoginFocus" autofocus="autofocus" value="%{getText('changePassword.resetPassword')}" action="passwordChangeAction"/>
