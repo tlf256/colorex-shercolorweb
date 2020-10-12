@@ -1152,6 +1152,7 @@
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.helpMenu"/></a>
 	        						<ul class="dropdown-menu" id="helpMenu">
 	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Customer_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToUseCustomerSherColorWeb"/></a></li>
+	        							<li id="setupXProtint"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_XProtint_Tinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAXProtint"/></a></li>
 	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Accutinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAnAccutinter"/></a></li>
 								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Fluid_Management_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateAnAccutinter"/></a></li>
 								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Color_Eye_Installation.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAColorEye"/></a></li>
@@ -1403,7 +1404,7 @@
 								</div>
 								<div class="modal-body">
 									<div class="alert alert-danger" role="alert" id="pswexperror">
-										<s:text name="global.loggedInAsFirstNameLastName">
+										<s:text name="welcome.yourPasswordDueToExpire">
 	 										<s:param>${sessionScope[thisGuid].daysUntilPasswdExpire}</s:param>
 										</s:text>
 										

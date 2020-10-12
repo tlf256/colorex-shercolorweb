@@ -35,6 +35,9 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 				case "SherColor_Web_Customer_Guide.pdf":
 					pdfFileName = "SherColor_Web_Customer_Guide.pdf";
 					break;
+				case "SherColor_Web_XProtint_Tinter_Installation_Guide.pdf":
+					pdfFileName = "SherColor_Web_XProtint_Tinter_Installation_Guide.pdf";
+					break;
 				case "SherColor_Web_Accutinter_Installation_Guide.pdf":
 					pdfFileName = "SherColor_Web_Accutinter_Installation_Guide.pdf";
 					break;
