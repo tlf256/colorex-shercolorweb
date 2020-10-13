@@ -162,7 +162,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 				reqObj.setKlass(goodProd.getKlass());
 				reqObj.setIntExt(goodProd.getIntExt());
 				reqObj.setBase(goodProd.getBase());
+				if(goodProd.getComposite()==null) {goodProd.setComposite("");}
 				reqObj.setComposite(goodProd.getComposite());
+				if(goodProd.getQuality()==null) {goodProd.setQuality("");}
 				reqObj.setQuality(goodProd.getQuality());
 				if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
 					if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){

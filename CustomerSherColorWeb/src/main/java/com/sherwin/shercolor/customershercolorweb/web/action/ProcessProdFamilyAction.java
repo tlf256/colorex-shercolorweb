@@ -59,7 +59,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 				sessionMap.put(reqGuid, reqObj);
 			    return SUCCESS;
 			} catch (Exception e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 				return ERROR;
 			}
 		}
@@ -76,7 +76,6 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 
 			FormulationResponse oldFormula = (FormulationResponse) reqObj.getFormResponse();
 			reqObj.setPercentageFactor(100);
-
 			
 			for(FormulaInfo item:oldFormula.getFormulas()) {
 				if (item.getProdNbr().equals(selectedProdNbr)) {
@@ -104,7 +103,9 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 						reqObj.setKlass(goodProd.getKlass());
 						reqObj.setIntExt(goodProd.getIntExt());
 						reqObj.setBase(goodProd.getBase());
+						if(goodProd.getComposite()==null) {goodProd.setComposite("");}
 						reqObj.setComposite(goodProd.getComposite());
+						if(goodProd.getQuality()==null) {goodProd.setQuality("");}
 						reqObj.setQuality(goodProd.getQuality());
 						if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
 							if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
@@ -137,7 +138,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 			
 			return returnStatus;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -187,7 +188,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 				}
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

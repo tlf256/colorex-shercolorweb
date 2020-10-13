@@ -28,12 +28,12 @@ function getPdfFromServer(myGuid){
 			error: function(error){
 				pdfobj="error";
 				console.log(error);
-				alert("Could not generate pdf for " + printing);
+				alert(i18n['printer.couldNotGeneratePdf']);
 			}
 		});
 	}
 	else {
-		alert("Not logged in.  ReqGuid not found");
+		alert(i18n['global.notLoggedInReqGuidNotFound']);
 	}
 
 	return pdfobj;
@@ -50,7 +50,7 @@ function pdf(myguid){
 		this.data=pdf_file.data;
 	}
 	else{
-		alert("Could not find Default pdf for colorant:" + mycolorant  );
+		alert(i18n['printer.couldNotFindDefaultPdf']+ myguid);
 	}
 }
 

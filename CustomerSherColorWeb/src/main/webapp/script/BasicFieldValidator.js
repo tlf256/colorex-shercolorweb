@@ -12,10 +12,10 @@
    if(restrictionType.test(myData)){
 
    }else{
-    alert('Your data input is invalid!');
+    alert(i18n['basicFieldValidator.yourDataInputIsInvalid']);
    }
   }else{
-   alert('Please enter data!');
+   alert(i18n['basicFieldValidator.pleaseEnterData']);
   }
   return;
     

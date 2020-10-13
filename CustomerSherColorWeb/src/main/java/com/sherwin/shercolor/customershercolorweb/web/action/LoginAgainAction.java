@@ -67,9 +67,9 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 				reqObj = null;
 			}
 			if (reqObj == null) {
-				loMessage = "Your session has expired.";
+				 loMessage = getText("global.yourSessionHasExpired");//"Your session has expired.";
 			} else {
-				loMessage = "You have been logged out.";
+				 loMessage = getText("global.youHaveBeenLoggedOut");
 			}
 			
 			//Check for AJAX

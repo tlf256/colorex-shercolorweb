@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Verify Default Spectro Settings</title>
+		<title><s:text name="global.verifyDefaultSpectroSettings"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -73,7 +73,7 @@
 	    	settingsTable.find("#spectroReflValueMode").text(spectroSettings[3]);
 	    	settingsTable.find("#spectroBeeperVolume").text(spectroSettings[4]);
 	    	settingsTable.find("#spectroGUIMode").text(spectroSettings[5]);
-	    	settingsTable.find("#spectroUserInterface").text("Disable");
+	    	settingsTable.find("#spectroUserInterface").text('<s:text name="verifyDefaultSpectroSettings.disable"/>');
 	    	
 	    	if (spectroSettings.length == 8) {
 		    	settingsTable.find("#spectroSampleStorage").text(spectroSettings[7]);
@@ -184,7 +184,7 @@
 		  			var settings = return_message.responseMessage;
 		  			
 		  			var currentSpectroHeading = settingsTable.find("#spectroName");
-		  			currentSpectroHeading.text("Current Spectro ("+return_message.model+")");
+		  			currentSpectroHeading.text('<s:text name="verifyDefaultSpectroSettings.currentSpectro"><s:param>'+ return_message.model +'</s:param></s:text>');
 		  			spectroSettings = settings.split(",");
 		  			SetSpectroSettings(spectroSettings);
 		  			CompareSpectroToDefault(spectroSettings);
@@ -239,7 +239,7 @@
 			<div class="row">
 			<div class="col-sm-1"></div>
 			<div class="col-sm-10 mb-2	">
-				<h1>Verify Default Spectro Settings</h1>
+				<h1><s:text name="global.verifyDefaultSpectroSettings"/></h1>
 			</div>
 			<div class="col-sm-1"></div>
 			</div>
@@ -262,60 +262,60 @@
 				<div class="d-flex flex-row ">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-10">
-						<h2 class="text-success d-none">Device Settings</h2>
+						<h2 class="text-success d-none"><s:text name="verifyDefaultSpectroSettings.deviceSettings"/></h2>
 						<br>
 						<table id="device_settings_table" class="table table-bordered d-none" style="width:100%">
 							<thead>
 								<tr>
-									<th>Description</th>
+									<th><s:text name="global.description"/></th>
 									<th id="spectroName"></th>
-									<th>Sherwin Default</th>
-									<th>Match</th>
+									<th><s:text name="verifyDefaultSpectroSettings.sherwinDefault"/></th>
+									<th><s:text name="verifyDefaultSpectroSettings.match"/></th>
 								</tr>
 								<tr class="odd-row">
-									<td>Transform Mode</td>
+									<td><s:text name="verifyDefaultSpectroSettings.transformMode"/></td>
 									<td id="spectroTransformMode"></td>
 									<td id="defaultTransformMode">i7PAINT41_v1</td>
 									<td id="matchTransformMode" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr>
-									<td>Cal Time Out</td>
+									<td><s:text name="verifyDefaultSpectroSettings.calTimeOut"/></td>
 									<td id="spectroCalTimeOut"></td>
 									<td id="defaultCalTimeOut">24</td>
 									<td id="matchCalTimeOut" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr class="odd-row">
-									<td>Meas Trig Mode</td>
+									<td><s:text name="verifyDefaultSpectroSettings.measTrigMode"/></td>
 									<td id="spectroMeasTrigMode"></td>
 									<td id="defaultMeasTrigMode">1</td>
 									<td id="matchMeasTrigMode" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr>
-									<td>Refl Value Mode</td>
+									<td><s:text name="verifyDefaultSpectroSettings.reflValueMode"/></td>
 									<td id="spectroReflValueMode"></td>
 									<td id="defaultReflValueMode">0</td>
 									<td id="matchReflValueMode" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr class="odd-row">
-									<td>Beeper Volume</td>
+									<td><s:text name="verifyDefaultSpectroSettings.beeperVolume"/></td>
 									<td id="spectroBeeperVolume"></td>
 									<td id="defaultBeeperVolume">2</td>
 									<td id="matchBeeperVolume" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr>
-									<td>GUI Mode</td>
+									<td><s:text name="verifyDefaultSpectroSettings.guiMode"/></td>
 									<td id="spectroGUIMode"></td>
-									<td id="defaultGUIMode">MEASURE</td>
+									<td id="defaultGUIMode"><s:text name="verifyDefaultSpectroSettings.measure"/></td>
 									<td id="matchGUIMode" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr class="odd-row">
-									<td>User Interface</td>
+									<td><s:text name="verifyDefaultSpectroSettings.userInterface"/></td>
 									<td id="spectroUserInterface"></td>
-									<td id="defaultUserInterface">Disable</td>
+									<td id="defaultUserInterface"><s:text name="verifyDefaultSpectroSettings.disable"/></td>
 									<td id="matchUserInterface" class="d-flex justify-content-center nbb-td"></td>
 								</tr>
 								<tr id="sampleStorageRow" class="d-none">
-									<td>Sample Storage</td>
+									<td><s:text name="verifyDefaultSpectroSettings.sampleStorage"/></td>
 									<td id="spectroSampleStorage"></td>
 									<td id="defaultSampleStorage">1</td>
 									<td id="matchSampleStorage" class="d-flex justify-content-center nbb-td"></td>
@@ -328,8 +328,8 @@
 				<div class="row">
 					<div class="col-sm-8"></div>
 					<div class="col-sm-3">
-						<button type="button" id="setToDefaultButton" class="btn btn-primary mb-5 mt-2 mx-1 d-none">Set Spectro to Default</button>
-						<s:submit cssClass="btn btn-secondary mb-5 mt-2 mx-1" value="Cancel" action="userCancelAction"/>
+						<button type="button" id="setToDefaultButton" class="btn btn-primary mb-5 mt-2 mx-1 d-none"><s:text name="verifyDefaultSpectroSettings.setSpectroToDefault"/></button>
+						<s:submit cssClass="btn btn-secondary mb-5 mt-2 mx-1" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1"></div>
 				</div>

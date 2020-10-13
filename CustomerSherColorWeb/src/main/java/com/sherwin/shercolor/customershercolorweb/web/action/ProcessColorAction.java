@@ -397,7 +397,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			
 			//set the successful information into the request object.
 			reqObj.setColorComp(colorComp);
+			if (colorID==null) {colorID="";}
 			reqObj.setColorID(colorID);
+			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
 			reqObj.setIntBases(intBases);
 			reqObj.setExtBases(extBases);

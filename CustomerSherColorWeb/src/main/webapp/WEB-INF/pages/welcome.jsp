@@ -9,7 +9,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>New or Existing Job?</title>
+		<title><s:text name="welcome.newOrExistingJob"/></title>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.4.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -113,17 +113,17 @@
 			// show tinter info and status in header tinter status popover
 			$("#tinterStatusList").empty();
 			if(sessionTinterInfo.tinterOnFile===true){
-				$("#tinterStatusList").append("<li><strong>Colorant:</strong> " + sessionTinterInfo.clrntSysId + "</li>");
-				$("#tinterStatusList").append("<li><strong>Model:</strong> " + sessionTinterInfo.model + "</li>");
-				$("#tinterStatusList").append("<li><strong>S/N:</strong> " + sessionTinterInfo.serialNbr + "</li>");
+				$("#tinterStatusList").append("<li><strong>" + '<s:text name="welcome.colorantColon"/>' + "</strong> " + sessionTinterInfo.clrntSysId + "</li>");
+				$("#tinterStatusList").append("<li><strong>" + '<s:text name="global.modelColon"/>' + "</strong> " + sessionTinterInfo.model + "</li>");
+				$("#tinterStatusList").append("<li><strong>" + '<s:text name="welcome.serialNbrColon"/>'  + "</strong> " + sessionTinterInfo.serialNbr + "</li>");
 				if(sessionTinterInfo.lastInitErrorList!=null && sessionTinterInfo.lastInitErrorList[0]!=null){
 					sessionTinterInfo.lastInitErrorList.forEach(function(initError){
-						$("#tinterStatusList").append('<li class="bg-danger"><strong>Init Error:</strong> '+initError+'</li>');
+						$("#tinterStatusList").append('<li class="bg-danger"><strong>' + '<s:text name="welcome.initErrorColon"/>' + '</strong> '+initError+'</li>');
 						//also add to alert message being built
-						alertErrors.push("Init Error: "+initError);
+						alertErrors.push('<s:text name="welcome.initErrorColon"/>' + " " + initError);
 					});
 				} else {
-					$("#tinterStatusList").append("<li><strong>Last Init:</strong> OK</li>");
+					$("#tinterStatusList").append("<li><strong>" + '<s:text name="welcome.lastInitColon"/>' + "</strong> " + '<s:text name="global.ok"/>' + "</li>");
 				}
 
 				// purge status
@@ -132,20 +132,20 @@
 					var dateFromString = new Date(sessionTinterInfo.lastPurgeDate);
 					var today = new Date();
 					if (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() || dateFromString.getDate()<today.getDate()){
-						alertErrors.push("Tinter Purge is Required: Last done on " + moment(dateFromString).format('ddd MMM DD YYYY'));
-						$("#tinterStatusList").append('<li class="bg-danger"><strong>Last Purge:</strong> ' + moment(dateFromString).format('ddd MMM DD YYYY') + "</li>");
+						alertErrors.push('<s:text name="global.tinterPurgeIsRequiredLastDoneOnDate"><s:param>' + moment(dateFromString).format('ddd MMM DD YYYY') + '</s:param></s:text>');
+						$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.lastPurgeColon"/></strong> ' + moment(dateFromString).format('ddd MMM DD YYYY') + "</li>");
 					} else {
-						$("#tinterStatusList").append("<li><strong>Last Purge:</strong> " + moment(dateFromString).format('ddd MMM DD YYYY') + "</li>");
+						$("#tinterStatusList").append('<li><strong><s:text name="welcome.lastPurgeColon"/></strong> ' + moment(dateFromString).format('ddd MMM DD YYYY') + "</li>");
 					}
 				} else {
-					$("#tinterStatusList").append('<li class="bg-danger"><strong>Last Purge:</strong> Purge Never Done</li>');
+					$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.lastPurgeColon"/></strong> <s:text name="welcome.purgeNeverDone"/></li>');
 					alertErrors.push("Tinter Purge is Required");
 				}
 				
-				if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append("<li><strong>Ecal Status:</strong> OK</li>");
+				if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append('<li><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="global.ok"/></li>');
 				else {
 					hasWarnings=true;
-					$("#tinterStatusList").append('<li class="bg-warning"><strong>Ecal Status:</strong> Warning! No Ecal on file</li>');
+					$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
 				}
 				
 				// Check Levels
@@ -155,18 +155,18 @@
 				if(stopList[0]!=null){
 					stopList.forEach(function(item){
 						//add to alert message being built
-						alertErrors.push("Colorant: " + item);
+						alertErrors.push('<s:text name="welcome.colorantColon"/>' + item);
 					});
 				}
 				var warnList = checkColorantLow(sessionTinterInfo.canisterList);
 				if(warnList!=null && warnList[0]!=null){
 					hasWarnings=true;
 					warnList.forEach(function(item){
-						if(item.lastIndexOf("Error",0)===0)	$("#tinterStatusList").append('<li class="bg-danger"><strong>Colorant: </strong>'+item+"</li>");
-						else $("#tinterStatusList").append('<li class="bg-warning"><strong>Colorant: </strong>'+item+"</li>");
+						if(item.lastIndexOf("Error",0)===0)	$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
+						else $("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
 					});
 				} else {
-					$("#tinterStatusList").append("<li><strong>Colorant Levels:</strong> OK</li>");
+					$("#tinterStatusList").append('<li><strong><s:text name="welcome.colorantLevelsColon"/></strong> <s:text name="global.ok"/></li>');
 				}
 					
 				//Show alerts in main alert section in middle of screen
@@ -350,8 +350,8 @@
 						initErrorList.push(return_message.errorMessage);
 						$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 					}
-					$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-					$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+					$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+					$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 					$("#tinterErrorListModal").modal('show');
 					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 				}
@@ -403,8 +403,8 @@
 							initErrorList.push(return_message.errorMessage);
 							$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 						}
-						$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-						$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+						$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+						$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 						$("#tinterErrorListModal").modal('show');
 						saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 					}
@@ -435,7 +435,7 @@
 					$bar.css("background-color", "#ffffff");
 					$bar.children("span").css("color", "black");
 					if (item.clrntCode == "NA"){
-						$bar.children("span").text(item.position + " - Not in use");
+						$bar.children("span").text(item.position + " - " + '<s:text name="welcome.notInUse"/>');
 					}
 				} else {
 					//set up text and background color
@@ -503,8 +503,8 @@
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				
-					$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-					$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+					$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+					$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 					$("#tinterErrorListModal").modal('show');
 					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 			
@@ -548,8 +548,8 @@
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				}
-				$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-				$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 				$("#tinterErrorListModal").modal('show');
 				saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 			}
@@ -639,9 +639,9 @@
 								if(sessionTinterInfo.tinterOnFile===false){
 									//Tell User Bad Config and to redo Add Tinter
 									$("#tinterErrorList").empty();
-									$("#tinterErrorList").append("<li>If you have a tinter on this station please redo Tinter Configure process.</li>");
+									$("#tinterErrorList").append('<li><s:text name="welcome.ifTinterPleaseRedo"/></li>');
 									//Show it in a modal they can't go on
-									$("#tinterErrorListTitle").text("Tinter Configuration Error");
+									$("#tinterErrorListTitle").text('<s:text name="welcome.tinterConfigurationError"/>');
 									$("#tinterErrorListSummary").text("");
 									$("#tinterErrorListModal").modal('show');
 								} else {
@@ -719,8 +719,8 @@
 										} else {
 											$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 										}
-										$("#tinterErrorListTitle").text("Prior Tinter Initialization Successful with Warnings");
-										$("#tinterErrorListSummary").text("This was a prior attempt at initialization. You should try Initializing the tinter again.");
+										$("#tinterErrorListTitle").text('<s:text name="welcome.priorTinterInitializationSuccessfulwithWarnings"/>');
+										$("#tinterErrorListSummary").text('<s:text name="welcome.priorAttemptAtInitialization"/>');
 										$("#tinterErrorListModal").modal('show');
 										
 										initErrorList = [];
@@ -738,8 +738,8 @@
 											$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 											initErrorList.push(return_message.errorMessage);
 										}
-										$("#tinterErrorListTitle").text("Prior Tinter Initialization Failure");
-										$("#tinterErrorListSummary").text("This was a prior attempt at initialization. Please try Initializing the tinter again.");
+										$("#tinterErrorListTitle").text('<s:text name="welcome.priorTinterInitializationSuccessfulwithWarnings"/>');
+										$("#tinterErrorListSummary").text('<s:text name="welcome.priorAttemptAtInitialization"/>');
 										$("#tinterErrorListModal").modal('show');
 										//Also update session to show error in status area
 										saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
@@ -776,7 +776,7 @@
 							$('#initTinterInProgressModal #spinner').addClass('d-none');
 							$('#initTinterInProgressModal .modal-body').text("Tinter removed.");
 							$('#initTinterInProgressModal .modal-footer').html(
-									'<button type="button" class="btn btn-primary" id="closeModal" onclick="deleteTinter();">OK</button>');
+									'<button type="button" class="btn btn-primary" id="closeModal" onclick="deleteTinter();"><s:text name="global.ok"/></button>');
 							
 							// log tinter event
 							var curDate = new Date();
@@ -845,14 +845,14 @@
 									theMin = theMin.toString();
 									$("#calRemainTime").text(theHrs.concat(":",theMin));
 									if (theHrs=="0") {
-										$("#coloreyeStatusList").append("<li><strong>Calibration Status:</strong> " + theMin + " remaining</li>");
+										$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.calStatusColon"/></strong> <s:text name="welcome.minRemaining"><s:param>' + theMin + '</s:param></s:text></li>');
 									} else {
-										$("#coloreyeStatusList").append("<li><strong>Calibration Status:</strong> OK</li>");
+										$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.calStatusColon"/></strong> <s:text name="global.ok"/></li>');
 									}
-									$("#coloreyeStatusList").append("<li><strong>Internal Temp:</strong> " + goodMsg[1] + " C</li>");
+									$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.internalTempColon"/></strong> ' + goodMsg[1] + " C</li>");
 									$('#coloreyeNotify').find('i').css('color','limegreen');
 								} else {
-									$("#coloreyeStatusList").append("<li><strong>Calibration Status:</strong> EXPIRED</li>");
+									$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.calStatusColon"/></strong> <s:text name="global.expired"/></li>');
 									$('#coloreyeNotify').find('i').css('color','yellow');
 								}
 							}
@@ -868,8 +868,8 @@
 							// save config info to sesssion on app server
 							saveSpectroConfigToSession(spectro_return_message.spectroConfig.model,spectro_return_message.spectroConfig.serial);
 							//update the spectro popover
-							$("#coloreyeStatusList").append("<li><strong>Model:</strong> " + localhostSpectroConfig.model + "</li>");
-							$("#coloreyeStatusList").append("<li><strong>S/N:</strong> " + localhostSpectroConfig.serial + "</li>");
+							$("#coloreyeStatusList").append('<li><strong><s:text name="global.modelColon"/></strong> ' + localhostSpectroConfig.model + "</li>");
+							$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.serialNbrColon"/></strong> ' + localhostSpectroConfig.serial + "</li>");
 							
 							//now detect the spectro and see if it is connected.
 							console.log("ready to detect spctro as we received a ReadConfig");
@@ -886,7 +886,7 @@
 				  					$('#spectroManageStoredMeasurements').removeClass('d-none');
 				  				}
 								$('li#spectroGetInfo').show();
-								$("#coloreyeStatusList").append("<li><strong>Comm Status:</strong> CONNECTED</li>");
+								$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.commStatusColon"/></strong> <s:text name="welcome.connected"/></li>');
 								console.log("ready to get spctro calibration status as we received a Detect");
 								GetCalStatus();
 							} else {
@@ -906,7 +906,7 @@
 // 									localhostSpectroConfig.model = return_message.spectroConfig.model;
 // 									localhostSpectroConfig.serial = return_message.spectroConfig.serial;
 // 									saveSpectroConfigToSession(return_message.spectroConfig.model,return_message.spectroConfig.serial);
-									$("#coloreyeStatusList").append("<li><strong>Comm Status:</strong> DISCONNECTED</li>");
+									$("#coloreyeStatusList").append('<li><strong><s:text name="welcome.commStatusColon"/></strong> <s:text name="welcome.disconnected"/></li>');
 									$('#coloreyeNotify').show();
 									if($('#colorEyeBar').hasClass('d-none')){$('#colorEyeBar').removeClass('d-none');}
 								}
@@ -1018,7 +1018,7 @@
 		
 		function showRemoveTinterModal(){
 			$('#removeTinterTxt').html('<h5><strong>'+ sessionTinterInfo.model +':</strong> <strong>'+ 
-					sessionTinterInfo.serialNbr +'</strong></h5><h6>Tinter will be removed from the system.<br>Are you sure?</h6>');
+					sessionTinterInfo.serialNbr +'</strong></h5><h6><s:text name="welcome.tinterWillBeRemoved"/></h6>');
 			$('#removeTinterModal').modal('show');
 		}
 		
@@ -1039,8 +1039,8 @@
 			console.log("Removing tinterconfig");
 			$('#removeTinterModal').modal('hide');
 			$('#initTinterInProgressModal').modal('show');
-			$('#initTinterInProgressModal .modal-title').text('Remove Tinter Status');
-			$('#initTinterInProgressModal .modal-body').text('Removing tinter...');
+			$('#initTinterInProgressModal .modal-title').text('<s:text name="welcome.removeTinterStatus"/>');
+			$('#initTinterInProgressModal .modal-body').text('<s:text name="welcome.removingTinter"/>');
 			rotateIcon();
 			
 			setTimeout(function(){
@@ -1055,6 +1055,43 @@
 			window.location.href = "removeTinter?reqGuid=${reqGuid}";
 		}
 		
+		//update user's language preference
+		function updateLanguage(){
+			var selectedLang = $("select[id='languageList'] option:selected").val();
+			console.log(selectedLang);
+			
+			$.ajax({
+				url : "updateLocale.action",
+				type : "POST",
+				data : {
+					request_locale : selectedLang,
+				},
+				datatype : "json",
+				async : true,
+				success : function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						// reload page to update the language
+						location.reload();
+					}
+				},
+				error : function(err) {
+					alert('<s:text name="global.failureColon"/>' + err);
+				}
+			});
+		}
+
+		$(document).ready(function() {
+		    // update dropdown to display the language that the user picked if they have done so
+		    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+		    if (userLanguage != null && userLanguage != ""){
+			    $("#languageList").val(userLanguage);
+		    } else {
+		    	$("#languageList").val("en_US");
+		    }
+		});
+		
 	</script>
   </head>
 		    
@@ -1068,60 +1105,61 @@
 	         				<button class="btn dropdown-toggle bg-dark pt-2" data-toggle="dropdown" type="button" aria-haspopup="true"
 	        				aria-expanded="false"><i class="fa fa-bars" style="color: white;font-size: 1.4rem;"></i></button>
 	        				<ul class="dropdown-menu">
-	        					<li class="dropdown-item"><a class="dropdown-item" tabindex="-1" href='<s:url action="loginAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-home pr-1'></span>Color Lookup</a></li>
+	        					<li class="dropdown-item"><a class="dropdown-item" tabindex="-1" href='<s:url action="loginAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-home pr-1'></span><s:text name="welcome.colorLookup"/></a></li>
 	        					<div class="dropdown-divider"></div>
 	        					<li class="dropdown-item dropdown-submenu">
-	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Color Eye Menu</a>
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.colorEyeMenu"/></a>
 	        						<ul class="dropdown-menu" id="coloreyemenu">
 	<%--         						 <c:if test="${sessionScope[thisGuid].spectroModel != ''}">   --%>
 	<%-- 								    	<li><a href='<s:url action="spectroCalibrateAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-screenshot'></span> Calibrate</a></li> --%>
 	<%-- 								    </c:if>  --%>
 	<%-- 									<li><a href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog'></span> Configure</a></li> --%>
-									    <li id="spectroCalibrate"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCalibrateAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-bullseye pr-1'></span> Calibrate</a></li>
+									    <li id="spectroCalibrate"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCalibrateAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-bullseye pr-1'></span> <s:text name="global.calibrate"/></a></li>
 										
 										<!-- 6/24/2019 BXW: This menu item has been added to incorporate new Ci62 functionality, -->
-									    <li id="spectroManageStoredMeasurements" class="d-none"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroManageStoredMeasurementsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-edit'></span>  Manage Remote Measurements</a></li>
-										<li id="spectroVerifyDefaultSettings"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroVerifyDefaultSettingsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-check-square-o'></span>  Verify Default Spectro Settings</a></li>
-										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> Color Eye Information</a></li>
-										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
+									    <li id="spectroManageStoredMeasurements" class="d-none"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroManageStoredMeasurementsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-edit'></span>  <s:text name="global.manageRemoteMeasurements"/></a></li>
+										<li id="spectroVerifyDefaultSettings"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroVerifyDefaultSettingsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-check-square-o'></span>  <s:text name="global.verifyDefaultSpectroSettings"/></a></li>
+										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="global.colorEyeInformation"/></a></li>
+										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
 				        			</ul>
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">
-	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Tinter Menu</a>
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.tinterMenu"/></a>
 	        						<ul class="dropdown-menu" id="tintermenu">
-								    	<li id="tinterPurge"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterPurgeAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-tint pr-2'></span> Purge</a></li>
-								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> Update Canister Layout</a></li>
-				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> Colorant Levels</a></li>
-				        				<li id="dispenseColorants"><a class="dropdown-item" tabindex="-1" href='<s:url action="displayDispenseColorantsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-random pr-1'></span>  Dispense Colorants</a></li>
-								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=detectTinter();><span class='fa fa-retweet pr-1'></span> Initialize Tinter</a></li>
-								        <li id="tinterEcal"><a class="dropdown-item" tabindex="-1" href='<s:url action="ecalManagerAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>' ><span class='fa fa-exchange pr-1'></span> Calibration Manager</a></li>
-										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Add New Tinter</a></li>
-										<li id="tinterRemove"><a class="dropdown-item" tabindex="-1" href="#" onclick="showRemoveTinterModal();"><span class='fa fa-eject pr-1'></span> Remove Tinter</a></li>
+								    	<li id="tinterPurge"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterPurgeAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-tint pr-2'></span> <s:text name="global.purge"/></a></li>
+								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> <s:text name="welcome.updateCanisterLayout"/></a></li>
+				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> <s:text name="global.colorantLevels"/></a></li>
+				        				<li id="dispenseColorants"><a class="dropdown-item" tabindex="-1" href='<s:url action="displayDispenseColorantsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-random pr-1'></span>  <s:text name="global.dispenseColorants"/></a></li>
+								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=detectTinter();><span class='fa fa-retweet pr-1'></span> <s:text name="welcome.initializeTinter"/></a></li>
+								        <li id="tinterEcal"><a class="dropdown-item" tabindex="-1" href='<s:url action="ecalManagerAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>' ><span class='fa fa-exchange pr-1'></span> <s:text name="global.calibrationManager"/></a></li>
+										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="welcome.addNewTinter"/></a></li>
+										<li id="tinterRemove"><a class="dropdown-item" tabindex="-1" href="#" onclick="showRemoveTinterModal();"><span class='fa fa-eject pr-1'></span> <s:text name="welcome.removeTinter"/></a></li>
 				        			</ul>
 	       						</li>
 	       						<li class="dropdown-item dropdown-submenu">
-	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Printer Menu</a>
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.printerMenu"/></a>
 	        						<ul class="dropdown-menu" id="tintermenu">
-								    	<li id="printerConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="printerConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> Configure</a></li>
+								    	<li id="printerConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="printerConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
 				   					</ul>
 	       						</li>
 	       						<li class="dropdown-item dropdown-submenu">
-	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">User Menu</a>
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.userMenu"/></a>
 	        						<ul class="dropdown-menu" id="usermenu">
-								    	<li id="changePwd"><a class="dropdown-item" tabindex="-1" href='<s:url action="passwordResetAction2"><s:param name="guid1" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-2'></span> Change Password</a></li>
+								    	<li id="changePwd"><a class="dropdown-item" tabindex="-1" href='<s:url action="passwordResetAction2"><s:param name="guid1" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-2'></span> <s:text name="global.changePassword"/></a></li>
 				        			</ul>
 				        <!-- edo78r Adding new menu items for Help -->			
 				        		<li class="dropdown-item dropdown-submenu">
-	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#">Help Menu</a>
+	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.helpMenu"/></a>
 	        						<ul class="dropdown-menu" id="helpMenu">
-	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Customer_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Use Customer SherColor Web</a></li>
-	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Accutinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up An Accutinter</a></li>
-								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Fluid_Management_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate An Accutinter</a></li>
-								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Color_Eye_Installation.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Color Eye</a></li>
-								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Corob</a></li>
-								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Calibrate A Corob</a></li>
-								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Dymo_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Dymo Label Printer</a></li>
-								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Zebra_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> How To Set Up A Zebra Label Printer</a></li>
+	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Customer_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToUseCustomerSherColorWeb"/></a></li>
+	        							<li id="setupXProtint"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_XProtint_Tinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAXProtint"/></a></li>
+	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Accutinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAnAccutinter"/></a></li>
+								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Fluid_Management_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateAnAccutinter"/></a></li>
+								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Color_Eye_Installation.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAColorEye"/></a></li>
+								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpACorob"/></a></li>
+								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateACorob"/></a></li>
+								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Dymo_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpADymoLabelPrinter"/></a></li>
+								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Zebra_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAZebraLabelPrinter"/></a></li>
 				        			</ul>
 				        			
 	       						</li>
@@ -1129,47 +1167,60 @@
 	        			</li>
 	        				<!-- Popover links -->
 	        			<li class="nav-item p-2 pl-3 pr-3" id="tinterBar"><span class="bar"><strong style="color: dimgrey;">|</strong></span></li>
-	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="tinterNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#tinterPopover" data-original-title="Tinter Status" data-animation="true"><span><i class="fa fa-certificate" style="color: limegreen;"></i></span>  Tinter Status</a></li>
+	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="tinterNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#tinterPopover" data-original-title="Tinter Status" data-animation="true"><span><i class="fa fa-certificate" style="color: limegreen;"></i></span>  <s:text name="welcome.tinterStatus"/></a></li>
 	        			<li class="nav-item p-2 pl-3 pr-3" id="colorEyeBar"><span class="bar"><strong style="color: dimgrey;">|</strong></span></li>
-	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="coloreyeNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#coloreyePopover" data-original-title="Color-Eye Status" data-animation="true"><span><i class="fa fa-exclamation-circle" style="color: red;"></i></span>  Color-Eye Status</a></li>
+	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="coloreyeNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#coloreyePopover" data-original-title="Color-Eye Status" data-animation="true"><span><i class="fa fa-exclamation-circle" style="color: red;"></i></span>  <s:text name="welcome.colorEyeStatus"/></a></li>
 	        			
 	        			
 	        			<!-- Content for Popovers -->
 						<div class="d-none" id="tinterPopover">
 						  <div class="popover-heading">
-						    Tinter Status
+						    <s:text name="welcome.tinterStatus"/>
 						  </div>
 						  <div class="popover-body">
 							<ul class="list-unstyled" id="tinterStatusList">
 							</ul>
-	<%-- 				    	<p>Serial Number:  <s:property value="tinter.serialNbr"/></p> --%>
-	<%-- 				    	<p>Model:  <s:property value="tinter.model"/></p> --%>
-	<%-- 				    	<p>Last Detected:  <s:property value="tinter.lastDetected"/></p> --%>
-	<%-- 						<p>Last Purged on  <s:property value="tinter.lastPurgeDate"/>  by  <s:property value="tinter.lastPurgeUser"/></p> --%>
+	<%-- 				    	<p><s:text name="global.serialNumberColon"/>  <s:property value="tinter.serialNbr"/></p> --%>
+	<%-- 				    	<p><s:text name="global.modelColon"/>  <s:property value="tinter.model"/></p> --%>
+	<%-- 				    	<p><s:text name="welcome.lastDetectedColon"/>  <s:property value="tinter.lastDetected"/></p> --%>
+	<%-- 						<p><s:text name="tinterPurge.lastPurgeDateUser"><s:param><s:property value="tinter.lastPurgeDate"/></s:param><s:param><s:property value="tinter.lastPurgeUser"/></s:param></s:text></p> --%>
 						  </div>
 						</div>
 						<div class="d-none" id="coloreyePopover">
 						  <div class="popover-heading">
-						    Color-Eye Status
+						    <s:text name="welcome.colorEyeStatus"/>
 						  </div>
 						  <div class="popover-body">
 						  	<ul class="list-unstyled" id="coloreyeStatusList">
 							</ul>
-	<%-- 				    	<p>Serial Number:  <s:property value="localhostSpectroConfig.serial"/></p> --%>
-	<%-- 				    	<p>Model:  <s:property value="localhostSpectroConfig.model"/></p> --%>
-	<%-- 				    	<p>Comm Status:  <s:property value="spectroCommStatus"/></p> --%>
-	<%-- 				    	<p>Calibration Status:  <s:property value="spectroCalStatus"/></p> --%>
-	<%-- 				    	<p>Internal Temp:  <s:property value="spectroCalTemp"/></p> --%>
+	<%-- 				    	<p><s:text name="global.serialNumberColon"/>  <s:property value="localhostSpectroConfig.serial"/></p> --%>
+	<%-- 				    	<p><s:text name="global.modelColon"/>  <s:property value="localhostSpectroConfig.model"/></p> --%>
+	<%-- 				    	<p><s:text name="welcome.commStatusColon"/>  <s:property value="spectroCommStatus"/></p> --%>
+	<%-- 				    	<p><s:text name="welcome.calStatusColon"/>  <s:property value="spectroCalStatus"/></p> --%>
+	<%-- 				    	<p><s:text name="welcome.internalTempColon"/>  <s:property value="spectroCalTemp"/></p> --%>
 						  </div>
 						</div>
 			      	</ul>
 			   		<s:set var="thisGuid" value="reqGuid" />
 			     	<ul class="navbar-nav ml-auto">
-			     		<li class="nav-item"><span class='navbar-text'>Logged in as ${sessionScope[thisGuid].firstName} ${sessionScope[thisGuid].lastName}</span></li>
+			     		<li class="nav-item">
+			     			<span class='navbar-text'>
+			     				<s:text name="global.loggedInAsFirstNameLastName">
+									<s:param>${sessionScope[thisGuid].firstName}</s:param>
+									<s:param>${sessionScope[thisGuid].lastName}</s:param>
+								</s:text>
+							</span>
+						</li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
+			     		<li class="nav-item p-2 pl-3 pr-3 d-none"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
+			     		<li class="nav-item d-none"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+							    <option value="en_US">English</option>
+							    <option value="es_ES">Español</option>
+						    </select>
+						</li>
 						<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />">Logout <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
+			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />"><s:text name="global.logout"/> <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
 			     	</ul>
 			   </div><!--/.nav-collapse -->
 		</nav>
@@ -1220,8 +1271,8 @@
 							<s:hidden name="reReadLocalHostTinter" value="%{reReadLocalHostTinter}"/>
 							<s:hidden name="siteHasSpectro" value="%{siteHasSpectro}"/>
 							<s:hidden name="daysUntilPwdExp" value="%{daysUntilPwdExp}"/>
-							<s:submit cssClass="btn btn-primary btn-lg pull-left" id="startNewJobFocus" autofocus="autofocus" value="Start New Job" action="startNewJob"/>
-							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="Lookup Existing Job" action="listJobsAction"/>
+							<s:submit cssClass="btn btn-primary btn-lg pull-left" id="startNewJobFocus" autofocus="autofocus" value="%{getText('welcome.startNewJob')}" action="startNewJob"/>
+							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="%{getText('welcome.lookupExistingJob')}" action="listJobsAction"/>
 				    	</div>  
 			    	
 			    	<!-- Updated Canister Layout Modal Window -->
@@ -1229,7 +1280,7 @@
 				    	<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="updatedCanisterLayoutTitle">Updated Canister Layout</h5>
+									<h5 class="modal-title" id="updatedCanisterLayoutTitle"><s:text name="welcome.updatedCanisterLayout"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
@@ -1237,10 +1288,10 @@
 										<div class="progress-wrapper"></div>
 									</div>
 									<br>
-									<p>CorobTECH must be closed for your changes to have saved. Canister levels are set to full. Please fill your canisters to the top of the agitator paddles.</p>
+									<p><s:text name="welcome.updatedCanisterLayoutMessage"/></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="updatedCanisterLayoutOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-primary" id="updatedCanisterLayoutOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div>
@@ -1257,11 +1308,11 @@
 				    	<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title">Checking Tinter Status</h5>
+									<h5 class="modal-title"><s:text name="welcome.checkingTinterStatus"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
-									<p font-size="4">A tinter has been configured for this station. Checking the status of the tinter now...</p>
+									<p font-size="4"><s:text name="welcome.tinterConfigured"/></p>
 								</div>
 								<div class="modal-footer">
 								</div>
@@ -1275,11 +1326,11 @@
 							<div class="modal-content">
 								<div class="modal-header">
 									<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title">Tinter Detection and Initialization</h5>
+									<h5 class="modal-title"><s:text name="global.tinterDetectionAndInitialization"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
-									<p id="progress-message" font-size="4">Please wait while we detect and initialize the tinter...</p>
+									<p id="progress-message" font-size="4"><s:text name="global.pleaseWaitDetectInitTinter"/></p>
 								</div>
 								<div class="modal-footer">
 								</div>
@@ -1293,11 +1344,11 @@
 							<div class="modal-content">
 								<div class="modal-header">
 									<i id="layoutUpdateSpinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title">Tinter Detection and Layout Update</h5>
+									<h5 class="modal-title"><s:text name="welcome.tinterDetectionAndLayoutUpdate"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
-									<p id="progress-message" font-size="4">Please ensure that CorobTECH is closed in order to save your changes to the canister layout. Please wait while we detect and initialize the tinter...</p>
+									<p id="progress-message" font-size="4"><s:text name="welcome.corobTECHIsClosedToSaveLayout"/></p>
 								</div>
 								<div class="modal-footer">
 								</div>
@@ -1310,7 +1361,7 @@
 				    	<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
+									<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
@@ -1321,7 +1372,7 @@
 									<p id="tinterErrorListSummary" font-size="4"></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div>
@@ -1331,14 +1382,14 @@
 				    	<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="unsupportedBrowserTitle">Unsupported Browser</h5>
+									<h5 class="modal-title" id="unsupportedBrowserTitle"><s:text name="global.unsupportedBrowser"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
-									<div class="alert alert-danger" role="alert" id="wsserror">You are currently using an unsupported browser, if you are using a <strong>Tinter</strong> or <strong>Color-Eye</strong>, please use <strong>Google Chrome</strong> (Version 43 and above) in order to assure proper Tinter/Color-Eye communication.</div>
+									<div class="alert alert-danger" role="alert" id="wsserror"><s:text name="global.currentlyUsingUnsupportedBrowser"/></div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-success" id="unsupportedBrowserOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-success" id="unsupportedBrowserOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div>
@@ -1348,14 +1399,19 @@
 				    	<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="passwordExpirationTitle">Password Due to Expire</h5>
+									<h5 class="modal-title" id="passwordExpirationTitle"><s:text name="welcome.passwordDuetoExpire"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
-									<div class="alert alert-danger" role="alert" id="pswexperror">Your password is due to expire in <strong>${sessionScope[thisGuid].daysUntilPasswdExpire}</strong> days.  Please consider changing your password via the User Menu.</div>
+									<div class="alert alert-danger" role="alert" id="pswexperror">
+										<s:text name="welcome.yourPasswordDueToExpire">
+	 										<s:param>${sessionScope[thisGuid].daysUntilPasswdExpire}</s:param>
+										</s:text>
+										
+									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-success" id="passwordExpirationOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-success" id="passwordExpirationOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div>
@@ -1365,15 +1421,15 @@
 				    	<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="">Remove Tinter</h5>
+									<h5 class="modal-title" id=""><s:text name="welcome.removeTinter"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
 									<div id="removeTinterTxt"></div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" id="rmTinter" class="btn btn-danger" onclick="removeTinter();">Yes</button>
-									<button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal" aria-label="Close" >No</button>
+									<button type="button" id="rmTinter" class="btn btn-danger" onclick="removeTinter();"><s:text name="global.yes"/></button>
+									<button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal" aria-label="Close" ><s:text name="global.no"/></button>
 								</div>
 							</div>
 						</div>

@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Lookup Existing Jobs</title>
+		<title><s:text name="displayJobs.lookupExistingJobs"/></title>
 			<!-- JQuery -->
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
@@ -35,7 +35,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.2.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.5.js"></script>
 		
 	</head>
 	<body>
@@ -43,18 +43,18 @@
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title text-danger">Delete Job</h5>
+		        <h5 class="modal-title text-danger"><s:text name="global.deleteJob"/></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
 		      <div class="modal-body">
-		        <h6>Are you sure you want to delete this job?</h6>
+		        <h6><s:text name="displayJobs.areYouSureJobDelete"/></h6>
 		      </div>
 		      <div class="modal-footer">
 		      <s:form>
-			        <button type="button" id="yesbtn" class="btn btn-danger" data-dismiss="modal">Yes</button>
-			        <button type="button" id="nobtn" class="btn btn-secondary" data-dismiss="modal">No</button>
+			        <button type="button" id="yesbtn" class="btn btn-danger" data-dismiss="modal"><s:text name="global.yes"/></button>
+			        <button type="button" id="nobtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.no"/></button>
 		       </s:form>
 		      </div>
 		    </div>
@@ -87,21 +87,21 @@
 					<table id="job_table" class="table table-striped table-bordered">
 						<thead>
 							<tr>
-								<th>Job #</th>
+								<th><s:text name="displayJobs.jobNbrPound"/></th>
 								<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
 									<th><s:property value="screenLabel" /></th>
 								</s:iterator>
-								<th>Color #</th>
-								<th>Color Name</th>
-								<th>Chip</th>
-								<th>Product</th>
-								<th>Sz Code</th>
-								<th>Qty Disp</th>
-								<th style="">Clrnt System</th>
-								<th style="">Formula: OZ/32/64/128</th>
-								<th>Delete</th>
+								<th><s:text name="displayJobs.colorNbr"/></th>
+								<th><s:text name="global.colorName"/></th>
+								<th><s:text name="displayJobs.chip"/></th>
+								<th><s:text name="global.product"/></th>
+								<th><s:text name="displayJobs.szCode"/></th>
+								<th><s:text name="displayJobs.qtyDisp"/></th>
+								<th style=""><s:text name="displayJobs.clrntSystem"/></th>
+								<th style=""><s:text name="displayJobs.formulaHdr"/></th>
+								<th><s:text name="global.delete"/></th>
 								<!-- For the data sheets -->
-								<th style="display:none">Formula: OZ/32/64/128</th>
+								<th style="display:none"><s:text name="displayJobs.formulaHdr"/></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -134,7 +134,7 @@
 										</table>
 									</td>
 									<td>
-										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="Delete job" aria-label="delete">
+										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="%{getText('global.deleteJob')}" aria-label="delete">
 											<i class="fa fa-trash-o" aria-hidden="true"></i>
 										</button>
 									</td>
@@ -156,7 +156,7 @@
 					</div>
 
 					<div class="col-sm-10">
-						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">
 					</div>

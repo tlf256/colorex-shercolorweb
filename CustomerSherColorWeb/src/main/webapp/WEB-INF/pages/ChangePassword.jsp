@@ -9,7 +9,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Change Password</title>
+		<title><s:text name="changePassword.changePassword" /></title>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 	
@@ -70,10 +70,10 @@
 							<c:set var="whereFrom" value="${whereFrom1}"/>
 							<c:choose>
 								<c:when test="${whereFrom == 'EXPIRED'}">
-									Your password has expired.
+									<s:text name="changePassword.yourPasswordHasExpired" />
 								 </c:when>
 							 	<c:otherwise>
-									Please change your password.
+									<s:text name="changePassword.pleaseChangePassword" />
 							 	</c:otherwise>
 						 	</c:choose>
 					   	</div>
@@ -86,11 +86,11 @@
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
 					</div>	
 					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-						  For your security, please change your password using the following criteria:<br><br>
+						  <s:text name="changePassword.passCriteriaColon" /><br><br>
 						  <ul>
-						  	<li>Minimum of eight characters</li>
-						  	<li>Must have at least one capital letter and one lower-case letter</li>
-						  	<li>Must have at least one number and one special character (!@#$%^&amp;*)</li>
+						  	<li><s:text name="changePassword.minOfEightChars" /></li>
+						  	<li><s:text name="changePassword.mustHaveOneUcOneLc" /></li>
+						  	<li><s:text name="changePassword.mustHaveOneNumOneSc" /></li>
 						  </ul>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
@@ -116,10 +116,10 @@
 					</div>	
 					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 						<s:hidden name="guid1" id="guid1" value="%{guid1}"/>
-						<s:password name="userPass" id="userPass" label="New Password:" placeholder="Enter password here" size="30" maxlength="30"></s:password>
-		    			<s:password name="userPassConfirm" id="userPassConfirm" label="Confirm:" placeholder="Confirm password here" size="30" maxlength="30"></s:password>
-		    			<s:submit cssClass="btn btn-primary pull-left btn-lg active" id="LoginFocus" autofocus="autofocus" value="Reset Password" action="passwordChangeAction"/>
-		    			<s:submit cssClass="btn btn-secondary pull-right btn-lg" id="cancelChange" value="Cancel" action="cancelPasswordChangeAction"/>
+						<s:password name="userPass" id="userPass" label="%{getText('changePassword.newPasswordColon')}" placeholder="%{getText('changePassword.enterPasswordHere')}" size="30" maxlength="30"></s:password>
+		    			<s:password name="userPassConfirm" id="userPassConfirm" label="%{getText('changePassword.confirmColon')}" placeholder="%{getText('changePassword.confirmPassword')}" size="30" maxlength="30"></s:password>
+		    			<s:submit cssClass="btn btn-primary pull-left btn-lg active" id="LoginFocus" autofocus="autofocus" value="%{getText('changePassword.resetPassword')}" action="passwordChangeAction"/>
+		    			<s:submit cssClass="btn btn-secondary pull-right btn-lg" id="cancelChange" value="%{getText('global.cancel')}" action="cancelPasswordChangeAction"/>
 		    		</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
 					</div>	

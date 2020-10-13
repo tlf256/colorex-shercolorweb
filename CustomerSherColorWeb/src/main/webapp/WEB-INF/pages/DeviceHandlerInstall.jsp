@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>SWDeviceHandler Svc Installation</title>
+		<title><s:text name="deviceHandlerInstall.sWDeviceHandlerSvcInstallation"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -56,7 +56,7 @@
 					<div class="col-sm-2">
 					</div>
 					<div class="col-sm-8">
-						<h2>To install the SWDeviceHandler service:</h2>
+						<h2><s:text name="deviceHandlerInstall.toInstallSWDeviceHandler"/></h2>
 					</div>
 				</div>
 
@@ -64,15 +64,14 @@
 					<div class="col-sm-2">
 					</div>
 					<div class="col-sm-8">
-						<h2>1.  Click the Download button below to download the Setup.exe to the local PC.</h2>
+						<h2><s:text name="deviceHandlerInstall.clickDownload"/></h2>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-2">
 					</div>
 					<div class="col-sm-8">
-						<h2>2.  Double click on the SWDHSetup.exe to install the SWDeviceHandler as a service.</h2>
-					</div>
+						<h2><s:text name="deviceHandlerInstall.dblClickSetup"/></h2>					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-2">
@@ -115,10 +114,10 @@
 						<div class="col-sm-2">
 						</div>
 						<div class="col-sm-4">
-							<s:submit cssClass="btn btn-primary center-block btn-lg" value="Download" action="downloadExeAction"/>
+							<s:submit cssClass="btn btn-primary center-block btn-lg" value="%{getText('deviceHandlerInstall.download')}" action="downloadExeAction"/>
 						</div>
 						<div class="col-sm-4">
-			    			<s:submit cssClass="btn btn-secondary center-block btn-lg" value="Cancel" action="userCancelAction"/>
+			    			<s:submit cssClass="btn btn-secondary center-block btn-lg" value="%{getText('global.cancel')}" action="userCancelAction"/>
 			    		</div>
 			    	
 		    	</div>

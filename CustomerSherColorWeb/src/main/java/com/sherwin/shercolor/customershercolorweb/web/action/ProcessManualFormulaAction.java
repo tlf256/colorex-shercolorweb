@@ -49,6 +49,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private boolean adjByPercentVisible;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
+	private String percentFormulaMsg;
 	
 
 	private boolean debugOn = false;
@@ -84,7 +85,6 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				reqObj.setClosestSwColorId("");
 				reqObj.setClosestSwColorName("");
 			}
-			 
 			colorId = reqObj.getColorID();
 			colorName = reqObj.getColorName();
 			 
@@ -200,13 +200,13 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			}
 			
 			reqObj.setDisplayFormula(displayFormula);
-			
+			percentFormulaMsg =  getText("editFormula.pctOfFormula", new String[]{String.valueOf(percentOfFormula)});
 			sessionMap.put(reqGuid, reqObj);
 
 			retVal = SUCCESS;
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			System.err.println("Exepction thrown!, Percent Addition Calculation Failed");
+			System.err.println("Exception thrown!, Percent Addition Calculation Failed");
 			retVal = ERROR;
 		}
 
@@ -220,8 +220,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			recDirty=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			logger.debug("successfully read reqObj");
-
+			if (colorId==null) {colorId="";}
 			reqObj.setColorID(colorId);
+			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
 			// Fill in more display formula attributes
 			reqObj.getDisplayFormula().setSalesNbr(reqObj.getSalesNbr());
@@ -267,21 +268,21 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 					if(item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// Invalid Increment, no colorant selected, what to do?
 					} else {
-						addActionError("Invalid increment value(s) entered for " + item.getSelectedColorant());
+						addActionError(getText("processManualFormulaAction.invalidIncrementValue", new String[]{item.getSelectedColorant()}));
 						retVal = INPUT;
 					}
 				} else if(positiveValueEntered){
 					// value entered, did they select a colorant?
 					if(item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// No colorant selected, Error to user
-						addActionError("Increment value(s) entered but no colorant selected. Please select a colorant or change the values to zero.");
+						addActionError(getText("processManualFormulaAction.incrementButNoColorant"));
 						retVal = INPUT;
 					}
 				} else {
 					//no value entered, did they select a colorant?
 					if(!item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// Colorant selected, Error to user
-						addActionError("No increment value(s) entered for " + item.getSelectedColorant());
+						addActionError(getText("processManualFormulaAction.noIncrForClrnt", new String[]{item.getSelectedColorant()}));
 						retVal = INPUT;
 					}
 				}
@@ -351,7 +352,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				if(dupClrntWarnList.size()>0){
 					logger.debug("dup warn list has " + dupClrntWarnList.size() + " entries");
 					for(String dupClrnt : dupClrntWarnList){
-						addActionError("Colorant " + dupClrnt + " appears more than one time in your formula. Please correct.");
+						addActionError(getText("processManualFormulaAction.moreThanOneTime", new String[]{dupClrnt}));
 					}
 					retVal = INPUT;
 				}
@@ -365,22 +366,22 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 								displayFormula.setIngredients(newIngredients);
 							} else {
 								// Handle failure to fill ingredient info from cdsClrnt tables
-								addActionError("Invalid Formula Entered");
+								addActionError(getText("processManualFormulaAction.invalidFormulaEntered"));
 								retVal = INPUT;
 							}
 						} else {
 							// Handle failure to convert Shots to Incr
-							addActionError("Invalid Formula Entered");
+							addActionError(getText("processManualFormulaAction.invalidFormulaEntered"));
 							retVal = INPUT;
 						}
 					} else {
 						// Handle failure to convert Increments to Shots
-						addActionError("Invalid Formula Entered");
+						addActionError(getText("processManualFormulaAction.invalidFormulaEntered"));
 						retVal = INPUT;
 					}
 				} else {
 					// No ingredients entered by user, error back to user
-					addActionError("No colorants or amounts have been entered. You must select at least one colorant and enter an amount for the formula to be accepted.");
+					addActionError(getText("processManualFormulaAction.noClrntOrAmtsEntered"));
 					retVal = INPUT;
 				}
 			} // end second part of basic entry processing
@@ -474,7 +475,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				if(reqObj.getControlNbr()>0) {
 					SwMessage saveReminder = new SwMessage();
 					saveReminder.setSeverity(Level.INFO);
-					saveReminder.setMessage("Changes have been made but not yet saved");
+					saveReminder.setMessage(getText("processManualFormulaAction.changesNotYetSaved"));
 					if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
 					reqObj.getDisplayMsgs().add(saveReminder);
 				}
@@ -594,6 +595,14 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 	public void setPercentOfFormula(int percentOfFormula) {
 		this.percentOfFormula = percentOfFormula;
+	}
+
+	public String getPercentFormulaMsg() {
+		return percentFormulaMsg;
+	}
+
+	public void setPercentFormulaMsg(String percentFormulaMsg) {
+		this.percentFormulaMsg = percentFormulaMsg;
 	}
 	
 	

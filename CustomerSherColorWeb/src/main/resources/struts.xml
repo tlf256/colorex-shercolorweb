@@ -961,6 +961,14 @@
 			<result name="success">/WEB-INF/pages/TinterPurge.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="getUpdatedPurgeDateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterPurgeAction" method="getUpdatedPurgeDate">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
 		<action name="tinterConfigAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterConfigAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

@@ -101,7 +101,7 @@ public class ProcessPctFormulaBookBaseAction extends ActionSupport implements Se
 			
 			return returnStatus;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -125,7 +125,7 @@ public class ProcessPctFormulaBookBaseAction extends ActionSupport implements Se
 				}
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

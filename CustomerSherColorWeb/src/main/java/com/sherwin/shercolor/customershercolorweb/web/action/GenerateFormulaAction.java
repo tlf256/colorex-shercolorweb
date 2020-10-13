@@ -130,6 +130,9 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				}
 				
 			}
+			
+			// get SwMessages from the FormulationResponse
+			List<SwMessage> swmsgList = theFormula.getMessages();
 			 
 			//save the returned formula in the session using the guid for later display.
 			if (theFormula.getFormulas().size() > 0) {
@@ -141,16 +144,15 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				reqObj.setDisplayFormula(theFormula.getFormulas().get(0));
 				displayFormula = theFormula.getFormulas().get(0);
 				// check for warnings and set those as well.
-				validationMsgs = formulationService.validateFormulation(displayFormula);
+				validationMsgs = formulationService.validateFormulation(displayFormula, swmsgList);
 				
 				//PSCWEB-101 - if the colorant system used does not match the customer's default colorant system,
 				//             add a warning.
 				if (!defaultClrntSys.equals(reqObj.getClrntSys())) {
 					SwMessage csMsg = new SwMessage();
 					csMsg.setCode("NONDFLTCLRNTSYS");
-					csMsg.setMessage("Formula requires " + reqObj.getClrntSys() 
-							+ " colorant system.  Your site must have " + reqObj.getClrntSys() 
-							+ " tinting system to complete the paint formula.");
+					csMsg.setMessage(getText("generateFormulaAction.formulaRequiresClrntSys", 
+							new String[] {reqObj.getClrntSys(),reqObj.getClrntSys()}));
 					csMsg.setSeverity(Level.WARN);
 					validationMsgs.add(csMsg);
 				}
@@ -162,7 +164,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				//and post the validation message list to the request object for use in printing.
 				reqObj.setDisplayMsgs(validationMsgs);
 				
-				List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(displayFormula);
+				List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(displayFormula, swmsgList);
 				reqObj.setCanLabelMsgs(canLabelMsgs);
 				
 			}
@@ -179,7 +181,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 			sessionMap.put(reqGuid, reqObj);
 			return theFormula.getStatus().toLowerCase();
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			return ERROR;
 		}
 	}
