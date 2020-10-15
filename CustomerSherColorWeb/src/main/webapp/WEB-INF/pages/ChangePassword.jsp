@@ -119,7 +119,9 @@
 						<s:password name="userPass" id="userPass" label="%{getText('changePassword.newPasswordColon')}" placeholder="%{getText('changePassword.enterPasswordHere')}" size="30" maxlength="30"></s:password>
 		    			<s:password name="userPassConfirm" id="userPassConfirm" label="%{getText('changePassword.confirmColon')}" placeholder="%{getText('changePassword.confirmPassword')}" size="30" maxlength="30"></s:password>
 		    			<s:submit cssClass="btn btn-primary pull-left btn-lg active" id="LoginFocus" autofocus="autofocus" value="%{getText('changePassword.resetPassword')}" action="passwordChangeAction"/>
-		    			<s:submit cssClass="btn btn-secondary pull-right btn-lg" id="cancelChange" value="%{getText('global.cancel')}" action="cancelPasswordChangeAction"/>
+		    			<s:if test="whereFrom != 'EXPIRED'">
+		    				<s:submit cssClass="btn btn-secondary pull-right btn-lg" id="cancelChange" value="%{getText('global.cancel')}" action="cancelPasswordChangeAction"/>
+		    			</s:if>
 		    		</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-xs-0">
 					</div>	

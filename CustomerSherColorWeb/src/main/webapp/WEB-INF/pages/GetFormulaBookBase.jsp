@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Confirm Color And Base</title>
+		<title><s:text name="global.confirmColorAndBase" /></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -49,8 +49,8 @@
 						<div class="col-sm-2">
 						</div>
 	            		<div class="col-sm-4">
-	            			<s:select label="Select Formula To Use (Confirm Color And Base)" 
-	            				headerKey="-1" headerValue="Confirm Color And Base"
+	            			<s:select label="%{getText('global.selectFormulaToUse')}" 
+	            				headerKey="-1" headerValue="%{getText('global.confirmColorAndBase')}"
 								list="colorBases" name="selectedColorBase"  autofocus="autofocus" required="required" />
 						</div>
 				
@@ -69,14 +69,14 @@
 						<div class="col-sm-2">
 						</div>	
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="Next" action="fbBase2UserNextAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="fbBase2UserNextAction"/>
 						</div>
 						<div class="col-sm-2">	
 						</div>
 						<div class="col-sm-2">
 						</div>
 						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+			    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
 			    		</div>
 		    	</div>
 			</s:form>

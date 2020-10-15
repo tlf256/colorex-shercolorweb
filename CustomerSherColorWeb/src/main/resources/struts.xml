@@ -136,15 +136,13 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="cancelPasswordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAction" method="cancel">
+		<action name="cancelPasswordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="cancel">
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">loginAction</param>
-				<param name="reqGuid">${reqGuid}</param>
+				<param name="guid1">${guid1}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
