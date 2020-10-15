@@ -47,7 +47,6 @@
 				</div>
 			</div>
 			<br>
-			<br>
 			<div class="row">
 				<div class="col-sm-2">
 				</div>
@@ -146,6 +145,14 @@
 				<br>
 				<div class="row">
 					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<div id="deltaEGreaterThanOne" class="alert alert-warning d-none"><s:text name="getProdFamily.deltaEGreaterThanOneWarning"/></div>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-sm-1"></div>
 					<div class="col-sm-2">
 						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.next')}" action="prodFamilyUserNextAction"/>
 					</div>
@@ -183,8 +190,17 @@
 			    	$("#selectedProdFamily").val(prodNbr);
 			    	$(".prodFamRadio:eq("+index+")").prop('checked', true);
 			    });
+				
+				var pT = $('#prodFamily_table').DataTable();
+				for (index = 0; index < pT.data().count()/8; index++) {
+					var deltaE = prodTable.row(index).data()[4];
+					if (deltaE > 1) {
+						$('#deltaEGreaterThanOne').removeClass('d-none');
+					}
+				}
+				
+				
 			});
-
 			</script>
 	
 		</div>
