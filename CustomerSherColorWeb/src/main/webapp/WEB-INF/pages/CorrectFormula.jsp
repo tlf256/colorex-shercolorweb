@@ -529,6 +529,7 @@
     				data.ingredientList.forEach(function(item){
         				safeTintSysId = encodeURIComponent(item.tintSysId.toString());
         				safeName = encodeURIComponent(item.name.toString());
+        				safeName = safeName.replace(/%20/g, " ");
         				safeIncr0 = encodeURIComponent(item.increment[0].toString());
         				safeIncr1 = encodeURIComponent(item.increment[1].toString());
         				safeIncr2 = encodeURIComponent(item.increment[2].toString());
