@@ -18,7 +18,45 @@
 	src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-
+	
+	<script type="text/javascript">
+	//update user's language preference
+	function updateLanguage(){
+		var selectedLang = $("select[id='languageList'] option:selected").val();
+		console.log(selectedLang);
+		
+		$.ajax({
+			url : "updateLocale.action",
+			type : "POST",
+			data : {
+				request_locale : selectedLang,
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					// reload page to update the language
+					location.reload();
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	$(document).ready(function() {
+	    // update dropdown to display the language that the user picked if they have done so
+	    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+	    if (userLanguage != null && userLanguage != ""){
+		    $("#languageList").val(userLanguage);
+	    } else {
+	    	$("#languageList").val("en_US");
+	    }
+	});
+</script>
 </head>
 <body>
 	<!-- Fixed navbar -->
@@ -26,6 +64,15 @@
 		style="padding-top: 0px; padding-bottom: 0px;">
 		<a href='#'><img src="graphics/shercolor-sm.jpg" alt="Sher-Color"
 			style="height: 3.44rem;" /></a>
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+		   		<select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+				    <option value="en_US">English</option>
+				    <option value="es_ES">Español</option>
+				    <option value="zh_CN">中文</option>
+			    </select>
+			</li>
+		</ul>
 	</nav>
 
 	<div class="container center-form-parent">

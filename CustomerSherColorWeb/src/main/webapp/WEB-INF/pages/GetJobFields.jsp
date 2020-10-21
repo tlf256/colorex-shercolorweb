@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Enter Job Info</title>
+<title><s:text name="global.enterJobInfo" /></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -60,7 +60,7 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-1"></div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
-						<strong><s:property value="screenLabel" />:</strong>
+						<strong><s:property value="screenLabel" /><s:text name="global.colonDelimiter"/></strong>
 					</div>
 					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
 						<%-- 							<s:if test="%{#setFirstFieldFocus==%{'false'}}"> --%>
@@ -84,17 +84,17 @@
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-1"></div>
 				<s:if test="updateMode==1">
 					<div class="col-lg-4 col-md-4 col-sm-10 col-xs-1">
-						<s:submit cssClass="btn btn-primary" value="Next"
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
 							action="processJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="Cancel"
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}"
 							action="userCancelAction" />
 					</div>
 				</s:if>
 				<s:else>
 					<div class="col-lg-4 col-md-6 col-sm-10 col-xs-10">
-						<s:submit cssClass="btn btn-primary" value="Next"
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
 							action="processJobFieldsAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="Cancel"
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}"
 							action="userCancelAction" />
 					</div>
 				</s:else>
@@ -118,10 +118,10 @@
 				'keypress blur':function(){
 					try{
 						if(event.key == ">" || event.key == "<"){
-							throw "Special characters \"<\" or \">\" not allowed";
+							throw '<s:text name="global.noLtOrGt"/>';
 						}
 						if($(this).val().includes(">") || $(this).val().includes("<")){
-							throw "Invalid entry. Please remove these characters: < >";
+							throw '<s:text name="global.invalidEntryLtGt"/>';
 						}
 						$('.entval').each(function(){
 							$(this).parents('.row').find('#errortxt').remove();
