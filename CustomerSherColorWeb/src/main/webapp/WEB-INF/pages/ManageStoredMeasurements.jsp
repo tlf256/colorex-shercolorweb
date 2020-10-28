@@ -21,7 +21,7 @@
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
 		<script type="text/javascript" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" data-auto-replace-svg="nest"></script>
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
+ 		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
@@ -29,6 +29,8 @@
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
+ 		<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
 		<script type="text/javascript" src="script/displaystoredmeasurements.js"></script>
 		<style>
 	        .sw-bg-main {
@@ -184,7 +186,22 @@
 		}
 	 	
 	 	function buildMeasurementLoadTable(rgbList,measurementsJson) {
-	 		
+	 		var langUrl = null;
+	 		var dateFormat = null;
+	 		// translate datatable text like the search bar, and assign format pattern to check for dupes 
+	 		switch("${session['WW_TRANS_I18N_LOCALE']}"){
+				case("es_ES"):
+					langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json";
+					dateFormat = "DD-MMM-YYYY H:mm:ss";
+					break;
+				case("zh_CN"):
+					langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Chinese.json";
+					dateFormat = "YYYY-M-D H:mm:ss";
+					break;
+				default:
+					dateFormat = "MMM D, YYYY h:mm:ss A";					
+			}
+			
 	 		var measurementTable =  $('#measurement_table').DataTable();
 			var dates = [];
 			for (index = 0; index < measurementTable.data().count()/9; index++){
@@ -203,13 +220,24 @@
 		  			"pagingType": "full",
 		  			"scrollX": true,
 		  			"paginate": false,
+		  			"order": [ 3, "desc" ],
+		  			"ordering": true,
+		  			"language": {
+		  	        	"url" : langUrl
+		  	        },
 		  			columns : [
 		  				{
 		  					//data: 'addMeasurement'
 		  					"render" : function(
 		  						data, type, row,meta) {
 		  						isDupe = false;
-		  						var dateTime = moment(row.sampleDateTime).format('DD/MMM/YY hh:mm:ss A');
+		  						// To compare dates, we need to parse the spanish dates with the locale method added. 
+		  						// Default is english, and chinese date uses only numbers, so don't need locale call for those 
+		  						if ("${session['WW_TRANS_I18N_LOCALE']}" == "es_ES"){
+		  							var dateTime = moment(row.sampleDateTime, "MM/DD/YY H:mm:ss").locale('es').format(dateFormat);
+		  						} else {
+			  						var dateTime = moment(row.sampleDateTime, "MM/DD/YY H:mm:ss").format(dateFormat);
+		  						}
 		  						for (index = 0; index < dateList.length; index++) {
 		  							if(dateList[index] == dateTime) {
 			  							dateList.splice(index,1);
@@ -249,9 +277,20 @@
 		  				{
 		  					//data: 'sampleDateTime'
 		  					"render" : function(
-		  							data, type, row,meta) {
-		  						var dateTime = moment(row.sampleDateTime).format('DD/MMM/YY hh:mm:ss A');
-		  							return dateTime ;
+	  							data, type, row,meta) {
+		  						var dateTime = null;
+		  						// update date formatting so it matches how struts displays datetime for these locales 
+		  						switch("${session['WW_TRANS_I18N_LOCALE']}"){
+			  						case("es_ES"):
+			  							dateTime = moment(row.sampleDateTime, "MM/DD/YY H:mm:ss").locale('es').format('DD-MMM-YYYY H:mm:ss');
+			  							break;
+			  						case("zh_CN"):
+			  							dateTime = moment(row.sampleDateTime, "MM/DD/YY H:mm:ss").format('YYYY-M-D H:mm:ss');
+			  							break;
+			  						default:
+			  							dateTime = moment(row.sampleDateTime, "MM/DD/YY H:mm:ss").format('MMM D, YYYY h:mm:ss A');
+			  					}
+	  							return dateTime;
 		  					}
 		  				},
 		  				{
@@ -298,10 +337,22 @@
 			  	} else {
 			  		savedColors += newMeasurements[i].sampleName;
 			  	}
+			  	// format date for locale so it translates and sorts properly 
+			  	var datetime = null;
+			  	switch("${session['WW_TRANS_I18N_LOCALE']}"){
+					case("es_ES"):
+						datetime = moment(newMeasurements[i].sampleDateTime).locale('es').format('DD-MMM-YYYY H:mm:ss');
+						break;
+					case("zh_CN"):
+						datetime = moment(newMeasurements[i].sampleDateTime).format('YYYY-M-D H:mm:ss');
+						break;
+					default:
+						datetime = moment(newMeasurements[i].sampleDateTime).format('MMM D, YYYY h:mm:ss A');
+				}
 		  		measurements_table.row.add([
 		  			'<span class="chip p-0" style="background:' + newMeasurements[i].RGBHex + '"></span>',
 		  			newMeasurements[i].sampleName,
-		  			moment(newMeasurements[i].sampleDateTime).format('DD/MMM/YY hh:mm:ss A'),
+		  			datetime,
 		  			newMeasurements[i].sampleDescr,
 		  			newMeasurements[i].model,
 		  			newMeasurements[i].serialNbr,
@@ -316,6 +367,9 @@
 		
 	 	
 	 	$(document).ready(function() {
+	 		// need to grab locale out of the session in jsp before building datatable in displaystoredmeasurements.js
+	 		var userLocale = "${session['WW_TRANS_I18N_LOCALE']}";
+	 		displayStoredMeasurementsTable(userLocale);
 	 		
 	 		// Retrieve all the Ci62 Measurements
 	 		RetrieveAllStoredMeasurements();
@@ -393,8 +447,15 @@
 			
 	    		deleteRow = $(this).closest('tr');
 	    		//console.log("Table Row Clicked!!!");
-	    		colorName = measurementTable.row(deleteRow).data()[1];
-	    		rowDateTime = measurementTable.row(deleteRow).data()[2];
+	    		colorName = measurementTable.row(deleteRow).data()[1];   		
+	    		
+	    		if ("${session['WW_TRANS_I18N_LOCALE']}" == "es_ES"){
+					// parse in spanish and then reformat in english
+					rowDateTime = moment(measurementTable.row(deleteRow).data()[2], 'DD-MMM-YYYY H:mm:ss', 'es').locale('en').format('DD/MMM/YY hh:mm:ss A');
+				} else {
+					// default is english, and the chinese date is all numbers so don't need to change the date's locale
+					rowDateTime = moment(measurementTable.row(deleteRow).data()[2]).locale('en').format('DD/MMM/YY hh:mm:ss A');
+				}
 	    		rowSerialNbr = measurementTable.row(deleteRow).data()[5];
 	    		//console.log("The row data used to delete the measurement is: " + rowDateTime + ", " + rowSerialNbr);
 	    		$('#deletemodal').modal().show();
@@ -437,6 +498,16 @@
 		    	spectroModel = measurementTable.row(editRow).data()[4];
 		    	rowSerialNbr = measurementTable.row(editRow).data()[5];
 		    	rowMeasuredCurve = measurementTable.row(editRow).data()[7];
+		    	/* for spanish locale, struts formats 0.00, 1.00 into 0,00, 1,00
+		    	so change it back to default format before sending to action  
+		    	(but if record was added from the modal it didn't pass through struts
+		    	formatting and looks like 0.00,1.00) */
+		    	if ("${session['WW_TRANS_I18N_LOCALE']}" == "es_ES" && !rowMeasuredCurve.includes(".")){
+		    		console.log(rowMeasuredCurve);
+		    		rowMeasuredCurve = rowMeasuredCurve.replace(/,/g, ".");
+			    	rowMeasuredCurve = rowMeasuredCurve.replace(/. /g, ", ");
+			    	console.log(rowMeasuredCurve);
+		    	}
 		    	rowRgbHex = measurementTable.row(editRow).data()[8];
 		    	$("#editSampleName").val(colorName);
 		    	$("#editSampleDescription").val(description);
@@ -451,6 +522,15 @@
 			$('#confirmEdit').on('click', function(){
 				colorName = $("#editSampleName").val();
 				description = $("#editSampleDescription").val();
+				
+				if ("${session['WW_TRANS_I18N_LOCALE']}" == "es_ES"){
+					// parse in spanish and then reformat in english
+					rowDateTime = moment(measurementTable.row(editRow).data()[2], 'DD-MMM-YYYY H:mm:ss', 'es').locale('en').format('DD/MMM/YY hh:mm:ss A');
+				} else {
+					// default is english, and the chinese date is all numbers so don't need to change the date's locale
+					rowDateTime = moment(measurementTable.row(editRow).data()[2]).locale('en').format('DD/MMM/YY hh:mm:ss A');
+				}
+	    		
 				$.ajax({
 					url:"updateSpectroRemoteAction.action",
 					data: {
@@ -534,7 +614,7 @@
 								<tr class="border-bottom-1 border-dark">
 									<td><span class="chip p-0" style="background: <s:property value="#measurement.rgbHex"/>;"></span></td>
 									<td><s:property value="#measurement.sampleName" /></td>
-									<td ><s:date name="#measurement.sampleDateTime" format="dd/MMM/yy hh:mm:ss a"/></td>
+									<td ><s:date name="#measurement.sampleDateTime" /></td> 
 									<td><s:property value="#measurement.sampleDescr" /></td>
 									<td><s:property value="#measurement.model" /></td>
 									<td><s:property value="#measurement.serialNbr" /></td>
