@@ -26,6 +26,15 @@
 		</interceptors>
 		<default-interceptor-ref name="stack-with-login" />
 		<default-action-ref name="invalidLoginAction"/>
+		<!-- use chain type result to forward to login action (a redirect here would cause an IllegalStateException because the response (index.jsp) is already committed) -->
+		<action name="checkLocaleCookieAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="checkLocaleCookie">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="success" type="chain">
+				<param name="actionName">loginGetUserAction</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>		
 		<action name="loginGetUserAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginUserAction" method="display">
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
