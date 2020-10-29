@@ -23,6 +23,9 @@
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
  		<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.21/datatables.min.js"></script>
+ 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
+  		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
+	 	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script> 
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.4.js"></script>
 		<style>
@@ -117,6 +120,7 @@
 				displaySavedMeasurementsTable();
 			});
 			
+			
 			function displaySavedMeasurementsTable() {
 				var measuresTable;
 				var selectedRow;
@@ -129,22 +133,32 @@
 				var measurementCurve;
 				var measurementRgbHex;
 				
-				// internationalize the datatable; null here defaults to english, otherwise update url
+				// null language option defaults to english, otherwise update url
 				var langUrl = null;
-				console.log("${session['WW_TRANS_I18N_LOCALE']}");
 				
+				// internationalize datatable text and datetime
 				switch("${session['WW_TRANS_I18N_LOCALE']}"){
 				case("es_ES"):
 					langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json";
+					$.fn.dataTable.moment('DD-MMM-YYYY H:mm:ss', 'es');
 					break;
+				case("zh_CN"):
+					langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Chinese.json";
+					$.fn.dataTable.moment('YYYY-M-D H:mm:ss', 'zh-cn');
+					break;
+				default:
+					$.fn.dataTable.moment('MMM D, YYYY h:mm:ss A', 'en');
 				}
 				
+				// order the table reverse chronologically 
 				measuresTable = $('#measuresTable').DataTable({
 					"paginate": false,
 			        "scrollY" : 400,
 			        "language" : {
 			        	"url" : langUrl
-			        }
+			        },
+			        "order": [ 2, "desc" ],
+			        "ordering": true
 				});
 				
 				$("#measuresTable").addClass("table-hover");
@@ -283,7 +297,7 @@
 										<tr class="border-bottom-1 border-dark">
 											<td><span class="chip p-0" style="background: <s:property value="#measurement.rgbHex"/>;"></span></td>
 											<td class="name"><s:property value="#measurement.sampleName" /></td>
-											<td class="dateTime"><s:date name="#measurement.sampleDateTime" format="dd/MMM/yy hh:mm:ss a"/></td>
+											<td class="dateTime"><s:date name="#measurement.sampleDateTime" /></td>
 											<td class="description"><s:property value="#measurement.sampleDescr" /></td>
 											<td class="spectroModel" style="display:none"><s:property value="#measurement.model" /></td>
 											<td class="spectroSerial" style="display:none"><s:property value="#measurement.serialNbr" /></td>
