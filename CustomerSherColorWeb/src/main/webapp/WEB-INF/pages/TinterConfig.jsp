@@ -96,33 +96,44 @@
 		var configuration = new Configuration(mycolorantid, mymodel, myserial,
 				canister_layout);
 
-		var calibration = new Calibration(mycolorantid, mymodel, myserial);
+		var calibration = null;
+		//alfa and santint do not have cal files that we manage
+		if(mymodel.indexOf("ALFA") == 0  && mymodel.indexOf("SANTINT") == 0){
+			calibration =  new Calibration(mycolorantid, mymodel, myserial);
 		//console.log("calibration");
 		//console.log(calibration);
-		if(calibration.data != null){
-			var shotList = null;
-			var gdata = null;  //for corob only
-			if(mymodel.indexOf("Corob") >= 0 || mymodel.indexOf("COROB") >= 0){
-				var gdata = new GData(mycolorantid);
+			if(calibration.data != null){
+				var shotList = null;
+				var gdata = null;  //for corob only
+				if(mymodel.indexOf("Corob") >= 0 || mymodel.indexOf("COROB") >= 0){
+					var gdata = new GData(mycolorantid);
+				}
+				var configMessage = new TinterMessage(command, shotList, configuration,
+						calibration, gdata);
+				sendTinterConfig(configMessage);
+
 			}
-			configmessage = new TinterMessage(command, shotList, configuration,
-					calibration, gdata);
-	
-			var json = JSON.stringify(configmessage);
-	
-			if (ws_tinter && ws_tinter.isReady == "false") {
-				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
-				ws_tinter = new WSWrapper("tinter");
+			else{
+					$("#configError").text('<s:text name="tinterConfig.couldNotFindDefaultCalib"><s:param>'+ mycolorantid +'</s:param><s:param>'+ mymodel +'</s:param></s:text>');
+					$("#configErrorModal").modal('show');	
 			}
-			ws_tinter.send(json);
 		}
 		else{
-				$("#configError").text('<s:text name="tinterConfig.couldNotFindDefaultCalib"><s:param>'+ mycolorantid +'</s:param><s:param>'+ mymodel +'</s:param></s:text>');
-				$("#configErrorModal").modal('show');	
-			}
+			configMessage = new TinterMessage(command, shotList, configuration,
+					null, null);
+			sendTinterConfig(configMessage);
+		}
 
 	};
-
+	function sendTinterConfig(configMessage){
+		var json = JSON.stringify(configMessage);
+		
+		if (ws_tinter && ws_tinter.isReady == "false") {
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			ws_tinter = new WSWrapper("tinter");
+		}
+		ws_tinter.send(json);
+	}
 	function init() {
 		detectAttempt = 0;
 		if(initStarted == 0){
@@ -455,7 +466,7 @@
 			RecdMessageFMX();
 		}
 		else{
-			RecdMessageFM();
+			RecdMessageFMAlfa();
 		}
 	}
 	function RecdMessageCorob() {
@@ -666,7 +677,37 @@
 			
 		}
 	}
-	function RecdMessageFM() {
+	function RecdMessageFMAlfa() {
+		var curDate = new Date();
+		console.log("Received FM Message");
+		//parse the spectro
+		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
+				console.log(ws_tinter.wsmsg);
+				console.log("isReady is " + ws_tinter.isReady + "BTW");
+				//Show a modal with error message to make sure the user is forced to read it.
+				$("#configError").text(ws_tinter.wserrormsg);
+				$("#configErrorModal").modal('show');			
+		} else {
+
+		
+			var return_message = JSON.parse(ws_tinter.wsmsg);
+			switch (return_message.command) {
+
+			case 'Config':
+				if (return_message.errorNumber == 0) {
+					init();
+					$("#detectInProgressModal").modal('show');
+					rotateIcon();
+				} else {
+					$("#configError").text(return_message.errorMessage);
+					$("#configErrorModal").modal('show');
+				}
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
+				break;
+			case 'Detect':
+			case 'Init':
+				//status = 1, means, still trying serial ports so still in progress.
+				if ((return_message.errorMessage.indexOf("Init	function RecdMessageFM() {
 		var curDate = new Date();
 		console.log("Received FM Message");
 		//parse the spectro
@@ -697,6 +738,44 @@
 			case 'Init':
 				//status = 1, means, still trying serial ports so still in progress.
 				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) && (return_message.errorNumber >= 0 ||
+						 return_message.status == 1)) {
+					 	//save		
+					$("#progress-message").text(return_message.errorMessage);
+					//console.log(return_message.errorMessage);
+				}
+				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
+					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
+					
+					
+					waitForShowAndHide("#detectInProgressModal");
+		           
+					$("#detectStatusModal").modal('show');
+					
+					$("#detectStatus") 
+							.text(
+									'<s:text name="global.tinterDetectConfigComplete"/>');
+				}
+				else {
+					
+					waitForShowAndHide("#detectInProgressModal");
+		           
+					$("#detectErrorModal").modal('show');
+					
+					switch (return_message.errorNumber) {
+					case -10500:
+					case -3084:
+						$("#errorModalTitle")
+								.text(
+										'<s:text name="tinterConfig.tinterDetectConfigCompleteWithErrors"/>');
+						$("#detectErrorMessage").text(
+								return_message.errorMessage);
+						break;
+					default:
+						$("#errorModalTitle").text(
+								'<s:text name="tinterConfig.tinterInitErrors"/>');
+						$("#detectErrorMessage").text(
+								return_message.errorMessage);
+ialization Done") == -1) && (return_message.errorNumber >= 0 ||
 						 return_message.status == 1)) {
 					 	//save		
 					$("#progress-message").text(return_message.errorMessage);

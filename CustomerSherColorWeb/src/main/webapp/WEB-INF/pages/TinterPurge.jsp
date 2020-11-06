@@ -122,7 +122,7 @@
 			});
 		}
 	}
-	function FMXPurgeProgress(){
+	function FMXAlfaPurgeProgress(){
 		console.log('before purge status modal show');
 		$("#PurgeInProgressModal").modal('show');
 		rotateIcon();
@@ -168,7 +168,7 @@
 			}
 			console.log(return_message);
 			//setTimeout(function(){
-				FMXPurgeProgress();
+				FMXAlfaPurgeProgress();
 		//	}, 200);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 			
 		}
@@ -364,7 +364,8 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
+						if(tinterModel !=null && ( tinterModel.startsWith("FM X") ||
+								tinterModel.startsWith("ALFA"))){ //only FM X series has purge in progress % done
 							 if(return_message.errorNumber == 4226){
 							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 							    }

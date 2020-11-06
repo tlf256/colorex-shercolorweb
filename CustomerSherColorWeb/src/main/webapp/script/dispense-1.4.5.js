@@ -85,7 +85,7 @@ function buildProgressBars(return_message){
 			});
 		}
 }
-function FMXDispenseProgress(){
+function FMXAlfaDispenseProgress(){
 	console.log('before dispense progress send');
 	
 	rotateIcon();
@@ -114,6 +114,27 @@ function dispense(){
     // Send to tinter
     ws_tinter.send(json);
 }
+function alfaDispenseProgressResp(return_message){
+	$("#abort-message").show();
+	$('#progressok').addClass('d-none');  //hide ok button
+	if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
+			 return_message.status == 1)) {
+				
+		if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
+		//keep updating modal with status
+		} else {
+			tinterErrorList.push(return_message.errorMessage);
+			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+		}
+		console.log(return_message);
+		setTimeout(function(){
+			FMXAlfaDispenseProgress();
+		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+		}
+		else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
+			dispenseComplete(return_message);
+			}
+	}
 function dispenseProgressResp(return_message){
 	
 	//$("#progress-message").text(return_message.errorMessage);
@@ -126,7 +147,9 @@ function dispenseProgressResp(return_message){
 		if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 		//keep updating modal with status
 		//$("#progress-message").text(return_message.errorMessage);
+		if (tinterModel.startsWith("FM X")){
 			buildProgressBars(return_message);
+			}
 		
 		} else {
 			tinterErrorList.push(return_message.errorMessage);
@@ -134,7 +157,7 @@ function dispenseProgressResp(return_message){
 		}
 		console.log(return_message);
 		setTimeout(function(){
-			FMXDispenseProgress();
+			FMXAlfaDispenseProgress();
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 		
 	}
@@ -307,6 +330,9 @@ function RecdMessage() {
                 	var tinterModel = $("#tinterModel").val();
 					if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
 						dispenseProgressResp(return_message);
+					}
+					else if(tinterModel !=null && tinterModel.startsWith("ALFA")){ //alfa needs a progress check
+						alfaDispenseProgressResp(return_message);
 					}
 					else{
 						dispenseComplete(return_message);
