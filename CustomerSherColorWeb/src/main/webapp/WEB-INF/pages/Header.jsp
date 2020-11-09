@@ -1,5 +1,6 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>
-
+<%@ page contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!-- Fixed navbar -->
 <nav class="navbar navbar-dark bg-dark navbar-expand-md pt-0 pb-0">
 	   <a href='<s:url action="loginAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><img src="graphics/shercolor-sm.jpg" alt="Sher-Color" style="height: 3.44rem;"/></a>
@@ -21,7 +22,8 @@
 	     		<li class="nav-item p-2 pl-3 pr-3 d-none"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 	     		<li class="nav-item"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
 					    <option value="en_US">English</option>
-					    <option value="es_ES">Espa�ol</option>
+					    <option value="es_ES">Español</option>
+					    <option value="zh_CN">中文</option>
 				    </select>
 				</li>
 	     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>

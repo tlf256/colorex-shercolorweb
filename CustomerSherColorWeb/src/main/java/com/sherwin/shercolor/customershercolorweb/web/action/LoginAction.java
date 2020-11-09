@@ -440,20 +440,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	}
 	
-	public String cancel() {
-		try {
-			
-			RequestObject reqObj = (RequestObject) sessionMap.get(guid1);
-			reqGuid = reqObj.getGuid();
-			
-			return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-			return ERROR;
-		}
-	}
-	
 //	@SuppressWarnings("restriction")
 //	private boolean validateToken(String theId,String theToken, String theSendUrl) {
 //		boolean returnStatus = false;

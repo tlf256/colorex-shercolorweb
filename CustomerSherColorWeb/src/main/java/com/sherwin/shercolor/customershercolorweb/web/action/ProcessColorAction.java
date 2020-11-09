@@ -285,6 +285,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			reqObj.setProductChoosenFromDifferentBase(false);
 
 			//Okay, there is data there.  Interpret it.
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOM")) {

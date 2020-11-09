@@ -70,6 +70,7 @@ public class RequestObject {
 	private boolean printerConfigured;  //printer configured through SWDeviceHandler
 	private String closestSwColorName;
 	private String closestSwColorId;
+	private boolean productChoosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
 
 	public String getColorComp() {
 		return colorComp;
@@ -400,6 +401,7 @@ public class RequestObject {
 		this.daysUntilPasswdExpire = 90;
 		this.closestSwColorName = "";
 		this.closestSwColorId = "";
+		this.productChoosenFromDifferentBase = false;
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -485,8 +487,11 @@ public class RequestObject {
 	public void setClosestSwColorId(String closestSwColorId) {
 		this.closestSwColorId = closestSwColorId;		
 	}
-	
-	
-
+	public boolean isProductChoosenFromDifferentBase() {
+		return productChoosenFromDifferentBase;
+	}
+	public void setProductChoosenFromDifferentBase(boolean productChoosenFromDifferentBase) {
+		this.productChoosenFromDifferentBase = productChoosenFromDifferentBase;
+	}
 
 }

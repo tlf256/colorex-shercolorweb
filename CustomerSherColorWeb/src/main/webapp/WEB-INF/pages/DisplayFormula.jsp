@@ -1082,11 +1082,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		test="%{
 		#session[reqGuid].displayFormula.deltaEWarning == null ||
 		#session[reqGuid].displayFormula.deltaEWarning == '' ||
-		(
-		#session[reqGuid].displayFormula.averageDeltaE < 1
-		)
-		 
-		
+		#session[reqGuid].productChoosenFromDifferentBase == true
 		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">

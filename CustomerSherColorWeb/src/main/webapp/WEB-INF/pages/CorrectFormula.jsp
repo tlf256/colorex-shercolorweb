@@ -74,7 +74,7 @@
 		if(sessionTinterInfo.tinterOnFile===true){
 			
 			// load colorant into dropdown menu for Manual Add
-			console.log("loading colorant dropdown");
+			//console.log("loading colorant dropdown");
 			
 			$("#clrntList").empty();
 			sessionTinterInfo.canisterList.sort(function(a,b){
@@ -128,7 +128,7 @@
 		// ajax call to convert correctionList to dispenseItems
         var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -137,13 +137,13 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
-    					console.log("Write Successful!");
+    					//console.log("Write Successful!");
     					if(data.mergeCorrWithStartingForm == true){
     						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
     					} else {
@@ -151,7 +151,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAcceptContClick" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -161,8 +161,8 @@
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -173,7 +173,7 @@
 	<s:iterator value="dispenseItemList">
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
 	</s:iterator>
-		console.log(shotList);
+		//console.log(shotList);
 		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
@@ -186,7 +186,7 @@
 		// ajax call to post correction status to db
         var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -195,7 +195,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -205,7 +205,7 @@
     					mistintClickCallback();
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdPostCorrStatus" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -215,8 +215,8 @@
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -229,7 +229,7 @@
         var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
         //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -238,7 +238,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -252,7 +252,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSaveCorr" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -262,8 +262,8 @@
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -281,7 +281,7 @@
         var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
         //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -290,7 +290,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -301,7 +301,7 @@
     					reloadScreen();
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSkipConfirm" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -356,7 +356,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -370,7 +370,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAutoSkip" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -401,7 +401,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -415,7 +415,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAutoDiscard" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -445,7 +445,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -455,7 +455,7 @@
     					reloadScreen()
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdMerge" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -520,15 +520,28 @@
             	else{
             		// walk through result formula
     				var newRow = "";
+    				var safeTintSysId = "";
+    				var safeName = "";
+    				var safeIncr0 = "";
+    				var safeIncr1 = "";
+    				var safeIncr2 = "";
+    				var safeIncr3 = "";
     				data.ingredientList.forEach(function(item){
-    					console.log(item);
+        				safeTintSysId = encodeURIComponent(item.tintSysId.toString());
+        				safeName = encodeURIComponent(item.name.toString());
+        				safeName = safeName.replace(/%20/g, " ");
+        				safeIncr0 = encodeURIComponent(item.increment[0].toString());
+        				safeIncr1 = encodeURIComponent(item.increment[1].toString());
+        				safeIncr2 = encodeURIComponent(item.increment[2].toString());
+        				safeIncr3 = encodeURIComponent(item.increment[3].toString());
+    					//console.log("in the modified code");
     					newRow = "";
     					newRow = newRow + '<tr>';
-    					newRow = newRow + '<td id="clrntString">'+item.tintSysId+"-"+item.name+'</td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[0]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[1]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[2]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[3]+'"></td>'
+    					newRow = newRow + '<td id="clrntString">'+safeTintSysId+"-"+safeName+'</td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr0+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr1+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr2+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr3+'"></td>'
     					newRow = newRow + '</tr>';
     					$("#formulaAdditions > tbody:last-child").append(newRow);
     					$('#pct').text('');
@@ -632,7 +645,7 @@
 	            async: true,
 	            data : jsonIN,
 	            success : function(data){
-	            	console.log(data);
+	            	//console.log(data);
 	            	if(data.sessionStatus === "expired"){
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
@@ -1070,7 +1083,7 @@
             data : jsonIN,
             success : function(data){
             	processingDispense = false;
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -1095,7 +1108,7 @@
     					//alert("Write Successful");
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdWriteDispense" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
