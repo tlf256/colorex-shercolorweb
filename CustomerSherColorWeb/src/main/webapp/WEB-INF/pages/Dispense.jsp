@@ -22,8 +22,8 @@
 <script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.5.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 <script type="text/javascript">
 	<s:iterator value="tinter.canisterList" status="i">
 //DJM not sure what this shotList is here for, but no way I'm deleting it now :) 

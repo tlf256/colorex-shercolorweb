@@ -31,7 +31,7 @@
 
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 
 
@@ -707,75 +707,7 @@
 			case 'Detect':
 			case 'Init':
 				//status = 1, means, still trying serial ports so still in progress.
-				if ((return_message.errorMessage.indexOf("Init	function RecdMessageFM() {
-		var curDate = new Date();
-		console.log("Received FM Message");
-		//parse the spectro
-		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-				console.log(ws_tinter.wsmsg);
-				console.log("isReady is " + ws_tinter.isReady + "BTW");
-				//Show a modal with error message to make sure the user is forced to read it.
-				$("#configError").text(ws_tinter.wserrormsg);
-				$("#configErrorModal").modal('show');			
-		} else {
-
-		
-			var return_message = JSON.parse(ws_tinter.wsmsg);
-			switch (return_message.command) {
-
-			case 'Config':
-				if (return_message.errorNumber == 0) {
-					init();
-					$("#detectInProgressModal").modal('show');
-					rotateIcon();
-				} else {
-					$("#configError").text(return_message.errorMessage);
-					$("#configErrorModal").modal('show');
-				}
-				sendTinterEventConfig(reqGuid, curDate, return_message,null);
-				break;
-			case 'Detect':
-			case 'Init':
-				//status = 1, means, still trying serial ports so still in progress.
 				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) && (return_message.errorNumber >= 0 ||
-						 return_message.status == 1)) {
-					 	//save		
-					$("#progress-message").text(return_message.errorMessage);
-					//console.log(return_message.errorMessage);
-				}
-				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
-					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
-					
-					
-					waitForShowAndHide("#detectInProgressModal");
-		           
-					$("#detectStatusModal").modal('show');
-					
-					$("#detectStatus") 
-							.text(
-									'<s:text name="global.tinterDetectConfigComplete"/>');
-				}
-				else {
-					
-					waitForShowAndHide("#detectInProgressModal");
-		           
-					$("#detectErrorModal").modal('show');
-					
-					switch (return_message.errorNumber) {
-					case -10500:
-					case -3084:
-						$("#errorModalTitle")
-								.text(
-										'<s:text name="tinterConfig.tinterDetectConfigCompleteWithErrors"/>');
-						$("#detectErrorMessage").text(
-								return_message.errorMessage);
-						break;
-					default:
-						$("#errorModalTitle").text(
-								'<s:text name="tinterConfig.tinterInitErrors"/>');
-						$("#detectErrorMessage").text(
-								return_message.errorMessage);
-ialization Done") == -1) && (return_message.errorNumber >= 0 ||
 						 return_message.status == 1)) {
 					 	//save		
 					$("#progress-message").text(return_message.errorMessage);
@@ -817,7 +749,6 @@ ialization Done") == -1) && (return_message.errorNumber >= 0 ||
 					}
 					$("#detectErrorMessage").text(return_message.errorMessage);
 					if (return_message.errorList != undefined) {
-
 						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
 							var error = return_message.errorList[i];
 							var errorText = "<li>" + error.num + "\t"

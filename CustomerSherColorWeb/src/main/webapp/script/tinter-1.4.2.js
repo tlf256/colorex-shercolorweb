@@ -264,7 +264,7 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function TinterMessage(command,shotList,myconfig,mycalibration,mygdata){
+function TinterMessage(command,shotList,myconfig,mycalibration,mygdata,mymessageId){
 	console.log("In TinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
@@ -294,6 +294,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata){
 	this.errorMessage=0;
 	this.errorList=null;
 	this.statusMessages=null;
+	this.msgId = mymessageId;
 }
 function createUUID() {
     // http://www.ietf.org/rfc/rfc4122.txt

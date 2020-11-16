@@ -23,7 +23,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -44,6 +44,7 @@
 	var sendingTinterCommand = "false";
 	var _rgbArr = [];
 	var dispenseErrorList = [];
+	var statusCount=0;
 	<s:iterator value="canList" status="i">
 	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
@@ -136,6 +137,7 @@
     	ws_tinter.send(json);
 	}
 	function purge(){
+		statusCount = 0;
 		var cmd = "PurgeAll";
 		
 		var shotList = null;
@@ -157,9 +159,9 @@
 					
 			if(return_message.commandRC == 33){
 			//keep updating modal with status
+			  statusCount++;
 			
-			
-				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+				$("#tinterProgressList").html("").append("<li>" + return_message.errorMessage + "</li>");
 			}
 			console.log(return_message);
 			setTimeout(function(){
