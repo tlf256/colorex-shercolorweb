@@ -22,6 +22,7 @@ import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
+import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.util.CorrectionInfoBuilder;
@@ -57,6 +58,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private TinterService tinterService;
 	private TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
+	private DrawdownLabelService drawdownLabelService;
 
 	public String display(){
 		String retVal = null;
@@ -176,7 +178,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
 			printLabel.CreateLabelPdf("label.pdf", reqObj);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
@@ -191,7 +193,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		FileInputStream fin = null;
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
 			printLabel.CreateLabelPdf("label.pdf", reqObj);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
@@ -328,6 +330,13 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
 	}
-	
+
+	public DrawdownLabelService getDrawdownLabelService() {
+		return drawdownLabelService;
+	}
+
+	public void setDrawdownLabelService(DrawdownLabelService drawdownLabelService) {
+		this.drawdownLabelService = drawdownLabelService;
+	}
 
 }

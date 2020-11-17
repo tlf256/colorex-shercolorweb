@@ -33,10 +33,11 @@ import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+import com.sherwin.shercolor.common.domain.CustWebDrawdownLabelProfile;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
-import com.sherwin.shercolor.common.service.ProductService;
+import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
@@ -59,12 +60,16 @@ import be.quodlibet.boxable.VerticalAlignment;
  * a change for a potential cause of label PDF open failure.
  * */
 
+@Service
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	static Logger logger = LogManager.getLogger(ShercolorLabelPrintImpl.class);
 
-	@Autowired
-	ProductService productService;
+	DrawdownLabelService drawdownLabelService;
 
+	public ShercolorLabelPrintImpl(DrawdownLabelService drawdownLabelService) {
+		this.drawdownLabelService = drawdownLabelService;
+	}
+	
 	//Creating exception string
 	String errorLocation = "";
 
@@ -157,8 +162,26 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 
 	}
-
-
+	
+	public void CreateDrawdownLabelPdf(String filename,RequestObject reqObj) {
+		this.filename = filename;
+		this.reqObj=reqObj;
+		try {
+			CreateDrawdownLabelPdf();
+		} catch (Exception e){
+			logger.error(e.getMessage() + ": ", e);
+		}
+		
+	}
+	
+	public void CreateDrawdownLabelPdf() {
+		try {
+			DrawDrawdownLabelPdf();		
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+		}
+	}
+	
 
 	private void createTableCell(Row<PDPage> row,int  rowHeight, float cellWidth, int fontSize, HorizontalAlignment cellAlign) {
 
@@ -687,6 +710,92 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//logger.error(re);
 		}
 	}
+	
+	private void DrawDrawdownLabelPdf() {
+		// Create a new blank page and add it to the document
+		PDPage page = new PDPage();
+
+		// Create the 4" x 2" document.
+		// step 1 - width and height - 4 (288) x 2 (144) inches.  One inch = 72 points.
+		page.setMediaBox(new PDRectangle(0, 0 , 288f, 144f));
+		PDPageContentStream content = null;
+		try {
+			content = new PDPageContentStream(document, page);
+		} catch (IOException e1) {
+			logger.error(e1.getMessage() + ": ", e1);
+		}
+
+
+		try{
+
+			//setup Table
+			BaseTable table = createTopTable(page);
+			
+			// Must retrieve the jobFieldList and the Customer ID's Label Profile in order to query the below fields and
+			// pair the information up with their corresponding job field column
+			List<JobField> jobFieldList = reqObj.getJobFieldList();
+			List<CustWebDrawdownLabelProfile> labelProfileList = drawdownLabelService.listDrawdownLabelProfilesForCustomer(reqObj.getCustomerID());
+			
+			String customer = jobFieldList.get(labelProfileList.get(0).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
+			String storeCCN = jobFieldList.get(labelProfileList.get(1).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
+			String controlNbr = jobFieldList.get(labelProfileList.get(2).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
+			String jobDescr = jobFieldList.get(labelProfileList.get(3).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
+			String projectInfo = jobFieldList.get(labelProfileList.get(4).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
+			String schedule = jobFieldList.get(labelProfileList.get(5).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
+			
+			createDrawdownLabelRow(table, "Customer:", customer);
+			createDrawdownLabelRow(table, "Store CNN:", storeCCN);
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
+			String strDate = sdf.format(date);
+			createDrawdownLabelRow(table, "Date Prepared:", strDate + "  " + "Control Number: " + controlNbr);
+			createDrawdownLabelRow(table, "", "");
+			createDrawdownLabelRow(table, "Job:", jobDescr);
+			createDrawdownLabelRow(table, "Project Info:", projectInfo);
+			createDrawdownLabelRow(table, "Schedule:", schedule);
+			createDrawdownLabelRow(table, "", "");
+			createDrawdownLabelRow(table, "Color:", reqObj.getColorComp() + " " + reqObj.getColorID() + " " + reqObj.getColorName());
+			createDrawdownLabelRow(table, "Product:", reqObj.getQuality() + " " + reqObj.getFinish() + " " + reqObj.getBase() + " " + reqObj.getProdNbr());
+			
+			try {
+				table.draw();
+			}
+			catch(java.lang.IllegalArgumentException ex) {
+				logger.error(ex.getMessage() + ": ", ex);
+			}
+			
+			content.close();
+			document.addPage( page );
+		}
+		catch(IOException ie) {
+			logger.error(ie.getMessage() + ": ", ie);
+			//logger.error(ie);
+		}
+		catch(RuntimeException re){
+			logger.error(re.getMessage() + ": ", re);
+			//logger.error(re);
+		}
+	}
+	
+	private void createDrawdownLabelRow(BaseTable table, String cell1Data, String cell2Data) {
+		
+		int fontSize = 9;
+		int rowHeight = 10;
+		int cell1Width = 25;
+		int cell2Width = 75;
+		// ROW
+		Row<PDPage> row = table.createRow(rowHeight);
+		
+		// CELL 1
+		Cell<PDPage> r1cell1= row.createCell(cell1Width, cell1Data, HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
+		cellSettings(r1cell1,fontSize,rowHeight);
+		r1cell1.setBottomPadding(1);
+		// CELL 2
+		Cell<PDPage> r1cell2 = row.createCell(cell2Width, cell2Data, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+		cellSettings(r1cell2,fontSize,rowHeight);
+		r1cell2.setLeftPadding(1);
+		r1cell2.setBottomPadding(1);
+	}
 
 	boolean hasUnicode(String string) {
 		boolean ret = false;
@@ -1008,4 +1117,5 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	public void setUnicode(PDFont unicode) {
 		this.unicode = unicode;
 	}
+	
 }

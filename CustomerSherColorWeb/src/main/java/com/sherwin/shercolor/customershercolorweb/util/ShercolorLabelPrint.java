@@ -9,4 +9,6 @@ public interface ShercolorLabelPrint {
 
 	public void CreateLabelPdf();
 	
+	public void CreateDrawdownLabelPdf();
+	
 }
