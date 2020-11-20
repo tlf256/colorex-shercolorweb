@@ -31,6 +31,55 @@
 		_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
 
+	//Document ON-Load
+	$(function() {
+		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
+
+		//Popover closing functionality
+		$('table.table-bordered').on('click', function(event) {
+			$('.popover').each(function() {
+				$(this).popover('toggle');
+				$('input[data-toggle="popover"]').each(function() {
+					$(this).removeAttr('data-placement');
+					$(this).removeAttr('data-content');
+					$(this).removeAttr('data-toggle');
+				});
+			});
+		});
+
+
+		// Handle/validate form input on click
+		$('div #dispense').on('click', function() {
+			//Starts chain of functions to do all predispense checks and subsequently dispense if all is well.
+			preDispenseRoutine();
+		});
+
+		//Handle warning notification on-click
+		$('#tinterWarningListOK').click(function(event) {
+			//Dispensing if shotList contains values
+			if (shotList.length > 0) {
+				stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
+				decrementColorantForDispense($('#reqGuid').val(), shotList, decrementCallback);
+			} else {
+				console.log("Shotlist empty, dispense not executed.");
+				$('#tinterInProgressTitle').text(i18n['dispense.qtyError']);
+				$('#tinterInProgressMessage').text(i18n['dispense.noValuesEntered']);
+				$('#progressok').removeClass('d-none');
+			}
+			$(".progress-wrapper").empty();
+			$("#tinterInProgressModal").modal('show');
+		});
+
+		$('#progressok').click(function() {
+			$('#progressok').addClass('d-none');
+		});
+
+		jQuery(document).on("keydown", fkey);
+		
+		function writeDispense(return_message){
+			dispenseComplete(return_message);
+	}
+	});
 </script>
 <style type="text/css">
 input {

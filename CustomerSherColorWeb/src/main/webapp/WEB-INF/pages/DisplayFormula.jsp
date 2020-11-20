@@ -632,7 +632,7 @@ function ParsePrintMessage() {
 						if (tinterModel != null
 								&& tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
 							dispenseProgressResp(return_message);
-						} else if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
+						} else if (return_message.commandRC == 33 ||(return_message.errorNumber == 0 && return_message.commandRC == 0)
 								|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 							// save a dispense (will bump the counter)
 							$("#dispenseStatus").text(

@@ -25,6 +25,7 @@
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -126,7 +127,7 @@
 		// Update current cycle & container steps to ACCEPTED
 		var curDate = new Date();
 		// ajax call to convert correctionList to dispenseItems
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
         var jsonIN = JSON.stringify(str);
         //console.log(jsonIN);
         $.ajax({	
@@ -184,7 +185,7 @@
 		// mark open steps for this container as discarded.
 		var curDate = new Date();
 		// ajax call to post correction status to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
         //console.log(jsonIN);
         $.ajax({	
@@ -226,8 +227,8 @@
 		//Build mistint step info and save to DB
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
+        //var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
         //console.log(jsonIN);
         $.ajax({	
@@ -278,8 +279,8 @@
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to save discarded step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
+        //var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
         //console.log(jsonIN);
         $.ajax({	
@@ -345,7 +346,7 @@
 		method="AUTO SKIP";
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : []};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -390,7 +391,7 @@
 		method="AUTO DISCARD";
 		var curDate = new Date();
 		// ajax call to save discard step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Discarded. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY DISCARDED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Discarded. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY DISCARDED", "stepMethod":method, "shotList" : []};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -434,7 +435,7 @@
 	function mergeCorrWithStartingForm(myCycle){
 		var curDate = new Date();
 		// ajax call to merge Correction Cycle formula with Starting Formula
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : myCycle};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : myCycle};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -502,7 +503,7 @@
 	function percentConfirmClick(){
 		method="PERCENT ADDITION";
 		$("#formulaAdditions > tbody").empty();
-		var mydata = {reqGuid:$("#mainForm_reqGuid").val(), percentOfFormula:parseInt($("#pct").val())};
+		var mydata = {reqGuid:$("#reqGuid").val(), percentOfFormula:parseInt($("#pct").val())};
 		var jsonIn = JSON.stringify(mydata);
 		console.log("in percentAddClick and jsonIn is");
 		console.log(jsonIn);
@@ -634,7 +635,7 @@
 		
 		// ajax call to convert correctionList to dispenseItems
 		if(!invalidFlag && !tmpInvalidFlag){
-			var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "correctionList" : correctionList};
+			var str = { "reqGuid" : $('#reqGuid').val(), "correctionList" : correctionList};
 	        var jsonIN = JSON.stringify(str);
 	        console.log(jsonIN);
 	        $.ajax({	
@@ -781,7 +782,7 @@
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#mainForm_reqGuid").val(),preDispenseCheckCallback);
+		getSessionTinterInfo($("#reqGuid").val(),preDispenseCheckCallback);
 	}
 	
 	function preDispenseCheckCallback(){
@@ -836,7 +837,7 @@
 
 	function decrementColorantLevels(){
 		console.log("Calling decrementColorantLevels");
-		decrementColorantForDispense($("#mainForm_reqGuid").val(), shotList, decrementCallback);
+		decrementColorantForDispense($("#reqGuid").val(), shotList, decrementCallback);
 	}
 
 	function decrementCallback(myPassFail){
@@ -855,6 +856,7 @@
 	}
 	</script>
 	<script type="text/javascript"> //dispense
+	/*
     function fkey(e){
     	if(sendingTinterCommand == "true"){
         e = e || window.event;
@@ -873,6 +875,8 @@
 		}
 		return rgb;
 	}
+	*/
+	/*
 	function buildProgressBars(return_message){
 		var count = 1;
 		var keys=[];
@@ -929,6 +933,8 @@
 			});
 		}
 	}
+	*/
+	/*
 	function FMXDispenseProgress(){
 		console.log('before dispense progress send');
 		
@@ -954,6 +960,28 @@
 		}
 		// Send to tinter
     	ws_tinter.send(json);
+	}
+	*/
+	/*
+	function alfaDispenseProgressResp(return_message){
+		$("#abort-message").show();
+		$('#progressok').addClass('d-none');  //hide ok button
+			if (return_message.errorMessage.indexOf("complete") == -1 && (return_message.errorNumber == 1 ||
+					 return_message.status == 1)) {
+
+				if(return_message.commandRC == 33){
+				//keep updating modal with status
+
+					$("#tinterProgressList").html("").append("<li>" + return_message.errorMessage + "</li>");
+				}
+			console.log(return_message);
+			setTimeout(function(){
+				FMXAlfaDispenseProgress(return_message);
+			}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+		}
+		else if (return_message.errorMessage.indexOf("complete") > 0 || return_message.errorNumber != 0){
+				alfaDispenseComplete(return_message);
+		}
 	}
 	function dispenseProgressResp(return_message){
 		
@@ -1037,6 +1065,8 @@
 		else $("#tinterErrorListSummary").text("");
 		$("#tinterErrorListModal").modal('show');
 	}
+	*/
+	/*
 	function FMXDispenseComplete(return_message){
 		
 		buildProgressBars(return_message);
@@ -1067,11 +1097,12 @@
 	    }
 	    sendingTinterCommand = "false";
 	}
+	*/
 	function writeDispense(return_message) {
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to convert correctionList to dispenseItems
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -1100,7 +1131,7 @@
     					sendingDispCommand = "false";
 						// send tinter event (no blocking here)
 						var curDate = new Date();
-						var myGuid = $( "#mainForm_reqGuid" ).val();
+						var myGuid = $( "#reqGuid" ).val();
 						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 						var tedArray = [teDetail];
 						sendTinterEvent(myGuid, curDate, return_message, tedArray);
@@ -1130,6 +1161,7 @@
             }
         });
 	}
+	/*
 	function abort(){
 		console.log('before abort');
 		
@@ -1142,7 +1174,10 @@
 
 		ws_tinter.send(json);
 	}
+	*/
+	/*
 	function RecdMessage() {
+		
 		console.log("Received Message");
 		//parse the spectro
 		console.log("isReady is " + ws_tinter.isReady + " BTW");
@@ -1177,7 +1212,6 @@
 				//console.log("Junk Message is " + ws_tinter.wsmsg);
 			}
 			if(isTintJSON){
-				var return_message=JSON.parse(ws_tinter.wsmsg);
 				switch (return_message.command) {
 					case 'Dispense':
 					case 'DispenseProgress':
@@ -1185,6 +1219,9 @@
 						var tinterModel = sessionTinterInfo.model; 
 						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
 							dispenseProgressResp(return_message);
+						}
+						else if (tinterModel != null && tinterModel.startsWith("ALFA")) { //alfa needs a progress check
+							alfaDispenseProgressResp(return_message);
 						}
 						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							// save a dispense (will bump the counter)
@@ -1199,7 +1236,7 @@
 							sendingDispCommand = "false";
 							// send tinter event (no blocking here)
 							var curDate = new Date();
-							var myGuid = $( "#mainForm_reqGuid" ).val();
+							var myGuid = $( "#reqGuid" ).val();
 							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 							var tedArray = [teDetail];
 							sendTinterEvent(myGuid, curDate, return_message, tedArray);
@@ -1214,6 +1251,7 @@
 			}
 		}
 	}
+	*/
 	</script>
 	
 	<script type="text/javascript"> // document functions
@@ -1358,6 +1396,8 @@
 			$('#pct').text('');
 			$('#percentPrompt').toggle();
 		});
+		
+		jQuery(document).on("keydown", fkey); // for abort
 	});
 	
 	//Used to rotate loader icon in modals
@@ -1443,7 +1483,7 @@
 				<!-- Correction Attempts -->
 				<div class="row mb-3">
 					<div class="col-lg-1 col-md-1 col-sm-0 col-xs-0">
- 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+ 						<s:hidden name="reqGuid" value="%{reqGuid}" id="reqGuid"/>
  						<s:hidden name="jsDateString" value=""/>
 						<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
  						<s:hidden name="currCycle" value="%{cycle}"/>
@@ -1965,7 +2005,7 @@
 					}
 				}
 				// go get tinter info to load colorant dropdown
-				getSessionTinterInfo($("#mainForm_reqGuid").val(),sessionTinterInfoCallback);
+				getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
 			} else {
 				$("#currentPrompt").text("");
 				$("#addStep").hide();
