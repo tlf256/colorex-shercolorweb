@@ -71,6 +71,7 @@ public class RequestObject {
 	private String closestSwColorName;
 	private String closestSwColorId;
 	private boolean productChoosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
+	private String roomByRoom;
 
 	public String getColorComp() {
 		return colorComp;
@@ -402,6 +403,7 @@ public class RequestObject {
 		this.closestSwColorName = "";
 		this.closestSwColorId = "";
 		this.productChoosenFromDifferentBase = false;
+		this.roomByRoom = null;
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -492,6 +494,12 @@ public class RequestObject {
 	}
 	public void setProductChoosenFromDifferentBase(boolean productChoosenFromDifferentBase) {
 		this.productChoosenFromDifferentBase = productChoosenFromDifferentBase;
+	}
+	public String getRoomByRoom() {
+		return roomByRoom;		
+	}
+	public void setRoomByRoom(String roomByRoom) {
+		this.roomByRoom = roomByRoom;		
 	}
 
 }

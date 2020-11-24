@@ -104,64 +104,68 @@ badge {
 <script type="text/javascript">
 //printer scripts
 function prePrintSave() {
-	// save before print
-	var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
-	if (isNaN(myCtlNbr))
-		myCtlNbr = 0;
-	if (myCtlNbr == 0) {
-		console.log("ctlNbr is zero");
-	}
-	var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
-			.val()));
-	if (isNaN(myDirty))
-		myDirty = 0;
-	if (myDirty > 0) {
-		console.log("dirty is true");
-	}
-	if (myCtlNbr == 0 || myDirty > 0) {
-		//save needed before print
-		// 			$("#tinterInProgressTitle").text("Saving Changes");
-		// 			$("#tinterInProgressMessage").text("Saving Changes before print...");
-		// 			$("#tinterInProgressModal").modal('show');
-
-		var curDate = new Date();
-		$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
-		var myGuid = $("#reqGuid").val();
-		$
-				.ajax({
-					url : "saveOnPrintAction.action",
-					type : "POST",
-					data : {
-						reqGuid : myGuid,
-						jsDateString : curDate.toString()
-					},
-					datatype : "json",
-					async : true,
-					success : function(data) {
-						if (data.sessionStatus === "expired") {
-							window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-						} else {
-							$("#controlNbr").text(data.controlNbr);
-							$("#controlNbrDisplay").show();
-							//    	 				$("#tinterInProgressModal").modal('hide');
-							updateButtonDisplay();
-							showPrintModal();
-							var saveActionDirty = parseInt(data.recDirty);
-							if (!isNaN(saveActionDirty)){
-								$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+	// check whether room dropdown needs to be set first
+	if (verifyRoomSelected() == true){
+		// save before print
+		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
+		if (isNaN(myCtlNbr))
+			myCtlNbr = 0;
+		if (myCtlNbr == 0) {
+			console.log("ctlNbr is zero");
+		}
+		var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
+				.val()));
+		if (isNaN(myDirty))
+			myDirty = 0;
+		if (myDirty > 0) {
+			console.log("dirty is true");
+		}
+		if (myCtlNbr == 0 || myDirty > 0) {
+			//save needed before print
+			// 			$("#tinterInProgressTitle").text("Saving Changes");
+			// 			$("#tinterInProgressMessage").text("Saving Changes before print...");
+			// 			$("#tinterInProgressModal").modal('show');
+	
+			var curDate = new Date();
+			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
+			var myGuid = $("#formulaUserPrintAction_reqGuid").val();
+			$
+					.ajax({
+						url : "saveOnPrintAction.action",
+						type : "POST",
+						data : {
+							reqGuid : myGuid,
+							jsDateString : curDate.toString()
+						},
+						datatype : "json",
+						async : true,
+						success : function(data) {
+							if (data.sessionStatus === "expired") {
+								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+							} else {
+								$("#controlNbr").text(data.controlNbr);
+								$("#controlNbrDisplay").show();
+								//    	 				$("#tinterInProgressModal").modal('hide');
+								updateButtonDisplay();
+								showPrintModal();
+								var saveActionDirty = parseInt(data.recDirty);
+								if (!isNaN(saveActionDirty)){
+									$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+								}
 							}
+						},
+						error : function(err) {
+							alert("failure: " + err);
 						}
-					},
-					error : function(err) {
-						alert("failure: " + err);
-					}
-				});
-
-	} else {
-
-		showPrintModal();
+					});
+	
+		} else {
+	
+			showPrintModal();
+		}
 	}
 }
+
 
 function showPrintModal(){
 	if(printerConfig && printerConfig.model){
@@ -825,14 +829,17 @@ function ParsePrintMessage() {
 </script>
 <script type="text/javascript">
 //callback stuff
-
 	function setDispenseQuantity() {
-		$("#dispenseQuantityInputError").text("");
-		$("#dispenseQuantityInput").val("1");
-		$("#dispenseQuantityInput").attr("value", "1");
-		$("#setDispenseQuantityModal").modal('show');
-		$("#dispenseQuantityInput").select();
+		// check that user doesn't need to set rooms dropdown
+		if (verifyRoomSelected() == true){
+			$("#dispenseQuantityInputError").text("");
+			$("#dispenseQuantityInput").val("1");
+			$("#dispenseQuantityInput").attr("value", "1");
+			$("#setDispenseQuantityModal").modal('show');
+			$("#dispenseQuantityInput").select();
+		}
 	}
+	
 
 	function preDispenseCheck() {
 		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
@@ -936,7 +943,137 @@ function ParsePrintMessage() {
 			waitForShowAndHide("#tinterInProgressModal");
 		}
 	}
-
+	function validateRoomChoice(){
+		$("#roomsDropdownErrorText").addClass("d-none");
+		// if user chose Other in room list, show textfield to enter custom name
+		var selectedRoom = $("select[id='roomsList'] option:selected").text();
+		if (selectedRoom == "Other"){
+			$("#otherRoom").removeClass('d-none');
+			$("#otherRoom").focus();
+		// otherwise save the room choice unless it is the default blank option
+		} else if (selectedRoom != ""){
+			$("#otherRoom").addClass('d-none');
+			// call ajax method to save room choice to session
+			saveRoomSelection(selectedRoom);
+		}
+	}
+	
+	
+	function validateOtherRoomBlur(){
+		var clickedElement;
+		$("#otherRoomErrorText").addClass("d-none");
+		// need the timeout for the event processing so we can grab the element that was clicked on
+		setTimeout(function(){
+	        // let the user click away from the rooms textfield to update the dropdown, 
+	        // otherwise focus back on the textfield if they haven't entered text
+	        if (document.activeElement != null){
+	        	clickedElement = document.activeElement.id;
+	        }
+	     	// check textfield input, make sure it is not left blank
+	        if (clickedElement == null || clickedElement != "roomsList"){
+				var enteredText = $("#otherRoom").val();
+				if (enteredText == null || enteredText.trim() == ""){
+					$("#otherRoomErrorText").removeClass("d-none");
+					$("#otherRoom").focus();
+				} else {
+					// call ajax method to save room choice to session
+					saveRoomSelection(enteredText);
+				}
+			}
+	    }, 0);
+	}
+	
+	
+	function verifyRoomSelected(){
+		if ("${accountUsesRoomByRoom}" == "true"){
+			// require room choice if user hasn't already 
+			var roomText = $("select[id='roomsList'] option:selected").text();
+			if (roomText == null || roomText == ""){
+				$("#roomsList").focus();
+				$("#roomsDropdownErrorText").removeClass("d-none");
+				return false;
+			} else {
+				return true;
+			}
+		// skip this validation if user doesn't use room by room option
+		} else {
+			return true;
+		}
+	}
+	
+	
+	function saveRoomSelection(roomChoice){
+		var myGuid = "${reqGuid}";
+		
+		$.ajax({
+			url : "saveRoomByRoom.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				roomByRoom : roomChoice
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved room");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	$(function() {
+		// if account is profiled as room by room and a room choice is in session, show it in dropdown
+		var roomByRoomFlag = "${accountUsesRoomByRoom}";
+		var userRoomChoice = "${roomByRoom}";
+		var optionSelected = $("select[id='roomsList'] option:selected").text();
+		
+		// account uses room by room, and user already has a room choice stored in session
+		if (roomByRoomFlag == "true" && userRoomChoice != null && userRoomChoice != ""){
+			// room choice was a customized one; otherwise they match because the dropdown has already been updated
+			if (optionSelected != userRoomChoice){
+				$("select[id='roomsList']").val('Other');
+				$("#otherRoom").removeClass('d-none');
+				$("#otherRoom").val(userRoomChoice);
+			}
+		}
+	});
+	
+	
+	/* check that the user has set the room by room dropdown 
+	and doesn't have any unsaved changes before leaving
+	*/
+	function validationWithModal(){
+		// check if rooms dropdown is set first, if applicable
+		var retVal = verifyRoomSelected();
+		// get the return value of the function 
+		// that displays the Prompt To Save modal
+		if (retVal == true){
+			retVal = promptToSave();
+		}
+		return retVal;
+	}
+	
+	
+	/* check that the user has set the room by room dropdown 
+	and allow them to leave the page with unsaved changes
+	*/
+	function validationWithoutModal(){
+		// check if rooms dropdown is set first, if applicable
+		var retVal = verifyRoomSelected();
+		// set the flag which lets user navigate away from 
+		// the page without being prompted to save changes
+		if (retVal == true){
+			setFormSubmitting();
+		}
+		return retVal;
+	}
 function setFormSubmitting() { formSubmitting = true; };
     
     window.onload = function() {
@@ -1075,6 +1212,27 @@ function setFormSubmitting() { formSubmitting = true; };
 		</div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
+		<s:if test="%{accountUsesRoomByRoom==true}">
+		<div class="row mt-3">
+			<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+				<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
+			</div>
+			<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+				<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+					listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+				<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+					<s:text name="displayFormula.pleaseSelectARoom"/>
+				</div>
+				<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateOtherRoomBlur()"/>
+				<s:hidden name="roomChoice" value="" />
+				<div id="otherRoomErrorText" style="color:red" class="d-none">
+					<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+				</div>
+			</div>
+			<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+		</div>
+	</s:if>
 	<br>
 	<div class="row mt-3">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1170,28 +1328,67 @@ function setFormSubmitting() { formSubmitting = true; };
 				</div>
 			</s:else>
 			<br>
-			<div class="d-flex flex-row justify-content-around mt-3">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
-				<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
-					<button type="button" class="btn btn-primary" id="formulaDispense"
-						onclick="setFormSubmitting; setDispenseQuantity()" autofocus="autofocus"><s:text name="global.dispense"/></button>
-					<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" onclick="setFormSubmitting();"
-						action="formulaUserSaveAction" autofocus="autofocus" />
-					<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
-					<button type="button" class="btn btn-secondary" id="formulaPrint"
-						onclick="prePrintSave();return false;"><s:text name="global.print"/></button>
-					<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" onclick="setFormSubmitting();"
-						action="formulaUserEditAction" />
-					<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}" onclick="setFormSubmitting();"
-						action="formulaUserCorrectAction" />
-					<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
-						action="displayJobFieldUpdateAction" />
-					<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
-                        action="userCancelAction" onclick="return promptToSave();" />
+			<s:if test = "%{accountIsDrawdownCenter==true}">
+			<!-- validation methods: validationWithModal() checks that the dropdown has been set, if applicable, and shows the 
+			Prompt To Save modal if user has unsaved changes. validationWithoutModal() checks the dropdown and lets the user nav
+			away from the page without modal prompt. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box. 
+			Use either validationWithoutModal or verifyRoomSelected since the Prompt to Save modal is only set up for Next Job action. -->
+				<div class="d-flex flex-row justify-content-around mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<!-- add actions to go to sample dispense page and to save drawdown center job -->
+						<s:submit cssClass="btn btn-primary" autofocus="autofocus" value="%{getText('global.dispenseSample')}"
+							onclick="return validationWithoutModal();" action="" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
+							onclick="return validationWithoutModal();" action="" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
+							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
+							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+                        	onclick="return validationWithModal();" action="userCancelAction" />
+                	</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
-				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
-			</div>
-		</div>
+				<div class="d-flex flex-row justify-content-around mt-2">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<!-- update these onclick attributes with method calls for the label printing 
+						and move the verifyRoomSelected() calls to inside those methods and handle conditionally,
+						i.e., don't print the label if the verifyRoomSelected returns false -->
+						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
+							onclick="verifyRoomSelected();"><s:text name="global.drawdownLabel"/></button>
+						<button type="button" class="btn btn-secondary" id="sampleCanLabelPrint"
+							onclick="verifyRoomSelected();"><s:text name="displayFormula.sampleCanLabel"/></button>
+						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
+							onclick="verifyRoomSelected();"><s:text name="global.storeLabel"/></button>
+                	</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+				</div>
+			</s:if>
+			<s:else>
+				<div class="d-flex flex-row justify-content-around mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<button type="button" class="btn btn-primary" id="formulaDispense"
+							onclick="setDispenseQuantity()" autofocus="autofocus"><s:text name="global.dispense"/></button>
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
+							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<button type="button" class="btn btn-secondary" id="formulaPrint"
+							onclick="prePrintSave();return false;"><s:text name="global.print"/></button>
+						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
+							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
+							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
+							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+	                        onclick="return validationWithModal();" action="userCancelAction" />
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+				</div>
+			</s:else>
+			
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 
@@ -1593,196 +1790,150 @@ function setFormSubmitting() { formSubmitting = true; };
 		});
 
 		function updateButtonDisplay() {
-			var btnCount = 2; //Next Job and Print always shown so start at 2
-			if ($("#formulaUserPrintAction_midCorrection").val() == "true") {
-				$("#formulaUserPrintAction_formulaUserCorrectAction").show();
-				$("#formulaDispense").hide();
-				$("#formulaUserPrintAction_formulaUserSaveAction").hide();
-				$("#formulaPrint").hide(); //print button
-				$("#formulaUserPrintAction_formulaUserEditAction").hide();
-				$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide(); // copy button
-				btnCount += 1;
-			} else {
-				if ($("#formulaUserPrintAction_sessionHasTinter").val() == "true"
-						&& $("#formulaUserPrintAction_tinterClrntSysId").val() == $(
-								"#formulaUserPrintAction_formulaClrntSysId")
-								.val()) {
-					console.log("button on/off");
-					console.log("hasTinter is true");
-					// Has a tinter at this station
-					// Show Dispense button and make it Primary
-					$("#formulaDispense").show();
-					btnCount += 1;
-					makeDispensePrimary();
-					// has it been dispensed?
-					var myint = parseInt($.trim($("#qtyDispensed").text()));
-					if (isNaN(myint))
-						myint = 0;
-					if (myint > 0) {
-						console.log("qDisped is not zero");
-						console.log(">>" + $.trim($("#qtyDispensed").text())
-								+ "<<");
-						// has been dispensed hide Save and Edit, show Copy and Correct
-						$("#formulaUserPrintAction_formulaUserSaveAction")
-								.hide();
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.hide();
-						$("#formulaUserPrintAction_displayJobFieldUpdateAction")
-								.show();
-						$("#formulaUserPrintAction_formulaUserCorrectAction")
-								.show();
-						console.log("Value of Dirty is");
-						console
-								.log(">>"
-								+ $
-												.trim($(
-														"#formulaUserPrintAction_recDirty")
-														.val()) + "<<"); 
-						btnCount += 2;
-					} else {
-						console.log("qDisped is zero");
-						console.log(">>" + $.trim($("#qtyDispensed").text())
-								+ "<<");
-						// Has not been dispensed, never show Correct always show Edit
-						$("#formulaUserPrintAction_formulaUserCorrectAction")
-								.hide();
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.show();
-						btnCount += 1;
-						var myint2 = parseInt($.trim($("#controlNbr").text()));
-						if (isNaN(myint2))
-							myint2 = 0;
-						if (myint2 == 0) {
-							console.log("ctlNbr is zero");
-							// has not been saved, hide Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.hide();
-							$("#formulaUserPrintAction_formulaUserSaveAction")
-									.show();
-							btnCount += 1;
-						} else {
-							console.log("ctlNbr is not zero");
-							// has been saved show Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.show();
-							btnCount += 1;
-							//We can also hide the Save button if the record is not dirty
-							var myint3 = parseInt($.trim($(
-									"#formulaUserPrintAction_recDirty").val()));
-							if (isNaN(myint3))
-								myint3 = 0;
-							if (myint3 > 0) {
-								console.log("dirty is true");
-								console
-										.log(">>"
-												+ $
-														.trim($(
-																"#formulaUserPrintAction_recDirty")
-																.val()) + "<<");
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.show();
-								btnCount += 1;
-							} else {
-								console.log("dirty is false");
-								console
-										.log(">>"
-												+ $
-														.trim($(
-																"#formulaUserPrintAction_recDirty")
-																.val()) + "<<");
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.hide();
-							} // end else not dirty
-						} // end else saved 
-					} //end else not dispensed
-				} else {
-					console.log("button on/off");
-					console.log("hasTinter is false");
-					// No Tinter, hide dispense and correct button
+			// update button display only if account is customer, not drawdown center
+			if ($("#formulaUserPrintAction_accountIsDrawdownCenter").val() == "false"){
+				var btnCount = 2; //Next Job and Print always shown so start at 2
+				if ($("#formulaUserPrintAction_midCorrection").val() == "true") {
+					$("#formulaUserPrintAction_formulaUserCorrectAction").show();
 					$("#formulaDispense").hide();
-					$("#formulaUserPrintAction_formulaUserCorrectAction")
-							.hide();
-					// make Save primary
-					makeSavePrimary()
-
-					// if dispensed (could have been done at another station)
-					var myint = parseInt($.trim($("#qtyDispensed").text()));
-					if (isNaN(myint))
-						myint = 0;
-					if (myint > 0) {
-						// has been dispensed hide Save and Edit, show Copy
-						$("#formulaUserPrintAction_formulaUserSaveAction")
-								.hide();
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.hide();
-						$("#formulaUserPrintAction_displayJobFieldUpdateAction")
-								.show();
+					$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+					$("#formulaPrint").hide(); //print button
+					$("#formulaUserPrintAction_formulaUserEditAction").hide();
+					$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide(); // copy button
+					btnCount += 1;
+				} else {
+					if ($("#formulaUserPrintAction_sessionHasTinter").val() == "true"
+							&& $("#formulaUserPrintAction_tinterClrntSysId").val() == $(
+									"#formulaUserPrintAction_formulaClrntSysId").val()) {
+						console.log("button on/off");
+						console.log("hasTinter is true");
+						// Has a tinter at this station
+						// Show Dispense button and make it Primary
+						$("#formulaDispense").show();
 						btnCount += 1;
-						// make Print primary
-						makePrintPrimary()
-					} else {
-						// Has not been dispensed, always show Edit
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.show();
-						btnCount += 1;
-						var myint2 = parseInt($.trim($("#controlNbr").text()));
-						if (isNaN(myint2))
-							myint2 = 0;
-						if (myint2 == 0) {
-							// has not been saved, hide Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.hide();
-							$("#formulaUserPrintAction_formulaUserSaveAction")
-									.show();
-							btnCount += 1;
+						makeDispensePrimary();
+						// has it been dispensed?
+						var myint = parseInt($.trim($("#qtyDispensed").text()));
+						if (isNaN(myint))
+							myint = 0;
+						if (myint > 0) {
+							console.log("qDisped is not zero");
+							console.log(">>" + $.trim($("#qtyDispensed").text()) + "<<");
+							// has been dispensed hide Save and Edit, show Copy and Correct
+							$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+							$("#formulaUserPrintAction_formulaUserEditAction").hide();
+							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+							$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+							console.log("Value of Dirty is");
+							console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<"); 
+							btnCount += 2;
 						} else {
-							// has been saved show Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.show();
+							console.log("qDisped is zero");
+							console.log(">>" + $.trim($("#qtyDispensed").text()) + "<<");
+							// Has not been dispensed, never show Correct always show Edit
+							$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
+							$("#formulaUserPrintAction_formulaUserEditAction").show();
 							btnCount += 1;
-							// has been saved, we can hide the Save button if the record is not dirty
-							var myint3 = parseInt($.trim($(
-									"#formulaUserPrintAction_recDirty").val()));
-							if (isNaN(myint3))
-								myint3 = 0;
-							if (myint3 > 0) {
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.show();
+							var myint2 = parseInt($.trim($("#controlNbr").text()));
+							if (isNaN(myint2))
+								myint2 = 0;
+							if (myint2 == 0) {
+								console.log("ctlNbr is zero");
+								// has not been saved, hide Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide();
+								$("#formulaUserPrintAction_formulaUserSaveAction").show();
 								btnCount += 1;
-								// make Save primary
-								makeSavePrimary()
 							} else {
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.hide();
-								// make Print primary
-								makePrintPrimary()
-							} // end else (not dirty)
-						} // end else (saved) 
-					} // end else (not dispensed)
-				} // end else (no tinter)
-			}
-			console.log("button count is " + btnCount);
-			// adjust margin-left on all buttons based on number of buttons shown
-			/* var pct = '5%';
-			if(btnCount===6) pct = '1%';
-			else if(btnCount===5) pct = '2%';
-			else if(btnCount===4) pct='3%';
-			else if(btnCount===3) pct = '10%';
-			else if(btnCount===2) pct = '10%';
-			if(!$("#formulaDispense").hasClass("pull-left")) $("#formulaDispense").css('margin-left',pct);
-			if(!$("#formulaUserPrintAction_formulaUserSaveAction").hasClass("pull-left")) $("#formulaUserPrintAction_formulaUserSaveAction").css('margin-left',pct);
-			if(!$("#formulaPrint").hasClass("pull-left")) $("#formulaPrint").css('margin-left',pct);
-			$("#formulaUserPrintAction_formulaUserEditAction").css('margin-left',pct);
-			$("#formulaUserPrintAction_formulaUserCorrectAction").css('margin-left',pct);
-			$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
+								console.log("ctlNbr is not zero");
+								// has been saved show Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+								btnCount += 1;
+								//We can also hide the Save button if the record is not dirty
+								var myint3 = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+								if (isNaN(myint3))
+									myint3 = 0;
+								if (myint3 > 0) {
+									console.log("dirty is true");
+									console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<");
+									$("#formulaUserPrintAction_formulaUserSaveAction").show();
+									btnCount += 1;
+								} else {
+									console.log("dirty is false");
+									console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<");
+									$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+								} // end else not dirty
+							} // end else saved 
+						} //end else not dispensed
+					} else {
+						console.log("button on/off");
+						console.log("hasTinter is false");
+						// No Tinter, hide dispense and correct button
+						$("#formulaDispense").hide();
+						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
+						// make Save primary
+						makeSavePrimary()
+	
+						// if dispensed (could have been done at another station)
+						var myint = parseInt($.trim($("#qtyDispensed").text()));
+						if (isNaN(myint))
+							myint = 0;
+						if (myint > 0) {
+							// has been dispensed hide Save and Edit, show Copy
+							$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+							$("#formulaUserPrintAction_formulaUserEditAction").hide();
+							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+							btnCount += 1;
+							// make Print primary
+							makePrintPrimary()
+						} else {
+							// Has not been dispensed, always show Edit
+							$("#formulaUserPrintAction_formulaUserEditAction").show();
+							btnCount += 1;
+							var myint2 = parseInt($.trim($("#controlNbr").text()));
+							if (isNaN(myint2))
+								myint2 = 0;
+							if (myint2 == 0) {
+								// has not been saved, hide Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide();
+								$("#formulaUserPrintAction_formulaUserSaveAction").show();
+								btnCount += 1;
+							} else {
+								// has been saved show Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+								btnCount += 1;
+								// has been saved, we can hide the Save button if the record is not dirty
+								var myint3 = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+								if (isNaN(myint3))
+									myint3 = 0;
+								if (myint3 > 0) {
+									$("#formulaUserPrintAction_formulaUserSaveAction").show();
+									btnCount += 1;
+									// make Save primary
+									makeSavePrimary()
+								} else {
+									$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+									// make Print primary
+									makePrintPrimary()
+								} // end else (not dirty)
+							} // end else (saved) 
+						} // end else (not dispensed)
+					} // end else (no tinter)
+				}
+				console.log("button count is " + btnCount);
+				// adjust margin-left on all buttons based on number of buttons shown
+				/* var pct = '5%';
+				if(btnCount===6) pct = '1%';
+				else if(btnCount===5) pct = '2%';
+				else if(btnCount===4) pct='3%';
+				else if(btnCount===3) pct = '10%';
+				else if(btnCount===2) pct = '10%';
+				if(!$("#formulaDispense").hasClass("pull-left")) $("#formulaDispense").css('margin-left',pct);
+				if(!$("#formulaUserPrintAction_formulaUserSaveAction").hasClass("pull-left")) $("#formulaUserPrintAction_formulaUserSaveAction").css('margin-left',pct);
+				if(!$("#formulaPrint").hasClass("pull-left")) $("#formulaPrint").css('margin-left',pct);
+				$("#formulaUserPrintAction_formulaUserEditAction").css('margin-left',pct);
+				$("#formulaUserPrintAction_formulaUserCorrectAction").css('margin-left',pct);
+				$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
+			} // end if (!accountIsDrawdownCenter)
 		}
 
 		function makeDispensePrimary() {
