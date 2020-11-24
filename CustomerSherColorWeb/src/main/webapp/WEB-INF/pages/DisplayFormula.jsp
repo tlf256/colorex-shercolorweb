@@ -28,6 +28,7 @@
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
@@ -125,7 +126,7 @@ function prePrintSave() {
 
 		var curDate = new Date();
 		$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
-		var myGuid = $("#formulaUserPrintAction_reqGuid").val();
+		var myGuid = $("#reqGuid").val();
 		$
 				.ajax({
 					url : "saveOnPrintAction.action",
@@ -183,7 +184,7 @@ function showPrintModal(){
 
 function printOnDispenseGetJson() {
 	if (printerConfig && printerConfig.model) {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
+		var myguid = $("#reqGuid").val();
 
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
@@ -196,7 +197,7 @@ function printOnDispenseGetJson() {
 }
 function printButtonClickGetJson() {
 	if (printerConfig && printerConfig.model) {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
+		var myguid = $("#reqGuid").val();
 
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
@@ -213,7 +214,7 @@ function printButtonClickGetJson() {
 }
 
 function printButtonClick() {
-	var myValue = $("#formulaUserPrintAction_reqGuid").val();
+	var myValue = $("#reqGuid").val();
 	console.log("calling print window open for print action with guid "
 			+ myValue);
 	window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
@@ -290,7 +291,7 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 	//global variables moved up above
 	//tinter stuff
-
+/*
 	    function fkey(e){
 	    	if(sendingTinterCommand == "true"){
 	        e = e || window.event;
@@ -397,6 +398,8 @@ function ParsePrintMessage() {
 		// Send to tinter
 		ws_tinter.send(json);
 	}
+	*/
+	/*
 	function dispenseProgressResp(return_message) {
 
 		//$("#progress-message").text(return_message.errorMessage);
@@ -447,6 +450,7 @@ function ParsePrintMessage() {
 			    $("#tinterErrorList").append( '</li>' + item.message + '</li>');
 			});
 			 */
+			 /*
 		}
 		if (my_return_message.errorNumber == 4226) {
 			my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>'
@@ -521,9 +525,9 @@ function ParsePrintMessage() {
 		}
 		sendingTinterCommand = "false";
 	}
-		
+*/		
 	function writeDispense(myReturnMessage) {
-		var myValue = $("#formulaUserPrintAction_reqGuid").val();
+		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
 		$
 				.getJSON(
@@ -542,7 +546,7 @@ function ParsePrintMessage() {
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
 								// send tinter event (no blocking here)
 								var myGuid = $(
-										"#formulaUserPrintAction_reqGuid")
+										"#reqGuid")
 										.val();
 								var teDetail = new TintEventDetail(
 										"ORDER NUMBER",
@@ -564,6 +568,7 @@ function ParsePrintMessage() {
 							}
 						});
 	}
+	/*
 	function abort() {
 		console.log('before abort');
 
@@ -575,6 +580,7 @@ function ParsePrintMessage() {
 
 		ws_tinter.send(json);
 	}
+	
 	function RecdMessage() {
 		var printMessageParsed = false;
 		console.log("Received Message");
@@ -643,7 +649,7 @@ function ParsePrintMessage() {
 							startSessionTimeoutTimers();
 							// send tinter event
 							var curDate = new Date();
-							var myGuid = $("#formulaUserPrintAction_reqGuid")
+							var myGuid = $("#reqGuid")
 									.val();
 							var teDetail = new TintEventDetail("ORDER NUMBER",
 									$("#controlNbr").text(), 0);
@@ -671,7 +677,7 @@ function ParsePrintMessage() {
 			}
 		}
 	}
-
+*/
 	$(function() {
 
 		$("#tinterWarningListOK").on("click", function(event) {
@@ -836,7 +842,7 @@ function ParsePrintMessage() {
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#formulaUserPrintAction_reqGuid").val(),
+		getSessionTinterInfo($("#reqGuid").val(),
 				preDispenseCheckCallback);
 
 	}
@@ -916,7 +922,7 @@ function ParsePrintMessage() {
 	function decrementColorantLevels() {
 		console.log("Calling decrementColorantLevels");
 		decrementColorantForDispense(
-				$("#formulaUserPrintAction_reqGuid").val(), shotList,
+				$("#reqGuid").val(), shotList,
 				decrementCallback);
 	}
 
@@ -1088,7 +1094,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			theme="bootstrap">
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 					<s:hidden name="jsDateString" value="" />
 					<s:hidden name="siteHasTinter" value="%{siteHasTinter}" />
 					<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
@@ -1487,7 +1493,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			<div class="row">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-8">
-					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 
 					<Strong>${sessionScope[thisGuid].displayFormula.deltaEWarning}</Strong>
 				</div>

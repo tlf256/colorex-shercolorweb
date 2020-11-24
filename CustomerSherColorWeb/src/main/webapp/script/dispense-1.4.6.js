@@ -183,9 +183,9 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
 	$("#abort-message").hide();
 	processingDispense = false; // allow user to start another dispense after tinter error
 	startSessionTimeoutTimers();
-	 
+
 	if (my_return_message.statusMessages != null && my_return_message.statusMessages[0] != null) {
-									
+
 		if (my_return_message.statusMessages.length > 0) {
 			buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
 		}
@@ -195,8 +195,8 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
         });
         */
 	}
-	if(my_return_message.errorNumber == 4226){
-	    	my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry" />';
+	if (my_return_message.errorNumber == 4226) {
+		my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry" />';
 	}
 	$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
 
@@ -208,9 +208,9 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
 }
 function showTinterErrorModal(myTitle, mySummary, my_return_message) {
 	$("#tinterErrorList").empty();
-	if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-		my_return_message.errorList.forEach(function(item){
-				$("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
+	if (my_return_message.errorList =  null && my_return_message.errorList[0] != null) {
+		my_return_message.errorList.forEach(function(item) {
+			$("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
 		});
 	}
 	if (my_return_message.statusMessages != null && my_return_message.statusMessages[0] != null) {
@@ -218,8 +218,8 @@ function showTinterErrorModal(myTitle, mySummary, my_return_message) {
 			$("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
 		});
 	}
-		$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
-	
+	$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
+
 	if (myTitle != null) $("#tinterErrorListTitle").text(myTitle);
 	else $("#tinterErrorListTitle").text(i18n['global.tinterError']);
 	if (mySummary != null) $("#tinterErrorListSummary").text(mySummary);
@@ -227,17 +227,17 @@ function showTinterErrorModal(myTitle, mySummary, my_return_message) {
 	$("#tinterErrorListModal").modal('show');
 }
 function FMXDispenseComplete(return_message) {
-  
+
 	buildProgressBars(return_message);
 	$("#abort-message").hide();
-   
+
 	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
-													   
+
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
-					  
-	
+
+
 		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
 		$('#tinterInProgressMessage').text('');
 		$("#tinterProgressList").empty();
@@ -254,12 +254,12 @@ function FMXDispenseComplete(return_message) {
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
-		if($('#progressok').length > 0){
-				$('#progressok').removeClass('d-none');
+		if ($('#progressok').length > 0 ) {
+			$('#progressok').removeClass('d-none');
 		}
-		else{
-				writeDispense(return_message); // will also send tinter event
-				waitForShowAndHide("#tinterInProgressModal");
+		else {
+			writeDispense(return_message); // will also send tinter event
+			waitForShowAndHide("#tinterInProgressModal");
 		}
 	} else {
 		if (return_message.errorNumber == 4226) {
@@ -279,19 +279,19 @@ function alfaDispenseComplete(return_message) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
-		
+
 		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
 		$('#tinterInProgressMessage').text('');
 		$('#abort-message').text('');
 		$('#tinterProgressList').html('');
-		if($('#progressok').length > 0){
-				$('#progressok').removeClass('d-none');
+		if ($('#progressok').length > 0)  {
+			$('#progressok').removeClass('d-none');
 		}
-		else{
-				writeDispense(return_message); // will also send tinter event
-				waitForShowAndHide("#tinterInProgressModal");
+		else {
+			writeDispense(return_message); // will also send tinter event
+			waitForShowAndHide("#tinterInProgressModal");
 		}
-	
+
 	} else {
 		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
 		waitForShowAndHide("#tinterInProgressModal");
@@ -309,19 +309,19 @@ function dispenseComplete(return_message) {
 	var tedArray = [teDetail];
 	let curDate = new Date();
 	sendTinterEvent($('#reqGuid').val(), curDate, return_message, tedArray);
-	
+
 	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
 		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
 		$('#tinterInProgressMessage').text('');
-			if($('#progressok').length > 0){ //dispense.jsp
-				$('#progressok').removeClass('d-none');
+		if  ($('#progressok').length > 0) { //dispense.jsp
+			$('#progressok').removeClass('d-none');
 		}
-		else{
-				writeDispense(return_message); // will also send tinter event
-				waitForShowAndHide("#tinterInProgressModal");
+		else {
+			writeDispense(return_message); // will also send tinter event
+			waitForShowAndHide("#tinterInProgressModal");
 		}
 	} else {
 		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
@@ -416,6 +416,7 @@ function RecdMessage() {
 		}
 }
 */
+/*
 function RecdMessage() {
 	console.log("Received Message");
 
@@ -510,7 +511,118 @@ function RecdMessage() {
 	}
 	
 }
+end alfa 1 */
 
+function RecdMessage() {
+	var printMessageParsed = false;
+	console.log("Received Message");
+	//parse the spectro
+	if (ws_printer) {
+		printMessageParsed = ParsePrintMessage();
+	}
+	if (!printMessageParsed && typeof ws_tinter !== 'undefined'
+		&& ws_tinter) {
+		console.log("Received Message");
+		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
+
+			if (sendingTinterCommand == "true") {
+				// received an error from WSWrapper so we won't get any JSON result
+				// Since we are sending a dispense command, show as dispense error
+
+				$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter.wserrormsg);
+				//Show a modal with error message to make sure the user is forced to read it.
+				$("#tinterSocketError").text(ws_tinter.wserrormsg);
+				$('#progressok').removeClass('d-none');
+				waitForShowAndHide("#tinterInProgressModal");
+
+				startSessionTimeoutTimers();
+				console.log('hide done');
+				$("#tinterSocketErrorModal").modal('show');
+
+			} else {
+				console.log("Received unsolicited error " + ws_tinter.wserrormsg);
+
+				// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
+				// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
+			}
+		} else {
+			// is result (wsmsg) JSON?
+			let isTintJSON = false;
+			try {
+				if (ws_tinter && ws_tinter.wsmsg != null) {
+					var return_message = JSON.parse(ws_tinter.wsmsg);
+					isTintJSON = true;
+				}
+			}
+			catch (error) {
+
+				console.log("Caught error is = " + error);
+
+
+				console.log("Message is junk, throw it out");
+				//console.log("Junk Message is " + ws_tinter.wsmsg);
+			}
+			if (isTintJSON) {
+				console.log("in istintJSON return message = ");
+				console.log(return_message);
+				switch (return_message.command) {
+					case 'Dispense':
+					case 'DispenseProgress':
+					case 'Abort':
+						$("#dispenseStatus").text('');
+						var tinterModel = sessionTinterInfo.model;
+
+						if (tinterModel != null && tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
+							dispenseProgressResp(return_message);
+						}
+						else if (tinterModel != null && tinterModel.startsWith("ALFA")) { //alfa needs a progress check
+							alfaDispenseProgressResp(return_message);
+						}
+						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+
+							// save a dispense (will bump the counter)
+
+
+							writeDispense(return_message); // will also send tinter event
+							waitForShowAndHide("#tinterInProgressModal");
+						}
+						else {
+
+							waitForShowAndHide("#tinterInProgressModal");
+							//Show a modal with error message to make sure the user is forced to read it.
+							showTinterErrorModal("Dispense Error", null, return_message);
+							processingDispense = false; // allow user to start another dispense after tinter error
+							sendingDispCommand = "false";
+							// send tinter event (no blocking here)
+							var curDate = new Date();
+							var myGuid = $("#reqGuid").val();
+
+							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+
+							var tedArray = [teDetail];
+							sendTinterEvent(myGuid, curDate, return_message, tedArray);
+
+						}
+
+						break;
+					default:
+						//Not an response we expected...
+						console.log("Message from different command is junk, throw it out");
+
+				} // end switch statement
+			} else {
+				console.log("Message is junk, throw it out");
+			}
+		}
+
+		//Clearing  for dispense.jsp
+		if ($('.table-bordered input:not([type=hidden])').length > 0) {
+			//Clearing inputs
+			$('.table-bordered input:not([type=hidden])').val('');
+		}
+	}
+
+}
 //pre Dispense
 function preDispenseRoutine() {
 	shotList = [];
