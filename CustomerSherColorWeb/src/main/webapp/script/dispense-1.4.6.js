@@ -14,9 +14,11 @@ function fkey(e) {
 		e = e || window.event;
 
 		if (e.code === 'F4') {
-			abort();
-			console.log(e);
-			e.preventDefault();
+			if(processingDispense == true){
+				abort();
+				console.log(e);
+				e.preventDefault();
+			}
 		}
 	}
 }
@@ -336,7 +338,7 @@ function dispenseComplete(return_message) {
 }
 function abort() {
 	console.log('before abort');
-
+	processingDispense = false;
 
 	var cmd = "Abort";
 	var shotList = null;
