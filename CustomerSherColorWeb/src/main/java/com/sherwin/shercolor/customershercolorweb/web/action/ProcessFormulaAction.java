@@ -150,18 +150,6 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 				logger.debug("back from tinterService");
 				if(colorantMap!=null && !colorantMap.isEmpty()){
-					/* TODO moved this down below
-					//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
-					for(FormulaIngredient ingr : displayFormula.getIngredients()){
-						
-						if(!colorantMap.containsKey(ingr.getTintSysId())){
-							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
-							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()}));
-							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
-							return "errormsg";
-						}
-					}
-*/
 					logger.debug("colorant map is not null");
 					if(dispenseFormula==null) dispenseFormula = new ArrayList<DispenseItem>();
 					else dispenseFormula.clear();

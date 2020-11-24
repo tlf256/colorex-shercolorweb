@@ -1104,26 +1104,26 @@ function setFormSubmitting() { formSubmitting = true; };
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 		<s:if test="%{accountUsesRoomByRoom==true}">
-		<div class="row mt-3">
-			<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-				<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
-			</div>
-			<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-				<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
-					listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
-				<div id="roomsDropdownErrorText" style="color:red" class="d-none">
-					<s:text name="displayFormula.pleaseSelectARoom"/>
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
 				</div>
-				<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateOtherRoomBlur()"/>
-				<s:hidden name="roomChoice" value="" />
-				<div id="otherRoomErrorText" style="color:red" class="d-none">
-					<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+				<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+					<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+						listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+					<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+						<s:text name="displayFormula.pleaseSelectARoom"/>
+					</div>
+					<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateOtherRoomBlur()"/>
+					<s:hidden name="roomChoice" value="" />
+					<div id="otherRoomErrorText" style="color:red" class="d-none">
+						<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+					</div>
 				</div>
+				<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 			</div>
-			<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-		</div>
-	</s:if>
+		</s:if>
 	<br>
 	<div class="row mt-3">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1148,6 +1148,8 @@ function setFormSubmitting() { formSubmitting = true; };
 					<s:hidden name="siteHasTinter" value="%{siteHasTinter}" />
 					<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
 					<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}" />
+					<s:hidden name="accountIsDrawdownCenter" value="%{accountIsDrawdownCenter}" />	
+			 		<s:hidden name="accountUsesRoomByRoom" value="%{accountUsesRoomByRoom}" /> 
 					<s:hidden name="tinterClrntSysId"
 						value="%{#session[reqGuid].tinter.clrntSysId}" />
 					<s:hidden name="formulaClrntSysId"
