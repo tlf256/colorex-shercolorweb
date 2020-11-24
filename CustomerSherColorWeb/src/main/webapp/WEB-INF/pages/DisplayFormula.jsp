@@ -128,7 +128,7 @@ function prePrintSave() {
 	
 			var curDate = new Date();
 			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
-			var myGuid = $("#formulaUserPrintAction_reqGuid").val();
+			var myGuid = $("#reqGuid").val();
 			$
 					.ajax({
 						url : "saveOnPrintAction.action",
@@ -572,116 +572,7 @@ function ParsePrintMessage() {
 							}
 						});
 	}
-	/*
-	function abort() {
-		console.log('before abort');
 
-		var cmd = "Abort";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd, null, null, null, null);
-		var json = JSON.stringify(tintermessage);
-
-		ws_tinter.send(json);
-	}
-	
-	function RecdMessage() {
-		var printMessageParsed = false;
-		console.log("Received Message");
-		//parse the spectro
-
-		if (ws_printer) {
-			printMessageParsed = ParsePrintMessage();
-		}
-		if (!printMessageParsed && typeof ws_tinter !== 'undefined'
-				&& ws_tinter) {
-			if (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-				console.log("isReady is " + ws_tinter.isReady + "BTW");
-				if (sendingDispCommand == "true") {
-					// received an error from WSWrapper so we won't get any JSON result
-					// Since we are sending a dispense command, show as dispense error
-					$("#dispenseStatus").text(
-							'<s:text name="global.lastDispense"/>' + ws_tinter.wserrormsg);
-					//Show a modal with error message to make sure the user is forced to read it.
-					$("#tinterSocketError").text(ws_tinter.wserrormsg);
-					waitForShowAndHide("#tinterInProgressModal");
-					processingDispense = false; // allow user to start another dispense after socket error
-					startSessionTimeoutTimers();
-					
-					$("#tinterSocketErrorModal").modal('show');
-
-				} else {
-					console.log("Received unsolicited error "
-							+ ws_tinter.wserrormsg);
-					// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-					// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-				}
-			} else {
-				// is result (wsmsg) JSON?
-				var isTintJSON = false;
-				try {
-					if (ws_tinter != null && ws_tinter.wsmsg != null) {
-						var return_message = JSON.parse(ws_tinter.wsmsg);
-						isTintJSON = true;
-					}
-				} catch (error) {
-					console
-							.log("Caught error is = "
-									+ error
-									+ " If response is for printer message, this error trying to parse tinter message is expected.");
-					console.log("Message is junk, throw it out");
-					//console.log("Junk Message is " + ws_tinter.wsmsg);
-				}
-				if (isTintJSON) {
-					var return_message = JSON.parse(ws_tinter.wsmsg);
-					switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'Abort':
-						var tinterModel = $("#tinterModel").val();
-						if (tinterModel != null
-								&& tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
-							dispenseProgressResp(return_message);
-						} else if (return_message.commandRC == 33 ||(return_message.errorNumber == 0 && return_message.commandRC == 0)
-								|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
-							// save a dispense (will bump the counter)
-							$("#dispenseStatus").text(
-									'<s:text name="global.lastDispenseComplete"/>');
-							writeDispense(return_message); // will also send tinter event
-						} else {
-							processingDispense = false; // allow user to start another dispense after tinter error
-							startSessionTimeoutTimers();
-							// send tinter event
-							var curDate = new Date();
-							var myGuid = $("#reqGuid")
-									.val();
-							var teDetail = new TintEventDetail("ORDER NUMBER",
-									$("#controlNbr").text(), 0);
-							var tedArray = [ teDetail ];
-							sendTinterEvent(myGuid, curDate, return_message,
-									tedArray);
-							$("#dispenseStatus").text(
-									'<s:text name="global.lastDispense"/>'
-											+ return_message.errorMessage);
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal('<s:text name="global.dispenseError"/>', null,
-									return_message);
-						}
-						sendingDispCommand = "false";
-						break;
-					default:
-						//Not an response we expected...
-						console
-								.log("Message from different command is junk, throw it out");
-					} // end switch statement
-				} else {
-					console.log("Message is junk, throw it out");
-				}
-			}
-		}
-	}
-*/
 	$(function() {
 
 		$("#tinterWarningListOK").on("click", function(event) {
