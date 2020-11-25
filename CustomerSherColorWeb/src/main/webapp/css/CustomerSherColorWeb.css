@@ -36,7 +36,15 @@ navbar-brandcenter {
 #footer a {
   color:#efefef;
 }
-
+#cookieBanner {
+	position: absolute;
+	bottom: 7%;
+  	width: 100%;
+  	margin-top: 10px;
+}
+#cookieBanner a {
+	color: white;
+}
 .dot {
   height: 50px;
   width: 50px;

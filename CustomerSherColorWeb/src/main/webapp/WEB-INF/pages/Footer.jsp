@@ -77,7 +77,8 @@ i18n['wSWrapper.undefinedConnectionError'] = '<s:text name="wSWrapper.undefinedC
     </div>
   </div>
 </div>
-  
+<!-- cookie banner -->
+<div id="cookieBanner"></div>
  <!-- Footer -->
 <div id="footer" class="footer">
 	<div class="container text-center">

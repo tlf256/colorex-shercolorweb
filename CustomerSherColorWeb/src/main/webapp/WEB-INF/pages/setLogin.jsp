@@ -18,6 +18,7 @@
 	src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 	
 	<script type="text/javascript">
 	//update user's language preference
@@ -147,6 +148,7 @@
 		  }
 		//-->
 		</script>
+	
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>
