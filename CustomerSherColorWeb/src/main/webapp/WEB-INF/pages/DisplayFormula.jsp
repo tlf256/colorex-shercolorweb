@@ -27,9 +27,9 @@
 	src="script/customershercolorweb-1.4.5.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
-
 <style>
 .sw-bg-main {
 	background-color: ${sessionScope[thisGuid].rgbHex};
@@ -128,7 +128,7 @@ function prePrintSave() {
 	
 			var curDate = new Date();
 			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
-			var myGuid = $("#formulaUserPrintAction_reqGuid").val();
+			var myGuid = $("#reqGuid").val();
 			$
 					.ajax({
 						url : "saveOnPrintAction.action",
@@ -166,6 +166,7 @@ function prePrintSave() {
 	}
 }
 
+
 function showPrintModal(){
 	if(printerConfig && printerConfig.model){
 		
@@ -187,7 +188,7 @@ function showPrintModal(){
 
 function printOnDispenseGetJson() {
 	if (printerConfig && printerConfig.model) {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
+		var myguid = $("#reqGuid").val();
 
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
@@ -200,7 +201,7 @@ function printOnDispenseGetJson() {
 }
 function printButtonClickGetJson() {
 	if (printerConfig && printerConfig.model) {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
+		var myguid = $("#reqGuid").val();
 
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
@@ -217,7 +218,7 @@ function printButtonClickGetJson() {
 }
 
 function printButtonClick() {
-	var myValue = $("#formulaUserPrintAction_reqGuid").val();
+	var myValue = $("#reqGuid").val();
 	console.log("calling print window open for print action with guid "
 			+ myValue);
 	window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
@@ -294,7 +295,7 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 	//global variables moved up above
 	//tinter stuff
-
+/*
 	    function fkey(e){
 	    	if(sendingTinterCommand == "true"){
 	        e = e || window.event;
@@ -401,6 +402,8 @@ function ParsePrintMessage() {
 		// Send to tinter
 		ws_tinter.send(json);
 	}
+	*/
+	/*
 	function dispenseProgressResp(return_message) {
 
 		//$("#progress-message").text(return_message.errorMessage);
@@ -451,6 +454,7 @@ function ParsePrintMessage() {
 			    $("#tinterErrorList").append( '</li>' + item.message + '</li>');
 			});
 			 */
+			 /*
 		}
 		if (my_return_message.errorNumber == 4226) {
 			my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>'
@@ -525,9 +529,9 @@ function ParsePrintMessage() {
 		}
 		sendingTinterCommand = "false";
 	}
-		
+*/		
 	function writeDispense(myReturnMessage) {
-		var myValue = $("#formulaUserPrintAction_reqGuid").val();
+		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
 		$
 				.getJSON(
@@ -546,7 +550,7 @@ function ParsePrintMessage() {
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
 								// send tinter event (no blocking here)
 								var myGuid = $(
-										"#formulaUserPrintAction_reqGuid")
+										"#reqGuid")
 										.val();
 								var teDetail = new TintEventDetail(
 										"ORDER NUMBER",
@@ -567,113 +571,6 @@ function ParsePrintMessage() {
 								}
 							}
 						});
-	}
-	function abort() {
-		console.log('before abort');
-
-		var cmd = "Abort";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd, null, null, null, null);
-		var json = JSON.stringify(tintermessage);
-
-		ws_tinter.send(json);
-	}
-	function RecdMessage() {
-		var printMessageParsed = false;
-		console.log("Received Message");
-		//parse the spectro
-
-		if (ws_printer) {
-			printMessageParsed = ParsePrintMessage();
-		}
-		if (!printMessageParsed && typeof ws_tinter !== 'undefined'
-				&& ws_tinter) {
-			if (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-				console.log("isReady is " + ws_tinter.isReady + "BTW");
-				if (sendingDispCommand == "true") {
-					// received an error from WSWrapper so we won't get any JSON result
-					// Since we are sending a dispense command, show as dispense error
-					$("#dispenseStatus").text(
-							'<s:text name="global.lastDispense"/>' + ws_tinter.wserrormsg);
-					//Show a modal with error message to make sure the user is forced to read it.
-					$("#tinterSocketError").text(ws_tinter.wserrormsg);
-					waitForShowAndHide("#tinterInProgressModal");
-					processingDispense = false; // allow user to start another dispense after socket error
-					startSessionTimeoutTimers();
-					
-					$("#tinterSocketErrorModal").modal('show');
-
-				} else {
-					console.log("Received unsolicited error "
-							+ ws_tinter.wserrormsg);
-					// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-					// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-				}
-			} else {
-				// is result (wsmsg) JSON?
-				var isTintJSON = false;
-				try {
-					if (ws_tinter != null && ws_tinter.wsmsg != null) {
-						var return_message = JSON.parse(ws_tinter.wsmsg);
-						isTintJSON = true;
-					}
-				} catch (error) {
-					console
-							.log("Caught error is = "
-									+ error
-									+ " If response is for printer message, this error trying to parse tinter message is expected.");
-					console.log("Message is junk, throw it out");
-					//console.log("Junk Message is " + ws_tinter.wsmsg);
-				}
-				if (isTintJSON) {
-					var return_message = JSON.parse(ws_tinter.wsmsg);
-					switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'Abort':
-						var tinterModel = $("#tinterModel").val();
-						if (tinterModel != null
-								&& tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
-							dispenseProgressResp(return_message);
-						} else if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
-								|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
-							// save a dispense (will bump the counter)
-							$("#dispenseStatus").text(
-									'<s:text name="global.lastDispenseComplete"/>');
-							writeDispense(return_message); // will also send tinter event
-						} else {
-							processingDispense = false; // allow user to start another dispense after tinter error
-							startSessionTimeoutTimers();
-							// send tinter event
-							var curDate = new Date();
-							var myGuid = $("#formulaUserPrintAction_reqGuid")
-									.val();
-							var teDetail = new TintEventDetail("ORDER NUMBER",
-									$("#controlNbr").text(), 0);
-							var tedArray = [ teDetail ];
-							sendTinterEvent(myGuid, curDate, return_message,
-									tedArray);
-							$("#dispenseStatus").text(
-									'<s:text name="global.lastDispense"/>'
-											+ return_message.errorMessage);
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal('<s:text name="global.dispenseError"/>', null,
-									return_message);
-						}
-						sendingDispCommand = "false";
-						break;
-					default:
-						//Not an response we expected...
-						console
-								.log("Message from different command is junk, throw it out");
-					} // end switch statement
-				} else {
-					console.log("Message is junk, throw it out");
-				}
-			}
-		}
 	}
 
 	$(function() {
@@ -823,7 +720,6 @@ function ParsePrintMessage() {
 </script>
 <script type="text/javascript">
 //callback stuff
-
 	function setDispenseQuantity() {
 		// check that user doesn't need to set rooms dropdown
 		if (verifyRoomSelected() == true){
@@ -834,6 +730,7 @@ function ParsePrintMessage() {
 			$("#dispenseQuantityInput").select();
 		}
 	}
+	
 
 	function preDispenseCheck() {
 		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
@@ -843,7 +740,7 @@ function ParsePrintMessage() {
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#formulaUserPrintAction_reqGuid").val(),
+		getSessionTinterInfo($("#reqGuid").val(),
 				preDispenseCheckCallback);
 
 	}
@@ -923,7 +820,7 @@ function ParsePrintMessage() {
 	function decrementColorantLevels() {
 		console.log("Calling decrementColorantLevels");
 		decrementColorantForDispense(
-				$("#formulaUserPrintAction_reqGuid").val(), shotList,
+				$("#reqGuid").val(), shotList,
 				decrementCallback);
 	}
 
@@ -937,8 +834,6 @@ function ParsePrintMessage() {
 			waitForShowAndHide("#tinterInProgressModal");
 		}
 	}
-
-	
 	function validateRoomChoice(){
 		$("#roomsDropdownErrorText").addClass("d-none");
 		// if user chose Other in room list, show textfield to enter custom name
@@ -1070,12 +965,9 @@ function ParsePrintMessage() {
 		}
 		return retVal;
 	}
+function setFormSubmitting() { formSubmitting = true; };
     
-
-	function setFormSubmitting() { formSubmitting = true; };
-	
-	
-	window.onload = function() {
+    window.onload = function() {
     window.addEventListener("beforeunload", function (e) {
             var recDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
             // let the user navigate away from the page
@@ -1088,6 +980,7 @@ function ParsePrintMessage() {
             e.returnValue = ''; 
         });
     };
+
 
 </script>
 </head>
@@ -1210,29 +1103,27 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
-	
-	<s:if test="%{accountUsesRoomByRoom==true}">
-		<div class="row mt-3">
-			<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-				<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
-			</div>
-			<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-				<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
-					listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
-				<div id="roomsDropdownErrorText" style="color:red" class="d-none">
-					<s:text name="displayFormula.pleaseSelectARoom"/>
+		<s:if test="%{accountUsesRoomByRoom==true}">
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
 				</div>
-				<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateOtherRoomBlur()"/>
-				<s:hidden name="roomChoice" value="" />
-				<div id="otherRoomErrorText" style="color:red" class="d-none">
-					<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+				<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+					<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+						listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+					<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+						<s:text name="displayFormula.pleaseSelectARoom"/>
+					</div>
+					<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateOtherRoomBlur()"/>
+					<s:hidden name="roomChoice" value="" />
+					<div id="otherRoomErrorText" style="color:red" class="d-none">
+						<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+					</div>
 				</div>
+				<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 			</div>
-			<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-		</div>
-	</s:if>
-	
+		</s:if>
 	<br>
 	<div class="row mt-3">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1252,12 +1143,12 @@ function ParsePrintMessage() {
 			theme="bootstrap">
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 					<s:hidden name="jsDateString" value="" />
 					<s:hidden name="siteHasTinter" value="%{siteHasTinter}" />
 					<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
-					<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}" /> 
-			 		<s:hidden name="accountIsDrawdownCenter" value="%{accountIsDrawdownCenter}" />
+					<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}" />
+					<s:hidden name="accountIsDrawdownCenter" value="%{accountIsDrawdownCenter}" />	
 			 		<s:hidden name="accountUsesRoomByRoom" value="%{accountUsesRoomByRoom}" /> 
 					<s:hidden name="tinterClrntSysId"
 						value="%{#session[reqGuid].tinter.clrntSysId}" />
@@ -1692,7 +1583,7 @@ function ParsePrintMessage() {
 			<div class="row">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-8">
-					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 
 					<Strong>${sessionScope[thisGuid].displayFormula.deltaEWarning}</Strong>
 				</div>
