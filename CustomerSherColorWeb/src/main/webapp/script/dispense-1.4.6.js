@@ -7,7 +7,10 @@ var _rgbArr = [];
 
 var shotList = [];
 var processingDispense;
-
+$(function(){ // on ready
+	//capture F4 key to abort
+	jQuery(document).on("keydown",fkey);
+	});
 
 function fkey(e) {
 	if (sendingTinterCommand == "true") {
@@ -94,6 +97,16 @@ function FMXAlfaDispenseProgress(tintermessage) {
 	var cmd = "DispenseProgress";
 	var shotList = null;
 	var configuration = null;
+	var tinterModel = sessionTinterInfo.model;
+	if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
+
+   		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+	}
+	else{
+
+		var msgId = tintermessage.msgId;
+		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
+}
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
@@ -147,7 +160,7 @@ function dispenseProgressResp(return_message) {
 		tinterErrorList = [];
 		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
 			//keep updating modal with status
-
+			var tinterModel = sessionTinterInfo.model;
 			if (return_message.statusMessages.length > 0 && tinterModel.startsWith("FM X")) {
 				buildProgressBars(return_message);
 			}
@@ -230,7 +243,7 @@ function showTinterErrorModal(myTitle, mySummary, my_return_message) {
 }
 function FMXDispenseComplete(return_message) {
 	processingDispense = false; // allow user to start another dispense after tinter error
-	buildProgressBars(return_message);
+//	buildProgressBars(return_message);
 	$("#abort-message").hide();
 
 	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {

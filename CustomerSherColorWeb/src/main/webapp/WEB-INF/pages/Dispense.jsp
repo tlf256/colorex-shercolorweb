@@ -25,6 +25,7 @@
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 <script type="text/javascript">
+var processingDispense = false;
 	<s:iterator value="tinter.canisterList" status="i">
 //DJM not sure what this shotList is here for, but no way I'm deleting it now :) 
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
@@ -34,7 +35,7 @@
 	//Document ON-Load
 	$(function() {
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
-
+		jQuery(document).on("keydown",fkey);
 		//Popover closing functionality
 		$('table.table-bordered').on('click', function(event) {
 			$('.popover').each(function() {
@@ -50,8 +51,11 @@
 
 		// Handle/validate form input on click
 		$('div #dispense').on('click', function() {
+			if (processingDispense == false) {
+				processingDispense = true
 			//Starts chain of functions to do all predispense checks and subsequently dispense if all is well.
-			preDispenseRoutine();
+				preDispenseRoutine();
+			}
 		});
 
 		//Handle warning notification on-click
