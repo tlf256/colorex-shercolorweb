@@ -733,6 +733,7 @@ function ParsePrintMessage() {
 	
 
 	function preDispenseCheck() {
+		$(".progress-wrapper").empty();
 		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
 		$("#tinterInProgressMessage")
 				.text(

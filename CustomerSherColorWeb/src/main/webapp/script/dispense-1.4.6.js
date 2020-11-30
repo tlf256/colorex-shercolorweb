@@ -479,7 +479,7 @@ function preDispenseRoutine() {
 	let inputFound = false;
 	let invalidInput = false;
 	let numClrntsDispensed = 0;
-
+	$(".progress-wrapper").empty();
 	//Validate form input values and show popovers if necessary, add shotList values
 	$('.myinputs').each(function() {
 		if ($(this).val() != "") {
