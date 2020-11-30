@@ -23,7 +23,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -44,6 +44,7 @@
 	var sendingTinterCommand = "false";
 	var _rgbArr = [];
 	var dispenseErrorList = [];
+	var statusCount=0;
 	<s:iterator value="canList" status="i">
 	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
@@ -122,19 +123,21 @@
 			});
 		}
 	}
-	function FMXPurgeProgress(){
+	function PurgeProgress(tintermessage){
 		console.log('before purge status modal show');
 		$("#PurgeInProgressModal").modal('show');
 		rotateIcon();
-		var cmd = "PurgeProgress";
+		var cmd = "DispenseStatus";
 		var shotList = null;
 		var configuration = null;
-    	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		var msgId = tintermessage.msgId;
+    	var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
     	var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
     	ws_tinter.send(json);
 	}
 	function purge(){
+		statusCount = 0;
 		var cmd = "PurgeAll";
 		
 		var shotList = null;
@@ -147,37 +150,30 @@
 		}
     	ws_tinter.send(json);
 	}
-	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
-		//$("#progress-message").text(return_message.errorMessage);
+	
+	function alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		$("#abort-message").show();
-		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 1 ||
+		$('#progressok').addClass('d-none');  //hide ok button
+		if (return_message.errorMessage.indexOf("complete") == -1 && (return_message.errorNumber == 1 ||
 				 return_message.status == 1)) {
+					
+			if(return_message.commandRC == 33){
 			//keep updating modal with status
-			//$("#progress-message").text(return_message.errorMessage);
-			$("#tinterProgressList").empty();
-			dispenseErrorList = [];
-			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
-				return_message.statusMessages.forEach(function(item){
-					buildProgressBars(return_message);
-						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
-					dispenseErrorList.push(item.message);
-				});
-			} else {
-				dispenseErrorList.push(return_message.errorMessage);
-				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			  statusCount++;
+			
+				$("#tinterProgressList").html("").append("<li>" + return_message.errorMessage + "</li>");
 			}
 			console.log(return_message);
-			//setTimeout(function(){
-				FMXPurgeProgress();
-		//	}, 200);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
-			
+			setTimeout(function(){
+				PurgeProgress(return_message);
+			}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 		}
-		else{
-			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+		else {
+			purgeComplete(myGuid, curDate,return_message, tedArray, "alfa");
 			$(".progress-wrapper").empty();
-			}
-			
-    }
+		}
+	}
+
 	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
 	    $("#tinterErrorList").empty();
 	    $("#tinterErrorListModal").modal('show');
@@ -356,7 +352,7 @@
 				switch (return_message.command) {
 					case 'PurgeAll':
 					case 'PurgeProgress':
-					case 'DispenseProgress':
+					case 'DispenseStatus':
 			    		sendingTinterCommand = "false";
 						// log tinter event...
 						var curDate = new Date();
@@ -364,12 +360,15 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
+						if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ //only FM X series has purge in progress % done
 							 if(return_message.errorNumber == 4226){
 							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 							    }
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
+						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
+							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
+							}
 						else{  
 							 
 							purgeComplete(myGuid, curDate,return_message, tedArray);

@@ -287,6 +287,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			int setQualityParm = 50;
 			int setCompositeParm = 50;
 			int totalCharsLength = 0;
+			if(reqObj.getQuality()==null) {reqObj.setQuality("");}
+			if(reqObj.getComposite()==null) {reqObj.setComposite("");}
 			totalCharsLength = reqObj.getQuality().length() + reqObj.getComposite().length();
 			if (totalCharsLength >= 35 || reqObj.getQuality().length() > 17 || 
 					reqObj.getComposite().length() > 17){
@@ -348,6 +350,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			// Color i.d. and name.
 			// 01/20/2017 - Begin Color I.D. and Color Name field build.
+			if (reqObj.getColorID()==null) {reqObj.setColorID("");}
+			if (reqObj.getColorName()==null) {reqObj.setColorName("");}
 			totalCharsLength = reqObj.getColorID().length() + reqObj.getColorName().length();
 
 			//Modify input values, replace / and " with -
