@@ -533,6 +533,7 @@ function ParsePrintMessage() {
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
+		$("#dispenseStatus").text('<s:text name="global.lastDispenseComplete"/>');
 		$
 				.getJSON(
 						"bumpDispenseCounterAction.action?reqGuid=" + myValue
