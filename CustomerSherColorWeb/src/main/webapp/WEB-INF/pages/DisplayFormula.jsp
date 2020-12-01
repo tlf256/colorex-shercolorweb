@@ -24,7 +24,7 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.5.js"></script>
+	src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
@@ -1279,9 +1279,6 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
 			</s:else>
-			
-		<!-- Including footer -->
-		<s:include value="Footer.jsp"></s:include>
 
 			<!-- Set Dispense Quantity Modal Window -->
 			<div class="modal" aria-labelledby="setDispenseQuantityModal"
@@ -1623,7 +1620,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<br>
 	<br>
 	<br>
-	
+	<br>
 	<script>
 	<!--
 		function HF_openSherwin() {
@@ -1949,5 +1946,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	    }
 		
 	</script>
+	<!-- Including footer -->
+	<s:include value="Footer.jsp"></s:include>
 </body>
 </html>
