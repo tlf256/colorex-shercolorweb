@@ -89,11 +89,11 @@ function getBrowser(){
 function displayCookieBanner(){
 	var cookieBanner = sessionStorage.getItem("cookieBanner");
 	//console.log("displayCookieBanner: cookie banner before request " + cookieBanner);
+	var reqGuid = $("[name='reqGuid']").val();
+	//console.log("reqGuid = " + reqGuid);
 	
 	if(cookieBanner == null){
 		console.log("cookieBanner is null");
-		var reqGuid = $("[name='reqGuid']").val();
-		//console.log("reqGuid = " + reqGuid);
 		$.ajax({
 			url:"displayCookieBanner.action",
 			dataType:"json",
@@ -119,8 +119,8 @@ function displayCookieBanner(){
 			createCookieBanner();
 		} else {
 			var banner = $(document).find('#banner');
-			//console.log("displayCookieBanner: cookie banner element = " + banner);
-			if(banner != null){
+			console.log("displayCookieBanner: cookie banner element = " + banner);
+			if(banner.is(':visible')){
 				console.log("removing cookie banner");
 				banner.remove();
 			}
@@ -131,21 +131,14 @@ function displayCookieBanner(){
 
 function createCookieBanner(){
 	var banner = 
-		'<div class="row" id="banner" style="background-color:blue;color:white;padding:10px;">'
-		+ '<div class="col-sm-1"></div>'
-		+ '<div class="col-sm-9">'
-			+ '<h6>This site uses cookies and other tracking technologies to improve your browsing experience, analyze site traffic, and improve our marketing efforts. '
-			+ 'By clicking OK, you <a href="javascript:HF_openPrivacy()">consent to our use of these technologies</a>.</h6>'
-		+ '</div>'
-		+ '<div class="col-sm-1">'
-			+ '<button type="button" class="btn btn-secondary" id="consent">OK</button>'
-		+ '</div>'
-		+ '<div class="col-sm-1"></div>'
+		'<div class="d-flex" id="banner" style="background-color:blue;color:white;padding:10px 50px 5px 50px;">'
+		+ '<h6 class="" style="width:95%;">' + i18n['global.cookieBanner'] + '</h6>'
+		+ '<button type="button" class="btn btn-secondary ml-2" id="consent" style="float:right;">' + i18n['global.ok'] + '</button>'
 		+ '</div>';
 		
 		var div = $(document).find('#cookieBanner');
 		
-		$(div).prepend(banner);	
+		$(div).append(banner);	
 }
 
 $(document).ready(function(){

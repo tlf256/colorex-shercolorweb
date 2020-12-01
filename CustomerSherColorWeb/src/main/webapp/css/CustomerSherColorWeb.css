@@ -38,12 +38,12 @@ navbar-brandcenter {
 }
 #cookieBanner {
 	position: absolute;
-	bottom: 7%;
-  	width: 100%;
-  	margin-top: 10px;
+	bottom: 0;
+	width: 100%;
+	z-index: 1;
 }
 #cookieBanner a {
-	color: white;
+	color: aqua;
 }
 .dot {
   height: 50px;

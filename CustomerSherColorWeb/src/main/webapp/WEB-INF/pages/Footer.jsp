@@ -28,6 +28,7 @@ i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionE
 i18n['global.colorantLevelCheckInProgress'] = '<s:text name="global.colorantLevelCheckInProgress"/>';
 i18n['global.colorantLevelTooLow'] = '<s:text name="global.colorantLevelTooLow"/>';
 i18n['global.containerFull'] = '<s:text name="global.containerFull"/>';
+i18n['global.cookieBanner'] = '<s:text name="global.cookieBanner"/>';
 i18n['global.dispenseError'] = '<s:text name="global.dispenseError"/>';
 i18n['global.dispenseInProgress'] = '<s:text name="global.dispenseInProgress"/>';
 i18n['global.extend'] = '<s:text name="global.extend"/>';
@@ -39,6 +40,7 @@ i18n['global.lastDispenseInProgress'] = '<s:text name="global.lastDispenseInProg
 i18n['global.login'] = '<s:text name="global.login"/>';
 i18n['global.lowColorantLevels'] = '<s:text name="global.lowColorantLevels"/>';
 i18n['global.notLoggedInReqGuidNotFound'] = '<s:text name="global.notLoggedInReqGuidNotFound"/>';
+i18n['global.ok'] = '<s:text name="global.ok"/>';
 i18n['global.pleaseWaitClrntLevelCheck'] = '<s:text name="global.pleaseWaitClrntLevelCheck"/>';
 i18n['global.positiveNbr'] = '<s:text name="global.positiveNbr"/>';
 i18n['global.purgeRequired'] = '<s:text name="global.purgeRequired"/>';

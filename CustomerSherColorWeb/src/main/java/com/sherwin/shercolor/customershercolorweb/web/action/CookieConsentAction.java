@@ -26,7 +26,7 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 	
 	public String display() {
 		try {
-			logger.info("in display...");
+			logger.info("begin display...");
 			
 			setCookieBanner(getCookieConsent());
 			
@@ -40,7 +40,7 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 	
 	public String execute() {
 		try {
-			logger.info("in execute...");
+			logger.info("begin execute...");
 			
 			setCookieBanner(false);
 			
@@ -57,20 +57,20 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private boolean getCookieConsent() {
-		logger.info("in getCookieConsent, getting request and checking for consent");
+		logger.info("getCookieConsent: getting request and checking for consent");
 		request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
 		Cookie[] cookies = null;
 		boolean result = true;
 		String cookieName = "";
 		
 		if(request != null) {
-			logger.debug("getCookieConsent request is not null");
+			logger.debug("getCookieConsent: request is not null");
 			cookies = request.getCookies();
 		}
 		
 		// verify if consent has already been given
 		if(cookies != null) {
-			logger.debug("getCookieConsent cookies array is not null");
+			logger.debug("getCookieConsent: cookies array is not null");
 			for(Cookie cookie : cookies) {
 				cookieName = cookie.getName();
 				if(cookieName.contains("consent")) {
@@ -81,10 +81,9 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 		}
 		
 		// drop any existing cookies if consent is needed 
-		// (meaning there is no existing consent cookie)
 		// except JSESSIONID since it is a technical cookie
 		if(result && cookies != null) { 
-			logger.debug("getCookieConsent result is true and cookies is not null");
+			logger.info("getCookieConsent: consent is needed, dropping functional cookies");
 			for(Cookie cookie : cookies) {
 				cookieName = cookie.getName();
 				if(!cookieName.contains("JSESSIONID")) {
@@ -94,13 +93,13 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 			}
 		}
 		
-		logger.debug("end getCookieConsent returning " + result + " result");
+		logger.debug("getCookieConsent: returning " + result + " result");
 		
 		return result;
 	}
 	
 	private void createConsentCookie() {
-		logger.info("in createConsentCookie, getting response and creating cookie");
+		logger.info("createConsentCookie: getting response and creating cookie");
 		response = (HttpServletResponse) ActionContext.getContext().get(ServletActionContext.HTTP_RESPONSE);
 		String cookieValue = ""; // does consent cookie need a value?
 		
@@ -109,7 +108,7 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 		// expire cookie in one week
 		cookie.setMaxAge(7*24*60*60);
 		
-		logger.debug("createConsentCookie adding cookie to response");
+		logger.debug("createConsentCookie: adding cookie to response");
 		
 		response.addCookie(cookie);
 		

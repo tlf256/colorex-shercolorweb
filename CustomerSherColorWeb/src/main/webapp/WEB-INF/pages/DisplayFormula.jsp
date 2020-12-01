@@ -1281,9 +1281,6 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
 			</s:else>
-			
-		<!-- Including footer -->
-		<s:include value="Footer.jsp"></s:include>
 
 			<!-- Set Dispense Quantity Modal Window -->
 			<div class="modal" aria-labelledby="setDispenseQuantityModal"
@@ -1625,7 +1622,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<br>
 	<br>
 	<br>
-	
+	<br>
 	<script>
 	<!--
 		function HF_openSherwin() {
@@ -1944,5 +1941,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	    }
 		
 	</script>
+	<!-- Including footer -->
+	<s:include value="Footer.jsp"></s:include>
 </body>
 </html>
