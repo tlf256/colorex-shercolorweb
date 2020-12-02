@@ -1230,8 +1230,8 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<!-- add actions to go to sample dispense page and to save drawdown center job -->
-						<s:submit cssClass="btn btn-primary" autofocus="autofocus" value="%{getText('global.dispenseSample')}"
-							onclick="return validationWithoutModal();" action="" />
+						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
+							onclick="return validationWithoutModal();" action="displaySampleDispenseAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
@@ -1251,8 +1251,6 @@ function setFormSubmitting() { formSubmitting = true; };
 						i.e., don't print the label if the verifyRoomSelected returns false -->
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="verifyRoomSelected();"><s:text name="global.drawdownLabel"/></button>
-						<button type="button" class="btn btn-secondary" id="sampleCanLabelPrint"
-							onclick="verifyRoomSelected();"><s:text name="displayFormula.sampleCanLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
 							onclick="verifyRoomSelected();"><s:text name="global.storeLabel"/></button>
                 	</div>
@@ -1823,7 +1821,14 @@ function setFormSubmitting() { formSubmitting = true; };
 				$("#formulaUserPrintAction_formulaUserEditAction").css('margin-left',pct);
 				$("#formulaUserPrintAction_formulaUserCorrectAction").css('margin-left',pct);
 				$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
-			} // end if (!accountIsDrawdownCenter)
+			// account is drawdown center
+			} else {
+				// session doesn't have tinter or it's an incompatible colorant system for formula, so hide dispense button
+				if ($("#formulaUserPrintAction_sessionHasTinter").val() != "true" ||
+						$("#formulaUserPrintAction_tinterClrntSysId").val() != $("#formulaUserPrintAction_formulaClrntSysId").val()) {
+					$("#dispenseSampleButton").hide();
+				}
+			}
 		}
 
 		function makeDispensePrimary() {
