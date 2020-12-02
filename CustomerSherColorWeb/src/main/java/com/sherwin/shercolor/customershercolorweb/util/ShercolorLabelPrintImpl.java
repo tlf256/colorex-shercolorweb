@@ -89,57 +89,62 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	private static float WIDTH = 144f;
 
 
-	public void CreateLabelPdf(String filename,RequestObject reqObj) {
+	public void CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation) {
 		this.filename = filename;
 		this.reqObj=reqObj;
-		CreateLabelPdf();
-	}
-	public void CreateLabelPdf() {
+
 
 		String partMessage = null;
 
 		try {
 
+			if (printLabelType.equals("drawdownLabel")) {
+				DrawDrawdownLabelPdf();
+				
+			} else {
+				
+				// Get formula ingredients (colorants) for processing.
+				List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
+				// Determine the number of ingredient (colorant) lines in the formula.
+				int formulaSize = reqObj.getDisplayFormula().getIngredients().size();
 
-			// Get formula ingredients (colorants) for processing.
-			List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
-			// Determine the number of ingredient (colorant) lines in the formula.
-			int formulaSize = reqObj.getDisplayFormula().getIngredients().size();
-
-			// 5 or less lines in a formula - pass the one part label formula to formatting method.
-			if (formulaSize <= 5){
-				partMessage = " ";
-				DrawLabelPdf( listFormulaIngredients, partMessage);
-			}
-			else {
-				// Split the label colorant lines for 2 separate labels and proceed to create 2 labels that print simultaneously.
-				int counter = 0;
-				List<FormulaIngredient>partAListFormulaIngredients = new ArrayList<FormulaIngredient>(); 
-				List<FormulaIngredient>partBListFormulaIngredients = new ArrayList<FormulaIngredient>();
-				for(FormulaIngredient ingredient : listFormulaIngredients){
-					if (counter <= 4 ){
-						partAListFormulaIngredients.add(ingredient);
-					}
-					else{
-						partBListFormulaIngredients.add(ingredient);
-					}
-					counter++;
+				// 5 or less lines in a formula - pass the one part label formula to formatting method.
+				if (formulaSize <= 5){
+					partMessage = " ";
+					DrawLabelPdf( listFormulaIngredients, partMessage);
 				}
-				// Write the part A label on first page.
-				if(partAListFormulaIngredients != null && partAListFormulaIngredients.size() > 0){
-					partMessage = "* PART A - SEE PART B OF FORMULA *";
-					DrawLabelPdf(  partAListFormulaIngredients, partMessage);
-				}	
-				// Skip to next page to write part B label.
+				else {
+					// Split the label colorant lines for 2 separate labels and proceed to create 2 labels that print simultaneously.
+					int counter = 0;
+					List<FormulaIngredient>partAListFormulaIngredients = new ArrayList<FormulaIngredient>(); 
+					List<FormulaIngredient>partBListFormulaIngredients = new ArrayList<FormulaIngredient>();
+					for(FormulaIngredient ingredient : listFormulaIngredients){
+						if (counter <= 4 ){
+							partAListFormulaIngredients.add(ingredient);
+						}
+						else{
+							partBListFormulaIngredients.add(ingredient);
+						}
+						counter++;
+					}
+					// Write the part A label on first page.
+					if(partAListFormulaIngredients != null && partAListFormulaIngredients.size() > 0){
+						partMessage = "* PART A - SEE PART B OF FORMULA *";
+						DrawLabelPdf(  partAListFormulaIngredients, partMessage);
+					}	
+					// Skip to next page to write part B label.
 
-				// Write the part B label on second page.
-				if(partBListFormulaIngredients != null && partBListFormulaIngredients.size() > 0){
-					partMessage = "* PART B - SEE PART A OF FORMULA *";
-					DrawLabelPdf( partBListFormulaIngredients, partMessage);
-				}	
+					// Write the part B label on second page.
+					if(partBListFormulaIngredients != null && partBListFormulaIngredients.size() > 0){
+						partMessage = "* PART B - SEE PART A OF FORMULA *";
+						DrawLabelPdf( partBListFormulaIngredients, partMessage);
+					}	
+				}
+				// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
+				// Save the results and ensure that the document is properly closed:
+				
 			}
-			// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
-			// Save the results and ensure that the document is properly closed:
+			
 
 			document.save(filename);
 		}
@@ -160,28 +165,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				logger.error(e.getMessage() + ": ", e);
 			}
 		}
-
 	}
-	
-	public void CreateDrawdownLabelPdf(String filename,RequestObject reqObj) {
-		this.filename = filename;
-		this.reqObj=reqObj;
-		try {
-			CreateDrawdownLabelPdf();
-		} catch (Exception e){
-			logger.error(e.getMessage() + ": ", e);
-		}
-		
-	}
-	
-	public void CreateDrawdownLabelPdf() {
-		try {
-			DrawDrawdownLabelPdf();		
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-		}
-	}
-	
 
 	private void createTableCell(Row<PDPage> row,int  rowHeight, float cellWidth, int fontSize, HorizontalAlignment cellAlign) {
 
@@ -731,31 +715,44 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//setup Table
 			BaseTable table = createTopTable(page);
 			
+			// Common Parameters
+			HorizontalAlignment haLeft = HorizontalAlignment.LEFT;
+			HorizontalAlignment haRight = HorizontalAlignment.RIGHT;
+			VerticalAlignment vaMiddle = VerticalAlignment.MIDDLE;
+			int fontSize = 9;
+			int rowHeight = 10;
+			int cell1Width = 25;
+			int cell2Width = 75;
+			
 			// Must retrieve the jobFieldList and the Customer ID's Label Profile in order to query the below fields and
 			// pair the information up with their corresponding job field column
 			List<JobField> jobFieldList = reqObj.getJobFieldList();
 			List<CustWebDrawdownLabelProfile> labelProfileList = drawdownLabelService.listDrawdownLabelProfilesForCustomer(reqObj.getCustomerID());
 			
 			String customer = jobFieldList.get(labelProfileList.get(0).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
-			String storeCCN = jobFieldList.get(labelProfileList.get(1).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
-			String controlNbr = jobFieldList.get(labelProfileList.get(2).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
-			String jobDescr = jobFieldList.get(labelProfileList.get(3).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
-			String projectInfo = jobFieldList.get(labelProfileList.get(4).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
-			String schedule = jobFieldList.get(labelProfileList.get(5).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();;
+			String storeCCN = jobFieldList.get(labelProfileList.get(1).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
+			String controlNbr = jobFieldList.get(labelProfileList.get(2).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
+			String jobDescr = jobFieldList.get(labelProfileList.get(3).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
+			String projectInfo = jobFieldList.get(labelProfileList.get(4).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
+			String schedule = jobFieldList.get(labelProfileList.get(5).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			
-			createDrawdownLabelRow(table, "Customer:", customer);
-			createDrawdownLabelRow(table, "Store CNN:", storeCCN);
+			
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Customer:",cell2Width,haLeft,vaMiddle,customer);
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CNN:",cell2Width,haLeft,vaMiddle,storeCCN);
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
 			String strDate = sdf.format(date);
-			createDrawdownLabelRow(table, "Date Prepared:", strDate + "  " + "Control Number: " + controlNbr);
-			createDrawdownLabelRow(table, "", "");
-			createDrawdownLabelRow(table, "Job:", jobDescr);
-			createDrawdownLabelRow(table, "Project Info:", projectInfo);
-			createDrawdownLabelRow(table, "Schedule:", schedule);
-			createDrawdownLabelRow(table, "", "");
-			createDrawdownLabelRow(table, "Color:", reqObj.getColorComp() + " " + reqObj.getColorID() + " " + reqObj.getColorName());
-			createDrawdownLabelRow(table, "Product:", reqObj.getQuality() + " " + reqObj.getFinish() + " " + reqObj.getBase() + " " + reqObj.getProdNbr());
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Date Prepared:",
+							   cell2Width,haLeft,vaMiddle,strDate + "  " + "Control Number: " + controlNbr);
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"",cell2Width,haLeft,vaMiddle,"");
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Job:",cell2Width,haLeft,vaMiddle,jobDescr);
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Project Info:",cell2Width,haLeft,vaMiddle,projectInfo);
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Schedule:",cell2Width,haLeft,vaMiddle,schedule);
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"",cell2Width,haLeft,vaMiddle,"");
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Color:",
+							   cell2Width,haLeft,vaMiddle,reqObj.getColorComp() + " " + reqObj.getColorID() + " " + reqObj.getColorName());
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Product:",
+							   cell2Width,haLeft,vaMiddle,reqObj.getQuality() + " " + reqObj.getFinish() + " " + reqObj.getBase() + " " + reqObj.getProdNbr());
 			
 			try {
 				table.draw();
@@ -777,26 +774,37 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	private void createDrawdownLabelRow(BaseTable table, String cell1Data, String cell2Data) {
-		
-		int fontSize = 9;
-		int rowHeight = 10;
-		int cell1Width = 25;
-		int cell2Width = 75;
+	// ==========================================================================================================================================
+	// Label Row Creation Methods
+	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are neccessary
+	//				to help assist in providing more instruction and less static values 
+	// ==========================================================================================================================================
+
+	private void createTwoColumnRow(BaseTable table, int fontSize, int rowHeight,
+									int cell1Width, HorizontalAlignment cell1HAlign, VerticalAlignment cell1VAlign, String cell1Data,
+									int cell2Width, HorizontalAlignment cell2HAlign, VerticalAlignment cell2VAlign, String cell2Data) {
 		// ROW
 		Row<PDPage> row = table.createRow(rowHeight);
 		
 		// CELL 1
-		Cell<PDPage> r1cell1= row.createCell(cell1Width, cell1Data, HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE);
+		Cell<PDPage> r1cell1= row.createCell(cell1Width, cell1Data, cell1HAlign, cell1VAlign);
 		cellSettings(r1cell1,fontSize,rowHeight);
-		r1cell1.setBottomPadding(1);
 		// CELL 2
-		Cell<PDPage> r1cell2 = row.createCell(cell2Width, cell2Data, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+		Cell<PDPage> r1cell2 = row.createCell(cell2Width, cell2Data, cell2HAlign, cell2VAlign);
 		cellSettings(r1cell2,fontSize,rowHeight);
-		r1cell2.setLeftPadding(1);
-		r1cell2.setBottomPadding(1);
 	}
-
+	
+	private void createOneColumnRow(BaseTable table, int fontSize, int rowHeight,
+			int cellWidth, HorizontalAlignment cellHAlign, VerticalAlignment cellVAlign, String cellData) {
+		// ROW
+		Row<PDPage> row = table.createRow(rowHeight);
+				
+		// CELL
+		Cell<PDPage> cell = row.createCell(cellWidth, cellData, cellHAlign, cellVAlign);
+		cellSettings(cell,fontSize,rowHeight);
+	}
+	
+	// ==========================================================================================================================================
 	boolean hasUnicode(String string) {
 		boolean ret = false;
 		for (char ch : string.toCharArray()) {

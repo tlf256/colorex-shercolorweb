@@ -9,6 +9,13 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Test;
 import org.junit.internal.runners.TestClass;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sherwin.shercolor.common.service.DrawdownLabelService;
 
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
@@ -16,8 +23,15 @@ import be.quodlibet.boxable.HorizontalAlignment;
 import be.quodlibet.boxable.Row;
 import be.quodlibet.boxable.VerticalAlignment;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
+@Transactional
 public class TestSherColorLabel {
-	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl();
+	
+	@Autowired
+	DrawdownLabelService drawdownLabelService;
+	
+	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService);
 	// Create a new empty document
 	PDDocument document = new PDDocument();
 

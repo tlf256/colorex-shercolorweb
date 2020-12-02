@@ -61,6 +61,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private boolean accountUsesRoomByRoom = false;
 	private boolean sessionHasTinter;
 	private boolean midCorrection = false;
+	private String printOrientation;
+	private String printLabelType;
 
 	private TinterService tinterService;
 	private TranHistoryService tranHistoryService;
@@ -218,7 +220,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
 			return SUCCESS;
@@ -233,7 +235,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];
@@ -424,6 +426,22 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setRoomByRoom(String roomByRoom) {
 		this.roomByRoom = roomByRoom;
+	}
+
+	public String getPrintOrientation() {
+		return printOrientation;
+	}
+
+	public String getPrintLabelType() {
+		return printLabelType;
+	}
+
+	public void setPrintOrientation(String printOrientation) {
+		this.printOrientation = printOrientation;
+	}
+
+	public void setPrintLabelType(String printLabelType) {
+		this.printLabelType = printLabelType;
 	}
 
 }

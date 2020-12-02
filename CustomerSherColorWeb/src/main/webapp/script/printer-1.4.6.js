@@ -73,13 +73,15 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function PrinterMessage(mycommand, mydata, myconfig, mynumlabels){
+function PrinterMessage(mycommand, mydata, myconfig, mynumlabels,mylabeltype,myprintorientation){
 	console.log("In PrinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
 	this.messageName="PrinterMessage";
 	this.command=mycommand;
 	this.data=mydata;
+	this.labelType = mylabeltype;
+	this.printOrientation = myprintorientation;
 	if(mynumlabels){
 		this.numLabels=mynumlabels;
 	}
@@ -112,10 +114,10 @@ function createUUID() {
     return uuid;
 }
 
-function print(myPdf,myNumLabels) {
+function print(myPdf,myNumLabels,myLabelType,myPrintOrientation) {
 
 	
-	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels);
+	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels,myLabelType,myPrintOrientation);
 
 	var json = JSON.stringify(printermessage);
 	
@@ -132,7 +134,7 @@ function print(myPdf,myNumLabels) {
 function getPrinters() {
 
 	
-	var printermessage = new PrinterMessage("GetPrinters",null,null,null);
+	var printermessage = new PrinterMessage("GetPrinters",null,null,null,null,null);
 
 	var json = JSON.stringify(printermessage);
 	
@@ -152,7 +154,7 @@ function getPrinters() {
 function getPrinterConfig() {
 
 	
-	var printermessage = new PrinterMessage("GetConfig",null,null,null);
+	var printermessage = new PrinterMessage("GetConfig",null,null,null,null,null);
 
 	var json = JSON.stringify(printermessage);
 	if (ws_printer != null && ws_printer.isReady == "false") {
@@ -171,7 +173,7 @@ function getPrinterConfig() {
 function setPrinterConfig(myconfig) {
 
 		
-		var printermessage = new PrinterMessage("SetConfig",null,myconfig,null);
+		var printermessage = new PrinterMessage("SetConfig",null,myconfig,null,null,null);
 
 		var json = JSON.stringify(printermessage);
 		
