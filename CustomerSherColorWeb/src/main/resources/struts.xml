@@ -183,6 +183,26 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="displayCookieBanner" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="display">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+	        <result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="createConsentCookie" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="execute">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="displayDispenseColorantsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DispenseColorantsAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -767,6 +787,13 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+		</action>
+		<action name="displaySampleDispenseAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessSampleDispenseAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/SampleDispense.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="downloadExeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadExeAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">

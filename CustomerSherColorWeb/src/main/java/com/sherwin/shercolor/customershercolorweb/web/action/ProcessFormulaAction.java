@@ -154,22 +154,11 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 				logger.debug("back from tinterService");
 				if(colorantMap!=null && !colorantMap.isEmpty()){
-
-					//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
-					for(FormulaIngredient ingr : displayFormula.getIngredients()){
-						if(!colorantMap.containsKey(ingr.getTintSysId())){
-							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
-							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()}));
-							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
-							return "errormsg";
-						}
-					}
-
 					logger.debug("colorant map is not null");
 					if(dispenseFormula==null) dispenseFormula = new ArrayList<DispenseItem>();
 					else dispenseFormula.clear();
-
 					for(FormulaIngredient ingr : displayFormula.getIngredients()){
+						
 						logger.debug("pulling map info for " + ingr.getTintSysId());
 						DispenseItem addItem = new DispenseItem();
 						addItem.setClrntCode(ingr.getTintSysId());
@@ -178,8 +167,17 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						logger.debug(addItem.getShots());
 						addItem.setUom(ingr.getShotSize());
 						logger.debug(addItem.getUom());
-						addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
-						dispenseFormula.add(addItem);
+						//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
+						if(!colorantMap.containsKey(ingr.getTintSysId())){
+							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
+							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()}));
+							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
+							return "errormsg";
+						}
+						else {
+							addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
+							dispenseFormula.add(addItem);
+						}
 					}
 
 					retVal = SUCCESS;

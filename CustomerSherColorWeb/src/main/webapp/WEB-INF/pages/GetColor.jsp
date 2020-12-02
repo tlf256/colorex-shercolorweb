@@ -26,7 +26,7 @@
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
 	 	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script> 
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.4.js"></script>
 		<style>
 		.chip {
@@ -388,8 +388,8 @@
 				</div>			
 			</s:form>
 		</div>
-		
-				<br>
+		<br>
+		<br>
 		<br>
 		<br>
 		<script>

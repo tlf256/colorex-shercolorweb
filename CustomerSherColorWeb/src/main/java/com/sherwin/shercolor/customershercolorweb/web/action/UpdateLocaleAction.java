@@ -35,6 +35,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
     
     public String execute() {
     	try {
+    		logger.info("begin execute...");
 	    	Locale userLocale = (Locale) sessionMap.get("WW_TRANS_I18N_LOCALE");
 	    	// userLocale will be null if user has not requested a language change during this session
 	    	if (userLocale != null) {
@@ -42,18 +43,24 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 	    		
 	    		// convert locale to language tag so it can be easily converted back later
 	    		String localeId = userLocale.toLanguageTag();
-	    		Cookie localeCookie = new Cookie("locale", localeId);
-	    		localeCookie.setMaxAge(60 * 60 * 24 * 365 * 10);
-	    		// httponly helps to prevent XSS attacks
-	    		localeCookie.setHttpOnly(true);
-	    		response = (HttpServletResponse) ActionContext.getContext().get(ServletActionContext.HTTP_RESPONSE);
-	    		response.addCookie(localeCookie);
+	    		
+	    		// check for consent cookie before creating locale cookie
+	    		if(consentCookieExists()) {
+	    			logger.info("consent cookie exists, creating locale cookie");
+	    			Cookie localeCookie = new Cookie("locale", localeId);
+		    		localeCookie.setMaxAge(60 * 60 * 24 * 365 * 10);
+		    		// httponly helps to prevent XSS attacks
+		    		localeCookie.setHttpOnly(true);
+		    		response = (HttpServletResponse) ActionContext.getContext().get(ServletActionContext.HTTP_RESPONSE);
+		    		response.addCookie(localeCookie);
+	    		}
+	    		
 	    	}
 	    	
 	    	return SUCCESS;
     	
     	} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}
     }
@@ -81,12 +88,37 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 	    	return SUCCESS;
     	
     	} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}
     }
     
-    
+    private boolean consentCookieExists() {
+    	logger.info("consentCookieExists: getting request and checking for consent");
+    	request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+		Cookie[] cookies = null;
+		String cookieName = "";
+		boolean result = false;
+		
+		if(request != null) {
+			logger.debug("consentCookieExists: request is not null");
+			cookies = request.getCookies();
+		}
+		
+		// verify if consent has already been given
+		if(cookies != null) {
+			logger.debug("consentCookieExists: cookies array is not null");
+			for(Cookie cookie : cookies) {
+				cookieName = cookie.getName();
+				if(cookieName.contains("consent")) {
+					result = true;
+					break;
+				}
+			}
+		}
+		
+		return result;
+    }
     
     @Override
     public void setSession(Map<String, Object> sessionMap) {
