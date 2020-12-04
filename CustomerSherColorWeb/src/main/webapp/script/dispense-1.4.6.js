@@ -92,7 +92,7 @@ function buildProgressBars(return_message) {
 }
 function FMXAlfaDispenseProgress(tintermessage) {
 	console.log('before dispense progress send');
-
+	$('#tinterInProgressMessage').text('');
 	rotateIcon();
 	var cmd = "DispenseProgress";
 	var shotList = null;
@@ -243,6 +243,7 @@ function showTinterErrorModal(myTitle, mySummary, my_return_message) {
 }
 function FMXDispenseComplete(return_message) {
 	processingDispense = false; // allow user to start another dispense after tinter error
+	$('#spinner').addClass('d-none');
 //	buildProgressBars(return_message);
 	$("#abort-message").hide();
 
@@ -291,6 +292,7 @@ function FMXDispenseComplete(return_message) {
 
 function alfaDispenseComplete(return_message) {
 	processingDispense = false; // allow user to start another dispense after tinter error
+	$('#spinner').addClass('d-none');
 	if ((return_message.errorNumber == 0 && return_message.commandRC == 0)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
@@ -700,20 +702,21 @@ function warningCheck() {
 }
 
 //Used to rotate loader icon in modals
-function rotateIcon() {
+function rotateIcon(){
 	let n = 0;
-	let status = document.getElementById('dispenseStatus');
-	console.log(status);
 	$('#spinner').removeClass('d-none');
-	if (status) {
-		let interval = setInterval(function() {
-			n += 1;
-			if (n >= 60000 || status.textContent.indexOf("Complete") >= 0) {
-				$('#spinner').addClass('d-none');
-				clearInterval(interval);
-			} else {
-				$('#spinner').css("transform", "rotate(" + n + "deg)");
-			}
-		}, 5);
-	}
+	let interval = setInterval(function(){
+    	n += 1;
+    	if(n >= 60000){
+            $('#spinner').addClass('d-none');
+        	clearInterval(interval);
+        }else{
+        	$('#spinner').css("transform","rotate(" + n + "deg)");
+        }
+	},5);
+	
+	$('#tinterInProgressModal').one('hide.bs.modal',function(){
+		$('#spinner').addClass('d-none');
+    	if(interval){clearInterval(interval);}
+	});
 }
