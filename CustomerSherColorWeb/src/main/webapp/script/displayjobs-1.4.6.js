@@ -2,28 +2,12 @@ var jobTable;
 
 $(document).ready(function() {
 	jobTable = $('#job_table').DataTable({
-		columns: [
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
+		columnDefs: [
 			{
-				"render": function(data, type, row){
+				targets: ['displayJobs.formulaHdr'], render: function(data, type, row){
 					return data.split(" | ").join("<br/>");
 				}
-			},
-			null,
-			null,
+			}
 		],
 		dom: 'ifBrtp',
 		buttons : [
