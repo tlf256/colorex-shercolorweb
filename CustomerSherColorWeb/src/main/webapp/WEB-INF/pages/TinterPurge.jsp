@@ -44,7 +44,6 @@
 	var sendingTinterCommand = "false";
 	var _rgbArr = [];
 	var dispenseErrorList = [];
-	var statusCount=0;
 	<s:iterator value="canList" status="i">
 	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
@@ -123,21 +122,42 @@
 			});
 		}
 	}
+	
 	function PurgeProgress(tintermessage){
 		console.log('before purge status modal show');
 		$("#PurgeInProgressModal").modal('show');
 		rotateIcon();
-		var cmd = "DispenseStatus";
 		var shotList = null;
 		var configuration = null;
-		var msgId = tintermessage.msgId;
-    	var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
+		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+		if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
+			var cmd = "PurgeProgress";
+		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		}
+		else{
+			var cmd = "DispenseStatus";
+			var msgId = tintermessage.msgId;
+    		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
+		}
     	var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
     	ws_tinter.send(json);
 	}
+	/*
+	function FMXPurgeProgress(){
+		console.log('before purge status modal show');
+		$("#PurgeInProgressModal").modal('show');
+		rotateIcon();
+		var cmd = "PurgeProgress";
+		var shotList = null;
+		var configuration = null;
+    	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+    	var json = JSON.stringify(tintermessage);
+		sendingTinterCommand = "true";
+    	ws_tinter.send(json);
+	}
+	*/
 	function purge(){
-		statusCount = 0;
 		var cmd = "PurgeAll";
 		
 		var shotList = null;
@@ -150,7 +170,37 @@
 		}
     	ws_tinter.send(json);
 	}
-	
+	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
+		//$("#progress-message").text(return_message.errorMessage);
+		$("#abort-message").show();
+		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 1 ||
+				 return_message.status == 1)) {
+			//keep updating modal with status
+			//$("#progress-message").text(return_message.errorMessage);
+			$("#tinterProgressList").empty();
+			dispenseErrorList = [];
+			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
+				return_message.statusMessages.forEach(function(item){
+					buildProgressBars(return_message);
+						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+					dispenseErrorList.push(item.message);
+				});
+			} else {
+				dispenseErrorList.push(return_message.errorMessage);
+				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			}
+			console.log(return_message);
+			//setTimeout(function(){
+				PurgeProgress();
+		//	}, 200);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+			
+		}
+		else{
+			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+			$(".progress-wrapper").empty();
+			}
+			
+    }
 	function alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		$("#abort-message").show();
 		$('#progressok').addClass('d-none');  //hide ok button
@@ -159,7 +209,6 @@
 					
 			if(return_message.commandRC == 33){
 			//keep updating modal with status
-			  statusCount++;
 			
 				$("#tinterProgressList").html("").append("<li>" + return_message.errorMessage + "</li>");
 			}
