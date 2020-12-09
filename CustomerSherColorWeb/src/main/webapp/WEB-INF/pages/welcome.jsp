@@ -473,7 +473,7 @@
 				readLocalhostConfig();
             	
         	}
-		function DetectFMXResp(return_message){
+		function DetectAlfaFMXResp(return_message){
 			console.log("Processing FMX Detect Response");
 			var initErrorList=[];
 			// log event
@@ -495,7 +495,8 @@
 				else{ // close up shop with this error.
 					sendTinterEvent(myGuid, curDate, return_message, null); 
 					waitForShowAndHide('#initTinterInProgressModal');
-					return_message.errorMessage = "Timeout Waiting for X-Tinter Detect";
+					$("#tinterErrorList").empty();
+					return_message.errorMessage = "Timeout Waiting for Tinter Detect";
 				
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
@@ -683,15 +684,10 @@
 						    var DD = paddedDD.substring(paddedDD.length -2);
 							var todayYYYYMMDD = YYYY+MM+DD;
 							console.log("Compare " + todayYYYYMMDD + " to " + return_message.lastInitDate);
-							if (todayYYYYMMDD>return_message.lastInitDate){
-								detectTinter();
-							}
-							//DJMif (todayYYYYMMDD>return_message.lastInitDate){
-								// detect is not from today, redo
-								//detectTinter();
-							
-							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.indexOf("FM X") >= 0){
-									DetectFMXResp(return_message);
+
+							if(localhostConfig != null && localhostConfig.model != null && 
+									( localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0)){
+									DetectAlfaFMXResp(return_message);
 							} 
 							else if (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
@@ -756,8 +752,8 @@
 						    		// get session for tinter status
 						    		getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 								}
-								else if(localhostConfig.model.indexOf("FM X") >= 0){
-									DetectFMXResp(return_message);
+								else if(localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0){
+									DetectAlfaFMXResp(return_message);
 									}
 								else{
 									DetectFMResp(return_message);								

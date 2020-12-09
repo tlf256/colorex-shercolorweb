@@ -332,245 +332,12 @@ function ParsePrintMessage() {
 
 <script type="text/javascript">
 	//global variables moved up above
-	//tinter stuff
-/*
-	    function fkey(e){
-	    	if(sendingTinterCommand == "true"){
-	        e = e || window.event;
-	        
-	        if (e.code === 'F4') {
-	        	abort();
-	            console.log(e);
-	            e.preventDefault();
-	        }
-	    }
-	}
-	function getRGB(colorantCode){
-		var rgb = "";
-		if(colorantCode != null){
-			rgb = _rgbArr[colorantCode];
-		}
-		return rgb;
-	}
-	
-	function buildProgressBars(return_message) {
-		var count = 1;
-		var keys=[];
-		$(".progress-wrapper").empty();
-		keys = Object.keys(return_message.statusMessages);
-		if (keys !=null && keys.length > 0) {
-			return_message.statusMessages
-					.forEach(function(item) {
-						var colorList = item.message.split(" ");
-						var color = colorList[0];
-						var pct = colorList[1];
-						//fix bug where we are done, but not all pumps report as 100%
-						if (return_message.errorMessage.indexOf("done") > 1
-								&& (return_message.errorNumber == 0 && return_message.status == 0)) {
-							pct = "100%";
-						}
-						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
+	//tinter stuff moved to dispense-x.x.x.js
 
-						var $clone = $("#progress-0")
-										.removeClass('d-none')
-										.clone();
-						$clone.attr("id", "progress-" + count);
-						var $bar = $clone.children(".progress-bar");
-						$bar.attr("id", "bar-" + count);
-						$bar.attr("aria-valuenow", pct);
-						$bar.css("width", pct);
-						$clone.css("display", "block");
-						var color_rgb = getRGB(color);
-						//change color of text based on background color
-						switch (color) {
-						case "WHT":
-						case "TW":
-						case "W1":
-							$bar.children("span").css("color", "black");
-							$bar.css("background-color", "#efefef");
-							break;
-						case "OY":
-						case "Y1":
-						case "YGS":
-							$bar.children("span").css("color", "black");
-							$bar.css("background-color", color_rgb);
-							break;
-						default:
-							$bar.css("background-color", color_rgb);
-							$bar.children("span").css("color", "white");
-							break;
-						}
-
-						$bar.children("span").text(color + " " + pct);
-						console.log("barring " + item.message);
-						//console.log($clone);
-
-						$clone.appendTo(".progress-wrapper");
-
-						count++;
-					});
-		}
-	}
-	function FMXDispenseProgress() {
-		console.log('before dispense progress send');
-
-		rotateIcon();
-		var cmd = "DispenseProgress";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd, null, null, null, null);
-		var json = JSON.stringify(tintermessage);
-		sendingTinterCommand = "true";
-		ws_tinter.send(json);
-	}
-	function dispense() {
-
-		var cmd = "Dispense";
-
-		var tintermessage = new TinterMessage(cmd, shotList, null, null, null);
-
-		var json = JSON.stringify(tintermessage);
-		sendingDispCommand = "true";
-		if (ws_tinter != null && ws_tinter.isReady == "false") {
-			console
-					.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
-			ws_tinter = new WSWrapper("tinter");
-		}
-		$("#dispenseStatus").text('<s:text name="global.lastDispenseInProgress"/>');
-		// Send to tinter
-		ws_tinter.send(json);
-	}
-	*/
-	/*
-	function dispenseProgressResp(return_message) {
-
-		//$("#progress-message").text(return_message.errorMessage);
-		$("#abort-message").show();
-		$('#progressok').addClass('d-none'); //hide ok button
-		if (return_message.errorMessage.indexOf("done") == -1
-				&& (return_message.errorNumber == 1 || return_message.status == 1)) {
-			$("#tinterProgressList").empty();
-			tinterErrorList = [];
-			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
-				//keep updating modal with status
-				//$("#progress-message").text(return_message.errorMessage);
-				if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
-					buildProgressBars(return_message);
-				}
-				
-				} else {
-					tinterErrorList.push(return_message.errorMessage);
-					$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-				}
-
-			console.log(return_message);
-			setTimeout(function() {
-				FMXDispenseProgress();
-			}, 500); //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
-
-		} else if (return_message.errorMessage.indexOf("done") > 0
-				|| return_message.errorNumber != 0) {
-			if (return_message.errorNumber == 4226) {
-				return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>'
-			}
-			FMXDispenseComplete(return_message);
-		}
-
-	}
-	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
-		$("#tinterErrorList").empty();
-		$("#tinterErrorListModal").modal('show');
-		$("#abort-message").hide();
-		processingDispense = false; // allow user to start another dispense after tinter error
-		startSessionTimeoutTimers();
-	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
-	    	if(my_return_message.statusMessages.length > 0){
-	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
-	    	}
-			/*
-			my_return_message.errorList.forEach(function(item){
-			    $("#tinterErrorList").append( '</li>' + item.message + '</li>');
-			});
-			 */
-			 /*
-		}
-		if (my_return_message.errorNumber == 4226) {
-			my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>'
-		}
-		$("#tinterErrorList").append(
-				'<li class="alert alert-danger">'
-						+ my_return_message.errorMessage + '</li>');
-
-		if (myTitle != null)
-			$("#tinterErrorListTitle").text(myTitle);
-		else
-			$("#tinterErrorListTitle").text('<s:text name="global.tinterError"/>');
-		if (mySummary != null)
-			$("#tinterErrorListSummary").text(mySummary);
-		else
-			$("#tinterErrorListSummary").text("");
-
-	}
-	function showTinterErrorModal(myTitle, mySummary, my_return_message) {
-		$("#tinterErrorList").empty();
-		if (my_return_message.errorList != null
-				&& my_return_message.errorList[0] != null) {
-			my_return_message.errorList.forEach(function(item) {
-				$("#tinterErrorList").append(
-						'<li class="alert alert-danger">' + item.message
-								+ '</li>');
-			});
-		} else {
-			$("#tinterErrorList").append(
-					'<li class="alert alert-danger">'
-							+ my_return_message.errorMessage + '</li>');
-		}
-		if (myTitle != null)
-			$("#tinterErrorListTitle").text(myTitle);
-		else
-			$("#tinterErrorListTitle").text('<s:text name="global.tinterError"/>');
-		if (mySummary != null)
-			$("#tinterErrorListSummary").text(mySummary);
-		else
-			$("#tinterErrorListSummary").text("");
-		$("#tinterErrorListModal").modal('show');
-	}
-	function FMXDispenseComplete(return_message) {
-		if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
-			buildProgressBars(return_message);
-		}
-		$("#abort-message").hide();
-
-		if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
-				|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
-			// save a dispense (will bump the counter)
-
-			$("#tinterInProgressDispenseStatus").text("");
-			$("#dispenseStatus").text('<s:text name="global.lastDispenseComplete"/>');
-			rotateIcon();
-			//$('#progressok').removeClass('d-none');
-			$('#tinterInProgressTitle').text('<s:text name="global.tinterProgress"/>');
-			$('#tinterInProgressMessage').text('');
-			$("#tinterProgressList").empty();
-			tinterErrorList = [];
-			$(".progress-wrapper").empty();
-			writeDispense(return_message); // will also send tinter event
-		} else {
-			$("#tinterInProgressDispenseStatus").text(
-					'<s:text name="global.lastDispense"/>' + return_message.errorMessage);
-			$("#dispenseStatus").text(
-					'<s:text name="global.lastDispense"/>' + return_message.errorMessage);
-			waitForShowAndHide("#tinterInProgressModal");
-			console.log('hide done');
-			//Show a modal with error message to make sure the user is forced to read it.
-			FMXShowTinterErrorModal('<s:text name="global.dispenseError"/>', null, return_message);
-		}
-		sendingTinterCommand = "false";
-	}
-*/		
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
+		$("#dispenseStatus").text('<s:text name="global.lastDispenseComplete"/>');
 		$
 				.getJSON(
 						"bumpDispenseCounterAction.action?reqGuid=" + myValue
@@ -731,7 +498,7 @@ function ParsePrintMessage() {
 							curDate.toString());
 				});
 	});
-
+/*
 	//Used to rotate loader icon in modals
 	function rotateIcon() {
 		let n = 0;
@@ -752,6 +519,7 @@ function ParsePrintMessage() {
 				clearInterval(interval);
 			}
 		});
+		*/
 		jQuery(document).on("keydown", fkey); // capture F4
 	}
 	
@@ -771,6 +539,7 @@ function ParsePrintMessage() {
 	
 
 	function preDispenseCheck() {
+		$(".progress-wrapper").empty();
 		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
 		$("#tinterInProgressMessage")
 				.text(
