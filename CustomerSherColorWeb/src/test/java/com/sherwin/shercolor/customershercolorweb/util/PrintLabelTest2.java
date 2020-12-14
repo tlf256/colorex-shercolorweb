@@ -13,6 +13,8 @@ import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.common.domain.OeFormInputRequest;
+import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
@@ -39,6 +41,10 @@ public class PrintLabelTest2  {
 	private FormulationService formulationService;
 	@Autowired
 	private DrawdownLabelService drawdownLabelService;
+	@Autowired
+	CustomerService customerService;
+	@Autowired
+	ColorMastService colorMastService;
 	
 	private CdsProd cdsProd;
 	
@@ -87,40 +93,40 @@ public class PrintLabelTest2  {
 	@Test
 	public void testLabel5()  {
 		reqObj = GetShercolorFormula(request1, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label5.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label5.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 5 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel6()  {
 		reqObj = GetShercolorFormula(request2, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label6.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label6.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 6 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel7()  {
 		reqObj = GetShercolorFormula(request3, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label7.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label7.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 7 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel8()  {
 		reqObj = GetShercolorFormula(request4, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label8.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label8.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 8 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel9()  {
 		reqObj = GetShercolorFormula(request5, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label9.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label9.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 9 image created from " + reqObj.getProdNbr());
 	}
 	
@@ -128,40 +134,40 @@ public class PrintLabelTest2  {
 	@Test
 	public void testLabel10()  {
 		reqObj = GetShercolorFormula(request6, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label10.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label10.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 10 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel11()  {
 		reqObj = GetShercolorFormula(request7, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label11.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label11.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 11 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel12()  {
 		reqObj = GetShercolorFormula(request8, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label12.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label12.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 12 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel13()  {
 		reqObj = GetShercolorFormula(request9, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label13.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label13.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 13 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel14()  {
 		reqObj = GetShercolorFormula(request10, parms1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label14.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label14.pdf", reqObj,"storeLabel","PORTRAIT","","");
 		System.out.println("Label 14 image created from " + reqObj.getProdNbr());
 	}
 

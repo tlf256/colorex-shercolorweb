@@ -15,6 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
 
 import be.quodlibet.boxable.BaseTable;
@@ -30,8 +32,12 @@ public class TestSherColorLabel {
 	
 	@Autowired
 	DrawdownLabelService drawdownLabelService;
+	@Autowired
+	CustomerService customerService;
+	@Autowired
+	ColorMastService colorMastService;
 	
-	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService);
+	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
 	// Create a new empty document
 	PDDocument document = new PDDocument();
 

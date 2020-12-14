@@ -3,9 +3,8 @@ package com.sherwin.shercolor.customershercolorweb.util;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,15 +23,12 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
-import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
 import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sherwin.shercolor.common.domain.CdsColorMast;
@@ -53,7 +49,6 @@ import com.sherwin.shercolor.util.domain.SwMessage;
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
 import be.quodlibet.boxable.HorizontalAlignment;
-import be.quodlibet.boxable.Paragraph;
 import be.quodlibet.boxable.Row;
 import be.quodlibet.boxable.VerticalAlignment;
 
@@ -103,8 +98,21 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				
 	private static float WIDTH = 144f;
 
-
-	public void CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation) {
+	public void DrawLabel(List<FormulaIngredient> formulaIngredients, String partMessage, String labelType, String canType, String clrntAmtList) {
+		switch(labelType) {
+		case "storeLabel":
+			DrawStoreLabelPdf(  formulaIngredients, partMessage);
+			break;
+		case "drawdownStoreLabel":
+			DrawDrawdownStoreLabel(formulaIngredients, partMessage);
+			break;
+		case "sampleCanLabel":
+			DrawDrawdownCanLabel(formulaIngredients, partMessage, canType, clrntAmtList);
+			break;
+		}
+	}
+	
+	public void CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList) {
 		this.filename = filename;
 		this.reqObj=reqObj;
 
@@ -126,7 +134,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				// 5 or less lines in a formula - pass the one part label formula to formatting method.
 				if (formulaSize <= 5){
 					partMessage = " ";
-					DrawLabelPdf( listFormulaIngredients, partMessage);
+					DrawLabel(listFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 				}
 				else {
 					// Split the label colorant lines for 2 separate labels and proceed to create 2 labels that print simultaneously.
@@ -145,34 +153,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					// Write the part A label on first page.
 					if(partAListFormulaIngredients != null && partAListFormulaIngredients.size() > 0){
 						partMessage = "* PART A - SEE PART B OF FORMULA *";
-						switch(printLabelType) {
-						case "storeLabel":
-							DrawLabelPdf(  partAListFormulaIngredients, partMessage);
-							break;
-						case "drawdownStoreLabel":
-							DrawDrawdownStoreLabel(partAListFormulaIngredients, partMessage);
-							break;
-						case "sampleCanLabel":
-							DrawDrawdownCanLabel(partAListFormulaIngredients, partMessage);
-							break;
-						}
+						DrawLabel(partAListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 					}	
 					// Skip to next page to write part B label.
 
 					// Write the part B label on second page.
 					if(partBListFormulaIngredients != null && partBListFormulaIngredients.size() > 0){
 						partMessage = "* PART B - SEE PART A OF FORMULA *";
-						switch(printLabelType) {
-						case "storeLabel":
-							DrawLabelPdf(  partBListFormulaIngredients, partMessage);
-							break;
-						case "drawdownStoreLabel":
-							DrawDrawdownStoreLabel(partBListFormulaIngredients, partMessage);
-							break;
-						case "sampleCanLabel":
-							DrawDrawdownCanLabel(partBListFormulaIngredients, partMessage);
-							break;
-						}
+						DrawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 					}	
 				}
 				// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
@@ -209,7 +197,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		cellSettings(cell,fontSize,rowHeight );
 	}
 	
-	private void DrawLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) 
+	private void DrawStoreLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) 
 	{
 		int rowHeight = 2;
 		// Create a new blank page and add it to the document
@@ -528,7 +516,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	public void DrawDrawdownCanLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
+	public void DrawDrawdownCanLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage, String canType, String clrntAmtList ) {
 		int rowHeight = 2;
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
@@ -599,6 +587,32 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//Row<PDPage> row = table.createRow(rowHeight);
 			//setStandardFormulaTable(listFormulaIngredients, table, row, rowHeight);
 			//TODO: Create a custom formula table with 2-column format
+			//
+			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getClrntSys() + " Colorant", 50, haLeft, vaMiddle, reqObj.getDisplayFormula().getIncrementHdr().get(0));
+			int numIngredients = 0;
+			String[] clrntAmtString = new String[5];
+			clrntAmtString = clrntAmtList.split(",");
+			List<String> clrntAmtDouble = new ArrayList<String>();
+			List<String> clrntIngredientList = new ArrayList<String>();
+			int counter = 0;
+			for (String amt : clrntAmtString) {
+				if (amt != null || !amt.equals("")) {
+					if(counter%2==0) {
+						clrntIngredientList.add(amt.replace("-", " "));
+					} else {
+						clrntAmtDouble.add(String.format("%,.8f", Double.parseDouble(amt)));
+					}
+				}
+				counter++;
+			}
+			
+			for (FormulaIngredient ingredient : listFormulaIngredients) {
+				createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, clrntIngredientList.get(numIngredients), 50, haLeft, vaMiddle, clrntAmtDouble.get(numIngredients));
+				numIngredients++;
+			}
+			for (int index=numIngredients; index<5; index++) {
+				createBlankRow(table, 8);
+			}
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Product Information
@@ -607,7 +621,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			if (reqObj.getBase().length() > 15)
 				reqObj.setBase(reqObj.getBase().substring(0, 16));
 
-			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
+			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, canType, 50, haRight, vaMiddle, reqObj.getBase());
 			//-------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Sales and Product Number";
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getProdNbr(), 50, haRight, vaMiddle, reqObj.getSalesNbr());
@@ -864,7 +878,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 						job.setEnteredValue(job.getEnteredValue().substring(0, 16));
 					}
 					// 01/20/2017 - End Job 
-					createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, job.getScreenLabel(), 50, haLeft, vaMiddle, job.getEnteredValue());
+					createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, job.getScreenLabel() + ": ", 50, haLeft, vaMiddle, job.getEnteredValue());
 				}
 			}
 		}	

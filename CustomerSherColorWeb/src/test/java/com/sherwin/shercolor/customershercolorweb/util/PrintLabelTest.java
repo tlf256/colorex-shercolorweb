@@ -24,6 +24,8 @@ import com.sherwin.shercolor.util.domain.SwMessage;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
+import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,6 +35,12 @@ public class PrintLabelTest  {
 	
 	@Autowired
 	DrawdownLabelService drawdownLabelService;
+	
+	@Autowired
+	CustomerService customerService;
+	
+	@Autowired
+	ColorMastService colorMastService;
 	
 	private RequestObject reqObj = new RequestObject();
 	private List<FormulaIngredient> listIngredients;
@@ -139,44 +147,44 @@ public class PrintLabelTest  {
 	@Test
 	public void test()  {
 		reqObj = BuildReqObject(label1, formula1, message1, job1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label1.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label1.pdf", reqObj,"storeLabel","PORTRAIT","","");
 	}
 	
 	@Test
 	public void test2()  {
 		reqObj = BuildReqObject(label2, formula2, message2, job2);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
 		
-		printLabel.CreateLabelPdf("label2.pdf", reqObj,"storeLabel","PORTRAIT");
+		printLabel.CreateLabelPdf("label2.pdf", reqObj,"storeLabel","PORTRAIT","","");
 	}
 	
 	@Test
 	public void test3()  {
 		reqObj = BuildReqObject(label3, formula3, message3, job3);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label3.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label3.pdf", reqObj,"storeLabel","PORTRAIT","","");
 	}
 	
 	@Test
 	public void test4()  {
 		reqObj = BuildReqObject(label4, formula4, message4, job4);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label4.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label4.pdf", reqObj,"storeLabel","PORTRAIT","","");
 	}
 	
 	@Test
 	public void test5()  {
 		reqObj = BuildReqObject(label5, formula5, message5, job5);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label25.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label25.pdf", reqObj,"storeLabel","PORTRAIT","","");
 	}
 	
 	@Test
 	public void test6()  {
 		reqObj = BuildReqObject(label6, formula6, message6, job6);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-		printLabel.CreateLabelPdf("label26.pdf", reqObj,"storeLabel","PORTRAIT");
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+		printLabel.CreateLabelPdf("label26.pdf", reqObj,"storeLabel","PORTRAIT","","");
 	}
 	
 	private RequestObject BuildReqObject(String label[],  String formula[], String message[], String job[]){

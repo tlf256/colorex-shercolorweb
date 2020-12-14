@@ -18,6 +18,13 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="script/customershercolorweb-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
+
+
 <s:set var="thisGuid" value="reqGuid" />
 
 <style>
@@ -43,7 +50,11 @@
 </style>
 
 <script type="text/javascript">
-
+	
+	var printerConfig;
+	var clrntAmtList = "";
+	var canType = "";
+	
 	$(function() {	
 		// set default sample fill from can type
 		updateSampleFill();
@@ -61,6 +72,7 @@
 	
 	function updateSampleFill(){
 		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
+		canType = $("select[id='canTypesList'] option:selected").text();
 		var factoryFill = "${factoryFill}";
 		// get the sample size for this can type
 		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
@@ -76,8 +88,10 @@
 	}
 	
 	function calculatePartialOunces(){
+		clrntAmtList = "";
 		// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
 		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
+		//canType = (selectedIndex).text();
 		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
 		var sampleSizeFloat = parseFloat(sampleSize);
 		var sizeConversion = "${sizeConversion}";
@@ -91,11 +105,13 @@
 		
 		if (!isNaN(sampleSizeFloat) && !isNaN(sizeConvFloat)){
 			$(".formulaRow").each(function(){
+				var tintSysId = $(this).find('.tintSysId').text();
 				var numShots = $(this).find('.numShots').text();
 				var shotSize = $(this).find('.shotSize').text();
 				var shotsToOunces = Number(numShots) / Number(shotSize);
 				if (!isNaN(shotsToOunces)){
 					var partialOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
+					clrntAmtList += tintSysId + "," + partialOunces.toString() + ",";
 					$(this).find('.partialOunces').text(partialOunces);
 					// warn user if colorant amount is lower than tinter dispense floor, make them choose a larger can type
 					if (!isNaN(dispenseFloorFloat) && partialOunces < dispenseFloorFloat){
@@ -109,8 +125,133 @@
 		} else {
 			console.log("problem parsing the sample size or conversion size");
 		}
+		console.log("CLRNT AMT LIST: " + clrntAmtList);
 	}
+	
+	function showPrintModal(){
+		if(printerConfig && printerConfig.model){
+			
+			$("#printLabelPrint").show();
+			$("#printLabelPrint").focus();
+			
+			
+			$("#numLabels").val(printerConfig.numLabels);
+			$("#numLabels").show();
+		}
+		else{
+			$("#printLabelPrint").hide();
+			$("#numLabels").hide();
+		}
+		
+		$("#printLabelModal").modal('show');
 
+		
+	}
+	
+	function printButtonClickGetJson() {
+		if (printerConfig && printerConfig.model) {
+			var myguid = $("#reqGuid").val();
+
+			var myPdf = new pdf(myguid);
+			$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
+			var numLabels = null;
+
+			numLabels = printerConfig.numLabels;
+			numLabelsVal = $("#numLabels").val();
+			if(numLabelsVal && numLabelsVal !=0){
+				numLabels = numLabelsVal;
+			}
+			print(myPdf, numLabels, printLabelType, printOrientation);
+		}
+
+	}
+	
+	function printButtonClick() {
+		var myValue = $("#reqGuid").val();
+		console.log("calling print window open for print action with guid "
+				+ myValue);
+		window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
+				'<s:text name="displayFormula.printLabel"/>', 'width=500, height=1000');
+	}
+	
+	function ParsePrintMessage() {
+		var parsed = false;
+		try {
+			if (ws_printer != null && ws_printer.wsmsg != null
+					&& ws_printer.wserror == null) {
+				var return_message = JSON.parse(ws_printer.wsmsg);
+				if(return_message){
+				switch (return_message.command) {
+				case 'Print':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerInProgressModal").modal('show');
+						$("#printerInProgressMessage").text(
+								'<s:text name="displayFormula.printResultColon"/>' + return_message.errorMessage);
+						console.log(return_message);
+						//waitForShowAndHide("#tinterInProgressModal");
+					}
+					
+					break;
+				case 'GetConfig':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerResponseModal").modal('show');
+						$("#printerResponseMessage").text(
+								'<s:text name="displayFormula.getPrinterResult"/>'
+										+ return_message.errorMessage);
+						console.log(return_message);
+					} else {
+						printerConfig = return_message.printerConfig;
+
+					}
+					break;
+				default:
+					//Not an response we expected...
+					console
+							.log("Message from different command is junk, throw it out");
+				}
+				} // end switch statement
+			} else {}
+
+		} catch (error) {
+			console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
+			console.log("Message is junk, throw it out");
+			//console.log("Junk Message is " + ws_tinter.wsmsg);
+		}
+		return parsed;
+	}
+	
+	function printDrawdownCanLabel() {
+		printLabelType = "sampleCanLabel";
+		printOrientation = "PORTRAIT";
+		setLabelPrintEmbedContainer(printLabelType,printOrientation,clrntAmtList,canType);
+		//prePrintSave(printLabelType,printOrientation);
+		showPrintModal();
+	}
+	
+	function setLabelPrintEmbedContainer(labelType,orientation,clrntAmtList,canType) {
+		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' +
+							labelType + '&printOrientation=' + orientation +
+							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '" frameborder="0" class="embed-responsive-item">';
+		$("#printLabelEmbedContainer").html(embedString);
+	}
+	
+	//Enable enter key to print.  No need for mouse click
+	$("#printLabelPrint").keypress(function(event){
+	    var keycode = (event.keyCode ? event.keyCode : event.which);
+	    if(keycode == '13'){
+			if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
+			    // print button is visible
+				 printButtonClickGetJson(); 
+			}
+	       
+	    }
+	});
 </script>
 </head>
 
@@ -259,10 +400,12 @@
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 	<br>
-	
+	<s:form action="formulaUserPrintAction" validate="true"
+			theme="bootstrap">
+		<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
+	</s:form>
 	<s:form action="" validate="true" theme="bootstrap">
 	<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
-					
 	<div class="row mt-4">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
@@ -309,7 +452,7 @@
 				<tbody>
 					<s:iterator value="displayFormula.ingredients" status="i">
 						<tr id="<s:property value="%{#i.index}"/>" class="formulaRow">
-							<td class="col-lg-5 col-md-6 col-sm-4 col-xs-4">
+							<td class="tintSysId col-lg-5 col-md-6 col-sm-4 col-xs-4">
 									<s:property value="tintSysId" />-<s:property value="name" /></td>
 							<td class="numShots d-none"><s:property value="shots" /></td>
 							<td class="shotSize d-none"><s:property value="shotSize" /></td>
@@ -352,18 +495,90 @@
 		<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 			<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
 					onclick="return false;" />
-			<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
-					onclick=""><s:text name="global.drawdownLabel"/></button>
 			<button type="button" class="btn btn-secondary" id="sampleCanLabelPrint"
-					onclick=""><s:text name="sampleDispense.canLabel"/></button>
-			<button type="button" class="btn btn-secondary" id="storeLabelPrint"
-					onclick=""><s:text name="global.storeLabel"/></button>
+					onclick="printDrawdownCanLabel();return false;"><s:text name="sampleDispense.canLabel"/></button>
 			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('sampleDispense.done')}"
                    	action="userCancelAction" />
         </div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 	</div>
 	</s:form>
-
+	
+	<!-- Printer In Progress Modal Window -->
+	<div class="modal" aria-labelledby="printerInProgressModal"
+		aria-hidden="true" id="printerInProgressModal" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- 	<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i> -->
+					<h5 class="modal-title" id="printerInProgressTitle"><s:text name="displayFormula.labelPrinterError"/></h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="printerInProgressMessage" font-size="4"></p>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+	<!-- Print Label Modal Window -->
+	<div class="modal" aria-labelledby="printLabelModal"
+		aria-hidden="true" id="printLabelModal" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="printLabelTitle"><s:text name="displayFormula.printLabel"/></h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="printLabelEmbedContainer" class="embed-responsive embed-responsive-1by1">
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="col-xs-6">
+						<button type="button" class="btn btn-primary pull-left"
+							id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
+					</div>
+					<div class="col-xs-4">
+						
+						<select id="numLabels" name="numLabels"  >
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							
+						 </select>
+					</div>
+					 <div class="col-xs-2 ">
+						<button type="button" class="btn btn-secondary"
+						id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	$(document).ready(function() {
+		if ($("#formulaUserPrintAction_siteHasPrinter").val() == "true") {
+			getPrinterConfig();
+		}
+		$('#printLabelModal').on('shown.bs.modal', function () {
+			$("#printLabelPrint").focus();
+		}); 
+	});
+	</script>
 </body>
 </html>

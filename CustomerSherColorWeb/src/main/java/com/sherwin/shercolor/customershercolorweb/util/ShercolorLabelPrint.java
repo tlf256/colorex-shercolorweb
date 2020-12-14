@@ -7,6 +7,6 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public interface ShercolorLabelPrint {
 
-	public void CreateLabelPdf(String filename, RequestObject reqObj, String printLabelType, String printOrientation);
+	public void CreateLabelPdf(String filename, RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList);
 	
 }

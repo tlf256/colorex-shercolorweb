@@ -26,6 +26,7 @@ import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
+import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
@@ -63,11 +64,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private boolean midCorrection = false;
 	private String printOrientation;
 	private String printLabelType;
+	private String canType;
+	private String clrntAmtList;
 
 	private TinterService tinterService;
 	private TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
 	private DrawdownLabelService drawdownLabelService;
+	private ColorMastService colorMastService;
 
 	private List<CdsRoomList> roomByRoomList;
 	private String roomByRoom;
@@ -217,8 +221,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
 			return SUCCESS;
@@ -232,8 +236,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		FileInputStream fin = null;
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];
@@ -442,4 +446,28 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		this.printLabelType = printLabelType;
 	}
 
+	public ColorMastService getColorMastService() {
+		return colorMastService;
+	}
+
+	public void setColorMastService(ColorMastService colorMastService) {
+		this.colorMastService = colorMastService;
+	}
+
+	public String getCanType() {
+		return canType;
+	}
+
+	public String getClrntAmtList() {
+		return clrntAmtList;
+	}
+
+	public void setCanType(String canType) {
+		this.canType = canType;
+	}
+
+	public void setClrntAmtList(String clrntAmtList) {
+		this.clrntAmtList = clrntAmtList;
+	}
+	
 }

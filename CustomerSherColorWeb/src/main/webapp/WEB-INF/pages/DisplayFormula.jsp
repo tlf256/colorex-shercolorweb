@@ -133,13 +133,6 @@ function printDrawdownLabel() {
 	prePrintSave(printLabelType,printOrientation);
 }
 
-function printDrawdownCanLabel() {
-	printLabelType = "sampleCanLabel";
-	printOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(printLabelType,printOrientation);
-	prePrintSave(printLabelType,printOrientation);
-}
-
 function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
 	if (verifyRoomSelected() == true){
@@ -231,7 +224,9 @@ function printOnDispenseGetJson() {
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
-
+		// Currently only storeLabels can be printed through dispense
+		printLabelType = "storeLabel";
+		printOrientation = "PORTRAIT";
 		numLabels = printerConfig.numLabels;
 		print(myPdf, numLabels, printLabelType, printOrientation);
 	}
@@ -521,7 +516,6 @@ function ParsePrintMessage() {
 		});
 		*/
 		jQuery(document).on("keydown", fkey); // capture F4
-	}
 	
 </script>
 <script type="text/javascript">
@@ -1058,10 +1052,8 @@ function setFormSubmitting() { formSubmitting = true; };
 						i.e., don't print the label if the verifyRoomSelected returns false -->
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
-						<button type="button" class="btn btn-secondary" id="sampleCanLabelPrint"
-							onclick="printDrawdownCanLabel();return false;"><s:text name="displayFormula.sampleCanLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
-							onclick="printStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
+							onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
