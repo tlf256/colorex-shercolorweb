@@ -424,15 +424,18 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			fontSize = 7;
 			List<String> listIncrementHdr = reqObj.getDisplayFormula().getIncrementHdr();
 			//(Row<PDPage> row, String cellValue, int fontSize,  float cellHeight, float cellWidth, String cellAlign)
-			Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",52f, 7,  "left");
+			if(listIncrementHdr != null && listIncrementHdr.size() > 0) {
+				Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",52f, 7,  "left");
 
-			Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),11f, 8, "center");
+				Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),11f, 8, "center");
 
-			Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 11f,8, "center");
+				Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 11f,8, "center");
 
-			Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 11f,8, "center");
+				Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 11f,8, "center");
 
-			Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 14f,8, "center");
+				Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 14f,8, "center");
+			}
+			
 			//--------------------------------------------------------------------------------------------------------
 			// Formula Label Line Item.
 			//List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
