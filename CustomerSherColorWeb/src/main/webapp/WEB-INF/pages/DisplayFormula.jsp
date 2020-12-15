@@ -26,7 +26,7 @@
 <script type="text/javascript" charset="utf-8"
 	src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
@@ -72,6 +72,8 @@ badge {
 </style>
 <script type="text/javascript">
 //global vars
+	var printLabelType = '';
+	var printOrientation = '';
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
 	var dispenseTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
@@ -103,7 +105,35 @@ badge {
 </script>
 <script type="text/javascript">
 //printer scripts
-function prePrintSave() {
+
+function setLabelPrintEmbedContainer(labelType,orientation) {
+	var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	$("#printLabelEmbedContainer").html(embedString);
+}
+
+function printStoreLabel() {
+	
+	printLabelType = "storeLabel";
+	printOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(printLabelType,printOrientation);
+	prePrintSave(printLabelType,printOrientation);
+}
+
+function printDrawdownStoreLabel() {
+	printLabelType = "drawdownStoreLabel";
+	printOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(printLabelType,printOrientation);
+	prePrintSave(printLabelType,printOrientation);
+}
+
+function printDrawdownLabel() {
+	printLabelType = "drawdownLabel";
+	printOrientation = "LANDSCAPE";
+	setLabelPrintEmbedContainer(printLabelType,printOrientation);
+	prePrintSave(printLabelType,printOrientation);
+}
+
+function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
 	if (verifyRoomSelected() == true){
 		// save before print
@@ -181,6 +211,7 @@ function showPrintModal(){
 		$("#printLabelPrint").hide();
 		$("#numLabels").hide();
 	}
+	
 	$("#printLabelModal").modal('show');
 
 	
@@ -193,9 +224,11 @@ function printOnDispenseGetJson() {
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
-
+		// Currently only storeLabels can be printed through dispense
+		printLabelType = "storeLabel";
+		printOrientation = "PORTRAIT";
 		numLabels = printerConfig.numLabels;
-		print(myPdf, numLabels);
+		print(myPdf, numLabels, printLabelType, printOrientation);
 	}
 
 }
@@ -212,7 +245,7 @@ function printButtonClickGetJson() {
 		if(numLabelsVal && numLabelsVal !=0){
 			numLabels = numLabelsVal;
 		}
-		print(myPdf, numLabels);
+		print(myPdf, numLabels, printLabelType, printOrientation);
 	}
 
 }
@@ -483,7 +516,6 @@ function ParsePrintMessage() {
 		});
 		*/
 		jQuery(document).on("keydown", fkey); // capture F4
-	}
 	
 </script>
 <script type="text/javascript">
@@ -1019,9 +1051,9 @@ function setFormSubmitting() { formSubmitting = true; };
 						and move the verifyRoomSelected() calls to inside those methods and handle conditionally,
 						i.e., don't print the label if the verifyRoomSelected returns false -->
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
-							onclick="verifyRoomSelected();"><s:text name="global.drawdownLabel"/></button>
+							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
-							onclick="verifyRoomSelected();"><s:text name="global.storeLabel"/></button>
+							onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
@@ -1035,7 +1067,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
 						<button type="button" class="btn btn-secondary" id="formulaPrint"
-							onclick="prePrintSave();return false;"><s:text name="global.print"/></button>
+							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
@@ -1271,12 +1303,9 @@ function setFormSubmitting() { formSubmitting = true; };
 							</button>
 						</div>
 						<div class="modal-body">
-							<div class="embed-responsive embed-responsive-1by1">
-								<embed
-									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>"
-									frameborder="0" class="embed-responsive-item">
+							<div id="printLabelEmbedContainer" class="embed-responsive embed-responsive-1by1">
+								
 							</div>
-
 						</div>
 						<div class="modal-footer">
 							<div class="col-xs-6">
