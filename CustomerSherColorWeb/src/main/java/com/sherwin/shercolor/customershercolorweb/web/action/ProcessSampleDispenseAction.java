@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +17,14 @@ import com.sherwin.shercolor.common.domain.CustWebTinterProfileCanTypes;
 import com.sherwin.shercolor.common.domain.CdsMiscCodes;
 import com.sherwin.shercolor.common.domain.CdsProdCharzd;
 import com.sherwin.shercolor.common.domain.CustWebCanTypes;
+import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.UtilityService;
+import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
@@ -31,10 +35,12 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private FormulaInfo displayFormula;
+	private List<DispenseItem> dispenseFormula;
 	private int qtyDispensed;
 	private TinterInfo tinter;
 	private boolean siteHasTinter = false;
 	private boolean siteHasPrinter;
+	private boolean sessionHasTinter = false;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean accountUsesRoomByRoom = false;
 	List<CustWebCanTypes> canTypesList = null;
@@ -64,7 +70,11 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 			setQtyDispensed(reqObj.getQuantityDispensed());
 			setTinter(reqObj.getTinter());
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
+			// check if user has tinter configured
+			List<String> tinterList = tinterService.listOfModelsForCustomerId(reqObj.getCustomerID(), null);
+			if(tinterList.size() > 0) { setSiteHasTinter(true); }
 			
+						
 			// check if this account is a drawdown center and if it is profiled to use room by room option
 			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			if (profile != null) {
@@ -80,10 +90,6 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 			if (reqObj.getTinter() != null) {
 				tinterModel = reqObj.getTinter().getModel();
 			}
-			CustWebTinterProfile tinterProfile = tinterService.getCustWebTinterProfile(tinterModel);
-			if (tinterProfile != null) {
-				setDispenseFloor(tinterProfile.getColorantDispenseFloor());
-			}
 			
 			// grab list of can types associated with current tinter model
 			List<CustWebTinterProfileCanTypes> tinterCanList = tinterService.listOfCustWebTinterProfileCanTypesByTinterModel(tinterModel);
@@ -93,10 +99,6 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 				canType = tinterService.getCustWebCanType(tinterCan.getCanType());
 				canTypesList.add(canType);
 			}
-			
-			// check if user has tinter configured
-			List<String> tinterList = tinterService.listOfModelsForCustomerId(reqObj.getCustomerID(), null);
-			if(tinterList.size() > 0) { siteHasTinter = true; }
 			
 			// get factory fill for the product
 			String prodNbr = reqObj.getProdNbr();
@@ -120,7 +122,57 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 					}
 				}
 			}
-			retVal = SUCCESS;
+			
+			// set uom as the inverse of tinter dispense floor (it is the smallest amount the tinter can measure so it gives best precision for num shots)
+			CustWebTinterProfile tinterProfile = tinterService.getCustWebTinterProfile(tinterModel);
+			int uom = 0;
+			if (tinterProfile != null) {
+				setDispenseFloor(tinterProfile.getColorantDispenseFloor());
+				if (dispenseFloor > 0) {
+					uom = (int) Math.round(1 / dispenseFloor);
+				}
+			}
+			
+			// set up tinter colorant dispense info for small sample
+			if(tinter != null && tinter.getModel() != null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
+				setSessionHasTinter(true);
+				logger.debug("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
+
+				if(colorantMap != null && !colorantMap.isEmpty()){
+					logger.debug("colorant map is not null");
+					dispenseFormula = new ArrayList<DispenseItem>();
+
+					for(FormulaIngredient ingr : displayFormula.getIngredients()){  
+						DispenseItem addItem = new DispenseItem();
+						addItem.setClrntCode(ingr.getTintSysId());
+						addItem.setShots(0);
+						if (uom > 0) {
+							addItem.setUom(uom);
+						} else {
+							addItem.setUom(ingr.getShotSize());
+						}
+						// Validating completeness of colorantMap data returned from DB. If not, send error msg back to SampleDispense.jsp
+						if(!colorantMap.containsKey(ingr.getTintSysId())){
+							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()} ));
+							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
+							retVal = INPUT; 
+						} else {
+							addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
+							dispenseFormula.add(addItem);
+						}
+					}
+
+					retVal = SUCCESS;
+
+				} else {
+					logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+					retVal = ERROR;
+				}
+			} else {
+				// no tinter, go on
+				retVal = SUCCESS;
+			}		
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
 			e.printStackTrace();
@@ -128,7 +180,6 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 		}
 		return retVal;
 	}
-	
 	
 	
 
@@ -168,7 +219,15 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 	public void setDisplayFormula(FormulaInfo displayFormula) {
 		this.displayFormula = displayFormula;
 	}
+	
+	public List<DispenseItem> getDispenseFormula() {
+		return dispenseFormula;
+	}
 
+	public void setDispenseFormula(List<DispenseItem> dispenseFormula) {
+		this.dispenseFormula = dispenseFormula;
+	}
+	
 	public int getQtyDispensed() {
 		return qtyDispensed;
 	}
@@ -231,6 +290,14 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 
 	public void setDispenseFloor(double dispenseFloor) {
 		this.dispenseFloor = dispenseFloor;
+	}
+
+	public boolean isSessionHasTinter() {
+		return sessionHasTinter;
+	}
+
+	public void setSessionHasTinter(boolean sessionHasTinter) {
+		this.sessionHasTinter = sessionHasTinter;
 	}
 }
 
