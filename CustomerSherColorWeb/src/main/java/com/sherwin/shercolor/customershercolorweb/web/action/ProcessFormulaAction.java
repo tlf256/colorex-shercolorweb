@@ -23,6 +23,8 @@ import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
+import com.sherwin.shercolor.common.service.DrawdownLabelService;
+import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.ProductColorService;
 import com.sherwin.shercolor.common.service.TinterService;
@@ -57,10 +59,17 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private boolean accountUsesRoomByRoom = false;
 	private boolean sessionHasTinter;
 	private boolean midCorrection = false;
+	private String printOrientation;
+	private String printLabelType;
+	private String canType;
+	private String clrntAmtList;
 
 	private TinterService tinterService;
 	private TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
+	private DrawdownLabelService drawdownLabelService;
+	private ColorMastService colorMastService;
+
 	private List<CdsRoomList> roomByRoomList;
 	private String roomByRoom;
 	
@@ -70,7 +79,6 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	@Autowired 
 	private UtilityService utilityService;
 	
-
 	public String display(){
 		String retVal = null;
 
@@ -210,8 +218,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
-			printLabel.CreateLabelPdf("label.pdf", reqObj);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
 			return SUCCESS;
@@ -225,8 +233,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		FileInputStream fin = null;
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl();
-			printLabel.CreateLabelPdf("label.pdf", reqObj);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];
@@ -378,6 +386,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
 	}
+
+	public DrawdownLabelService getDrawdownLabelService() {
+		return drawdownLabelService;
+	}
+
+	public void setDrawdownLabelService(DrawdownLabelService drawdownLabelService) {
+		this.drawdownLabelService = drawdownLabelService;
+	}
 	
 	public boolean isAccountIsDrawdownCenter() {
 		return accountIsDrawdownCenter;
@@ -410,6 +426,45 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	public void setRoomByRoom(String roomByRoom) {
 		this.roomByRoom = roomByRoom;
 	}
-	
 
+	public String getPrintOrientation() {
+		return printOrientation;
+	}
+
+	public String getPrintLabelType() {
+		return printLabelType;
+	}
+
+	public void setPrintOrientation(String printOrientation) {
+		this.printOrientation = printOrientation;
+	}
+
+	public void setPrintLabelType(String printLabelType) {
+		this.printLabelType = printLabelType;
+	}
+
+	public ColorMastService getColorMastService() {
+		return colorMastService;
+	}
+
+	public void setColorMastService(ColorMastService colorMastService) {
+		this.colorMastService = colorMastService;
+	}
+
+	public String getCanType() {
+		return canType;
+	}
+
+	public String getClrntAmtList() {
+		return clrntAmtList;
+	}
+
+	public void setCanType(String canType) {
+		this.canType = canType;
+	}
+
+	public void setClrntAmtList(String clrntAmtList) {
+		this.clrntAmtList = clrntAmtList;
+	}
+	
 }
