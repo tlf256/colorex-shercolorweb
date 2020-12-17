@@ -49,9 +49,13 @@
 						<div class="col-sm-2">
 						</div>
 	            		<div class="col-sm-4">
-	            			<s:select label="%{getText('global.selectFormulaToUse')}" 
+	            			<s:select id="formulasList" label="%{getText('global.selectFormulaToUse')}" 
 	            				headerKey="-1" headerValue="%{getText('global.confirmColorAndBase')}"
 								list="colorBases" name="selectedColorBase"  autofocus="autofocus" required="required" />
+							<div id="formulasDropdownErrorText" style="color:red" class="d-none">
+								<s:text name="global.pleaseSelectAFormula"/>
+							</div>
+							<br>
 						</div>
 				
 				</div>
@@ -69,7 +73,8 @@
 						<div class="col-sm-2">
 						</div>	
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="fbBase2UserNextAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
+									  onclick="return verifyFormulaSelected();" action="fbBase2UserNextAction"/>
 						</div>
 						<div class="col-sm-2">	
 						</div>
@@ -86,20 +91,18 @@
 		<br>
 		<br>
 		<script>
-		<!--
-		  function HF_openSherwin() {
-		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");
-		    popupWin.focus();
-		  }  
-		  function HF_openLegal() {
-		    var popupWin = window.open("http://www.sherwin-williams.com/terms/", "legal", "resizable=no,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=800,height=600,left=10,top=10");
-		    popupWin.focus();
-		  }
-		  function HF_openPrivacy() {
-		    var popupWin = window.open("http://privacy.sherwin-williams.com/", "privacy", "resizable=yes,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=640,height=480,left=10,top=10");
-		    popupWin.focus();
-		  }
-		//-->
+			function verifyFormulaSelected(){
+				// require formula choice if user hasn't already 
+				var chooseFormulaText = '<s:text name="global.confirmColorAndBase"/>'
+				var formulaText = $("select[id='formulasList'] option:selected").text();
+				if (formulaText == null || formulaText == "" || formulaText == chooseFormulaText){
+					$("#formulasList").focus();
+					$("#formulasDropdownErrorText").removeClass("d-none");
+					return false;
+				} else {
+					return true;
+				}
+			}
 		</script>
   
 		<!-- Including footer -->

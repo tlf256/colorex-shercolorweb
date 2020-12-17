@@ -50,9 +50,13 @@
 						<div class="col-sm-2">
 						</div>
 	            		<div class="col-sm-4">
-	            			<s:select label="%{getText('global.selectFormulaToUse')}" 
+	            			<s:select id="formulasList" label="%{getText('global.selectFormulaToUse')}" 
 	            				headerKey="-1" headerValue="%{getText('global.confirmColorAndBase')}"
 								list="colorBases" name="selectedColorBase"  autofocus="autofocus" required="required" />
+							<div id="formulasDropdownErrorText" style="color:red" class="d-none">
+								<s:text name="global.pleaseSelectAFormula"/>
+							</div>
+							<br>
 						</div>
 				</div>
 				<div class="row">
@@ -64,12 +68,12 @@
 								onkeypress="return isNumber(event)" required="true" oninvalid="this.setCustomValidity('%{getText('global.pleaseFillOutThisField')}');" oninput="setCustomValidity('')" />
 						</div>
 				</div>
-			
 				<div class="row">
 						<div class="col-sm-2">
 						</div>	
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="fbBaseUserNextAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" 
+									  onclick="return verifyFormulaSelected();" action="fbBaseUserNextAction"/>
 						</div>
 						<div class="col-sm-2">	
 						</div>
@@ -88,6 +92,19 @@
 				        return false;
 				    }
 				    return true;
+				}
+				
+				function verifyFormulaSelected(){
+					// require formula choice if user hasn't already 
+					var chooseFormulaText = '<s:text name="global.confirmColorAndBase"/>'
+					var formulaText = $("select[id='formulasList'] option:selected").text();
+					if (formulaText == null || formulaText == "" || formulaText == chooseFormulaText){
+						$("#formulasList").focus();
+						$("#formulasDropdownErrorText").removeClass("d-none");
+						return false;
+					} else {
+						return true;
+					}
 				}
 			</script>
 		</div>
