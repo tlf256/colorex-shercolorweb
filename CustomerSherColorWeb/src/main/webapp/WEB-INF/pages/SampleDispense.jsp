@@ -18,18 +18,25 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
-
-
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 
 <style>
 .sw-bg-main {
 	background-color: ${sessionScope[thisGuid].rgbHex};
+}
+badge {
+	font-size: 14px;
+	margin: 5px;
+}
+
+.btn {
+	margin-left: 3px;
+	margin-right: 3px;
 }
 .chip {
   position: relative;
@@ -50,12 +57,22 @@
 </style>
 
 <script type="text/javascript">
-	
+	// global vars 
 	var printerConfig;
 	var clrntAmtList = "";
 	var canType = "";
-	
+	var shotList = [];
+	var drawdownShotList = [];
+	var processingDispense = false;
+
 	$(function() {	
+		// set up initial shotList
+		<s:iterator value="dispenseFormula">
+			var color = new Colorant("<s:property value='clrntCode'/>", <s:property value="shots"/>,
+									  <s:property value="position"/>, <s:property value="uom"/>);
+			shotList.push(color);
+		</s:iterator>
+		
 		// set default sample fill from can type
 		updateSampleFill();
 		// convert shots to decimal ounces
@@ -80,12 +97,14 @@
 		
 		if (!isNaN(sampleSizeFloat)){
 			// calculate amount of base in the sample:   Sample Size / 128 * Factory Fill
+			// don't need to do size conversion because factory fill is already scaled to a gallon
 			var productSampleFill = sampleSizeFloat / 128 * factoryFill;
 			$("#sampleFill").val(productSampleFill);
 		} else {
 			console.log("problem parsing the sample size");
 		}
 	}
+	
 	
 	function calculatePartialOunces(){
 		clrntAmtList = "";
@@ -98,6 +117,7 @@
 		var dispenseFloor = "${dispenseFloor}";
 		var dispenseFloorFloat = parseFloat(dispenseFloor);
 		var sizeConvFloat = parseFloat(sizeConversion);
+		var uom = shotList[0].uom;
 		
 		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
 		$("#dispenseFloorErrorText").addClass('d-none');
@@ -105,13 +125,27 @@
 		
 		if (!isNaN(sampleSizeFloat) && !isNaN(sizeConvFloat)){
 			$(".formulaRow").each(function(){
-				var tintSysId = $(this).find('.tintSysId').text();
+				var colorantName = $(this).find('.colorantName').text();
 				var numShots = $(this).find('.numShots').text();
 				var shotSize = $(this).find('.shotSize').text();
 				var shotsToOunces = Number(numShots) / Number(shotSize);
 				if (!isNaN(shotsToOunces)){
 					var partialOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
-					clrntAmtList += tintSysId + "," + partialOunces.toString() + ",";
+					clrntAmtList += colorantName + "," + partialOunces.toString() + ",";
+
+					// calculate number of shots based on tinter dispense floor, round to nearest int
+					var updatedNumShots = Math.round(partialOunces * uom); 
+					// divide again to find and display the exact partialOunces that you'll be sending the tinter
+					partialOunces = updatedNumShots / uom;
+					
+					// update shotlist
+					var colorantName = $(this).find('.colorantName').text();
+					shotList.forEach(function (item, index) {
+						 if (colorantName.includes(item.code)){
+							 item.shots = updatedNumShots;
+						 }
+					});
+					
 					$(this).find('.partialOunces').text(partialOunces);
 					// warn user if colorant amount is lower than tinter dispense floor, make them choose a larger can type
 					if (!isNaN(dispenseFloorFloat) && partialOunces < dispenseFloorFloat){
@@ -252,43 +286,221 @@
 	       
 	    }
 	});
+
+	
+	/* Dispense validation methods */
+	
+	$(function() {
+		$("#verifyButton").on("click", function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			// verify scan
+			if ($("#verifyScanInput").val() !== "" && 
+					($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}" || 
+					$("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}" || 
+					$("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" || 
+					$("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
+				
+				waitForShowAndHide("#verifyModal");
+				$("#positionContainerModal").modal('show');
+			} else {
+				$("#verifyScanInputError").text('<s:text name="displayFormula.productScannedDoesNotMatch"/>');
+				$("#verifyScanInput").select();
+			}
+		});
+		
+		$("#startDispenseButton").on("click", function(event) {
+			if (processingDispense == false) {
+				processingDispense = true;
+				stopSessionTimeoutTimers(timeoutWarning, timeoutExpire);
+				event.preventDefault();
+				event.stopPropagation();
+				waitForShowAndHide("#positionContainerModal");
+				$("#tinterInProgressModal").modal('show');
+				rotateIcon();
+				$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress"/>');
+				$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense"/>');
+
+				// Call decrement colorants which will call dispense
+				decrementColorantLevels();
+			}
+			// else do nothing
+		});
+		
+	});
+	
+	
+	function preDispenseCheck() {
+		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
+		$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitClrntLevelCheck"/>');
+		$("#tinterInProgressModal").modal('show');
+		rotateIcon();
+		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
+		getSessionTinterInfo("${reqGuid}", preDispenseCheckCallback);
+	}
+	
+	function preDispenseCheckCallback() {
+		// check if purge required...
+		var dateFromString = new Date(sessionTinterInfo.lastPurgeDate);
+		var today = new Date();
+		if (dateFromString.getFullYear() < today.getFullYear()
+				|| dateFromString.getMonth() < today.getMonth()
+				|| dateFromString.getDate() < today.getDate()) {
+			$("#tinterErrorList").empty();
+			$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="global.tinterPurgeIsRequiredLastDoneOnDate">'
+										+ '<s:param>' + moment(dateFromString).format('ddd MMM DD YYYY') + '</s:param></s:text></li>');
+			waitForShowAndHide("#tinterInProgressModal");
+			$("#tinterErrorListModal").modal('show');
+			$("#tinterErrorListTitle").text('<s:text name="global.purgeRequired"/>');
+			$("#tinterErrorListSummary").text('<s:text name="global.saveGoHomeToPurge"/>');
+		// Check Levels
+		} else {
+			// Check fill stop level
+			var stopList = checkDispenseColorantEmpty(shotList,	sessionTinterInfo.canisterList);
+			if (stopList[0] != null) {
+				$("#tinterErrorList").empty();
+				stopList.forEach(function(item) {
+					$("#tinterErrorList").append('<li class="alert alert-danger">' + item + '</li>');
+				});
+				// show that colorant levels are too low to go on
+				waitForShowAndHide("#tinterInProgressModal");
+				$("#tinterErrorListModal").modal('show');
+				$("#tinterErrorListTitle").text('<s:text name="global.colorantLevelTooLow"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.saveFillGoHomeToUpdateClrnts"/>');
+			} else {
+				// check fill alarm level
+				var warnList = checkDispenseColorantLow(shotList, sessionTinterInfo.canisterList);
+				if (warnList[0] != null) {
+					$("#tinterWarningList").empty();
+					warnList.forEach(function(item) {
+						$("#tinterWarningList").append('<li class="alert alert-warning">' + item + '</li>');
+					});
+					// Show in modal, they can say OK to continue
+					waitForShowAndHide("#tinterInProgressModal");
+					$("#tinterWarningListTitle").text('<s:text name="global.lowColorantLevels"/>');
+					$("#tinterWarningListModal").modal('show');
+				} else {
+					//OK to verify
+					waitForShowAndHide("#tinterInProgressModal");
+					$("#verifyModal").modal('show');
+					$("#verifyScanInput").select();
+				}
+			} // end colorant level checks
+		} // end purge check
+	}
+	
+	
+	function decrementColorantLevels() {
+		console.log("Calling decrementColorantLevels");
+		decrementColorantForDispense("${reqGuid}", shotList, decrementCallback);
+	}
+
+	
+	function decrementCallback(myPassFail) {
+		console.log("checking decrement pass/fail " + myPassFail);
+		if (myPassFail === true) {
+			dispense();
+			$("#formulaUserPrintAction_recDirty").val(0);
+		} else {
+			waitForShowAndHide("#tinterInProgressModal");
+		}
+	}
+	
+	
+	function writeDispense(myReturnMessage) {
+		// set up drawdown shot list for drawdown tran record
+		shotList.forEach(function (item, index) {
+			var newItem = {}; 
+			newItem.code = item.code;
+			newItem.shots = item.shots;
+			newItem.uom = item.uom;
+			$(".formulaRow").each(function(){
+				var colorantName = $(this).find('.colorantName').text();
+				if (colorantName.includes(item.code)){
+					 newItem.partialOz = $(this).find('.partialOunces').text();
+				}
+			});
+			drawdownShotList.push(newItem);
+		});
+		
+		var canType = $("select[id='canTypesList'] option:selected").text();		
+		var curDate = new Date();
+		var mydata = {
+			reqGuid : "${reqGuid}",
+			jsDateString : curDate.toString(),
+			canType : canType,
+			drawdownShotList : drawdownShotList
+		};
+		var jsonIn = JSON.stringify(mydata);
+		
+		$.ajax({
+			url : "bumpDispenseCounterAction.action",
+			contentType : "application/json; charset=utf-8",
+			type : "POST",
+			data : jsonIn,
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				processingDispense = false;
+				startSessionTimeoutTimers();
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					$("#controlNbr").text(data.controlNbr);
+					$("#controlNbrDisplay").show();
+					$("#qtyDispensed").text(data.qtyDispensed);
+					
+					// send tinter event (no blocking here)
+					var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+					var tedArray = [ teDetail ];
+					sendTinterEvent("${reqGuid}", curDate, myReturnMessage, tedArray);
+
+					waitForShowAndHide("#tinterInProgressModal");
+				}
+			},
+			error: function(err){
+				console.log(err);
+			}
+		});
+	}
+	
 </script>
 </head>
 
 <body>
 
 <!-- including Header -->
-	<s:include value="Header.jsp"></s:include>
+<s:include value="Header.jsp"></s:include>
 
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-3"></div>
-			<div class="col-sm-6"></div>
-			<div class="col-sm-3">
-				<s:set var="thisGuid" value="reqGuid" />
-			</div>
-		</div>
-		<br>
-		<div class="row">
-			<div class="col-sm-2"></div>
-		</div>
-
-		<s:if test="%{#session[reqGuid].controlNbr != null && #session[reqGuid].controlNbr > 0}">
-		<div class="row" id="controlNbrDisplay">
-		</s:if>
-		<s:else>
-		<div class="row" id="controlNbrDisplay" hidden="true">
-		</s:else>
- 
-			<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-				<strong><s:text name="global.jobNumber"/></strong>
-			</div>
-			<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8" id="controlNbr">
-				${sessionScope[thisGuid].controlNbr}</div>
-			<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-3"></div>
+		<div class="col-sm-6"></div>
+		<div class="col-sm-3">
+			<s:set var="thisGuid" value="reqGuid" />
 		</div>
 	</div>
+	<br>
+	<div class="row">
+		<div class="col-sm-2"></div>
+	</div>
+
+	<s:if test="%{#session[reqGuid].controlNbr != null && #session[reqGuid].controlNbr > 0}">
+	<div class="row" id="controlNbrDisplay">
+	</s:if>
+	<s:else>
+	<div class="row" id="controlNbrDisplay" hidden="true">
+	</s:else>
+
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong><s:text name="global.jobNumber"/></strong>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8" id="controlNbr">
+			${sessionScope[thisGuid].controlNbr}</div>
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
@@ -400,11 +612,13 @@
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
 	<br>
+
 	<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
 		<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
 	</s:form>
-	<s:form action="" validate="true" theme="bootstrap">
+
+	<s:form validate="true" theme="bootstrap">
 	<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 	<div class="row mt-4">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -429,7 +643,7 @@
 		</div>
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
-	<div class="row mt-2">
+	<div class="row mt-2 d-none">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
 			<input type="checkbox" id="includeBaseCheckBox" value="includeBase">
@@ -439,6 +653,15 @@
 	</div>
 	
 	<br>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+			<s:if test="hasActionMessages()">
+				<s:actionmessage />
+			</s:if>
+		</div>
+		<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
+	</div>
 	<div class="row mt-2">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
@@ -452,7 +675,7 @@
 				<tbody>
 					<s:iterator value="displayFormula.ingredients" status="i">
 						<tr id="<s:property value="%{#i.index}"/>" class="formulaRow">
-							<td class="tintSysId col-lg-5 col-md-6 col-sm-4 col-xs-4">
+							<td class="colorantName col-lg-5 col-md-6 col-sm-4 col-xs-4">
 									<s:property value="tintSysId" />-<s:property value="name" /></td>
 							<td class="numShots d-none"><s:property value="shots" /></td>
 							<td class="shotSize d-none"><s:property value="shotSize" /></td>
@@ -494,16 +717,146 @@
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 		<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 			<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
-					onclick="return false;" />
+					onclick="preDispenseCheck(); return false;" />
+			<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
+					onclick=""><s:text name="global.drawdownLabel"/></button>
 			<button type="button" class="btn btn-secondary" id="sampleCanLabelPrint"
 					onclick="printDrawdownCanLabel();return false;"><s:text name="sampleDispense.canLabel"/></button>
+			<button type="button" class="btn btn-secondary" id="storeLabelPrint"
+					onclick=""><s:text name="global.storeLabel"/></button>
 			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('sampleDispense.done')}"
                    	action="userCancelAction" />
         </div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 	</div>
 	</s:form>
+	<br><br><br><br>
+		
+	<!-- Including footer -->
+	<s:include value="Footer.jsp"></s:include>
+		
+		
+		
+	<!-- Tinter In Progress Modal Window -->
+    <div class="modal fade" aria-labelledby="tinterInProgressModal" aria-hidden="true"  id="tinterInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    	<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
+					<h5 class="modal-title" id="tinterInProgressTitle"><s:text name="global.dispenseInProgress"/></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<p id="tinterInProgressDispenseStatus" font-size="4"></p>
+					<p id="tinterInProgressMessage" font-size="4"></p>
+					<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
+					<ul class="list-unstyled" id="tinterProgressList"></ul> 
+					<div class="progress-wrapper "></div>
+	        	</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div> 
 	
+	<!-- Tinter Error List Modal Window -->
+    <div class="modal fade" aria-labelledby="tinterErrorListModal" aria-hidden="true"  id="tinterErrorListModal" role="dialog">
+    	<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">	
+					<div class="progress-wrapper "></div>
+					<div>
+						<ul class="p-0" id="tinterErrorList" style="list-style: none;">
+						</ul>
+					</div>
+					<p id="tinterErrorListSummary" font-size="4"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
+				</div>
+			</div>
+		</div> 
+	</div>			    
+
+	<!-- Tinter Warning List Modal Window -->
+	<div class="modal" aria-labelledby="tinterWarningListModal" aria-hidden="true" id="tinterWarningListModal" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="tinterWarningListTitle"><s:text name="global.tinterError"/></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<ul class="p-0" id="tinterWarningList" style="list-style: none;">
+						</ul>
+					</div>
+					<p id="tinterWarningListSummary" font-size="4"><s:text name="global.clickOKtoContinue"/></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" 
+						aria-label="Close"><s:text name="global.ok"/></button>
+					<button type="button" class="btn btn-secondary" id="tinterWarningListCancel" 
+						data-dismiss="modal" aria-label="Close"><s:text name="global.cancel"/></button>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	<!-- Dispense Verify Modal Window -->
+	<div class="modal" aria-labelledby="verifyModal" aria-hidden="true" id="verifyModal" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><s:text name="displayFormula.scanProductToVerifyDispense"/></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<input type="text" class="form-control" id="verifyScanInput" autofocus="autofocus">
+					<strong id="verifyScanInputError"></strong>
+				</div>
+				<div class="modal-body">
+					<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="verifyButton">
+						<s:text name="displayFormula.verify"/></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Position Container Modal Window -->
+	<div class="modal" aria-labelledby="positionContainerModal" aria-hidden="true" id="positionContainerModal" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><s:text name="global.prepareforDispense"/></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p font-size="4"><s:text name="global.positionContainerandClickStartDispensewhenReady"/></p>
+				</div>
+				<div class="modal-body">
+					<span class="dispenseNumberTracker mx-auto" style="background-color: #FF0; font-size: 125%;"></span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="startDispenseButton"><s:text name="global.startDispense"/></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+		
 	<!-- Printer In Progress Modal Window -->
 	<div class="modal" aria-labelledby="printerInProgressModal"
 		aria-hidden="true" id="printerInProgressModal" role="dialog">
@@ -524,6 +877,8 @@
 			</div>
 		</div>
 	</div>
+	
+					
 	<!-- Print Label Modal Window -->
 	<div class="modal" aria-labelledby="printLabelModal"
 		aria-hidden="true" id="printLabelModal" role="dialog">
@@ -565,11 +920,12 @@
 					 <div class="col-xs-2 ">
 						<button type="button" class="btn btn-secondary"
 						id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
-				</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
 	<script>
 	$(document).ready(function() {
 		if ($("#formulaUserPrintAction_siteHasPrinter").val() == "true") {
@@ -580,5 +936,6 @@
 		}); 
 	});
 	</script>
+
 </body>
 </html>
