@@ -16,6 +16,7 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -38,6 +39,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	private int qtyDispensed;
 	private String jsDateString;
 	private int recDirty;
+	private List<Map<String,Object>> drawdownShotList = null;
+	private String canType;
 	
 	private int cycle; //correction cycle
 	
@@ -133,6 +136,10 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 				    retVal = ERROR;
 				}
 			}
+			// drawdown center did a dispense, so save a drawdown transaction too
+			if (drawdownShotList != null) {
+				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr());
+			}
 
 		} catch (HibernateException he) {
 			logger.error(he.getMessage() + ": ", he);
@@ -157,6 +164,85 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		String retVal = this.execute();
 		logger.debug("inside action back from execute");
 		
+		return retVal;
+	}
+	
+	public String saveDrawdownTran(String customerId, int controlNbr, int lineNbr) {
+		String retVal = null;
+		try {
+			CustWebDrawdownTran drawdownTran = new CustWebDrawdownTran();
+			drawdownTran.setCustomerId(customerId);
+			drawdownTran.setControlNbr(controlNbr);
+			drawdownTran.setLineNbr(lineNbr);
+			drawdownTran.setCanType(canType);
+			
+			if(drawdownShotList != null && drawdownShotList.size() > 0){
+				int ctr = 1;
+				for(Map<String,Object> item : drawdownShotList) {
+					String code = null; 
+					Long uom = null; 
+					Long shots = null;
+					double partialOz = 0;
+					if(item.get("code")!=null) code = item.get("code").toString();
+					if(item.get("uom")!=null) uom = (Long) item.get("uom");
+					if(item.get("shots")!=null) shots = (Long) item.get("shots");
+					if(item.get("partialOz")!=null) partialOz = Double.parseDouble(item.get("partialOz").toString());
+					
+					if(code != null && shots != null && partialOz != 0 && uom != null){
+						switch (ctr) {
+						case 1:
+							drawdownTran.setClrnt1(code);
+							drawdownTran.setClrntShots1(shots.intValue());
+							drawdownTran.setClrntOz1(partialOz);
+							drawdownTran.setUom(uom.intValue());
+							break;
+						case 2:
+							drawdownTran.setClrnt2(code);
+							drawdownTran.setClrntShots2(shots.intValue());
+							drawdownTran.setClrntOz2(partialOz);
+							break;
+						case 3:
+							drawdownTran.setClrnt3(code);
+							drawdownTran.setClrntShots3(shots.intValue());
+							drawdownTran.setClrntOz3(partialOz);
+							break;
+						case 4:
+							drawdownTran.setClrnt4(code);
+							drawdownTran.setClrntShots4(shots.intValue());
+							drawdownTran.setClrntOz4(partialOz);
+							break;
+						case 5:
+							drawdownTran.setClrnt5(code);
+							drawdownTran.setClrntShots5(shots.intValue());
+							drawdownTran.setClrntOz5(partialOz);
+							break;
+						case 6:
+							drawdownTran.setClrnt6(code);
+							drawdownTran.setClrntShots6(shots.intValue());
+							drawdownTran.setClrntOz6(partialOz);
+							break;
+						case 7:
+							drawdownTran.setClrnt7(code);
+							drawdownTran.setClrntShots7(shots.intValue());
+							drawdownTran.setClrntOz7(partialOz);
+							break;
+						case 8:
+							drawdownTran.setClrnt8(code);
+							drawdownTran.setClrntShots8(shots.intValue());
+							drawdownTran.setClrntOz8(partialOz);
+							break;
+						}
+						ctr++;
+					}// end null check
+				}// end for loop drawdownShotList
+			}// end drawdownShotList null check		
+			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+			e.printStackTrace();
+			retVal = ERROR;
+		}
 		return retVal;
 	}
 	
@@ -520,6 +606,22 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	public void setRecDirty(int recDirty) {
 		this.recDirty = recDirty;
+	}
+	
+	public List<Map<String,Object>> getDrawdownShotList() {
+		return drawdownShotList;
+	}
+
+	public void setDrawdownShotList(List<Map<String,Object>> drawdownShotList) {
+		this.drawdownShotList = drawdownShotList;
+	}
+
+	public String getCanType() {
+		return canType;
+	}
+
+	public void setCanType(String canType) {
+		this.canType = canType;
 	}
 
 }
