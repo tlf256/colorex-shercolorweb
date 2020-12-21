@@ -1,11 +1,22 @@
 var jobTable;
 
+
 $(document).ready(function() {
+	//$("#listJobsAction_formulaUserCorrectAction")
+	var exportColList = $("#listJobsAction_exportColList").val();
+	var columnList = exportColList.split(',').map(function(item) {
+		var result = parseInt(item, 10);
+		if (isNaN(result)) {
+			return 0;
+		} else {
+			return result;
+		}
+	});
 	jobTable = $('#job_table').DataTable({
 		columnDefs: [
 			{
-				targets: ['displayJobs.formulaHdr'], render: function(data, type, row){
-					return data.split(" | ").join("<br/>");
+				targets: [columnList[columnList.length-1]], render: function(data, type, row){
+					return data.split(" | ").join("  <br/>");
 				}
 			}
 		],
@@ -14,25 +25,25 @@ $(document).ready(function() {
 			{ extend: 'copy',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
+            		columns: columnList
             	},
             },
 			{ extend: 'csv',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
+            		columns: columnList
             	},
             },
 			{ extend: 'excel',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
+            		columns: columnList
             	},
             },
             { extend: 'print',
             	exportOptions: {
             		stripHtml: false,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,14]
+            		columns: columnList
             	},
             	customize: function(win)
                 {

@@ -9,7 +9,9 @@ function getPdfFromServer(myGuid){
 			url : "formulaUserPrintAsJsonAction",
 			context : document.body,
 			data : {
-				reqGuid : myGuid //without this guid you will get a login exception and you won't even get an error
+				reqGuid : myGuid, //without this guid you will get a login exception and you won't even get an error
+				printLabelType : myPrintLabelType,
+				printOrientation : myPrintOrientation
 				//filename: uFilename
 			},
 			async : false,

@@ -100,8 +100,6 @@
 								<th style=""><s:text name="displayJobs.clrntSystem"/></th>
 								<th style=""><s:text name="displayJobs.formulaHdr"/></th>
 								<th><s:text name="global.delete"/></th>
-								<!-- For the data sheets -->
-								<th style="display:none"><s:text name="displayJobs.formulaHdr"/></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -128,7 +126,7 @@
 											</thead>
 											<tbody>
 												<tr>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.formulaDisplay"/></td>
+													<td id="formulaList" style="padding: 0px 10px 0px 0px"><s:property value="#job.formulaDisplay"/></td>
 												</tr>
 											</tbody>
 										</table>
@@ -138,7 +136,6 @@
 											<i class="fa fa-trash-o" aria-hidden="true"></i>
 										</button>
 									</td>
-									<td style="display:none"><s:property value="#job.formulaDisplay"/></td>
 								</tr>
 							</s:iterator>
 						</tbody>
@@ -161,6 +158,9 @@
 					<div class="col-sm-1">
 					</div>
 				</div>
+			</s:form>
+			<s:form action="listJobsAction" validate="true" theme="bootstrap">
+				<s:hidden name="exportColList" value="%{exportColList}" />
 			</s:form>
 		</div>
 		<br>
