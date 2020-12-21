@@ -264,8 +264,23 @@ badge {
 		printLabelType = "sampleCanLabel";
 		printOrientation = "PORTRAIT";
 		setLabelPrintEmbedContainer(printLabelType,printOrientation,clrntAmtList,canType);
-		//prePrintSave(printLabelType,printOrientation);
 		showPrintModal();
+	}
+	
+	function printDrawdownStoreLabel() {
+		printLabelType = "drawdownStoreLabel";
+		printOrientation = "PORTRAIT";
+		setLabelPrintEmbedContainer(printLabelType,printOrientation);
+		showPrintModal();
+
+	}
+
+	function printDrawdownLabel() {
+		printLabelType = "drawdownLabel";
+		printOrientation = "LANDSCAPE";
+		setLabelPrintEmbedContainer(printLabelType,printOrientation);
+		showPrintModal();
+
 	}
 	
 	function setLabelPrintEmbedContainer(labelType,orientation,clrntAmtList,canType) {
@@ -719,11 +734,11 @@ badge {
 			<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
 					onclick="preDispenseCheck(); return false;" />
 			<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
-					onclick=""><s:text name="global.drawdownLabel"/></button>
+					onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 			<button type="button" class="btn btn-secondary" id="sampleCanLabelPrint"
 					onclick="printDrawdownCanLabel();return false;"><s:text name="sampleDispense.canLabel"/></button>
 			<button type="button" class="btn btn-secondary" id="storeLabelPrint"
-					onclick=""><s:text name="global.storeLabel"/></button>
+					onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
 			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('sampleDispense.done')}"
                    	action="userCancelAction" />
         </div>
