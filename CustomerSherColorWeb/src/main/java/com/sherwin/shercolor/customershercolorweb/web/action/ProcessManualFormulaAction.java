@@ -94,11 +94,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				displayFormula.setSourceDescr("CUSTOM MANUAL VINYL SAFE MATCH");
 			} else {
 				displayFormula.setSource("MAN");
-				if(reqObj.isPackageColor()) {
-					displayFormula.setSourceDescr("PACKAGE COLOR");
-				} else {
-					displayFormula.setSourceDescr("CUSTOM MANUAL MATCH");
-				}
+				displayFormula.setSourceDescr("CUSTOM MANUAL MATCH");
 			}
 			displayFormula.setClrntSysId(reqObj.getClrntSys());
 			 

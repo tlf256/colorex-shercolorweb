@@ -1483,10 +1483,14 @@ function setFormSubmitting() { formSubmitting = true; };
 		function updateButtonDisplay() {
 			// update button display only if account is customer, not drawdown center
 			if ($("#formulaUserPrintAction_accountIsDrawdownCenter").val() == "false"){
+				// hide dispense button unless conditions for dispense are met
+				$("#formulaDispense").hide();
+				// make Save primary unless dispense is available
+				makeSavePrimary();
 				var btnCount = 2; //Next Job and Print always shown so start at 2
 				if ($("#formulaUserPrintAction_midCorrection").val() == "true") {
 					$("#formulaUserPrintAction_formulaUserCorrectAction").show();
-					$("#formulaDispense").hide();
+					
 					$("#formulaUserPrintAction_formulaUserSaveAction").hide();
 					$("#formulaPrint").hide(); //print button
 					$("#formulaUserPrintAction_formulaUserEditAction").hide();
@@ -1504,17 +1508,19 @@ function setFormSubmitting() { formSubmitting = true; };
 						if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
 							console.log("package color is not tintable");
 							// tinter is available but the package color is not tintable
-							$("#formulaDispense").hide();
+							
 							$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 							$("#formulaUserPrintAction_formulaUserEditAction").hide();
 							// hide dispense info row as well
 							$("#dispenseInfoRow").hide();
-							// make Save primary
-							makeSavePrimary();
+							
 						} else {
+							
 							// check if there are any colorants to dispense
-							if($("#ingredients_table") != null){
+							console.log("formula table is visible " + $("#ingredients_table").is(":visible"));
+							if($("#ingredients_table").is(":visible")){
 								// Show Dispense button and make it Primary
+								console.log("formula is visible, display dispense");
 								$("#formulaDispense").show();
 								btnCount += 1;
 								makeDispensePrimary();
@@ -1584,10 +1590,9 @@ function setFormSubmitting() { formSubmitting = true; };
 						console.log("button on/off");
 						console.log("hasTinter is false");
 						// No Tinter, hide dispense and correct button
-						$("#formulaDispense").hide();
+						
 						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
-						// make Save primary
-						makeSavePrimary();
+						
 	
 						// if dispensed (could have been done at another station)
 						var myint = parseInt($.trim($("#qtyDispensed").text()));
@@ -1651,6 +1656,8 @@ function setFormSubmitting() { formSubmitting = true; };
 				$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
 			// account is drawdown center
 			} else {
+				// hide dispense sample button
+				$("#dispenseSampleButton").hide();
 				// session doesn't have tinter or it's an incompatible colorant system for formula, so hide dispense button
 				if ($("#formulaUserPrintAction_sessionHasTinter").val() != "true" ||
 						$("#formulaUserPrintAction_tinterClrntSysId").val() != $("#formulaUserPrintAction_formulaClrntSysId").val()) {
@@ -1665,8 +1672,8 @@ function setFormSubmitting() { formSubmitting = true; };
 						$("#dispenseInfoRow").hide();
 					} else {
 						// check if any colorants are available for dispense
-						if($("#ingredients_table") == null){
-							$("#dispenseSampleButton").hide();
+						if($("#ingredients_table").is(":visible")){
+							$("#dispenseSampleButton").show();
 						}
 					}
 				}

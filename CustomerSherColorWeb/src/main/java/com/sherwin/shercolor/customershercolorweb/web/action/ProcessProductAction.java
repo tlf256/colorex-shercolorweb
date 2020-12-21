@@ -69,8 +69,11 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 				 reqObj.setPackageColor(true);
 				 if(custWebPkgClr.isTintable()) {
 					 reqObj.setPkgClrTintable(true);
+				 } else {
+					 reqObj.setPkgClrTintable(false);
 				 }
 			 } else {
+				 reqObj.setPackageColor(false);
 				//Call the validation.  If it validates successfully, call a read and get the data.
 					List<SwMessage> errlist = productService.validateProduct(salesNbr);
 					

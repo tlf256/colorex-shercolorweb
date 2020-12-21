@@ -768,12 +768,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		errorLocation = "Formula Label Line Headings";
 		// Formula Label Line Headings
 		List<String> listIncrementHdr = reqObj.getDisplayFormula().getIncrementHdr();
-		Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",52f, 7,  "left");
-		Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),11f, 8, "center");
-		Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 11f,8, "center");
-		Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 11f,8, "center");
-		Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 14f,8, "center");
+		if(listIncrementHdr.size() > 0) {
+			Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant",52f, 7,  "left");
+			Cell<PDPage> fcellHead3 =  createFormulaHeading(row,listIncrementHdr.get(0),11f, 8, "center");
+			Cell<PDPage> fcellHead4 =  createFormulaHeading(row,listIncrementHdr.get(1), 11f,8, "center");
+			Cell<PDPage> fcellHead5 =  createFormulaHeading(row,listIncrementHdr.get(2), 11f,8, "center");
+			Cell<PDPage> fcellHead6 =  createFormulaHeading(row,listIncrementHdr.get(3), 14f,8, "center");
 
+		}
+		
 		// Formula Label Line Item.
 		errorLocation = "Formula Label Line Items";
 		int lineCtr = 0;
