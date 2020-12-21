@@ -161,7 +161,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 			 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			return ERROR;
 		}
 		
@@ -205,7 +205,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			System.err.println("Exception thrown!, Percent Addition Calculation Failed");
 			retVal = ERROR;
 		}

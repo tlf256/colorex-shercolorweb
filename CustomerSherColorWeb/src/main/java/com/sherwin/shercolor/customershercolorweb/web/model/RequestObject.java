@@ -72,6 +72,8 @@ public class RequestObject {
 	private String closestSwColorId;
 	private boolean productChoosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
 	private String roomByRoom;
+	private boolean packageColor;
+	private boolean pkgClrTintable;
 
 	public String getColorComp() {
 		return colorComp;
@@ -500,6 +502,18 @@ public class RequestObject {
 	}
 	public void setRoomByRoom(String roomByRoom) {
 		this.roomByRoom = roomByRoom;		
+	}
+	public boolean isPackageColor() {
+		return packageColor;
+	}
+	public void setPackageColor(boolean packageColor) {
+		this.packageColor = packageColor;
+	}
+	public boolean isPkgClrTintable() {
+		return pkgClrTintable;
+	}
+	public void setPkgClrTintable(boolean pkgClrTintable) {
+		this.pkgClrTintable = pkgClrTintable;
 	}
 
 }
