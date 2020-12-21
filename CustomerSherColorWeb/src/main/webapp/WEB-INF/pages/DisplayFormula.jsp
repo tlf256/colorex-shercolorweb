@@ -72,8 +72,8 @@ badge {
 </style>
 <script type="text/javascript">
 //global vars
-	var printLabelType = '';
-	var printOrientation = '';
+	var myPrintLabelType = "";
+	var myPrintOrientation = "";
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
 	var dispenseTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
@@ -113,24 +113,24 @@ function setLabelPrintEmbedContainer(labelType,orientation) {
 
 function printStoreLabel() {
 	
-	printLabelType = "storeLabel";
-	printOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(printLabelType,printOrientation);
-	prePrintSave(printLabelType,printOrientation);
+	myPrintLabelType = "storeLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	prePrintSave(myPrintLabelType,myPrintOrientation);
 }
 
 function printDrawdownStoreLabel() {
-	printLabelType = "drawdownStoreLabel";
-	printOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(printLabelType,printOrientation);
-	prePrintSave(printLabelType,printOrientation);
+	myPrintLabelType = "drawdownStoreLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	prePrintSave(myPrintLabelType,myPrintOrientation);
 }
 
 function printDrawdownLabel() {
-	printLabelType = "drawdownLabel";
-	printOrientation = "LANDSCAPE";
-	setLabelPrintEmbedContainer(printLabelType,printOrientation);
-	prePrintSave(printLabelType,printOrientation);
+	myPrintLabelType = "drawdownLabel";
+	myPrintOrientation = "LANDSCAPE";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	prePrintSave(myPrintLabelType,myPrintOrientation);
 }
 
 function prePrintSave(labelType, orientation) {
@@ -219,16 +219,15 @@ function showPrintModal(){
 
 function printOnDispenseGetJson() {
 	if (printerConfig && printerConfig.model) {
+		// Currently only storeLabels can be printed through dispense
+		myPrintLabelType = "storeLabel";
+		myPrintOrientation = "PORTRAIT";
 		var myguid = $("#reqGuid").val();
-
 		var myPdf = new pdf(myguid);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
-		// Currently only storeLabels can be printed through dispense
-		printLabelType = "storeLabel";
-		printOrientation = "PORTRAIT";
 		numLabels = printerConfig.numLabels;
-		print(myPdf, numLabels, printLabelType, printOrientation);
+		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 
 }
@@ -245,7 +244,7 @@ function printButtonClickGetJson() {
 		if(numLabelsVal && numLabelsVal !=0){
 			numLabels = numLabelsVal;
 		}
-		print(myPdf, numLabels, printLabelType, printOrientation);
+		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 
 }
