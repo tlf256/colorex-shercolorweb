@@ -43,10 +43,12 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 	private boolean sessionHasTinter = false;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean accountUsesRoomByRoom = false;
+	private boolean tinterDoesBaseDispense = false;
 	List<CustWebCanTypes> canTypesList = null;
 	private Double factoryFill = null;
 	private double sizeConversion;
 	private double dispenseFloor;
+	private DispenseItem baseDispense = null;
 	
 	@Autowired
 	private CustomerService customerService;
@@ -127,6 +129,7 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 			CustWebTinterProfile tinterProfile = tinterService.getCustWebTinterProfile(tinterModel);
 			int uom = 0;
 			if (tinterProfile != null) {
+				setTinterDoesBaseDispense(tinterProfile.isDoesDispenseBase());
 				setDispenseFloor(tinterProfile.getColorantDispenseFloor());
 				if (dispenseFloor > 0) {
 					uom = (int) Math.round(1 / dispenseFloor);
@@ -161,6 +164,13 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 							addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
 							dispenseFormula.add(addItem);
 						}
+					}
+					// check if base is loaded into any tinter canisters
+					if (colorantMap.containsKey(prodNbr)) {
+						baseDispense = new DispenseItem();
+						baseDispense.setClrntCode(prodNbr);
+						baseDispense.setUom(uom);
+						baseDispense.setPosition(colorantMap.get(prodNbr).getPosition());
 					}
 
 					retVal = SUCCESS;
@@ -298,6 +308,30 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 
 	public void setSessionHasTinter(boolean sessionHasTinter) {
 		this.sessionHasTinter = sessionHasTinter;
+	}
+
+
+
+	public boolean isTinterDoesBaseDispense() {
+		return tinterDoesBaseDispense;
+	}
+
+
+
+	public void setTinterDoesBaseDispense(boolean tinterDoesBaseDispense) {
+		this.tinterDoesBaseDispense = tinterDoesBaseDispense;
+	}
+
+
+
+	public DispenseItem getBaseDispense() {
+		return baseDispense;
+	}
+
+
+
+	public void setBaseDispense(DispenseItem baseDispense) {
+		this.baseDispense = baseDispense;
 	}
 }
 

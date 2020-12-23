@@ -138,7 +138,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			}
 			// drawdown center did a dispense, so save a drawdown transaction too
 			if (drawdownShotList != null) {
-				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr());
+				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr() + qtyDispensed - 1);
 			}
 
 		} catch (HibernateException he) {
