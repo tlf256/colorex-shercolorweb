@@ -62,16 +62,22 @@ badge {
 	var clrntAmtList = "";
 	var canType = "";
 	var shotList = [];
-	var drawdownShotList = [];
+	var initialShotList = [];
 	var processingDispense = false;
+	var baseDispense = null;
 
 	$(function() {	
-		// set up initial shotList
+		// set up initial shotList with only the colorants
 		<s:iterator value="dispenseFormula">
 			var color = new Colorant("<s:property value='clrntCode'/>", <s:property value="shots"/>,
-									  <s:property value="position"/>, <s:property value="uom"/>);
-			shotList.push(color);
+						<s:property value="position"/>, <s:property value="uom"/>);
+			initialShotList.push(color);
 		</s:iterator>
+		
+		<s:if test="%{baseDispense != null}">
+			baseDispense = new Colorant("<s:property value='baseDispense.clrntCode'/>", <s:property value="baseDispense.shots"/>,
+				  		<s:property value="baseDispense.position"/>, <s:property value="baseDispense.uom"/>);
+		</s:if>
 		
 		// set default sample fill from can type
 		updateSampleFill();
@@ -83,6 +89,11 @@ badge {
 		if (canTypesLength == 0){ 
 			$("#canTypesErrorText").removeClass('d-none');
 			$("#dispenseSampleButton").prop('disabled', true);
+		}
+		
+		// show checkbox because tinter can base dispense and the base is loaded in a canister
+		if ("${tinterDoesBaseDispense}" == "true" && baseDispense != null){
+			$("#baseDispenseRow").removeClass("d-none");
 		}
 	});
 
@@ -100,6 +111,13 @@ badge {
 			// don't need to do size conversion because factory fill is already scaled to a gallon
 			var productSampleFill = sampleSizeFloat / 128 * factoryFill;
 			$("#sampleFill").val(productSampleFill);
+			
+			// calculate shots in case user wants to dispense the base
+			if (baseDispense != null){
+				var baseShots = Math.round(productSampleFill * baseDispense.uom); 
+				baseDispense.shots = baseShots;
+			}
+			
 		} else {
 			console.log("problem parsing the sample size");
 		}
@@ -110,14 +128,13 @@ badge {
 		clrntAmtList = "";
 		// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
 		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
-		//canType = (selectedIndex).text();
 		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
 		var sampleSizeFloat = parseFloat(sampleSize);
 		var sizeConversion = "${sizeConversion}";
 		var dispenseFloor = "${dispenseFloor}";
 		var dispenseFloorFloat = parseFloat(dispenseFloor);
 		var sizeConvFloat = parseFloat(sizeConversion);
-		var uom = shotList[0].uom;
+		var uom = initialShotList[0].uom;
 		
 		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
 		$("#dispenseFloorErrorText").addClass('d-none');
@@ -140,7 +157,7 @@ badge {
 					
 					// update shotlist
 					var colorantName = $(this).find('.colorantName').text();
-					shotList.forEach(function (item, index) {
+					initialShotList.forEach(function (item, index) {
 						 if (colorantName.includes(item.code)){
 							 item.shots = updatedNumShots;
 						 }
@@ -306,6 +323,30 @@ badge {
 	/* Dispense validation methods */
 	
 	$(function() {
+		$("#tinterWarningListOK").on("click", function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			waitForShowAndHide("#tinterWarningListModal");
+			$("#verifyModal").modal('show');
+		});
+		
+		$(document).on("shown.bs.modal", "#verifyModal", function(event) {
+			$("#verifyScanInput").val("");
+			$("#verifyScanInputError").text("");
+			$("#verifyScanInput").focus();
+		});
+
+		$(document).on("keypress", "#verifyScanInput", function(event) {
+			if (event.keyCode == 13) {
+				event.preventDefault();
+				$("#verifyButton").click();
+			}
+		});
+		
+		$(document).on("shown.bs.modal", "#positionContainerModal", function(event) {
+			$("#startDispenseButton").focus();
+		});
+		
 		$("#verifyButton").on("click", function(event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -346,13 +387,24 @@ badge {
 	
 	
 	function preDispenseCheck() {
+		// build final shotList and add base if user wants to dispense that too
+		shotList = [];
+		for (var i = 0; i < initialShotList.length; i++){
+		    shotList.push(initialShotList[i]);
+		}
+		if ("${tinterDoesBaseDispense}" == "true" && baseDispense != null && $("#includeBaseCheckBox").prop('checked')){
+			shotList.push(baseDispense);
+		}
+		console.log(shotList);
+		
 		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
 		$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitClrntLevelCheck"/>');
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo("${reqGuid}", preDispenseCheckCallback);
+		getSessionTinterInfo("${reqGuid}", preDispenseCheckCallback);		
 	}
+	
 	
 	function preDispenseCheckCallback() {
 		// check if purge required...
@@ -398,7 +450,6 @@ badge {
 					//OK to verify
 					waitForShowAndHide("#tinterInProgressModal");
 					$("#verifyModal").modal('show');
-					$("#verifyScanInput").select();
 				}
 			} // end colorant level checks
 		} // end purge check
@@ -424,6 +475,7 @@ badge {
 	
 	function writeDispense(myReturnMessage) {
 		// set up drawdown shot list for drawdown tran record
+		var drawdownShotList = [];
 		shotList.forEach(function (item, index) {
 			var newItem = {}; 
 			newItem.code = item.code;
@@ -435,8 +487,13 @@ badge {
 					 newItem.partialOz = $(this).find('.partialOunces').text();
 				}
 			});
+			if (baseDispense != null && baseDispense.code == item.code){
+				var sampleFill = $("#sampleFill").val();
+				newItem.partialOz = sampleFill;
+			}
 			drawdownShotList.push(newItem);
 		});
+		console.log(drawdownShotList);
 		
 		var canType = $("select[id='canTypesList'] option:selected").text();		
 		var curDate = new Date();
@@ -658,10 +715,10 @@ badge {
 		</div>
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
-	<div class="row mt-2 d-none">
+	<div class="row mt-2 d-none" id="baseDispenseRow">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
-			<input type="checkbox" id="includeBaseCheckBox" value="includeBase">
+			<input type="checkbox" id="includeBaseCheckBox" value="includeBase" checked>
 			<label for="includeBaseCheckBox"><s:text name="sampleDispense.includeBaseInDispense"/></label>
 		</div>
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
