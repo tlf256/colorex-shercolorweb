@@ -14,13 +14,11 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.sherwin.shercolor.common.domain.CdsRoomList;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
-import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -35,10 +33,8 @@ import com.sherwin.shercolor.customershercolorweb.util.CorrectionInfoBuilder;
 import com.sherwin.shercolor.customershercolorweb.util.CorrectionInfoBuilderImpl;
 import com.sherwin.shercolor.customershercolorweb.util.ShercolorLabelPrintImpl;
 import com.sherwin.shercolor.customershercolorweb.web.model.CorrectionInfo;
-import com.sherwin.shercolor.customershercolorweb.web.model.CorrectionStep;
 import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
-import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
 

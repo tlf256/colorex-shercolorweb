@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -67,119 +68,142 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
-			theCdsProd = productService.readCdsProd(reqObj.getSalesNbr());
-			 
-			OeFormInputRequest oeRequest = new OeFormInputRequest();
-			oeRequest.setClrntSysId(reqObj.getClrntSys());
-			oeRequest.setColorComp(reqObj.getColorComp());
-			oeRequest.setColorId(reqObj.getColorID());
-			oeRequest.setSalesNbr(reqObj.getSalesNbr());
-			oeRequest.setVinylSafe(reqObj.isVinylExclude());
-			String[] illums = new String[3];
-			if (reqObj.getLightSource().equals("A")) {
-				illums[0] = "A";
-				illums[1] = "D65";
-				illums[2] = "F2";
-				oeRequest.setIllum(illums);
-			}
-			if (reqObj.getLightSource().equals("D65")) {
-				illums[0] = "D65";
-				illums[1] = "A";
-				illums[2] = "F2";
-				oeRequest.setIllum(illums);
-			}
-			if (reqObj.getLightSource().equals("F2")) {
-				illums[0] = "F2";
-				illums[1] = "A";
-				illums[2] = "D65";
-				oeRequest.setIllum(illums);
-			}
-			
+			// check if package color
+			// if true, skip formulation
+			if(reqObj.isPackageColor()) {
+				// instantiate empty FormulationResponse obj for package color
+				theFormula = new FormulationResponse();
+				displayFormula = new FormulaInfo();
 				
-			CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
-			String defaultClrntSys = custWebParms.getClrntSysId();
-			//in the case of multiple possible colorant systems, we need to assure that the colorant system
-			//on the custWebParms matches the one we are passing in, or the formulation server will return
-			//an error.
-			custWebParms.setClrntSysId(reqObj.getClrntSys());
-			
-
-			
-			//call the formulation service
-			logger.debug(reqObj.getColorType());
-			if(reqObj.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")){
-				theFormula = formulationService.formulate(oeRequest, custWebParms);
-			} else {
-				if(reqObj.getColorType().equalsIgnoreCase("COMPETITIVE")) {
-					theFormula = formulationService.prodFamilyFormulate(oeRequest, custWebParms);
-					
-				} else {
-					if (reqObj.getColorType().equalsIgnoreCase("CUSTOMMATCH") || reqObj.getColorType().equalsIgnoreCase("SAVEDMEASURE")) {
-						//set the curve from the requestObject
-						double[] dblCurve = new double[40];
-						for (int x=0; x<40; x++) {
-							dblCurve[x] = reqObj.getCurveArray()[x].doubleValue();
-						}
-						oeRequest.setColorCurve(dblCurve);
-						theFormula = formulationService.prodFamilyFormulate(oeRequest, custWebParms);
-					} else {
-						// custom
-						// only doing manuals now so return Manual
-						 return "manual";
-					}
-				}
+				// set displayFormula sourceDescr and clrntsys
+				displayFormula.setSourceDescr("PACKAGE COLOR");
+				displayFormula.setClrntSysId(reqObj.getClrntSys());
 				
-			}
-			
-			// get SwMessages from the FormulationResponse
-			List<SwMessage> swmsgList = theFormula.getMessages();
-			 
-			//save the returned formula in the session using the guid for later display.
-			if (theFormula.getFormulas().size() > 0) {
+				List<FormulaInfo> formList = new ArrayList<FormulaInfo>();
+				formList.add(displayFormula);
+				
+				theFormula.setFormulas(formList);
+				// status needs to be complete to bypass 
+				theFormula.setStatus("COMPLETE");
+				
+				reqObj.setDisplayFormula(displayFormula);
 				reqObj.setFormResponse(theFormula);
-				sessionMap.put(theFormula.getFormulas().get(0).getOeRequestId() , theFormula);
-			}
-			
-			if (theFormula.getStatus().equals("COMPLETE")) {
-				reqObj.setDisplayFormula(theFormula.getFormulas().get(0));
-				displayFormula = theFormula.getFormulas().get(0);
-				// check for warnings and set those as well.
-				validationMsgs = formulationService.validateFormulation(displayFormula, swmsgList);
-				
-				//PSCWEB-101 - if the colorant system used does not match the customer's default colorant system,
-				//             add a warning.
-				if (!defaultClrntSys.equals(reqObj.getClrntSys())) {
-					SwMessage csMsg = new SwMessage();
-					csMsg.setCode("NONDFLTCLRNTSYS");
-					csMsg.setMessage(getText("generateFormulaAction.formulaRequiresClrntSys", 
-							new String[] {reqObj.getClrntSys(),reqObj.getClrntSys()}));
-					csMsg.setSeverity(Level.WARN);
-					validationMsgs.add(csMsg);
+			} else {
+				theCdsProd = productService.readCdsProd(reqObj.getSalesNbr());
+				 
+				OeFormInputRequest oeRequest = new OeFormInputRequest();
+				oeRequest.setClrntSysId(reqObj.getClrntSys());
+				oeRequest.setColorComp(reqObj.getColorComp());
+				oeRequest.setColorId(reqObj.getColorID());
+				oeRequest.setSalesNbr(reqObj.getSalesNbr());
+				oeRequest.setVinylSafe(reqObj.isVinylExclude());
+				String[] illums = new String[3];
+				if (reqObj.getLightSource().equals("A")) {
+					illums[0] = "A";
+					illums[1] = "D65";
+					illums[2] = "F2";
+					oeRequest.setIllum(illums);
+				}
+				if (reqObj.getLightSource().equals("D65")) {
+					illums[0] = "D65";
+					illums[1] = "A";
+					illums[2] = "F2";
+					oeRequest.setIllum(illums);
+				}
+				if (reqObj.getLightSource().equals("F2")) {
+					illums[0] = "F2";
+					illums[1] = "A";
+					illums[2] = "D65";
+					oeRequest.setIllum(illums);
 				}
 				
-				for(SwMessage item:validationMsgs) {
-					addActionMessage(item.getMessage());
-				}
+					
+				CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
+				String defaultClrntSys = custWebParms.getClrntSysId();
+				//in the case of multiple possible colorant systems, we need to assure that the colorant system
+				//on the custWebParms matches the one we are passing in, or the formulation server will return
+				//an error.
+				custWebParms.setClrntSysId(reqObj.getClrntSys());
+				
 
-				//and post the validation message list to the request object for use in printing.
-				reqObj.setDisplayMsgs(validationMsgs);
 				
-				List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(displayFormula, swmsgList);
-				reqObj.setCanLabelMsgs(canLabelMsgs);
+				//call the formulation service
+				logger.debug(reqObj.getColorType());
+				if(reqObj.getColorType().equalsIgnoreCase("SHERWIN-WILLIAMS")){
+					theFormula = formulationService.formulate(oeRequest, custWebParms);
+				} else {
+					if(reqObj.getColorType().equalsIgnoreCase("COMPETITIVE")) {
+						theFormula = formulationService.prodFamilyFormulate(oeRequest, custWebParms);
+						
+					} else {
+						if (reqObj.getColorType().equalsIgnoreCase("CUSTOMMATCH") || reqObj.getColorType().equalsIgnoreCase("SAVEDMEASURE")) {
+							//set the curve from the requestObject
+							double[] dblCurve = new double[40];
+							for (int x=0; x<40; x++) {
+								dblCurve[x] = reqObj.getCurveArray()[x].doubleValue();
+							}
+							oeRequest.setColorCurve(dblCurve);
+							theFormula = formulationService.prodFamilyFormulate(oeRequest, custWebParms);
+						} else {
+							// custom
+							// only doing manuals now so return Manual
+							 return "manual";
+						}
+					}
+					
+				}
 				
-			}
-			
-			if (theFormula.getStatus().equals("ERROR")) {
-				for(SwMessage item:theFormula.getMessages()) {
-					// only show errors in the SwMessage list
-					if(item.getSeverity().isInRange(Level.FATAL, Level.ERROR)){
-						addFieldError("getFormulation", item.getMessage());
+				// get SwMessages from the FormulationResponse
+				List<SwMessage> swmsgList = theFormula.getMessages();
+				 
+				//save the returned formula in the session using the guid for later display.
+				if (theFormula.getFormulas().size() > 0) {
+					reqObj.setFormResponse(theFormula);
+					sessionMap.put(theFormula.getFormulas().get(0).getOeRequestId() , theFormula);
+				}
+				
+				if (theFormula.getStatus().equals("COMPLETE")) {
+					reqObj.setDisplayFormula(theFormula.getFormulas().get(0));
+					displayFormula = theFormula.getFormulas().get(0);
+					// check for warnings and set those as well.
+					validationMsgs = formulationService.validateFormulation(displayFormula, swmsgList);
+					
+					//PSCWEB-101 - if the colorant system used does not match the customer's default colorant system,
+					//             add a warning.
+					if (!defaultClrntSys.equals(reqObj.getClrntSys())) {
+						SwMessage csMsg = new SwMessage();
+						csMsg.setCode("NONDFLTCLRNTSYS");
+						csMsg.setMessage(getText("generateFormulaAction.formulaRequiresClrntSys", 
+								new String[] {reqObj.getClrntSys(),reqObj.getClrntSys()}));
+						csMsg.setSeverity(Level.WARN);
+						validationMsgs.add(csMsg);
+					}
+					
+					for(SwMessage item:validationMsgs) {
+						addActionMessage(item.getMessage());
+					}
+
+					//and post the validation message list to the request object for use in printing.
+					reqObj.setDisplayMsgs(validationMsgs);
+					
+					List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(displayFormula, swmsgList);
+					reqObj.setCanLabelMsgs(canLabelMsgs);
+					
+				}
+				
+				if (theFormula.getStatus().equals("ERROR")) {
+					for(SwMessage item:theFormula.getMessages()) {
+						// only show errors in the SwMessage list
+						if(item.getSeverity().isInRange(Level.FATAL, Level.ERROR)){
+							addFieldError("getFormulation", item.getMessage());
+						}
 					}
 				}
 			}
-			
+				
 			sessionMap.put(reqGuid, reqObj);
 			return theFormula.getStatus().toLowerCase();
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage() + ": ", e);
 			return ERROR;
