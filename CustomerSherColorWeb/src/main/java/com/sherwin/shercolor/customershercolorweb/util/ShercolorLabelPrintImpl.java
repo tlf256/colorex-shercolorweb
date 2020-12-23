@@ -127,6 +127,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			} else {
 				
 				// Get formula ingredients (colorants) for processing.
+				errorLocation = "Retrieving Formula Ingredients";
 				List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
 				// Determine the number of ingredient (colorant) lines in the formula.
 				int formulaSize = reqObj.getDisplayFormula().getIngredients().size();
@@ -134,6 +135,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				// 5 or less lines in a formula - pass the one part label formula to formatting method.
 				if (formulaSize <= 5){
 					partMessage = " ";
+					errorLocation = "Drawing Label";
 					DrawLabel(listFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 				}
 				else {
@@ -153,6 +155,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					// Write the part A label on first page.
 					if(partAListFormulaIngredients != null && partAListFormulaIngredients.size() > 0){
 						partMessage = "* PART A - SEE PART B OF FORMULA *";
+						errorLocation = "Drawing Label Part A";
 						DrawLabel(partAListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 					}	
 					// Skip to next page to write part B label.
@@ -160,6 +163,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					// Write the part B label on second page.
 					if(partBListFormulaIngredients != null && partBListFormulaIngredients.size() > 0){
 						partMessage = "* PART B - SEE PART A OF FORMULA *";
+						errorLocation = "Drawing Label Part B";
 						DrawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 					}	
 				}
@@ -173,19 +177,20 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": ", ie);
+			logger.error(ie.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", ie);
 			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": ", re);
+			logger.error(re.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", re);
 			//logger.error(re);
 		}
 		finally {
 			try {
+				errorLocation = "Closing Document";
 				document.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				logger.error(e.getMessage() + ": ", e);
+				logger.error(e.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", e);
 			}
 		}
 	}
@@ -208,9 +213,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		page.setMediaBox(new PDRectangle(0, 0 , 144f, 288f));
 		PDPageContentStream content = null;
 		try {
+			errorLocation = "Opening Content Stream";
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1.getMessage() + ": ", e1);
+			logger.error(e1.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", e1);
 		}
 
 		try{
@@ -229,6 +235,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Optional Field - Not yet implemented and Order Number
+			errorLocation = "Order Number";
 			createTwoColumnRow(table, 7, 7, 50, haLeft, vaMiddle, "", 50, haRight, vaMiddle, "Order # " + Integer.toString(reqObj.getControlNbr()));
 			
 			// ================================================================================================================================================
@@ -237,6 +244,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			// ================================================================================================================================================
 			// 12/07/2020 | Use Interior/Exterior
+			errorLocation = "Interior/Exterior";
 			createTwoColumnRow(table, 6, 8, 30, haLeft, vaMiddle, reqObj.getIntExt(), 70, haRight, vaMiddle, reqObj.getKlass());
 			
 			// ================================================================================================================================================
@@ -264,7 +272,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Formula Heading and 5 Colorant Lines maximum.
-			
 			rowHeight = 8;
 			Row<PDPage> row = table.createRow(rowHeight);
 			setStandardFormulaTable(listFormulaIngredients, table, row, rowHeight);
@@ -303,18 +310,18 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": ", ex);
+				logger.error(ex.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", ex);
 			}
 
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": ", ie);
+			logger.error(ie.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", ie);
 			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": ", re);
+			logger.error(re.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", re);
 			//logger.error(re);
 		}
 	}
@@ -328,14 +335,16 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		page.setMediaBox(new PDRectangle(0, 0 , 288f, 144f));
 		PDPageContentStream content = null;
 		try {
+			errorLocation = "Opening Content Stream";
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1.getMessage() + ": ", e1);
+			logger.error(e1.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", e1);
 		}
 
 		try{
 
 			//setup Table
+			errorLocation = "Table Setup";
 			BaseTable table = createTopTable(page);
 			
 			
@@ -346,9 +355,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			// Must retrieve the jobFieldList and the Customer ID's Label Profile in order to query the below fields and
 			// pair the information up with their corresponding job field column
+			errorLocation = "Retrieving Job Field List";
 			List<JobField> jobFieldList = reqObj.getJobFieldList();
 			List<CustWebDrawdownLabelProfile> labelProfileList = drawdownLabelService.listDrawdownLabelProfilesForCustomer(reqObj.getCustomerID());
 			
+			errorLocation = "Setting Label Info Based on Customer Job Field Sequence Nbr";
 			String customer = jobFieldList.get(labelProfileList.get(0).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			String storeCCN = jobFieldList.get(labelProfileList.get(1).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			String controlNbr = jobFieldList.get(labelProfileList.get(2).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
@@ -356,21 +367,28 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			String projectInfo = jobFieldList.get(labelProfileList.get(4).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			String schedule = jobFieldList.get(labelProfileList.get(5).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			
-			
+			errorLocation = "Customer";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Customer:",cell2Width,haLeft,vaMiddle,customer);
+			errorLocation = "Store CNN";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CNN:",cell2Width,haLeft,vaMiddle,storeCCN);
+			errorLocation = "Date Prepared and Control Nbr";
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
 			String strDate = sdf.format(date);
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Date Prepared:",
 							   cell2Width,haLeft,vaMiddle,strDate + "  " + "Control Number: " + controlNbr);
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"",cell2Width,haLeft,vaMiddle,"");
+			errorLocation = "Job";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Job:",cell2Width,haLeft,vaMiddle,jobDescr);
+			errorLocation = "Project Info";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Project Info:",cell2Width,haLeft,vaMiddle,projectInfo);
+			errorLocation = "Schedule";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Schedule:",cell2Width,haLeft,vaMiddle,schedule);
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"",cell2Width,haLeft,vaMiddle,"");
+			errorLocation = "Color";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Color:",
 							   cell2Width,haLeft,vaMiddle,reqObj.getColorComp() + " " + reqObj.getColorID() + " " + reqObj.getColorName());
+			errorLocation = "Product";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Product:",
 							   cell2Width,haLeft,vaMiddle,reqObj.getQuality() + " " + reqObj.getFinish() + " " + reqObj.getBase() + " " + reqObj.getProdNbr());
 			
@@ -378,18 +396,18 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": ", ex);
+				logger.error(ex.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", ex);
 			}
 			
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": ", ie);
+			logger.error(ie.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", ie);
 			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": ", re);
+			logger.error(re.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", re);
 			//logger.error(re);
 		}
 	}
@@ -426,6 +444,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Optional Field - Not yet implemented and Order Number
+			errorLocation = "Order Number";
 			createTwoColumnRow(table, 7, 7, 50, haLeft, vaMiddle, reqObj.getCustomerID(), 50, haRight, vaMiddle, "Order # " + Integer.toString(reqObj.getControlNbr()));
 			
 			// ================================================================================================================================================
@@ -434,10 +453,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			// ================================================================================================================================================
 			// 12/07/2020 | Use Interior/Exterior
+			errorLocation = "Interior Exterior";
 			createTwoColumnRow(table, 6, 8, 30, haLeft, vaMiddle, reqObj.getIntExt(), 70, haRight, vaMiddle, reqObj.getKlass());
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Quality and Composite
+			errorLocation = "Quality and Composite";
 			setQualityAndCompositeRow(table);
 			
 			// ================================================================================================================================================
@@ -500,18 +521,18 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": ", ex);
+				logger.error(ex.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", ex);
 			}
 
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": ", ie);
+			logger.error(ie.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", ie);
 			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": ", re);
+			logger.error(re.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", re);
 			//logger.error(re);
 		}
 	}
@@ -526,6 +547,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		page.setMediaBox(new PDRectangle(0, 0 , 144f, 288f));
 		PDPageContentStream content = null;
 		try {
+			errorLocation = "Opening Content Stream";
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
 			logger.error(e1.getMessage() + ": ", e1);
@@ -547,6 +569,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Optional Field - Not yet implemented and Order Number
+			errorLocation = "Order Number";
 			createTwoColumnRow(table, 7, 7, 50, haLeft, vaMiddle, "", 50, haRight, vaMiddle, "Order # " + Integer.toString(reqObj.getControlNbr()));
 			
 			// ================================================================================================================================================
@@ -555,10 +578,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			// ================================================================================================================================================
 			// 12/07/2020 | Use Interior/Exterior
+			errorLocation = "Interior Exterior";
 			createTwoColumnRow(table, 6, 8, 30, haLeft, vaMiddle, reqObj.getIntExt(), 70, haRight, vaMiddle, reqObj.getKlass());
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Quality and Composite
+			errorLocation = "Quality and Composite";
 			setQualityAndCompositeRow(table);
 			
 			// ================================================================================================================================================
@@ -582,12 +607,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			// ================================================================================================================================================
 			// 12/07/2020 | Formula Heading and 5 Colorant Lines maximum.
-			
+			errorLocation = "Formula Heading and Colorant Lines";
 			rowHeight = 8;
-			//Row<PDPage> row = table.createRow(rowHeight);
-			//setStandardFormulaTable(listFormulaIngredients, table, row, rowHeight);
-			//TODO: Create a custom formula table with 2-column format
-			//
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getClrntSys() + " Colorant", 50, haLeft, vaMiddle, reqObj.getDisplayFormula().getIncrementHdr().get(0));
 			int numIngredients = 0;
 			String[] clrntAmtString = new String[5];
@@ -648,18 +669,18 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": ", ex);
+				logger.error(ex.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", ex);
 			}
 
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": ", ie);
+			logger.error(ie.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", ie);
 			//logger.error(ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": ", re);
+			logger.error(re.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", re);
 			//logger.error(re);
 		}
 	}
