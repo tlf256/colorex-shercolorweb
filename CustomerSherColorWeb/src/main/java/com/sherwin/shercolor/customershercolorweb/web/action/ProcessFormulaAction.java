@@ -193,7 +193,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			}
 
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -208,7 +208,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -223,7 +223,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -247,7 +247,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -258,7 +258,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -274,7 +274,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			}
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			return ERROR;
 		}

@@ -178,18 +178,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 		catch(IOException ie) {
 			logger.error(ie.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", ie);
-			//logger.error(ie);
 		}
 		catch(RuntimeException re){
 			logger.error(re.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", re);
-			//logger.error(re);
 		}
 		finally {
 			try {
 				errorLocation = "Closing Document";
 				document.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				logger.error(e.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", e);
 			}
 		}
@@ -318,11 +315,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 		catch(IOException ie) {
 			logger.error(ie.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", ie);
-			//logger.error(ie);
 		}
 		catch(RuntimeException re){
 			logger.error(re.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", re);
-			//logger.error(re);
 		}
 	}
 	
@@ -404,11 +399,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 		catch(IOException ie) {
 			logger.error(ie.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", ie);
-			//logger.error(ie);
 		}
 		catch(RuntimeException re){
 			logger.error(re.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", re);
-			//logger.error(re);
 		}
 	}
 	
@@ -425,7 +418,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1.getMessage() + ": ", e1);
+			logger.error(e1.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", e1);
 		}
 
 		try{
@@ -529,11 +522,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 		catch(IOException ie) {
 			logger.error(ie.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", ie);
-			//logger.error(ie);
 		}
 		catch(RuntimeException re){
 			logger.error(re.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", re);
-			//logger.error(re);
 		}
 	}
 	
@@ -677,11 +668,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 		catch(IOException ie) {
 			logger.error(ie.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", ie);
-			//logger.error(ie);
 		}
 		catch(RuntimeException re){
 			logger.error(re.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", re);
-			//logger.error(re);
 		}
 	}
 	
@@ -941,7 +930,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			}
 			retString = sb.toString();
 		} catch(Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [replaceUnicode, " + errorLocation + "]", e);
 		}
 	
 		return retString;
@@ -983,7 +972,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cell.setTopPadding(0);
 			cell.setBottomPadding(0);
 		} catch(Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [cellSettings, " + errorLocation + "]", e);
 		}
 
 
@@ -1003,8 +992,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			table = new BaseTable(yPosition, yStartNewPage,
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [createTopTable, " + errorLocation + "]", e);
 			e.printStackTrace();
 		}
 		return table;
@@ -1025,8 +1013,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [createTableFormula, " + errorLocation + "]", e);
 			e.printStackTrace();
 		}
 		return table;
@@ -1095,8 +1082,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [createTableProd, " + errorLocation + "]", e);
 			e.printStackTrace();
 		}
 		return table;
@@ -1111,7 +1097,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			content.drawImage(pdImage, 20, 12, 100, 15);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [createBarcode, " + errorLocation + "]", e);
 			e.printStackTrace();
 		}
 	}
@@ -1132,7 +1118,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			canvas1.finish();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage() + ": [geBufferedImageForCode128Bean, " + errorLocation + "]", e);
 			e.printStackTrace();
 		}
 		return canvas1.getBufferedImage();
@@ -1218,7 +1204,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					unicodeFont = PDType0Font.load(document,f);
 					setUnicode(unicodeFont);
 				} catch (IOException e) {
-					logger.error(e.getMessage() + ": ", e);
+					logger.error(e.getMessage() + ": [setFontBold, " + errorLocation + "]", e);
 				}
 			}
 		}
