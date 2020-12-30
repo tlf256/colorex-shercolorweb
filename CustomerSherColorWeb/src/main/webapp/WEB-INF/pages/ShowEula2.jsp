@@ -247,7 +247,7 @@
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
 							    <option value="en_US">English</option>
-							    <option value="es_ES">Español</option>
+							    <option value="es_ES" class="d-none">Español</option>
 							    <option value="zh_CN">中文</option>
 						    </select>
 						</li>
