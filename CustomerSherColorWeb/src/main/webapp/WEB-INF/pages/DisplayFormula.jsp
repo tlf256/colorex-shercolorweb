@@ -736,22 +736,7 @@ function ParsePrintMessage() {
 		}
 	});
 	
-	
-	/* check that the user has set the room by room dropdown 
-	and doesn't have any unsaved changes before leaving
-	*/
-	function validationWithModal(){
-		// check if rooms dropdown is set first, if applicable
-		var retVal = verifyRoomSelected();
-		// get the return value of the function 
-		// that displays the Prompt To Save modal
-		if (retVal == true){
-			retVal = promptToSave();
-		}
-		return retVal;
-	}
-	
-	
+		
 	/* check that the user has set the room by room dropdown 
 	and allow them to leave the page with unsaved changes
 	*/
@@ -765,7 +750,8 @@ function ParsePrintMessage() {
 		}
 		return retVal;
 	}
-function setFormSubmitting() { formSubmitting = true; };
+	
+	function setFormSubmitting() { formSubmitting = true; };
     
     window.onload = function() {
     window.addEventListener("beforeunload", function (e) {
@@ -1026,33 +1012,28 @@ function setFormSubmitting() { formSubmitting = true; };
 			</s:else>
 			<br>
 			<s:if test = "%{accountIsDrawdownCenter==true}">
-			<!-- validation methods: validationWithModal() checks that the dropdown has been set, if applicable, and shows the 
-			Prompt To Save modal if user has unsaved changes. validationWithoutModal() checks the dropdown and lets the user nav
-			away from the page without modal prompt. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box. 
-			Use either validationWithoutModal or verifyRoomSelected since the Prompt to Save modal is only set up for Next Job action. -->
+			<!-- validation methods: validationWithoutModal() verifies room by room dropdown is set and lets the user nav away from the page
+			without modal prompt for unsaved changes. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box.  
+			promptToSave() shows modal asking user to save their unsaved changes before leaving the page, without checking rooms dropdown -->
 				<div class="d-flex flex-row justify-content-around mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
-						<!-- add actions to go to sample dispense page and to save drawdown center job -->
 						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
 							onclick="return validationWithoutModal();" action="displaySampleDispenseAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
-							onclick="return validationWithoutModal();" action="" />
+							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
-                        	onclick="return validationWithModal();" action="userCancelAction" />
+                        	onclick="return promptToSave();" action="userCancelAction" />
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
 				<div class="d-flex flex-row justify-content-around mt-2">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
-						<!-- update these onclick attributes with method calls for the label printing 
-						and move the verifyRoomSelected() calls to inside those methods and handle conditionally,
-						i.e., don't print the label if the verifyRoomSelected returns false -->
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
@@ -1078,7 +1059,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
-	                        onclick="return validationWithModal();" action="userCancelAction" />
+	                        onclick="return promptToSave();" action="userCancelAction" />
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
