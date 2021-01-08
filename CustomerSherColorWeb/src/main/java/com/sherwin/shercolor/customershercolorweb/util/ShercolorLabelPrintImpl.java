@@ -471,7 +471,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			CustWebCustomerProfile custProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			CdsColorMast colorMast = colorMastService.read(reqObj.getColorComp(), reqObj.getColorID());
-			if (custProfile.isUseLocatorId() && colorMast.getLocId() != null) {
+			if (custProfile.isUseLocatorId() && colorMast!= null && colorMast.getLocId() != null) {
 				createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, colorMast.getLocId() + " " + reqObj.getColorID() + " " + reqObj.getColorName() );
 			} else {
 				createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, reqObj.getColorID() + " " + reqObj.getColorName() );
