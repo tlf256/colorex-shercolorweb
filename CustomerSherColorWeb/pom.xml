@@ -4,7 +4,7 @@
   <groupId>com.sherwin.SherColorWeb</groupId>
   <artifactId>CustomerSherColorWeb</artifactId>
   <packaging>war</packaging>
-  <version>1.3</version>
+  <version>1.4.6</version>
   <name>CustomerSherColorWeb Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <repositories>
