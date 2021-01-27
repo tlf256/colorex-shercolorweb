@@ -13,36 +13,6 @@ $(document).ready(function() {
 	
 	$("#loginnext-btn").prop("disabled", true);
 	
-	function natlWdigits(){
-		$("#ntlacct").show();
-		$("#intntlacct").hide();
-		$("#cstmrnm").show();
-		$("#cdsadlfld").show();
-		$("#clrnt").show();
-		$("#loginnext-btn").show();
-		$("#eula").show();
-	}
-	
-	function intnatlWdigits(){
-		$("#intntlacct").show();
-		$("#ntlacct").hide();
-		$("#cstmrnm").show();
-		$("#cdsadlfld").show();
-		$("#clrnt").show();
-		$("#loginnext-btn").show();
-		$("#eula").show();
-	}
-	
-	function acctWOdigits(){
-		$("#ntlacct").hide();
-		$("#intntlacct").hide();
-		$("#cstmrnm").show();
-		$("#cdsadlfld").show();
-		$("#clrnt").show();
-		$("#loginnext-btn").show();
-		$("#eula").show();
-	}
-	
 	$("#selectedAccttype-0").click(function(){
 		natlWdigits();
 		$("#ntlacctnbr").focus();
@@ -106,7 +76,7 @@ $(document).ready(function() {
 			$("#formerror").text("");
 		}catch(msg){
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 			$("#ntlaccterror").text(msg);
 		}
 	});
@@ -144,7 +114,7 @@ $(document).ready(function() {
 		}catch(msg){
 			$("#intntlaccterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -152,7 +122,7 @@ $(document).ready(function() {
 		var title = $.trim($("#swuititle").val());
 		try{
 			if(title.length > 20 || title.length == 0){
-				throw "Please enter a Customer Name not greater than 20 characters"
+				throw "Please enter a Customer Name not greater than 20 characters";
 			} 
 			$("#swuititlerror").text("");
 			$("#formerror").text("");
@@ -160,7 +130,7 @@ $(document).ready(function() {
 		}catch(msg){
 			$("#swuititlerror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 	
@@ -176,7 +146,7 @@ $(document).ready(function() {
 		} catch(msg) {
 			$("#cdsadlflderror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 	
@@ -223,7 +193,7 @@ $(document).ready(function() {
 		}catch(msg){
 			$("#eulaerror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 	
@@ -254,5 +224,35 @@ $(document).ready(function() {
 			}, 1500);
 		}
 	});
+	
+	function natlWdigits(){
+		$("#ntlacct").show();
+		$("#intntlacct").hide();
+		$("#cstmrnm").show();
+		$("#cdsadlfld").show();
+		$("#clrnt").show();
+		$("#loginnext-btn").show();
+		$("#eula").show();
+	}
+	
+	function intnatlWdigits(){
+		$("#intntlacct").show();
+		$("#ntlacct").hide();
+		$("#cstmrnm").show();
+		$("#cdsadlfld").show();
+		$("#clrnt").show();
+		$("#loginnext-btn").show();
+		$("#eula").show();
+	}
+	
+	function acctWOdigits(){
+		$("#ntlacct").hide();
+		$("#intntlacct").hide();
+		$("#cstmrnm").show();
+		$("#cdsadlfld").show();
+		$("#clrnt").show();
+		$("#loginnext-btn").show();
+		$("#eula").show();
+	}
 	
 });

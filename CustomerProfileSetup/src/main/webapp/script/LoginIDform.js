@@ -89,7 +89,7 @@ $(document).ready(function(){
 				$("#formerror").text("");
 				keyfld.removeClass("border-danger");
 			}catch(msg){
-				keyfld.focus();
+				keyfld.select();
 				keyfld.addClass("border-danger");
 				$("#loginformerror").text(msg);
 				$("html, body").animate({
@@ -111,7 +111,7 @@ $(document).ready(function(){
 			$("#loginformerror").text("");
 			$("#formerror").text("");
 		}catch(msg){
-			$(this).focus();
+			$(this).select();
 			$(this).addClass("border-danger");
 			$("#loginformerror").text(msg);
 			$("html, body").animate({
