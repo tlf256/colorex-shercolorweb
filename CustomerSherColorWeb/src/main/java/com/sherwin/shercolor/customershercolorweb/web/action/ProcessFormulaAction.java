@@ -24,6 +24,7 @@ import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
+import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.TinterService;
@@ -60,6 +61,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private boolean midCorrection = false;
 	private String printOrientation;
 	private String printLabelType;
+	private boolean printCorrectionLabel;
+	private List<Map<String,Object>> shotList;
 	private String canType;
 	private String clrntAmtList;
 
@@ -74,6 +77,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private FormulationService formulationService;
 	
 	@Autowired 
 	private UtilityService utilityService;
@@ -217,8 +223,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
 			return SUCCESS;
@@ -232,8 +238,12 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		FileInputStream fin = null;
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+			if (clrntAmtList != null) {
+				clrntAmtList = clrntAmtList.replaceAll("\n", "");
+				clrntAmtList = clrntAmtList.replaceAll("\t", "");
+			}
+			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];
@@ -464,6 +474,22 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setClrntAmtList(String clrntAmtList) {
 		this.clrntAmtList = clrntAmtList;
+	}
+
+	public boolean isPrintCorrectionLabel() {
+		return printCorrectionLabel;
+	}
+
+	public void setPrintCorrectionLabel(boolean printCorrectionLabel) {
+		this.printCorrectionLabel = printCorrectionLabel;
+	}
+
+	public List<Map<String, Object>> getShotList() {
+		return shotList;
+	}
+
+	public void setShotList(List<Map<String, Object>> shotList) {
+		this.shotList = shotList;
 	}
 	
 }

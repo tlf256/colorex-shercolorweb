@@ -278,50 +278,9 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			//last container in the correction process, merge this cycle with current formula
 			FormulaInfo currentFormula = reqObj.getDisplayFormula();
 			
-			//get dispensed correction formula for the cycle
-			List<CustWebTranCorr> acceptedCorrThisCycle = tranHistoryService.getAcceptedCorrectionsForCycle(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(),cycle);
-	
-			//Build accepted formula, may be several steps
-			int prevAcceptedContNbr = 0;
-			List<FormulaIngredient> acceptedFormula = new ArrayList<FormulaIngredient>();
-			for(CustWebTranCorr acceptedCorr : acceptedCorrThisCycle){
-				if(acceptedCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
-					if(acceptedCorr.getUnitNbr()!=prevAcceptedContNbr) acceptedFormula.clear();
-					List<FormulaIngredient> stepIngredientList = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(acceptedCorr);
-					for(FormulaIngredient addIngr : stepIngredientList){
-						logger.debug("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
-						boolean merged = false;
-						for(FormulaIngredient totaledIngr : acceptedFormula){
-							if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-								logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
-								totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
-								merged = true;
-							}
-						}
-						if(!merged) acceptedFormula.add(addIngr);
-					}
-					prevAcceptedContNbr = acceptedCorr.getUnitNbr();
-				}
-			}
-			
-			//Build accepted formula with current formula
-			if(acceptedFormula.size()>0) {
-				List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
-				for(FormulaIngredient addIngr : acceptedFormula){
-					logger.debug("looking to add " + addIngr.getTintSysId() + " to currentFormula");
-					boolean merged = false;
-					for(FormulaIngredient totaledIngr : currentIngredients){
-						if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-							logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
-							totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
-							merged = true;
-						}
-					}
-					if(!merged) currentIngredients.add(addIngr);
-				}
-				formulationService.convertShotsToIncr(currentIngredients);
-				currentFormula.setIngredients(currentIngredients);
-			}
+			// 1/28/2021 - Removed a large portion of code responsible for merging the correction formula
+			//			   ,which now happens when the label is being printed. This method is now only responsible
+			//			   for updating the remaining info before the current cycle gets closed out
 			
 			//Update DB (tranCorr) set merged to true
 			SwMessage updateResult = tranHistoryService.updateTranCorrectionMerged(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle);

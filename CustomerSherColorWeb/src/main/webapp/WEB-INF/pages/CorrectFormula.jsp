@@ -24,6 +24,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
@@ -50,6 +51,7 @@
 	// global vars for tinter
 	var sendingDispCommand = "false";
 	var shotList = [];
+	var printJsonIN = "";
 	var processingDispense = false;
 	// global vars for correction
 	var method;
@@ -66,6 +68,13 @@
 	
 	var _rgbArr = [];
 	
+	//global vars for printer
+	var printerConfig;
+	// Currently only storeLabels can be printed through dispense here
+	var myPrintLabelType = "storeLabel";
+	var myPrintOrientation = "PORTRAIT";
+	var dispenseAccepted = false;
+
 	<s:iterator value="tinter.canisterList" status="i">
 	booya=0;
 			_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
@@ -129,7 +138,6 @@
 		// ajax call to convert correctionList to dispenseItems
         var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
         var jsonIN = JSON.stringify(str);
-        //console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -145,6 +153,10 @@
             	else{
             		if(data.errorMessage==null){
     					//console.log("Write Successful!");
+						data.dispenseItemList.forEach(addToShotList);
+    					var correctionStr = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
+    					var printJsonIN = JSON.stringify(correctionStr);
+    					printOnDispenseGetJson(data.reqGuid, printJsonIN);
     					if(data.mergeCorrWithStartingForm == true){
     						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
     					} else {
@@ -167,9 +179,14 @@
             }
         });
 	}
-
+	
+	function addToShotList(dispenseItem){
+		shotList.push(new Colorant(dispenseItem.clrntCode,dispenseItem.shots,dispenseItem.position,dispenseItem.uom));
+	}
+	
 	function dispenseAcceptedClick(){
 		method="DISPENSE ACCEPTED";
+		dispenseAccepted = true;
 		// if dispenseItemList avail on display then it is the accepted formula
 	<s:iterator value="dispenseItemList">
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
@@ -279,10 +296,8 @@
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to save discarded step to db
-        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+		var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
-        //console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -346,7 +361,7 @@
 		method="AUTO SKIP";
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -863,7 +878,6 @@
 		// ajax call to convert correctionList to dispenseItems
         var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -886,6 +900,12 @@
     					} else {
     						// not end of cycle just refresh page
     						reloadScreen()
+    					}
+    					if (dispenseAccepted == true) {
+    						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+    						printJsonIN = JSON.stringify(str);
+    						printOnDispenseGetJson(data.reqGuid,printJsonIN);
+    						dispenseAccepted == false;
     					}
     					sendingDispCommand = "false";
 						// send tinter event (no blocking here)
@@ -921,7 +941,79 @@
         });
 	}
 	</script>
+	<script type="text/javascript"> //print functions
+	function printOnDispenseGetJson(myguid,printJsonIN) {
+		if (printerConfig && printerConfig.model) {
+			
+			//var myguid = $("#reqGuid").val();
+			console.log("myguid = " + myguid);
+
+			var myPdf = new pdf(myguid,printJsonIN);
+			$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
+			var numLabels = null;
+
+			numLabels = printerConfig.numLabels;
+			numLabelsVal = $("#numLabels").val();
+			if(numLabelsVal && numLabelsVal !=0){
+				numLabels = numLabelsVal;
+			}
+			numLabels = printerConfig.numLabels;
+			print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+		}
+	}
 	
+	function ParsePrintMessage() {
+		var parsed = false;
+		try {
+			if (ws_printer != null && ws_printer.wsmsg != null
+					&& ws_printer.wserror == null) {
+				var return_message = JSON.parse(ws_printer.wsmsg);
+				if(return_message){
+				switch (return_message.command) {
+				case 'Print':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerInProgressModal").modal('show');
+						$("#printerInProgressMessage").text(
+								'<s:text name="displayFormula.printResultColon"/>' + return_message.errorMessage);
+						console.log(return_message);
+						//waitForShowAndHide("#tinterInProgressModal");
+					}
+					
+					break;
+				case 'GetConfig':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerResponseModal").modal('show');
+						$("#printerResponseMessage").text(
+								'<s:text name="displayFormula.getPrinterResult"/>'
+										+ return_message.errorMessage);
+						console.log(return_message);
+					} else {
+						printerConfig = return_message.printerConfig;
+
+					}
+					break;
+				default:
+					//Not an response we expected...
+					console
+							.log("Message from different command is junk, throw it out");
+				}
+				} // end switch statement
+			} else {}
+		} catch (error) {
+			console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
+			console.log("Message is junk, throw it out");
+			//console.log("Junk Message is " + ws_tinter.wsmsg);
+		}
+		return parsed;
+	}
+	
+	</script>
 	<script type="text/javascript"> // document functions
 	function reloadScreen(){
 		document.getElementById("mainForm").submit();
@@ -1154,6 +1246,7 @@
  						<s:hidden name="reqGuid" value="%{reqGuid}" id="reqGuid"/>
  						<s:hidden name="jsDateString" value=""/>
 						<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
+						<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
  						<s:hidden name="currCycle" value="%{cycle}"/>
  						<s:hidden name="nextUnitNbr" value="%{nextUnitNbr}"/>
  						<s:hidden name="lastStep" value="%{lastStep}"/>
@@ -1574,6 +1667,10 @@
 		  }
 		//-->
 		$(document).ready(function(){
+			//get user printer config
+			if ($("#mainForm_siteHasPrinter").val() == "true") {
+				getPrinterConfig();
+			}
 			// init which buttons user can see
 			updateButtonDisplay();
 			// if middle of cycle, check and possibly auto process next container if it has been skpped or discarded 
@@ -1619,7 +1716,6 @@
 
 		function updateButtonDisplay(){
 			$("#mainForm_displayFormulaAction").show(); //Leave button
-			
 			if($("#mainForm_sessionHasTinter").val()=="true"){
 				if($("#mainForm_corrStatus").val()=="NONE"){
 					$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
