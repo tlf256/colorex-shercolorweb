@@ -149,6 +149,10 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 					case "W1":
 					case "TW":
 					case "WHT":
+					case "EW":
+					case "UD":
+					case "HRB":
+					case "DB":
 						canister.setRgbHex("#ffffff");
 						break;
 					case "MY":
