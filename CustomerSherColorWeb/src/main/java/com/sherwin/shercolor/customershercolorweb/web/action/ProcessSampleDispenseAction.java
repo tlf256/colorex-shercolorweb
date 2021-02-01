@@ -16,6 +16,7 @@ import com.sherwin.shercolor.common.domain.CustWebTinterProfile;
 import com.sherwin.shercolor.common.domain.CustWebTinterProfileCanTypes;
 import com.sherwin.shercolor.common.domain.CdsMiscCodes;
 import com.sherwin.shercolor.common.domain.CdsProdCharzd;
+import com.sherwin.shercolor.common.domain.CustWebBase;
 import com.sherwin.shercolor.common.domain.CustWebCanTypes;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -165,12 +166,19 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 							dispenseFormula.add(addItem);
 						}
 					}
-					// check if base is loaded into any tinter canisters
-					if (colorantMap.containsKey(prodNbr)) {
-						baseDispense = new DispenseItem();
-						baseDispense.setClrntCode(prodNbr);
-						baseDispense.setUom(uom);
-						baseDispense.setPosition(colorantMap.get(prodNbr).getPosition());
+					
+					// look up code for the base being used in formula 
+					CustWebBase custWebBase = productService.readCustWebBase(prodNbr);
+					if (custWebBase != null) {
+						String baseCode = custWebBase.getBaseCode();
+						
+						// check if base is loaded into any tinter canisters
+						if (colorantMap.containsKey(baseCode)) {
+							baseDispense = new DispenseItem();
+							baseDispense.setClrntCode(baseCode);
+							baseDispense.setUom(uom);
+							baseDispense.setPosition(colorantMap.get(baseCode).getPosition());
+						}
 					}
 
 					retVal = SUCCESS;
