@@ -135,7 +135,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 		
 			sessionMap.put(reqGuid, reqObj);
 			//logger.debug("put reqObj back in session");
-			
+			reqObj.setProductChoosenFromDifferentBase(true);
 			return returnStatus;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

@@ -33,9 +33,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.5.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.6.js"></script>
 		
 	</head>
 	<body>
@@ -100,8 +100,6 @@
 								<th style=""><s:text name="displayJobs.clrntSystem"/></th>
 								<th style=""><s:text name="displayJobs.formulaHdr"/></th>
 								<th><s:text name="global.delete"/></th>
-								<!-- For the data sheets -->
-								<th style="display:none"><s:text name="displayJobs.formulaHdr"/></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -128,7 +126,7 @@
 											</thead>
 											<tbody>
 												<tr>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.formulaDisplay"/></td>
+													<td id="formulaList" style="padding: 0px 10px 0px 0px"><s:property value="#job.formulaDisplay"/></td>
 												</tr>
 											</tbody>
 										</table>
@@ -138,7 +136,6 @@
 											<i class="fa fa-trash-o" aria-hidden="true"></i>
 										</button>
 									</td>
-									<td style="display:none"><s:property value="#job.formulaDisplay"/></td>
 								</tr>
 							</s:iterator>
 						</tbody>
@@ -162,7 +159,11 @@
 					</div>
 				</div>
 			</s:form>
+			<s:form action="listJobsAction" validate="true" theme="bootstrap">
+				<s:hidden name="exportColList" value="%{exportColList}" />
+			</s:form>
 		</div>
+		<br>
 		<br>
 		<br>
 		<script>

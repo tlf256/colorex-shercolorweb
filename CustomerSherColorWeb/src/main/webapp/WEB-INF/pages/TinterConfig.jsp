@@ -29,9 +29,9 @@
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 
 
@@ -96,33 +96,44 @@
 		var configuration = new Configuration(mycolorantid, mymodel, myserial,
 				canister_layout);
 
-		var calibration = new Calibration(mycolorantid, mymodel, myserial);
+		var calibration = null;
+		//alfa and santint do not have cal files that we manage
+		if(mymodel.indexOf("ALFA") == 0  && mymodel.indexOf("SANTINT") == 0){
+			calibration =  new Calibration(mycolorantid, mymodel, myserial);
 		//console.log("calibration");
 		//console.log(calibration);
-		if(calibration.data != null){
-			var shotList = null;
-			var gdata = null;  //for corob only
-			if(mymodel.indexOf("Corob") >= 0 || mymodel.indexOf("COROB") >= 0){
-				var gdata = new GData(mycolorantid);
+			if(calibration.data != null){
+				var shotList = null;
+				var gdata = null;  //for corob only
+				if(mymodel.indexOf("Corob") >= 0 || mymodel.indexOf("COROB") >= 0){
+					var gdata = new GData(mycolorantid);
+				}
+				var configMessage = new TinterMessage(command, shotList, configuration,
+						calibration, gdata);
+				sendTinterConfig(configMessage);
+
 			}
-			configmessage = new TinterMessage(command, shotList, configuration,
-					calibration, gdata);
-	
-			var json = JSON.stringify(configmessage);
-	
-			if (ws_tinter && ws_tinter.isReady == "false") {
-				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
-				ws_tinter = new WSWrapper("tinter");
+			else{
+					$("#configError").text('<s:text name="tinterConfig.couldNotFindDefaultCalib"><s:param>'+ mycolorantid +'</s:param><s:param>'+ mymodel +'</s:param></s:text>');
+					$("#configErrorModal").modal('show');	
 			}
-			ws_tinter.send(json);
 		}
 		else{
-				$("#configError").text('<s:text name="tinterConfig.couldNotFindDefaultCalib"><s:param>'+ mycolorantid +'</s:param><s:param>'+ mymodel +'</s:param></s:text>');
-				$("#configErrorModal").modal('show');	
-			}
+			configMessage = new TinterMessage(command, shotList, configuration,
+					null, null);
+			sendTinterConfig(configMessage);
+		}
 
 	};
-
+	function sendTinterConfig(configMessage){
+		var json = JSON.stringify(configMessage);
+		
+		if (ws_tinter && ws_tinter.isReady == "false") {
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			ws_tinter = new WSWrapper("tinter");
+		}
+		ws_tinter.send(json);
+	}
 	function init() {
 		detectAttempt = 0;
 		if(initStarted == 0){
@@ -455,7 +466,7 @@
 			RecdMessageFMX();
 		}
 		else{
-			RecdMessageFM();
+			RecdMessageFMAlfa();
 		}
 	}
 	function RecdMessageCorob() {
@@ -666,7 +677,7 @@
 			
 		}
 	}
-	function RecdMessageFM() {
+	function RecdMessageFMAlfa() {
 		var curDate = new Date();
 		console.log("Received FM Message");
 		//parse the spectro
@@ -738,7 +749,6 @@
 					}
 					$("#detectErrorMessage").text(return_message.errorMessage);
 					if (return_message.errorList != undefined) {
-
 						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
 							var error = return_message.errorList[i];
 							var errorText = "<li>" + error.num + "\t"

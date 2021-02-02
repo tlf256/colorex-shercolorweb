@@ -22,9 +22,10 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -74,7 +75,7 @@
 		if(sessionTinterInfo.tinterOnFile===true){
 			
 			// load colorant into dropdown menu for Manual Add
-			console.log("loading colorant dropdown");
+			//console.log("loading colorant dropdown");
 			
 			$("#clrntList").empty();
 			sessionTinterInfo.canisterList.sort(function(a,b){
@@ -126,9 +127,9 @@
 		// Update current cycle & container steps to ACCEPTED
 		var curDate = new Date();
 		// ajax call to convert correctionList to dispenseItems
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -137,13 +138,13 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
-    					console.log("Write Successful!");
+    					//console.log("Write Successful!");
     					if(data.mergeCorrWithStartingForm == true){
     						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
     					} else {
@@ -151,7 +152,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAcceptContClick" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -161,8 +162,8 @@
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -173,7 +174,7 @@
 	<s:iterator value="dispenseItemList">
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
 	</s:iterator>
-		console.log(shotList);
+		//console.log(shotList);
 		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
@@ -184,9 +185,9 @@
 		// mark open steps for this container as discarded.
 		var curDate = new Date();
 		// ajax call to post correction status to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -195,7 +196,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -205,7 +206,7 @@
     					mistintClickCallback();
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdPostCorrStatus" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -215,8 +216,8 @@
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -226,10 +227,10 @@
 		//Build mistint step info and save to DB
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
+        //var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -238,7 +239,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -252,7 +253,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSaveCorr" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -262,8 +263,8 @@
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -278,10 +279,10 @@
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to save discarded step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
+        //var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -290,7 +291,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -301,7 +302,7 @@
     					reloadScreen();
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSkipConfirm" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -345,7 +346,7 @@
 		method="AUTO SKIP";
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : []};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -356,7 +357,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -370,7 +371,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAutoSkip" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -390,7 +391,7 @@
 		method="AUTO DISCARD";
 		var curDate = new Date();
 		// ajax call to save discard step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Discarded. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY DISCARDED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Discarded. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY DISCARDED", "stepMethod":method, "shotList" : []};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -401,7 +402,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -415,7 +416,7 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAutoDiscard" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -434,7 +435,7 @@
 	function mergeCorrWithStartingForm(myCycle){
 		var curDate = new Date();
 		// ajax call to merge Correction Cycle formula with Starting Formula
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : myCycle};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : myCycle};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -445,7 +446,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -455,7 +456,7 @@
     					reloadScreen()
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdMerge" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -502,7 +503,7 @@
 	function percentConfirmClick(){
 		method="PERCENT ADDITION";
 		$("#formulaAdditions > tbody").empty();
-		var mydata = {reqGuid:$("#mainForm_reqGuid").val(), percentOfFormula:parseInt($("#pct").val())};
+		var mydata = {reqGuid:$("#reqGuid").val(), percentOfFormula:parseInt($("#pct").val())};
 		var jsonIn = JSON.stringify(mydata);
 		console.log("in percentAddClick and jsonIn is");
 		console.log(jsonIn);
@@ -520,15 +521,28 @@
             	else{
             		// walk through result formula
     				var newRow = "";
+    				var safeTintSysId = "";
+    				var safeName = "";
+    				var safeIncr0 = "";
+    				var safeIncr1 = "";
+    				var safeIncr2 = "";
+    				var safeIncr3 = "";
     				data.ingredientList.forEach(function(item){
-    					console.log(item);
+        				safeTintSysId = encodeURIComponent(item.tintSysId.toString());
+        				safeName = encodeURIComponent(item.name.toString());
+        				safeName = safeName.replace(/%20/g, " ");
+        				safeIncr0 = encodeURIComponent(item.increment[0].toString());
+        				safeIncr1 = encodeURIComponent(item.increment[1].toString());
+        				safeIncr2 = encodeURIComponent(item.increment[2].toString());
+        				safeIncr3 = encodeURIComponent(item.increment[3].toString());
+    					//console.log("in the modified code");
     					newRow = "";
     					newRow = newRow + '<tr>';
-    					newRow = newRow + '<td id="clrntString">'+item.tintSysId+"-"+item.name+'</td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[0]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[1]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[2]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[3]+'"></td>'
+    					newRow = newRow + '<td id="clrntString">'+safeTintSysId+"-"+safeName+'</td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr0+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr1+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr2+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr3+'"></td>'
     					newRow = newRow + '</tr>';
     					$("#formulaAdditions > tbody:last-child").append(newRow);
     					$('#pct').text('');
@@ -621,7 +635,7 @@
 		
 		// ajax call to convert correctionList to dispenseItems
 		if(!invalidFlag && !tmpInvalidFlag){
-			var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "correctionList" : correctionList};
+			var str = { "reqGuid" : $('#reqGuid').val(), "correctionList" : correctionList};
 	        var jsonIN = JSON.stringify(str);
 	        console.log(jsonIN);
 	        $.ajax({	
@@ -632,7 +646,7 @@
 	            async: true,
 	            data : jsonIN,
 	            success : function(data){
-	            	console.log(data);
+	            	//console.log(data);
 	            	if(data.sessionStatus === "expired"){
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
@@ -768,7 +782,7 @@
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#mainForm_reqGuid").val(),preDispenseCheckCallback);
+		getSessionTinterInfo($("#reqGuid").val(),preDispenseCheckCallback);
 	}
 	
 	function preDispenseCheckCallback(){
@@ -823,7 +837,7 @@
 
 	function decrementColorantLevels(){
 		console.log("Calling decrementColorantLevels");
-		decrementColorantForDispense($("#mainForm_reqGuid").val(), shotList, decrementCallback);
+		decrementColorantForDispense($("#reqGuid").val(), shotList, decrementCallback);
 	}
 
 	function decrementCallback(myPassFail){
@@ -842,223 +856,12 @@
 	}
 	</script>
 	<script type="text/javascript"> //dispense
-    function fkey(e){
-    	if(sendingTinterCommand == "true"){
-        e = e || window.event;
-        
-        if (e.code === 'F4') {
-        	abort();
-            console.log(e);
-            e.preventDefault();
-        }
-    }
-}
-	function getRGB(colorantCode){
-		var rgb = "";
-		if(colorantCode != null){
-			rgb = _rgbArr[colorantCode];
-		}
-		return rgb;
-	}
-	function buildProgressBars(return_message){
-		var count = 1;
-		var keys=[];
-		$(".progress-wrapper").empty();
-		keys = Object.keys(return_message.statusMessages);
-		if (keys !=null && keys.length > 0) {
-			return_message.statusMessages.forEach(function(item){
-				var colorList = item.message.split(" ");
-				var color= colorList[0];
-				var pct = colorList[1];
-				//fix bug where we are done, but not all pumps report as 100%
-				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
-						 return_message.status == 0)) {
-					  pct = "100%";
-				  }
-				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
-				
-				var $clone = $("#progress-0").clone();
-				$clone.attr("id","progress-" + count);
-				var $bar = $clone.children(".progress-bar");
-				$bar.attr("id","bar-" + count);
-				$bar.attr("aria-valuenow",pct);
-				$bar.css("width", pct);
-				$clone.css("display", "block");
-				var color_rgb = getRGB(color);
-	//change color of text based on background color
-				switch(color){
-				case "WHT":
-				case "TW":
-				case "W1":
-					$bar.children("span").css("color", "black");
-					$bar.css("background-color", "#efefef");
-					break;
-				case "OY":
-				case "Y1":
-				case "YGS":
-					$bar.children("span").css("color", "black");
-					$bar.css("background-color", color_rgb);
-					break;
-				default:
-					$bar.css("background-color", color_rgb);
-					$bar.children("span").css("color", "white");
-					break;
-				}
-				
-				
-				$bar.children("span").text(color + " " + pct);
-				console.log("barring " + item.message);
-				//console.log($clone);
-				
-				$clone.appendTo(".progress-wrapper");
-				
-				count++;
-			});
-		}
-	}
-	function FMXDispenseProgress(){
-		console.log('before dispense progress send');
-		
-		rotateIcon();
-		var cmd = "DispenseProgress";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-		var json = JSON.stringify(tintermessage);
-		sendingTinterCommand = "true";
-		ws_tinter.send(json);
-	}
-	function dispense(){
-		var cmd = "Dispense";
-    
-    	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
 
-    	var json = JSON.stringify(tintermessage);
-		sendingDispCommand = "true";
-		if(ws_tinter!=null && ws_tinter.isReady=="false") {
-    		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
-    		ws_tinter = new WSWrapper("tinter");
-		}
-		// Send to tinter
-    	ws_tinter.send(json);
-	}
-	function dispenseProgressResp(return_message){
-		
-		//$("#progress-message").text(return_message.errorMessage);
-		$("#abort-message").show();
-		$('#progressok').addClass('d-none');  //hide ok button
-		if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
-				 return_message.status == 1)) {
-			$("#tinterProgressList").empty();
-			 tinterErrorList = [];
-			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
-			//keep updating modal with status
-				if(return_message.statusMessages.length > 0){
-				   buildProgressBars(return_message);
-				}
-			
-			} 
-			if(return_message.errorList!=null && return_message.errorList[0]!=null){
-				// show errors
-				return_message.errorList.forEach(function(item){
-						$("#tinterProgressList").append("<li>" + item.message + "</li>");
-						tinterErrorList.push(item.message);
-					});
-			}
-			if(return_message.errorMessage !=null) {
-				tinterErrorList.push(return_message.errorMessage);
-				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-			}
-			console.log(return_message);
-			setTimeout(function(){
-				FMXDispenseProgress();
-			}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
-			
-		}
-		else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
-			  if(return_message.errorNumber == 4226){
-			    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry" />';
-				    }
-			FMXDispenseComplete(return_message);
-			
-			}
-			
-	}
-	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
-	    $("#tinterErrorList").empty();
-	    $("#tinterErrorListModal").modal('show');
-	    $("#abort-message").hide();
-	    processingDispense = false; // allow user to start another dispense after tinter error
-	    
-		if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
-			//keep updating modal with status
-				if(my_return_message.statusMessages.length > 0){
-				   buildProgressBars(return_message);
-				}
-			
-		} 
-
-	    if(my_return_message.errorNumber == 4226){
-	    	my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry" />';
-		}
-	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
-	    
-	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-	    else $("#tinterErrorListTitle").text('<s:text name="global.tinterError" />');
-	    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
-	    else $("#tinterErrorListSummary").text("");
-	  
-	}
-	function showTinterErrorModal(myTitle, mySummary, my_return_message){
-		$("#tinterErrorList").empty();
-		if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-			my_return_message.errorList.forEach(function(item){
-				$("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
-			});
-		} else {
-			$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
-		}
-		if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-		else $("#tinterErrorListTitle").text('<s:text name="global.tinterError" />');
-		if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
-		else $("#tinterErrorListSummary").text("");
-		$("#tinterErrorListModal").modal('show');
-	}
-	function FMXDispenseComplete(return_message){
-		
-		buildProgressBars(return_message);
-		 $("#abort-message").hide();
-			
-	    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
-	        // save a dispense (will bump the counter)
-
-	        $("#tinterInProgressDispenseStatus").text("");
-	        $("#dispenseStatus").text('<s:text name="global.lastDispenseComplete" />');
-	        rotateIcon();
-	        //$('#progressok').removeClass('d-none');
-	        $('#tinterInProgressTitle').text('<s:text name="global.tinterProgress" />');
-	        $('#tinterInProgressMessage').text('');
-	        $("#tinterProgressList").empty();
-			tinterErrorList = [];
-			$(".progress-wrapper").empty();
-		
-			writeDispense(return_message); // will also send tinter event
-			waitForShowAndHide("#tinterInProgressModal");
-	    } else {
-	        $("#tinterInProgressDispenseStatus").text('<s:text name="correctFormula.lastDispensePlusError"><s:param>'+return_message.errorMessage+'</s:param></s:text>');
-	        $("#dispenseStatus").text('<s:text name="correctFormula.lastDispensePlusError"><s:param>'+return_message.errorMessage+'</s:param></s:text>');
-	        waitForShowAndHide("#tinterInProgressModal");
-	        console.log('hide done');
-	        //Show a modal with error message to make sure the user is forced to read it.
-	        FMXShowTinterErrorModal("Dispense Error",null,return_message);
-	    }
-	    sendingTinterCommand = "false";
-	}
 	function writeDispense(return_message) {
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to convert correctionList to dispenseItems
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -1070,7 +873,7 @@
             data : jsonIN,
             success : function(data){
             	processingDispense = false;
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -1087,7 +890,7 @@
     					sendingDispCommand = "false";
 						// send tinter event (no blocking here)
 						var curDate = new Date();
-						var myGuid = $( "#mainForm_reqGuid" ).val();
+						var myGuid = $( "#reqGuid" ).val();
 						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 						var tedArray = [teDetail];
 						sendTinterEvent(myGuid, curDate, return_message, tedArray);
@@ -1095,7 +898,7 @@
     					//alert("Write Successful");
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
     					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdWriteDispense" /></li>');
     					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
@@ -1116,90 +919,6 @@
 				$("#tinterErrorListModal").modal('show');
             }
         });
-	}
-	function abort(){
-		console.log('before abort');
-		
-		
-		var cmd = "Abort";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-		var json = JSON.stringify(tintermessage);
-
-		ws_tinter.send(json);
-	}
-	function RecdMessage() {
-		console.log("Received Message");
-		//parse the spectro
-		console.log("isReady is " + ws_tinter.isReady + " BTW");
-		if(ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg!=""){
-			if(sendingDispCommand == "true"){
-				// received an error from WSWrapper so we won't get any JSON result
-				// Since we are sending a dispense command, show as dispense error
-				//Show a modal with error message to make sure the user is forced to read it.
-				$("#tinterSocketError").text(ws_tinter.wserrormsg);
-				
-				waitForShowAndHide("#tinterInProgressModal");
-	            
-					$("#tinterSocketErrorModal").modal('show');
-				
-			} else {
-				console.log("Received unsolicited error " + ws_tinter.wserrormsg);
-				// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-				// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-			}
-		} else {
-			// is result (wsmsg) JSON?
-			var isTintJSON = false;
-			try{
-				if(ws_tinter!=null && ws_tinter.wsmsg!=null){
-					var return_message=JSON.parse(ws_tinter.wsmsg);
-					isTintJSON = true;
-				}
-			}
-			catch(error){
-                console.log("Caught error is = " + error);
-				console.log("Message is junk, throw it out");
-				//console.log("Junk Message is " + ws_tinter.wsmsg);
-			}
-			if(isTintJSON){
-				var return_message=JSON.parse(ws_tinter.wsmsg);
-				switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'Abort':
-						var tinterModel = sessionTinterInfo.model; 
-						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
-							dispenseProgressResp(return_message);
-						}
-						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
-							// save a dispense (will bump the counter)
-							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
-						} else {
-							
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Dispense Error",null,return_message);
-							processingDispense = false; // allow user to start another dispense after tinter error
-							sendingDispCommand = "false";
-							// send tinter event (no blocking here)
-							var curDate = new Date();
-							var myGuid = $( "#mainForm_reqGuid" ).val();
-							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-							var tedArray = [teDetail];
-							sendTinterEvent(myGuid, curDate, return_message, tedArray);
-						}
-						break;
-					default:
-						//Not an response we expected...
-						console.log("Message from different command is junk, throw it out");
-				} // end switch statement
-			} else {
-				console.log("Message is junk, throw it out");
-			}
-		}
 	}
 	</script>
 	
@@ -1345,6 +1064,8 @@
 			$('#pct').text('');
 			$('#percentPrompt').toggle();
 		});
+		
+		jQuery(document).on("keydown", fkey); // for abort
 	});
 	
 	//Used to rotate loader icon in modals
@@ -1430,7 +1151,7 @@
 				<!-- Correction Attempts -->
 				<div class="row mb-3">
 					<div class="col-lg-1 col-md-1 col-sm-0 col-xs-0">
- 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+ 						<s:hidden name="reqGuid" value="%{reqGuid}" id="reqGuid"/>
  						<s:hidden name="jsDateString" value=""/>
 						<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
  						<s:hidden name="currCycle" value="%{cycle}"/>
@@ -1952,7 +1673,7 @@
 					}
 				}
 				// go get tinter info to load colorant dropdown
-				getSessionTinterInfo($("#mainForm_reqGuid").val(),sessionTinterInfoCallback);
+				getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
 			} else {
 				$("#currentPrompt").text("");
 				$("#addStep").hide();

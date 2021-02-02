@@ -19,9 +19,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -70,9 +70,6 @@
 		    margin-bottom: 14px;
 		    margin-top: 13.5px;
 		}
-	 	.navbar-text{
-	 		padding-bottom: 0px;
-	 	}
 	 	.dropdown-toggle::after {
 		    display: none;
 		}
@@ -476,7 +473,7 @@
 				readLocalhostConfig();
             	
         	}
-		function DetectFMXResp(return_message){
+		function DetectAlfaFMXResp(return_message){
 			console.log("Processing FMX Detect Response");
 			var initErrorList=[];
 			// log event
@@ -498,7 +495,8 @@
 				else{ // close up shop with this error.
 					sendTinterEvent(myGuid, curDate, return_message, null); 
 					waitForShowAndHide('#initTinterInProgressModal');
-					return_message.errorMessage = "Timeout Waiting for X-Tinter Detect";
+					$("#tinterErrorList").empty();
+					return_message.errorMessage = "Timeout Waiting for Tinter Detect";
 				
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
@@ -686,15 +684,10 @@
 						    var DD = paddedDD.substring(paddedDD.length -2);
 							var todayYYYYMMDD = YYYY+MM+DD;
 							console.log("Compare " + todayYYYYMMDD + " to " + return_message.lastInitDate);
-							if (todayYYYYMMDD>return_message.lastInitDate){
-								detectTinter();
-							}
-							//DJMif (todayYYYYMMDD>return_message.lastInitDate){
-								// detect is not from today, redo
-								//detectTinter();
-							
-							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.indexOf("FM X") >= 0){
-									DetectFMXResp(return_message);
+
+							if(localhostConfig != null && localhostConfig.model != null && 
+									( localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0)){
+									DetectAlfaFMXResp(return_message);
 							} 
 							else if (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
@@ -759,8 +752,8 @@
 						    		// get session for tinter status
 						    		getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 								}
-								else if(localhostConfig.model.indexOf("FM X") >= 0){
-									DetectFMXResp(return_message);
+								else if(localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0){
+									DetectAlfaFMXResp(return_message);
 									}
 								else{
 									DetectFMResp(return_message);								
@@ -1213,10 +1206,11 @@
 						</li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
-			     		<li class="nav-item p-2 pl-3 pr-3 d-none"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
-			     		<li class="nav-item d-none"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
+			     		<li class="nav-item"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
 							    <option value="en_US">English</option>
-							    <option value="es_ES">Español</option>
+							    <option value="es_ES" class="d-none">Español</option>
+							    <option value="zh_CN">中文</option>
 						    </select>
 						</li>
 						<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>

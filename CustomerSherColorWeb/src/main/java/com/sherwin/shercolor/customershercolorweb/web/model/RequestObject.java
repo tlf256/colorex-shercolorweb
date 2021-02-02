@@ -70,6 +70,10 @@ public class RequestObject {
 	private boolean printerConfigured;  //printer configured through SWDeviceHandler
 	private String closestSwColorName;
 	private String closestSwColorId;
+	private boolean productChoosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
+	private String roomByRoom;
+	private boolean packageColor;
+	private boolean pkgClrTintable;
 
 	public String getColorComp() {
 		return colorComp;
@@ -400,6 +404,8 @@ public class RequestObject {
 		this.daysUntilPasswdExpire = 90;
 		this.closestSwColorName = "";
 		this.closestSwColorId = "";
+		this.productChoosenFromDifferentBase = false;
+		this.roomByRoom = null;
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -485,8 +491,29 @@ public class RequestObject {
 	public void setClosestSwColorId(String closestSwColorId) {
 		this.closestSwColorId = closestSwColorId;		
 	}
-	
-	
-
+	public boolean isProductChoosenFromDifferentBase() {
+		return productChoosenFromDifferentBase;
+	}
+	public void setProductChoosenFromDifferentBase(boolean productChoosenFromDifferentBase) {
+		this.productChoosenFromDifferentBase = productChoosenFromDifferentBase;
+	}
+	public String getRoomByRoom() {
+		return roomByRoom;		
+	}
+	public void setRoomByRoom(String roomByRoom) {
+		this.roomByRoom = roomByRoom;		
+	}
+	public boolean isPackageColor() {
+		return packageColor;
+	}
+	public void setPackageColor(boolean packageColor) {
+		this.packageColor = packageColor;
+	}
+	public boolean isPkgClrTintable() {
+		return pkgClrTintable;
+	}
+	public void setPkgClrTintable(boolean pkgClrTintable) {
+		this.pkgClrTintable = pkgClrTintable;
+	}
 
 }

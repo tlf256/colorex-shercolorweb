@@ -18,7 +18,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 
 	
 	<style>
@@ -67,9 +67,6 @@
 		    margin-bottom: 14px;
 		    margin-top: 13.5px;
 		}
-	 	.navbar-text{
-	 		padding-bottom: 0px;
-	 	}
 	 	.dropdown-toggle::after {
 		    display: none;
 		}
@@ -250,7 +247,8 @@
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
 							    <option value="en_US">English</option>
-							    <option value="es_ES">Español</option>
+							    <option value="es_ES" class="d-none">Español</option>
+							    <option value="zh_CN">中文</option>
 						    </select>
 						</li>
 			     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>

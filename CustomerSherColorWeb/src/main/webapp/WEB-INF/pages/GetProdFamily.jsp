@@ -25,12 +25,23 @@
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<style type="text/css">
 			.table-hover tbody tr:hover{
 				background: #FFFF99;
 				cursor: pointer;
 			}
 		</style>
+		<script>
+		var userSelectedProduct = false;
+		
+		function verifyProductSelected(){
+			if (!userSelectedProduct) {
+				$("#noProductChoosenErrorText").removeClass("d-none");
+			}
+			return userSelectedProduct;
+		}
+		</script>
 	</head>
 	
 	<body>
@@ -46,7 +57,6 @@
 				<div class="col-sm-3">
 				</div>
 			</div>
-			<br>
 			<br>
 			<div class="row">
 				<div class="col-sm-2">
@@ -146,8 +156,26 @@
 				<br>
 				<div class="row">
 					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<div id="noProductChoosenErrorText" style="color:red" class="d-none">
+							<s:text name="global.pleaseSelectAProduct"/>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<div id="deltaEGreaterThanOne" class="alert alert-warning d-none"><s:text name="getProdFamily.deltaEGreaterThanOneWarning"/></div>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-sm-1"></div>
 					<div class="col-sm-2">
-						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.next')}" action="prodFamilyUserNextAction"/>
+						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.next')}"
+								  onclick="return verifyProductSelected();" action="prodFamilyUserNextAction"/>
 					</div>
 					<div class="col-sm-2">
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="prodFamilyUserBackAction"/>
@@ -161,6 +189,7 @@
 			<br>
 			<script>
 			$(document).ready(function() {
+				
 				var prodTable = $('#prodFamily_table').DataTable({
 					dom: 'rtp',
 			        "language": {
@@ -182,9 +211,18 @@
 			    	console.log("prod number " + prodNbr);
 			    	$("#selectedProdFamily").val(prodNbr);
 			    	$(".prodFamRadio:eq("+index+")").prop('checked', true);
+			    	userSelectedProduct = true;
 			    });
+				
+				var pT = $('#prodFamily_table').DataTable();
+				for (index = 0; index < pT.data().count()/8; index++) {
+					var deltaE = prodTable.row(index).data()[4];
+					if (deltaE > 1) {
+						$('#deltaEGreaterThanOne').removeClass('d-none');
+					}
+				}
+	
 			});
-
 			</script>
 	
 		</div>
@@ -192,24 +230,6 @@
 		<br>
 		<br>
 		<br>
-		<script>
-
-		<!--
-		  function HF_openSherwin() {
-		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");
-		    popupWin.focus();
-		  }  
-		  function HF_openLegal() {
-		    var popupWin = window.open("http://www.sherwin-williams.com/terms/", "legal", "resizable=no,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=800,height=600,left=10,top=10");
-		    popupWin.focus();
-		  }
-		  function HF_openPrivacy() {
-		    var popupWin = window.open("http://privacy.sherwin-williams.com/", "privacy", "resizable=yes,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=640,height=480,left=10,top=10");
-		    popupWin.focus();
-		  }
-		//-->
-		</script>
-  
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		

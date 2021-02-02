@@ -26,6 +26,15 @@
 		</interceptors>
 		<default-interceptor-ref name="stack-with-login" />
 		<default-action-ref name="invalidLoginAction"/>
+		<!-- use chain type result to forward to login action (a redirect here would cause an IllegalStateException because the response (index.jsp) is already committed) -->
+		<action name="checkLocaleCookieAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="checkLocaleCookie">
+			<interceptor-ref name="nocache" />
+			<interceptor-ref name="defaultStack" />
+			<result name="success" type="chain">
+				<param name="actionName">loginGetUserAction</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>		
 		<action name="loginGetUserAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginUserAction" method="display">
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
@@ -136,15 +145,13 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="cancelPasswordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAction" method="cancel">
+		<action name="cancelPasswordChangeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PasswordAction" method="cancel">
 			<interceptor-ref name="nocache" />
 			<interceptor-ref name="defaultStack" />
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
+			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">loginAction</param>
-				<param name="reqGuid">${reqGuid}</param>
+				<param name="guid1">${guid1}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -174,6 +181,26 @@
 			<result name="success" type="redirect">
 				<param name="location">${sherLinkURL}</param>
 			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayCookieBanner" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="display">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+	        <result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="createConsentCookie" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="execute">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="displayDispenseColorantsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DispenseColorantsAction" method="display">
@@ -754,6 +781,21 @@
 			
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="saveRoomByRoom" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveRoomByRoom">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="displaySampleDispenseAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessSampleDispenseAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/SampleDispense.jsp</result>
+			<result name="input">/WEB-INF/pages/SampleDispense.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="downloadExeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadExeAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -868,7 +910,9 @@
 			<result name="success" type="json"></result>
 		</action>
 		<action name="bumpDispenseCounterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="bumpDispense">
-			<result name="loginRedirect" type="redirectAction">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+	        <result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 				<param name="isAJAX">true</param>
 			</result>

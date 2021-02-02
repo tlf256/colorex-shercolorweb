@@ -44,6 +44,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private List<JobField> jobFieldList;
 	private int lookupControlNbr;
 	private FormulaInfo displayFormula;
+	private List<Integer> exportColList;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -165,6 +166,21 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			double actionTime = endAction-startAction;
 			logger.debug("LookupJobAction: Average Job Processing Time: " + (jobTimeAverage/tranHistory.size()) + " ms)" );
 			logger.debug("LookupJobAction: display - Time Spent: " + (actionTime/1000) + " seconds");
+			
+			int currentCol;
+			exportColList = new ArrayList<Integer>();
+			exportColList.add(0);
+			currentCol = 1;
+			for (JobField job : reqObj.getJobFieldList()) {
+				exportColList.add(currentCol);
+				currentCol++;
+			}
+			for (int index = currentCol; index <= (currentCol+7); index++) {
+				if (index != (currentCol+2)) {
+					exportColList.add(index);
+				}
+			}
+						
 			return SUCCESS;
 				
 		
@@ -403,6 +419,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		this.displayFormula = displayFormula;
 	}
 	
+	public List<Integer> getExportColList() {
+		return exportColList;
+	}
+	
+	public void setExportColList(List<Integer> exportColList) {
+		this.exportColList = exportColList;
+	}
+
 	protected List<FormulaIngredient> getDefaultRecipeInfo(CustWebTran webTran, FormulaConversion formulaConverter){
 		
 		List<FormulaIngredient> recipe = new ArrayList<FormulaIngredient>();
