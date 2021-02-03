@@ -153,10 +153,12 @@
             	else{
             		if(data.errorMessage==null){
     					//console.log("Write Successful!");
-						data.dispenseItemList.forEach(addToShotList);
-    					var correctionStr = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
-    					var printJsonIN = JSON.stringify(correctionStr);
-    					printOnDispenseGetJson(data.reqGuid, printJsonIN);
+    					if (printerConfig && printerConfig.printOnDispense) {
+    						data.dispenseItemList.forEach(addToShotList);
+        					var correctionStr = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
+        					var printJsonIN = JSON.stringify(correctionStr);
+        					printOnDispenseGetJson(data.reqGuid, printJsonIN);
+    					}
     					if(data.mergeCorrWithStartingForm == true){
     						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
     					} else {
@@ -901,8 +903,8 @@
     						// not end of cycle just refresh page
     						reloadScreen()
     					}
-    					if (dispenseAccepted == true) {
-    						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+    					if (dispenseAccepted == true && printerConfig && printerConfig.printOnDispense) {
+    						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
     						printJsonIN = JSON.stringify(str);
     						printOnDispenseGetJson(data.reqGuid,printJsonIN);
     						dispenseAccepted == false;

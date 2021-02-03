@@ -154,7 +154,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				
 				// Get formula ingredients (colorants) for processing.
 				errorLocation = "Retrieving Formula Ingredients";
-				List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
+				List<FormulaIngredient> listFormulaIngredients = new ArrayList<FormulaIngredient>();
+				for (FormulaIngredient displayIngredient : reqObj.getDisplayFormula().getIngredients()) {
+					listFormulaIngredients.add(displayIngredient);
+				}
 				// Merge correction ingredients if the dispense is from an accepted correction dispense
 				if (isCorrectionDispense) {
 					errorLocation = "Merging Correction Ingredients";
