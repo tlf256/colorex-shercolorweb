@@ -73,11 +73,13 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 			setQtyDispensed(reqObj.getQuantityDispensed());
 			setTinter(reqObj.getTinter());
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
+			
 			// check if user has tinter configured
 			List<String> tinterList = tinterService.listOfModelsForCustomerId(reqObj.getCustomerID(), null);
-			if(tinterList.size() > 0) { setSiteHasTinter(true); }
+			if(tinterList.size() > 0) { 
+				setSiteHasTinter(true);
+			}
 			
-						
 			// check if this account is a drawdown center and if it is profiled to use room by room option
 			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			if (profile != null) {
@@ -88,7 +90,6 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 				setAccountUsesRoomByRoom(profile.isUseRoomByRoom());
 			}
 			
-			// get list of can types based on tinter model
 			String tinterModel = null;
 			if (reqObj.getTinter() != null) {
 				tinterModel = reqObj.getTinter().getModel();
@@ -126,15 +127,11 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 				}
 			}
 			
-			// set uom as the inverse of tinter dispense floor (it is the smallest amount the tinter can measure so it gives best precision for num shots)
+			// check tinter properties
 			CustWebTinterProfile tinterProfile = tinterService.getCustWebTinterProfile(tinterModel);
-			int uom = 0;
 			if (tinterProfile != null) {
 				setTinterDoesBaseDispense(tinterProfile.isDoesDispenseBase());
 				setDispenseFloor(tinterProfile.getColorantDispenseFloor());
-				if (dispenseFloor > 0) {
-					uom = (int) Math.round(1 / dispenseFloor);
-				}
 			}
 			
 			// set up tinter colorant dispense info for small sample
@@ -150,12 +147,9 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 					for(FormulaIngredient ingr : displayFormula.getIngredients()){  
 						DispenseItem addItem = new DispenseItem();
 						addItem.setClrntCode(ingr.getTintSysId());
-						addItem.setShots(0);
-						if (uom > 0) {
-							addItem.setUom(uom);
-						} else {
-							addItem.setUom(ingr.getShotSize());
-						}
+						addItem.setShots(0);	// shots get filled in on the page based on can type
+						addItem.setUom(ingr.getShotSize());
+						
 						// Validating completeness of colorantMap data returned from DB. If not, send error msg back to SampleDispense.jsp
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()} ));
@@ -176,8 +170,10 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 						if (colorantMap.containsKey(baseCode)) {
 							baseDispense = new DispenseItem();
 							baseDispense.setClrntCode(baseCode);
-							baseDispense.setUom(uom);
 							baseDispense.setPosition(colorantMap.get(baseCode).getPosition());
+							if (dispenseFormula.get(0) != null) {
+								baseDispense.setUom(dispenseFormula.get(0).getUom());
+							}
 						}
 					}
 
