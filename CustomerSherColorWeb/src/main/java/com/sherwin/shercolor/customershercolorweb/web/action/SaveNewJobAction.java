@@ -383,6 +383,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		custWebTran.setInitTranDate(reqObj.getInitTranDate());
 		custWebTran.setLastTranDate(reqObj.getLastTranDate());
 		custWebTran.setVinylSafe(reqObj.isVinylExclude());
+		custWebTran.setRoomByRoom(reqObj.getRoomByRoom());
 		
 		//formula fields
 		FormulaInfo displayFormula = reqObj.getDisplayFormula();
