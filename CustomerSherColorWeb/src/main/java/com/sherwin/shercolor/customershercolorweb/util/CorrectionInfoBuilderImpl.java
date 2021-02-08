@@ -85,11 +85,11 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 						currentAcceptedCycle = tranCorr.getCycle();
 					}
 					if (tranCorr.getUnitNbr() == acceptedUnitNbr) {
-						for (FormulaIngredient ingredient : tranHistoryService.mapTranCorrClrntFieldsToIngredientList(tranCorr)) {
+						for (FormulaIngredient ingredient : ingredients) {
 							acceptedIngredients.add(ingredient);
 						} 	
 					} else {
-						acceptedIngredients = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(tranCorr);
+						acceptedIngredients = ingredients;
 					}
 					
 					acceptedUnitNbr = tranCorr.getUnitNbr();

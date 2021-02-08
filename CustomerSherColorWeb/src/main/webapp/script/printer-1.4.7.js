@@ -1,6 +1,15 @@
 
 var ws_printer = new WSWrapper("printer");
 
+function printOnDispenseGetJson(myguid,printJsonIN) {
+	if (printerConfig && printerConfig.model) {
+		var myPdf = new pdf(myguid,printJsonIN);
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
+		var numLabels = null;
+		numLabels = printerConfig.numLabels;
+		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+	}
+}
 
 function getPdfFromServer(myGuid, jsonIN){
 	console.log("JSON IN BEFORE SENDING: " + jsonIN);

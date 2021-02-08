@@ -944,26 +944,6 @@
 	}
 	</script>
 	<script type="text/javascript"> //print functions
-	function printOnDispenseGetJson(myguid,printJsonIN) {
-		if (printerConfig && printerConfig.model) {
-			
-			//var myguid = $("#reqGuid").val();
-			console.log("myguid = " + myguid);
-
-			var myPdf = new pdf(myguid,printJsonIN);
-			$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
-			var numLabels = null;
-
-			numLabels = printerConfig.numLabels;
-			numLabelsVal = $("#numLabels").val();
-			if(numLabelsVal && numLabelsVal !=0){
-				numLabels = numLabelsVal;
-			}
-			numLabels = printerConfig.numLabels;
-			print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
-		}
-	}
-	
 	function ParsePrintMessage() {
 		var parsed = false;
 		try {

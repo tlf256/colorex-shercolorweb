@@ -219,22 +219,6 @@ function showPrintModal(){
 	
 }
 
-function printOnDispenseGetJson() {
-	if (printerConfig && printerConfig.model) {
-		// Currently only storeLabels can be printed through dispense
-		myPrintLabelType = "storeLabel";
-		myPrintOrientation = "PORTRAIT";
-		var myguid = $("#reqGuid").val();
-		var correctionStr = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
-		printJsonIN = JSON.stringify(correctionStr);
-		var myPdf = new pdf(myguid,printJsonIN);
-		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
-		var numLabels = null;
-		numLabels = printerConfig.numLabels;
-		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
-	}
-
-}
 function printButtonClickGetJson() {
 	if (printerConfig && printerConfig.model) {
 		var myguid = $("#reqGuid").val();
@@ -365,7 +349,13 @@ function ParsePrintMessage() {
 
 								if (printerConfig
 										&& printerConfig.printOnDispense) {
-									printOnDispenseGetJson(); //new print on dispense
+									// Currently only storeLabels can be printed through dispense
+									myPrintLabelType = "storeLabel";
+									myPrintOrientation = "PORTRAIT";
+									var myguid = $("#reqGuid").val();
+									var correctionStr = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+									printJsonIN = JSON.stringify(correctionStr);
+									printOnDispenseGetJson(myguid,printJsonIN);
 								}
 								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {
