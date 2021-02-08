@@ -465,10 +465,78 @@
 		else if(model.indexOf("FM X") >= 0){
 			RecdMessageFMX();
 		}
+		else if(model.indexOf("SANTINT") >= 0){
+			RecdMessageSantint();
+		}
 		else{
 			RecdMessageFMAlfa();
 		}
 	}
+	
+	function RecdMessageSantint() {
+		var curDate = new Date();
+		console.log("Received Santint Message");
+		// parse the spectro
+		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
+			console.log(ws_tinter.wsmsg);
+			console.log("isReady is " + ws_tinter.isReady + "BTW");
+			// Show a modal with error message to make sure the user is forced to read it.
+			$("#configError").text(ws_tinter.wserrormsg);
+			$("#configErrorModal").modal('show');			
+		
+		} else {
+			var return_message = JSON.parse(ws_tinter.wsmsg);
+			switch (return_message.command) {
+
+			case 'Config':
+				if (return_message.errorNumber == 0 && return_message.commandRC == 0) {
+					init();
+					$("#detectInProgressModal").modal('show');
+					rotateIcon();
+				} else {
+					$("#configError").text(return_message.errorMessage);
+					$("#configErrorModal").modal('show');
+				}
+				sendTinterEventConfig(reqGuid, curDate, return_message, null);
+				break;
+			case 'Detect':
+				waitForShowAndHide("#detectInProgressModal");
+
+				// got back success 
+				if (return_message.errorNumber == 0 && return_message.commandRC == 0) {
+					$("#detectStatusModal").modal('show');
+					$("#detectStatus").text('<s:text name="global.tinterDetectConfigComplete"/>');
+					console.log(return_message);
+
+				} else {
+					$("#detectErrorModal").modal('show');
+					switch (return_message.errorNumber) {
+					case -1:
+					default:
+						$("#errorModalTitle").text('<s:text name="tinterConfig.tinterInitErrors"/>');
+						$("#detectErrorMessage").text(return_message.errorMessage);
+						break;
+					}
+					$("#detectErrorMessage").css("white-space", "pre");
+					$("#detectErrorMessage").text(return_message.errorMessage);
+					
+					if (return_message.errorList != undefined) {
+						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
+							var error = return_message.errorList[i];
+							var errorText = "<li>" + error.num + "\t" + error.message + "</li>";
+							$("#detectErrorList").append(errorText);
+						}
+					}
+				}
+				sendTinterEventConfig(reqGuid, curDate, return_message, null);
+				break;
+			default:
+				// Not an response we expected
+				console.log("Message from different command is junk, throw it out");
+			}
+		}
+	}
+	
 	function RecdMessageCorob() {
 		var curDate = new Date();
 		console.log("Received Message");
