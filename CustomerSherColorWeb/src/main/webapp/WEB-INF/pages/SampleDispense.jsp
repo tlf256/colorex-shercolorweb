@@ -22,7 +22,7 @@
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 
 <style>
@@ -65,6 +65,7 @@ badge {
 	var initialShotList = [];
 	var processingDispense = false;
 	var baseDispense = null;
+	var printJsonIN = "";
 	var tinterModel = "${tinter.model}";
 
 	$(function() {	
@@ -224,8 +225,9 @@ badge {
 	function printButtonClickGetJson() {
 		if (printerConfig && printerConfig.model) {
 			var myguid = $("#reqGuid").val();
-
-			var myPdf = new pdf(myguid);
+			var correctionStr = { "reqGuid" : myguid, "printLabelType" : printLabelType, "printOrientation" : printOrientation, "canType" : canType, "clrntAmtList" : clrntAmtList, "printCorrectionLabel" : false, "shotList" : shotList};
+			printJsonIN = JSON.stringify(correctionStr);
+			var myPdf = new pdf(myguid,printJsonIN);
 			$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 			var numLabels = null;
 
@@ -325,7 +327,7 @@ badge {
 	function setLabelPrintEmbedContainer(labelType,orientation,clrntAmtList,canType) {
 		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' +
 							labelType + '&printOrientation=' + orientation +
-							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '" frameborder="0" class="embed-responsive-item">';
+							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '&printCorrectionLabel=' + false + '&shotList=' + shotList + '" frameborder="0" class="embed-responsive-item">';
 		$("#printLabelEmbedContainer").html(embedString);
 	}
 	

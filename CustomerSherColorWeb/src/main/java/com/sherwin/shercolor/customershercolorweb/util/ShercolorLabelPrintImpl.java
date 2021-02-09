@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -34,10 +35,12 @@ import org.springframework.stereotype.Service;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebDrawdownLabelProfile;
+import com.sherwin.shercolor.common.domain.FormulaConversion;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
+import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
@@ -68,11 +71,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	CustomerService customerService;
 	
 	ColorMastService colorMastService;
+	
+	FormulationService formulationService;
 
-	public ShercolorLabelPrintImpl(DrawdownLabelService drawdownLabelService, CustomerService customerService, ColorMastService colorMastService) {
+	public ShercolorLabelPrintImpl(DrawdownLabelService drawdownLabelService, CustomerService customerService, ColorMastService colorMastService, FormulationService formulationService) {
 		this.drawdownLabelService = drawdownLabelService;
 		this.customerService = customerService;
 		this.colorMastService = colorMastService;
+		this.formulationService = formulationService;
 	}
 	
 	//Creating exception string
@@ -112,7 +118,27 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	public void CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList) {
+	// New method neccessary to help merge the new correction formula so that the labels that print when the containers are accepted
+	// will display the new corrected formula. This partially merges the formula into the starting correction form
+	public List<FormulaIngredient> mergeCorrectionIngredients(List<FormulaIngredient> ingredients, List<Map<String,Object>> correctionShotList) {
+		String clrntSysId = ingredients.get(0).getClrntSysId();
+		FormulaConversion formulaConverter = formulationService.buildFormulaConversion(clrntSysId);
+		for (Map<String,Object> correction : correctionShotList) {
+			FormulaIngredient item = new FormulaIngredient();
+			item.setClrntSysId(clrntSysId);
+			item.setTintSysId(correction.get("code").toString());
+			item.setShots(Integer.parseInt(correction.get("shots").toString()));
+			item.setShotSize(Integer.parseInt(correction.get("uom").toString()));
+			ingredients.add(item);
+		}
+		
+		formulationService.fillIngredientInfoFromTintSysId(ingredients, formulaConverter);
+		formulationService.convertShotsToIncr(ingredients, formulaConverter);
+		
+		return ingredients;
+	}
+	
+	public void CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
 		this.filename = filename;
 		this.reqObj=reqObj;
 
@@ -128,7 +154,16 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				
 				// Get formula ingredients (colorants) for processing.
 				errorLocation = "Retrieving Formula Ingredients";
-				List<FormulaIngredient> listFormulaIngredients = reqObj.getDisplayFormula().getIngredients();
+				List<FormulaIngredient> listFormulaIngredients = new ArrayList<FormulaIngredient>();
+				for (FormulaIngredient displayIngredient : reqObj.getDisplayFormula().getIngredients()) {
+					listFormulaIngredients.add(displayIngredient);
+				}
+				// Merge correction ingredients if the dispense is from an accepted correction dispense
+				if (isCorrectionDispense) {
+					errorLocation = "Merging Correction Ingredients";
+					listFormulaIngredients = mergeCorrectionIngredients(listFormulaIngredients, correctionShotList);
+				}
+				
 				// Determine the number of ingredient (colorant) lines in the formula.
 				int formulaSize = reqObj.getDisplayFormula().getIngredients().size();
 

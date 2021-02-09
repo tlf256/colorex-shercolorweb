@@ -54,7 +54,10 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 			int maxQty=reqObj.getQuantityDispensed();
 			Map<Integer,Integer> discardedMap = new HashMap<Integer,Integer>();
 			Map<Integer,Integer> skippedMap = new HashMap<Integer,Integer>();
-
+			
+			int currentAcceptedCycle = 0; 
+			int acceptedUnitNbr = 0;
+			List<FormulaIngredient> acceptedIngredients = new ArrayList<FormulaIngredient>();
 			int prevAcceptedUnitNbr = 0; // use for tracking when Accepted unitNbr changes while we are looping
 			int prevOpenUnitNbr = 0; // use for tracking when Open unitNbr changes while we are looping
 			//map to correctionHistory model
@@ -75,6 +78,22 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 				// convert clrnt items to ingredients
 				List<FormulaIngredient> ingredients = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(tranCorr);
 				addMe.setIngredients(ingredients);
+				// Store accepted correction formula and set boolean
+				if (tranCorr.getStatus().equalsIgnoreCase("ACCEPTED") && (acceptedUnitNbr == 0 || acceptedUnitNbr == tranCorr.getUnitNbr())) {
+					if (currentAcceptedCycle != tranCorr.getCycle()) {
+						acceptedIngredients.clear();
+						currentAcceptedCycle = tranCorr.getCycle();
+					}
+					if (tranCorr.getUnitNbr() == acceptedUnitNbr) {
+						for (FormulaIngredient ingredient : ingredients) {
+							acceptedIngredients.add(ingredient);
+						} 	
+					} else {
+						acceptedIngredients = ingredients;
+					}
+					
+					acceptedUnitNbr = tranCorr.getUnitNbr();
+				}
 				
 				if(tranCorr.getStatus().equalsIgnoreCase("OPEN")){
 					correction.setCorrStatus("MIDUNIT");
@@ -103,6 +122,9 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 					prevOpenUnitNbr = tranCorr.getUnitNbr();
 				} else {
 					if(tranCorr.getStatus().equalsIgnoreCase("DISCARDED") || tranCorr.getStatus().equalsIgnoreCase("PREVIOUSLY DISCARDED")){
+						// Force accepted formula reset as this status marks that the formula has been thrown away
+						acceptedIngredients.clear();
+						acceptedUnitNbr = 0;
 						if(!discardedMap.containsKey(tranCorr.getUnitNbr())) discardedMap.put(tranCorr.getUnitNbr(), tranCorr.getCycle());
 					}
 					if(tranCorr.getStatus().equalsIgnoreCase("SKIPPED") || tranCorr.getStatus().equalsIgnoreCase("PREVIOUSLY SKIPPED")){
@@ -122,10 +144,12 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 						correction.setCycle(tranCorr.getCycle());
 						correction.setNextUnitNbr(tranCorr.getUnitNbr() + 1);
 						//any accepted steps? if so, put in dispenseItemsList for next container
-						if(tranCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
-							if(prevAcceptedUnitNbr!=tranCorr.getUnitNbr()) dispenseItemList.clear();
-							correction.setAcceptedContNbr(tranCorr.getUnitNbr());
-							for(FormulaIngredient ingr : ingredients){
+						
+						//if(tranCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
+						if(acceptedUnitNbr != 0) {
+							dispenseItemList.clear();
+							correction.setAcceptedContNbr(acceptedUnitNbr);
+							for(FormulaIngredient ingr : acceptedIngredients){
 								DispenseItem dispItem = new DispenseItem();
 								dispItem.setClrntCode(ingr.getTintSysId());
 								dispItem.setUom(ingr.getShotSize());
