@@ -49,6 +49,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	private int nextUnitNbr;
 	private List<CorrectionStep> correctionHistory;
 	private boolean sessionHasTinter;
+	private boolean siteHasPrinter;
 	private int lastStep;
 	private int acceptedContNbr;
 	private int[] skippedCont;
@@ -94,6 +95,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			displayFormula = reqObj.getDisplayFormula();
+			
+			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			 
 			List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 			
@@ -335,7 +338,9 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			tranCorr.setMergedWithOrig(false);
 			tranCorr.setClrntSysId(reqObj.getClrntSys());
 			// walk shotList to get clrnt, clrntAmt and shotSize
-			if(shotList!=null && shotList.size()>0){
+			if(shotList!=null && shotList.size()>0 && 
+			   (!tranCorr.getCorrMethod().equalsIgnoreCase("SKIP CONTAINER") || !tranCorr.getCorrMethod().equalsIgnoreCase("PREVIOUSLY SKIPPED"))
+			){
 				int ctr = 1;
 				for(Map<String,Object> item : shotList){
 					String code = null; Long uom = null; Long shots = null;
@@ -427,6 +432,14 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 					logger.debug("updatedTranCorrStatus, nextUnitNbr is" + nextUnitNbr + " and qty disp is " + reqObj.getQuantityDispensed());
 					if(nextUnitNbr==reqObj.getQuantityDispensed()) mergeCorrWithStartingForm = true;
 					logger.debug("mergeCorr is " + mergeCorrWithStartingForm);
+					// First time the formula is accepted the shotList information is not available for the first correction label
+					// This conditional will help pass back information to help construct a shotList for the first accepted container
+					if (stepStatus.equalsIgnoreCase("ACCEPTED")) {
+						List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
+						CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
+						CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+						dispenseItemList = corrInfo.getAcceptedDispenseList();
+					}
 					retVal = SUCCESS;
 				} else {
 					logger.debug("in postContainerStatus tranHistoryService update returned " + result.getCode());
@@ -579,6 +592,12 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		this.tinter = tinter;
 	}
 
+	public boolean isSiteHasPrinter() {
+		return siteHasPrinter;
+	}
 
+	public void setSiteHasPrinter(boolean siteHasPrinter) {
+		this.siteHasPrinter = siteHasPrinter;
+	}
 	
 }
