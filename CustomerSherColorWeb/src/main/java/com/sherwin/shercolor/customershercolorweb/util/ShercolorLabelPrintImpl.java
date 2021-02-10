@@ -361,6 +361,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			String jobDescr = jobFieldList.get(labelProfileList.get(3).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			String projectInfo = jobFieldList.get(labelProfileList.get(4).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			String schedule = jobFieldList.get(labelProfileList.get(5).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
+			String roomByRoom = reqObj.getRoomByRoom();
 			
 			errorLocation = "Customer";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Customer:",cell2Width,haLeft,vaMiddle,customer);
@@ -379,6 +380,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Project Info:",cell2Width,haLeft,vaMiddle,projectInfo);
 			errorLocation = "Schedule";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Schedule:",cell2Width,haLeft,vaMiddle,schedule);
+			errorLocation = "Room/Use"; //KXK PSCWEB-703
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Room/Use:",cell2Width,haLeft,vaMiddle,roomByRoom);
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"",cell2Width,haLeft,vaMiddle,"");
 			errorLocation = "Color";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Color:",
@@ -506,7 +509,17 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			setFormulaMessagesRows(table,partMessage);
 
 			//------------------------------djm-------------------------
-			List<JobField> listJobField = reqObj.getJobFieldList();
+			//KXK PSCWEB-703
+			List<JobField> listJobField = new ArrayList<JobField>(reqObj.getJobFieldList());
+			JobField roomByRoom = new JobField();
+			roomByRoom.setScreenLabel("Room/Use");
+			roomByRoom.setEnteredValue(reqObj.getRoomByRoom());
+			//add roomByRoom beneath Schedule (2nd to last) if possible
+			if(listJobField.size() > 0) {
+				listJobField.add(listJobField.size()-1, roomByRoom); 
+			} else {
+				listJobField.add(roomByRoom);
+			}
 			setJobFieldRows(table, listJobField);
 			
 			// ================================================================================================================================================
