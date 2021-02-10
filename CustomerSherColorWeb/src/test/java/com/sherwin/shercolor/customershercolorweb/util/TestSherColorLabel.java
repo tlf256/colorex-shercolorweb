@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
+import com.sherwin.shercolor.common.service.FormulationService;
 
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
@@ -36,8 +37,10 @@ public class TestSherColorLabel {
 	CustomerService customerService;
 	@Autowired
 	ColorMastService colorMastService;
+	@Autowired
+	FormulationService formulationService;
 	
-	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService);
+	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
 	// Create a new empty document
 	PDDocument document = new PDDocument();
 

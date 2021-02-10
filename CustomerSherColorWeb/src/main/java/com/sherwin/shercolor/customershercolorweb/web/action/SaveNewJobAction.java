@@ -280,7 +280,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			
 			//get dispensed correction formula for the cycle
 			List<CustWebTranCorr> acceptedCorrThisCycle = tranHistoryService.getAcceptedCorrectionsForCycle(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(),cycle);
-	
+
 			//Build accepted formula, may be several steps
 			int prevAcceptedContNbr = 0;
 			List<FormulaIngredient> acceptedFormula = new ArrayList<FormulaIngredient>();
@@ -303,7 +303,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					prevAcceptedContNbr = acceptedCorr.getUnitNbr();
 				}
 			}
-			
+
 			//Build accepted formula with current formula
 			if(acceptedFormula.size()>0) {
 				List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
