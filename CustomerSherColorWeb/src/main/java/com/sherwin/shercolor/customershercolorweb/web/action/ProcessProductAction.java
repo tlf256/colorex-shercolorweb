@@ -229,10 +229,10 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			// list all products in autocomplete search because the custom manual option does not have primary base types
 			if (colorType.equals("CUSTOM")) {
 				/* 09/06/2017 - New Active Products Search. */
-				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
+				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase(),reqObj.getCustomerID())));
 			} else {
 				/* 04/14/2020 - Filter by Compatible Base Products Search */
-				setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList)));
+				setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList, reqObj.getCustomerID())));
 			}
 		}
 		catch (SherColorException e){
