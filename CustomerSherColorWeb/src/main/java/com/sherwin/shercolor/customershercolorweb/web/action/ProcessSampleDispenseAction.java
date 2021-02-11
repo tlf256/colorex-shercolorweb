@@ -1,6 +1,8 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +105,8 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 				canType = tinterService.getCustWebCanType(tinterCan.getCanType());
 				canTypesList.add(canType);
 			}
+			// sort by sample size, largest to smallest 
+			Collections.sort(canTypesList, Comparator.comparing(CustWebCanTypes::getSampleSize).reversed());
 			
 			// get factory fill for the product
 			String prodNbr = reqObj.getProdNbr();
