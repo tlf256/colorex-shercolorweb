@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Tinter Config</title>
+<title><s:text name="tinterConfig.tinterConfig"/></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -29,9 +29,9 @@
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 
-<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.3.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 
 
@@ -63,7 +63,7 @@
 		var colorants = getColorantIds();
 		var $select = $('#colorantId');
 		$select.find('option').remove();
-		$('<option>').val("-1").text("---Select---").appendTo($select);
+		$('<option>').val("-1").text('<s:text name="tinterConfig.select"/>').appendTo($select);
 		$.each(attributeActions, function(index, value) {
 			$('<option>').val(value).text(value).appendTo($select);
 		});
@@ -79,9 +79,9 @@
 				canister4, canister5, canister6, canister7, canister8,
 				canister9, canister10, canister11 ];
 		configuration = new Configuration(
-				"<s:property value="tinter.clrntSysId"/>",
-				"<s:property value="tinter.model"/>",
-				"<s:property value="tinter.serialNbr"/>", canister_layout);
+				"<s:property value="tinter.clrntSysId" escapeHtml="true"/>",
+				"<s:property value="tinter.model" escapeHtml="true"/>",
+				"<s:property value="tinter.serialNbr" escapeHtml="true"/>", canister_layout);
 
 	}
 	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout) {
@@ -96,33 +96,44 @@
 		var configuration = new Configuration(mycolorantid, mymodel, myserial,
 				canister_layout);
 
-		var calibration = new Calibration(mycolorantid, mymodel, myserial);
+		var calibration = null;
+		//alfa and santint do not have cal files that we manage
+		if(mymodel.indexOf("ALFA") == 0  && mymodel.indexOf("SANTINT") == 0){
+			calibration =  new Calibration(mycolorantid, mymodel, myserial);
 		//console.log("calibration");
 		//console.log(calibration);
-		if(calibration.data != null){
-			var shotList = null;
-			var gdata = null;  //for corob only
-			if(mymodel.indexOf("Corob") >= 0 || mymodel.indexOf("COROB") >= 0){
-				var gdata = new GData(mycolorantid);
+			if(calibration.data != null){
+				var shotList = null;
+				var gdata = null;  //for corob only
+				if(mymodel.indexOf("Corob") >= 0 || mymodel.indexOf("COROB") >= 0){
+					var gdata = new GData(mycolorantid);
+				}
+				var configMessage = new TinterMessage(command, shotList, configuration,
+						calibration, gdata);
+				sendTinterConfig(configMessage);
+
 			}
-			configmessage = new TinterMessage(command, shotList, configuration,
-					calibration, gdata);
-	
-			var json = JSON.stringify(configmessage);
-	
-			if (ws_tinter && ws_tinter.isReady == "false") {
-				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
-				ws_tinter = new WSWrapper("tinter");
+			else{
+					$("#configError").text('<s:text name="tinterConfig.couldNotFindDefaultCalib"><s:param>'+ mycolorantid +'</s:param><s:param>'+ mymodel +'</s:param></s:text>');
+					$("#configErrorModal").modal('show');	
 			}
-			ws_tinter.send(json);
 		}
 		else{
-			$("#configError").text("Could not find Default Calibration for colorant:" + mycolorantid + " and model:" + mymodel + " Please contact support.");
-			$("#configErrorModal").modal('show');	
-			}
+			configMessage = new TinterMessage(command, shotList, configuration,
+					null, null);
+			sendTinterConfig(configMessage);
+		}
 
 	};
-
+	function sendTinterConfig(configMessage){
+		var json = JSON.stringify(configMessage);
+		
+		if (ws_tinter && ws_tinter.isReady == "false") {
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			ws_tinter = new WSWrapper("tinter");
+		}
+		ws_tinter.send(json);
+	}
 	function init() {
 		detectAttempt = 0;
 		if(initStarted == 0){
@@ -174,20 +185,19 @@
     										objs.newtinter.canisterList);
     							} else {
 
-    								alert("Invalid Response from Server. Resetting page.")
+    								alert('<s:text name="tinterConfig.invalidResponseFromServer"/>');
     								window.location.href = "tinterConfigAction?reqGuid=${reqGuid}";
 
     							}
                         	}
 						},
 						error : function() {
-
-							alert("Could not find canister layout for "
-									+ $("[name='newtinter.clrntSysId']").value);
+							var clrntSysId = $("[name='newtinter.clrntSysId']").val();
+							alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + clrntSysId + '</s:param></s:text>');
 						}
 					});
 		} else {
-			alert("One or more of the configuration settings is empty.  Please try again.")
+			alert('<s:text name="tinterConfig.emptyConfigSetting"/>');
 			window.location.href = "tinterConfigAction?reqGuid=${reqGuid}";
 		}
 	}
@@ -198,24 +208,24 @@
 
 		if (SN.length < 5 || SN.length > 15) {
 			$('#SNValidationError').text(
-					"Serial Number must be between 5-15 characters.");
+					'<s:text name="tinterConfig.invalidSerialNbrLength"/>');
 			rc = -1;
 		} else if (SN.substring(0, 2) == SN.substring(3, 5)) {
 			$('#SNValidationError')
 					.text(
-							"Serial Number invalid.  Repeat of same numbers not allowed");
+							'<s:text name="tinterConfig.invalidRepeatOfSame"/>');
 			rc = -1;
 		} else if (SN.substring(0, 1) == SN.substring(2, 3)
 				|| SN.substring(4, 5) == SN.substring(6, 7)) {
 			$('#SNValidationError')
 					.text(
-							"Serial Number invalid.  Repeat of same numbers not allowed");
+							'<s:text name="tinterConfig.invalidRepeatOfSame"/>');
 			rc = -1;
 		} else if (SN.charAt(0) == SN.charAt(1) && SN.charAt(1) == SN.charAt(2)
 				&& SN.charAt(2) == SN.charAt(3) && SN.charAt(3) == SN.charAt(4)) {
 			$('#SNValidationError')
 					.text(
-							"Serial Number invalid.  Repeat of same numbers not allowed");
+							'<s:text name="tinterConfig.invalidRepeatOfSame"/>');
 			rc = -1;
 		} else if (((Number(SN.charAt(4)) + 0) == (Number(SN.charAt(3)) + 1))
 				&& ((Number(SN.charAt(3)) + 0) == (Number(SN.charAt(2)) + 1))
@@ -223,7 +233,7 @@
 				&& ((Number(SN.charAt(1)) + 0) == (Number(SN.charAt(0)) + 1))) {
 			$('#SNValidationError')
 					.text(
-							"Serial Number invalid.  Consecutive numbers are not allowed");
+							'<s:text name="tinterConfig.invalidConsecutiveNbrs"/>');
 			rc = -1;
 		} else {
 			for (var i = 0; i < SN.length; i++) {
@@ -237,7 +247,7 @@
 				else {
 					$('#SNValidationError')
 							.text(
-									"Serial Number invalid.  Special Chars not allowed");
+									'<s:text name="tinterConfig.invalidNoSc"/>');
 					rc = -1;
 				}
 			}
@@ -291,11 +301,56 @@
 		$("#frmSubmit").submit(); // action to save colorants txt and move to welcome page. // TODO.  This works for simulator.  Do we want to keep this?
 
 	});
-
+	/***
+	* @param myGuid - Session Guid from page (i.e. reqGuid) 
+	* @param myMessage - TinterMessage object
+	* @param teDetail - array of TintEventDetail
+	* @param myConfig - Configuration object (canister_layout not required) 
+	* @returns
+	*/
+	function sendTinterEventConfig(myGuid, myDate, myMessage, teDetail){
+	/* use global variable if null sent for myGuid*/
+		if(myGuid == null){
+			if(reqGuid != null){
+				myGuid=reqGuid;
+			}
+		}
+		var colorant = $('#selectClrntSysId').val();
+		var model = $('#modelSelect').val();
+		var serial = $('#tSerialNbr').val();
+		/*tinter.setClrntSysId("CCE");
+		tinter.setModel("COROB UNITTEST");
+		tinter.setSerialNbr("TESTSERIAL");
+		*/
+		var tinter = {
+				clrntSysId:colorant,
+				model:model,
+				serialNbr:serial
+					  };
+		//var mydata = {reqGuid:myGuid, tinterMessage:myMessage, tintEventDetail:teDetail};
+		var mydata = {reqGuid:myGuid, eventDate:myDate.toString(), newTinter:tinter,tintEventDetail:teDetail, tinterMessage:myMessage};
+		var jsonIn = JSON.stringify(mydata);
+		console.log("Logging Tinter Event " + jsonIn);
+		$.ajax({
+			url: "logTinterEventConfigAction.action",
+			contentType : "application/json; charset=utf-8",
+			type: "POST",
+			data: jsonIn,
+			datatype : "json",
+			success: function (data) {
+				if(data.sessionStatus === "expired"){
+	        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	        	}
+	        	else{
+	        		//Handle success after checking expiration
+	        	}
+			}
+		});
+	}
 	function GetModelsForColorant(colorantId_obj) {
 		var modellist = null;
-		var colorantId = colorantId_obj.value;
-
+		var colorantId = colorantId_obj.val();
+		
 		$
 				.ajax({
 					url : "GetTinterModelsAction",
@@ -318,9 +373,9 @@
                     	}
 					},
 					error : function() {
-						modellist = [ "Could not find tinter models for "
-								+ colorantId ];
-						alert("Could not find tinter models for " + colorantId);
+						modellist = [ '<s:text name="tinterConfig.couldNotFindTinterModels"/>'
+								+ " " + colorantId ];
+						alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + colorantId + '</s:param></s:text>');
 					}
 				});
 
@@ -329,7 +384,7 @@
 		setTimeout(function() {
 			//wait 300ms.  Then!  draw table
 			box.append($("<option></option>").attr("value", -1).text(
-					"Select Model"));
+					'<s:text name="tinterConfig.selectModel"/>'));
 			if (modellist != null) {
 				$('#hidden_modellist').html("");
 				$.each(modellist, function(index, value) {
@@ -410,10 +465,78 @@
 		else if(model.indexOf("FM X") >= 0){
 			RecdMessageFMX();
 		}
+		else if(model.indexOf("SANTINT") >= 0){
+			RecdMessageSantint();
+		}
 		else{
-			RecdMessageFM();
+			RecdMessageFMAlfa();
 		}
 	}
+	
+	function RecdMessageSantint() {
+		var curDate = new Date();
+		console.log("Received Santint Message");
+		// parse the spectro
+		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
+			console.log(ws_tinter.wsmsg);
+			console.log("isReady is " + ws_tinter.isReady + "BTW");
+			// Show a modal with error message to make sure the user is forced to read it.
+			$("#configError").text(ws_tinter.wserrormsg);
+			$("#configErrorModal").modal('show');			
+		
+		} else {
+			var return_message = JSON.parse(ws_tinter.wsmsg);
+			switch (return_message.command) {
+
+			case 'Config':
+				if (return_message.errorNumber == 0 && return_message.commandRC == 0) {
+					init();
+					$("#detectInProgressModal").modal('show');
+					rotateIcon();
+				} else {
+					$("#configError").text(return_message.errorMessage);
+					$("#configErrorModal").modal('show');
+				}
+				sendTinterEventConfig(reqGuid, curDate, return_message, null);
+				break;
+			case 'Detect':
+				waitForShowAndHide("#detectInProgressModal");
+
+				// got back success 
+				if (return_message.errorNumber == 0 && return_message.commandRC == 0) {
+					$("#detectStatusModal").modal('show');
+					$("#detectStatus").text('<s:text name="global.tinterDetectConfigComplete"/>');
+					console.log(return_message);
+
+				} else {
+					$("#detectErrorModal").modal('show');
+					switch (return_message.errorNumber) {
+					case -1:
+					default:
+						$("#errorModalTitle").text('<s:text name="tinterConfig.tinterInitErrors"/>');
+						$("#detectErrorMessage").text(return_message.errorMessage);
+						break;
+					}
+					$("#detectErrorMessage").css("white-space", "pre");
+					$("#detectErrorMessage").text(return_message.errorMessage);
+					
+					if (return_message.errorList != undefined) {
+						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
+							var error = return_message.errorList[i];
+							var errorText = "<li>" + error.num + "\t" + error.message + "</li>";
+							$("#detectErrorList").append(errorText);
+						}
+					}
+				}
+				sendTinterEventConfig(reqGuid, curDate, return_message, null);
+				break;
+			default:
+				// Not an response we expected
+				console.log("Message from different command is junk, throw it out");
+			}
+		}
+	}
+	
 	function RecdMessageCorob() {
 		var curDate = new Date();
 		console.log("Received Message");
@@ -440,7 +563,7 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			case 'Detect':
 			case 'Init':
@@ -453,8 +576,7 @@
 					//save
 					$("#detectStatusModal").modal('show');
 					$("#detectStatus")
-							.text(
-									"Tinter Detected.  Configuration Complete. Click to continue");
+							.text('<s:text name="global.tinterDetectConfigComplete"/>');
 					console.log(return_message);
 
 						//$("#frmSubmit").submit();  // action to save colorants txt and move to welcome page.
@@ -467,13 +589,13 @@
 					case -3084:
 						$("#errorModalTitle")
 								.text(
-										"Tinter Detected. Config Complete.  Click to continue");
+										'<s:text name="global.tinterDetectConfigComplete"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
 					default:
 						$("#errorModalTitle").text(
-								"Tinter Init Error(s)  Click to continue")
+								'<s:text name="global.tinterInitErrorsClickContinue"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
@@ -490,7 +612,11 @@
 						}
 					}
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
+				if(return_message.configuration != null && return_message.configuration.model != null 
+						&& return_message.configuration.model.includes("COROB CUSTOM")){
+					updateColorantsTxt(reqGuid, return_message, false, null);
+				}
 				break;
 			default:
 				//Not an response we expected...
@@ -525,7 +651,7 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			case 'Detect':
 			case 'Init':
@@ -554,8 +680,8 @@
 						
 						$("#detectErrorList").append("<li>" + return_message.errorMessage + "</li>");
 					
-						$("#errorModalTitle").text("Tinter Detect and Initialization Failed");
-						$("#detectErrorMessage").text("Issues need to be resolved before you try to dispense formulas.");
+						$("#errorModalTitle").text('<s:text name="global.timeoutWaitingForXTinterDetect"/>');
+						$("#detectErrorMessage").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 						$("#detectErrorModal").modal('show');
 					
 				
@@ -572,7 +698,7 @@
 					
 					$("#detectStatus") 
 							.text(
-									"Tinter Detected. Config Complete. Click to continue");
+									'<s:text name="global.tinterDetectConfigComplete"/>');
 				}
 				else {
 					
@@ -585,13 +711,13 @@
 					case -3084:
 						$("#errorModalTitle")
 								.text(
-										"Tinter Detected. Config Complete....with errors.");
+										'<s:text name="tinterConfig.tinterDetectConfigCompleteWithErrors"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
 					default:
 						$("#errorModalTitle").text(
-								"Tinter Init Error(s)  ")
+								'<s:text name="tinterConfig.tinterInitErrors"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
@@ -608,7 +734,7 @@
 					}
 				}
 				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
-					sendTinterEvent(reqGuid, curDate, return_message,null);
+					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
 			default:
@@ -619,7 +745,7 @@
 			
 		}
 	}
-	function RecdMessageFM() {
+	function RecdMessageFMAlfa() {
 		var curDate = new Date();
 		console.log("Received FM Message");
 		//parse the spectro
@@ -644,7 +770,7 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEvent(reqGuid, curDate, return_message,null);
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				break;
 			case 'Detect':
 			case 'Init':
@@ -665,7 +791,7 @@
 					
 					$("#detectStatus") 
 							.text(
-									"Tinter Detected. Config Complete. Click to continue");
+									'<s:text name="global.tinterDetectConfigComplete"/>');
 				}
 				else {
 					
@@ -678,20 +804,19 @@
 					case -3084:
 						$("#errorModalTitle")
 								.text(
-										"Tinter Detected. Config Complete....with errors.");
+										'<s:text name="tinterConfig.tinterDetectConfigCompleteWithErrors"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
 					default:
 						$("#errorModalTitle").text(
-								"Tinter Init Error(s)  ")
+								'<s:text name="tinterConfig.tinterInitErrors"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
 					}
 					$("#detectErrorMessage").text(return_message.errorMessage);
 					if (return_message.errorList != undefined) {
-
 						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
 							var error = return_message.errorList[i];
 							var errorText = "<li>" + error.num + "\t"
@@ -701,7 +826,7 @@
 					}
 				}
 				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
-					sendTinterEvent(reqGuid, curDate, return_message,null);
+					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
 			default:
@@ -771,23 +896,22 @@
 			validate="true" theme="bootstrap">
 			<div class="text-center mb-4">
 
-				<h1 class="h3 mb-3 font-weight-normal">Config Tinter</h1>
-				<p>Choose your Colorant, Tinter Model and Serial Number and
-					we will connect to your Tinter!</p>
+				<h1 class="h3 mb-3 font-weight-normal"><s:text name="tinterConfig.configTinter"/></h1>
+				<p><s:text name="tinterConfig.chooseClrntModelSerial"/></p>
 			</div>
 
 			<div class="form-label-group">
 
-				<label class="sw-label" for="selectClrntSysId">Colorant</label>
+				<label class="sw-label" for="selectClrntSysId"><s:text name="tinterConfig.colorant"/></label>
 				<s:select id="selectClrntSysId" name="newtinter.clrntSysId"
-					headerKey="-1" headerValue="Select Colorant"
+					headerKey="-1" headerValue="%{getText('global.selectColorant')}"
 					list="defaultColorantList" onchange='GetModelsForColorant(this)' />
 
 
 			</div>
 
 			<div class="form-label-group">
-				<label class="sw-label" for="modelSelect">Model</label>
+				<label class="sw-label" for="modelSelect"><s:text name="tinterConfig.model"/></label>
 				<s:select id="modelSelect" name="newtinter.Model"
 					autofocus="autofocus" list="defaultModelList" headerKey="-1"
 					headerValue="" onchange='changeModel()'>
@@ -796,7 +920,7 @@
 			</div>
 
 			<div class="form-label-group">
-				<label class="sw-label" for="tSerialNbr">Serial Number</label>
+				<label class="sw-label" for="tSerialNbr"><s:text name="tinterConfig.serialNumber"/></label>
 				<s:textfield id="tSerialNbr" name="newtinter.serialNbr"></s:textfield>
 
 				<p style="color: red; font-weight: bold" id="SNValidationError"></p>
@@ -811,10 +935,10 @@
 
 				<input type="button" class="btn btn-lg btn-primary btn-block"
 					id="btn_tinterConfig" data-toggle="modal"
-					data-target="#verifyModal" value="Configure" />
+					data-target="#verifyModal" value='<s:text name="global.configure"/>' />
 
 				<s:submit cssClass="btn btn-lg btn-secondary btn-block"
-					value="Cancel" action="userCancelAction" />
+					value="%{getText('global.cancel')}" action="userCancelAction" />
 
 
 			</div>
@@ -841,14 +965,14 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-					<h5 class="modal-title">Tinter Detection and Initialization</h5>
+					<h5 class="modal-title"><s:text name="global.tinterDetectionAndInitialization"/></h5>
 					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+						aria-label="%{getText('global.close')}">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<p id="progress-message" style="white-space:pre-line">Please wait while your tinter initializes...</p>
+					<p id="progress-message" style="white-space:pre-line"><s:text name="tinterConfig.pleaseWaitTinterInit"/></p>
 				</div>
 				<div class="modal-footer">
 					<!-- 									<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button> -->
@@ -863,9 +987,9 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Configuration Error</h5>
+					<h5 class="modal-title"><s:text name="global.configurationError"/></h5>
 					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+						aria-label="%{getText('global.close')}">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -882,10 +1006,10 @@
 						<s:param name="reqGuid" value="%{thisGuid}" />
 					</s:url>
 					<a href="<s:property value="troubleshootURL"/>"
-						class="btn btn-primary">Troubleshoot</a> <a
-						href="<s:property value="installURL"/>" class="btn btn-success">Install</a>
+						class="btn btn-primary"><s:text name="global.troubleshoot"/></a> <a
+						href="<s:property value="installURL"/>" class="btn btn-success"><s:text name="global.install"/></a>
 					<button type="button" class="btn btn-secondary"
-						id="configErrorButton" data-dismiss="modal" aria-label="Close">Close</button>
+						id="configErrorButton" data-dismiss="modal" aria-label="%{getText('global.close')}"><s:text name="global.close"/></button>
 				</div>
 			</div>
 		</div>
@@ -897,7 +1021,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 
-					<h5 class="modal-title">Tinter Initialization Status</h5>
+					<h5 class="modal-title"><s:text name="tinterConfig.tinterInitializationStatus"/></h5>
 				</div>
 				<div class="modal-body">
 					<p id="detectStatus" ></p>
@@ -905,7 +1029,7 @@
 				<div class="modal-footer">
 					<button id="detectStatusClose" type="button"
 						class="btn btn-primary" id="detectStatusButton"
-						data-dismiss="modal" aria-label="Close">Continue</button>
+						data-dismiss="modal" aria-label="%{getText('global.continue')}"><s:text name="global.continue"/></button>
 				</div>
 			</div>
 		</div>
@@ -917,7 +1041,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 
-					<h5 id="errorModalTitle" class="modal-title">Tinter Initialization Error</h5>
+					<h5 id="errorModalTitle" class="modal-title"><s:text name="tinterConfig.tinterInitializationError"/></h5>
 				</div>
 				<div class="modal-body">
 					<p id="detectErrorMessage" ></p>
@@ -928,7 +1052,7 @@
 				</div>
 				<div class="modal-footer">
 					<button id="detectErrorClose" type="button" class="btn btn-primary"
-						data-dismiss="modal" aria-label="Close">Close</button>
+						data-dismiss="modal" aria-label="%{getText('global.close')}"><s:text name="global.close"/></button>
 				</div>
 			</div>
 		</div>

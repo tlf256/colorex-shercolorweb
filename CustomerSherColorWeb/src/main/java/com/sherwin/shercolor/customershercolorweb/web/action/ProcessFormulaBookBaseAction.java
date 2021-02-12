@@ -74,8 +74,6 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 
 			FormulationResponse oldFormula = (FormulationResponse) reqObj.getFormResponse();
 			
-		
-
 			//reqObj.setPercentageFactor(Integer.valueOf(percentOfFormula)); 
 			
 			reqObj.setPercentageFactor(100); 
@@ -95,7 +93,7 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 					validationMsgs = formulationService.validateFormulation(displayFormula);
 					
 					for(SwMessage item2:validationMsgs) {
-						System.out.println("in loop to add validation msgs");
+						logger.debug("in loop to add validation msgs");
 						addActionMessage(item2.getMessage());
 					}
 					
@@ -107,7 +105,7 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 			
 			return returnStatus;
 		} catch (Exception e) {
-			logger.error("ERROR -" + e.getMessage());
+			logger.error("ERROR -" + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -131,7 +129,7 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 				}
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

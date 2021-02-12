@@ -8,7 +8,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Login</title>
+<title><s:text name="global.login"/></title>
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="js/smoothness/jquery-ui.css"
 	type="text/css">
@@ -18,7 +18,46 @@
 	src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+	
+	<script type="text/javascript">
+	//update user's language preference
+	function updateLanguage(){
+		var selectedLang = $("select[id='languageList'] option:selected").val();
+		console.log(selectedLang);
+		
+		$.ajax({
+			url : "updateLocale.action",
+			type : "POST",
+			data : {
+				request_locale : selectedLang,
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					// reload page to update the language
+					location.reload();
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	$(document).ready(function() {
+	    // update dropdown to display the language that the user picked if they have done so
+	    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+	    if (userLanguage != null && userLanguage != ""){
+		    $("#languageList").val(userLanguage);
+	    } else {
+	    	$("#languageList").val("en_US");
+	    }
+	});
+</script>
 </head>
 <body>
 	<!-- Fixed navbar -->
@@ -26,6 +65,15 @@
 		style="padding-top: 0px; padding-bottom: 0px;">
 		<a href='#'><img src="graphics/shercolor-sm.jpg" alt="Sher-Color"
 			style="height: 3.44rem;" /></a>
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+		   		<select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+				    <option value="en_US">English</option>
+				    <option value="es_ES" class="d-none">Español</option>
+				    <option value="zh_CN">中文</option>
+			    </select>
+			</li>
+		</ul>
 	</nav>
 
 	<div class="container center-form-parent">
@@ -37,7 +85,7 @@
 				src="graphics/shercolor-lg.jpg"
 				alt="" width="72" height="72">
 				-->
-				<h1 class="h3 mb-3 font-weight-normal">Sign in to Sher-Color</h1>
+				<h1 class="h3 mb-3 font-weight-normal"><s:text name="setLogin.signIn"/></h1>
 
 			</div>
 			<div class="row">
@@ -49,18 +97,18 @@
 
 
 			<div class="form-label-group">
-				<label class="sw-label" for="userID">User ID</label>
+				<label class="sw-label" for="userID"><s:text name="setLogin.userID"/></label>
 				<s:textfield name="userId" id="userID"
-					placeholder="Enter User ID here" size="30" maxlength="30"
+					placeholder="%{getText('setLogin.userIDPlaceholder')}" size="30" maxlength="30"
 					cssStyle="font-size: 16px;" autofocus="autofocus"></s:textfield>
 			</div>
 			<div class="form-label-group">
-				<label class="sw-label" for="userPass">Password</label>
+				<label class="sw-label" for="userPass"><s:text name="setLogin.password"/></label>
 				<s:password name="userPass" id="userPass"></s:password>
 			</div>
 			<div class="form-row">
 				<s:submit cssClass="btn btn-primary btn-lg btn-block active"
-					id="LoginFocus" autofocus="autofocus" value="Log In"
+					id="LoginFocus" autofocus="autofocus" value="%{getText('setLogin.logIn')}"
 					action="loginUserAction" />
 
 			</div>
@@ -68,10 +116,7 @@
 		</s:form>
 		<div class="center-text-parent">
 			<p class="text-center sw-textbox" >
-				If you have questions about your assigned username and password, call
-				1-800-566-2997 or send an email to <a
-					href="mailto:sherlink@sherwin.com">sherlink@sherwin.com</a> and a
-				SherLink Representative will assist you.
+				<s:text name="setLogin.questions"/>
 			</p>
 		</div>
 	</div>
@@ -103,6 +148,7 @@
 		  }
 		//-->
 		</script>
+	
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>

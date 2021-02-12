@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Confirm Color And Base</title>
+		<title><s:text name="global.confirmColorAndBase"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -18,8 +18,8 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.4.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/BasicFieldValidator.js"></script>
 		<script type="text/javascript" src="script/PctCancel.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
@@ -50,9 +50,13 @@
 						<div class="col-sm-2">
 						</div>
 	            		<div class="col-sm-4">
-	            			<s:select label="Select Formula To Use (Confirm Color And Base)" 
-	            				headerKey="-1" headerValue="Confirm Color And Base"
+	            			<s:select id="formulasList" label="%{getText('global.selectFormulaToUse')}" 
+	            				headerKey="-1" headerValue="%{getText('global.confirmColorAndBase')}"
 								list="colorBases" name="selectedColorBase"  autofocus="autofocus" required="required" />
+							<div id="formulasDropdownErrorText" style="color:red" class="d-none">
+								<s:text name="global.pleaseSelectAFormula"/>
+							</div>
+							<br>
 						</div>
 				</div>
 				<div class="row">
@@ -60,22 +64,23 @@
 							<s:hidden name="reqGuid" value="%{reqGuid}"/>
 						</div>
 						<div class="col-sm-2">
-							<s:textfield name="percentOfFormula" id="percentOfFormula" label="Percent of Formula" size="10" maxlength="3" cssStyle="font-size: 16px;"  onkeypress="return isNumber(event)" required="true"  />
+							<s:textfield name="percentOfFormula" id="percentOfFormula" label="%{getText('global.percentOfFormula')}" size="10" maxlength="3" cssStyle="font-size: 16px;"  
+								onkeypress="return isNumber(event)" required="true" oninvalid="this.setCustomValidity('%{getText('global.pleaseFillOutThisField')}');" oninput="setCustomValidity('')" />
 						</div>
 				</div>
-			
 				<div class="row">
 						<div class="col-sm-2">
 						</div>	
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="Next" action="fbBaseUserNextAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" 
+									  onclick="return verifyFormulaSelected();" action="fbBaseUserNextAction"/>
 						</div>
 						<div class="col-sm-2">	
 						</div>
 						<div class="col-sm-2">
 						</div>
 						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+			    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
 			    		</div>
 		    	</div>
 			</s:form>
@@ -87,6 +92,19 @@
 				        return false;
 				    }
 				    return true;
+				}
+				
+				function verifyFormulaSelected(){
+					// require formula choice if user hasn't already 
+					var chooseFormulaText = '<s:text name="global.confirmColorAndBase"/>'
+					var formulaText = $("select[id='formulasList'] option:selected").text();
+					if (formulaText == null || formulaText == "" || formulaText == chooseFormulaText){
+						$("#formulasList").focus();
+						$("#formulasDropdownErrorText").removeClass("d-none");
+						return false;
+					} else {
+						return true;
+					}
 				}
 			</script>
 		</div>

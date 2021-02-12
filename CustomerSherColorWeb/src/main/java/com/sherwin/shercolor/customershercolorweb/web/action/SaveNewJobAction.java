@@ -16,6 +16,7 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -37,6 +38,9 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	private int controlNbr;
 	private int qtyDispensed;
 	private String jsDateString;
+	private int recDirty;
+	private List<Map<String,Object>> drawdownShotList = null;
+	private String canType;
 	
 	private int cycle; //correction cycle
 	
@@ -49,7 +53,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	
 	public String execute(){
 		String retVal = null;
-		System.out.println("Inside SaveNewJobAction execute");
+		logger.debug("Inside SaveNewJobAction execute");
 		CustWebTran custWebTran = new CustWebTran();
 		
 		try {
@@ -82,7 +86,6 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			}
 
 			custWebTran.setLastTranDate(localeDateTime);
-			custWebTran = unescapeJobFields(custWebTran);
 
 			//logger.info("determine saveNew or update. controlNbr is " + custWebTran.getControlNbr());
 			if(custWebTran.getControlNbr()>0){
@@ -97,11 +100,12 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					reqObj.setLastTranDate(custWebTran.getLastTranDate());
 					reqObj.setInitTranDate(custWebTran.getInitTranDate());
 					SwMessage statusMsg = new SwMessage();
-					statusMsg.setMessage("Successfully Updated Job Number " + custWebTran.getControlNbr());
+					statusMsg.setMessage(getText("saveNewJobAction.successfullyUpdated",new String[] { String.valueOf(custWebTran.getControlNbr())}));//"Successfully Updated Job Number " + custWebTran.getControlNbr());
 					if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
 					reqObj.getDisplayMsgs().add(statusMsg);
 					//addActionMessage("Successfully Updated Job Number " + custWebTran.getControlNbr());
 					sessionMap.put(reqGuid, reqObj);
+					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
 					logger.error("Received updateTranTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
@@ -119,25 +123,30 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					reqObj.setLastTranDate(custWebTran.getLastTranDate());
 					reqObj.setInitTranDate(custWebTran.getInitTranDate());
 					SwMessage statusMsg = new SwMessage();
-					statusMsg.setMessage("Successfully Saved as Job Number " + custWebTran.getControlNbr());
+					statusMsg.setMessage(getText("saveNewJobAction.successfullySaved",new String[] { String.valueOf(custWebTran.getControlNbr())}));//"Successfully Updated Job Number " + custWebTran.getControlNbr());
 					if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
 					reqObj.getDisplayMsgs().add(statusMsg);
 					//addActionMessage("Successfully Saved as Job Number " + custWebTran.getControlNbr());
 					sessionMap.put(reqGuid, reqObj);
 					this.controlNbr = custWebTran.getControlNbr(); //for ajax call to read
+					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
 					logger.error("Received saveNewTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
 				    retVal = ERROR;
 				}
 			}
+			// drawdown center did a dispense, so save a drawdown transaction too
+			if (drawdownShotList != null) {
+				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr() + qtyDispensed - 1);
+			}
 
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error(he.getMessage() + ": ", he);
 			he.printStackTrace();
 			retVal = ERROR;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -148,119 +157,212 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	}
 
 	public String saveOnPrint(){
-		System.out.println("inside action to saveOnPrint");
+		logger.debug("inside action to saveOnPrint");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
-		System.out.println("inside action about to execute");
+		logger.debug("inside action about to execute");
 		String retVal = this.execute();
-		System.out.println("inside action back from execute");
+		logger.debug("inside action back from execute");
 		
 		return retVal;
 	}
 	
+	public String saveDrawdownTran(String customerId, int controlNbr, int lineNbr) {
+		String retVal = null;
+		try {
+			CustWebDrawdownTran drawdownTran = new CustWebDrawdownTran();
+			drawdownTran.setCustomerId(customerId);
+			drawdownTran.setControlNbr(controlNbr);
+			drawdownTran.setLineNbr(lineNbr);
+			drawdownTran.setCanType(canType);
+			
+			if(drawdownShotList != null && drawdownShotList.size() > 0){
+				int ctr = 1;
+				for(Map<String,Object> item : drawdownShotList) {
+					String code = null; 
+					Long uom = null; 
+					Long shots = null;
+					double partialOz = 0;
+					if(item.get("code")!=null) code = item.get("code").toString();
+					if(item.get("uom")!=null) uom = (Long) item.get("uom");
+					if(item.get("shots")!=null) shots = (Long) item.get("shots");
+					if(item.get("partialOz")!=null) partialOz = Double.parseDouble(item.get("partialOz").toString());
+					
+					if(code != null && shots != null && partialOz != 0 && uom != null){
+						switch (ctr) {
+						case 1:
+							drawdownTran.setClrnt1(code);
+							drawdownTran.setClrntShots1(shots.intValue());
+							drawdownTran.setClrntOz1(partialOz);
+							drawdownTran.setUom(uom.intValue());
+							break;
+						case 2:
+							drawdownTran.setClrnt2(code);
+							drawdownTran.setClrntShots2(shots.intValue());
+							drawdownTran.setClrntOz2(partialOz);
+							break;
+						case 3:
+							drawdownTran.setClrnt3(code);
+							drawdownTran.setClrntShots3(shots.intValue());
+							drawdownTran.setClrntOz3(partialOz);
+							break;
+						case 4:
+							drawdownTran.setClrnt4(code);
+							drawdownTran.setClrntShots4(shots.intValue());
+							drawdownTran.setClrntOz4(partialOz);
+							break;
+						case 5:
+							drawdownTran.setClrnt5(code);
+							drawdownTran.setClrntShots5(shots.intValue());
+							drawdownTran.setClrntOz5(partialOz);
+							break;
+						case 6:
+							drawdownTran.setClrnt6(code);
+							drawdownTran.setClrntShots6(shots.intValue());
+							drawdownTran.setClrntOz6(partialOz);
+							break;
+						case 7:
+							drawdownTran.setClrnt7(code);
+							drawdownTran.setClrntShots7(shots.intValue());
+							drawdownTran.setClrntOz7(partialOz);
+							break;
+						case 8:
+							drawdownTran.setClrnt8(code);
+							drawdownTran.setClrntShots8(shots.intValue());
+							drawdownTran.setClrntOz8(partialOz);
+							break;
+						}
+						ctr++;
+					}// end null check
+				}// end for loop drawdownShotList
+			}// end drawdownShotList null check		
+			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+			e.printStackTrace();
+			retVal = ERROR;
+		}
+		return retVal;
+	}
+	
 	public String bumpDispense(){
-		// add 1 to quantityDispensed and put back in map for execute to do it's thing
-		System.out.println("inside action to bumpDispense");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		qtyDispensed = reqObj.getQuantityDispensed();   //for ajax call to read
-		qtyDispensed++;
-		System.out.println("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
-		reqObj.setQuantityDispensed(qtyDispensed);
-		sessionMap.put(reqGuid, reqObj);
+		String retVal = null;
+		try {
+			// add 1 to quantityDispensed and put back in map for execute to do it's thing
+			logger.debug("inside action to bumpDispense");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			qtyDispensed = reqObj.getQuantityDispensed();   //for ajax call to read
+			qtyDispensed++;
+			logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
+			reqObj.setQuantityDispensed(qtyDispensed);
+			sessionMap.put(reqGuid, reqObj);
 
-		System.out.println("inside action about to execute");
-		String retVal = this.execute();
-		System.out.println("inside action back from execute");
+			logger.debug("inside action about to execute");
+			retVal = this.execute();
+			logger.debug("inside action back from execute");
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+			e.printStackTrace();
+			retVal = ERROR;
+		}
 		
 		return retVal;
 	}
 	
 	public String mergeCorrWithStartForm(){
 		String retVal;
+		try {
+			logger.debug("Inside mergeCorrWithStartForm");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			//last container in the correction process, merge this cycle with current formula
+			FormulaInfo currentFormula = reqObj.getDisplayFormula();
+			
+			//get dispensed correction formula for the cycle
+			List<CustWebTranCorr> acceptedCorrThisCycle = tranHistoryService.getAcceptedCorrectionsForCycle(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(),cycle);
 
-		System.out.println("Inside mergeCorrWithStartForm");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		//last container in the correction process, merge this cycle with current formula
-		FormulaInfo currentFormula = reqObj.getDisplayFormula();
-		
-		//get dispensed correction formula for the cycle
-		List<CustWebTranCorr> acceptedCorrThisCycle = tranHistoryService.getAcceptedCorrectionsForCycle(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(),cycle);
+			//Build accepted formula, may be several steps
+			int prevAcceptedContNbr = 0;
+			List<FormulaIngredient> acceptedFormula = new ArrayList<FormulaIngredient>();
+			for(CustWebTranCorr acceptedCorr : acceptedCorrThisCycle){
+				if(acceptedCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
+					if(acceptedCorr.getUnitNbr()!=prevAcceptedContNbr) acceptedFormula.clear();
+					List<FormulaIngredient> stepIngredientList = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(acceptedCorr);
+					for(FormulaIngredient addIngr : stepIngredientList){
+						logger.debug("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
+						boolean merged = false;
+						for(FormulaIngredient totaledIngr : acceptedFormula){
+							if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
+								logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
+								totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
+								merged = true;
+							}
+						}
+						if(!merged) acceptedFormula.add(addIngr);
+					}
+					prevAcceptedContNbr = acceptedCorr.getUnitNbr();
+				}
+			}
 
-		//Build accepted formula, may be several steps
-		int prevAcceptedContNbr = 0;
-		List<FormulaIngredient> acceptedFormula = new ArrayList<FormulaIngredient>();
-		for(CustWebTranCorr acceptedCorr : acceptedCorrThisCycle){
-			if(acceptedCorr.getStatus().equalsIgnoreCase("ACCEPTED")){
-				if(acceptedCorr.getUnitNbr()!=prevAcceptedContNbr) acceptedFormula.clear();
-				List<FormulaIngredient> stepIngredientList = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(acceptedCorr);
-				for(FormulaIngredient addIngr : stepIngredientList){
-					System.out.println("looking to add " + addIngr.getTintSysId() + " to acceptedFormula");
+			//Build accepted formula with current formula
+			if(acceptedFormula.size()>0) {
+				List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
+				for(FormulaIngredient addIngr : acceptedFormula){
+					logger.debug("looking to add " + addIngr.getTintSysId() + " to currentFormula");
 					boolean merged = false;
-					for(FormulaIngredient totaledIngr : acceptedFormula){
+					for(FormulaIngredient totaledIngr : currentIngredients){
 						if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-							System.out.println("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
+							logger.debug("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
 							totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
 							merged = true;
 						}
 					}
-					if(!merged) acceptedFormula.add(addIngr);
+					if(!merged) currentIngredients.add(addIngr);
 				}
-				prevAcceptedContNbr = acceptedCorr.getUnitNbr();
-			}
-		}
-		
-		//Build accepted formula with current formula
-		if(acceptedFormula.size()>0) {
-			List<FormulaIngredient> currentIngredients = currentFormula.getIngredients();
-			for(FormulaIngredient addIngr : acceptedFormula){
-				System.out.println("looking to add " + addIngr.getTintSysId() + " to currentFormula");
-				boolean merged = false;
-				for(FormulaIngredient totaledIngr : currentIngredients){
-					if(totaledIngr.getTintSysId().equalsIgnoreCase(addIngr.getTintSysId())){
-						System.out.println("adding " + addIngr.getTintSysId() + " shots " + addIngr.getShots() + " to acceptedFormula " + totaledIngr.getShots());
-						totaledIngr.setShots(totaledIngr.getShots()+addIngr.getShots());
-						merged = true;
-					}
-				}
-				if(!merged) currentIngredients.add(addIngr);
-			}
-			formulationService.convertShotsToIncr(currentIngredients);
-			currentFormula.setIngredients(currentIngredients);
-		}
-		
-		//Update DB (tranCorr) set merged to true
-		SwMessage updateResult = tranHistoryService.updateTranCorrectionMerged(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle);
-		if(updateResult==null){
-			if(!reqObj.getColorComp().equalsIgnoreCase("CUSTOM")){
-				// change to custom and replace color id with word Manual
-				reqObj.setColorComp("CUSTOM");
-				reqObj.setColorID("MANUAL");
-			}
-			if(reqObj.isVinylExclude()){
-				currentFormula.setSource("MANV");
-				currentFormula.setSourceDescr("CUSTOM MANUAL VINYL SAFE MATCH");
-			} else {
-				currentFormula.setSource("MAN");
-				currentFormula.setSourceDescr("CUSTOM MANUAL MATCH");
+				formulationService.convertShotsToIncr(currentIngredients);
+				currentFormula.setIngredients(currentIngredients);
 			}
 			
-			//Stuff it back in reqObj
-			reqObj.setDisplayFormula(currentFormula);
-			sessionMap.put(reqGuid, reqObj);
-			//write it to DB (tran) by triggering savecorrmerge
-			System.out.println("inside saveTranMergeWithCorr about to execute");
-			retVal = this.execute();
-			System.out.println("inside saveTranMergeWithCorr back from execute");
-		} else {
+			//Update DB (tranCorr) set merged to true
+			SwMessage updateResult = tranHistoryService.updateTranCorrectionMerged(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle);
+			if(updateResult==null){
+				if(!reqObj.getColorComp().equalsIgnoreCase("CUSTOM")){
+					// change to custom and replace color id with word Manual
+					reqObj.setColorComp("CUSTOM");
+					reqObj.setColorID("MANUAL");
+					// empty out SW color match if it was set
+					reqObj.setClosestSwColorId("");
+					reqObj.setClosestSwColorName("");
+				}
+				if(reqObj.isVinylExclude()){
+					currentFormula.setSource("MANV");
+					currentFormula.setSourceDescr("CUSTOM MANUAL VINYL SAFE MATCH");
+				} else {
+					currentFormula.setSource("MAN");
+					currentFormula.setSourceDescr("CUSTOM MANUAL MATCH");
+				}
+				
+				//Stuff it back in reqObj
+				reqObj.setDisplayFormula(currentFormula);
+				sessionMap.put(reqGuid, reqObj);
+				//write it to DB (tran) by triggering savecorrmerge
+				logger.debug("inside saveTranMergeWithCorr about to execute");
+				retVal = this.execute();
+				logger.debug("inside saveTranMergeWithCorr back from execute");
+			} else {
+				retVal = ERROR;
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage() + ": ", e);
+			e.printStackTrace();
 			retVal = ERROR;
 		}
-		
 		return retVal;
 		
 	}
 	
 	private CustWebTran mapRequestObjectToCustWebTranObject(RequestObject reqObj, CustWebTran origTran){
-		System.out.println("Inside SaveNewJobAction mapRequestObjectToCustWebTranObject");
+		logger.debug("Inside SaveNewJobAction mapRequestObjectToCustWebTranObject");
 		CustWebTran custWebTran = new CustWebTran();
 		custWebTran.setCustomerId(reqObj.getCustomerID());
 		custWebTran.setControlNbr(reqObj.getControlNbr());
@@ -281,6 +383,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		custWebTran.setInitTranDate(reqObj.getInitTranDate());
 		custWebTran.setLastTranDate(reqObj.getLastTranDate());
 		custWebTran.setVinylSafe(reqObj.isVinylExclude());
+		custWebTran.setRoomByRoom(reqObj.getRoomByRoom());
 		
 		//formula fields
 		FormulaInfo displayFormula = reqObj.getDisplayFormula();
@@ -453,22 +556,6 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		return custWebTran;
 	}
 	
-	public CustWebTran unescapeJobFields(CustWebTran custWebTran) {
-		
-		custWebTran.setJobField01(StringEscapeUtils.unescapeHtml(custWebTran.getJobField01()));
-		custWebTran.setJobField02(StringEscapeUtils.unescapeHtml(custWebTran.getJobField02()));
-		custWebTran.setJobField03(StringEscapeUtils.unescapeHtml(custWebTran.getJobField03()));
-		custWebTran.setJobField04(StringEscapeUtils.unescapeHtml(custWebTran.getJobField04()));
-		custWebTran.setJobField05(StringEscapeUtils.unescapeHtml(custWebTran.getJobField05()));
-		custWebTran.setJobField06(StringEscapeUtils.unescapeHtml(custWebTran.getJobField06()));
-		custWebTran.setJobField07(StringEscapeUtils.unescapeHtml(custWebTran.getJobField07()));
-		custWebTran.setJobField08(StringEscapeUtils.unescapeHtml(custWebTran.getJobField08()));
-		custWebTran.setJobField09(StringEscapeUtils.unescapeHtml(custWebTran.getJobField09()));
-		custWebTran.setJobField10(StringEscapeUtils.unescapeHtml(custWebTran.getJobField10()));
-		
-		return custWebTran;
-	}
-	
 
 	public void setSession(Map<String, Object> sessionMap) {
 		this.setSessionMap(sessionMap);
@@ -512,6 +599,30 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	public void setCycle(int cycle) {
 		this.cycle = cycle;
+	}
+
+	public int getRecDirty() {
+		return recDirty;
+	}
+
+	public void setRecDirty(int recDirty) {
+		this.recDirty = recDirty;
+	}
+	
+	public List<Map<String,Object>> getDrawdownShotList() {
+		return drawdownShotList;
+	}
+
+	public void setDrawdownShotList(List<Map<String,Object>> drawdownShotList) {
+		this.drawdownShotList = drawdownShotList;
+	}
+
+	public String getCanType() {
+		return canType;
+	}
+
+	public void setCanType(String canType) {
+		this.canType = canType;
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +27,10 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 	private boolean autoNozzleCover;
 	private String currentUser;
 	private String lastPurgeDate;
+	private String lastPurgeTime;
 	private String lastPurgeUser;
+	private String updatedTime;
+	private String updatedLastPurgeMsg;
 	
 	private TinterInfo tinter;
 	private List<TinterCanister> canList;
@@ -49,15 +54,24 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 				tinter.setLastPurgeDate(jsdf.format(lastPurge.getDateTime()));
 				tinter.setLastPurgeUser(lastPurge.getEventDetails());
 //				SimpleDateFormat df = new SimpleDateFormat("E mon dd yyyy 'at' hh.mm.ss a");
-				System.out.println("About to format date" + lastPurge.getDateTime().toString());
-				SimpleDateFormat dfDisplay = new SimpleDateFormat("E MMM dd yyyy 'at' hh:mm a");
-				lastPurgeDate = dfDisplay.format(lastPurge.getDateTime());
+				logger.debug("About to format date" + lastPurge.getDateTime().toString());
+				
+				// locale will be null if the user hasn't changed their language preference
+				Locale userLocale = (Locale) sessionMap.get("WW_TRANS_I18N_LOCALE");
+				if (userLocale == null) {
+					userLocale = Locale.ENGLISH;
+				}
+				// separate date and time so it can be internationalized on the jsp
+				SimpleDateFormat dfDisplayDate = new SimpleDateFormat("E MMM dd yyyy", userLocale);
+				SimpleDateFormat dfDisplayTime = new SimpleDateFormat("hh:mm a", userLocale);
+				lastPurgeDate = dfDisplayDate.format(lastPurge.getDateTime());
+				lastPurgeTime = dfDisplayTime.format(lastPurge.getDateTime());
 				lastPurgeUser = tinter.getLastPurgeUser();
 			} else {
-				lastPurgeDate = "Not Available";
+				lastPurgeDate = getText("processTinterPurgeAction.notAvailable");
+				lastPurgeTime = getText("processTinterPurgeAction.notAvailable");
 				lastPurgeUser = "";
 			}
-			
 			
 			autoNozzleCover = tinter.isAutoNozzleCover();
 			currentUser = reqObj.getFirstName() + " " + reqObj.getLastName();
@@ -74,6 +88,22 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 		return retVal;
 
 	}
+	
+	public String getUpdatedPurgeDate() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		// locale will be null if the user hasn't changed their language preference
+		Locale userLocale = (Locale) sessionMap.get("WW_TRANS_I18N_LOCALE");
+		if (userLocale == null) {
+			userLocale = Locale.ENGLISH;
+		}
+		SimpleDateFormat dtf = new SimpleDateFormat("E MMM dd yyyy", userLocale);
+		Date now = new Date();
+		String updatedDate = dtf.format(now);
+		updatedLastPurgeMsg = getText("tinterPurge.lastPurgeDateTimeUser", new String[]{updatedDate, updatedTime, reqObj.getFirstName() + " " + reqObj.getLastName()});
+		
+		return SUCCESS;
+	}
+		
 	
 	public void setSession(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;		
@@ -94,7 +124,7 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 	public String getCurrentUser() {
 		return currentUser;
 	}
-
+	
 	public String getLastPurgeDate() {
 		return lastPurgeDate;
 	}
@@ -113,6 +143,30 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 
 	public void setCanList(List<TinterCanister> canList) {
 		this.canList = canList;
+	}
+
+	public String getUpdatedTime() {
+		return updatedTime;
+	}
+
+	public void setUpdatedTime(String updatedTime) {
+		this.updatedTime = updatedTime;
+	}
+
+	public String getUpdatedLastPurgeMsg() {
+		return updatedLastPurgeMsg;
+	}
+
+	public void setUpdatedLastPurgeMsg(String updatedLastPurgeMsg) {
+		this.updatedLastPurgeMsg = updatedLastPurgeMsg;
+	}
+
+	public String getLastPurgeTime() {
+		return lastPurgeTime;
+	}
+
+	public void setLastPurgeTime(String lastPurgeTime) {
+		this.lastPurgeTime = lastPurgeTime;
 	}
 
 

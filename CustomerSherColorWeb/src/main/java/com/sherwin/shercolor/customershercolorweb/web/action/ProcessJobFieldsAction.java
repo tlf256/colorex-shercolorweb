@@ -50,7 +50,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					JobField jobField = new JobField();
 					jobField.setScreenLabel(custField.getScreenLabel());
 					jobField.setEnteredValue(custField.getFieldDefault());
-					if(debugOn) System.out.println("Adding field " + jobField.getScreenLabel() + " default is " + jobField.getEnteredValue());
+					logger.debug("Adding field " + jobField.getScreenLabel() + " default is " + jobField.getEnteredValue());
 					jobFieldList.add(jobField);
 				}
 				retVal = INPUT;
@@ -63,7 +63,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		
@@ -91,7 +91,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		
@@ -103,39 +103,38 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 		String retVal;
 		try {
 			updateMode = 0;
-			if(debugOn) System.out.println("About to get object from map");
-			if(debugOn) System.out.println("reqGuid is " + reqGuid);
+			logger.debug("About to get object from map");
+			logger.debug("reqGuid is " + reqGuid);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			List<String> validateMe = new ArrayList<String>();
 			List<String> jobFieldLabels = new ArrayList<String>();
 			
-			if(debugOn) System.out.println("about to process jobFieldList");
+			logger.debug("about to process jobFieldList");
 			if(jobFieldList==null){
-				if(debugOn) System.out.println("jobFieldList is null");
+				logger.debug("jobFieldList is null");
 				retVal = ERROR;
 			} else {
-				if(debugOn) System.out.println("jobFieldList is NOT null");
+				logger.debug("jobFieldList is NOT null");
 				
 				int i = 0;
 				for(JobField thisField : jobFieldList){
-					if(debugOn) System.out.println("thisField=" + thisField.getEnteredValue());
+					logger.debug("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
-					// encode entered value
-					thisField.setEnteredValue(Encode.forHtml(thisField.getEnteredValue()));
-					if(debugOn) System.out.println("thisField after encoding: " + thisField.getEnteredValue());
+					thisField.setEnteredValue(thisField.getEnteredValue());
+					
 					i++;
-					validateMe.add(StringEscapeUtils.unescapeHtml(thisField.getEnteredValue()));
+					validateMe.add(thisField.getEnteredValue());
 					jobFieldLabels.add(thisField.getScreenLabel());
 				}
 				
-				if(debugOn) System.out.println("about to call validate");
+				logger.debug("about to call validate");
 				
 				List<SwMessage> messages = customerService.validateCustJobFields(jobFieldLabels,validateMe);
 				
-				if(debugOn) System.out.println("back from validate");
-				if(debugOn) System.out.println("message size is " + messages.size());
+				logger.debug("back from validate");
+				logger.debug("message size is " + messages.size());
 				if(messages.size()>0){
 					// TODO process field entry errors
 					int index = 0;
@@ -145,17 +144,17 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					retVal = INPUT;
 				} else {
 					// all good
-					if(debugOn) System.out.println("about to set JobFieldList");
+					logger.debug("about to set JobFieldList");
 					reqObj.setJobFieldList(jobFieldList);
 					
-					if(debugOn) System.out.println("about to put map into session");
+					logger.debug("about to put map into session");
 					sessionMap.put(reqGuid, reqObj);
 					retVal = SUCCESS;
 				} // end else no messages
 			} // end else jobFieldList is not null
 			
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		
@@ -179,7 +178,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			}
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 		return retVal;

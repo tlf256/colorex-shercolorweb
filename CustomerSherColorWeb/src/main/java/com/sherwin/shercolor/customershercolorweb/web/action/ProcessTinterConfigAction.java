@@ -52,20 +52,22 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 
 	public String AjaxGetCanisterList(){
-		System.out.println("inside getCanisterList and reqGuid is " + reqGuid);
+
+		logger.debug("inside getCanisterList and reqGuid is " + reqGuid);
+		
 		if(newtinter !=null){
 
-			System.out.println("newtinter:" + newtinter.getModel());
-			System.out.println("newtinter:" + Encode.forHtml(newtinter.getSerialNbr()));
-			System.out.println("newtinter:" + newtinter.getClrntSysId());
-			System.out.println("thisserial:" + this.tinterSerialNbr);
-			System.out.println("newtinterserial:" + Encode.forHtml(newtinter.getSerialNbr()));
+			logger.debug("newtinter:" + newtinter.getModel());
+			logger.debug("newtinter:" + Encode.forHtml(newtinter.getSerialNbr()));
+			logger.debug("newtinter:" + newtinter.getClrntSysId());
+			logger.debug("thisserial:" + this.tinterSerialNbr);
+			logger.debug("newtinterserial:" + Encode.forHtml(newtinter.getSerialNbr()));
 		}
 		else{
 			newtinter = new TinterInfo();
 		}
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		System.out.println("inside getCanisterList, got reqObj, now getting tinter");
+		logger.debug("inside getCanisterList, got reqObj, now getting tinter");
 		if(reqObj !=null) {this.setCustomerId(reqObj.getCustomerID());}
 		else {System.out.print("reqObj null");}
 		System.out.print("customerId:" + this.getCustomerId());
@@ -101,12 +103,12 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 				}
 				
 				newtinter.setCanisterList(buildMe);
-				System.out.println("New Canister list added for: " + newtinter.getClrntSysId() + "_" + newtinter.getModel()+"_"+Encode.forHtml(newtinter.getSerialNbr()));
+				logger.debug("New Canister list added for: " + newtinter.getClrntSysId() + "_" + newtinter.getModel()+"_"+Encode.forHtml(newtinter.getSerialNbr()));
 
 
 			}
 			else{
-				System.out.println("Not saving colorantsTxt.  Customer ID is:" + getCustomerId());
+				logger.debug("Not saving colorantsTxt.  Customer ID is:" + getCustomerId());
 			}
 		}
 
@@ -144,13 +146,13 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		 */
 
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		System.out.println("Begin Saving colorantsTxt.");
+		logger.debug("Begin Saving colorantsTxt.");
 		
 		if(reqObj !=null) {this.setCustomerId(reqObj.getCustomerID());}
 		List<CustWebColorantsTxt> colorantsTxtList = (List<CustWebColorantsTxt>) sessionMap.get("colorantsTxtList");
 		if(colorantsTxtList ==null) {
-			System.out.println("ColorantsTxt is null");
-			addActionError("Session variable colorantsTxt was null.  Please try again.");
+			logger.error("ColorantsTxt is null");
+			addActionError(getText("processTinterConfigAction.nullClrntsTxt"));
 			return INPUT;
 		}
 		else{
@@ -166,17 +168,18 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 			if(this.getCustomerId()!=null && !this.getCustomerId().equals("DEFAULT") && this.getNewtinter().getSerialNbr() != null
 					&& this.getNewtinter().getSerialNbr().length()>1){
 				logger.info("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
-				System.out.println("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
-					if(tinterService.conditionalSaveColorantsTxt(colorantsTxtList) < 0){
+				logger.debug("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
+					// create records if they don't already exist, and colorant code may be different than expected because of layout update
+					if(tinterService.conditionalSaveColorantsTxtByPosition(colorantsTxtList) < 0){
 						//save if new customer id otherwise do nothing.  If error return error
-						addActionError("Config not complete.  Critical DB error saving colorants txt.  Please try again.  Call support if this persists.");
+						addActionError(getText("processTinterConfigAction.configNotCompleteColorantsTxt"));
 						return ERROR;
 					}
 					
 				
 			}
 			else {
-				addActionError("Invalid Serial Number:" + this.getNewtinter().getSerialNbr());
+				addActionError(getText("processTinterConfigAction.invalidSerialNbr", new String[]{this.getNewtinter().getSerialNbr()}));
 				return INPUT;
 			}
 		}
@@ -187,16 +190,16 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		String retVal = null;
 
 		try {
-			System.out.println("inside ProcessTinterConfigAction and reqGuid is " + reqGuid);
+			logger.debug("inside ProcessTinterConfigAction and reqGuid is " + reqGuid);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			System.out.println("inside ProcessTinterConfigAction, got reqObj, now getting tinter");
+			logger.debug("inside ProcessTinterConfigAction, got reqObj, now getting tinter");
 			TinterInfo tinter = reqObj.getTinter();
-			System.out.println("inside ProcessTinterConfigAction, got tinter, returning success");
+			logger.debug("inside ProcessTinterConfigAction, got tinter, returning success");
 
 			//TODO get last Config date info to be shown on screen...
 
 			// setup tinter stuff if needed
-			if(tinter==null) System.out.println("inside ProcessConfigAction_display and tinter object is null");
+			if(tinter==null) logger.error("inside ProcessConfigAction_display and tinter object is null");
 			//set up list of colorants for combo box
 			this.setDefaultColorantList( tinterService.listOfColorantSystemsByCustomerId("DEFAULT"));
 			//get List of Ecals
@@ -208,7 +211,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 				myEcalList = ecalService.getEcalsByCustomer(customerID);
 			}
 			//get List of Template Cals
-			System.out.println("CustomerID=" +reqObj.getCustomerID());
+			logger.debug("CustomerID=" +reqObj.getCustomerID());
 
 
 			retVal = SUCCESS;
@@ -315,7 +318,6 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	public boolean isReReadLocalHostTinter() {
 		return reReadLocalHostTinter;
 	}
-
 
 
 }

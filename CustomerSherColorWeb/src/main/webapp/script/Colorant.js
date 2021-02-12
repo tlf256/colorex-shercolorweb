@@ -61,13 +61,13 @@ $(function(){
                     error: function(textStatus, errorThrown ) {
                         console.log("Failed in add function here");
                         console.log(textStatus + "" + errorThrown);
-                        $('#addmsg').text('Error occurred while adding quart, please contact the Help Desk.');
+                        $('#addmsg').text(i18n['colorant.errorAddingQuart']);
                         $('#addModal').modal('show');
                     }
                 });
             }
             else{
-            	FMXShowTinterErrorModal("Colorant Level Error", "Cannot add one full quart, please use Set Full.", null);
+            	FMXShowTinterErrorModal(i18n['colorant.colorantLevelError'], i18n['colorant.cannotAddOneFullQuart'], null);
                // $('#addmsg').text('Cannot add one full quart, please use Set Full.');
                // $('#addModal').modal('show');
             } 
@@ -94,13 +94,13 @@ $(function(){
                     error: function(textStatus, errorThrown ) {
                         console.log("Failed in sub function");
                         console.log(textStatus + "" + errorThrown);
-                        $('#submsg').text('Error occurred while subtracting quart, please contact the Help Desk');
+                        $('#submsg').text(i18n['colorant.errorSubtractingQuart']);
                         $('#subModal').modal('show');
                     }
                 });
             }
             else{
-                $('#submsg').text('Colorant is less than one quart, cannot subtract one full quart.');
+                $('#submsg').text(i18n['colorant.lessThanOneQuart']);
                 $('#subModal').modal('show');
             } 
         }
@@ -126,13 +126,13 @@ $(function(){
                     error: function(textStatus, errorThrown ) {
                         console.log("Failed in set one full function");
                         console.log(textStatus + "" + errorThrown);
-                        $('#addmsg').text('Error occurred while attempting to set colorant full, please contact the Help Desk.');
+                        $('#addmsg').text(i18n['colorant.errorSettingClrntFull']);
                         $('#addModal').modal('show');
                     }
                 });
             }
             else{
-                $('#addmsg').text('Container is full.');
+                $('#addmsg').text(i18n['global.containerFull']);
                 $('#addModal').modal('show');
             } 
         }
@@ -258,14 +258,14 @@ function moveComplete(myGuid, curDate,return_message){
 	if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 		// show success message in alert area
 		$("#tinterAlertList").empty();
-		$("#tinterAlertList").append("<li>Move Complete</li>");
+		$("#tinterAlertList").append("<li>" + i18n["colorant.moveComplete"] + "</li>");
 		if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
 		if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
 		if(!$("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").addClass("alert-success");
 	} else {
 		
 		$("#tinterAlertList").empty();
-		$("#tinterAlertList").append("<li>Purge Failed:" + return_message.errorMessage + "</li>");
+		$("#tinterAlertList").append("<li>" + i18n["colorant.purgeFailedColon"] + return_message.errorMessage + "</li>");
 		if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
 		if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
 		if($("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").removeClass("alert-success");
@@ -303,7 +303,7 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
     	$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
     }
     if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-    else $("#tinterErrorListTitle").text("Tinter Error");
+    else $("#tinterErrorListTitle").text(i18n['global.tinterError']);
     if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
     else $("#tinterErrorListSummary").text("");
   

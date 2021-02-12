@@ -49,6 +49,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private boolean adjByPercentVisible;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
+	private String percentFormulaMsg;
 	
 
 	private boolean debugOn = false;
@@ -80,8 +81,10 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				// change to custom and replace color id with word Manual
 				reqObj.setColorComp("CUSTOM");
 				reqObj.setColorID("MANUAL");
+				// empty out SW color match if it was set
+				reqObj.setClosestSwColorId("");
+				reqObj.setClosestSwColorName("");
 			}
-			 
 			colorId = reqObj.getColorID();
 			colorName = reqObj.getColorName();
 			 
@@ -117,7 +120,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				ingredientList.add(item);
 			}
 			 
-			if(debugOn) System.out.println("in display,DONE  building ingredientList, size is " + ingredientList.size());
+			logger.debug("in display,DONE  building ingredientList, size is " + ingredientList.size());
 			if(reqObj.getDisplayFormula()!=null){
 				// Merge current formula values into ingredientList
 				FormulaInfo currentFormula = reqObj.getDisplayFormula();
@@ -145,7 +148,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			CustWebTran webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), 1);
 			
 			if (webTran == null && reqObj.getDisplayFormula() == null) {
-				System.out.println("Formula not saved or display formula null, no Adjust By Percent");
+				logger.debug("Formula not saved or display formula null, no Adjust By Percent");
 				adjByPercentVisible = true;
 			}
 	 
@@ -158,7 +161,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 			 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			return ERROR;
 		}
 		
@@ -183,27 +186,27 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			displayFormula = reqObj.getDisplayFormula();
 			
-			System.out.println("in percentAdjustment, origFormula ingredient count returned is " + displayFormula.getIngredients().size());
+			logger.debug("in percentAdjustment, origFormula ingredient count returned is " + displayFormula.getIngredients().size());
 			for(FormulaIngredient item : displayFormula.getIngredients()){
-				System.out.println("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
+				logger.debug("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
 			}
 			
-			System.out.println("in percentAdjustment, about to call scaleByPercent");
+			logger.debug("in percentAdjustment, about to call scaleByPercent");
 			displayFormula = formulationService.scaleFormulaByPercent(displayFormula, percentOfFormula);
 			
-			System.out.println("in percentAdjustment, new Formula ingredient count returned is " + displayFormula.getIngredients().size());
+			logger.debug("in percentAdjustment, new Formula ingredient count returned is " + displayFormula.getIngredients().size());
 			for(FormulaIngredient item : displayFormula.getIngredients()){
-				System.out.println("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
+				logger.debug("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
 			}
 			
 			reqObj.setDisplayFormula(displayFormula);
-			
+			percentFormulaMsg =  getText("editFormula.pctOfFormula", new String[]{String.valueOf(percentOfFormula)});
 			sessionMap.put(reqGuid, reqObj);
 
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			System.err.println("Exepction thrown!, Percent Addition Calculation Failed");
+			logger.error(e.toString() + " " + e.getMessage(), e);
+			System.err.println("Exception thrown!, Percent Addition Calculation Failed");
 			retVal = ERROR;
 		}
 
@@ -213,12 +216,13 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	public String execute() {
 		String retVal = SUCCESS;
 		try{
-			if(debugOn) System.out.println("Start of execute, reqGuid is " + reqGuid);
+			logger.debug("Start of execute, reqGuid is " + reqGuid);
 			recDirty=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			if(debugOn) System.out.println("successfully read reqObj");
-
+			logger.debug("successfully read reqObj");
+			if (colorId==null) {colorId="";}
 			reqObj.setColorID(colorId);
+			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
 			// Fill in more display formula attributes
 			reqObj.getDisplayFormula().setSalesNbr(reqObj.getSalesNbr());
@@ -230,31 +234,31 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			//check user input, first make sure all positive integers used...
 			boolean positiveValueEntered = false;
 			boolean badValueEntered = false;
-			if(debugOn) System.out.println("ready to look through ingredientlist");
+			logger.debug("ready to look through ingredientlist");
 			for(ManualIngredient item : ingredientList){
 				positiveValueEntered = false;
 				badValueEntered = false;
 				for(int i = 0; i< item.getIncrements().size(); i++){
 					if(item.getIncrements().get(i).trim().isEmpty() || item.getIncrements().get(i).trim().equals("-")){
-						if(debugOn) System.out.println("empty increment or single hyphen, force 0");
+						logger.debug("empty increment or single hyphen, force 0");
 						item.getIncrements().set(i, "0");
 					} else {
 						//this increment not empty, not hyphen...
 						try {
 							int testInt = Integer.parseInt(item.getIncrements().get(i));
 							if(testInt>0){
-								if(debugOn) System.out.println("increment greater than 0, OK");
+								logger.debug("increment greater than 0, OK");
 								positiveValueEntered = true;
 							} else if (testInt<0) {
-								if(debugOn) System.out.println("increment is less than 0, return error");
+								logger.debug("increment is less than 0, return error");
 								badValueEntered = true;
 							} else {
-								if(debugOn) System.out.println("increment is 0, OK");
+								logger.debug("increment is 0, OK");
 								item.getIncrements().set(i, "0");
 							}
 						} catch (NumberFormatException e) {
 							// not a number
-							if(debugOn) System.out.println("increment value not a number, return error");
+							logger.debug("increment value not a number, return error");
 							badValueEntered = true;
 						}
 					}
@@ -264,25 +268,25 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 					if(item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// Invalid Increment, no colorant selected, what to do?
 					} else {
-						addActionError("Invalid increment value(s) entered for " + item.getSelectedColorant());
+						addActionError(getText("processManualFormulaAction.invalidIncrementValue", new String[]{item.getSelectedColorant()}));
 						retVal = INPUT;
 					}
 				} else if(positiveValueEntered){
 					// value entered, did they select a colorant?
 					if(item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// No colorant selected, Error to user
-						addActionError("Increment value(s) entered but no colorant selected. Please select a colorant or change the values to zero.");
+						addActionError(getText("processManualFormulaAction.incrementButNoColorant"));
 						retVal = INPUT;
 					}
 				} else {
 					//no value entered, did they select a colorant?
 					if(!item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// Colorant selected, Error to user
-						addActionError("No increment value(s) entered for " + item.getSelectedColorant());
+						addActionError(getText("processManualFormulaAction.noIncrForClrnt", new String[]{item.getSelectedColorant()}));
 						retVal = INPUT;
 					}
 				}
-			}// end looping ManualIgredients and checking positive integers enteres
+			}// end looping ManualIgredients and checking positive integers entered
 
 			// second part of basic entry processing, make a list of ingredients entered and populate ingredient objects
 			if(retVal.equalsIgnoreCase(SUCCESS)){
@@ -294,7 +298,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				for(ManualIngredient item : ingredientList){
 					if(!item.getSelectedColorant().equalsIgnoreCase("-1")){
 						// they selected a colorant
-						if(debugOn) System.out.println("they selected a colorant, add to new");
+						logger.debug("they selected a colorant, add to new");
 						FormulaIngredient addMe = new FormulaIngredient();
 						addMe.setClrntSysId(reqObj.getClrntSys());
 						addMe.setTintSysId(item.getSelectedColorant().split("-")[0]);
@@ -309,7 +313,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 							}
 							i++;
 						}
-						if(debugOn) System.out.println("adding clrnt/incrs to new formula" + addMe.getClrntSysId() + " " + addMe.getTintSysId() + " " + Arrays.toString(incrs));
+						logger.debug("adding clrnt/incrs to new formula" + addMe.getClrntSysId() + " " + addMe.getTintSysId() + " " + Arrays.toString(incrs));
 						addMe.setIncrement(incrs);
 						newIngredients.add(addMe);
 
@@ -322,19 +326,19 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 							if(newClrntCheck.contains(addMe.getTintSysId())){
 								// this is a dup clrnt, add this to the list of duplicate colorant entries
 								// when adding to list of dup colorants, check if this colorant is already being reported as dup, if so, don't tell them a 2nd, 3rd, 4th, etc time
-								if(debugOn) System.out.println("Duplicate Colorant Found");
+								logger.debug("Duplicate Colorant Found");
 								if(dupClrntWarnList.size()>0){
 									if(!dupClrntWarnList.contains(addMe.getTintSysId())){
 										// dup not yet reported for this colorant, add to list
-										if(debugOn) System.out.println("not already on dup warn list, add it");
+										logger.debug("not already on dup warn list, add it");
 										dupClrntWarnList.add(addMe.getTintSysId());
 									} else { 
-										if(debugOn) System.out.println("already on dup warn list, skip it");
+										logger.debug("already on dup warn list, skip it");
 									}
 								} else {
 									// first dup reported, just add
 									dupClrntWarnList.add(addMe.getTintSysId());
-									if(debugOn) System.out.println("dup warn list empty, add it");
+									logger.debug("dup warn list empty, add it");
 								}
 							} else {
 								// no dupliate, add to running list of colorant to check against
@@ -346,9 +350,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 				// any duplicate warnings are reported as errors so user will have to correct before moving on...
 				if(dupClrntWarnList.size()>0){
-					if(debugOn) System.out.println("dup warn list has " + dupClrntWarnList.size() + " entries");
+					logger.debug("dup warn list has " + dupClrntWarnList.size() + " entries");
 					for(String dupClrnt : dupClrntWarnList){
-						addActionError("Colorant " + dupClrnt + " appears more than one time in your formula. Please correct.");
+						addActionError(getText("processManualFormulaAction.moreThanOneTime", new String[]{dupClrnt}));
 					}
 					retVal = INPUT;
 				}
@@ -362,22 +366,22 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 								displayFormula.setIngredients(newIngredients);
 							} else {
 								// Handle failure to fill ingredient info from cdsClrnt tables
-								addActionError("Invalid Formula Entered");
+								addActionError(getText("processManualFormulaAction.invalidFormulaEntered"));
 								retVal = INPUT;
 							}
 						} else {
 							// Handle failure to convert Shots to Incr
-							addActionError("Invalid Formula Entered");
+							addActionError(getText("processManualFormulaAction.invalidFormulaEntered"));
 							retVal = INPUT;
 						}
 					} else {
 						// Handle failure to convert Increments to Shots
-						addActionError("Invalid Formula Entered");
+						addActionError(getText("processManualFormulaAction.invalidFormulaEntered"));
 						retVal = INPUT;
 					}
 				} else {
 					// No ingredients entered by user, error back to user
-					addActionError("No colorants or amounts have been entered. You must select at least one colorant and enter an amount for the formula to be accepted.");
+					addActionError(getText("processManualFormulaAction.noClrntOrAmtsEntered"));
 					retVal = INPUT;
 				}
 			} // end second part of basic entry processing
@@ -407,7 +411,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				
 				List<String> currentWarningMessages = new ArrayList<String>();  //list of all warnings on this pass
 				for(SwMessage item:allMsgs) {
-					if(debugOn) System.out.println("in execute, adding action message " + item.getSeverity() + " " + item.getMessage());
+					logger.debug("in execute, adding action message " + item.getSeverity() + " " + item.getMessage());
 					if(item.getSeverity().isInRange(Level.FATAL,Level.ERROR)){
 						//addFieldError("reqGuid", item.getMessage());
 						addActionError(item.getMessage());
@@ -417,7 +421,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 							// check if already in list that has been overridden, if so don't put in current list
 							if(!userWarningOverride || newWarningCount>0){
 								// user hasn't seen this yet or didn't choose override, show it
-								if(debugOn) System.out.println("it is a warning, show in action message");
+								logger.debug("it is a warning, show in action message");
 								addActionMessage(item.getMessage());
 								currentWarningMessages.add(item.getMessage());
 								retVal = INPUT; // show same screen with warnings to override
@@ -471,13 +475,13 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				if(reqObj.getControlNbr()>0) {
 					SwMessage saveReminder = new SwMessage();
 					saveReminder.setSeverity(Level.INFO);
-					saveReminder.setMessage("Changes have been made but not yet saved");
+					saveReminder.setMessage(getText("processManualFormulaAction.changesNotYetSaved"));
 					if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
 					reqObj.getDisplayMsgs().add(saveReminder);
 				}
 			}
 
-			if(debugOn) System.out.println("putting map back into session");
+			logger.debug("putting map back into session");
 			sessionMap.put(reqGuid, reqObj);
 			
 			if(retVal.equalsIgnoreCase(INPUT)){
@@ -486,9 +490,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			
 		} catch (Exception e) {
-			if(debugOn) System.out.println("Exception is " + e.toString() + " " + e.getMessage());
-			if(debugOn) e.printStackTrace();
 			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e);
 			retVal = ERROR;
 		}
 		return retVal;
@@ -539,11 +542,11 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	}
 
 	public void setColorId(String colorId) {
-		this.colorId = Encode.forHtml(colorId);
+		this.colorId = colorId;
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public List<JobField> getJobFields() {
@@ -592,6 +595,14 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 	public void setPercentOfFormula(int percentOfFormula) {
 		this.percentOfFormula = percentOfFormula;
+	}
+
+	public String getPercentFormulaMsg() {
+		return percentFormulaMsg;
+	}
+
+	public void setPercentFormulaMsg(String percentFormulaMsg) {
+		this.percentFormulaMsg = percentFormulaMsg;
 	}
 	
 	

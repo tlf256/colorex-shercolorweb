@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Vinyl Safe Formula?</title>
+		<title><s:text name="getVinylSafeOption.vinylSafeFormula"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -20,12 +20,28 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
 	        }
+	        .chip {
+	          position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
 	    </style>
 	</head>
 
@@ -53,7 +69,7 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Color Company:</strong>
+					<strong><s:text name="global.colorCompanyColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].colorComp}
@@ -63,7 +79,7 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Color ID:</strong>
+					<strong><s:text name="global.colorIdColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].colorID}
@@ -73,26 +89,26 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Color Name:</strong>
+					<strong><s:text name="global.colorNameColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].colorName}
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mb-1">
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-4">
-					<div class="card card-body sw-bg-main"></div>
+					<div class="chip sw-bg-main mt-1"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Sales Number:</strong>
+					<strong><s:text name="global.salesNumberColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].salesNbr} ${sessionScope[thisGuid].quality} ${sessionScope[thisGuid].composite} ${sessionScope[thisGuid].finish}
@@ -118,7 +134,7 @@
   						<div class="col-sm-2">
 						</div>
 	            		<div class="col-sm-4">
-							Product can be used for application to vinyl surfaces.  Vinyl Safe technology has colorant restrictions.
+							<s:text name="getVinylSafeOption.canBeUsedForVinylSafe"/>
 						</div>
 				</div>
 				<div class="row">
@@ -126,7 +142,7 @@
 						</div>
 	            		<div class="col-sm-4">
    								<s:hidden name="reqGuid" value="%{reqGuid}"/>
-   								<s:checkbox id="makeVinylSafeFormulaCk" name="makeVinylSafeFormula" label="Do you want to create a Vinyl Safe formula?" cssClass="mt-3"/>
+   								<s:checkbox id="makeVinylSafeFormulaCk" name="makeVinylSafeFormula" label="%{getText('getVinylSafeOption.createVinylSafe')}" cssClass="mt-3"/>
 						</div>
 				</div>
 				
@@ -135,15 +151,15 @@
 						<div class="col-sm-2">
 						</div>	
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="Next" action="vsUserNextAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="vsUserNextAction"/>
 						</div>
 						<div class="col-sm-2">	
-							<s:submit cssClass="btn btn-secondary" value="Back" action="vsUserBackAction"/>
+							<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="vsUserBackAction"/>
    						</div>
 						<div class="col-sm-2">
 						</div>
 						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+			    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
 			    		</div>
 		    	</div>
 			</s:form>

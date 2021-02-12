@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsProd;
+import com.sherwin.shercolor.common.domain.CustWebPackageColor;
 import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.exception.SherColorException;
 import com.sherwin.shercolor.common.service.ProductColorService;
@@ -40,13 +41,15 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String colorName;
 	private String salesNbr;
 	private String reqGuid;
-	private static final String OVERRIDEWARNMSG = "Click Next to override and continue.";
+	private String OVERRIDEWARNMSG;
 	
 	public String execute() {
 		
 		 try {
-			 
 			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			 OVERRIDEWARNMSG = getText("processProductAction.clickNext");
+			 String colorComp = reqObj.getColorComp();
+			 String colorId = reqObj.getColorID();
 			 
 			 //validate the product - need call to productService once complete
 			 
@@ -58,82 +61,96 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 				 this.setSalesNbr(enteredSalesNbr);
 			 }
 			 
-			 //Call the validation.  If it validates successfully, call a read and get the data.
-			List<SwMessage> errlist = productService.validateProduct(salesNbr);
-			
-			// We need to review how validation errors are handled - product validation and color validation are
-			// slightly different.  Would be better if they were consistent.
-			if (errlist.size()>0) {
-				Boolean gotARealError = false;
-				for(SwMessage item:errlist) {
-					if (item.getSeverity()!=null) {
-						if (item.getSeverity().equals(Level.ERROR)) {
-							addFieldError("partialProductNameOrId", item.getMessage());
-							gotARealError = true;
-						}
-					}
-				}
-				if (gotARealError) {
-					return INPUT;
-				} else {
-					//probably got a single result back that indicated successful validation.
-					//call the product color validation.
-					List<SwMessage> errmsg = productColorService.validate(reqObj.getColorComp(), reqObj.getColorID(), salesNbr);
-					if (errmsg.size() > 0) {
-						Boolean gotARealError2 = false;
-						for(SwMessage item:errmsg) {
+			 // check if color/product is a package color
+			 // if true, skip validation
+			 CustWebPackageColor custWebPkgClr = productColorService.getPackageColor(colorComp, colorId, salesNbr);
+			 
+			 if(custWebPkgClr != null) {
+				 reqObj.setPackageColor(true);
+				 if(custWebPkgClr.isTintable()) {
+					 reqObj.setPkgClrTintable(true);
+				 } else {
+					 reqObj.setPkgClrTintable(false);
+				 }
+			 } else {
+				 reqObj.setPackageColor(false);
+				//Call the validation.  If it validates successfully, call a read and get the data.
+					List<SwMessage> errlist = productService.validateProduct(salesNbr);
+					
+					// We need to review how validation errors are handled - product validation and color validation are
+					// slightly different.  Would be better if they were consistent.
+					if (errlist.size()>0) {
+						Boolean gotARealError = false;
+						for(SwMessage item:errlist) {
 							if (item.getSeverity()!=null) {
 								if (item.getSeverity().equals(Level.ERROR)) {
 									addFieldError("partialProductNameOrId", item.getMessage());
-									gotARealError2 = true;
-								} else {
-									//check if this is a warning on the same salesNbr, and we have already displayed a 
-									//warning for this sales number.  If so, then the user wants to go past the warning.
-									if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
-										//All is well, John Spartan.  
+									gotARealError = true;
+								}
+							}
+						}
+						if (gotARealError) {
+							return INPUT;
+						} else {
+							//probably got a single result back that indicated successful validation.
+							//call the product color validation.
+							List<SwMessage> errmsg = productColorService.validate(colorComp, colorId, salesNbr);
+							if (errmsg.size() > 0) {
+								Boolean gotARealError2 = false;
+								for(SwMessage item:errmsg) {
+									if (item.getSeverity()!=null) {
+										if (item.getSeverity().equals(Level.ERROR)) {
+											addFieldError("partialProductNameOrId", item.getMessage());
+											gotARealError2 = true;
+										} else {
+											//check if this is a warning on the same salesNbr, and we have already displayed a 
+											//warning for this sales number.  If so, then the user wants to go past the warning.
+											if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
+												//All is well, John Spartan.  
+											} else {
+												//Since this is a warning, add the warning "Click Next to override and continue" at 
+												//the end here.  Eventually we may wish to convert this to retrieve this from a
+												//properties file for globalization.
+												addActionMessage(item.getMessage() + " " + OVERRIDEWARNMSG);
+												reqObj.setValidationWarning(true);
+												reqObj.setValidationWarningSalesNbr(salesNbr);
+												sessionMap.put(reqGuid, reqObj);
+												gotARealError2 = true;
+											}
+										}
+									}
+
+								}
+								if (gotARealError2) {
+									return INPUT;
+								}
+							}
+						}
+					} else {
+						//call the product color validation.
+						List<SwMessage> errmsg = productColorService.validate(colorComp, colorId, salesNbr);
+						if (errmsg.size() > 0) {
+							Boolean gotARealError = false;
+							for(SwMessage item:errmsg) {
+								if (item.getSeverity()!=null) {
+									if (item.getSeverity().equals(Level.ERROR)) {
+										addFieldError("partialProductNameOrId", item.getMessage());
+										gotARealError = true;
 									} else {
-										//Since this is a warning, add the warning "Click Next to override and continue" at 
-										//the end here.  Eventually we may wish to convert this to retrieve this from a
-										//properties file for globalization.
-										addActionMessage(item.getMessage() + " " + OVERRIDEWARNMSG);
+										addActionMessage(item.getMessage());
 										reqObj.setValidationWarning(true);
 										reqObj.setValidationWarningSalesNbr(salesNbr);
 										sessionMap.put(reqGuid, reqObj);
-										gotARealError2 = true;
+										gotARealError = true;
 									}
 								}
 							}
-
-						}
-						if (gotARealError2) {
-							return INPUT;
-						}
-					}
-				}
-			} else {
-				//call the product color validation.
-				List<SwMessage> errmsg = productColorService.validate(reqObj.getColorComp(), reqObj.getColorID(), salesNbr);
-				if (errmsg.size() > 0) {
-					Boolean gotARealError = false;
-					for(SwMessage item:errmsg) {
-						if (item.getSeverity()!=null) {
-							if (item.getSeverity().equals(Level.ERROR)) {
-								addFieldError("partialProductNameOrId", item.getMessage());
-								gotARealError = true;
-							} else {
-								addActionMessage(item.getMessage());
-								reqObj.setValidationWarning(true);
-								reqObj.setValidationWarningSalesNbr(salesNbr);
-								sessionMap.put(reqGuid, reqObj);
-								gotARealError = true;
+							if (gotARealError) {
+								return INPUT;
 							}
 						}
 					}
-					if (gotARealError) {
-						return INPUT;
-					}
-				}
-			}
+			 }
 			 
 		 	PosProd posProd = productService.readPosProd(salesNbr);
 		 	if(posProd!=null && posProd.getUpc()!=null) reqObj.setUpc(posProd.getUpc());
@@ -162,7 +179,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 				reqObj.setKlass(goodProd.getKlass());
 				reqObj.setIntExt(goodProd.getIntExt());
 				reqObj.setBase(goodProd.getBase());
+				if(goodProd.getComposite()==null) {goodProd.setComposite("");}
 				reqObj.setComposite(goodProd.getComposite());
+				if(goodProd.getQuality()==null) {goodProd.setQuality("");}
 				reqObj.setQuality(goodProd.getQuality());
 				if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
 					if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
@@ -184,22 +203,40 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setValidationWarning(false);
 			reqObj.setValidationWarningSalesNbr("");
 			sessionMap.put(reqGuid, reqObj);
-		     return SUCCESS;
+		    return SUCCESS;
+		     
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
 	
 	public String listProducts() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		String intBases = reqObj.getIntBases();
+		String extBases = reqObj.getExtBases();
+		String colorType = reqObj.getColorType();
+		String intBasesList[] = {""};
+		String extBasesList[] = {""};
+		if (intBases != null) {	
+			intBasesList = intBases.split(",");
+		}
+		if (extBases != null) { 
+			extBasesList = extBases.split(",");
+		}
 		
 		try {
-//			setOptions(mapToOptions(productService.productAutocompleteBoth(partialProductNameOrId.toUpperCase())));
-			/* 09/06/2017 - New Active Products Search. */
-			setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
+			// list all products in autocomplete search because the custom manual option does not have primary base types
+			if (colorType.equals("CUSTOM")) {
+				/* 09/06/2017 - New Active Products Search. */
+				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
+			} else {
+				/* 04/14/2020 - Filter by Compatible Base Products Search */
+				setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList)));
+			}
 		}
 		catch (SherColorException e){
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			setMessage(e.getMessage());
 		}
 		return SUCCESS;
@@ -237,10 +274,12 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setIntExt("");
 			reqObj.setValidationWarning(false);
 			reqObj.setValidationWarningSalesNbr("");
+			reqObj.setClosestSwColorId("");
+			reqObj.setClosestSwColorName("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -267,7 +306,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setPartialProductNameOrId(String partialProductNameOrId) {
-		this.partialProductNameOrId = Encode.forHtml(partialProductNameOrId);
+		this.partialProductNameOrId = partialProductNameOrId;
 	}
 	
 	public ProductService getProductService() {
@@ -303,7 +342,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setColorID(String colorID) {
-		this.colorID = Encode.forHtml(colorID);
+		this.colorID = colorID;
 	}
 
 	public String getColorComp() {
@@ -319,7 +358,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	}
 
 	public void setColorName(String colorName) {
-		this.colorName = Encode.forHtml(colorName);
+		this.colorName = colorName;
 	}
 
 	public String getReqGuid() {

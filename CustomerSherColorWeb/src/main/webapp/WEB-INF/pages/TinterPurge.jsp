@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Tinter Purge</title>
+		<title><s:text name="tinterPurge.tinterPurge"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -21,9 +21,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -122,6 +122,28 @@
 			});
 		}
 	}
+	
+	function PurgeProgress(tintermessage){
+		console.log('before purge status modal show');
+		$("#PurgeInProgressModal").modal('show');
+		rotateIcon();
+		var shotList = null;
+		var configuration = null;
+		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+		if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
+			var cmd = "PurgeProgress";
+		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		}
+		else{
+			var cmd = "DispenseStatus";
+			var msgId = tintermessage.msgId;
+    		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
+		}
+    	var json = JSON.stringify(tintermessage);
+		sendingTinterCommand = "true";
+    	ws_tinter.send(json);
+	}
+	/*
 	function FMXPurgeProgress(){
 		console.log('before purge status modal show');
 		$("#PurgeInProgressModal").modal('show');
@@ -134,6 +156,7 @@
 		sendingTinterCommand = "true";
     	ws_tinter.send(json);
 	}
+	*/
 	function purge(){
 		var cmd = "PurgeAll";
 		
@@ -168,7 +191,7 @@
 			}
 			console.log(return_message);
 			//setTimeout(function(){
-				FMXPurgeProgress();
+				PurgeProgress();
 		//	}, 200);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 			
 		}
@@ -178,6 +201,28 @@
 			}
 			
     }
+	function alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray){
+		$("#abort-message").show();
+		$('#progressok').addClass('d-none');  //hide ok button
+		if (return_message.errorMessage.indexOf("complete") == -1 && (return_message.errorNumber == 1 ||
+				 return_message.status == 1)) {
+					
+			if(return_message.commandRC == 33){
+			//keep updating modal with status
+			
+				$("#tinterProgressList").html("").append("<li>" + return_message.errorMessage + "</li>");
+			}
+			console.log(return_message);
+			setTimeout(function(){
+				PurgeProgress(return_message);
+			}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+		}
+		else {
+			purgeComplete(myGuid, curDate,return_message, tedArray, "alfa");
+			$(".progress-wrapper").empty();
+		}
+	}
+
 	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
 	    $("#tinterErrorList").empty();
 	    $("#tinterErrorListModal").modal('show');
@@ -194,12 +239,12 @@
 	        */
 	    } 
 	    if(my_return_message.errorNumber == 4226){
-	    	my_return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+	    	my_return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 				    }
 	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
 	    
 	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-	    else $("#tinterErrorListTitle").text("Tinter Error");
+	    else $("#tinterErrorListTitle").text('<s:text name="global.tinterError"/>');
 	    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
 	    else $("#tinterErrorListSummary").text("");
 	  
@@ -214,7 +259,7 @@
 			$("#tinterErrorList").append("<li>" + my_return_message.errorMessage + "</li>");
 		}
 		if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-		else $("#tinterErrorListTitle").text("Tinter Error");
+		else $("#tinterErrorListTitle").text('<s:text name="global.tinterError"/>');
 		if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
 		else $("#tinterErrorListSummary").text("");
 		$("#tinterErrorListModal").modal('show');
@@ -227,18 +272,44 @@
 			//var displayDate = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
 			//var displayTime = curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
 			//$("#lastPurgeText").text("Last purge was done on " + displayDate + " at " + displayTime + " by " + $("#tinterPurgeAction_currUser").val())
-			$("#lastPurgeText").text("Last purge was done on " + moment(curDate).format('ddd MMM DD YYYY') + " at " + moment(curDate).format('LT') + " by " + $("#tinterPurgeAction_currUser").val())
-            waitForShowAndHide("#purgeInProgressModal");
+			
+			// reach back to the server to get the internationalized Last Purge string 		
+			$.ajax({
+				url: "getUpdatedPurgeDateAction",
+				context : document.body,
+				type: "POST",
+				data: {
+					reqGuid: myGuid,
+					updatedTime: moment(curDate).format('LT')
+				},
+				dataType : "json",
+				async: false,
+				success: function (data) {
+					//console.log(data);		
+					if(data.sessionStatus === "expired"){
+	            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	            	}
+	            	else{
+	            		if (data != null && data.updatedLastPurgeMsg != null){
+		            		$("#lastPurgeText").text(data.updatedLastPurgeMsg);
+	            		}
+	            	}
+				},
+				error: function(error){
+					console.log(error);
+				}
+			});
+			waitForShowAndHide("#purgeInProgressModal");
 			// show success message in alert area
 			$("#tinterAlertList").empty();
-			$("#tinterAlertList").append("<li>Purge Successful</li>");
+			$("#tinterAlertList").append('<li><s:text name="tinterPurge.purgeSuccessful"/></li>');
 			if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
 			if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
 			if(!$("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").addClass("alert-success");
 		} else {
 			waitForShowAndHide("#purgeInProgressModal");
 			$("#tinterAlertList").empty();
-			$("#tinterAlertList").append("<li>Purge Failed:" + return_message.errorMessage + "</li>");
+			$("#tinterAlertList").append('<li><s:text name="tinterPurge.purgeFailedErrMsg"/>'+ return_message.errorMessage + "</li>");
 			if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
 			if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
 			if($("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").removeClass("alert-success");
@@ -330,7 +401,7 @@
 				switch (return_message.command) {
 					case 'PurgeAll':
 					case 'PurgeProgress':
-					case 'DispenseProgress':
+					case 'DispenseStatus':
 			    		sendingTinterCommand = "false";
 						// log tinter event...
 						var curDate = new Date();
@@ -338,12 +409,15 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
+						if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ //only FM X series has purge in progress % done
 							 if(return_message.errorNumber == 4226){
-							    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
+							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 							    }
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
+						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
+							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
+							}
 						else{  
 							 
 							purgeComplete(myGuid, curDate,return_message, tedArray);
@@ -365,7 +439,7 @@
 						} else {
 							waitForShowAndHide("#cleanNozzleModal");
 							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Open Nozzle Cover Error",null,return_message);
+							showTinterErrorModal('<s:text name="tinterPurge.openNozzleCoverError"/>', null, return_message);
 						}
 						break;
 					case 'CloseNozzle':
@@ -476,7 +550,7 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="card card-body bg-light">
-							<div><span class="badge badge-secondary mb-1" style="font-size: 1.2rem;">Purge Tinter</span></div>
+							<div><span class="badge badge-secondary mb-1" style="font-size: 1.2rem;"><s:text name="tinterPurge.purgeTinter"/></span></div>
 							<h4 class="text-primary"><strong>${sessionScope[thisGuid].tinter.model}</strong></h4>
 						</div>	
 					</div>
@@ -490,12 +564,18 @@
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
 						        <s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
-									<p class="lead">1. Thoroughly Clean Nozzle with the Cleaning Tool</p>
-									<p class="lead">2. Clean and Moisten Humidifier Sponge Before Purging</p>
-									<p class="lead">3. Position Container and click Purge button to start purge colorants</p>
+									<p class="lead"><s:text name="tinterPurge.cleanNozzleWithTool2"/></p>
+									<p class="lead"><s:text name="tinterPurge.moistenSponge"/></p>
+									<p class="lead"><s:text name="tinterPurge.clickPurge"/></p>
 									<p></p>
 								</s:if>
-								<p class="lead" id="lastPurgeText">Last purge was done on <s:property value="lastPurgeDate"/> by <s:property value="lastPurgeUser"/></p>
+								<p class="lead" id="lastPurgeText">
+									<s:text name="tinterPurge.lastPurgeDateTimeUser">
+										<s:param><s:property value="lastPurgeDate" escapeHtml="true"/></s:param>
+										<s:param><s:property value="lastPurgeTime" escapeHtml="true"/></s:param>
+										<s:param><s:property value="lastPurgeUser" escapeHtml="true"/></s:param>
+									</s:text>
+								</p>
 								<p></p>
 							</div>
 						</div>
@@ -523,13 +603,13 @@
 					<div class="col-sm-3">
 					</div>
 					<div class="col-sm-2">	
-						<button type="button" class="btn btn-primary" id="tinterCleanNozzle" data-toggle="modal" data-target="#cleanNozzleModal">Clean Nozzle</button>
+						<button type="button" class="btn btn-primary" id="tinterCleanNozzle" data-toggle="modal" data-target="#cleanNozzleModal"><s:text name="tinterPurge.cleanNozzle"/></button>
   						</div>
 					<div class="col-sm-2">	
-						<button type="button" class="btn btn-primary center-block" id="tinterPurge" data-toggle="modal" data-target="#purgeInProgressModal" autofocus="autofocus">Purge</button>
+						<button type="button" class="btn btn-primary center-block" id="tinterPurge" data-toggle="modal" data-target="#purgeInProgressModal" autofocus="autofocus"><s:text name="global.purge"/></button>
   						</div>
 					<div class="col-sm-2">	
-		    			<s:submit cssClass="btn btn-secondary pull-right" value="Done" action="userCancelAction"/>
+		    			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.done')}" action="userCancelAction"/>
   						</div>
   						<div class="col-sm-3">
 					</div>
@@ -541,7 +621,7 @@
 						<div class="col-sm-3">
 						</div>
 						<div class="col-sm-6">
-							<p class="bg-warning text-center"><strong>Nozzle Cleaning Tool can be ordered through Color Resources Help Desk 800-232-5192</strong></p>
+							<p class="bg-warning text-center"><strong><s:text name="tinterPurge.nozzleCleaningToolOrder"/></strong></p>
 						</div>
 						<div class="col-sm-3">
 						</div>
@@ -552,23 +632,23 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Clean Nozzle</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"  id="cleanNozzleX"><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="tinterPurge.cleanNozzle"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}"  id="cleanNozzleX"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<video id="cleanNozzleVid" width="320" height="240" loop muted>
 <%-- 									<source src="<s:url action='getNozzleVideoAction'/>" type="video/mp4">>Browser does not support video. Sorry --%>
-									<source src="video/nozzle_open.mp4" type="video/mp4">Browser does not support video. Sorry
+									<source src="video/nozzle_open.mp4" type="video/mp4"><s:text name="tinterPurge.browserDoesNotSupportVideo"/>
 									</source>
 								</video>
-								<p class="cleanNozzleText h5 pt-3">1. Clean the nozzle with the Cleaning Tool.</p>
-								<p class="cleanNozzleText h5">2. Clean and moisten the Humidifier Sponge.</p>
-								<p class="cleanNozzleText h5">3. Remove all the cleaning tools from the nozzle area before closing it.</p>
+								<p class="cleanNozzleText h5 pt-3"><s:text name="tinterPurge.cleanNozzleWithTool"/></p>
+								<p class="cleanNozzleText h5"><s:text name="tinterPurge.moistenSponge2"/></p>
+								<p class="cleanNozzleText h5"><s:text name="tinterPurge.removeCleaningTools"/></p>
 								<br/>
-								<p class="cleanNozzleText h5 bg-warning text-center pb-3" >Clicking the Done button will close the Nozzle</p>
+								<p class="cleanNozzleText h5 bg-warning text-center pb-3" ><s:text name="tinterPurge.clickingDoneNozzleClose"/></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary center-block" id="cleanNozzleButton">Done</button>
+								<button type="button" class="btn btn-primary center-block" id="cleanNozzleButton"><s:text name="global.done"/></button>
 							</div>
 						</div>
 					</div>
@@ -579,11 +659,11 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Closing Nozzle Cover</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="tinterPurge.closingNozzleCover"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
-								<p font-size="4">Please wait while Nozzle Cover closes...</p>
+								<p font-size="4"><s:text name="tinterPurge.pleaseWaitNozzleCoverClose"/></p>
 							</div>
 							<div class="modal-footer">
 							</div>
@@ -597,13 +677,13 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-								<h5 class="modal-title">Purge All In Progress</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="tinterPurge.purgeAllInProgress"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 							
-								<p id="progress-message" font-size="4">Please wait while the tinter performs Purge All Colorants...</p>
-								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"> Press F4 to abort </p>
+								<p id="progress-message" font-size="4"><s:text name="tinterPurge.pleaseWaitPurgeAll"/></p>
+								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
 								<div class="progress-wrapper "></div>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
@@ -619,14 +699,14 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Tinter Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="global.tinterError"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<p id="tinterSocketError" font-size="4"></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" >Close</button>
+								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="%{getText('global.close')}" ><s:text name="global.close"/></button>
 							</div>
 						</div>
 					</div>
@@ -636,8 +716,8 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<div class="progress-wrapper "></div>
@@ -648,7 +728,7 @@
 								<p id="tinterErrorListSummary" font-size="4"></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="%{getText('global.close')}" ><s:text name="global.ok"/></button>
 							</div>
 						</div>
 					</div>

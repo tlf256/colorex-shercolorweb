@@ -149,6 +149,10 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 					case "W1":
 					case "TW":
 					case "WHT":
+					case "EW":
+					case "UD":
+					case "HRB":
+					case "DB":
 						canister.setRgbHex("#ffffff");
 						break;
 					case "MY":
@@ -183,7 +187,6 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			System.out.println("Stamp Session Exception: " + e.getMessage());
 			retVal = ERROR;
 		}
 		
@@ -216,7 +219,6 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			System.out.println("Stamp Session TinterInit Exception: " + e.getMessage());
 			retVal = ERROR;
 		}
 		
@@ -230,7 +232,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			tinter = reqObj.getTinter();
-			System.out.println("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
+			logger.debug("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
 			
 			if (tinter.getModel() != null && tinter.getSerialNbr() != null) {
 				refreshTinterInfo(reqObj.getCustomerID(), tinter);
@@ -242,7 +244,6 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			System.out.println("Get Session Exception: " + e.getMessage());
 			retVal = ERROR;
 		}
 		
@@ -331,7 +332,6 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			retVal = SUCCESS;
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage());
-			System.out.println("decrementColor Exception: " + e.getMessage());
 			retVal = ERROR;
 		}
 		

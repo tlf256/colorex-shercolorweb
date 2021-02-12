@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Choose Colorant System</title>
+		<title><s:text name="getClrntSys.chooseColorantSystem"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -20,13 +20,56 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
 	        }
+	        .chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
 	    </style>
+	    <script type="text/javascript">
+	    	$(function(){
+	    		var colorCompany;
+	    		var colorID;
+	    		
+	    		// internationalize CUSTOM, MANUAL, and MATCH; otherwise leave color company and ID untranslated
+		    	switch("${sessionScope[thisGuid].colorComp}"){
+		    		case "CUSTOM":
+		    			colorCompany = '<s:text name="processColorAction.custom"/>';
+		    			break;
+		    		default:
+		    			colorCompany = "${sessionScope[thisGuid].colorComp}";
+		    	}
+		    	switch("${sessionScope[thisGuid].colorID}"){
+		    		case "MANUAL":
+		    			colorID = '<s:text name="processColorAction.manual"/>';
+		    			break;
+		    		case "MATCH":
+		    			colorID = '<s:text name="processColorAction.match"/>';
+		    			break;
+		    		default:
+		    			colorID = "${sessionScope[thisGuid].colorID}";
+		    	}
+		    	$("#colorComp").text(colorCompany);
+		    	$("#colorID").text(colorID);
+	    	});
+	    </script>
 	</head>
 	
 	<body>
@@ -54,12 +97,12 @@
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<strong><s:property value="screenLabel"/>:</strong><br>
+						<strong><s:property value="screenLabel"/><s:text name="global.colonDelimiter"/></strong><br>
 					</s:iterator>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<s:property value="enteredValue" escapeHtml="false"/><br>
+						<s:property value="enteredValue" /><br>
 					</s:iterator>	
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
@@ -71,10 +114,10 @@
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong>Color Company:</strong>
+					<strong><s:text name="global.colorCompanyColon"/></strong>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
-					${sessionScope[thisGuid].colorComp}
+					<span id="colorComp"></span>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
 				</div>
@@ -83,10 +126,10 @@
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong>Color ID:</strong>
+					<strong><s:text name="global.colorIdColon"/></strong>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
-					${sessionScope[thisGuid].colorID}
+					<span id="colorID"></span>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
 				</div>
@@ -95,11 +138,17 @@
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong>Color Name:</strong>
+					<strong><s:text name="global.colorNameColon"/></strong>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-					${sessionScope[thisGuid].colorName}<br>
-					<div class="card card-body sw-bg-main"></div>
+				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
+					<s:property value="#session[reqGuid].colorName" /><br>
+					<div class="chip sw-bg-main mt-1"></div>
+					<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+						<em><s:text name="global.closestSWColorIs">
+							<s:param>${sessionScope[thisGuid].closestSwColorId}</s:param>
+							<s:param>${sessionScope[thisGuid].closestSwColorName}</s:param>
+						</s:text></em>
+					</s:if>
 				</div>
 				<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2">
 				</div>
@@ -108,7 +157,7 @@
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong>Sales Number:</strong>
+					<strong><s:text name="global.salesNumberColon"/></strong>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
 					${sessionScope[thisGuid].salesNbr} ${sessionScope[thisGuid].quality} ${sessionScope[thisGuid].composite} ${sessionScope[thisGuid].finish}<br>
@@ -138,8 +187,8 @@
 						</div>
 	            		<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
    								<s:hidden name="reqGuid" value="%{reqGuid}"/>
- 	            				<s:select label="Select Colorant System"
-									headerKey="-1" headerValue="Select Colorant System"
+ 	            				<s:select label="%{getText('getClrntSys.selectColorantSystem')}"
+									headerKey="-1" headerValue="%{getText('getClrntSys.selectColorantSystem')}"
 									list="selectClrntSysIds"
 									name="selectedClrntSys"
 									value="defaultClrntSys" autofocus="autofocus" />
@@ -154,11 +203,11 @@
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
-							<s:submit cssClass="btn btn-primary pull-left" value="Next" action="clrntUserNextAction"/>
+							<s:submit cssClass="btn btn-primary pull-left" value="%{getText('global.next')}" action="clrntUserNextAction"/>
 						</div>
 						<div class="col-lg-4 col-md-4 col-sm-6 col-xs-9">
-							<s:submit cssClass="btn btn-secondary" value="Back" action="clrntUserBackAction"/>
-							<s:submit cssClass="btn btn-secondary pull-right" value="Cancel" action="userCancelAction"/>
+							<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="clrntUserBackAction"/>
+							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-lg-5 col-md-5 col-sm-4 col-xs-0">	
    						</div>
@@ -166,8 +215,8 @@
 		    	</div>
 			</s:form>
 		</div>
-		
-				<br>
+		<br>
+		<br>
 		<br>
 		<br>
 		<script>

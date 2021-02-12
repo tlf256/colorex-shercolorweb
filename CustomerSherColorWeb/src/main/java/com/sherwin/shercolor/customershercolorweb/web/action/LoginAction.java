@@ -100,12 +100,12 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		try {
 			// Get the testmode.properties file data first.  If the file is not present we are not in test mode.
 			try {
-				System.out.println("ready to load testmode");
+				logger.debug("ready to load testmode");
 				propTest.load(new FileInputStream("/web_apps/server/shercolor/deploy/customershercolorwebtestmode.properties"));
 				//20170829 - BKP - adding a test mode toggle.
-				System.out.println("loaded testmode");
+				logger.debug("loaded testmode");
 				testMode = propTest.getProperty("testMode");
-				System.out.println("got testmode property it is " + testMode);
+				logger.debug("got testmode property it is " + testMode);
 				testModeFirst = propTest.getProperty("testModeFirst");
 				testModeLast = propTest.getProperty("testModeLast");
 				testModeAcct = propTest.getProperty("testModeAcct");
@@ -119,16 +119,16 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			sherLinkTokenWSURL = prop.getProperty("sherLinkTokenSWUrl." + dbEnv);
 						
 			//logger.info("sherLinkLoginUrl = " + sherLinkURL + " and dbEnv=" + dbEnv);
-			System.out.println("got other properties");
-			System.out.println("sherLinkTokenWSURL is " + sherLinkTokenWSURL);
-			System.out.println("sherLinkURL is " + sherLinkURL);
+			logger.debug("got other properties");
+			logger.debug("sherLinkTokenWSURL is " + sherLinkTokenWSURL);
+			logger.debug("sherLinkURL is " + sherLinkURL);
 
 			logger.info("DEBUG reqGuid="+reqGuid);
 			 if (reqGuid==null || reqGuid.isEmpty()) {
 				 // we've never set anything.  Check the account and if it's not empty, try using it for a login.
 				 //System.setProperty("jsse.enableSNIExtension", "false");
 				 //call the Sher-link validation service to confirm we have a valid token before logging in.
-				 System.out.println("ready to validate token, testmode = " + testMode);
+				 logger.debug("ready to validate token, testmode = " + testMode);
 				 //BKP 2018-02-26 - no longer validating token, if here, we should be okay.
 				 //if (!testMode.equals("inTesting") && !validateToken(id,token,sherLinkTokenWSURL)  ) {
 				 if (!testMode.equals("inTesting") && (guid1==null | guid1.isEmpty())) {
@@ -139,7 +139,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					 
 				 } else {
 					logger.info("DEBUG reqGuid not empty " + reqGuid);
-					System.out.println("Guid1 = " + guid1);
+					logger.debug("Guid1 = " + guid1);
 					RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
 					acct = loginReqObj.getCustomerID();
 					first = loginReqObj.getFirstName();
@@ -150,7 +150,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					//03-01-2019*BKP*pass through the "days until password expires field as well.
 					daysUntilPwdExp = loginReqObj.getDaysUntilPasswdExpire();
 					
-					System.out.println("successfully validated");
+					logger.debug("successfully validated");
 					if (acct==null || acct.isEmpty()) {
 						 //It's empty, this may be for testing.  Use CCF for the moment.
 						 //commenting this out for production
@@ -185,7 +185,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setUserId(userId);
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 							
-							System.out.println("DEBUG new reqGuid created "+ reqGuid);
+							logger.debug("DEBUG new reqGuid created "+ reqGuid);
 							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
 							spectro = new SpectroInfo();
 							
@@ -234,7 +234,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
 				 if (origReqObj==null) {
 					 logger.info("DEBUG origReqObj is null - probably a session timeout");
-					 loMessage = "Your session has expired.";
+					 loMessage = getText("global.yourSessionHasExpired");
 					 return LOGIN;
 				 }
 				 acct = origReqObj.getCustomerID();
@@ -422,7 +422,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	}
 	private void setIsPrinterConfigured() {
 		
-		System.out.println("Looking for printer devices");
+		logger.debug("Looking for printer devices");
 
 		List<CustWebDevices> devices = customerService.getCustDevices(reqObj.getCustomerID());
 		for (CustWebDevices d: devices) {
@@ -431,7 +431,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				reqObj.setPrinterConfigured(true);
 				setSiteHasPrinter(true);
 				
-				System.out.println("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+				logger.debug("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
 			}
 			else {
 				setSiteHasPrinter(false);
@@ -448,7 +448,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 //            // Confirm the token and id are not null - there's no sense creating a soap request if 
 //			// either is null.  Just return false.
 //			if (theToken==null || theId==null) {
-//				 System.out.println("in validateToken, token or id was null, returning false");
+//				 logger.debug("in validateToken, token or id was null, returning false");
 //				return false;
 //			}
 //			
@@ -465,26 +465,26 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 //		    
 //	        System.out.print("Response SOAP Message:");
 //	        soapResponse.writeTo(System.out);
-//	        System.out.println();
+//	        logger.debug();
 //	        //parse response to find the true/false flag.
 //	        //NodeList resultList = soapResponse.getSOAPBody().getElementsByTagName("result");
 //	        //String isTrueOrFalse = resultList.item(0).getNodeValue();
 //	        
 //	        SOAPPart mySPart = soapResponse.getSOAPPart();
 ////	        if (mySPart != null) {
-////	        	System.out.println("mySPart not null");
+////	        	logger.debug("mySPart not null");
 ////	        }
 //
 //	        SOAPEnvelope myEnvp = mySPart.getEnvelope();
 //	        
 ////	        if (mySPart != null) {
-////	        	System.out.println("myEnvp not null");
+////	        	logger.debug("myEnvp not null");
 ////	        }
 //	        
 //	        SOAPBody myBody = myEnvp.getBody();
 //	        
 ////	        if (myBody != null) {
-////	        	System.out.println("myBody not null");
+////	        	logger.debug("myBody not null");
 ////	        }
 //	        
 //	        String isTrueOrFalse = "init";
@@ -502,20 +502,20 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 ////	        Name ElName = myEnvp.createName("ns1:validateTokenResponse");
 ////	        
 ////	        if (ElName != null) {
-////	        	System.out.println("ElName not null");
+////	        	logger.debug("ElName not null");
 ////	        }
-////	        System.out.println("firstchildnodename is " + myBody.getFirstChild().getNodeName());
-////	        System.out.println("firstchilds child node value is " + myBody.getFirstChild().getFirstChild().getNodeValue());
+////	        logger.debug("firstchildnodename is " + myBody.getFirstChild().getNodeName());
+////	        logger.debug("firstchilds child node value is " + myBody.getFirstChild().getFirstChild().getNodeValue());
 ////	        
 ////	        SOAPBodyElement sbe = (SOAPBodyElement) myBody.getFirstChild();
-////	        System.out.println("sbe firstchildnodename is " + sbe.getFirstChild().getNodeName());
+////	        logger.debug("sbe firstchildnodename is " + sbe.getFirstChild().getNodeName());
 ////	        
 ////	        SOAPBodyElement sbe2 = (SOAPBodyElement) sbe.getFirstChild();
 ////	      
 ////	        //Get the value
 ////	        String isTrueOrFalse = sbe2.getNodeValue();
 //
-////	        System.out.println("isTrueOrFalse is " + isTrueOrFalse);
+////	        logger.debug("isTrueOrFalse is " + isTrueOrFalse);
 //	        
 //	        if (isTrueOrFalse.equalsIgnoreCase("true")) {
 //	        	returnStatus = true;
@@ -527,7 +527,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 //		} catch (Exception e) {
 //			logger.error(e.getMessage());
 //			logger.error("ErrorDetail",e);
-//			System.out.println(e);
+//			logger.debug(e);
 //			return false;
 //		}
 //		
@@ -542,11 +542,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 //        SOAPPart soapPart = soapMessage.getSOAPPart();
 //
 //        String serverURI = "http://sherlink.sherwin.com/sher-link/StoresEcommerceService";
-//        System.out.println("token " + theToken);
+//        logger.debug("token " + theToken);
 //        //BKP - 20170524 - add a quick fix to convert blank characters in the token back to plus signs.
 //        //RFC-1866 treats + signs in the query portion of HTML as spaces.
 //        String theNewToken = theToken.replaceAll(" ", "+");
-//        System.out.println("NEW token " + theNewToken);
+//        logger.debug("NEW token " + theNewToken);
 //        
 //        // SOAP Envelope
 //        SOAPEnvelope envelope = soapPart.getEnvelope();
@@ -567,7 +567,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 //        /* Print the request message */
 //        System.out.print("Request SOAP Message:");
 //        soapMessage.writeTo(System.out);
-//        System.out.println();
 //
 //        return soapMessage;
 //    }
@@ -598,7 +597,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 //        HostnameVerifier hv = new HostnameVerifier() {
 //            public boolean verify(String urlHostName, SSLSession session) {
 //                if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
-//                    System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
+//                    logger.debug("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
 //                }
 //                return true;
 //            }

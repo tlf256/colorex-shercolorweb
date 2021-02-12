@@ -57,16 +57,13 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 	        	} else {
 	        		reqGuid = reqGuidObj.getValue();
 	        	}
-	        	System.out.println("reqGuid = ");
-	        	System.out.println(reqGuid);
-	        	//logger.error("got reqGuid");
+	        	logger.debug("reqGuid = " + reqGuid);
 	        	if (reqGuid != null) {
 	        		if (!reqGuid.isEmpty()) {
 	        			reqObj = (RequestObject) session.get(reqGuid);
 	        			
 	        			if (reqObj == null) {
 	        				logger.error("reqObj is null");
-	        				System.out.println("reqObj is null!!");
 	        			}
 	        			else{
 	        				acct   = reqObj.getCustomerID();

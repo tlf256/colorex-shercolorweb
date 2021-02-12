@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Lookup Existing Jobs</title>
+		<title><s:text name="displayJobs.lookupExistingJobs"/></title>
 			<!-- JQuery -->
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
@@ -33,10 +33,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/DisplayJobs-1.3.1.js"></script>
-		
+		<script type="text/javascript" src="script/displayjobs-1.4.6.js"></script>
 		
 	</head>
 	<body>
@@ -44,18 +43,18 @@
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title text-danger">Delete Job</h5>
+		        <h5 class="modal-title text-danger"><s:text name="global.deleteJob"/></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
 		      <div class="modal-body">
-		        <h6>Are you sure you want to delete this job?</h6>
+		        <h6><s:text name="displayJobs.areYouSureJobDelete"/></h6>
 		      </div>
 		      <div class="modal-footer">
 		      <s:form>
-			        <button type="button" id="yesbtn" class="btn btn-danger" data-dismiss="modal">Yes</button>
-			        <button type="button" id="nobtn" class="btn btn-secondary" data-dismiss="modal">No</button>
+			        <button type="button" id="yesbtn" class="btn btn-danger" data-dismiss="modal"><s:text name="global.yes"/></button>
+			        <button type="button" id="nobtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.no"/></button>
 		       </s:form>
 		      </div>
 		    </div>
@@ -88,21 +87,19 @@
 					<table id="job_table" class="table table-striped table-bordered">
 						<thead>
 							<tr>
-								<th>Job #</th>
+								<th><s:text name="displayJobs.jobNbrPound"/></th>
 								<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
 									<th><s:property value="screenLabel" /></th>
 								</s:iterator>
-								<th>Color #</th>
-								<th>Color Name</th>
-								<th>Chip</th>
-								<th>Product</th>
-								<th>Sz Code</th>
-								<th>Qty Disp</th>
-								<!--  What needs to be included in the table (but won't be shown) -->
-								<th style="">Clrnt System</th>
-								<th style="">Formula: OZ/32/64/128</th>
-								<th style="display:none">Formula (Colorant: OZ / 32 / 64 / 128)</th>
-								<th>Delete</th>
+								<th><s:text name="displayJobs.colorNbr"/></th>
+								<th><s:text name="global.colorName"/></th>
+								<th><s:text name="displayJobs.chip"/></th>
+								<th><s:text name="global.product"/></th>
+								<th><s:text name="displayJobs.szCode"/></th>
+								<th><s:text name="displayJobs.qtyDisp"/></th>
+								<th style=""><s:text name="displayJobs.clrntSystem"/></th>
+								<th style=""><s:text name="displayJobs.formulaHdr"/></th>
+								<th><s:text name="global.delete"/></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -110,7 +107,7 @@
 								<tr class="border-bottom-1 border-dark">
 									<td><s:property value="#job.controlNbr" /></td>
 									<s:iterator var="fld" value="#session[reqGuid].jobFieldList" status="inner">
-										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue" escapeHtml="false"/></span></td>
+										<td class="idNumber"><span style="word-break: break-word; width: 100px"><s:property value="#job.jobFieldList[#inner.count-1].enteredValue" /></span></td>
 									</s:iterator>
 									<td><s:property value="#job.colorId" /></td>
 									<td><s:property value="#job.colorName" /></td>
@@ -125,40 +122,17 @@
 											<thead>
 												<tr style="display:none">
 												<th></th>
-												<th>OZ</th>
-												<th>32</th>
-												<th>64</th>
-												<th>128</th>
 												</tr>
 											</thead>
 											<tbody>
-												<s:iterator begin="0" end="#job.numberOfColorants-1" status="innermost">
-													<tr>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].tintSysId"/></td>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[0]"/></td>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[1]"/></td>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[2]"/></td>
-													<td style="padding: 0px 10px 0px 0px"><s:property value="#job.recipe[#innermost.count-1].increment[3]"/></td>						
-													</tr>
-												</s:iterator>
+												<tr>
+													<td id="formulaList" style="padding: 0px 10px 0px 0px"><s:property value="#job.formulaDisplay"/></td>
+												</tr>
 											</tbody>
 										</table>
 									</td>
-									<td style="display: none">
-										<s:iterator begin="0" end="#job.numberOfColorants-1" status="innermost">
-											<s:property value="#job.recipe[#innermost.count-1].tintSysId"/>: 
-											<s:property value="#job.recipe[#innermost.count-1].increment[0]"/> /
-											<s:property value="#job.recipe[#innermost.count-1].increment[1]"/> /
-											<s:property value="#job.recipe[#innermost.count-1].increment[2]"/> /
-											<s:property value="#job.recipe[#innermost.count-1].increment[3]"/>
-											<s:if test="#innermost.count<#job.numberOfColorants">
-											,
-											</s:if>
-											<br>	
-										</s:iterator>
-									</td>
 									<td>
-										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="Delete job" aria-label="delete">
+										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="%{getText('global.deleteJob')}" aria-label="delete">
 											<i class="fa fa-trash-o" aria-hidden="true"></i>
 										</button>
 									</td>
@@ -170,7 +144,6 @@
 				<div class="col-lg-0 col-md-0">
 				</div>
 			</div>
-			
 <br>
 			<s:form id="mainForm" action="selectJobAction" validate="true"  theme="bootstrap">
 				<div class="row">
@@ -180,13 +153,17 @@
 					</div>
 
 					<div class="col-sm-10">
-						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="Cancel" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">
 					</div>
 				</div>
 			</s:form>
+			<s:form action="listJobsAction" validate="true" theme="bootstrap">
+				<s:hidden name="exportColList" value="%{exportColList}" />
+			</s:form>
 		</div>
+		<br>
 		<br>
 		<br>
 		<script>

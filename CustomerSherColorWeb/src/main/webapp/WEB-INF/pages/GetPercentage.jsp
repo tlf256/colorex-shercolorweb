@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Enter Percentage Of Formula</title>
+		<title><s:text name="getPercentage.enterPercentageOfFormula"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -18,8 +18,8 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.4.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/BasicFieldValidator.js"></script>
 		<script type="text/javascript" src="script/PctCancel.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
@@ -51,7 +51,8 @@
 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
 					</div>
 					<div class="col-sm-2">
-						<s:textfield name="percentOfFormula" id="percentOfFormula" label="Percent of Formula" size="10" maxlength="3" cssStyle="font-size: 16px;" autofocus="autofocus" onkeypress="return isNumber(event)" required="true"  />
+						<s:textfield name="percentOfFormula" id="percentOfFormula" label="%{getText('global.percentOfFormula')}" size="10" maxlength="3" 
+								cssStyle="font-size: 16px;" autofocus="autofocus" onkeypress="return isNumber(event)" required="true"  />
 					</div>
 			</div>
 			
@@ -59,14 +60,14 @@
 					<div class="col-sm-2">
 					</div>	
 					<div class="col-sm-2">
-						<s:submit cssClass="btn btn-primary" value="Next" action="pctUserNextAction"/>
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="pctUserNextAction"/>
 					</div>
 					<div class="col-sm-2">	
 					</div>
 					<div class="col-sm-2">
 					</div>
 					<div class="col-sm-2">
-		    			<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+		    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
 		    		</div>
 	    	</div>
 		</s:form>

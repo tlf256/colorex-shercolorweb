@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Better Performance With Different Base</title>
+		<title><s:text name="getProdFamily.betterPerformanceWithDifferentBase"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -18,9 +18,30 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CustomerSherColorWeb.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/GetColorAutoComplete-1.3.1.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/BasicFieldValidator.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<style type="text/css">
+			.table-hover tbody tr:hover{
+				background: #FFFF99;
+				cursor: pointer;
+			}
+		</style>
+		<script>
+		var userSelectedProduct = false;
+		
+		function verifyProductSelected(){
+			if (!userSelectedProduct) {
+				$("#noProductChoosenErrorText").removeClass("d-none");
+			}
+			return userSelectedProduct;
+		}
+		</script>
 	</head>
 	
 	<body>
@@ -34,7 +55,6 @@
 				<div class="col-sm-6">
 				</div>
 				<div class="col-sm-3">
-
 				</div>
 			</div>
 			<br>
@@ -42,135 +62,167 @@
 				<div class="col-sm-2">
 				</div>
 			</div>
-
-	
 			<s:form id="GetProdFamily" action="GetProductFamilyAction" validate="true" focusElement="prodFambly" theme="bootstrap">
-			<div class="row">
-						<div class="col-sm-2">
-							<s:hidden name="reqGuid" value="%{reqGuid}"/>
-						</div>
-	            		<div class="col-sm-4">
-	            			<s:select id="prodFambly" label="Better Performance Found in Different Base" 
-	            				headerKey="-1" headerValue="Confirm Product"
-								list="colorProdFamilies" name="selectedProdFamily"
-								autofocus="autofocus" required="required" />
-						</div>
+				<div class="row">
+					<div class="col-sm-2">
+						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+						<s:hidden id="selectedProdFamily" name="selectedProdFamily" />
+					</div>
+					<div class="col-sm-2">
+						<s:set var="reqGuid" value="reqGuid" />
+					</div>
 				</div>
 				<div class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-						</div>
+					<div class="col-sm-1">
+					</div>
+					<div class="col-sm-10">
+						<h5><s:text name="getProdFamily.betterPerformanceFoundinDifferentBase"/></h5>
+					</div>
 				</div>
-				<div id="frstFormula" style="display: none;">
-					<div  class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).clrntSysId}*COLORANT</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[0]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[1]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[2]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(0).incrementHdr[3]}</Strong>
-						</div>
-					</div>
-					<s:iterator value="bothFormulas.get(0).ingredients">	
-						<div class="row">
-							<div class="col-sm-2">
-							</div>
-							<div class="col-sm-2">
-								<s:property value="tintSysId"/>-<s:property value="name"/> 
-							</div>
-							<s:iterator value="increment" status="stat">
-								<div class="col-sm-1" align="center">
-									<s:property value="top"/>
-								</div>
-							</s:iterator>
-							</div>
-				    </s:iterator>
-			</div>
-			<div id="scndFormula" style="display: none;">
 				<div class="row">
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).clrntSysId}*COLORANT</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[0]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[1]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[2]}</Strong>
-						</div>
-						<div class="col-sm-1" align="center">
-							<Strong>${sessionScope[thisGuid].formResponse.getFormulas().get(1).incrementHdr[3]}</Strong>
-						</div>
+					<div class="col-sm-1">
 					</div>
-	
-	    			<s:iterator value="bothFormulas.get(1).ingredients">	
-						<div class="row">
-							<div class="col-sm-2">
-							</div>
-							<div class="col-sm-2">
-								<s:property value="tintSysId"/>-<s:property value="name"/> 
-							</div>
-							<s:iterator value="increment" status="stat">
-								<div class="col-sm-1" align="center">
-									<s:property value="top"/>
-								</div>
-							</s:iterator>
-							</div>
-				    </s:iterator>
+					<div class="col-sm-10">
+					</div>
 				</div>
 				<br>
+				<div id="prodFamily" class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+					<table id="prodFamily_table" class="table table-striped table-bordered m-0">
+						<caption style="caption-side:top;"><s:text name="global.chooseProduct"/></caption>
+						<thead>
+							<tr>
+								<th></th>
+								<th><s:text name="global.product"/></th>
+								<th><s:text name="getProdFamily.quality"/></th>
+								<th><s:text name="getProdFamily.base"/></th>
+								<th><s:text name="getProdFamily.deltaE"/></th>
+								<th><s:text name="getProdFamily.contrastRatio"/></th>
+								<th><s:text name="global.comment"/></th>
+								<th><s:text name="global.formula"/></th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator var="entry" value="colorProdFamilies.entrySet()" status="i">
+								<s:set var="index" value="%{#i.index}" />
+								<tr class="border-bottom-1 border-dark">
+									<td><input type="radio" class="prodFamRadio" name="prodFamily" /></td>
+									<s:iterator var="item" value="colorProdFamilies[#index]">
+										<td class="prodDetail">
+											<s:property />
+										</td>
+									</s:iterator>
+									<td class="pr-0">
+										<s:iterator value="#session[reqGuid].formResponse.getFormulas().get(#index)">
+											<div class="row">
+												<div class="col-sm-6">
+													<strong><s:property value="clrntSysId"/>*<s:text name="global.colorant"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[0]"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[1]"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[2]"/></strong>
+												</div>
+												<div class="col-sm-1" align="center">
+													<strong><s:property value="incrementHdr[3]"/></strong>
+												</div>
+											</div>
+										</s:iterator>
+										<s:iterator value="bothFormulas.get(#index).ingredients">
+											<div class="row">
+												<div class="col-sm-6">
+													<s:property value="tintSysId"/>-<s:property value="name"/> 
+												</div>
+												<s:iterator value="increment" status="stat">
+													<div class="col-sm-1" align="center">
+														<s:property />
+													</div>
+												</s:iterator>
+											</div>
+										</s:iterator>
+									</td>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
 				<br>
 				<div class="row">
-						<div class="col-sm-2">
-						</div>	
-						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="Next" action="prodFamilyUserNextAction"/>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<div id="noProductChoosenErrorText" style="color:red" class="d-none">
+							<s:text name="global.pleaseSelectAProduct"/>
 						</div>
-						<div class="col-sm-2">	
-						</div>
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
-			    		</div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<div id="deltaEGreaterThanOne" class="alert alert-warning d-none"><s:text name="getProdFamily.deltaEGreaterThanOneWarning"/></div>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-2">
+						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.next')}"
+								  onclick="return verifyProductSelected();" action="prodFamilyUserNextAction"/>
+					</div>
+					<div class="col-sm-2">
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="prodFamilyUserBackAction"/>
+					</div>
+					<div class="col-sm-6">
+						<s:submit cssClass="btn btn-secondary pull-right mr-3" value="%{getText('global.cancel')}" action="userCancelAction"/>
+					</div>
+					<div class="col-sm-1"></div>
 		    	</div>
 			</s:form>
+			<br>
 			<script>
 			$(document).ready(function() {
-				var firstFormula = '<s:property value="firstFormula"/>';
-				$('#prodFambly').on('change',function(){
-				    if( $(this).val()===firstFormula){
-					    $("#frstFormula").show()
-					    $("#scndFormula").hide()
-				    }
-				    else{
-				    	if( $(this).val()===-1){
-						    $("#frstFormula").hide()
-						    $("#scndFormula").hide()
-				    	}
-				    	else {
-						    $("#frstFormula").hide()
-						    $("#scndFormula").show()
-				    	}
-				    }
-				});
+				
+				var prodTable = $('#prodFamily_table').DataTable({
+					dom: 'rtp',
+			        "language": {
+			        	"emptyTable" : '<s:text name="getProdFamily.noProductsFound"/>'
+			        },
+			        "ordering": true,
+			        "order": [ 4, 'asc' ],
+			        "paginate": false,
+			        "pagingType": "full",
+			    });
+				
+				$('#prodFamily_table').addClass('table-hover');
+				
+				$('#prodFamily_table tbody').on('click','tr',function(event){
+			    	var prodNbr = prodTable.row(this).data()[1];
+			    	// table has been sorted by Delta-E value, so grab the updated row position
+			    	var index = prodTable.rows( { order: 'applied' } ).nodes().indexOf(this);
+			    	console.log("row index " + index);
+			    	console.log("prod number " + prodNbr);
+			    	$("#selectedProdFamily").val(prodNbr);
+			    	$(".prodFamRadio:eq("+index+")").prop('checked', true);
+			    	userSelectedProduct = true;
+			    });
+				
+				var pT = $('#prodFamily_table').DataTable();
+				for (index = 0; index < pT.data().count()/8; index++) {
+					var deltaE = prodTable.row(index).data()[4];
+					if (deltaE > 1) {
+						$('#deltaEGreaterThanOne').removeClass('d-none');
+					}
+				}
+	
 			});
-
 			</script>
 	
 		</div>
@@ -178,24 +230,6 @@
 		<br>
 		<br>
 		<br>
-		<script>
-
-		<!--
-		  function HF_openSherwin() {
-		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");
-		    popupWin.focus();
-		  }  
-		  function HF_openLegal() {
-		    var popupWin = window.open("http://www.sherwin-williams.com/terms/", "legal", "resizable=no,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=800,height=600,left=10,top=10");
-		    popupWin.focus();
-		  }
-		  function HF_openPrivacy() {
-		    var popupWin = window.open("http://privacy.sherwin-williams.com/", "privacy", "resizable=yes,toolbar=no,menubar=yes,statusbar=no,directories=no,location=no,scrollbars=yes,width=640,height=480,left=10,top=10");
-		    popupWin.focus();
-		  }
-		//-->
-		</script>
-  
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		

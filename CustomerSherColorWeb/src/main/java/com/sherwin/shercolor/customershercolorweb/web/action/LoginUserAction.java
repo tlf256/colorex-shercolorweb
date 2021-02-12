@@ -83,6 +83,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		int loginAttemptCnt = 0;
 		int sleepSeconds = 0;
 		int sleepPower = 0;
+		boolean isDisabledLogin = false;
 		HttpServletRequest request = ServletActionContext.getRequest();
 		Pattern pattern = Pattern.compile("[A-Za-z0-9_]+");
 		
@@ -131,6 +132,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				
 				// Is Login Active
 				if (isloginActive(userId) != true) {
+					isDisabledLogin = true;
 					if (logger.isDebugEnabled())
 						logger.debug("authentication failed, inactive login  -> " + Encode.forHtml(userId));
 					throw new Exception("Login failed. This login has been disabled.");
@@ -200,7 +202,11 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				logger.info("sleeping for " + sleepSeconds + " seconds after login failure attempt " + loginAttemptCnt); 
 				TimeUnit.SECONDS.sleep(sleepSeconds);
 				sessionMap.put("sher-link-login-attempt", loginAttemptCnt);
-				addFieldError("userId","Login/password combination failed. Please retry your request.");
+				if (isDisabledLogin) {
+					addFieldError("userId",getText("loginUserAction.tooManyFailedAttempts"));//"Too many failed login attempts. Please contact shercolor@sherwin.com for required action.");
+				} else {
+					addFieldError("userId",getText("loginUserAction.loginPasswordFailed"));//"Login/password combination failed. Please retry your request.");
+				}
 				return INPUT;
 			}			
 		} catch (Exception e) {
@@ -215,12 +221,12 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		Date currentDate = new Date();
 		
 		try {
-			//System.out.println("currentDate is " + currentDate);
-			//System.out.println("changePasswordDate is " + changePasswordDate);
+			//logger.debug("currentDate is " + currentDate);
+			//logger.debug("changePasswordDate is " + changePasswordDate);
 			long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
-			//System.out.println("diffInMillies is " + diffInMillies);
+			//logger.debug("diffInMillies is " + diffInMillies);
 		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-		    //System.out.println("diff is " + diff);
+		    //logger.debug("diff is " + diff);
 		    returnDays = (int) diff;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
@@ -311,7 +317,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 						isStoreEmp = false;
 					}
 					changePasswordDate = theUserRec.getChangePassword();
-					//System.out.println("changePasswordDate is " + changePasswordDate);
+					//logger("changePasswordDate is " + changePasswordDate);
 					return true;
 				} else {
 					firstName = "";

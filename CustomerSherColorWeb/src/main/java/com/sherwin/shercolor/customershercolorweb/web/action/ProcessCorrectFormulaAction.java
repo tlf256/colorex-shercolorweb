@@ -49,6 +49,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	private int nextUnitNbr;
 	private List<CorrectionStep> correctionHistory;
 	private boolean sessionHasTinter;
+	private boolean siteHasPrinter;
 	private int lastStep;
 	private int acceptedContNbr;
 	private int[] skippedCont;
@@ -90,10 +91,12 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		String retVal;
 		
 		try{
-			System.out.println("Inside ProccessCorrectFormulaAction - display");
+			logger.debug("Inside ProccessCorrectFormulaAction - display");
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			displayFormula = reqObj.getDisplayFormula();
+			
+			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			 
 			List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 			
@@ -106,7 +109,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
 			
 			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
-			System.out.println("back from getCorrInfo");
+			logger.debug("back from getCorrInfo");
 			nextUnitNbr = corrInfo.getNextUnitNbr();
 			cycle = corrInfo.getCycle();
 			lastStep = corrInfo.getLastStep();
@@ -117,7 +120,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			discardedCont = corrInfo.getDiscardedCont();
 			skippedCont = corrInfo.getSkippedCont();
 			
-			System.out.println("getting product fill info");
+			logger.debug("getting product fill info");
 			// Colorant Fill details
 			ProductFillInfo productFillInfo = productService.getProductFillInfo(reqObj.getSalesNbr(), reqObj.getClrntSys());
 			if(productFillInfo.getProductMaxOverLoad()>0D){
@@ -136,14 +139,14 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			int openShots = 0;
 			int uom = 0;
 			// current correction dispensed...
-			System.out.println("sum curr corr dispensed");
+			logger.debug("sum curr corr dispensed");
 			if(corrInfo.getOpenDispenseList()!=null && corrInfo.getOpenDispenseList().size()>0){
 				for(DispenseItem item : corrInfo.getOpenDispenseList()){
 					openShots = openShots + item.getShots();
 				}
 			}
 			// current formula ...
-			System.out.println("sum curr formula");
+			logger.debug("sum curr formula");
 			for(FormulaIngredient ingr : displayFormula.getIngredients()){
 				openShots += ingr.getShots();
 				uom = ingr.getShotSize();
@@ -153,7 +156,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 			retVal = INPUT;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
 		}
 
@@ -169,25 +172,25 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			
 			displayFormula = reqObj.getDisplayFormula();
 			
-			System.out.println("in percentAddition, about to call scaleByPercent");
+			logger.debug("in percentAddition, about to call scaleByPercent");
 			FormulaInfo adjFormula = formulationService.scaleFormulaByPercent(displayFormula, percentOfFormula);
 			
-			System.out.println("in percentAddition, origFormula ingredient count returned is " + displayFormula.getIngredients().size());
+			logger.debug("in percentAddition, origFormula ingredient count returned is " + displayFormula.getIngredients().size());
 			for(FormulaIngredient item : displayFormula.getIngredients()){
-				System.out.println("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
+				logger.debug("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
 			}
 
 			ingredientList = adjFormula.getIngredients();
 			
-			System.out.println("in percentAddition, ingredient count returned is " + ingredientList.size());
+			logger.debug("in percentAddition, ingredient count returned is " + ingredientList.size());
 			for(FormulaIngredient item : ingredientList){
-				System.out.println("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
+				logger.debug("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
 			}
 
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			errorMessage = "Exepction thrown!, Percent Addition Calculation Failed";
+			logger.error(e.getMessage() + ": ", e);
+			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");  
 			retVal = ERROR;
 		}
 
@@ -197,29 +200,29 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	@SuppressWarnings("unchecked")
 	public String convertFormulaToDispenseItems(){
 		String retVal = null;
-		System.out.println("inside convertFormulaToDispenseItems");
+		logger.debug("inside convertFormulaToDispenseItems");
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			System.out.println("inside convertFormulaToDispenseItems: got reqObj");
+			logger.debug("inside convertFormulaToDispenseItems: got reqObj");
 			
 			TinterInfo tinter = reqObj.getTinter();
-			System.out.println("inside convertFormulaToDispenseItems: got tinter");
+			logger.debug("inside convertFormulaToDispenseItems: got tinter");
 			
 			if(correctionList!=null){
 				if(correctionList.size()>0){
-					System.out.println("inside convertFormulaToDispenseItems: walking map ");
+					logger.debug("inside convertFormulaToDispenseItems: walking map ");
 					List<FormulaIngredient> ingredientList = new ArrayList<FormulaIngredient>();
 					for(Map<String,Object> item : correctionList){
 						String clrntString=null;
-						System.out.println("inside convertFormulaToDispenseItems: item is " + item.toString());
+						logger.debug("inside convertFormulaToDispenseItems: item is " + item.toString());
 						if(item.get("clrntString")!=null) clrntString= item.get("clrntString").toString();
-						System.out.println("pulled clrntString and it is " + clrntString);
+						logger.debug("pulled clrntString and it is " + clrntString);
 						List<Long> incrList = null;
 						List<Object> objList = null;
-						System.out.println(item.get("incrArray").getClass().getName());
+						logger.debug(item.get("incrArray").getClass().getName());
 						objList = (ArrayList<Object>) item.get("incrArray");
 						for(Object obj : objList){
-							System.out.println(obj.getClass().getName());
+							logger.debug(obj.getClass().getName());
 						}
 						if(item.get("incrArray") != null) incrList = (ArrayList<Long>) item.get("incrArray");
 
@@ -235,25 +238,25 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 							ingredientList.add(addMe);
 						} else {
 							retVal = ERROR;
-							errorMessage = "Bad Colorant Increments!, Colorant Increment Conversion Failed.";
+							errorMessage = getText("processCorrectFormulaAction.badClrntIncrementConversionFailed");//"Bad Colorant Increments! Colorant Increment Conversion Failed.";
 						}
 					} // end for each correctionList
 					if(retVal==null || !retVal.equals(ERROR)){
 						//ConvertIncrToShots
-						System.out.println("about to convertIncrToShots");
+						logger.debug("about to convertIncrToShots");
 						formulationService.convertIncrToShots(ingredientList);
 						//Make a list of dispenseItems to return to user
-						System.out.println("getting colorantMap for can position");
+						logger.debug("getting colorantMap for can position");
 						HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
-						System.out.println("back from tinterService");
+						logger.debug("back from tinterService");
 						if(colorantMap!=null){
-							System.out.println("colorant map is not null");
+							logger.debug("colorant map is not null");
 							if(dispenseItemList==null) dispenseItemList = new ArrayList<DispenseItem>();
 							else dispenseItemList.clear();
 
 							for(FormulaIngredient ingr : ingredientList){
-								System.out.println("pulling map info for " + ingr.getTintSysId());
+								logger.debug("pulling map info for " + ingr.getTintSysId());
 								DispenseItem addItem = new DispenseItem();
 								addItem.setClrntCode(ingr.getTintSysId());
 								addItem.setShots(ingr.getShots());
@@ -265,8 +268,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 							retVal = SUCCESS;
 
 						} else {
-							System.out.println("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
-							errorMessage = "No Colorants!, Colorant Increment Conversion Failed.";
+							logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+							errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
 							retVal = ERROR;
 						}
 						retVal = SUCCESS;
@@ -274,23 +277,23 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 					
 				} else {
 					// empty list passed in
-					System.out.println("inside convertFormulaToDispenseItems: correctionList is empty");
-					errorMessage = "No Colorants!, Colorant Increment Conversion Failed.";
+					logger.debug("inside convertFormulaToDispenseItems: correctionList is empty");
+					errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
 					retVal = ERROR;
 				}
 			} else {
 				// null list passed in
-				System.out.println("inside convertFormulaToDispenseItems: correctionList is null");
-				errorMessage = "No Colorants!, Colorant Increment Conversion Failed.";
+				logger.debug("inside convertFormulaToDispenseItems: correctionList is null");
+				errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
 				retVal = ERROR;
 			}
 
 			
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
-			errorMessage = "Exepction thrown!, Colorant Increment Conversion Failed.";
+			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");
 		}
 
 		return retVal;
@@ -301,13 +304,13 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		String retVal;
 		
 		try{
-			System.out.println("in saveCorrectionStep, about to get reqObj");
+			logger.debug("in saveCorrectionStep, about to get reqObj");
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			// get Correction Step info, save to DB
 			
 			displayFormula = reqObj.getDisplayFormula();
 			
-			System.out.println("in saveCorrectionStep, about to parse info sent from javascript");
+			logger.debug("in saveCorrectionStep, about to parse info sent from javascript");
 			
 			CustWebTranCorr tranCorr = new CustWebTranCorr();
 			tranCorr.setCustomerId(reqObj.getCustomerID());
@@ -335,14 +338,16 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			tranCorr.setMergedWithOrig(false);
 			tranCorr.setClrntSysId(reqObj.getClrntSys());
 			// walk shotList to get clrnt, clrntAmt and shotSize
-			if(shotList!=null && shotList.size()>0){
+			if(shotList!=null && shotList.size()>0 && 
+			   (!tranCorr.getCorrMethod().equalsIgnoreCase("SKIP CONTAINER") || !tranCorr.getCorrMethod().equalsIgnoreCase("PREVIOUSLY SKIPPED"))
+			){
 				int ctr = 1;
 				for(Map<String,Object> item : shotList){
 					String code = null; Long uom = null; Long shots = null;
 					if(item.get("code")!=null) code = item.get("code").toString();
-					System.out.println("about to convert uom to Long");
+					logger.debug("about to convert uom to Long");
 					if(item.get("uom")!=null) uom = (Long) item.get("uom");
-					System.out.println("about to convert shots to Long");
+					logger.debug("about to convert shots to Long");
 					if(item.get("shots")!=null) shots = (Long) item.get("shots");
 					if(code!=null && shots!=null && shots!=null){
 						tranCorr.setShotSize(uom.intValue());
@@ -390,19 +395,19 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			SwMessage result = tranHistoryService.saveNewTranCorrection(tranCorr);
 
 			if(result==null || result.getCode()==null){
-				System.out.println("inside saveStep and stepStatus is " + stepStatus);
+				logger.debug("inside saveStep and stepStatus is " + stepStatus);
 				if(!stepStatus.equalsIgnoreCase("OPEN") && nextUnitNbr==reqObj.getQuantityDispensed()) mergeCorrWithStartingForm = true;
 				retVal = SUCCESS;
 			} else {
-				System.out.println("in saveStep tranHistoryService save returned " + result.getCode());
+				logger.debug("in saveStep tranHistoryService save returned " + result.getCode());
 				retVal = ERROR;
 				errorMessage = result.getMessage();
 			}
 
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.getMessage() + ": ", e);
 			retVal = ERROR;
-			errorMessage = "Exepction thrown, Write Failed";
+			errorMessage = getText("processCorrectFormulaAction.exceptionThrownWriteFailed");
 		}
 
 		return retVal;
@@ -414,32 +419,40 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		String retVal;
 		
 		try{
-			System.out.println("in postContainerStatus, about to get reqObj");
+			logger.debug("in postContainerStatus, about to get reqObj");
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			displayFormula = reqObj.getDisplayFormula();
 			
-			System.out.println("in postContainerStatus, about to parse info sent from javascript");
+			logger.debug("in postContainerStatus, about to parse info sent from javascript");
 			
 			if(stepStatus!=null){
 				SwMessage result = tranHistoryService.updateTranCorrectionStatus(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle, nextUnitNbr, stepStatus);
 				if(result==null || result.getCode()==null){
-					System.out.println("updatedTranCorrStatus, nextUnitNbr is" + nextUnitNbr + " and qty disp is " + reqObj.getQuantityDispensed());
+					logger.debug("updatedTranCorrStatus, nextUnitNbr is" + nextUnitNbr + " and qty disp is " + reqObj.getQuantityDispensed());
 					if(nextUnitNbr==reqObj.getQuantityDispensed()) mergeCorrWithStartingForm = true;
-					System.out.println("mergeCorr is " + mergeCorrWithStartingForm);
+					logger.debug("mergeCorr is " + mergeCorrWithStartingForm);
+					// First time the formula is accepted the shotList information is not available for the first correction label
+					// This conditional will help pass back information to help construct a shotList for the first accepted container
+					if (stepStatus.equalsIgnoreCase("ACCEPTED")) {
+						List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
+						CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
+						CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+						dispenseItemList = corrInfo.getAcceptedDispenseList();
+					}
 					retVal = SUCCESS;
 				} else {
-					System.out.println("in postContainerStatus tranHistoryService update returned " + result.getCode());
+					logger.debug("in postContainerStatus tranHistoryService update returned " + result.getCode());
 					retVal = ERROR;
-					errorMessage = result.getMessage();
+					errorMessage = getText("processCorrectFormulaAction.tranHistoryServiceUpdateFailed"); 
 				}
 			} else {
 				retVal = ERROR;
-				errorMessage = "Missing Status, Post Container as Accepted Failed";
+				errorMessage = getText("processCorrectFormulaAction.missingStatusPostFailed"); 
 			}
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			errorMessage = "Exepction thrown!, Post Container as Accepted Failed";
+			logger.error(e.getMessage() + ": ", e);
+			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");
 			retVal = ERROR;
 		}
 
@@ -501,7 +514,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	}
 
 	public void setReason(String reason) {
-		this.reason = Encode.forHtml(reason);
+		this.reason = reason;
 	}
 
 	public void setJsDateString(String jsDateString) {
@@ -579,6 +592,12 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		this.tinter = tinter;
 	}
 
+	public boolean isSiteHasPrinter() {
+		return siteHasPrinter;
+	}
 
+	public void setSiteHasPrinter(boolean siteHasPrinter) {
+		this.siteHasPrinter = siteHasPrinter;
+	}
 	
 }
