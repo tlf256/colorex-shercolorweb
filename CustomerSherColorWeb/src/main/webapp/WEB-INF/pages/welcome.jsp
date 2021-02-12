@@ -141,8 +141,10 @@
 				
 				if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append('<li><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="global.ok"/></li>');
 				else {
-					hasWarnings=true;
-					$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
+					if (sessionTinterInfo.model != null && !sessionTinterInfo.model.includes("SANTINT")){
+						hasWarnings=true;
+						$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
+					}
 				}
 				
 				// Check Levels
@@ -423,8 +425,6 @@
 			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 				// clear init errors in session			
 				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
-				// get session for tinter status
-	    		getSessionTinterInfo($("#startNewJob_reqGuid").val(), sessionTinterInfoCallback);
 			} else {
 				// Show a modal with error message to make sure the user is forced to read it. 
 				$("#tinterErrorList").empty();
@@ -443,6 +443,8 @@
 				$("#tinterErrorListModal").modal('show');
 				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
 			}
+			// get session for tinter status 
+    		getSessionTinterInfo($("#startNewJob_reqGuid").val(), sessionTinterInfoCallback);
     	}
 		
 		function showUpdatedLayout(data){
@@ -1584,6 +1586,11 @@
  			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   
 			if (daysUntilPwdExpire <= 7 && $("#startNewJob_newSession").val()=="true") {
 				$('#passwordExpirationModal').modal('show');
+			}
+			
+			if (localhostConfig != null && localhostConfig.model != null && localhostConfig.model.includes("SANTINT")){
+				// remove Ecal Manager from menu
+				$("#tinterEcal").hide();
 			}
 			
 		});
