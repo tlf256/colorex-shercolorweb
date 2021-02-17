@@ -133,7 +133,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -152,7 +152,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -171,7 +171,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -193,7 +193,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -221,7 +221,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -242,7 +242,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 	
@@ -293,7 +293,7 @@ $(document).ready(function() {
 				}, 1500);
 				$("#custediterror").text(msg);
 				keyfld.addClass("border-danger");
-				keyfld.focus();
+				keyfld.select();
 			}
 		}
 	},".kyfld");
@@ -315,7 +315,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -337,7 +337,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -356,7 +356,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
