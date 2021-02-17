@@ -133,6 +133,10 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		this.guid1 = guid1;
 	}
 
+	public String getUserPass() {
+		return userPass;
+	}
+
 	public void setUserPass(String userPass) {
 		this.userPass = Encode.forHtml(userPass);
 	}
