@@ -474,7 +474,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			colorCompanies.add(getText("processColorAction.all")); 
 			 
-			String [] colorCompaniesArray = colorMastService.listColorCompanies();
+			String [] colorCompaniesArray = colorMastService.listColorCompanies(false);
 			for (String company : colorCompaniesArray) {
 				if (!company.equals("SHERWIN-WILLIAMS")){
 					colorCompanies.add(company);
