@@ -2,10 +2,6 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import org.owasp.encoder.Encode;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +17,8 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class PasswordAction extends ActionSupport  implements SessionAware, LoginRequired {
 	private String guid1;
-	private String whereFrom = "EXPIRED";
+	private String reqGuid;
+	private String whereFrom;
 	private String userPass;
 	private String userPassConfirm;
 	private static final long serialVersionUID = 1L;
@@ -36,9 +33,10 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		String returnStatus = "";
 
 		try {
+			 whereFrom = "EXPIRED";
 			returnStatus = SUCCESS;
 		} catch (Exception e) {
-			
+			logger.error(e.getMessage(), e);
 		}
 		return returnStatus;
 	}
@@ -50,7 +48,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			whereFrom = "USERCHANGE";
 			returnStatus = SUCCESS;
 		} catch (Exception e) {
-			
+			logger.error(e.getMessage(), e);
 		}
 		return returnStatus;
 	}
@@ -59,45 +57,54 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		String returnStatus = "";
 		String userId = "";
 		try {
-			logger.error("change start, guid1 is " + guid1);
+			logger.info("change start, guid1 is " + guid1);
+			logger.info("...reqGuid is " + reqGuid);
 			RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
-			logger.error("got loginReqObj");
-			userId = loginReqObj.getUserId();
-			logger.error("got user ID is " + userId);
-			
-			//Do some comparisons and checks - make sure firstly that the password and 
-			//the password confirmation match.
-			if (!userPass.equals(userPassConfirm)) {
-				logger.error("passwords do not match");
-				addActionMessage(getText("passwordAction.passwordsDoNotMatch"));
-				returnStatus = INPUT;
-			} else {
-			if (!swLoginValidator.validatePassword(userPass)) {	
-				logger.error("password does not validate rules");
-				addActionMessage(getText("passwordAction.passwordDoesNotMeetAllValidationRules"));
-				returnStatus = INPUT;
-			} else {		
-				//call the SsoHelper and see what its response is now.
-				logger.error("passwords match...");
+			if(loginReqObj != null) {
+				logger.info("got loginReqObj");
+				userId = loginReqObj.getUserId();
+				logger.debug("got user ID is " + userId);
 				
-				if (SsoHelper.getInstance().userPasswordReset(userId, userPass)) {
-					logger.error("...and the reset was successful");
-					//and update the SWUser's password change date.
-					boolean isGoodPwdDateSet = swUserService.updatePasswordChangeDate(userId);
-					logger.error("updatePasswordChangeDate is " + isGoodPwdDateSet);
-					returnStatus = SUCCESS;
-				} else {
-					logger.error("...and the reset failed");
+				//Do some comparisons and checks - make sure firstly that the password and 
+				//the password confirmation match.
+				if (!userPass.equals(userPassConfirm)) {
+					logger.error("passwords do not match");
+					addActionMessage(getText("passwordAction.passwordsDoNotMatch"));
 					returnStatus = INPUT;
+				} else {
+					if (!swLoginValidator.validatePassword(userPass)) {	
+						logger.error("password does not validate rules");
+						addActionMessage(getText("passwordAction.passwordDoesNotMeetAllValidationRules"));
+						returnStatus = INPUT;
+					} else {		
+						//call the SsoHelper and see what its response is now.
+						logger.info("passwords match...");
+						
+						if (SsoHelper.getInstance().userPasswordReset(userId, userPass)) {
+							logger.info("...and the reset was successful");
+							//and update the SWUser's password change date.
+							boolean isGoodPwdDateSet = swUserService.updatePasswordChangeDate(userId);
+							logger.debug("updatePasswordChangeDate is " + isGoodPwdDateSet);
+							returnStatus = SUCCESS;
+						} else {
+							logger.error("...and the reset failed");
+							returnStatus = INPUT;
+						}
+					}
 				}
+			} else {
+				//loginReqObj is null, probably due to session timeout
+				logger.error("loginReqObj is null");
+				
+				//return success to redirect to loginAction
+				returnStatus = SUCCESS;
 			}
-		}
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			returnStatus = ERROR;
 		}
-		logger.error("change end, returning " + returnStatus);
+		logger.info("change end, returning " + returnStatus);
 		return returnStatus;
 	
 	}
@@ -126,6 +133,14 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 
 	public void setGuid1(String guid1) {
 		this.guid1 = guid1;
+	}
+
+	public String getReqGuid() {
+		return reqGuid;
+	}
+
+	public void setReqGuid(String reqGuid) {
+		this.reqGuid = reqGuid;
 	}
 
 	public String getUserPass() {
