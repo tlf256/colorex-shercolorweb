@@ -56,12 +56,12 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		String returnStatus = "";
 		String userId = "";
 		try {
-			logger.debug("change start, guid1 is " + guid1);
+			logger.info("change start, guid1 is " + guid1);
 			RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
 			if(loginReqObj != null) {
 				logger.info("got loginReqObj");
 				userId = loginReqObj.getUserId();
-				logger.debug("got user ID is " + userId);
+				logger.info("got user ID is " + userId);
 				
 				//Do some comparisons and checks - make sure firstly that the password and 
 				//the password confirmation match.
@@ -82,7 +82,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 							logger.info("...and the reset was successful");
 							//and update the SWUser's password change date.
 							boolean isGoodPwdDateSet = swUserService.updatePasswordChangeDate(userId);
-							logger.debug("updatePasswordChangeDate is " + isGoodPwdDateSet);
+							logger.info("updatePasswordChangeDate is " + isGoodPwdDateSet);
 							returnStatus = SUCCESS;
 						} else {
 							logger.error("...and the reset failed");
