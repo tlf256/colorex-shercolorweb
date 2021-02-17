@@ -17,7 +17,6 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class PasswordAction extends ActionSupport  implements SessionAware, LoginRequired {
 	private String guid1;
-	private String reqGuid;
 	private String whereFrom;
 	private String userPass;
 	private String userPassConfirm;
@@ -57,8 +56,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		String returnStatus = "";
 		String userId = "";
 		try {
-			logger.info("change start, guid1 is " + guid1);
-			logger.info("...reqGuid is " + reqGuid);
+			logger.debug("change start, guid1 is " + guid1);
 			RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
 			if(loginReqObj != null) {
 				logger.info("got loginReqObj");
@@ -133,18 +131,6 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 
 	public void setGuid1(String guid1) {
 		this.guid1 = guid1;
-	}
-
-	public String getReqGuid() {
-		return reqGuid;
-	}
-
-	public void setReqGuid(String reqGuid) {
-		this.reqGuid = reqGuid;
-	}
-
-	public String getUserPass() {
-		return userPass;
 	}
 
 	public void setUserPass(String userPass) {
