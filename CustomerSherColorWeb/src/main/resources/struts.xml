@@ -772,6 +772,8 @@
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="formulaUserPrintAsJsonAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printAsJson">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
 			<result name="loginRedirect" type="redirectAction">
 			<param name="actionName">invalidLoginAction</param>
 			</result>

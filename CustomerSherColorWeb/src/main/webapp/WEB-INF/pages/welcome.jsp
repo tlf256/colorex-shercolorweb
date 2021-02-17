@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -409,6 +409,42 @@
 			}
     	}
 		
+		function DetectSantintResp(return_message){
+			console.log("Processing Santint Detect Response");
+			var initErrorList;
+			// log event
+			var curDate = new Date();
+			var myGuid = $( "#startNewJob_reqGuid" ).val();
+			sendTinterEvent(myGuid, curDate, return_message, null); 
+			waitForShowAndHide('#initTinterInProgressModal');
+			initErrorList = [];
+			
+			// Detected and no errors from tinter
+			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+				// clear init errors in session			
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
+				// get session for tinter status
+	    		getSessionTinterInfo($("#startNewJob_reqGuid").val(), sessionTinterInfoCallback);
+			} else {
+				// Show a modal with error message to make sure the user is forced to read it. 
+				$("#tinterErrorList").empty();
+				
+				if(return_message.errorList != null && return_message.errorList[0] != null){
+					return_message.errorList.forEach(function(item){
+						$("#tinterErrorList").append("<li>" + item.message + "</li>");
+						initErrorList.push(item.message);
+					});
+				} else {
+					initErrorList.push(return_message.errorMessage);
+					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+				}
+				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
+				$("#tinterErrorListModal").modal('show');
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
+			}
+    	}
+		
 		function showUpdatedLayout(data){
 			$(".progress-wrapper").empty();
 			var count = 1;
@@ -688,7 +724,10 @@
 							if(localhostConfig != null && localhostConfig.model != null && 
 									( localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0)){
 									DetectAlfaFMXResp(return_message);
-							} 
+							}
+							else if(localhostConfig != null && localhostConfig.model != null && (localhostConfig.model.indexOf("SANTINT") >= 0)){
+								DetectSantintResp(return_message);
+							}
 							else if (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
 								detectTinter();
@@ -754,7 +793,10 @@
 								}
 								else if(localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0){
 									DetectAlfaFMXResp(return_message);
-									}
+								}
+								else if(localhostConfig.model.indexOf("SANTINT") >= 0){
+									DetectSantintResp(return_message);
+								}
 								else{
 									DetectFMResp(return_message);								
 								}

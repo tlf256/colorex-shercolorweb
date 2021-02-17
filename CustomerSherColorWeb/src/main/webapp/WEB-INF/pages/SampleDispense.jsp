@@ -20,9 +20,9 @@
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 
 <style>
@@ -65,18 +65,21 @@ badge {
 	var initialShotList = [];
 	var processingDispense = false;
 	var baseDispense = null;
+	var printJsonIN = "";
+	var tinterModel = "${tinter.model}";
 
 	$(function() {	
-		// set up initial shotList with only the colorants
+		// set up initial shotList; shots and decimalOunces start off zeroed out and will be updated based on canType
 		<s:iterator value="dispenseFormula">
 			var color = new Colorant("<s:property value='clrntCode'/>", <s:property value="shots"/>,
-						<s:property value="position"/>, <s:property value="uom"/>);
+						<s:property value="position"/>, <s:property value="uom"/>, 0.0);
 			initialShotList.push(color);
 		</s:iterator>
 		
 		<s:if test="%{baseDispense != null}">
 			baseDispense = new Colorant("<s:property value='baseDispense.clrntCode'/>", <s:property value="baseDispense.shots"/>,
-				  		<s:property value="baseDispense.position"/>, <s:property value="baseDispense.uom"/>);
+				  		<s:property value="baseDispense.position"/>, <s:property value="baseDispense.uom"/>, 0.0);
+			//console.log(baseDispense);
 		</s:if>
 		
 		// set default sample fill from can type
@@ -110,14 +113,19 @@ badge {
 			// calculate amount of base in the sample:   Sample Size / 128 * Factory Fill
 			// don't need to do size conversion because factory fill is already scaled to a gallon
 			var productSampleFill = sampleSizeFloat / 128 * factoryFill;
-			$("#sampleFill").val(productSampleFill);
+			// round to 5 digits without trailing zeroes
+			$("#sampleFill").val(parseFloat(productSampleFill.toFixed(5)));
 			
 			// calculate shots in case user wants to dispense the base
 			if (baseDispense != null){
 				var baseShots = Math.round(productSampleFill * baseDispense.uom); 
 				baseDispense.shots = baseShots;
+				// only set decimal ounces field for alfa tinters and lab corob 
+				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB"))){
+					baseDispense.decimalOunces = productSampleFill;
+				}
 			}
-			
+
 		} else {
 			console.log("problem parsing the sample size");
 		}
@@ -126,7 +134,6 @@ badge {
 	
 	function calculatePartialOunces(){
 		clrntAmtList = "";
-		// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
 		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
 		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
 		var sampleSizeFloat = parseFloat(sampleSize);
@@ -134,11 +141,12 @@ badge {
 		var dispenseFloor = "${dispenseFloor}";
 		var dispenseFloorFloat = parseFloat(dispenseFloor);
 		var sizeConvFloat = parseFloat(sizeConversion);
-		var uom = initialShotList[0].uom;
 		
 		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
 		$("#dispenseFloorErrorText").addClass('d-none');
 		$("#dispenseSampleButton").prop('disabled', false);
+		$('.partialOunces').css("color", "black");
+		$('.colorantName').css("color", "black");
 		
 		if (!isNaN(sampleSizeFloat) && !isNaN(sizeConvFloat)){
 			$(".formulaRow").each(function(){
@@ -147,28 +155,42 @@ badge {
 				var shotSize = $(this).find('.shotSize').text();
 				var shotsToOunces = Number(numShots) / Number(shotSize);
 				if (!isNaN(shotsToOunces)){
+					// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
 					var partialOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
-					clrntAmtList += colorantName + "," + partialOunces.toString() + ",";
-
-					// calculate number of shots based on tinter dispense floor, round to nearest int
-					var updatedNumShots = Math.round(partialOunces * uom); 
-					// divide again to find and display the exact partialOunces that you'll be sending the tinter
-					partialOunces = updatedNumShots / uom;
 					
 					// update shotlist
 					var colorantName = $(this).find('.colorantName').text();
 					initialShotList.forEach(function (item, index) {
-						 if (colorantName.includes(item.code)){
-							 item.shots = updatedNumShots;
+						if (colorantName.includes(item.code)){
+							// only set decimal ounces field for alfa tinters and lab corob 
+							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB"))){
+								item.decimalOunces = partialOunces;
+							}
+							//console.log(colorantName + " unrounded: " + partialOunces);
+							
+							// calculate number of shots based on uom, round to nearest int
+							var updatedNumShots = Math.round(partialOunces * item.uom);
+							item.shots = updatedNumShots;
+							//console.log("rounded for tinter: " + colorantName + ", " + updatedNumShots / item.uom); 
 						 }
 					});
 					
-					$(this).find('.partialOunces').text(partialOunces);
 					// warn user if colorant amount is lower than tinter dispense floor, make them choose a larger can type
 					if (!isNaN(dispenseFloorFloat) && partialOunces < dispenseFloorFloat){
 						$("#dispenseFloorErrorText").removeClass('d-none');
 						$("#dispenseSampleButton").prop('disabled', true);
+						// highlight colorant name and amount in red that is too low
+						$(this).find('.partialOunces').css("color", "red");
+						$(this).find('.colorantName').css("color", "red");
 					}
+					
+					// round colorant amount to 5 decimal places for screen display and labels
+					partialOunces = partialOunces.toFixed(5);
+					clrntAmtList += colorantName + "," + partialOunces.toString() + ",";
+					
+					// calculated amount displayed to the user
+					$(this).find('.partialOunces').text(partialOunces);
+					
 				} else {
 					console.log("problem calculating shots to ounces");
 				}
@@ -177,6 +199,7 @@ badge {
 			console.log("problem parsing the sample size or conversion size");
 		}
 		console.log("CLRNT AMT LIST: " + clrntAmtList);
+		console.log(initialShotList);
 	}
 	
 	function showPrintModal(){
@@ -202,8 +225,9 @@ badge {
 	function printButtonClickGetJson() {
 		if (printerConfig && printerConfig.model) {
 			var myguid = $("#reqGuid").val();
-
-			var myPdf = new pdf(myguid);
+			var correctionStr = { "reqGuid" : myguid, "printLabelType" : printLabelType, "printOrientation" : printOrientation, "canType" : canType, "clrntAmtList" : clrntAmtList, "printCorrectionLabel" : false, "shotList" : shotList};
+			printJsonIN = JSON.stringify(correctionStr);
+			var myPdf = new pdf(myguid,printJsonIN);
 			$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 			var numLabels = null;
 
@@ -303,7 +327,7 @@ badge {
 	function setLabelPrintEmbedContainer(labelType,orientation,clrntAmtList,canType) {
 		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' +
 							labelType + '&printOrientation=' + orientation +
-							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '" frameborder="0" class="embed-responsive-item">';
+							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '&printCorrectionLabel=' + false + '&shotList=' + shotList + '" frameborder="0" class="embed-responsive-item">';
 		$("#printLabelEmbedContainer").html(embedString);
 	}
 	
