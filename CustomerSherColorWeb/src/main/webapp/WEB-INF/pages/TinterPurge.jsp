@@ -265,8 +265,13 @@
 		$("#tinterErrorListModal").modal('show');
 	}
     function purgeComplete(myGuid, curDate,return_message, tedArray, fmx){
-    	 $("#abort-message").hide();
-         
+    	$("#abort-message").hide();
+    	var errorKey = return_message.errorMessage;
+    	var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
+			return_message.errorMessage = i18n[errorKey];
+		}
+		 
 		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 			// show purge
 			//var displayDate = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
@@ -321,9 +326,14 @@
 				showTinterErrorModal(null,null,return_message);
 			}
 		}
-		 return_message.command = "PurgeAll";
-	    sendTinterEvent(myGuid, curDate, return_message, tedArray);
+		return_message.command = "PurgeAll";
+		// update error message to english for logging
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
+			return_message.errorMessage = log_english[errorKey];
+		}
+		sendTinterEvent(myGuid, curDate, return_message, tedArray);
     }
+    
     function abort(){
     	console.log('before abort');
     	
@@ -398,6 +408,7 @@
 			}
 			if(isTintJSON){
 				var return_message=JSON.parse(ws_tinter.wsmsg);
+				
 				switch (return_message.command) {
 					case 'PurgeAll':
 					case 'PurgeProgress':
@@ -419,8 +430,7 @@
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
 							}
 						else{  
-							 
-							purgeComplete(myGuid, curDate,return_message, tedArray);
+							purgeComplete(myGuid, curDate, return_message, tedArray);
 						}
 						break;
 					
@@ -530,6 +540,13 @@
 		});
 		//capture F4 key to abort
 		jQuery(document).on("keydown",fkey);
+		
+		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
+			// hide Clean Nozzle button for Santint tinters
+			$("#tinterCleanNozzle").hide();
+		}
+		
 	});
     
 </script>
