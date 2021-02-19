@@ -98,7 +98,8 @@
 
 		var calibration = null;
 		//alfa and santint do not have cal files that we manage
-		if(mymodel.indexOf("ALFA") == 0  && mymodel.indexOf("SANTINT") == 0){
+	
+		if(mymodel.indexOf("ALFA") <= 0  && mymodel.indexOf("SANTINT") <= 0){  //these models do not have cal files
 			calibration =  new Calibration(mycolorantid, mymodel, myserial);
 		//console.log("calibration");
 		//console.log(calibration);

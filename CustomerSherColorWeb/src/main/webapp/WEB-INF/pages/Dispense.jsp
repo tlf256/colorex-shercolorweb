@@ -31,6 +31,10 @@ var processingDispense = false;
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
 		_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
+	
+	function writeDispense(return_message){
+		dispenseComplete(return_message);
+	}
 
 	//Document ON-Load
 	$(function() {
@@ -79,10 +83,7 @@ var processingDispense = false;
 		});
 
 		jQuery(document).on("keydown", fkey);
-		
-		function writeDispense(return_message){
-			dispenseComplete(return_message);
-	}
+
 	});
 </script>
 <style type="text/css">
