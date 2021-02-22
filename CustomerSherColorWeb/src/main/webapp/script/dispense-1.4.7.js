@@ -415,6 +415,11 @@ function RecdMessage() {
 				//console.log("Junk Message is " + ws_tinter.wsmsg);
 			}
 			if (isTintJSON) {
+				var tinterModel = sessionTinterInfo.model;
+				var errorKey = return_message.errorMessage;
+				if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+					return_message.errorMessage = i18n[errorKey];
+				}
 				console.log("in istintJSON return message = ");
 				console.log(return_message);
 				switch (return_message.command) {
@@ -422,8 +427,6 @@ function RecdMessage() {
 					case 'DispenseProgress':
 					case 'Abort':
 						$("#dispenseStatus").text('');
-						var tinterModel = sessionTinterInfo.model;
-
 						if (tinterModel != null && tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
 							dispenseProgressResp(return_message);
 						}
@@ -433,8 +436,9 @@ function RecdMessage() {
 						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 
 							// save a dispense (will bump the counter)
-
-
+							if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+								return_message.errorMessage = log_english[errorKey];
+							}
 							writeDispense(return_message); // will also send tinter event
 							waitForShowAndHide("#tinterInProgressModal");
 						}
@@ -452,6 +456,9 @@ function RecdMessage() {
 							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 
 							var tedArray = [teDetail];
+							if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+								return_message.errorMessage = log_english[errorKey];
+							}
 							sendTinterEvent(myGuid, curDate, return_message, tedArray);
 
 						}
