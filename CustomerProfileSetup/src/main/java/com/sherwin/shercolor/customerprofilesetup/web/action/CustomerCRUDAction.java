@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -77,7 +75,11 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				CustParms cp = new CustParms();
 				cp.setCustomerId(webparms.getCustomerId());
 				if(webparms.getCustomerId().length()==9) {
-					reqObj.setAccttype("natlWdigits");
+					if(webparms.getCustomerId().startsWith("4")) {
+						reqObj.setAccttype("internal");
+					} else {
+						reqObj.setAccttype("natlWdigits");
+					}
 				}else {
 					reqObj.setAccttype("loginRequired");
 				}
@@ -166,10 +168,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			return SUCCESS;
 	
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}
 		
@@ -351,10 +353,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			return SUCCESS;
 			
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -430,10 +432,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			return SUCCESS;
 			
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -459,10 +461,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			return SUCCESS;
 			
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
