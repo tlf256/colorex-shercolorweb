@@ -153,7 +153,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 					tintEvent.setErrorStatus("1");
 
 					if(tinterMessage.get("errorSeverity")!=null) sev = tinterMessage.get("errorSeverity").toString();
-					if(tinterMessage.get("errorSeverity")==null || (tinterMessage.get("errorSeverity")=="0")) {
+					if(tinterMessage.get("errorSeverity")==null || (tinterMessage.get("errorSeverity").toString().startsWith("0"))) {
 						//severity not set by sender, figure it out by error number
 						if(errorNbr==-10500) sev = "1" ;
 						else sev = "2";
