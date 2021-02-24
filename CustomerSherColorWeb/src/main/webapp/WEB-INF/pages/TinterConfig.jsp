@@ -98,11 +98,10 @@
 
 		var calibration = null;
 		//alfa and santint do not have cal files that we manage
-	
-		if(mymodel.indexOf("ALFA") <= 0  && mymodel.indexOf("SANTINT") <= 0){  //these models do not have cal files
+		if(mymodel != null && (!mymodel.includes("ALFA") && !mymodel.includes("SANTINT"))){  //these models do not have cal files
 			calibration =  new Calibration(mycolorantid, mymodel, myserial);
-		//console.log("calibration");
-		//console.log(calibration);
+			//console.log("calibration");
+			//console.log(calibration);
 			if(calibration.data != null){
 				var shotList = null;
 				var gdata = null;  //for corob only
@@ -483,12 +482,15 @@
 			console.log("isReady is " + ws_tinter.isReady + "BTW");
 			// Show a modal with error message to make sure the user is forced to read it.
 			$("#configError").text(ws_tinter.wserrormsg);
-			$("#configErrorModal").modal('show');			
+			$("#configErrorModal").modal('show');	
 		
 		} else {
 			var return_message = JSON.parse(ws_tinter.wsmsg);
+			var errorKey = return_message.errorMessage;
+			// update error with internationalized message
+			return_message.errorMessage = i18n[errorKey];
+			
 			switch (return_message.command) {
-
 			case 'Config':
 				if (return_message.errorNumber == 0 && return_message.commandRC == 0) {
 					init();
@@ -498,7 +500,9 @@
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
 				}
-				sendTinterEventConfig(reqGuid, curDate, return_message, null);
+				// update error message to english and log
+				return_message.errorMessage = log_english[errorKey];
+				sendTinterEventConfig(reqGuid, curDate, return_message, null);	
 				break;
 			case 'Detect':
 				waitForShowAndHide("#detectInProgressModal");
@@ -518,8 +522,6 @@
 						$("#detectErrorMessage").text(return_message.errorMessage);
 						break;
 					}
-					$("#detectErrorMessage").css("white-space", "pre");
-					$("#detectErrorMessage").text(return_message.errorMessage);
 					
 					if (return_message.errorList != undefined) {
 						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
@@ -529,6 +531,8 @@
 						}
 					}
 				}
+				// update error message to english and log
+				return_message.errorMessage = log_english[errorKey];
 				sendTinterEventConfig(reqGuid, curDate, return_message, null);
 				break;
 			default:

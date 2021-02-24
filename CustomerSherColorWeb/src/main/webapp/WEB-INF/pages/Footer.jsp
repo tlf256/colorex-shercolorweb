@@ -58,7 +58,32 @@ i18n['tinter.couldNotFindDefaultGdata'] = '<s:text name="tinter.couldNotFindDefa
 i18n['tinter.couldNotFindGdata'] = '<s:text name="tinter.couldNotFindGdata"/>';
 i18n['tinter.errorClrntEmpty'] = '<s:text name="tinter.errorClrntEmpty"/>';
 i18n['tinter.notEnoughClrntToDisp'] = '<s:text name="tinter.notEnoughClrntToDisp"/>';
+i18n['tinterResponse.dispenseComplete'] = '<s:text name="tinterResponse.dispenseComplete"/>';
+i18n['tinterResponse.errorDuringDispense'] = '<s:text name="tinterResponse.errorDuringDispense"/>';
+i18n['tinterResponse.notDetectedRunColorLink'] = '<s:text name="tinterResponse.notDetectedRunColorLink"/>';
+i18n['tinterResponse.notValidCommand'] = '<s:text name="tinterResponse.notValidCommand"/>';
+i18n['tinterResponse.noWritebackConfigureColorLink'] = '<s:text name="tinterResponse.noWritebackConfigureColorLink"/>';
+i18n['tinterResponse.softwareCurrentlyRunning'] = '<s:text name="tinterResponse.softwareCurrentlyRunning"/>';
+i18n['tinterResponse.unableToPurge'] = '<s:text name="tinterResponse.unableToPurge"/>';
+i18n['tinterResponse.unableToSaveConfiguration'] = '<s:text name="tinterResponse.unableToSaveConfiguration"/>';
+i18n['tinterResponse.unableToSaveConfigureColorLink'] = '<s:text name="tinterResponse.unableToSaveConfigureColorLink"/>';
 i18n['wSWrapper.undefinedConnectionError'] = '<s:text name="wSWrapper.undefinedConnectionError"/>';
+
+
+
+// english version of santint error for logging
+var log_english = [];
+log_english['tinterResponse.dispenseComplete'] = 'Dispense job complete';
+log_english['tinterResponse.errorDuringDispense'] = 'Error during dispense';
+log_english['tinterResponse.notDetectedRunColorLink'] = 'Tinter software not detected, please run ColorLink 3 and re-initialize tinter';
+log_english['tinterResponse.notValidCommand'] = 'Message command not recognized as a valid tinter command';
+log_english['tinterResponse.noWritebackConfigureColorLink'] = 'Error during dispense: No writeback file found, please configure ColorLink';
+log_english['tinterResponse.softwareCurrentlyRunning'] = 'Tinter software is currently running';
+log_english['tinterResponse.unableToPurge'] = 'Error during dispense: Unable to purge, no configuration on file';
+log_english['tinterResponse.unableToSaveConfiguration'] = 'Error during configuration: Unable to save configuration to disk';
+log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dispense: Unable to save Flink, please configure ColorLink';
+
+
 </script>
 
 <div class="modal fade" aria-labelledby="sessionModal" aria-hidden="true"  id="sessionModal" role="dialog">
@@ -85,7 +110,7 @@ i18n['wSWrapper.undefinedConnectionError'] = '<s:text name="wSWrapper.undefinedC
 <div id="footer" class="footer">
 	<div class="container text-center">
 		<p class="text-muted">
- 			<a href="javascript:HF_openSherwin()"><font>www.sherwin-williams.com</font></a> |
+			<a href="javascript:HF_openSherwin()"><font>www.sherwin-williams.com</font></a> |
 			<a href="javascript:HF_openPrivacy()"><font><s:text name="footer.privacyStatement"/></font></a> |
 			<a href="javascript:HF_openLegal()"><font><s:text name="footer.legalNotice"/></font></a> |
 			&copy; <s:text name="footer.theSherwinWilliamsCompany"><s:param><span id="currentYear"></span></s:param>
