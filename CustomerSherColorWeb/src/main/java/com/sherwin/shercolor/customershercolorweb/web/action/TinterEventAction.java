@@ -142,19 +142,20 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 				tintEvent.setFunction(tinterMessage.get("command").toString());
 			}
 			//Build errorList array when errorNumber is not 0
-			String sev;
+			
 			if(tinterMessage.get("errorNumber")!=null){
 				int errorNbr = Integer.parseInt(tinterMessage.get("errorNumber").toString());
 				if(errorNbr!=0){
+					String sev = "2";
 					//tintEvent.setErrorNumber(String.valueOf(errorNbr));
 					//if(tinterMessage.get("errorMessage")!=null) tintEvent.setErrorMessage(tinterMessage.get("errorMessage").toString());
 					//if(tinterMessage.get("errorSeverity")!=null) tintEvent.setErrorSeverity(tinterMessage.get("errorSeverity").toString());
 					tintEvent.setErrorStatus("1");
 
 					if(tinterMessage.get("errorSeverity")!=null) sev = tinterMessage.get("errorSeverity").toString();
-					else {
+					if(tinterMessage.get("errorSeverity")==null || (tinterMessage.get("errorSeverity").toString().startsWith("0"))) {
 						//severity not set by sender, figure it out by error number
-						if(errorNbr!=-10500) sev = "1" ;
+						if(errorNbr==-10500) sev = "1" ;
 						else sev = "2";
 					}
 					tintEvent.setErrorSeverity(sev);

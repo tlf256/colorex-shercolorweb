@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -139,31 +139,34 @@
 					alertErrors.push("Tinter Purge is Required");
 				}
 				
-				if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append('<li><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="global.ok"/></li>');
-				else {
-					hasWarnings=true;
-					$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
-				}
-				
-				// Check Levels
-				console.log("about to check levels");
-				// Check for STOP! because there is not enough colorant in the tinter
-				var stopList = checkColorantEmpty(sessionTinterInfo.canisterList);
-				if(stopList[0]!=null){
-					stopList.forEach(function(item){
-						//add to alert message being built
-						alertErrors.push('<s:text name="welcome.colorantColon"/>' + item);
-					});
-				}
-				var warnList = checkColorantLow(sessionTinterInfo.canisterList);
-				if(warnList!=null && warnList[0]!=null){
-					hasWarnings=true;
-					warnList.forEach(function(item){
-						if(item.lastIndexOf("Error",0)===0)	$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
-						else $("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
-					});
-				} else {
-					$("#tinterStatusList").append('<li><strong><s:text name="welcome.colorantLevelsColon"/></strong> <s:text name="global.ok"/></li>');
+				// leave off Ecal and Colorant Levels indicators for Santint tinters
+				if (sessionTinterInfo.model != null && !sessionTinterInfo.model.includes("SANTINT")){
+					if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append('<li><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="global.ok"/></li>');
+					else {
+						hasWarnings=true;
+						$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
+					}
+					
+					// Check Levels
+					console.log("about to check levels");
+					// Check for STOP! because there is not enough colorant in the tinter
+					var stopList = checkColorantEmpty(sessionTinterInfo.canisterList);
+					if(stopList[0]!=null){
+						stopList.forEach(function(item){
+							//add to alert message being built
+							alertErrors.push('<s:text name="welcome.colorantColon"/>' + item);
+						});
+					}
+					var warnList = checkColorantLow(sessionTinterInfo.canisterList);
+					if(warnList!=null && warnList[0]!=null){
+						hasWarnings=true;
+						warnList.forEach(function(item){
+							if(item.lastIndexOf("Error",0)===0)	$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
+							else $("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
+						});
+					} else {
+						$("#tinterStatusList").append('<li><strong><s:text name="welcome.colorantLevelsColon"/></strong> <s:text name="global.ok"/></li>');
+					}
 				}
 					
 				//Show alerts in main alert section in middle of screen
@@ -407,6 +410,44 @@
 					}
 				}
 			}
+    	}
+		
+		function DetectSantintResp(return_message){
+			console.log("Processing Santint Detect Response");
+			var initErrorList;
+			var curDate = new Date();
+			var myGuid = $( "#startNewJob_reqGuid" ).val();
+			var errorKey = return_message.errorMessage;
+			// update error to english for logging
+			return_message.errorMessage = log_english[errorKey];
+			// log event
+			sendTinterEvent(myGuid, curDate, return_message, null);
+			// update error with internationalized message
+			return_message.errorMessage = i18n[errorKey];
+			waitForShowAndHide('#initTinterInProgressModal');
+			initErrorList = [];
+			
+			// Detected and no errors from tinter
+			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+				// clear init errors in session			
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
+			} else {
+				// Show a modal with error message to make sure the user is forced to read it. 
+				$("#tinterErrorList").empty();
+				
+				initErrorList.push(return_message.errorMessage);
+				$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
+				$("#tinterErrorListModal").modal('show');
+				
+				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
+			}
+			// get session for tinter status
+    		getSessionTinterInfo($("#startNewJob_reqGuid").val(), sessionTinterInfoCallback);
+    		// remove Ecal Manager and ColorantLevels from menu if they weren't already removed on page load because localhostConfig was still null
+			$("#tinterEcal").hide();
+    		$("#colorantLevels").hide();
     	}
 		
 		function showUpdatedLayout(data){
@@ -688,7 +729,10 @@
 							if(localhostConfig != null && localhostConfig.model != null && 
 									( localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0)){
 									DetectAlfaFMXResp(return_message);
-							} 
+							}
+							else if(localhostConfig != null && localhostConfig.model != null && (localhostConfig.model.indexOf("SANTINT") >= 0)){
+								DetectSantintResp(return_message);
+							}
 							else if (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
 								detectTinter();
@@ -754,7 +798,10 @@
 								}
 								else if(localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0){
 									DetectAlfaFMXResp(return_message);
-									}
+								}
+								else if(localhostConfig.model.indexOf("SANTINT") >= 0){
+									DetectSantintResp(return_message);
+								}
 								else{
 									DetectFMResp(return_message);								
 								}
@@ -1542,6 +1589,12 @@
  			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   
 			if (daysUntilPwdExpire <= 7 && $("#startNewJob_newSession").val()=="true") {
 				$('#passwordExpirationModal').modal('show');
+			}
+			
+			if (localhostConfig != null && localhostConfig.model != null && localhostConfig.model.includes("SANTINT")){
+				// remove Ecal Manager and Colorant Levels links from menu
+				$("#tinterEcal").hide();
+				$("#colorantLevels").hide();
 			}
 			
 		});

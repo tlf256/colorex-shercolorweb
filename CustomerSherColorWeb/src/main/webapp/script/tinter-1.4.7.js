@@ -198,13 +198,14 @@ function Calibration(mycolorant,mymodel,myserial){
 }
 
 
-function Colorant(code,shots,pos,uom){
+function Colorant(code,shots,pos,uom,decimalOunces){
 	this.code=code;
 	this.shots=shots;
 	this.uom=uom;
 	this.position=pos;
-	
+	this.decimalOunces=decimalOunces;	
 }
+
     /* String clrntCode;
 	
 	short clrntShots;   // colorant shot array

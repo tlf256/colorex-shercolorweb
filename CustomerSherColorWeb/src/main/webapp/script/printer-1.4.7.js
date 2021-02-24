@@ -1,19 +1,24 @@
 
 var ws_printer = new WSWrapper("printer");
 
+function printOnDispenseGetJson(myguid,printJsonIN) {
+	if (printerConfig && printerConfig.model) {
+		var myPdf = new pdf(myguid,printJsonIN);
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
+		var numLabels = null;
+		numLabels = printerConfig.numLabels;
+		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+	}
+}
 
-function getPdfFromServer(myGuid){
+function getPdfFromServer(myGuid, jsonIN){
+	console.log("JSON IN BEFORE SENDING: " + jsonIN);
 	var pdfobj=null;
 	if(myGuid !=null){
 		$.ajax({
 			url : "formulaUserPrintAsJsonAction",
-			context : document.body,
-			data : {
-				reqGuid : myGuid, //without this guid you will get a login exception and you won't even get an error
-				printLabelType : myPrintLabelType,
-				printOrientation : myPrintOrientation
-				//filename: uFilename
-			},
+			contentType : "application/json; charset=utf-8",
+			data : jsonIN,
 			async : false,
 			type: "POST",
 			dataType: "json",
@@ -41,12 +46,12 @@ function getPdfFromServer(myGuid){
 	return pdfobj;
 }
 
-function pdf(myguid){
+function pdf(myguid, jsonIN){
 
 	this.data = null;
 
 	
-	var pdf_file = getPdfFromServer(myguid);
+	var pdf_file = getPdfFromServer(myguid, jsonIN);
 	if(pdf_file !=null && pdf_file.data != null){
 	
 		this.data=pdf_file.data;

@@ -366,6 +366,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.getFormResponse().setMessages(new ArrayList<SwMessage>());
 		
 		reqObj.setQuantityDispensed(webTran.getQuantityDispensed());
+		reqObj.setRoomByRoom(webTran.getRoomByRoom());
 	}
 	
 	public void setSession(Map<String, Object> sessionMap) {

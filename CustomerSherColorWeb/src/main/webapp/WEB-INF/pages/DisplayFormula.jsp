@@ -26,9 +26,9 @@
 <script type="text/javascript" charset="utf-8"
 	src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.6.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.6.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
@@ -78,6 +78,8 @@ badge {
 	var numberOfDispenses = 0;
 	var dispenseTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
 	var printerConfig;
+	var isCorrectionDispense = false;
+	var printJsonIN = "";
 	var processingDispense = false;
 	var sendingTinterCommand = "false";
 	 var ws_tinter = new WSWrapper("tinter");
@@ -217,25 +219,12 @@ function showPrintModal(){
 	
 }
 
-function printOnDispenseGetJson() {
-	if (printerConfig && printerConfig.model) {
-		// Currently only storeLabels can be printed through dispense
-		myPrintLabelType = "storeLabel";
-		myPrintOrientation = "PORTRAIT";
-		var myguid = $("#reqGuid").val();
-		var myPdf = new pdf(myguid);
-		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
-		var numLabels = null;
-		numLabels = printerConfig.numLabels;
-		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
-	}
-
-}
 function printButtonClickGetJson() {
 	if (printerConfig && printerConfig.model) {
 		var myguid = $("#reqGuid").val();
-
-		var myPdf = new pdf(myguid);
+		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+		printJsonIN = JSON.stringify(str);
+		var myPdf = new pdf(myguid,printJsonIN);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
 
@@ -360,7 +349,13 @@ function ParsePrintMessage() {
 
 								if (printerConfig
 										&& printerConfig.printOnDispense) {
-									printOnDispenseGetJson(); //new print on dispense
+									// Currently only storeLabels can be printed through dispense
+									myPrintLabelType = "storeLabel";
+									myPrintOrientation = "PORTRAIT";
+									var myguid = $("#reqGuid").val();
+									var correctionStr = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+									printJsonIN = JSON.stringify(correctionStr);
+									printOnDispenseGetJson(myguid,printJsonIN);
 								}
 								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {

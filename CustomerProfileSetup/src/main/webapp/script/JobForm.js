@@ -17,7 +17,7 @@ $(document).ready(function(){
 			$("#formerror").text("");
 		}catch(msg){
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 			$("#jobformerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
@@ -36,7 +36,7 @@ $(document).ready(function(){
 			$("#formerror").text("");
 		}catch(msg){
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 			$("#jobformerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
