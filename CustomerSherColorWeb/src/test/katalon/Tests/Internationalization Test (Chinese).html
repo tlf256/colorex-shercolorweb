@@ -1,0 +1,1130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Internationalization Test (Chinese)</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Login</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>Login<datalist><option>Login</option></datalist></td><td></td>
+</tr>
+<tr><td>select</td><td>id=languageList<datalist><option>id=languageList</option><option>//select[@id='languageList']</option><option>//select</option><option>css=#languageList</option></datalist></td><td>label=中文</td>
+</tr>
+<tr><td>waitForTitle</td><td>登录<datalist><option>登录</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='loginForm']/fieldset/div/h1<datalist><option>//form[@id='loginForm']/fieldset/div/h1</option><option>//h1</option><option>css=h1.h3.mb-3.font-weight-normal</option></datalist></td><td>登录到Sher-Color</td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='loginForm']/fieldset/div[4]/label<datalist><option>//form[@id='loginForm']/fieldset/div[4]/label</option><option>//div[4]/label</option></datalist></td><td>密码</td>
+</tr>
+<tr><td>assertValue</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td>登录</td>
+</tr>
+<tr><td>type</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td>shercolortest</td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Fall2020#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Welcome</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=initTinterInProgressModal<datalist><option>id=initTinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='navbarContent']/ul[2]/li/span<datalist><option>//div[@id='navbarContent']/ul[2]/li/span</option><option>//ul[2]/li/span</option><option>css=span.navbar-text</option></datalist></td><td>使用姓名登录*</td>
+</tr>
+<tr><td>assertValue</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td>开始新任务</td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[1]/a<datalist><option>link=Color Lookup</option><option>//a[contains(text(),'Color Lookup')]</option><option>//ul[@id='menuPanelL']/li/ul/li/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/loginAction.action?reqGuid=52f20370fba14713b3f482ac5153dc42')]</option><option>//a</option><option>css=a.dropdown-item</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[1]/a</option></datalist></td><td>查找颜色</td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Header</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=tinterNotify<datalist><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option></datalist></td><td>调色机状态</td>
+</tr>
+<tr><td>clickAtAndWait</td><td>id=tinterNotify<datalist><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="tinterPopover"]<datalist><option>//div[@id='tinterPopover']/div</option><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option><option>div[@id=tinterPopover]\div</option><option>div[@id='tinterPopover']\div</option><option>//*[@id="tinterNotify"]</option><option>//*[@id="tinterPopover"][1]</option><option>//*[@id="tinterPopover"]</option></datalist></td><td>*色浆：*</td>
+</tr>
+<tr><td>storeEval</td><td>document.getElementById('tinterNotify').getAttribute('data-original-title');<datalist><option>return document.getElementById('tinterNotify').getAttribute('data-original-title');</option><option>document.getElementById('tinterNotify').getAttribute('data-original-title');</option></datalist></td><td>popoverTitle</td>
+</tr>
+<tr><td>store</td><td>${popoverTitle}<datalist><option>${popoverTitle}</option></datalist></td><td>title</td>
+</tr>
+<tr><td>assertEval</td><td>${popoverTitle}<datalist><option>//div[@id='tinterPopover']/div</option><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option><option>div[@id=tinterPopover]\div</option><option>div[@id='tinterPopover']\div</option><option>//*[@id="tinterNotify"]</option><option>//a[@data-original-title]</option><option>//a[@data-original-title='Tinter Status']</option><option>${popoverTitle}</option><option>popoverTitle</option><option>storedVars['popoverTitle']</option><option>storedVars['title']</option></datalist></td><td>Tinter Status</td>
+</tr>
+<tr><td>assertText</td><td>id=coloreyeNotify<datalist><option>id=coloreyeNotify</option><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option></datalist></td><td>读色器状态</td>
+</tr>
+<tr><td>click</td><td>id=coloreyeNotify<datalist><option>id=coloreyeNotify</option><option>link=Color-Eye Status</option><option>//a[contains(text(),'Color-Eye Status')]</option><option>//a[@id='coloreyeNotify']</option><option>//ul[@id='menuPanelL']/li[5]/a</option><option>xpath=(//a[contains(@href, 'javascript:void(0)')])[2]</option><option>//li[5]/a</option><option>css=#coloreyeNotify</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='coloreyePopover']/div<datalist><option>//div[@id='coloreyePopover']/div</option><option>//div[@id='tinterPopover']/div</option><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option><option>div[@id=tinterPopover]\div</option><option>div[@id='tinterPopover']\div</option></datalist></td><td>读色器状态</td>
+</tr>
+<tr><td>click</td><td>id=coloreyeNotify<datalist><option>id=coloreyeNotify</option><option>link=Color-Eye Status</option><option>//a[contains(text(),'Color-Eye Status')]</option><option>//a[@id='coloreyeNotify']</option><option>//ul[@id='menuPanelL']/li[5]/a</option><option>xpath=(//a[contains(@href, 'javascript:void(0)')])[2]</option><option>//li[5]/a</option><option>css=#coloreyeNotify</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=shercolorimg<datalist><option>id=shercolorimg</option><option>//img[@id='shercolorimg']</option><option>//img</option><option>css=#shercolorimg</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Footer</td></tr>
+</thead>
+<tbody>
+<tr><td>assertText</td><td>//div[@id='footer']/div/p/a[2]/font<datalist><option>//div[@id='footer']/div/p/a[2]/font</option><option>//a[2]/font</option></datalist></td><td>隐私声明</td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='footer']/div/p/a[3]/font<datalist><option>//div[@id='footer']/div/p/a[3]/font</option><option>//a[3]/font</option></datalist></td><td>法律通知</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Calibrate Spectro</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>link=Color Eye Menu</option><option>//a[contains(text(),'Color Eye Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[2]/a</option><option>//a[contains(@href, '#')]</option><option>//li[2]/a</option><option>css=a.sub.dropdown-item.pr-1</option><option>//*[@id="coloreyemenu"]</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option></datalist></td><td>读色器菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="spectroCalibrate"]/a<datalist><option>link=Calibrate</option><option>//a[contains(text(),'Calibrate')]</option><option>//li[@id='spectroCalibrate']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroCalibrateAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li/a</option><option>css=#spectroCalibrate &gt; a.dropdown-item</option><option>//*[@id="spectroCalibrate"]/a</option></datalist></td><td>校准</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="spectroCalibrate"]/a<datalist><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Calibrate</option><option>//*[@id="spectroCalibrate"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>校准读色器<datalist><option>校准读色器</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=spectroCalModal<datalist><option>id=spectroCalModal</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='spectroCalModal']/div/div/div/h2<datalist><option>//div[@id='spectroCalModal']/div/div/div/h2</option><option>//div[2]/div/div/div/h2</option><option>css=h2.modal-title.ml-3</option></datalist></td><td>校准读色器</td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div[2]/h2[2]<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div[2]/h2[2]</option><option>//h2[2]</option><option>css=h2.calsuccess</option></datalist></td><td>校准成功</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_goodCalibrateAction<datalist><option>id=colorUserNextAction_goodCalibrateAction</option><option>name=action:goodCalibrateAction</option><option>//input[@id='colorUserNextAction_goodCalibrateAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div/div[5]/div[2]/div[2]/input</option><option>//div[2]/input</option><option>css=#colorUserNextAction_goodCalibrateAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Manage Stored Measurements</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option><option>link=Color Eye Menu</option><option>//a[contains(text(),'Color Eye Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[2]/a</option><option>//a[contains(@href, '#')]</option><option>//li[2]/a</option><option>css=a.sub.dropdown-item.pr-1</option><option>//*[@id="coloreyemenu"]</option></datalist></td><td>读色器菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="spectroManageStoredMeasurements"]/a<datalist><option>link=Manage Remote Measurements</option><option>//a[contains(text(),'Manage Remote Measurements')]</option><option>//li[@id='spectroManageStoredMeasurements']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroManageStoredMeasurementsAction.action?reqGuid=2284a3991b8d489c859f8ef1b0c48982')]</option><option>//li[2]/ul/li[2]/a</option><option>css=#spectroManageStoredMeasurements &gt; a.dropdown-item</option><option>//*[@id="spectroManageStoredMeasurements"]/a</option></datalist></td><td>管理远程测量</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="spectroManageStoredMeasurements"]/a<datalist><option>link=Manage Remote Measurements</option><option>//a[contains(text(),'Manage Remote Measurements')]</option><option>//li[@id='spectroManageStoredMeasurements']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroManageStoredMeasurementsAction.action?reqGuid=2284a3991b8d489c859f8ef1b0c48982')]</option><option>//li[2]/ul/li[2]/a</option><option>css=#spectroManageStoredMeasurements &gt; a.dropdown-item</option><option>//*[@id="spectroManageStoredMeasurements"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>管理远程测量<datalist><option>校准读色器</option><option>管理远程测量</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//h1<datalist><option>//h1</option><option>css=h1</option></datalist></td><td>管理远程测量</td>
+</tr>
+<tr><td>assertText</td><td>id=loadMeasurementsButton<datalist><option>id=loadMeasurementsButton</option><option>//button[@id='loadMeasurementsButton']</option><option>//form[@id='mainForm']/fieldset/div[2]/div[3]/button</option><option>//div[3]/button</option><option>css=#loadMeasurementsButton</option></datalist></td><td>[zh_CN: Load Measurements]</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_userCancelAction<datalist><option>id=mainForm_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='mainForm_userCancelAction']</option><option>//form[@id='mainForm']/fieldset/div[2]/div[4]/input</option><option>//div[4]/input</option><option>css=#mainForm_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Verify Default Spectro Settings</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option><option>link=Color Eye Menu</option><option>//a[contains(text(),'Color Eye Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[2]/a</option><option>//a[contains(@href, '#')]</option><option>//li[2]/a</option><option>css=a.sub.dropdown-item.pr-1</option><option>//*[@id="coloreyemenu"]</option></datalist></td><td>读色器菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="spectroVerifyDefaultSettings"]/a<datalist><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>//*[@id="spectroVerifyDefaultSettings"]/a</option></datalist></td><td>验证默认光谱设置</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="spectroVerifyDefaultSettings"]/a<datalist><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>//*[@id="spectroVerifyDefaultSettings"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>验证默认光谱设置<datalist><option>验证默认光谱设置</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//h1<datalist><option>//h1</option><option>css=h1</option></datalist></td><td>验证默认光谱设置</td>
+</tr>
+<tr><td>assertValue</td><td>id=verifyDeviceSettingsAction_userCancelAction<datalist><option>id=verifyDeviceSettingsAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='verifyDeviceSettingsAction_userCancelAction']</option><option>//form[@id='verifyDeviceSettingsAction']/fieldset/div[3]/div[2]/input</option><option>//div[2]/input</option><option>css=#verifyDeviceSettingsAction_userCancelAction</option></datalist></td><td>取消</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyDeviceSettingsAction_userCancelAction<datalist><option>id=verifyDeviceSettingsAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='verifyDeviceSettingsAction_userCancelAction']</option><option>//form[@id='verifyDeviceSettingsAction']/fieldset/div[3]/div[2]/input</option><option>//div[2]/input</option><option>css=#verifyDeviceSettingsAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Color Eye Information</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option><option>link=Color Eye Menu</option><option>//a[contains(text(),'Color Eye Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[2]/a</option><option>//a[contains(@href, '#')]</option><option>//li[2]/a</option><option>css=a.sub.dropdown-item.pr-1</option><option>//*[@id="coloreyemenu"]</option></datalist></td><td>读色器菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="spectroGetInfo"]/a<datalist><option>link=Color Eye Information</option><option>//a[contains(text(),'Color Eye Information')]</option><option>//li[@id='spectroGetInfo']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroGetInfoAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[2]/ul/li[4]/a</option><option>css=#spectroGetInfo &gt; a.dropdown-item</option><option>//*[@id="spectroGetInfo"]/a</option></datalist></td><td>读色器信息</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="spectroGetInfo"]/a<datalist><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Color Eye Information</option><option>//*[@id="spectroGetInfo"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>读色器信息<datalist><option>读色器信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='calStatusUserNextAction']/fieldset/div[2]/div[2]/div/strong<datalist><option>//form[@id='calStatusUserNextAction']/fieldset/div[2]/div[2]/div/strong</option><option>//div/strong</option><option>css=div.goodcal &gt; strong</option></datalist></td><td>校准状况</td>
+</tr>
+<tr><td>assertValue</td><td>id=calStatusUserNextAction_userCancelAction<datalist><option>id=calStatusUserNextAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='calStatusUserNextAction_userCancelAction']</option><option>//form[@id='calStatusUserNextAction']/fieldset/div[14]/div[3]/input</option><option>//div[3]/input</option><option>css=#calStatusUserNextAction_userCancelAction</option></datalist></td><td>取消</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=calStatusUserNextAction_userCancelAction<datalist><option>id=calStatusUserNextAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='calStatusUserNextAction_userCancelAction']</option><option>//form[@id='calStatusUserNextAction']/fieldset/div[14]/div[3]/input</option><option>//div[3]/input</option><option>css=#calStatusUserNextAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Color Eye Configure</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option><option>link=Color Eye Menu</option><option>//a[contains(text(),'Color Eye Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[2]/a</option><option>//a[contains(@href, '#')]</option><option>//li[2]/a</option><option>css=a.sub.dropdown-item.pr-1</option><option>//*[@id="coloreyemenu"]</option></datalist></td><td>读色器菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a<datalist><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[2]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="spectroConfig"]/a<datalist><option>link=Configure</option><option>//a[contains(text(),'Configure')]</option><option>//li[@id='spectroConfig']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroConfigureAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[2]/ul/li[5]/a</option><option>css=#spectroConfig &gt; a.dropdown-item</option><option>//*[@id="spectroConfig"]/a</option></datalist></td><td>配置</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="spectroConfig"]/a<datalist><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Configure</option><option>//*[@id="spectroConfig"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>设置读色器<datalist><option>设置读色器</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='configureSpectroNextAction']/fieldset/div[4]/div[2]/h2[3]<datalist><option>//form[@id='configureSpectroNextAction']/fieldset/div[4]/div[2]/h2[3]</option><option>//h2[3]</option><option>css=h2.pleasewait</option></datalist></td><td>1 、连接读色器</td>
+</tr>
+<tr><td>assertValue</td><td>id=configureButton<datalist><option>id=configureButton</option><option>//input[@id='configureButton']</option><option>//form[@id='configureSpectroNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#configureButton</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=cancelButton<datalist><option>id=cancelButton</option><option>name=action:userCancelAction</option><option>//input[@id='cancelButton']</option><option>//form[@id='configureSpectroNextAction']/fieldset/div[8]/div[3]/input</option><option>//div[8]/div[3]/input</option><option>css=#cancelButton</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Purge</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Color Eye Menu</option><option>link=Tinter Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="tinterPurge"]/a<datalist><option>link=Purge</option><option>//a[contains(text(),'Purge')]</option><option>//li[@id='tinterPurge']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterPurgeAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[3]/ul/li/a</option><option>css=#tinterPurge &gt; a.dropdown-item</option><option>//*[@id="tinterPurge"]/a</option></datalist></td><td>清除</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="tinterPurge"]/a<datalist><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Purge</option><option>//*[@id="tinterPurge"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>清洁调色机<datalist><option>设置读色器</option><option>清洁调色机</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='tinterPurgeAction']/fieldset/div/div[2]/div/div/span<datalist><option>//form[@id='tinterPurgeAction']/fieldset/div/div[2]/div/div/span</option><option>//div/span</option><option>css=span.badge.badge-secondary.mb-1</option></datalist></td><td>清洁调色机</td>
+</tr>
+<tr><td>assertText</td><td>id=tinterPurge<datalist><option>id=tinterPurge</option><option>//button[@id='tinterPurge']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[3]/button</option><option>//div[3]/button</option><option>css=#tinterPurge</option></datalist></td><td>清除</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurgeAction_userCancelAction<datalist><option>id=tinterPurgeAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='tinterPurgeAction_userCancelAction']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[4]/input</option><option>//div[4]/input</option><option>css=#tinterPurgeAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Colorant Levels</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="colorantLevels"]/a<datalist><option>link=Colorant Levels</option><option>//a[contains(text(),'Colorant Levels')]</option><option>//li[@id='colorantLevels']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/processColorantLevelsAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[3]/ul/li[3]/a</option><option>css=#colorantLevels &gt; a.dropdown-item</option><option>//*[@id="updateCanisterLayout"]/a</option><option>//*[@id="colorantLevels"]/a</option></datalist></td><td>色浆含量</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="colorantLevels"]/a<datalist><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Colorant Levels</option><option>//*[@id="updateCanisterLayout"]/a</option><option>//*[@id="colorantLevels"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>色浆含量<datalist><option>清洁调色机</option><option>设置读色器</option><option>色浆含量</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div/span<datalist><option>//div/span</option><option>css=span.badge.badge-secondary</option></datalist></td><td>色浆含量</td>
+</tr>
+<tr><td>assertText</td><td>id=setallfull<datalist><option>id=setallfull</option><option>link=Set All Full</option><option>//a[contains(text(),'Set All Full')]</option><option>//a[@id='setallfull']</option><option>//a[contains(@href, '/CustomerSherColorWeb/clrntLevelsUpdateAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673&amp;updateType=setAllFull')]</option><option>//div[3]/a</option><option>css=#setallfull</option></datalist></td><td>设置全部加满</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setallfull<datalist><option>id=setallfull</option><option>link=Set All Full</option><option>//a[contains(text(),'Set All Full')]</option><option>//a[@id='setallfull']</option><option>//a[contains(@href, '/CustomerSherColorWeb/clrntLevelsUpdateAction.action?reqGuid=53ddb2b5a4894b7f88669cbf9245b7fe&amp;updateType=setAllFull')]</option><option>//div[3]/a</option><option>css=#setallfull</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=cancel<datalist><option>id=cancel</option><option>link=Done</option><option>//a[contains(text(),'Done')]</option><option>//a[@id='cancel']</option><option>//a[contains(@href, '/CustomerSherColorWeb/userCancelAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//a[2]</option><option>css=#cancel</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Dispense Colorants</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="dispenseColorants"]/a<datalist><option>link=Dispense Colorants</option><option>//a[contains(text(),'Dispense Colorants')]</option><option>//li[@id='dispenseColorants']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/displayDispenseColorantsAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[3]/ul/li[4]/a</option><option>css=#dispenseColorants &gt; a.dropdown-item</option><option>//*[@id="dispenseColorants"]/a</option></datalist></td><td>分配色浆</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="dispenseColorants"]/a<datalist><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Dispense Colorants</option><option>//*[@id="dispenseColorants"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>分配色浆<datalist><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option><option>分配色浆</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div/span<datalist><option>//div/span</option><option>css=span.badge.badge-secondary</option></datalist></td><td>分配</td>
+</tr>
+<tr><td>assertText</td><td>id=dispense<datalist><option>id=dispense</option><option>//button[@id='dispense']</option><option>//div[3]/button</option><option>css=#dispense</option></datalist></td><td>分配</td>
+</tr>
+<tr><td>type</td><td>id=oz0<datalist><option>id=oz0</option><option>name=oz0</option><option>//input[@id='oz0']</option><option>//td[@id='col2row0']/div/div/input</option><option>//td[2]/div/div/input</option><option>css=#oz0</option></datalist></td><td>100</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispense<datalist><option>id=dispense</option><option>//button[@id='dispense']</option><option>//div[3]/button</option><option>css=#dispense</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@class="popover"]/div[2]<datalist><option>//div[@id='popover44398']/div[2]</option><option>//div[10]/div[2]</option><option>css=div.popover-body</option><option>//div[@class="popover"]/div[2]</option></datalist></td><td>输入必须是0-99之间的正整数，请重新输入。</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=cancel<datalist><option>id=cancel</option><option>link=Done</option><option>//a[contains(text(),'Done')]</option><option>//a[@id='cancel']</option><option>//a[contains(@href, '/CustomerSherColorWeb/userCancelAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//div[4]/a</option><option>css=#cancel</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Initialize Tinter</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="tinterInit"]/a<datalist><option>link=Initialize Tinter</option><option>//a[contains(text(),'Initialize Tinter')]</option><option>//a[@onclick='detectTinter();']</option><option>//li[@id='tinterInit']/a</option><option>xpath=(//a[contains(@href, '#')])[4]</option><option>//li[3]/ul/li[5]/a</option><option>css=#tinterInit &gt; a.dropdown-item</option><option>//*[@id="tinterInit"]/a</option></datalist></td><td>初始化调色机</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="tinterInit"]/a<datalist><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Initialize Tinter</option><option>//*[@id="tinterInit"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=initTinterInProgressModal<datalist><option>id=initTinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='initTinterInProgressModal']/div/div/div/h5<datalist><option>//div[@id='initTinterInProgressModal']/div/div/div/h5</option><option>//div[5]/div/div/div/h5</option><option>css=#initTinterInProgressModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td>调色机检测和初始化</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=initTinterInProgressModal<datalist><option>id=initTinterInProgressModal</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Calibration Manager</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="tinterEcal"]/a<datalist><option>link=Calibration Manager</option><option>//a[contains(text(),'Calibration Manager')]</option><option>//li[@id='tinterEcal']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/ecalManagerAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[3]/ul/li[6]/a</option><option>css=#tinterEcal &gt; a.dropdown-item</option><option>//*[@id="tinterEcal"]/a</option></datalist></td><td>校准管理器</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="tinterEcal"]/a<datalist><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Calibration Manager</option><option>//*[@id="tinterEcal"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>校准管理器<datalist><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option><option>校准管理器</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='frmSubmit']/fieldset/div/h1<datalist><option>//form[@id='frmSubmit']/fieldset/div/h1</option><option>//h1</option><option>css=h1.h3.mb-3.font-weight-normal</option></datalist></td><td>校准管理器</td>
+</tr>
+<tr><td>assertText</td><td>id=upload_ecal<datalist><option>id=upload_ecal</option><option>//button[@id='upload_ecal']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/button[2]</option><option>//button[2]</option><option>css=#upload_ecal</option></datalist></td><td>上传校准</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=btn_done<datalist><option>id=btn_done</option><option>name=action:loginAction</option><option>//input[@id='btn_done']</option><option>//form[@id='frmSubmit']/fieldset/div[6]/input</option><option>//div[6]/input</option><option>css=#btn_done</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Add New Tinter</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="tinterAdd"]/a<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option><option>//*[@id="tinterAdd"]/a</option></datalist></td><td>添加新调色机</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="tinterAdd"]/a<datalist><option>link=Calibration Manager</option><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Add New Tinter</option><option>//*[@id="tinterAdd"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>调色机配置<datalist><option>校准管理器</option><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option><option>调色机配置</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='frmSubmit']/fieldset/div/p<datalist><option>//form[@id='frmSubmit']/fieldset/div/p</option><option>//p</option><option>css=p</option></datalist></td><td>选择您的色浆，调色机型号和序列号，我们将连接到您的调色机！</td>
+</tr>
+<tr><td>assertValue</td><td>id=btn_tinterConfig<datalist><option>id=btn_tinterConfig</option><option>//input[@id='btn_tinterConfig']</option><option>//form[@id='frmSubmit']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#btn_tinterConfig</option></datalist></td><td>配置</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=frmSubmit_userCancelAction<datalist><option>id=frmSubmit_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='frmSubmit_userCancelAction']</option><option>//form[@id='frmSubmit']/fieldset/div[5]/input[2]</option><option>//input[2]</option><option>css=#frmSubmit_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Remove Tinter</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[3]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="tinterRemove"]/a<datalist><option>link=Remove Tinter</option><option>//a[contains(text(),'Remove Tinter')]</option><option>//a[@onclick='showRemoveTinterModal();']</option><option>//li[@id='tinterRemove']/a</option><option>xpath=(//a[contains(@href, '#')])[5]</option><option>//li[8]/a</option><option>css=#tinterRemove &gt; a.dropdown-item</option><option>//*[@id="tinterRemove"]/a</option></datalist></td><td>删除调色机</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="tinterRemove"]/a<datalist><option>link=Initialize Tinter</option><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=Remove Tinter</option><option>//*[@id="tinterRemove"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=removeTinterModal<datalist><option>//div[@id='removeTinterModal']/div/div/div</option><option>//div[10]/div/div/div</option><option>css=#removeTinterModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header</option><option>id=removeTinterModal</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//h5[@id='']<datalist><option>//h5[@id='']</option><option>//div[@id='removeTinterModal']/div/div/div/h5</option><option>//div[10]/div/div/div/h5</option><option>css=#removeTinterModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td>删除调色机</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=closeModal<datalist><option>id=closeModal</option><option>//button[@id='closeModal']</option><option>//div[@id='removeTinterModal']/div/div/div[3]/button[2]</option><option>//button[2]</option><option>css=#closeModal</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=removeTinterModal<datalist><option>id=initTinterInProgressModal</option><option>id=removeTinterModal</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Printer Configure</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[4]/a<datalist><option>link=Printer Menu</option><option>//a[contains(text(),'Printer Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[4]/a</option><option>xpath=(//a[contains(@href, '#')])[6]</option><option>//li[4]/a</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[4]/a</option></datalist></td><td>打印机菜单</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[4]/a<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>link=Printer Menu</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[4]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="printerConfig"]/a<datalist><option>xpath=(//a[contains(text(),'Configure')])[2]</option><option>//li[@id='printerConfig']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/printerConfigureAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[4]/ul/li/a</option><option>css=#printerConfig &gt; a.dropdown-item</option><option>//*[@id="printerConfig"]/a</option></datalist></td><td>配置</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="printerConfig"]/a<datalist><option>xpath=(//a[contains(text(),'Configure')])[2]</option><option>//li[@id='printerConfig']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/printerConfigureAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[4]/ul/li/a</option><option>css=#printerConfig &gt; a.dropdown-item</option><option>//*[@id="printerConfig"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>打印机配置<datalist><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option><option>打印机配置</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='frmSubmit']/fieldset/div/h1<datalist><option>//form[@id='frmSubmit']/fieldset/div/h1</option><option>//h1</option><option>css=h1.h3.mb-3.font-weight-normal</option></datalist></td><td>配置打印机</td>
+</tr>
+<tr><td>assertValue</td><td>id=btn_printerConfig<datalist><option>id=btn_printerConfig</option><option>//input[@id='btn_printerConfig']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/input</option><option>//div[4]/input</option><option>css=#btn_printerConfig</option></datalist></td><td>保存</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=frmSubmit_userCancelAction<datalist><option>id=frmSubmit_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='frmSubmit_userCancelAction']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/input[2]</option><option>//input[2]</option><option>css=#frmSubmit_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Change Password</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[5]/a<datalist><option>//*[@id="menuPanelL"]/li[1]/ul/li[5]/a</option></datalist></td><td>[zh_CN: User Menu]</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
+</tr>
+<tr><td>click</td><td>//*[@id="menuPanelL"]/li[1]/ul/li[5]/a<datalist><option>link=User Menu</option><option>//a[contains(text(),'User Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[5]/a</option><option>xpath=(//a[contains(@href, '#')])[7]</option><option>//li/ul/li[5]/a</option><option>//*[@id="menuPanelL"]/li[1]/ul/li[5]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//*[@id="changePwd"]/a<datalist><option>link=Change Password</option><option>//a[contains(text(),'Change Password')]</option><option>//li[@id='changePwd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/passwordResetAction2.action?guid1=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[5]/ul/li/a</option><option>css=#changePwd &gt; a.dropdown-item</option><option>//*[@id="changePwd"]/a</option></datalist></td><td>更改密码</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="changePwd"]/a<datalist><option>link=Change Password</option><option>//a[contains(text(),'Change Password')]</option><option>//li[@id='changePwd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/passwordResetAction2.action?guid1=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[5]/ul/li/a</option><option>css=#changePwd &gt; a.dropdown-item</option><option>//*[@id="changePwd"]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>[zh_CN: Change Password]<datalist><option>打印机配置</option><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option><option>更改密码</option><option>[zh_CN: Change Password]</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='passwordForm']/fieldset/div[2]/div[2]/div/label<datalist><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/div/label</option><option>//label</option></datalist></td><td>新密码:</td>
+</tr>
+<tr><td>assertValue</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:passwordChangeAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/input[2]</option><option>//input[2]</option><option>css=#LoginFocus</option></datalist></td><td>重设密码</td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#userPass</option></datalist></td><td>abc123</td>
+</tr>
+<tr><td>type</td><td>id=userPassConfirm<datalist><option>id=userPassConfirm</option><option>name=userPassConfirm</option><option>//input[@id='userPassConfirm']</option><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/div[2]/div/input</option><option>//div[2]/div[2]/div/input</option><option>css=#userPassConfirm</option></datalist></td><td>abc</td>
+</tr>
+<tr><td>click</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:passwordChangeAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/input[2]</option><option>//input[2]</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>//form[@id='passwordForm']/fieldset/div[2]/div[3]<datalist><option>//form[@id='passwordForm']/fieldset/div[2]/div[3]</option><option>//fieldset/div[2]/div[3]</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='passwordForm']/fieldset/div/div[2]/div/p/span[2]<datalist><option>//form[@id='passwordForm']/fieldset/div/div[2]/div/p/span[2]</option><option>//span[2]</option></datalist></td><td>密码不匹配</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=cancelChange<datalist><option>id=cancelChange</option><option>name=action:cancelPasswordChangeAction</option><option>//input[@id='cancelChange']</option><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/input[3]</option><option>//input[3]</option><option>css=#cancelChange</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Formulation Error</td></tr>
+</thead>
+<tbody>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Correct Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertValue</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertValue</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0022</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertValue</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>A06W00053-16</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择色浆系统<datalist><option>选择色浆系统</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择色浆系统</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>配方<datalist><option>配方</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td>下一个工作</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[4]/div/div/div/div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='verifyModal']/div/div/div/h5<datalist><option>//div[@id='verifyModal']/div/div/div/h5</option><option>//div[6]/div/div/div/h5</option><option>css=#verifyModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td>扫描产品以验证分配</td>
+</tr>
+<tr><td>type</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div[5]/div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>640333845</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[4]/button</option><option>//div[4]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=positionContainerModal<datalist><option>id=positionContainerModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[4]/button</option><option>//div[6]/div/div/div[4]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=qtyDispensed<datalist><option>id=qtyDispensed</option><option>//span[@id='qtyDispensed']</option><option>//div[@id='dispenseInfoRow']/div[2]/span</option><option>//div[2]/span</option><option>css=#qtyDispensed</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserCorrectAction<datalist><option>id=formulaUserPrintAction_formulaUserCorrectAction</option><option>name=action:formulaUserCorrectAction</option><option>//input[@id='formulaUserPrintAction_formulaUserCorrectAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[3]</option><option>//div[2]/input[3]</option><option>css=#formulaUserPrintAction_formulaUserCorrectAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>配方校准<datalist><option>配方校准</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=currentPrompt<datalist><option>id=currentPrompt</option><option>//h5[@id='currentPrompt']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/h5</option><option>//div[3]/div[2]/div/h5</option><option>css=#currentPrompt</option></datalist></td><td>开始校准容器*</td>
+</tr>
+<tr><td>assertText</td><td>id=addStep<datalist><option>id=addStep</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td>添加色浆</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=addStep<datalist><option>id=addStep</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//div[@id='addIngredients']/div[2]/div/h5/strong<datalist><option>//div[@id='addIngredients']/div[2]/div/h5/strong</option><option>//div[4]/div[2]/div/h5/strong</option><option>css=#addIngredients &gt; div.col-lg-10.col-md-10.col-sm-12.col-xs-12 &gt; div.card.card-body.bg-light &gt; h5.text-primary &gt; strong</option></datalist></td><td>添加色浆到容器 #*</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=percentAdd<datalist><option>id=percentAdd</option><option>//button[@id='percentAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[2]/td/button</option><option>//tr[2]/td/button</option><option>css=#percentAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForEditable</td><td>id=pct<datalist><option>id=pct</option><option>//input[@id='pct']</option><option>//div[@id='percentPrompt']/div/div/div/input</option><option>//td[2]/div/div/div/div/input</option><option>css=#pct</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=pct<datalist><option>id=pct</option><option>//input[@id='pct']</option><option>//div[@id='percentPrompt']/div/div/div/input</option><option>//td[2]/div/div/div/div/input</option><option>css=#pct</option></datalist></td><td>10</td>
+</tr>
+<tr><td>clickAndWait</td><td>//button[@id='percentOk']/span<datalist><option>//button[@id='percentOk']/span</option><option>//div/button/span</option><option>css=span.fa.fa-check</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseAdd<datalist><option>id=dispenseAdd</option><option>//button[@id='dispenseAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[3]/td/button</option><option>//tr[3]/td/button</option><option>css=#dispenseAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='popover201221']/div[2]<datalist><option>//div[@id='popover201221']/div[2]</option><option>//div[5]/div[2]</option><option>css=div.popover-body</option></datalist></td><td>原因必须是2个字符以上，请重新输入。</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=cancelAdd<datalist><option>id=cancelAdd</option><option>//button[@id='cancelAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[4]/td/button</option><option>//tr[4]/td/button</option><option>css=#cancelAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Edit Formula Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0022</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>A06W00053-16</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择色浆系统<datalist><option>选择色浆系统</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择色浆系统</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>配方<datalist><option>配方</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='dispenseInfoRow']/div[2]/strong<datalist><option>//div[@id='dispenseInfoRow']/div[2]/strong</option><option>//fieldset/div[4]/div[2]/strong</option><option>css=div.col-lg-6.col-md-8.col-sm-10.col-xs-12 &gt; strong</option></datalist></td><td>数量分配：</td>
+</tr>
+<tr><td>assertText</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td>下一个工作</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserEditAction<datalist><option>id=formulaUserPrintAction_formulaUserEditAction</option><option>name=action:formulaUserEditAction</option><option>//input[@id='formulaUserPrintAction_formulaUserEditAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[2]</option><option>//div[2]/input[2]</option><option>css=#formulaUserPrintAction_formulaUserEditAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>编辑配方<datalist><option>编辑配方</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=adjByPct<datalist><option>id=adjByPct</option><option>//button[@id='adjByPct']</option><option>//form[@id='form']/fieldset/div[11]/div[2]/button</option><option>//div[2]/button</option><option>css=#adjByPct</option></datalist></td><td>调整%</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=form_userCancelAction<datalist><option>id=form_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='form_userCancelAction']</option><option>//form[@id='form']/fieldset/div[11]/div[3]/input</option><option>//div[3]/input</option><option>css=#form_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Vinyl Safe Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>6802</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>K33W00253-16</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>乙烯基安全配方？<datalist><option>乙烯基安全配方？</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='GetVinylSafeAction']/fieldset/div[2]/div[2]/div/div[2]/div/label<datalist><option>//form[@id='GetVinylSafeAction']/fieldset/div[2]/div[2]/div/div[2]/div/label</option><option>//label</option><option>css=label</option></datalist></td><td>你想创造一个乙烯基安全配方吗？</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetVinylSafeAction_vsUserNextAction<datalist><option>id=GetVinylSafeAction_vsUserNextAction</option><option>name=action:vsUserNextAction</option><option>//input[@id='GetVinylSafeAction_vsUserNextAction']</option><option>//form[@id='GetVinylSafeAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#GetVinylSafeAction_vsUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>配方<datalist><option>配方</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td>下一个工作</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Prod Family Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>click</td><td>id=selectedCoTypes-1<datalist><option>id=selectedCoTypes-1</option><option>//input[@id='selectedCoTypes-1']</option><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/div/div[2]/input</option><option>//div[2]/input</option><option>css=#selectedCoTypes-1</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=companiesList<datalist><option>id=companiesList</option><option>//select[@id='companiesList']</option><option>//div[@id='colorCompanies']/div[2]/div/div/select</option><option>//div/select</option><option>css=#companiesList</option></datalist></td><td></td>
+</tr>
+<tr><td>select</td><td>id=companiesList<datalist><option>id=companiesList</option><option>//select[@id='companiesList']</option><option>//div[@id='colorCompanies']/div[2]/div/div/select</option><option>//div/select</option><option>css=#companiesList</option></datalist></td><td>label=PPG</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>101-5</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>PPG 101-5</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>A06W00053-16</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择色浆系统<datalist><option>选择色浆系统</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择色浆系统</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>主光源<datalist><option>主光源</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='GetLightSourceAction']/fieldset/div[2]/div[2]/div/strong<datalist><option>//form[@id='GetLightSourceAction']/fieldset/div[2]/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>选择主光源</td>
+</tr>
+<tr><td>click</td><td>id=selectedLightSources-1<datalist><option>id=selectedLightSources-1</option><option>//input[@id='selectedLightSources-1']</option><option>//form[@id='GetLightSourceAction']/fieldset/div[2]/div[2]/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#selectedLightSources-1</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetLightSourceAction_lsUserNextAction<datalist><option>id=GetLightSourceAction_lsUserNextAction</option><option>name=action:lsUserNextAction</option><option>//input[@id='GetLightSourceAction_lsUserNextAction']</option><option>//form[@id='GetLightSourceAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#GetLightSourceAction_lsUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>在不同的基底上有更好的性能<datalist><option>在不同的基底上有更好的性能</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//table[@id='prodFamily_table']/caption<datalist><option>//table[@id='prodFamily_table']/caption</option><option>//caption</option><option>css=caption</option></datalist></td><td>选择产品</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetProdFamily_userCancelAction<datalist><option>id=GetProdFamily_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='GetProdFamily_userCancelAction']</option><option>//form[@id='GetProdFamily']/fieldset/div[5]/div[4]/input</option><option>//div[4]/input</option><option>css=#GetProdFamily_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Perct of Formula Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>6255</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>B71W00111-16</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择色浆系统<datalist><option>选择色浆系统</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择色浆系统</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入配方百分比<datalist><option>输入配方百分比</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='GetPctForm']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='GetPctForm']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>配方百分比</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetPctForm_userCancelAction<datalist><option>id=GetPctForm_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='GetPctForm_userCancelAction']</option><option>//form[@id='GetPctForm']/fieldset/div[2]/div[5]/input</option><option>//div[5]/input</option><option>css=#GetPctForm_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Int/Ext Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>6444</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>100005578</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择色浆系统<datalist><option>选择色浆系统</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择色浆系统</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入内部/外部<datalist><option>输入内部/外部</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='GetPctForm']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='GetPctForm']/fieldset/div/div[2]/div/strong</option><option>//div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>内部/外部</td>
+</tr>
+<tr><td>type</td><td>id=percentOfFormula<datalist><option>id=percentOfFormula</option><option>name=percentOfFormula</option><option>//input[@id='percentOfFormula']</option><option>//form[@id='GetPctForm']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#percentOfFormula</option></datalist></td><td>100</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetPctForm_intExtUserNextAction<datalist><option>id=GetPctForm_intExtUserNextAction</option><option>name=action:intExtUserNextAction</option><option>//input[@id='GetPctForm_intExtUserNextAction']</option><option>//form[@id='GetPctForm']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#GetPctForm_intExtUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>配方<datalist><option>配方</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='formulaUserPrintAsJsonAction']/fieldset/div[3]/div[2]/strong<datalist><option>//form[@id='formulaUserPrintAsJsonAction']/fieldset/div[3]/div[2]/strong</option><option>//fieldset/div[3]/div[2]/strong</option><option>css=div.col-sm-2 &gt; strong</option></datalist></td><td>仍然使用（是/否）？</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAsJsonAction_deltaENoAction<datalist><option>id=formulaUserPrintAsJsonAction_deltaENoAction</option><option>name=action:deltaENoAction</option><option>//input[@id='formulaUserPrintAsJsonAction_deltaENoAction']</option><option>//form[@id='formulaUserPrintAsJsonAction']/fieldset/div[4]/div[2]/input</option><option>//div[4]/div[2]/input</option><option>css=#formulaUserPrintAsJsonAction_deltaENoAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_userCancelAction<datalist><option>id=productUserNextAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='productUserNextAction_userCancelAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[3]/input[2]</option><option>//input[2]</option><option>css=#productUserNextAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Confirm Color and Base Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>确认颜色和基底<datalist><option>确认颜色和基底</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='GetPctForm']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='GetPctForm']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择要使用的配方（确认颜色和基底）</td>
+</tr>
+<tr><td>assertText</td><td>id=GetPctForm_fbBaseUserNextAction<datalist><option>id=GetPctForm_fbBaseUserNextAction</option><option>name=action:fbBaseUserNextAction</option><option>//input[@id='GetPctForm_fbBaseUserNextAction']</option><option>//form[@id='GetPctForm']/fieldset/div[3]/div[2]/input</option><option>//div[2]/input</option><option>css=#GetPctForm_fbBaseUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetPctForm_userCancelAction<datalist><option>id=GetPctForm_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='GetPctForm_userCancelAction']</option><option>//form[@id='GetPctForm']/fieldset/div[3]/div[5]/input</option><option>//div[5]/input</option><option>css=#GetPctForm_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Formula Book Base Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Pct Formula Book Base Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>MWAX01</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择产品<datalist><option>选择产品</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label<datalist><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/label</option><option>//label</option></datalist></td><td>产品</td>
+</tr>
+<tr><td>assertText</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>651061178</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>确认颜色和基底<datalist><option>确认颜色和基底</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='GetPctForm']/fieldset/div/div[2]/div/label<datalist><option>//form[@id='GetPctForm']/fieldset/div/div[2]/div/label</option><option>//label</option></datalist></td><td>选择要使用的配方（确认颜色和基底）</td>
+</tr>
+<tr><td>assertText</td><td>id=GetPctForm_fbBaseUserNextAction<datalist><option>id=GetPctForm_fbBaseUserNextAction</option><option>name=action:fbBaseUserNextAction</option><option>//input[@id='GetPctForm_fbBaseUserNextAction']</option><option>//form[@id='GetPctForm']/fieldset/div[3]/div[2]/input</option><option>//div[2]/input</option><option>css=#GetPctForm_fbBaseUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetPctForm_userCancelAction<datalist><option>id=GetPctForm_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='GetPctForm_userCancelAction']</option><option>//form[@id='GetPctForm']/fieldset/div[3]/div[5]/input</option><option>//div[5]/input</option><option>css=#GetPctForm_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Measure Color Job</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>输入任务信息<datalist><option>输入任务信息</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>选择颜色<datalist><option>选择颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong<datalist><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/strong</option><option>//div[2]/div/strong</option><option>css=div.form-group &gt; strong</option></datalist></td><td>颜色类型：</td>
+</tr>
+<tr><td>assertText</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td>下一步</td>
+</tr>
+<tr><td>click</td><td>id=selectedCoTypes-3<datalist><option>id=selectedCoTypes-3</option><option>//input[@id='selectedCoTypes-3']</option><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/div/div[4]/input</option><option>//div[4]/input</option><option>css=#selectedCoTypes-3</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>measure</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>测量颜色<datalist><option>测量颜色</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=measureColorModal<datalist><option>id=measureColorModal</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='measureColorModal']/div/div/div/h2<datalist><option>//div[@id='measureColorModal']/div/div/div/h2</option><option>//div[2]/div/div/div/h2</option><option>css=h2.modal-title.ml-3</option></datalist></td><td>测量颜色</td>
+</tr>
+<tr><td>assertText</td><td>xpath=(//button[@type='button'])[3]<datalist><option>xpath=(//button[@type='button'])[3]</option><option>//div[@id='measureColorModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=button.btn.btn-secondary</option></datalist></td><td>关闭</td>
+</tr>
+<tr><td>clickAndWait</td><td>xpath=(//button[@type='button'])[3]<datalist><option>xpath=(//button[@type='button'])[3]</option><option>//div[@id='measureColorModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=button.btn.btn-secondary</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=errmsg<datalist><option>id=errmsg</option><option>//h2[@id='errmsg']</option><option>//form[@id='measure-color-form']/fieldset/div/div[4]/div[2]/h2</option><option>//div[4]/div[2]/h2</option><option>css=#errmsg</option></datalist></td><td>颜色测量终止</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=measure-color-form_userCancelAction<datalist><option>id=measure-color-form_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='measure-color-form_userCancelAction']</option><option>//form[@id='measure-color-form']/fieldset/div/div[5]/div[3]/div/input</option><option>//div[3]/div/input</option><option>css=#measure-color-form_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Display Jobs</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>查看现有工作<datalist><option>查看现有工作</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='job_table_wrapper']/div[4]/div/div/table/thead/tr/th[8]<datalist><option>//div[@id='job_table_wrapper']/div[4]/div/div/table/thead/tr/th[8]</option><option>//th[8]</option></datalist></td><td>颜色#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_userCancelAction<datalist><option>id=mainForm_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='mainForm_userCancelAction']</option><option>//form[@id='mainForm']/fieldset/div/div[2]/input</option><option>//div[2]/input</option><option>css=#mainForm_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Logged Out</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Logout<datalist><option>link=Logout</option><option>//a[contains(text(),'Logout')]</option><option>//div[@id='navbarContent']/ul[2]/li[6]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/logoutAction.action?reqGuid=26e89f5147994c749bdc9e321fa4f9cb')]</option><option>//ul[2]/li[6]/a</option><option>css=a.nav-link</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>登出<datalist><option>登出</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//form[@id='loginForm']/fieldset/div/h1<datalist><option>//form[@id='loginForm']/fieldset/div/h1</option><option>//h1</option><option>css=h1.h3.mb-5.mt-5.font-weight-normal</option></datalist></td><td>你已经退出系统。</td>
+</tr>
+<tr><td>assertText</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginAgainAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[2]/input</option><option>//input</option><option>css=#LoginFocus</option></datalist></td><td>再次登录</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginAgainAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[2]/input</option><option>//input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Invalid Login</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>登录<datalist><option>登录</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td>shercolortest</td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Fall2020#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>新任务或现有任务？<datalist><option>新任务或现有任务？</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1500000</td>
+</tr>
+<tr><td>waitForVisible</td><td>id=sessionModal<datalist><option>//div[@id='sessionModal']/div/div/div/h5</option><option>//div[3]/div/div/div/h5</option><option>css=div.modal-dialog.modal-sm &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option><option>id=sessionModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>xpath=(//button[@type='button'])[19]<datalist><option>xpath=(//button[@type='button'])[19]</option><option>//div[@id='sessionModal']/div/div/div[3]/button[2]</option><option>//div[3]/div/div/div[3]/button[2]</option><option>css=div.modal-dialog.modal-sm &gt; div.modal-content &gt; div.modal-footer &gt; button.btn.btn-secondary</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>300000</td>
+</tr>
+<tr><td>waitForVisible</td><td>id=sessionModal<datalist><option>id=sessionModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>xpath=(//button[@type='button'])[19]<datalist><option>xpath=(//button[@type='button'])[19]</option><option>//div[@id='sessionModal']/div/div/div[3]/button[2]</option><option>//div[2]/div/div/div[3]/button[2]</option><option>css=div.modal-dialog.modal-sm &gt; div.modal-content &gt; div.modal-footer &gt; button.btn.btn-secondary</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Logout<datalist><option>link=Logout</option><option>//a[contains(text(),'Logout')]</option><option>//div[@id='navbarContent']/ul[2]/li[6]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/logoutAction.action?reqGuid=ff3ba61ec3794e47b5811950a5d4f074')]</option><option>//ul[2]/li[6]/a</option><option>css=a.nav-link</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>登出<datalist><option>登出</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//h2<datalist><option>//h2</option><option>css=h2</option></datalist></td><td>你已经退出系统。</td>
+</tr>
+</tbody></table>
+</body>
+</html>
