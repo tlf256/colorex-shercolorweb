@@ -545,10 +545,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			//------------------------------djm-------------------------
 			//KXK PSCWEB-703
+			errorLocation = "Job Field List";
 			List<JobField> listJobField = new ArrayList<JobField>(reqObj.getJobFieldList());
 			JobField roomByRoom = new JobField();
 			roomByRoom.setScreenLabel("Room/Use");
 			roomByRoom.setEnteredValue(reqObj.getRoomByRoom());
+
 			//add roomByRoom beneath Schedule (2nd to last) if possible
 			if(listJobField.size() > 0) {
 				listJobField.add(listJobField.size()-1, roomByRoom); 
@@ -916,19 +918,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	}
 	
 	public void setJobFieldRows(BaseTable table, List<JobField> listJobField) {
-		//Modify input values, replace / and " with -
-		if(!listJobField.isEmpty()){
-			for (JobField jobField : listJobField) {
-				jobField.setEnteredValue(StringEscapeUtils.unescapeHtml(jobField.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
-			}
-		}
-
+		//Only process non-null jobs
 		if(listJobField != null && listJobField.size() > 0){
 			// Process each instance of the listJobField objects.
-			//TODO - Will these always be in order?  Will there always be 4?
 			for(JobField job : listJobField){
 				// Only process defined job data.	
-				if (job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ){
+				if (job.getScreenLabel() != null && job.getScreenLabel().length() > 0 && 
+						job.getEnteredValue() != null && job.getEnteredValue().length() > 0 ){
+					//Modify input values, replace / and " with -
+					job.setEnteredValue(StringEscapeUtils.unescapeHtml(job.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
 					// 01/20/2017 - Begin Job
 					// Truncate Screen Label to fit the line space.
 					if (job.getScreenLabel().length() > 13){
