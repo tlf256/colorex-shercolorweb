@@ -70,6 +70,8 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 		String retVal = null;
 		
 		try {
+			// wait a half second in case user is saving rooms field
+			Thread.sleep(500);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			setDisplayFormula(reqObj.getDisplayFormula());
 			setQtyDispensed(reqObj.getQuantityDispensed());

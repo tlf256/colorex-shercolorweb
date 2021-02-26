@@ -57,6 +57,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		CustWebTran custWebTran = new CustWebTran();
 		
 		try {
+			// wait a second in case user is saving rooms field
+			Thread.sleep(1000);
 			//logger.info("About to get object from map");
 			//logger.info("reqGuid is " + reqGuid);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);

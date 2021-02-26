@@ -118,21 +118,27 @@ function printStoreLabel() {
 	myPrintLabelType = "storeLabel";
 	myPrintOrientation = "PORTRAIT";
 	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
 }
 
 function printDrawdownStoreLabel() {
 	myPrintLabelType = "drawdownStoreLabel";
 	myPrintOrientation = "PORTRAIT";
 	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
 }
 
 function printDrawdownLabel() {
 	myPrintLabelType = "drawdownLabel";
 	myPrintOrientation = "LANDSCAPE";
 	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
 }
 
 function prePrintSave(labelType, orientation) {
@@ -629,23 +635,31 @@ function ParsePrintMessage() {
 			waitForShowAndHide("#tinterInProgressModal");
 		}
 	}
+	
+	
 	function validateRoomChoice(){
+		// clear out old error messages
 		$("#roomsDropdownErrorText").addClass("d-none");
+		$("#otherRoomErrorText").addClass("d-none");
+		
 		// if user chose Other in room list, show textfield to enter custom name
 		var selectedRoom = $("select[id='roomsList'] option:selected").text();
 		if (selectedRoom == "Other"){
 			$("#otherRoom").removeClass('d-none');
 			$("#otherRoom").focus();
-		// otherwise save the room choice unless it is the default blank option
-		} else if (selectedRoom != ""){
+		// otherwise hide custom room textbox
+		} else {
 			$("#otherRoom").addClass('d-none');
-			// call ajax method to save room choice to session
-			saveRoomSelection(selectedRoom);
+			//  save the room choice if it's not the default blank option
+			if (selectedRoom != ""){
+				// call ajax method to save room choice to session
+				saveRoomSelection(selectedRoom);
+			}
 		}
 	}
 	
 	
-	function validateOtherRoomBlur(){
+	function validateCustomRoom(){
 		var clickedElement;
 		$("#otherRoomErrorText").addClass("d-none");
 		// need the timeout for the event processing so we can grab the element that was clicked on
@@ -672,12 +686,22 @@ function ParsePrintMessage() {
 	
 	function verifyRoomSelected(){
 		if ("${accountUsesRoomByRoom}" == "true"){
-			// require room choice if user hasn't already 
+			// main room by room selection dropdown
 			var roomText = $("select[id='roomsList'] option:selected").text();
+			// custom text if they chose Other
+			var enteredText = $("#otherRoom").val();
+			
+			// they left the room dropdown blank
 			if (roomText == null || roomText == ""){
 				$("#roomsList").focus();
 				$("#roomsDropdownErrorText").removeClass("d-none");
 				return false;
+			// they picked Other but didn't enter text
+			} else if (roomText == "Other" && (enteredText == null || enteredText.trim() == "")){
+				$("#otherRoomErrorText").removeClass("d-none");
+				$("#otherRoom").focus();
+				return false;
+			// input is validated
 			} else {
 				return true;
 			}
@@ -738,13 +762,16 @@ function ParsePrintMessage() {
 	function validationWithoutModal(){
 		// check if rooms dropdown is set first, if applicable
 		var retVal = verifyRoomSelected();
+		//console.log("verifyRoomSelected: " + retVal);
+		
 		// set the flag which lets user navigate away from 
 		// the page without being prompted to save changes
 		if (retVal == true){
 			setFormSubmitting();
 		}
-		return retVal;
+		return retVal;			
 	}
+	
 	
 	function setFormSubmitting() { formSubmitting = true; };
     
@@ -896,7 +923,7 @@ function ParsePrintMessage() {
 					<div id="roomsDropdownErrorText" style="color:red" class="d-none">
 						<s:text name="displayFormula.pleaseSelectARoom"/>
 					</div>
-					<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateOtherRoomBlur()"/>
+					<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateCustomRoom()"/>
 					<s:hidden name="roomChoice" value="" />
 					<div id="otherRoomErrorText" style="color:red" class="d-none">
 						<s:text name="displayFormula.thisFieldCannotBeBlank"/>
