@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>SherColorWeb Test Prep</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Login to dev-shercolor.sherwin.com</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>https://dev-shercolor.sherwin.com/CustomerSherColorWeb/<datalist><option>https://dev-shercolor.sherwin.com/CustomerSherColorWeb/</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Password'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='User ID'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='sherlink@sherwin.com'])[1]/preceding::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[3]</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Winter2021#</td>
+</tr>
+<tr><td>click</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Password'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='User ID'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='sherlink@sherwin.com'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[2]</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Tinter Purge</td></tr>
+</thead>
+<tbody>
+<tr><td>clickAndWait</td><td>//button[@type='button']<datalist><option>//button[@type='button']</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=tinterNotify<datalist><option>id=tinterNotify</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Purge<datalist><option>link=Purge</option><option>//a[contains(text(),'Purge')]</option><option>//li[@id='tinterPurge']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterPurgeAction.action?reqGuid=f64d275ab0844dda94c6b99593663cfa')]</option><option>//li[3]/ul/li/a</option><option>css=#tinterPurge &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Purge<datalist><option>Tinter Purge</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurge<datalist><option>id=tinterPurge</option><option>//button[@id='tinterPurge']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[3]/button</option><option>//div[3]/button</option><option>css=#tinterPurge</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Purge Successful</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurgeAction_userCancelAction<datalist><option>id=tinterPurgeAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='tinterPurgeAction_userCancelAction']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[4]/input</option><option>//div[4]/input</option><option>css=#tinterPurgeAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Set All Colorants Full</td></tr>
+</thead>
+<tbody>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Colorant Levels<datalist><option>link=Colorant Levels</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Colorant Levels<datalist><option>Colorant Levels</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=setallfull<datalist><option>id=setallfull</option><option>link=Set All Full</option><option>//a[contains(text(),'Set All Full')]</option><option>//a[@id='setallfull']</option><option>//a[contains(@href, '/CustomerSherColorWeb/clrntLevelsUpdateAction.action?reqGuid=c92bc8ce963848d797042f8fcecb9634&amp;updateType=setAllFull')]</option><option>//div[3]/a</option><option>css=#setallfull</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=cancel<datalist><option>id=cancel</option><option>link=Done</option><option>//a[contains(text(),'Done')]</option><option>//a[@id='cancel']</option><option>//a[contains(@href, '/CustomerSherColorWeb/userCancelAction.action?reqGuid=c92bc8ce963848d797042f8fcecb9634')]</option><option>//a[2]</option><option>css=#cancel</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Ci52 Calibration</td></tr>
+</thead>
+<tbody>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=Calibrate<datalist><option>link=Calibrate</option><option>//a[contains(text(),'Calibrate')]</option><option>//li[@id='spectroCalibrate']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroCalibrateAction.action?reqGuid=5f833c135b3840e69bac0d1f591d4dfa')]</option><option>//li[2]/ul/li/a</option><option>css=#spectroCalibrate &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Calibrate Color Eye<datalist><option>Calibrate Color Eye</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>class=whitecal<datalist><option>#colorUserNextAction &gt; fieldset &gt; div:nth-child(1) &gt; div.col-sm-8 &gt; h2.blackcal</option><option>id=colorUserNextAction</option><option>class=blackcal</option><option>class=whitecal</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>class=blackcal<datalist><option>#colorUserNextAction &gt; fieldset &gt; div:nth-child(1) &gt; div.col-sm-8 &gt; h2.greenmeas</option><option>class=greenmeas</option><option>class=blackcal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>10000</td>
+</tr>
+<tr><td>waitForText</td><td>class=calsuccess<datalist><option>#colorUserNextAction &gt; fieldset &gt; div:nth-child(1) &gt; div.col-sm-8 &gt; h2.calsuccess</option><option>class=</option><option>class=calsuccess</option></datalist></td><td>Calibration Successful</td>
+</tr>
+<tr><td>click</td><td>id=colorUserNextAction_goodCalibrateAction<datalist><option>id=colorUserNextAction_goodCalibrateAction</option><option>name=action:goodCalibrateAction</option><option>//input[@id='colorUserNextAction_goodCalibrateAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[10]/div[2]/div/input</option><option>//div[10]/div[2]/div/input</option><option>css=#colorUserNextAction_goodCalibrateAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=coloreyeNotify<datalist><option>id=coloreyeNotify</option><option>link=Color-Eye Status</option><option>//a[contains(text(),'Color-Eye Status')]</option><option>//a[@id='coloreyeNotify']</option><option>//ul[@id='menuPanelL']/li[5]/a</option><option>xpath=(//a[contains(@href, 'javascript:void(0)')])[2]</option><option>//li[5]/a</option><option>css=#coloreyeNotify</option></datalist></td><td>Color-Eye Status</td>
+</tr>
+</tbody></table>
+</body>
+</html>
