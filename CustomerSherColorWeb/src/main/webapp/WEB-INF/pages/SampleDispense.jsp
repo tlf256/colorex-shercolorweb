@@ -703,7 +703,7 @@ badge {
 			<strong><s:text name="sampleDispense.factoryFillColon"/></strong>
 		</div>
 		<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-			<s:text name="%{factoryFill}"/>
+			<s:property value="%{factoryFill}"/>
 		</div>
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
