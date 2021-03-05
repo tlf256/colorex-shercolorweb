@@ -1,0 +1,1226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Application Test A Scan</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Set All Colorants Full</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=Colorant Levels<datalist><option>link=Colorant Levels</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Purge'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Configure'])[1]/following::a[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Colorants'])[1]/preceding::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Calibration Manager'])[1]/preceding::a[3]</option><option>xpath=//*/text()[normalize-space(.)='Colorant Levels']/parent::*</option><option>//a[contains(text(),'Colorant Levels')]</option><option>//li[@id='colorantLevels']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/processColorantLevelsAction.action?reqGuid=8cced5cdb4534b439f9936fec7f4c4a7')]</option><option>//li[3]/ul/li[2]/a</option><option>css=#colorantLevels &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setallfull<datalist><option>id=setallfull</option><option>link=Set All Full</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Note:'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='COROB D600'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Done'])[1]/preceding::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Low Colorant Warnings'])[1]/preceding::a[2]</option><option>xpath=//*/text()[normalize-space(.)='Set All Full']/parent::*</option><option>//a[contains(text(),'Set All Full')]</option><option>//a[@id='setallfull']</option><option>//a[contains(@href, '/CustomerSherColorWeb/clrntLevelsUpdateAction.action?reqGuid=8cced5cdb4534b439f9936fec7f4c4a7&amp;updateType=setAllFull')]</option><option>//div[3]/a</option><option>css=#setallfull</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=cancel<datalist><option>id=cancel</option><option>link=Done</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Set All Full'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Note:'])[1]/following::a[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Low Colorant Warnings'])[1]/preceding::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Position'])[1]/preceding::a[1]</option><option>xpath=//*/text()[normalize-space(.)='Done']/parent::*</option><option>//a[contains(text(),'Done')]</option><option>//a[@id='cancel']</option><option>//a[contains(@href, '/CustomerSherColorWeb/userCancelAction.action?reqGuid=8cced5cdb4534b439f9936fec7f4c4a7')]</option><option>//a[2]</option><option>css=#cancel</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Scan 253 Step 95</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>Step_095</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0001</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Product'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DEEP,DB MIDTONE'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[5]</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>035777728581</td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option><option>id=sessionModal</option><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=dispenseQuantityInput<datalist><option>id=dispenseQuantityInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[1]</option><option>//input[@id='dispenseQuantityInput']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#dispenseQuantityInput</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::button[2]</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[1]</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>035777728581</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[7]/div/div/div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>55</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R4-New Red</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>16</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>Y1-Yellow</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>3</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Step 96</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Logout'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='QA Team'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Checking Tinter Status'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Detection and Initialization'])[1]/preceding::input[1]</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>typeAndWait</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>Step_095</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>55</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R4-New Red</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>16</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>Y1-Yellow</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>3</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserCorrectAction<datalist><option>id=formulaUserPrintAction_formulaUserCorrectAction</option><option>name=action:formulaUserCorrectAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[4]</option><option>//input[@id='formulaUserPrintAction_formulaUserCorrectAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[3]</option><option>//div[2]/input[3]</option><option>css=#formulaUserPrintAction_formulaUserCorrectAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula Correction<datalist><option>Formula Correction</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=addStep<datalist><option>id=addStep</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Correcting Container 1 of 1'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Accept Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[2]</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td>test</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=manualAdd<datalist><option>id=manualAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::button[2]</option><option>//button[@id='manualAdd']</option><option>//table[@id='addColorantActions']/tbody/tr/td/button</option><option>//td/button</option><option>css=#manualAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=B1-Black<datalist><option>link=B1-Black</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::a[10]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::a[10]</option><option>//a[contains(text(),'B1-Black')]</option><option>//a[@onclick="addManClrnt('B1-Black')"]</option><option>//ul[@id='clrntList']/li/a</option><option>//a[contains(@href, '#')]</option><option>//td/ul/li/a</option><option>css=a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>doubleClick</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='B1-Black'])[2]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='B1-Black'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='B1-Black'])[2]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='B1-Black'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td>18</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseAdd<datalist><option>id=dispenseAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CCE*COLORANT'])[2]/preceding::button[4]</option><option>//button[@id='dispenseAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[3]/td/button</option><option>//tr[3]/td/button</option><option>css=#dispenseAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=fillWarningListOK<datalist><option>id=fillWarningListOK</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='The colorant addition for this dispense (0.5625oz) would exceed the maximum limit.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Current colorant load for this product is 2.4921875oz.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Error'])[2]/preceding::button[2]</option><option>//button[@id='fillWarningListOK']</option><option>//div[@id='fillWarningListModal']/div/div/div[3]/button</option><option>//div[9]/div/div/div[3]/button</option><option>css=#fillWarningListOK</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='B1-Black'])[2]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Colorant Level Check In Progress'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Error'])[1]/preceding::button[2]</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=currentPrompt<datalist><option>id=currentPrompt</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OPEN'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Wed Jun 12 2019 10:14:18 GMT-0400 (EDT)'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/preceding::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/preceding::h5[1]</option><option>//h5[@id='currentPrompt']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/h5</option><option>//div[3]/div[2]/div/h5</option><option>css=#currentPrompt</option></datalist></td><td>Currently Correcting Container 1 of 1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=acceptContainer<datalist><option>id=acceptContainer</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/preceding::button[2]</option><option>//button[@id='acceptContainer']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[2]/button</option><option>//div[2]/button</option><option>css=#acceptContainer</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_displayFormulaAction<datalist><option>id=mainForm_displayFormulaAction</option><option>name=action:displayFormulaAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Skip Container'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/preceding::input[1]</option><option>//input[@id='mainForm_displayFormulaAction']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[3]/input</option><option>//div[3]/input</option><option>css=#mainForm_displayFormulaAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>55</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R4-New Red</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>16</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>Y1-Yellow</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>3</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row4<datalist><option>id=col1row4</option><option>//td[@id='col1row4']</option><option>//tr[@id='4']/td</option><option>//tr[5]/td</option><option>css=#col1row4</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[2]<datalist><option>//tr[@id='4']/td[2]</option><option>//tr[5]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[3]<datalist><option>//tr[@id='4']/td[3]</option><option>//tr[5]/td[3]</option></datalist></td><td>18</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[4]<datalist><option>//tr[@id='4']/td[4]</option><option>//tr[5]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[5]<datalist><option>//tr[@id='4']/td[5]</option><option>//tr[5]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaPrint<datalist><option>id=formulaPrint</option><option>//button[@id='formulaPrint']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button[2]</option><option>//button[2]</option><option>css=#formulaPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=printLabelPrint<datalist><option>id=printLabelPrint</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print Label'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Close'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::button[2]</option><option>//button[@id='printLabelPrint']</option><option>//div[@id='printLabelModal']/div/div/div[3]/div/button</option><option>//div[3]/div/button</option><option>css=#printLabelPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Scan 251 Step 97</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>Step_097</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0002</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Product'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DEEP,DB MIDTONE'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[5]</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>035777728598</td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option><option>id=sessionModal</option><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=dispenseQuantityInput<datalist><option>id=dispenseQuantityInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[1]</option><option>//input[@id='dispenseQuantityInput']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#dispenseQuantityInput</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::button[2]</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[1]</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>035777728598</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[7]/div/div/div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>34</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>R4-New Red</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>3</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>Y1-Yellow</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Step 98</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Logout'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='QA Team'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Checking Tinter Status'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Detection and Initialization'])[1]/preceding::input[1]</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>typeAndWait</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>Step_097</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>34</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>R4-New Red</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>3</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>Y1-Yellow</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserCorrectAction<datalist><option>id=formulaUserPrintAction_formulaUserCorrectAction</option><option>name=action:formulaUserCorrectAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[4]</option><option>//input[@id='formulaUserPrintAction_formulaUserCorrectAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[3]</option><option>//div[2]/input[3]</option><option>css=#formulaUserPrintAction_formulaUserCorrectAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula Correction<datalist><option>Formula Correction</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=addStep<datalist><option>id=addStep</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Correcting Container 1 of 1'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Accept Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[2]</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td>test</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=manualAdd<datalist><option>id=manualAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::button[2]</option><option>//button[@id='manualAdd']</option><option>//table[@id='addColorantActions']/tbody/tr/td/button</option><option>//td/button</option><option>css=#manualAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=L1-Blue<datalist><option>link=L1-Blue</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::a[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::a[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::a[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::a[9]</option><option>//a[contains(text(),'L1-Blue')]</option><option>//a[@onclick="addManClrnt('L1-Blue')"]</option><option>//ul[@id='clrntList']/li[2]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li[2]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>doubleClick</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='L1-Blue'])[2]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='L1-Blue'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='L1-Blue'])[2]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='L1-Blue'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td>9</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseAdd<datalist><option>id=dispenseAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CCE*COLORANT'])[2]/preceding::button[4]</option><option>//button[@id='dispenseAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[3]/td/button</option><option>//tr[3]/td/button</option><option>css=#dispenseAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=fillWarningListOK<datalist><option>id=fillWarningListOK</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='The colorant addition for this dispense (0.28125oz) would exceed the maximum limit.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Current colorant load for this product is 1.234375oz.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Error'])[2]/preceding::button[2]</option><option>//button[@id='fillWarningListOK']</option><option>//div[@id='fillWarningListModal']/div/div/div[3]/button</option><option>//div[9]/div/div/div[3]/button</option><option>css=#fillWarningListOK</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='L1-Blue'])[2]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Colorant Level Check In Progress'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Error'])[1]/preceding::button[2]</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=currentPrompt<datalist><option>id=currentPrompt</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OPEN'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Wed Jun 12 2019 14:4:8 GMT-0400 (EDT)'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/preceding::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/preceding::h5[1]</option><option>//h5[@id='currentPrompt']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/h5</option><option>//div[3]/div[2]/div/h5</option><option>css=#currentPrompt</option></datalist></td><td>Currently Correcting Container 1 of 1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=acceptContainer<datalist><option>id=acceptContainer</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/preceding::button[2]</option><option>//button[@id='acceptContainer']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[2]/button</option><option>//div[2]/button</option><option>css=#acceptContainer</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_displayFormulaAction<datalist><option>id=mainForm_displayFormulaAction</option><option>name=action:displayFormulaAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Skip Container'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/preceding::input[1]</option><option>//input[@id='mainForm_displayFormulaAction']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[3]/input</option><option>//div[3]/input</option><option>css=#mainForm_displayFormulaAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>34</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>R4-New Red</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>3</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>Y1-Yellow</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>L1-Blue</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>9</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaPrint<datalist><option>id=formulaPrint</option><option>//button[@id='formulaPrint']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button[2]</option><option>//button[2]</option><option>css=#formulaPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=printLabelPrint<datalist><option>id=printLabelPrint</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print Label'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Close'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::button[2]</option><option>//button[@id='printLabelPrint']</option><option>//div[@id='printLabelModal']/div/div/div[3]/div/button</option><option>//div[3]/div/button</option><option>css=#printLabelPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Scan 251 Step 99</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>Step_099</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0003</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Product'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DEEP,DB MIDTONE'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[5]</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>035777728598</td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option><option>id=sessionModal</option><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=dispenseQuantityInput<datalist><option>id=dispenseQuantityInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[1]</option><option>//input[@id='dispenseQuantityInput']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#dispenseQuantityInput</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::button[2]</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[1]</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>035777728598</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[7]/div/div/div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>18</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>Y3-Deep Gold</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Step 100</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Logout'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='QA Team'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Checking Tinter Status'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Detection and Initialization'])[1]/preceding::input[1]</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>typeAndWait</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>Step_099</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>18</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>Y3-Deep Gold</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserCorrectAction<datalist><option>id=formulaUserPrintAction_formulaUserCorrectAction</option><option>name=action:formulaUserCorrectAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[4]</option><option>//input[@id='formulaUserPrintAction_formulaUserCorrectAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[3]</option><option>//div[2]/input[3]</option><option>css=#formulaUserPrintAction_formulaUserCorrectAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula Correction<datalist><option>Edit Formula</option><option>Formula Correction</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=addStep<datalist><option>id=addStep</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Correcting Container 1 of 1'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Accept Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[2]</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td>test</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=manualAdd<datalist><option>id=manualAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::button[2]</option><option>//button[@id='manualAdd']</option><option>//table[@id='addColorantActions']/tbody/tr/td/button</option><option>//td/button</option><option>css=#manualAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=N1-Raw Umber<datalist><option>link=N1-Raw Umber</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::a[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::a[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::a[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::a[3]</option><option>//a[contains(text(),'N1-Raw Umber')]</option><option>//a[@onclick="addManClrnt('N1-Raw Umber')"]</option><option>//ul[@id='clrntList']/li[8]/a</option><option>xpath=(//a[contains(@href, '#')])[8]</option><option>//li[8]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>doubleClick</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td>19</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseAdd<datalist><option>id=dispenseAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CCE*COLORANT'])[2]/preceding::button[4]</option><option>//button[@id='dispenseAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[3]/td/button</option><option>//tr[3]/td/button</option><option>css=#dispenseAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=fillWarningListOK<datalist><option>id=fillWarningListOK</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='The colorant addition for this dispense (0.59375oz) would exceed the maximum limit.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Current colorant load for this product is 0.921875oz.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Error'])[2]/preceding::button[2]</option><option>//button[@id='fillWarningListOK']</option><option>//div[@id='fillWarningListModal']/div/div/div[3]/button</option><option>//div[9]/div/div/div[3]/button</option><option>css=#fillWarningListOK</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Colorant Level Check In Progress'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Error'])[1]/preceding::button[2]</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=currentPrompt<datalist><option>id=currentPrompt</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OPEN'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Wed Jun 12 2019 9:50:31 GMT-0400 (EDT)'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/preceding::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/preceding::h5[1]</option><option>//h5[@id='currentPrompt']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/h5</option><option>//div[3]/div[2]/div/h5</option><option>css=#currentPrompt</option></datalist></td><td>Currently Correcting Container 1 of 1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=acceptContainer<datalist><option>id=acceptContainer</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/preceding::button[2]</option><option>//button[@id='acceptContainer']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[2]/button</option><option>//div[2]/button</option><option>css=#acceptContainer</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_displayFormulaAction<datalist><option>id=mainForm_displayFormulaAction</option><option>name=action:displayFormulaAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Skip Container'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/preceding::input[1]</option><option>//input[@id='mainForm_displayFormulaAction']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[3]/input</option><option>//div[3]/input</option><option>css=#mainForm_displayFormulaAction</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>37</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>Y3-Deep Gold</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>5</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaPrint<datalist><option>id=formulaPrint</option><option>//button[@id='formulaPrint']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button[2]</option><option>//button[2]</option><option>css=#formulaPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=printLabelPrint<datalist><option>id=printLabelPrint</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print Label'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Close'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::button[2]</option><option>//button[@id='printLabelPrint']</option><option>//div[@id='printLabelModal']/div/div/div[3]/div/button</option><option>//div[3]/div/button</option><option>css=#printLabelPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Scan 253 Step 101</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>Step_101</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0004</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Product'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DEEP,DB MIDTONE'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[5]</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>035777728581</td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option><option>id=sessionModal</option><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=dispenseQuantityInput<datalist><option>id=dispenseQuantityInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[1]</option><option>//input[@id='dispenseQuantityInput']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#dispenseQuantityInput</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::button[2]</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[1]</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>035777728581</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[7]/div/div/div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>6</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>6</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>11</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>R3-Magenta</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>7</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Step 102</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Logout'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='QA Team'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Checking Tinter Status'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Detection and Initialization'])[1]/preceding::input[1]</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>typeAndWait</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>Step_101</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>6</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>6</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>11</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>R3-Magenta</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>7</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserCorrectAction<datalist><option>id=formulaUserPrintAction_formulaUserCorrectAction</option><option>name=action:formulaUserCorrectAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[4]</option><option>//input[@id='formulaUserPrintAction_formulaUserCorrectAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[3]</option><option>//div[2]/input[3]</option><option>css=#formulaUserPrintAction_formulaUserCorrectAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula Correction<datalist><option>Formula Correction</option><option>Edit Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=addStep<datalist><option>id=addStep</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Correcting Container 1 of 1'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Accept Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[2]</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td>test</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=manualAdd<datalist><option>id=manualAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::button[2]</option><option>//button[@id='manualAdd']</option><option>//table[@id='addColorantActions']/tbody/tr/td/button</option><option>//td/button</option><option>css=#manualAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=N1-Raw Umber<datalist><option>link=N1-Raw Umber</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::a[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::a[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::a[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::a[3]</option><option>//a[contains(text(),'N1-Raw Umber')]</option><option>//a[@onclick="addManClrnt('N1-Raw Umber')"]</option><option>//ul[@id='clrntList']/li[8]/a</option><option>xpath=(//a[contains(@href, '#')])[8]</option><option>//li[8]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>doubleClick</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[2]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[2]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td>65</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseAdd<datalist><option>id=dispenseAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CCE*COLORANT'])[2]/preceding::button[4]</option><option>//button[@id='dispenseAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[3]/td/button</option><option>//tr[3]/td/button</option><option>css=#dispenseAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=fillWarningListOK<datalist><option>id=fillWarningListOK</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='The colorant addition for this dispense (0.59375oz) would exceed the maximum limit.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Current colorant load for this product is 0.921875oz.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Error'])[2]/preceding::button[2]</option><option>//button[@id='fillWarningListOK']</option><option>//div[@id='fillWarningListModal']/div/div/div[3]/button</option><option>//div[9]/div/div/div[3]/button</option><option>css=#fillWarningListOK</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Colorant Level Check In Progress'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Error'])[1]/preceding::button[2]</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=currentPrompt<datalist><option>id=currentPrompt</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OPEN'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Wed Jun 12 2019 9:50:31 GMT-0400 (EDT)'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/preceding::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/preceding::h5[1]</option><option>//h5[@id='currentPrompt']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/h5</option><option>//div[3]/div[2]/div/h5</option><option>css=#currentPrompt</option></datalist></td><td>Currently Correcting Container 1 of 1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=acceptContainer<datalist><option>id=acceptContainer</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/preceding::button[2]</option><option>//button[@id='acceptContainer']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[2]/button</option><option>//div[2]/button</option><option>css=#acceptContainer</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_displayFormulaAction<datalist><option>id=mainForm_displayFormulaAction</option><option>name=action:displayFormulaAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Skip Container'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/preceding::input[1]</option><option>//input[@id='mainForm_displayFormulaAction']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[3]/input</option><option>//div[3]/input</option><option>css=#mainForm_displayFormulaAction</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>6</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>6</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>11</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row3<datalist><option>id=col1row3</option><option>//td[@id='col1row3']</option><option>//tr[@id='3']/td</option><option>//tr[4]/td</option><option>css=#col1row3</option></datalist></td><td>R3-Magenta</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[2]<datalist><option>//tr[@id='3']/td[2]</option><option>//tr[4]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[3]<datalist><option>//tr[@id='3']/td[3]</option><option>//tr[4]/td[3]</option></datalist></td><td>7</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[4]<datalist><option>//tr[@id='3']/td[4]</option><option>//tr[4]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='3']/td[5]<datalist><option>//tr[@id='3']/td[5]</option><option>//tr[4]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row4<datalist><option>id=col1row4</option><option>//td[@id='col1row4']</option><option>//tr[@id='4']/td</option><option>//tr[5]/td</option><option>css=#col1row4</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[2]<datalist><option>//tr[@id='4']/td[2]</option><option>//tr[5]/td[2]</option></datalist></td><td>2</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[3]<datalist><option>//tr[@id='4']/td[3]</option><option>//tr[5]/td[3]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[4]<datalist><option>//tr[@id='4']/td[4]</option><option>//tr[5]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='4']/td[5]<datalist><option>//tr[@id='4']/td[5]</option><option>//tr[5]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaPrint<datalist><option>id=formulaPrint</option><option>//button[@id='formulaPrint']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button[2]</option><option>//button[2]</option><option>css=#formulaPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=printLabelPrint<datalist><option>id=printLabelPrint</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print Label'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Close'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::button[2]</option><option>//button[@id='printLabelPrint']</option><option>//div[@id='printLabelModal']/div/div/div[3]/div/button</option><option>//div[3]/div/button</option><option>css=#printLabelPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Scan 253 Step 103</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>Step_103</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0005</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Product'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DEEP,DB MIDTONE'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[5]</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>035777728581</td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option><option>id=sessionModal</option><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=dispenseQuantityInput<datalist><option>id=dispenseQuantityInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::input[1]</option><option>//input[@id='dispenseQuantityInput']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#dispenseQuantityInput</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::button[2]</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForValue</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[5]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Verify'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[1]</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>035777728581</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::button[2]</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[7]/div/div/div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>34</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>13</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>16</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Step 104</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Logout'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='QA Team'])[1]/following::input[9]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Checking Tinter Status'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Detection and Initialization'])[1]/preceding::input[1]</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>120000<datalist><option>120000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>typeAndWait</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>Step_103</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>34</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>13</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>16</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserCorrectAction<datalist><option>id=formulaUserPrintAction_formulaUserCorrectAction</option><option>name=action:formulaUserCorrectAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Next'])[1]/preceding::input[4]</option><option>//input[@id='formulaUserPrintAction_formulaUserCorrectAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[3]</option><option>//div[2]/input[3]</option><option>css=#formulaUserPrintAction_formulaUserCorrectAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula Correction<datalist><option>Formula Correction</option><option>Edit Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=addStep<datalist><option>id=addStep</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Correcting Container 1 of 1'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Accept Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[2]</option><option>//button[@id='addStep']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div/button[2]</option><option>//button[2]</option><option>css=#addStep</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=reason<datalist><option>id=reason</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::input[1]</option><option>//input[@id='reason']</option><option>//div[@id='addIngredients']/div[2]/div/p/input</option><option>//p/input</option><option>css=#reason</option></datalist></td><td>test</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=manualAdd<datalist><option>id=manualAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::button[2]</option><option>//button[@id='manualAdd']</option><option>//table[@id='addColorantActions']/tbody/tr/td/button</option><option>//td/button</option><option>css=#manualAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>link=N1-Raw Umber<datalist><option>link=N1-Raw Umber</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::a[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/following::a[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/preceding::a[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Addition'])[1]/preceding::a[3]</option><option>//a[contains(text(),'N1-Raw Umber')]</option><option>//a[@onclick="addManClrnt('N1-Raw Umber')"]</option><option>//ul[@id='clrntList']/li[8]/a</option><option>xpath=(//a[contains(@href, '#')])[8]</option><option>//li[8]/a</option></datalist></td><td></td>
+</tr>
+<tr><td>doubleClick</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OZ'])[2]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start Dispense'])[1]/preceding::input[3]</option><option>xpath=(//input[@value='0'])[4]</option><option>//table[@id='formulaAdditions']/tbody/tr/td[3]/input</option><option>//td[3]/table/tbody/tr/td[3]/input</option></datalist></td><td>33</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseAdd<datalist><option>id=dispenseAdd</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Percent Addition'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Manual Addition'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel Addition'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CCE*COLORANT'])[2]/preceding::button[4]</option><option>//button[@id='dispenseAdd']</option><option>//table[@id='addColorantActions']/tbody/tr[3]/td/button</option><option>//tr[3]/td/button</option><option>css=#dispenseAdd</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=fillWarningListOK<datalist><option>id=fillWarningListOK</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='The colorant addition for this dispense (0.59375oz) would exceed the maximum limit.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Current colorant load for this product is 0.921875oz.'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancel'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Error'])[2]/preceding::button[2]</option><option>//button[@id='fillWarningListOK']</option><option>//div[@id='fillWarningListModal']/div/div/div[3]/button</option><option>//div[9]/div/div/div[3]/button</option><option>css=#fillWarningListOK</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[3]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Colorant Level Check In Progress'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Error'])[1]/preceding::button[2]</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=currentPrompt<datalist><option>id=currentPrompt</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='OPEN'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Wed Jun 12 2019 9:50:31 GMT-0400 (EDT)'])[1]/following::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/preceding::h5[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/preceding::h5[1]</option><option>//h5[@id='currentPrompt']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/h5</option><option>//div[3]/div[2]/div/h5</option><option>css=#currentPrompt</option></datalist></td><td>Currently Correcting Container 1 of 1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=acceptContainer<datalist><option>id=acceptContainer</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Add Colorant'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Start New Cycle'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mistint Container'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/preceding::button[2]</option><option>//button[@id='acceptContainer']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[2]/button</option><option>//div[2]/button</option><option>css=#acceptContainer</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=mainForm_displayFormulaAction<datalist><option>id=mainForm_displayFormulaAction</option><option>name=action:displayFormulaAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Skip Container'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense Accepted'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Reason:'])[1]/preceding::input[1]</option><option>//input[@id='mainForm_displayFormulaAction']</option><option>//form[@id='mainForm']/fieldset/div[3]/div[2]/div/div/div[3]/input</option><option>//div[3]/input</option><option>css=#mainForm_displayFormulaAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>34</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>N1-Raw Umber</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>46</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>16</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaPrint<datalist><option>id=formulaPrint</option><option>//button[@id='formulaPrint']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button[2]</option><option>//button[2]</option><option>css=#formulaPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=printLabelPrint<datalist><option>id=printLabelPrint</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print Label'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Close'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::button[2]</option><option>//button[@id='printLabelPrint']</option><option>//div[@id='printLabelModal']/div/div/div[3]/div/button</option><option>//div[3]/div/button</option><option>css=#printLabelPrint</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=printLabelModal<datalist><option>id=printLabelModal</option><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
