@@ -112,5 +112,127 @@
 <tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
 </tr>
 </tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-687</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Change Password<datalist><option>link=Change Password</option><option>//a[contains(text(),'Change Password')]</option><option>//li[@id='changePwd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/passwordResetAction2.action?guid1=8cf64875e5854a6dac47173f34fcb928')]</option><option>//li[5]/ul/li/a</option><option>css=#changePwd &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Change Password<datalist><option>New or Existing Job?</option><option>Change Password</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1800000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:passwordChangeAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='passwordForm']/fieldset/div[2]/div[2]/input[2]</option><option>//input[2]</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Logged Out<datalist><option>Logged Out</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginAgainAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[2]/input</option><option>//input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Login<datalist><option>Change Password</option><option>New or Existing Job?</option><option>Login</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=userID<datalist><option>id=userID</option><option>scdrawdown</option><option></option></datalist></td><td>shercolortest</td>
+</tr>
+<tr><td>click</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>Fall2020#</option></datalist></td><td>Winter2021#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-707</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Logout'])[1]/following::input[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Eric Painting'])[1]/following::input[8]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Checking Tinter Status'])[1]/preceding::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Tinter Detection and Initialization'])[1]/preceding::input[2]</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option><option>name=jobFieldList[5].enteredValue</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Comment:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Surface Type:'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[4]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[4]</option><option>//input[@id='processJobFieldsAction_jobFieldList_5__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[7]/div[3]/div/div/input</option><option>//div[7]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option><option>name=jobFieldList[5].enteredValue</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Comment:'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Surface Type:'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[4]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[4]</option><option>//input[@id='processJobFieldsAction_jobFieldList_5__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[7]/div[3]/div/div/input</option><option>//div[7]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>Step_707</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Comment:'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Surface Type:'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::input[3]</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=selectedCoTypes-1<datalist><option>id=selectedCoTypes-1</option><option>//input[@id='selectedCoTypes-1']</option><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/div/div[2]/input</option><option>//div[2]/input</option><option>css=#selectedCoTypes-1</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>TROUT G</td>
+</tr>
+<tr><td>pause</td><td>2000<datalist><option>1000</option><option>2000</option></datalist></td><td></td>
+</tr>
+<tr><td>runScript</td><td>return $('#ui-id-1 li').length;<datalist><option>id=ui-id-4</option><option>//div[@id='ui-id-4']</option><option>//ul[@id='ui-id-1']/li/div</option><option>//li/div</option><option>css=#ui-id-4</option><option>return $('#ui-id-1 li').eq(0).val();</option><option>return $('#ui-id-1').size();</option><option>return $('#ui-id-1').length();</option><option>return $('#ui-id-1 li').size();</option><option>return $('#ui-id-1 li').length;</option></datalist></td><td>resultCount</td>
+</tr>
+<tr><td>runScript</td><td>return $('#ui-id-1 li').eq(0).text();<datalist><option>return $('#ui-id-1 li').length;</option><option>id=ui-id-4</option><option>//div[@id='ui-id-4']</option><option>//ul[@id='ui-id-1']/li/div</option><option>//li/div</option><option>css=#ui-id-4</option><option>return $('#ui-id-1 li').eq(0).val();</option><option>return $('#ui-id-1').size();</option><option>return $('#ui-id-1').length();</option><option>return $('#ui-id-1 li').size();</option><option>return $('#ui-id-1 li').get(0).val();</option><option>return $('#ui-id-1 li').get(0).text();</option><option>return $('#ui-id-1 li').get(0);</option><option>return $('#ui-id-1 li').eq(0).text();</option></datalist></td><td>resultString</td>
+</tr>
+<tr><td>assertEval</td><td>'${resultCount}'=='1'<datalist><option>'${resultCount}'=='1'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>assertEval</td><td>'${resultString}'=='BENJAMIN MOORE 2124-20 TROUT GRAY'<datalist><option>'${resultCount}'=='1'</option><option>'${resultString}'=='BENJAMIN MOORE 2124-20 TROUT GRAY'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>runScript</td><td>return $('#companiesList option').length;<datalist><option>return $('#ui-id-1 li').length;</option><option>id=ui-id-4</option><option>//div[@id='ui-id-4']</option><option>//ul[@id='ui-id-1']/li/div</option><option>//li/div</option><option>css=#ui-id-4</option><option>return $('#ui-id-1 li').eq(0).val();</option><option>return $('#ui-id-1').size();</option><option>return $('#ui-id-1').length();</option><option>return $('#ui-id-1 li').size();</option><option>return $('#companiesList option').length;</option></datalist></td><td>companiesCount</td>
+</tr>
+<tr><td>store</td><td>0<datalist><option>0</option></datalist></td><td>index</td>
+</tr>
+<tr><td>while</td><td>index&lt;${companiesCount}<datalist><option>index&lt;3</option><option>index&lt;20</option><option>index&lt;{companiesCount}</option><option>index&lt;${companiesCount}</option></datalist></td><td></td>
+</tr>
+<tr><td>runScript</td><td>return $('#companiesList option').eq(${index}).val();<datalist><option>return $('#ui-id-1 li').length;</option><option>id=ui-id-4</option><option>//div[@id='ui-id-4']</option><option>//ul[@id='ui-id-1']/li/div</option><option>//li/div</option><option>css=#ui-id-4</option><option>return $('#ui-id-1 li').eq(0).val();</option><option>return $('#ui-id-1').size();</option><option>return $('#ui-id-1').length();</option><option>return $('#ui-id-1 li').size();</option><option>return $('#companiesList option').eq(0).val();</option><option>return $('#companiesList option').eq(${index}).val();</option></datalist></td><td>company</td>
+</tr>
+<tr><td>assertEval</td><td>"${company}"=="BUFFALO WILD WINGS"<datalist><option>'${companiesCount}'=='106'</option><option>'${resultCount}'=='1'</option><option>'${company0}'=='BUFFALO WILD WINGS'</option><option>'${company}'=='BUFFALO WILD WINGS'</option><option>"${company}"='BUFFALO WILD WINGS'</option><option>"${company}"=="BUFFALO WILD WINGS"</option></datalist></td><td>false</td>
+</tr>
+<tr><td>assertEval</td><td>"${company}"=="CHILI'S"<datalist><option>'${companiesCount}'=='106'</option><option>'${resultCount}'=='1'</option><option>'${company0}'=="CHILI'S"</option><option>'${company}'=="CHILI'S"</option><option>"${company}"=="CHILI'S"</option></datalist></td><td>false</td>
+</tr>
+<tr><td>assertEval</td><td>"${company}"=="DUNKIN DONUTS"<datalist><option>'${companiesCount}'=='106'</option><option>'${resultCount}'=='1'</option><option>'${company0}'=='DUNKIN DONUTS'</option><option>'${company}'=='DUNKIN DONUTS'</option><option>"${company}"=='DUNKIN DONUTS'</option><option>"${company}"=="DUNKIN DONUTS"</option></datalist></td><td>false</td>
+</tr>
+<tr><td>assertEval</td><td>"${company}"=="IHOP"<datalist><option>'${companiesCount}'=='106'</option><option>'${resultCount}'=='1'</option><option>'${company0}'=='IHOP'</option><option>'${company}'=='IHOP'</option><option>"${company}"=='IHOP'</option><option>"${company}"=="IHOP"</option></datalist></td><td>false</td>
+</tr>
+<tr><td>assertEval</td><td>"${company}"=="PETCO"<datalist><option>'${companiesCount}'=='106'</option><option>'${resultCount}'=='1'</option><option>'${company0}'=='ALL'</option><option>'${company0}'=='PETCO'</option><option>'${company}'=='PETCO'</option><option>"${company}"=='PETCO'</option><option>"${company}"=="PETCO"</option></datalist></td><td>false</td>
+</tr>
+<tr><td>storeEval</td><td>${index}+1<datalist><option>${index}+1</option></datalist></td><td>index</td>
+</tr>
+<tr><td>endWhile</td><td><datalist><option></option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_userCancelAction<datalist><option>id=colorUserNextAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='colorUserNextAction_userCancelAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[4]/div[2]/div[3]/input[2]</option><option>//div[3]/input[2]</option><option>css=#colorUserNextAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-713</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyElementPresent</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Purge<datalist><option>link=Purge</option><option>//a[contains(text(),'Purge')]</option><option>//li[@id='tinterPurge']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterPurgeAction.action?reqGuid=cfd66bea746a43b9aadf566ee42e70dc')]</option><option>//li[3]/ul/li/a</option><option>css=#tinterPurge &gt; a.dropdown-item</option><option>link=Purgez</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Purge<datalist><option>Tinter Purge</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurge<datalist><option>id=tinterPurge</option><option>//button[@id='tinterPurge']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[3]/button</option><option>//div[3]/button</option><option>css=#tinterPurge</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Purge Successful</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurgeAction_userCancelAction<datalist><option>id=tinterPurgeAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='tinterPurgeAction_userCancelAction']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[4]/input</option><option>//div[4]/input</option><option>css=#tinterPurgeAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyElementNotPresent</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td></td>
+</tr>
+</tbody></table>
 </body>
 </html>
