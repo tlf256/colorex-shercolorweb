@@ -1208,6 +1208,13 @@
 			<result name="success" type="json"></result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="spectroCompareColorsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/CompareColors.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="deleteSpectroRemoteAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ManageStoredMeasurementsAction" method="deleteSpectroRemote">
 			<interceptor-ref name="defaultStack"/>
 		    <interceptor-ref name="json" />
