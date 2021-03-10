@@ -3,6 +3,7 @@ package com.sherwin.shercolor.customershercolorweb.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -162,6 +163,7 @@ public class PrintLabelTest2  {
 		printLabel.CreateLabelPdf("label14.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
 		System.out.println("Label 14 image created from " + reqObj.getProdNbr());
 	}
+	
 
 	private RequestObject GetShercolorFormula(String [] request, String[] parms) {
 		RequestObject reqObj = new RequestObject();
@@ -173,7 +175,7 @@ public class PrintLabelTest2  {
 		reqObj.setClrntSys(request[5]);
 		reqObj.setVinylExclude(Boolean.parseBoolean(request[7]));
 		
-		cdsProd = productService.readCdsProd(request[4]);
+		cdsProd = productService.readCdsProd(request[4]).get();
 		reqObj.setProdNbr(cdsProd.getPrepComment().substring(0, 9));
 		reqObj.setQuality(cdsProd.getQuality());
 		reqObj.setComposite(cdsProd.getComposite());
