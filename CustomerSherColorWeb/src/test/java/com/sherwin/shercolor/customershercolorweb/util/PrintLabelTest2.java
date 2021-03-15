@@ -163,7 +163,6 @@ public class PrintLabelTest2  {
 		printLabel.CreateLabelPdf("label14.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
 		System.out.println("Label 14 image created from " + reqObj.getProdNbr());
 	}
-	
 
 	private RequestObject GetShercolorFormula(String [] request, String[] parms) {
 		RequestObject reqObj = new RequestObject();

@@ -160,13 +160,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		 	Optional<CdsProd> goodProd = productService.readCdsProd(salesNbr);
 			
 		 	//Check for CdsProd, if not, build prepCmt for PosProd
-		 	Optional<String[]> prepCmtOptional = goodProd.map(CdsProd::getPrepComment).map(x -> x.split("-"));
-		 	if(!prepCmtOptional.isPresent()) {
-		 		prepCmtOptional = Optional.of(new String[2]);
-		 		prepCmtOptional.get()[0] = posProd.getProdNbr();
-		 		prepCmtOptional.get()[1] = posProd.getSzCd();
-		 	}
-		 	String[] prepCmt = prepCmtOptional.get();
+		 	String[] prepCmt = goodProd.map(CdsProd::getPrepComment)
+                    .map(x -> x.split("-"))
+                    .orElse(new String[]{posProd.getProdNbr(),posProd.getSzCd()});
 			 
 			//set the successful information into the request object.
 			reqObj.setSalesNbr(salesNbr);

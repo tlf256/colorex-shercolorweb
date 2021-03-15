@@ -311,13 +311,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// ================================================================================================================================================
 			// 12/07/2020 | Product Information
 			errorLocation = "Size and Base";
-			if(reqObj.getBase() != null && reqObj.getSizeText() != null) {
 				// Abbreviating base type name to 16 characters to keep font size on label line.
-				if (reqObj.getBase().length() > 15)
-					reqObj.setBase(reqObj.getBase().substring(0, 16));
-	
-				createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
-			}
+			if (reqObj.getBase().length() > 15)
+				reqObj.setBase(reqObj.getBase().substring(0, 16));
+
+			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
 			//-------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Sales and Product Number";
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getProdNbr(), 50, haRight, vaMiddle, reqObj.getSalesNbr());
@@ -534,7 +532,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// Abbreviating base type name to 16 characters to keep font size on label line.
 			if (reqObj.getBase().length() > 15)
 				reqObj.setBase(reqObj.getBase().substring(0, 16));
-	
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
 			//-------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Sales and Product Number";
