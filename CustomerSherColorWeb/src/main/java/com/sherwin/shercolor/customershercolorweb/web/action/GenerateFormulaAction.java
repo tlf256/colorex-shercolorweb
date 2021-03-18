@@ -14,7 +14,6 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
@@ -41,9 +40,6 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 	private String clrntSys;
 	private String displayDate;
 
-	
-	
-	private CdsProd theCdsProd;
 	private FormulationResponse theFormula;
 	private FormulaInfo displayFormula;
 	
@@ -89,7 +85,6 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 				reqObj.setDisplayFormula(displayFormula);
 				reqObj.setFormResponse(theFormula);
 			} else {
-				theCdsProd = productService.readCdsProd(reqObj.getSalesNbr());
 				 
 				OeFormInputRequest oeRequest = new OeFormInputRequest();
 				oeRequest.setClrntSysId(reqObj.getClrntSys());
@@ -316,15 +311,6 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 
 	public void setFormulationService(FormulationService formulationService) {
 		this.formulationService = formulationService;
-	}
-
-	public CdsProd getTheCdsProd() {
-		return theCdsProd;
-	}
-
-
-	public void setTheCdsProd(CdsProd theCdsProd) {
-		this.theCdsProd = theCdsProd;
 	}
 
 
