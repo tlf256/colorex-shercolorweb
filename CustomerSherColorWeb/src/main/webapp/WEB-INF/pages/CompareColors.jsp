@@ -9,23 +9,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title><s:text name="getColor.chooseColor"/></title>
-			<!-- JQuery -->
+		<title><s:text name=""/>Compare Colors</title>
+		<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 	
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>
   		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
- 		<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.21/datatables.min.js"></script>
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
-	 	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script> 
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.4.js"></script>
 		<style>
@@ -38,9 +33,10 @@
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
 				var selectedValue;
-				$("[id^=sourceTypes]").change(function(){
-					selectedValue = $("[id^=sourceTypes]:checked").val();
-					//console.log("selected value - " + selectedValue);
+				$("[id^=selectedCoTypes]").change(function(){
+					selectedValue = $("[id^=selectedCoTypes]:checked").val();
+					console.log("selected value - " + selectedValue);
+					
 					if (selectedValue === "COMPET"){
 						$('#colorCompanies').removeClass('d-none');
 					} else {
@@ -102,7 +98,7 @@
 				<div class="col-sm-2"></div>
 			</div>
 			<br>
-			<s:form action="" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
+			<s:form id="compareColorsForm" action="" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1">
 					</div>
@@ -113,12 +109,12 @@
             					<s:iterator value="sourceOptions" status="i">
 	            					<div class="form-check">
 	            					  <s:if test="%{#i.index == 0}">
-	            					  	<input class="form-check-input" type="radio" name="sourceTypes" value='<s:property value="key"/>' id="sourceTypes-<s:property value="%{#i.index}"/>" checked>
+	            					  	<input class="form-check-input" type="radio" name="selectedCoTypes" value='<s:property value="key"/>' id="selectedCoTypes-<s:property value="%{#i.index}"/>" checked>
 	            					  </s:if>
 	            					  <s:else>
-	            					  	<input class="form-check-input" type="radio" name="sourceTypes" value='<s:property value="key"/>' id="sourceTypes-<s:property value="%{#i.index}"/>">
+	            					  	<input class="form-check-input" type="radio" name="selectedCoTypes" value='<s:property value="key"/>' id="selectedCoTypes-<s:property value="%{#i.index}"/>">
 	            					  </s:else>
-									  <label class="form-check-label font-weight-normal" for="sourceTypes-<s:property value="%{#i.index}"/>">
+									  <label class="form-check-label font-weight-normal" for="selectedCoTypes-<s:property value="%{#i.index}"/>">
 									    <s:property value="value"/>
 									  </label>
 									</div>
@@ -152,7 +148,7 @@
 					<div class="row">
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>	
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3" id="nextBtnDiv">
-							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action=""/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="compareColorsNextAction"/>
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
 							<s:submit cssClass="btn btn-secondary" action="" value="%{getText('global.back')}" />

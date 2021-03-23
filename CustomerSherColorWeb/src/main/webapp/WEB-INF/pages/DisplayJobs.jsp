@@ -72,6 +72,7 @@
 				</div>
 				<div class="col-sm-3">
 					<s:set var="thisGuid" value="reqGuid" />
+					<s:hidden name="filter" id="filter" value="%{filter}"/>
 				</div>
 			</div>
 <br>

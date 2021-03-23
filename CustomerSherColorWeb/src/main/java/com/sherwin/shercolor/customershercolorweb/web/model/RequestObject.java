@@ -3,9 +3,12 @@ package com.sherwin.shercolor.customershercolorweb.web.model;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.owasp.encoder.Encode;
 
+import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.common.domain.CdsColorStand;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -74,6 +77,8 @@ public class RequestObject {
 	private String roomByRoom;
 	private boolean packageColor;
 	private boolean pkgClrTintable;
+	private List<ColorCoordinates> coordinatesList;
+	private Map<String, double[]> compareColors;
 
 	public String getColorComp() {
 		return colorComp;
@@ -514,6 +519,18 @@ public class RequestObject {
 	}
 	public void setPkgClrTintable(boolean pkgClrTintable) {
 		this.pkgClrTintable = pkgClrTintable;
+	}
+	public List<ColorCoordinates> getCoordinatesList() {
+		return coordinatesList;
+	}
+	public void setCoordinatesList(List<ColorCoordinates> coordinatesList) {
+		this.coordinatesList = coordinatesList;
+	}
+	public Map<String, double[]> getCompareColors() {
+		return compareColors;
+	}
+	public void setCompareColors(Map<String, double[]> compareColors) {
+		this.compareColors = compareColors;
 	}
 
 }

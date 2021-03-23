@@ -2,6 +2,7 @@ var jobTable;
 
 
 $(document).ready(function() {
+	var filter = $.urlParam('filter');
 	//$("#listJobsAction_formulaUserCorrectAction")
 	var exportColList = $("#listJobsAction_exportColList").val();
 	var columnList = exportColList.split(',').map(function(item) {
@@ -98,6 +99,12 @@ $(document).ready(function() {
         "scrollX": true,
         "pagingType": "full",
     });
+    
+    console.log('filter is ' + filter);
+    
+    if(filter != null && filter == "true"){
+    	$('#mainForm').attr('action', 'selectColorMatchAction');
+    }
 	
 	/*var cell = jobTable.cell(this);
 	var celldata = cell.data();
@@ -128,6 +135,7 @@ $(document).ready(function() {
     	document.getElementById('controlNbr').value = lookupControlNbr;
     	document.getElementById('mainForm').submit();
     });
+    
     $("#job_table").addClass("table-hover");
     
     $('#job_table tbody').on({
@@ -172,6 +180,15 @@ $(document).ready(function() {
     });
     
 });
+
+$.urlParam = function(name){
+var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    } else{
+       return results[1] || 0;
+    }
+}
 
 
 
