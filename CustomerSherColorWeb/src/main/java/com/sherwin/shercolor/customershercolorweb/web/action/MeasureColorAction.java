@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String intBases;
 	
 	private String extBases;
+	private boolean measure;
+	private boolean compare;
 	
 
 	public MeasureColorAction(){
@@ -101,9 +104,33 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			
 			// Try getting an RGB value for the object.
 			ColorCoordinates colorCoord = colorService.getColorCoordinates(curveArray, "D65");
+			
+			if(measure || compare) {
+				List<ColorCoordinates> coordList = reqObj.getCoordinatesList();
+				
+				if(coordList == null) {
+					coordList = new ArrayList<ColorCoordinates>();
+				}
+				
+				coordList.add(colorCoord);
+				
+				reqObj.setCoordinatesList(coordList);
+				
+				sessionMap.put(reqGuid, reqObj);
+				
+				if(measure) {
+					return "sample";
+				}
+				
+				if(compare) {
+					return "result";
+				}
+			}
+			
 			if (colorCoord != null) {
 				rgbHex = colorCoord.getRgbHex();
 			}
+			
 			//2018-01-15 BKP - copied from below to here to calculated bases based on curve.
 			//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
 			//call the autobase routine.
@@ -127,7 +154,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setCurveArray(curveArray);
 
 			sessionMap.put(reqGuid, reqObj);
-
+			
 			return SUCCESS;
 
 		} catch (Exception e) {
@@ -228,6 +255,22 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 	public void setIntBases(String intBases) {
 		this.intBases = Encode.forHtml(intBases);
+	}
+
+	public boolean isMeasure() {
+		return measure;
+	}
+
+	public void setMeasure(boolean measure) {
+		this.measure = measure;
+	}
+
+	public boolean isCompare() {
+		return compare;
+	}
+
+	public void setCompare(boolean compare) {
+		this.compare = compare;
 	}
 
 }

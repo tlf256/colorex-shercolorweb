@@ -2,7 +2,7 @@ var jobTable;
 
 
 $(document).ready(function() {
-	var filter = $.urlParam('filter');
+	var match = $.urlParam('match');
 	//$("#listJobsAction_formulaUserCorrectAction")
 	var exportColList = $("#listJobsAction_exportColList").val();
 	var columnList = exportColList.split(',').map(function(item) {
@@ -100,10 +100,11 @@ $(document).ready(function() {
         "pagingType": "full",
     });
     
-    console.log('filter is ' + filter);
+    console.log('match is ' + match);
     
-    if(filter != null && filter == "true"){
+    if(match != null && match == "true"){
     	$('#mainForm').attr('action', 'selectColorMatchAction');
+    	$('#title').text('Choose First Sample');
     }
 	
 	/*var cell = jobTable.cell(this);
@@ -181,6 +182,7 @@ $(document).ready(function() {
     
 });
 
+//function parses url to get value of specified param name
 $.urlParam = function(name){
 var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
     if (results==null){

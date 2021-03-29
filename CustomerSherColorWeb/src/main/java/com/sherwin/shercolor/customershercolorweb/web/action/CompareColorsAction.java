@@ -30,7 +30,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	static Logger logger = LogManager.getLogger(CompareColorsAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
-	private boolean filter;
+	private boolean match;
 	private int lookupControlNbr;
 	private String SW;
 	private String COMPETITIVE;
@@ -45,8 +45,10 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	private String colorComp;
 	private String colorId;
 	private String colorData;
-	private ArrayList<String> colorCompanies = new ArrayList<String>();
+	private List<String> colorCompanies;
 	private String selectedCompany;
+	private boolean measure;
+	private boolean compare;
 	
 	@Autowired
 	private TranHistoryService tranHistoryService;
@@ -62,7 +64,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	
 	public String display() {
 		try {
-						
+			
 			buildSourceOptionsMap();
 			buildCompaniesList();
 			
@@ -82,9 +84,10 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			//CdsColorMast ccm = null;
 			
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOMMATCH")) {
-				setFilter(true);
+				setMatch(true);
 				return "match";
 			} else if (selectedCoTypes.equalsIgnoreCase("MEASURE")) {
+				setMeasure(true);
 				return "measure";
 			} else {
 				//SW or compet color
@@ -134,11 +137,15 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 		}
 	}
 	
-	public String selectExistingCustomMatchJob() {
+	public String selectCustomMatch() {
 		try {
 			//setFilter(false);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			List<ColorCoordinates> coordList = reqObj.getCoordinatesList();
+			
+			if(coordList == null) {
+				coordList = new ArrayList<ColorCoordinates>();
+			}
 			
 			String customerId = reqObj.getCustomerID();
 			
@@ -151,6 +158,30 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			reqObj.setCoordinatesList(coordList);
 			
 			sessionMap.put(reqGuid, reqObj);
+			
+			return SUCCESS;
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	public String measureSample() {
+		try {
+			setCompare(true);
+			
+			
+			
+			return SUCCESS;
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	public String compare() {
+		try {
+			
 			
 			return SUCCESS;
 		} catch(Exception e) {
@@ -175,6 +206,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	
 	private void buildCompaniesList() {
 		try {
+			colorCompanies = new ArrayList<String>();
 			colorCompanies.add(getText("processColorAction.all")); 
 			 
 			String [] colorCompaniesArray = colorMastService.listColorCompanies(false);
@@ -348,12 +380,12 @@ public void parseColorData(String colorData) {
 		this.reqGuid = reqGuid;
 	}
 
-	public boolean isFilter() {
-		return filter;
+	public boolean isMatch() {
+		return match;
 	}
 
-	public void setFilter(boolean filter) {
-		this.filter = filter;
+	public void setMatch(boolean match) {
+		this.match = match;
 	}
 
 	public int getLookupControlNbr() {
@@ -436,7 +468,11 @@ public void parseColorData(String colorData) {
 		this.colorData = colorData;
 	}
 	
-	public void setColorCompanies(ArrayList<String> colorCompanies) {
+	public List<String> getColorCompanies() {
+		return colorCompanies;
+	}
+	
+	public void setColorCompanies(List<String> colorCompanies) {
 		this.colorCompanies = colorCompanies;
 	}
 	
@@ -446,6 +482,22 @@ public void parseColorData(String colorData) {
 	
 	public void setSelectedCompany(String selectedCompany) {
 		this.selectedCompany = selectedCompany;
+	}
+
+	public boolean isMeasure() {
+		return measure;
+	}
+
+	public void setMeasure(boolean measure) {
+		this.measure = measure;
+	}
+
+	public boolean isCompare() {
+		return compare;
+	}
+
+	public void setCompare(boolean compare) {
+		this.compare = compare;
 	}
 
 }

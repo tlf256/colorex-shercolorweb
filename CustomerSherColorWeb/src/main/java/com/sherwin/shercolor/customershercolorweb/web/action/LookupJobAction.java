@@ -67,7 +67,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	List<CustWebTran> tranHistory;
 	
 	List<JobHistoryInfo> jobHistory;
-	private boolean filter;
+	private boolean match;
 	
 	public String display() {
 		
@@ -94,9 +94,9 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-			if(filter) {
+			if(match) {
 				//only pull CUSTOMMATCH records for compare colors selection
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByColorType(reqObj.getCustomerID(), "CUSTOMMATCH");
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByColorType(reqObj.getCustomerID(), "CUSTOMMATCH", false);
 			} else {
 				tranHistory = tranHistoryService.getActiveCustomerJobs(reqObj.getCustomerID(),false);
 			}
@@ -187,7 +187,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 					exportColList.add(index);
 				}
 			}
-						
+			
 			return SUCCESS;
 				
 		
@@ -544,12 +544,12 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		return jobFields;
 	}
 
-	public boolean isFilter() {
-		return filter;
+	public boolean isMatch() {
+		return match;
 	}
 
-	public void setFilter(boolean filter) {
-		this.filter = filter;
+	public void setMatch(boolean match) {
+		this.match = match;
 	}
 
 }

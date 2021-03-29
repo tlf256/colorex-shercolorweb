@@ -81,6 +81,7 @@
 				<div class="col-lg-0 col-md-0">
 				</div>
 				<div class="col-lg-12 col-md-12">
+					<h3 id="title"></h3>
 					<h6 id="dltmsg" class="text-danger d-none"></h6>
 					<s:if test="hasActionMessages()">
 					      <s:actionmessage cssClass="alert-danger"/>
@@ -151,6 +152,7 @@
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
  						<s:hidden id="controlNbr" name="lookupControlNbr" value=""/>
+ 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 					</div>
 
 					<div class="col-sm-10">
