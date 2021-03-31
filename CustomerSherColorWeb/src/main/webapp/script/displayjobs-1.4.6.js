@@ -104,7 +104,7 @@ $(document).ready(function() {
     
     if(match != null && match == "true"){
     	$('#mainForm').attr('action', 'selectColorMatchAction');
-    	$('#title').text('Choose First Sample');
+    	$('#title').text(i18n['compareColors.chooseFirstSample']);
     }
 	
 	/*var cell = jobTable.cell(this);

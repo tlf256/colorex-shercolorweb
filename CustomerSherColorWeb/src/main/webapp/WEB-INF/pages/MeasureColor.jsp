@@ -191,6 +191,7 @@
 		<s:form id="calibrateForm" action="spectroCalibrateRedirectAction">
 			<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 			<s:hidden name="compare" id="compareColors" value="%{compare}"/>
+			<s:hidden name="measure" id="measureColor" value="%{measure}"/>
 		</s:form>
 		<s:form id="measure-color-form" action="MeasureColorNextAction" validate="true"  theme="bootstrap" method="post">
 			<div class="container-fluid">
@@ -250,7 +251,7 @@
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
 		      	<s:if test="compare">
-		      		<h2 class="modal-title ml-3">Measure Second Sample</h2>
+		      		<h2 class="modal-title ml-3"><s:text name="compareColors.measureSecondSample"></s:text></h2>
 		      	</s:if>
 		      	<s:else>
 		      		<h2 class="modal-title ml-3" id="measureModalTitle"><s:text name="measureColor.measureColor"/></h2>

@@ -14,13 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
-import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.exception.SherColorException;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorService;
-import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -51,13 +48,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	private boolean compare;
 	
 	@Autowired
-	private TranHistoryService tranHistoryService;
-	
-	@Autowired
 	private ColorService colorService;
-	
-	@Autowired
-	private ColorCoordinatesCalculator colorCoordCalc;
 	
 	@Autowired
 	private ColorMastService colorMastService;
@@ -81,7 +72,6 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			Map<String, ColorCoordinates> coordMap = reqObj.getColorCoordMap();
 			colorComp = "";
 			colorId = "";
-			//CdsColorMast ccm = null;
 			
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOMMATCH")) {
 				setMatch(true);
@@ -113,12 +103,6 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 					buildSourceOptionsMap();
 					return INPUT;
 				} else {
-					//get CdsColorStand record for delta-e and LAB values
-					//ccm = colorMastService.read(colorComp, colorId);
-					
-					//CdsColorStand ccs = colorService.getCdsColorStandRecord(colorComp, colorId, ccm.getEntryDate(), "");
-					
-					//double[] compValues = {ccs.getCieLValue(), ccs.getCieAValue(), ccs.getCieBValue()};
 					
 					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorId, "D65");
 					
@@ -137,37 +121,13 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 		}
 	}
 	
-	public String measureSample() {
-		try {
-			setCompare(true);
-			
-			
-			
-			return SUCCESS;
-		} catch(Exception e) {
-			logger.error(e.getMessage(), e);
-			return ERROR;
-		}
-	}
-	
-	public String compare() {
-		try {
-			
-			
-			return SUCCESS;
-		} catch(Exception e) {
-			logger.error(e.getMessage(), e);
-			return ERROR;
-		}
-	}
-	
 	private void buildSourceOptionsMap() {
 		sourceOptions = new LinkedHashMap<String, String>();
 		
-		SW = "Sherwin-Williams Color"; //getText("");
-		COMPETITIVE = "Competitive Color"; //getText("");
-		CUSTOMMATCH = "Existing Custom Match"; //getText("");
-		MEASURE = "Measure Color"; //getText("processColorAction.savedCi62Measurement");
+		SW = getText("compareColors.sherwinWilliamsColor");
+		COMPETITIVE = getText("compareColors.competitiveColor");
+		CUSTOMMATCH = getText("compareColors.existingCustomMatch");
+		MEASURE = getText("compareColors.measureColor");
 		
 		sourceOptions.put("SW", SW);
 		sourceOptions.put("COMPET",COMPETITIVE);

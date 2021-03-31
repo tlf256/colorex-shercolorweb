@@ -79,7 +79,6 @@ public class RequestObject {
 	private boolean packageColor;
 	private boolean pkgClrTintable;
 	private Map<String, ColorCoordinates> colorCoordMap;
-	private Map<String, double[]> compareColors;
 	private ColorDifference colorDiff;
 
 	public String getColorComp() {
@@ -527,12 +526,6 @@ public class RequestObject {
 	}
 	public void setColorCoordMap(Map<String, ColorCoordinates> colorCoordMap) {
 		this.colorCoordMap = colorCoordMap;
-	}
-	public Map<String, double[]> getCompareColors() {
-		return compareColors;
-	}
-	public void setCompareColors(Map<String, double[]> compareColors) {
-		this.compareColors = compareColors;
 	}
 	public ColorDifference getColorDiff() {
 		return colorDiff;

@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title><s:text name=""/>Compare Results</title>
+		<title><s:text name="compareResults"/></title>
 		<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -36,7 +36,7 @@
 		<div class="container-fluid">
 			<div class="row mt-4">
 				<div class="col-sm-1"></div>
-				<div class="col-sm-10"><h3><s:text name=""/>Color Comparison Results</h3></div>
+				<div class="col-sm-10"><h3><s:text name="compareColorsResult.colorComparisonResults"/></h3></div>
 				<div class="col-sm-1"></div>
 			</div>
 			<br>
@@ -46,12 +46,12 @@
 					<table id="compareResults_table" class="table table-striped table-bordered">
 						<thead>
 							<tr>
-								<th>Scale</th>
-								<th>Standard</th>
-								<th>Sample</th>
-								<th>Difference</th>
-								<th>Color Range</th>
-								<th>Sample Description</th>
+								<th><s:text name="compareColorsResult.scale"></s:text></th>
+								<th><s:text name="compareColorsResult.standard"></s:text></th>
+								<th><s:text name="compareColorsResult.sample"></s:text></th>
+								<th><s:text name="compareColorsResult.difference"></s:text></th>
+								<th><s:text name="compareColorsResult.colorRange"></s:text></th>
+								<th><s:text name="compareColorsResult.sampleDescription"></s:text></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -60,16 +60,16 @@
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.standLval})" /></td>
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.trialLval})" /></td>
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.lDiff})" /></td>
-								<td><s:text name="" />Lightness</td>
+								<td><s:text name="compareColorsResult.lightness" /></td>
 								<td>
 									<s:if test="colorDiff.trialLdescr == 'lighter'">
-										<s:text name=""></s:text>Lighter than standard
+										<s:text name="compareColorsResult.lighterThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialLdescr == 'darker'">
-										<strong><s:text name=""></s:text>Darker than standard</strong>
+										<strong><s:text name="compareColorsResult.darkerThanStandard"></s:text></strong>
 									</s:if>
 									<s:if test="colorDiff.trialLdescr == 'nodiff'">
-										<s:text name=""></s:text>No difference
+										<s:text name="compareColorsResult.noDifference"></s:text>
 									</s:if>
 								</td>
 							</tr>
@@ -78,16 +78,16 @@
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.standAval})" /></td>
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.trialAval})" /></td>
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.aDiff})" /></td>
-								<td><s:text name="" />Red/Green</td>
+								<td><s:text name="compareColorsResult.redGreen" /></td>
 								<td>
 									<s:if test="colorDiff.trialAdescr == 'more red'">
-										<span style="color:red"><s:text name=""></s:text>More red than standard</span>
+										<span style="color:red"><s:text name="compareColorsResult.moreRedThanStandard"></s:text></span>
 									</s:if>
 									<s:if test="colorDiff.trialAdescr == 'more green'">
-										<span style="color:green"><s:text name=""></s:text>More green than standard</span>
+										<span style="color:green"><s:text name="compareColorsResult.moreGreenThanStandard"></s:text></span>
 									</s:if>
 									<s:if test="colorDiff.trialAdescr == 'nodiff'">
-										<s:text name=""></s:text>No difference
+										<s:text name="compareColorsResult.noDifference"></s:text>
 									</s:if>
 								</td>
 							</tr>
@@ -96,16 +96,16 @@
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.standBval})" /></td>
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.trialBval})" /></td>
 								<td><s:property value="getText('{0, number, #.##}', {colorDiff.bDiff})" /></td>
-								<td><s:text name="" />Yellow/Blue</td>
+								<td><s:text name="compareColorsResult.yellowBlue" /></td>
 								<td>
 									<s:if test="colorDiff.trialBdescr == 'more yellow'">
-										<span style="color:yellow"><s:text name=""></s:text>More yellow than standard</span>
+										<span style="color:yellow"><s:text name="compareColorsResult.moreYellowThanStandard"></s:text></span>
 									</s:if>
 									<s:if test="colorDiff.trialBdescr == 'more blue'">
-										<span style="color:blue"><s:text name=""></s:text>More blue than standard</span>
+										<span style="color:blue"><s:text name="compareColorsResult.moreBlueThanStandard"></s:text></span>
 									</s:if>
 									<s:if test="colorDiff.trialBdescr == 'nodiff'">
-										<s:text name=""></s:text>No difference
+										<s:text name="compareColorsResult.noDifference"></s:text>
 									</s:if>
 								</td>
 							</tr>
@@ -118,7 +118,7 @@
 			<div class="row">
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
-					<strong><s:text name=""/>Delta E: </strong>
+					<strong><s:text name="compareColorsResult.deltaEcolon"/> </strong>
 					<span class="badge badge-secondary"style="font-size: .9rem;" id="delta-e">
 						<s:property value="getText('{0, number, #.##}', {colorDiff.deDiff})" />
 					</span>
@@ -129,9 +129,7 @@
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
 					<strong class="" id="deMsg">
-						<s:if test="colorDiff.deDiff > 1">
-							<s:text name=""></s:text>(A Delta E greater than 1.00 produces a visible difference)
-						</s:if>
+						<s:text name="getProdFamily.deltaEGreaterThanOneWarning"></s:text>
 					</strong>
 				</div>
 				<div class="col-sm-1"></div>

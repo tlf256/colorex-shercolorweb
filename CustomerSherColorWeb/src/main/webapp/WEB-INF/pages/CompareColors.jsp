@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title><s:text name=""/>Compare Colors</title>
+		<title><s:text name="compareColors.compareColors"/></title>
 		<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -94,7 +94,7 @@
 		<div class="container-fluid">
 			<div class="row mt-4">
 				<div class="col-sm-2"></div>
-				<div class="col-sm-8"><h3>Compare Colors</h3></div>
+				<div class="col-sm-8"><h3><s:text name="compareColors.compareColors"/></h3></div>
 				<div class="col-sm-2"></div>
 			</div>
 			<br>
@@ -104,7 +104,7 @@
 					</div>
             		<div class="col-lg-8 col-md-8 col-sm-10">
             			<div class="form-group">
-            				<strong><s:text name=""/>Choose Standard Source:</strong>
+            				<strong><s:text name="compareColors.chooseStandardSourceColon"/></strong>
             				<div class="controls">
             					<s:iterator value="sourceOptions" status="i">
 	            					<div class="form-check">
@@ -152,7 +152,6 @@
 							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="spectroCompareColorsNextAction"/>
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
-							<s:submit cssClass="btn btn-secondary" action="" value="%{getText('global.back')}" />
 							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
