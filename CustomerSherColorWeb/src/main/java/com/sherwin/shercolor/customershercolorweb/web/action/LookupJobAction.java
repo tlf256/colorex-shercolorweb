@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -378,18 +379,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setJobFieldList(jobFields);
 		
 		// lookup fields not stored to DB tran record
-		CdsProd cdsProd = productService.readCdsProd(webTran.getSalesNbr());
-		if(cdsProd!=null){
-			reqObj.setBase(cdsProd.getBase());
-			if(cdsProd.getComposite()==null) {cdsProd.setComposite("");}
-			reqObj.setComposite(cdsProd.getComposite());
-			reqObj.setFinish(cdsProd.getFinish());
-			reqObj.setIntExt(cdsProd.getIntExt());
-			reqObj.setKlass(cdsProd.getKlass());
-			if(cdsProd.getQuality()==null) {cdsProd.setQuality("");}
-			reqObj.setQuality(cdsProd.getQuality());
-		}
-		
+		Optional<CdsProd> cdsProd = productService.readCdsProd(webTran.getSalesNbr());
+		reqObj.setBase(cdsProd.map(CdsProd::getBase).orElse(""));
+		reqObj.setComposite(cdsProd.map(CdsProd::getComposite).orElse(""));
+		reqObj.setFinish(cdsProd.map(CdsProd::getFinish).orElse(""));
+		reqObj.setIntExt(cdsProd.map(CdsProd::getIntExt).orElse(""));
+		reqObj.setKlass(cdsProd.map(CdsProd::getKlass).orElse(""));
+		reqObj.setQuality(cdsProd.map(CdsProd::getQuality).orElse(""));
+			
 		// lookup color fields
 		CdsColorMast cdsColorMast = colorMastService.read(webTran.getColorComp(), webTran.getColorId());
 		if(cdsColorMast!=null){

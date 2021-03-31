@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,36 +93,21 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 					PosProd posprod = productService.readPosProd(item.getSalesNbr());
 					reqObj.setUpc(posprod.getUpc());
 					//logger.debug("set reqObjprodnbr, sizecode and salesnbr");
-					CdsProd goodProd = productService.readCdsProd(item.getSalesNbr());
-					String[] prepCmt = new String[2];
-					
-
-					if (goodProd!=null) {
-						//logger.debug("got goodprod and its not null");
-						prepCmt = goodProd.getPrepComment().split("-");
-						reqObj.setFinish(goodProd.getFinish());
-						reqObj.setKlass(goodProd.getKlass());
-						reqObj.setIntExt(goodProd.getIntExt());
-						reqObj.setBase(goodProd.getBase());
-						if(goodProd.getComposite()==null) {goodProd.setComposite("");}
-						reqObj.setComposite(goodProd.getComposite());
-						if(goodProd.getQuality()==null) {goodProd.setQuality("");}
-						reqObj.setQuality(goodProd.getQuality());
-						if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
-							if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
-								reqObj.setIntBases(goodProd.getBase());
-							} else {
-								reqObj.setExtBases(goodProd.getBase());
-							}
+					Optional<CdsProd> goodProd = productService.readCdsProd(item.getSalesNbr());
+					reqObj.setFinish(goodProd.map(CdsProd::getFinish).orElse(""));
+					reqObj.setKlass(goodProd.map(CdsProd::getKlass).orElse(""));
+					reqObj.setIntExt(goodProd.map(CdsProd::getIntExt).orElse(""));
+					reqObj.setBase(goodProd.map(CdsProd::getBase).orElse(""));
+					reqObj.setComposite(goodProd.map(CdsProd::getComposite).orElse(""));
+					reqObj.setQuality(goodProd.map(CdsProd::getQuality).orElse(""));
+					if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
+						if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
+							reqObj.setIntBases(reqObj.getBase());
+						} else {
+							reqObj.setExtBases(reqObj.getBase());
 						}
-					} else {
-						reqObj.setFinish("");
-						reqObj.setKlass("");
-						reqObj.setIntExt("");
-						reqObj.setBase("");
-						reqObj.setComposite("");
-						reqObj.setQuality("");
 					}
+					
 					reqObj.setSizeText(productService.getSizeText(reqObj.getSizeCode()));
 					//logger.debug("ready to validate and set validationmessages");
 					validationMsgs = formulationService.validateFormulation(displayFormula);
@@ -144,7 +130,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	}
 	
 	public String display() {
-		CdsProd theCdsProd;
+		Optional<CdsProd> theCdsProd;
 		String theQuality = "";
 		String theBase    = "";
 		String theComment = getText("global.comment");
@@ -159,13 +145,8 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 				for(FormulaInfo item:oldFormula.getFormulas()) {
 					List<String> rowData = new ArrayList<String>();
 					theCdsProd = productService.readCdsProd(item.getSalesNbr());
-					if (theCdsProd!=null) {
-						 theQuality = theCdsProd.getQuality();
-						 theBase    = theCdsProd.getBase();
-					} else {
-						 theQuality = "";
-						 theBase    = "";
-					}
+					theQuality = theCdsProd.map(CdsProd::getQuality).orElse("");
+					theBase = theCdsProd.map(CdsProd::getBase).orElse("");
 					if (theComment.equals(getText("processProdFamilyAction.bestPerformance"))) {
 						theComment = getText("processProdFamilyAction.productEntered");
 						bothFormulas.add(item);
