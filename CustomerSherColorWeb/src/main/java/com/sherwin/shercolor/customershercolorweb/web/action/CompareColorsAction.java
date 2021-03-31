@@ -3,6 +3,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	public String execute() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			Map<String, ColorCoordinates> coordMap = reqObj.getColorCoordMap();
+			Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
 			colorComp = "";
 			colorId = "";
 			

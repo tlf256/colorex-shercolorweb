@@ -343,6 +343,8 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">spectroCalibrateAction</param>
 				<param name="measureColor">${measureColor}</param>
+				<param name="measure">${measure}</param>
+				<param name="compare">${compare}</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
@@ -424,6 +426,15 @@
 		<action name="measureColorReturnAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="measure">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="sample" type="redirectAction">
+				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="measure" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="measure">${measure}</param>
 			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>

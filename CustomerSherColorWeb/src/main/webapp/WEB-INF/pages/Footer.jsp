@@ -9,6 +9,8 @@ var i18n = [];
 i18n['basicFieldValidator.yourDataInputIsInvalid'] = '<s:text name="basicFieldValidator.yourDataInputIsInvalid"/>';
 i18n['basicFieldValidator.pleaseEnterData'] = '<s:text name="basicFieldValidator.pleaseEnterData"/>';
 i18n['compareColors.chooseFirstSample'] = '<s:text name="compareColors.chooseFirstSample" />';
+i18n['compareColors.measureFirstSamle'] = '<s:text name="compareColors.measureFirstSamle" />'
+i18n['compareColors.measureSecondSample'] = '<s:text name="compareColors.measureSecondSample" />'
 i18n['colorant.cannotAddOneFullQuart'] = '<s:text name="colorant.cannotAddOneFullQuart"/>';
 i18n['colorant.colorantLevelError'] = '<s:text name="colorant.colorantLevelError"/>';
 i18n['colorant.errorAddingQuart'] = '<s:text name="colorant.errorAddingQuart"/>';

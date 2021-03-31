@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title><s:text name="compareResults"/></title>
+		<title><s:text name="compareColorsResult.compareResults"/></title>
 		<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -125,11 +125,12 @@
 				</div>
 				<div class="col-sm-1"></div>
 			</div>
+			<br>
 			<div class="row">
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
 					<strong class="" id="deMsg">
-						<s:text name="getProdFamily.deltaEGreaterThanOneWarning"></s:text>
+						<s:text name="compareColorsResult.deltaEgreaterThanOneWarning"></s:text>
 					</strong>
 				</div>
 				<div class="col-sm-1"></div>

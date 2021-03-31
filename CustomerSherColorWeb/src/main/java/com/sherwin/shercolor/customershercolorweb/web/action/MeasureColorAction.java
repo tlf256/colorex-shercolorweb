@@ -194,7 +194,13 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	public String measure() {
 
 		 try {
-		     return SUCCESS;
+			 if(measure) {
+				 return "measure";
+			 } else if(compare) {
+				 return "sample";
+			 } else {
+				 return SUCCESS;
+			 }
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;

@@ -154,23 +154,23 @@
 	  	  	}
 
 	  	  //function parses url to get value of specified param name
-	  	  $.urlParam = function(name){
+	  	  /*$.urlParam = function(name){
 	  	  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 	  	      if (results==null){
 	  	         return null;
 	  	      } else{
 	  	         return results[1] || 0;
 	  	      }
-	  	  }
+	  	  }*/
 				
 			$(document).ready(function() {	
 				console.log("in docready");
 
-				var measure = $.urlParam('measure');
-				console.log('measure is ' + measure);
+				//var measure = $.urlParam('measure');
+				console.log('measure is ' + $('#measureSample').val());
 			    
-			    if(measure != null && measure == "true"){
-			    	$('#measureModalTitle').text('Measure First Sample');
+			    if($('#measureSample').val() != null && $('#measureSample').val() == "true"){
+			    	$('#measureModalTitle').text(i18n['compareColors.measureFirstSamle']);
 			    }
 				
 				//this loads on startup!  
@@ -191,7 +191,7 @@
 		<s:form id="calibrateForm" action="spectroCalibrateRedirectAction">
 			<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 			<s:hidden name="compare" id="compareColors" value="%{compare}"/>
-			<s:hidden name="measure" id="measureColor" value="%{measure}"/>
+			<s:hidden name="measure" id="measureSample" value="%{measure}"/>
 		</s:form>
 		<s:form id="measure-color-form" action="MeasureColorNextAction" validate="true"  theme="bootstrap" method="post">
 			<div class="container-fluid">
@@ -203,7 +203,7 @@
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
-						<s:hidden name="measure" id="measureColor" value="%{measure}"/>
+						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
 					</div>
 				</div>
 				<br>

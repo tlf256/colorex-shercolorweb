@@ -185,7 +185,7 @@
 			//this loads on startup! 
 			
 			var cntr = 1;
-			
+
 			InitializeCalibrationScreen();
 
 			console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
@@ -221,6 +221,8 @@
 					<div class="col-sm-3">
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
+						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
+						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
 						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>
 				</div>
