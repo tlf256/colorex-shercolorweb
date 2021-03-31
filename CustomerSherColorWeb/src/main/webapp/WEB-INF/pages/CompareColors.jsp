@@ -92,9 +92,9 @@
 		<s:include value="Header.jsp"></s:include>
 		
 		<div class="container-fluid">
-			<div class="row mt-3">
+			<div class="row mt-4">
 				<div class="col-sm-2"></div>
-				<div class="col-sm-8"><h3>Compare Two Colors</h3></div>
+				<div class="col-sm-8"><h3>Compare Colors</h3></div>
 				<div class="col-sm-2"></div>
 			</div>
 			<br>

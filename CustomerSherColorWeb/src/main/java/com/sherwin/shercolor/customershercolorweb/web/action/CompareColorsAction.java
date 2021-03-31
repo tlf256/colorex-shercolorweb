@@ -78,7 +78,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	public String execute() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			List<ColorCoordinates> coordList = reqObj.getCoordinatesList();
+			Map<String, ColorCoordinates> coordMap = reqObj.getColorCoordMap();
 			colorComp = "";
 			colorId = "";
 			//CdsColorMast ccm = null;
@@ -122,42 +122,13 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 					
 					ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorId, "D65");
 					
-					coordList.add(colorCoord);
+					coordMap.put("standard", colorCoord);
 					
-					reqObj.setCoordinatesList(coordList);
+					reqObj.setColorCoordMap(coordMap);
 					
 					sessionMap.put(reqGuid, reqObj);
 				}
 			}
-			
-			return SUCCESS;
-		} catch(Exception e) {
-			logger.error(e.getMessage(), e);
-			return ERROR;
-		}
-	}
-	
-	public String selectCustomMatch() {
-		try {
-			//setFilter(false);
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			List<ColorCoordinates> coordList = reqObj.getCoordinatesList();
-			
-			if(coordList == null) {
-				coordList = new ArrayList<ColorCoordinates>();
-			}
-			
-			String customerId = reqObj.getCustomerID();
-			
-			CustWebTran webTran = tranHistoryService.readTranHistory(customerId, lookupControlNbr, 1);
-			
-			ColorCoordinates colorCoord = getColorCoordinates(webTran);
-			
-			coordList.add(colorCoord);
-			
-			reqObj.setCoordinatesList(coordList);
-			
-			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
 		} catch(Exception e) {
@@ -350,14 +321,6 @@ public void parseColorData(String colorData) {
 				}
 			}	
 		}
-	}
-	
-	private ColorCoordinates getColorCoordinates(CustWebTran cwt) {
-		ColorCoordinates colorCoord = new ColorCoordinates();
-		
-		colorCoord = colorCoordCalc.getColorCoordinates(cwt.getMeasCurve());
-		
-		return colorCoord;
 	}
 	
 	public void setSession(Map<String, Object> sessionMap) {

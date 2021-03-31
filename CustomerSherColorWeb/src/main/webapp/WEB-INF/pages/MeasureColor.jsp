@@ -202,6 +202,7 @@
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
+						<s:hidden name="measure" id="measureColor" value="%{measure}"/>
 					</div>
 				</div>
 				<br>

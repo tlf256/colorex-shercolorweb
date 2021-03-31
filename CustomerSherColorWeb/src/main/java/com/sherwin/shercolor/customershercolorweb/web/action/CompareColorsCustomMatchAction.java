@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +34,7 @@ public class CompareColorsCustomMatchAction extends ActionSupport implements Ses
 		try {
 			//setFilter(false);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			List<ColorCoordinates> coordList = reqObj.getCoordinatesList();
-			
-			if(coordList == null) {
-				coordList = new ArrayList<ColorCoordinates>();
-			}
+			Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
 			
 			String customerId = reqObj.getCustomerID();
 			
@@ -45,9 +42,9 @@ public class CompareColorsCustomMatchAction extends ActionSupport implements Ses
 			
 			ColorCoordinates colorCoord = getColorCoordinates(webTran);
 			
-			coordList.add(colorCoord);
+			coordMap.put("standard", colorCoord);
 			
-			reqObj.setCoordinatesList(coordList);
+			reqObj.setColorCoordMap(coordMap);
 			
 			sessionMap.put(reqGuid, reqObj);
 			

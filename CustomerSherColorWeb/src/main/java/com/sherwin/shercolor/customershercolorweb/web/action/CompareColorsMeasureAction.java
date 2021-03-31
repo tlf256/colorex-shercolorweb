@@ -1,7 +1,5 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class CompareColorsMeasureAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
@@ -29,19 +25,7 @@ public class CompareColorsMeasureAction extends ActionSupport implements Session
 	
 	public String execute() {
 		try {
-			//setFilter(false);
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			List<ColorCoordinates> coordList = reqObj.getCoordinatesList();
 			
-			if(coordList == null) {
-				coordList = new ArrayList<ColorCoordinates>();
-			}
-			
-			
-			
-			reqObj.setCoordinatesList(coordList);
-			
-			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
 		} catch(Exception e) {

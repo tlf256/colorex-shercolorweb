@@ -8,6 +8,7 @@ import java.util.Map;
 import org.owasp.encoder.Encode;
 
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.colormath.domain.ColorDifference;
 import com.sherwin.shercolor.common.domain.CdsColorStand;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
@@ -77,8 +78,9 @@ public class RequestObject {
 	private String roomByRoom;
 	private boolean packageColor;
 	private boolean pkgClrTintable;
-	private List<ColorCoordinates> coordinatesList;
+	private Map<String, ColorCoordinates> colorCoordMap;
 	private Map<String, double[]> compareColors;
+	private ColorDifference colorDiff;
 
 	public String getColorComp() {
 		return colorComp;
@@ -520,17 +522,23 @@ public class RequestObject {
 	public void setPkgClrTintable(boolean pkgClrTintable) {
 		this.pkgClrTintable = pkgClrTintable;
 	}
-	public List<ColorCoordinates> getCoordinatesList() {
-		return coordinatesList;
+	public Map<String, ColorCoordinates> getColorCoordMap() {
+		return colorCoordMap;
 	}
-	public void setCoordinatesList(List<ColorCoordinates> coordinatesList) {
-		this.coordinatesList = coordinatesList;
+	public void setColorCoordMap(Map<String, ColorCoordinates> colorCoordMap) {
+		this.colorCoordMap = colorCoordMap;
 	}
 	public Map<String, double[]> getCompareColors() {
 		return compareColors;
 	}
 	public void setCompareColors(Map<String, double[]> compareColors) {
 		this.compareColors = compareColors;
+	}
+	public ColorDifference getColorDiff() {
+		return colorDiff;
+	}
+	public void setColorDiff(ColorDifference colorDiff) {
+		this.colorDiff = colorDiff;
 	}
 
 }
