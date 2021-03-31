@@ -60,53 +60,45 @@ badge {
 	// global vars 
 	var printerConfig;
 	var clrntAmtList = "";
-	var canType = "";
+	var canType = "${sessionScope[thisGuid].canType}";
 	var shotList = [];
-	var initialShotList = [];
 	var processingDispense = false;
 	var baseDispense = null;
 	var printJsonIN = "";
 	var tinterModel = "${tinter.model}";
 
 	$(function() {	
-		// set up initial shotList; shots and decimalOunces start off zeroed out and will be updated based on canType
+		// set up shotList; shots and decimalOunces start off zeroed out and update based on canType
 		<s:iterator value="dispenseFormula">
 			var color = new Colorant("<s:property value='clrntCode'/>", <s:property value="shots"/>,
 						<s:property value="position"/>, <s:property value="uom"/>, 0.0);
-			initialShotList.push(color);
+			shotList.push(color);
 		</s:iterator>
 		
 		<s:if test="%{baseDispense != null}">
 			baseDispense = new Colorant("<s:property value='baseDispense.clrntCode'/>", <s:property value="baseDispense.shots"/>,
-				  		<s:property value="baseDispense.position"/>, <s:property value="baseDispense.uom"/>, 0.0);
-			//console.log(baseDispense);
+				<s:property value="baseDispense.position"/>, <s:property value="baseDispense.uom"/>, 0.0);
+			console.log(baseDispense);
 		</s:if>
+		
+		// tinter can base dispense, base is loaded in a canister, and job is profiled for base dispense
+		if ("${tinterDoesBaseDispense}" == "true" && baseDispense != null && "${sessionScope[thisGuid].dispenseBase}" == "1"){
+			// show checkbox
+			$("#baseDispenseRow").removeClass("d-none");
+			// add base to shotList
+			shotList.push(baseDispense);
+		}
 		
 		// set default sample fill from can type
 		updateSampleFill();
 		// convert shots to decimal ounces
-		calculatePartialOunces();
-		
-		// warn user if tinter has no can types profiled for it
-		var canTypesLength = $("select[id='canTypesList']").children('option').length;
-		if (canTypesLength == 0){ 
-			$("#canTypesErrorText").removeClass('d-none');
-			$("#dispenseSampleButton").prop('disabled', true);
-		}
-		
-		// show checkbox because tinter can base dispense and the base is loaded in a canister
-		if ("${tinterDoesBaseDispense}" == "true" && baseDispense != null){
-			$("#baseDispenseRow").removeClass("d-none");
-		}
+		calculateDecimalOunces();
 	});
 
 	
 	function updateSampleFill(){
-		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
-		canType = $("select[id='canTypesList'] option:selected").text();
 		var factoryFill = "${factoryFill}";
-		// get the sample size for this can type
-		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
+		var sampleSize = "${sampleSize}"; 
 		var sampleSizeFloat = parseFloat(sampleSize);
 		
 		if (!isNaN(sampleSizeFloat)){
@@ -121,7 +113,7 @@ badge {
 				var baseShots = Math.round(productSampleFill * baseDispense.uom); 
 				baseDispense.shots = baseShots;
 				// only set decimal ounces field for alfa tinters and lab corob 
-				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB"))){
+				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB") || tinterModel.includes("SIMULATOR"))){
 					baseDispense.decimalOunces = productSampleFill;
 				}
 			}
@@ -132,10 +124,10 @@ badge {
 	}
 	
 	
-	function calculatePartialOunces(){
+	function calculateDecimalOunces(){
 		clrntAmtList = "";
-		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
-		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
+		var sampleSize = "${sampleSize}"; 
+		
 		var sampleSizeFloat = parseFloat(sampleSize);
 		var sizeConversion = "${sizeConversion}";
 		var dispenseFloor = "${dispenseFloor}";
@@ -145,7 +137,7 @@ badge {
 		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
 		$("#dispenseFloorErrorText").addClass('d-none');
 		$("#dispenseSampleButton").prop('disabled', false);
-		$('.partialOunces').css("color", "black");
+		$('.decimalOuncesDisplay').css("color", "black");
 		$('.colorantName').css("color", "black");
 		
 		if (!isNaN(sampleSizeFloat) && !isNaN(sizeConvFloat)){
@@ -156,40 +148,40 @@ badge {
 				var shotsToOunces = Number(numShots) / Number(shotSize);
 				if (!isNaN(shotsToOunces)){
 					// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
-					var partialOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
+					var decimalOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
 					
 					// update shotlist
 					var colorantName = $(this).find('.colorantName').text();
-					initialShotList.forEach(function (item, index) {
+					shotList.forEach(function (item, index) {
 						if (colorantName.includes(item.code)){
 							// only set decimal ounces field for alfa tinters and lab corob 
-							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB"))){
-								item.decimalOunces = partialOunces;
+							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB") || tinterModel.includes("SIMULATOR"))){
+								item.decimalOunces = decimalOunces;
 							}
-							//console.log(colorantName + " unrounded: " + partialOunces);
+							//console.log(colorantName + " unrounded: " + decimalOunces);
 							
 							// calculate number of shots based on uom, round to nearest int
-							var updatedNumShots = Math.round(partialOunces * item.uom);
+							var updatedNumShots = Math.round(decimalOunces * item.uom);
 							item.shots = updatedNumShots;
 							//console.log("rounded for tinter: " + colorantName + ", " + updatedNumShots / item.uom); 
 						 }
 					});
 					
 					// warn user if colorant amount is lower than tinter dispense floor, make them choose a larger can type
-					if (!isNaN(dispenseFloorFloat) && partialOunces < dispenseFloorFloat){
+					if (!isNaN(dispenseFloorFloat) && decimalOunces < dispenseFloorFloat){
 						$("#dispenseFloorErrorText").removeClass('d-none');
 						$("#dispenseSampleButton").prop('disabled', true);
 						// highlight colorant name and amount in red that is too low
-						$(this).find('.partialOunces').css("color", "red");
+						$(this).find('.decimalOuncesDisplay').css("color", "red");
 						$(this).find('.colorantName').css("color", "red");
 					}
 					
 					// round colorant amount to 5 decimal places for screen display and labels
-					partialOunces = partialOunces.toFixed(5);
-					clrntAmtList += colorantName + "," + partialOunces.toString() + ",";
+					decimalOunces = decimalOunces.toFixed(5);
+					clrntAmtList += colorantName + "," + decimalOunces.toString() + ",";
 					
 					// calculated amount displayed to the user
-					$(this).find('.partialOunces').text(partialOunces);
+					$(this).find('.decimalOuncesDisplay').text(decimalOunces);
 					
 				} else {
 					console.log("problem calculating shots to ounces");
@@ -199,8 +191,9 @@ badge {
 			console.log("problem parsing the sample size or conversion size");
 		}
 		console.log("CLRNT AMT LIST: " + clrntAmtList);
-		console.log(initialShotList);
+		console.log(shotList);
 	}
+	
 	
 	function showPrintModal(){
 		if(printerConfig && printerConfig.model){
@@ -327,7 +320,7 @@ badge {
 	function setLabelPrintEmbedContainer(labelType,orientation,clrntAmtList,canType) {
 		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' +
 							labelType + '&printOrientation=' + orientation +
-							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '&printCorrectionLabel=' + false + '&shotList=' + shotList + '" frameborder="0" class="embed-responsive-item">';
+							'&clrntAmtList=' + clrntAmtList + '&canType=' + canType + '&printCorrectionLabel=' + false + '" frameborder="0" class="embed-responsive-item">';
 		$("#printLabelEmbedContainer").html(embedString);
 	}
 	
@@ -411,14 +404,6 @@ badge {
 	
 	
 	function preDispenseCheck() {
-		// build final shotList and add base if user wants to dispense that too
-		shotList = [];
-		for (var i = 0; i < initialShotList.length; i++){
-		    shotList.push(initialShotList[i]);
-		}
-		if ("${tinterDoesBaseDispense}" == "true" && baseDispense != null && $("#includeBaseCheckBox").prop('checked')){
-			shotList.push(baseDispense);
-		}
 		console.log(shotList);
 		
 		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
@@ -498,34 +483,10 @@ badge {
 	
 	
 	function writeDispense(myReturnMessage) {
-		// set up drawdown shot list for drawdown tran record
-		var drawdownShotList = [];
-		shotList.forEach(function (item, index) {
-			var newItem = {}; 
-			newItem.code = item.code;
-			newItem.shots = item.shots;
-			newItem.uom = item.uom;
-			$(".formulaRow").each(function(){
-				var colorantName = $(this).find('.colorantName').text();
-				if (colorantName.includes(item.code)){
-					 newItem.partialOz = $(this).find('.partialOunces').text();
-				}
-			});
-			if (baseDispense != null && baseDispense.code == item.code){
-				var sampleFill = $("#sampleFill").val();
-				newItem.partialOz = sampleFill;
-			}
-			drawdownShotList.push(newItem);
-		});
-		console.log(drawdownShotList);
-		
-		var canType = $("select[id='canTypesList'] option:selected").text();		
 		var curDate = new Date();
 		var mydata = {
 			reqGuid : "${reqGuid}",
-			jsDateString : curDate.toString(),
-			canType : canType,
-			drawdownShotList : drawdownShotList
+			jsDateString : curDate.toString()
 		};
 		var jsonIn = JSON.stringify(mydata);
 		
@@ -707,31 +668,28 @@ badge {
 		</div>
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong><s:text name="sampleDispense.canTypeColon"/></strong>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+			${sessionScope[thisGuid].canType}
+			<s:hidden id="sampleSize" value="%{sampleSize}" />
+		</div>
+		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
 	<br>
 
 	<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
 		<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
 	</s:form>
-
+	 
 	<s:form validate="true" theme="bootstrap">
-	<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
-	<div class="row mt-4">
-		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
-			<s:select id="canTypesList" onchange="updateSampleFill(); calculatePartialOunces();" list="canTypesList" autofocus="true"
-				listKey="canType" listValue="canType" label="%{getText('sampleDispense.canType')}"/>
-			<ul class="d-none" id="canTypeSampleSizes">
-			<s:iterator value="canTypesList" status="outerStat">
-				<li class="sampleSize"><s:property value="sampleSize" /></li>
-			</s:iterator>
-			</ul>
-			<div id="canTypesErrorText" style="color:red" class="d-none">
-				<s:text name="sampleDispense.noCanTypesProfiledForTinter"/>
-			</div>
-		</div>
-		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-	</div>
+	<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/> 
+
+	
 	<div class="row mt-3">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
@@ -742,7 +700,7 @@ badge {
 	<div class="row mt-2 d-none" id="baseDispenseRow">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
-			<input type="checkbox" id="includeBaseCheckBox" value="includeBase" checked>
+			<input type="checkbox" id="includeBaseCheckBox" value="includeBase" checked disabled>
 			<label for="includeBaseCheckBox"><s:text name="sampleDispense.includeBaseInDispense"/></label>
 		</div>
 		<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
@@ -775,7 +733,7 @@ badge {
 									<s:property value="tintSysId" />-<s:property value="name" /></td>
 							<td class="numShots d-none"><s:property value="shots" /></td>
 							<td class="shotSize d-none"><s:property value="shotSize" /></td>
-							<td class="partialOunces"></td>
+							<td class="decimalOuncesDisplay"></td>
 						</tr>
 					</s:iterator>
 				</tbody>
