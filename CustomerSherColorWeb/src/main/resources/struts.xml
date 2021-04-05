@@ -1264,16 +1264,6 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="selectColorMeasureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsMeasureAction" method="execute">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success" type="redirectAction">
-				<param name="actionName">spectroMeasureSampleAction</param>
-				<param name="reqGuid">${reqGuid}</param>
-			</result>
-			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
-		</action>
 		<action name="spectroMeasureSampleAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCompareColorsAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

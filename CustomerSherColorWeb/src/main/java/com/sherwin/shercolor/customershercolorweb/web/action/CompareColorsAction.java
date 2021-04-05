@@ -69,18 +69,22 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	
 	public String execute() {
 		try {
+			logger.info("excuting compare colors...");
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
 			colorComp = "";
 			colorId = "";
 			
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOMMATCH")) {
+				logger.info("match source");
 				setMatch(true);
 				return "match";
 			} else if (selectedCoTypes.equalsIgnoreCase("MEASURE")) {
+				logger.info("measure source");
 				setMeasure(true);
 				return "measure";
 			} else {
+				logger.info("sw or competitive source");
 				//SW or compet color
 				if (colorData.equals("")) {
 					colorData = partialColorNameOrId.trim();
