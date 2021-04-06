@@ -80,6 +80,8 @@ public class RequestObject {
 	private boolean pkgClrTintable;
 	private Map<String, ColorCoordinates> colorCoordMap;
 	private ColorDifference colorDiff;
+	private String canType;
+	private int dispenseBase = -1;
 
 	public String getColorComp() {
 		return colorComp;
@@ -205,7 +207,7 @@ public class RequestObject {
 	}
 	public void setIntExt(String intExt) {
 		this.intExt = intExt;
-	}
+	}	
 	public String getRgbHex() {
 		return rgbHex;
 	}
@@ -411,7 +413,9 @@ public class RequestObject {
 		this.closestSwColorName = "";
 		this.closestSwColorId = "";
 		this.productChoosenFromDifferentBase = false;
-		this.roomByRoom = null;
+		this.roomByRoom = "";
+		this.canType = "";
+		this.dispenseBase = -1;
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -532,6 +536,18 @@ public class RequestObject {
 	}
 	public void setColorDiff(ColorDifference colorDiff) {
 		this.colorDiff = colorDiff;
+	}
+	public String getCanType() {
+		return canType;
+	}
+	public void setCanType(String canType) {
+		this.canType = canType;
+	}
+	public int getDispenseBase() {
+		return dispenseBase;
+	}
+	public void setDispenseBase(int dispenseBase) {
+		this.dispenseBase = dispenseBase;
 	}
 
 }
