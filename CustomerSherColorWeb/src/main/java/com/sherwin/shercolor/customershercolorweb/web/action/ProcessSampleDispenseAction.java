@@ -194,7 +194,7 @@ public class ProcessSampleDispenseAction extends ActionSupport implements Sessio
 				retVal = SUCCESS;
 			}		
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

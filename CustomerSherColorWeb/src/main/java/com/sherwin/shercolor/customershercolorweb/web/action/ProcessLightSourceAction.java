@@ -57,7 +57,7 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 		 
 			 return INPUT;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -70,7 +70,7 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -88,7 +88,7 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

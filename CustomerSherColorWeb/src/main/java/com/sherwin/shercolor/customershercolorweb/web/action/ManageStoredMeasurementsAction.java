@@ -70,7 +70,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			return SUCCESS;
 			
 			} catch (Exception e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 				return ERROR;
 			}
 	}
@@ -92,7 +92,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 		    
 		    
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -135,7 +135,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			}
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			return ERROR;
 		}
@@ -155,7 +155,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 		    
 		    
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -264,7 +264,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			return ERROR;
 		}
@@ -281,6 +281,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			customerService.deleteCustWebSpectroRemote(customerId, dateTime, measurementSerialNbr);
 			return SUCCESS;
 		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -316,6 +317,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			
 			return SUCCESS;
 		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}

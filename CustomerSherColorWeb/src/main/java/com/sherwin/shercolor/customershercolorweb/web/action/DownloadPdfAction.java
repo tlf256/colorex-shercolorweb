@@ -63,12 +63,13 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 					pdfFileName = "INVALID";
 			}
 			if (pdfFileName.equals("INVALID")) {
+				logger.error("pdf filename is invalid");
 				return ERROR;
 			}
 			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/" + pdfFileName));
 	    	return SUCCESS;
 		 } catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

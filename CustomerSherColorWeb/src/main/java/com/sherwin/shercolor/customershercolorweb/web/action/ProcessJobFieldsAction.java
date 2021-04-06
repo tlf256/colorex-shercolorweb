@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -63,7 +61,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -91,7 +89,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -154,7 +152,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			} // end else jobFieldList is not null
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -178,7 +176,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			}
 
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;

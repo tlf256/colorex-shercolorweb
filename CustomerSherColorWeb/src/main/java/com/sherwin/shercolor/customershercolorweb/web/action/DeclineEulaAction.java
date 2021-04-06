@@ -57,7 +57,7 @@ public class DeclineEulaAction extends ActionSupport implements SessionAware, Lo
 				return ERROR;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
   

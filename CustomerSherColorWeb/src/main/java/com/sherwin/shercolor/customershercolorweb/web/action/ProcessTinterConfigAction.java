@@ -217,7 +217,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 			retVal = SUCCESS;
 
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

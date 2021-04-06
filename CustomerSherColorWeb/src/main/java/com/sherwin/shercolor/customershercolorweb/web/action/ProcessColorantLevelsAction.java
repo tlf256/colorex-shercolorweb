@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,7 +40,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 			else logger.error("reqGuid is empty");
 		}
 		catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
 		return SUCCESS;
@@ -199,7 +198,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 			return SUCCESS;
 			
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
 	}	

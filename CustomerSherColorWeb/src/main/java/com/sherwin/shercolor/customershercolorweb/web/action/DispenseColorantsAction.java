@@ -56,8 +56,7 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 					setIncrHdr(colorantService.getColorantIncrementHeader(reqObj.getClrntSys()));
 
 				} catch (Exception e) {
-					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-					logger.error(e);
+					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 				}
 				
 				//Creating sorted canisterList for display
@@ -77,16 +76,13 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 					    });
 					}
 				} catch (Exception e) {
-					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-					logger.error(e);
-
+					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 				}
 			}
 			else logger.error("reqGuid is empty");
 		}
 		catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-			logger.error(e);
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
 		
@@ -118,8 +114,7 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 			}
 		}
 		catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			logger.error(e);
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}

@@ -52,11 +52,11 @@ public class DeleteJobAction extends ActionSupport implements SessionAware, Logi
 			return SUCCESS;
 			
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
 			result = "error";
 			return ERROR;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			result = "error";
 			return ERROR;
 		}

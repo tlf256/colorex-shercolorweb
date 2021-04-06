@@ -45,16 +45,12 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 	static Logger logger = LogManager.getLogger(ProcessPctIntExtAction.class);
 	
 	public void buildIntExtTypesMap() {
-		try {
-			INTERIOR = getText("getPercentageIntExt.interior");
-			EXTERIOR = getText("getPercentageIntExt.exterior");
-			
-			intexttypes = new HashMap<String, String>();
-			intexttypes.put("INTERIOR",INTERIOR);
-			intexttypes.put("EXTERIOR",EXTERIOR);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
+		INTERIOR = getText("getPercentageIntExt.interior");
+		EXTERIOR = getText("getPercentageIntExt.exterior");
+		
+		intexttypes = new HashMap<String, String>();
+		intexttypes.put("INTERIOR",INTERIOR);
+		intexttypes.put("EXTERIOR",EXTERIOR);
 	}
 	
 	public ProcessPctIntExtAction(){}

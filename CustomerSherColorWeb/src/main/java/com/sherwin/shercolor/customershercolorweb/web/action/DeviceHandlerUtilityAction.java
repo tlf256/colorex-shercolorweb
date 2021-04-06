@@ -27,7 +27,7 @@ public class DeviceHandlerUtilityAction extends ActionSupport  implements Sessio
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

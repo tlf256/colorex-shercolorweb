@@ -490,8 +490,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			logger.error(e);
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;

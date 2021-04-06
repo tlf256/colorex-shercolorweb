@@ -200,7 +200,7 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 			return theFormula.getStatus().toLowerCase();
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

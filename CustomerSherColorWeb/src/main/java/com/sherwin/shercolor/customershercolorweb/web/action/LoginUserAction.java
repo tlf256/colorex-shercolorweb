@@ -70,10 +70,10 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			return SUCCESS;
 		
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -210,7 +210,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				return INPUT;
 			}			
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 		
@@ -229,7 +229,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		    //logger.debug("diff is " + diff);
 		    returnDays = (int) diff;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 		}
 		
 		return returnDays;
@@ -255,7 +255,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				}
 				//what if the change password date is null? Is this initialized when the user is created?
 			} catch (Exception e) {
-				logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+				logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 				returnStatus = INPUT;
 			}
 //		}
@@ -272,7 +272,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				logger.error("Attempt to disable active user " + theUserId + " failed");
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -369,6 +369,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				loginAttemptCnt = 0;
 			} 
 		} catch (Exception e1) {
+			logger.error(e1.getMessage(), e1);
 			e1.printStackTrace();
 			//reset the login attempts if there's an error - don't want to end up having a timeout.
 			loginAttemptCnt = 0;

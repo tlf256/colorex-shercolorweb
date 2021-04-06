@@ -61,94 +61,99 @@ public class DisplayEulaAction extends ActionSupport  implements SessionAware, L
 
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
 	
 	public String execute() {
 		logger.info("in DisplayEulaActuionExecute");
-		//First, verify that the entered code is valid.  We will bounce this off a table as the code
-		//will be customer specific (still need to define this part.)
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		if (!eulaAgreementCode.equals(target.getAcceptanceCode("CUSTOMERSHERCOLORWEB", reqObj.getCustomerID()))) {
-			addFieldError("eulaAgreementCode", getText("displayEulaAction.agreementCodeIncorrect"));
-			return INPUT;
-		}
-		
-		//agreement code is valid, get the Eula for display.
-		
-		Eula validEula = target.readActive("CUSTOMERSHERCOLORWEB",reqObj.getCustomerID());
-        if (validEula!=null) {
-        	// Need to set the permission level here - store this in a session variable?
-    		@SuppressWarnings("rawtypes")
-    		Map session = (Map) ActionContext.getContext().get("session");
-    		allEulas = new ArrayList<String>();
-    		eulaText1 = validEula.getEulaText1();
-    		allEulas.add(eulaText1);
-    		eulaText2 = validEula.getEulaText2();
-    		if (eulaText2!=null) {
-	    		if (!eulaText2.isEmpty()) {
-	    			allEulas.add(eulaText2);
+		try {
+			//First, verify that the entered code is valid.  We will bounce this off a table as the code
+			//will be customer specific (still need to define this part.)
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if (!eulaAgreementCode.equals(target.getAcceptanceCode("CUSTOMERSHERCOLORWEB", reqObj.getCustomerID()))) {
+				addFieldError("eulaAgreementCode", getText("displayEulaAction.agreementCodeIncorrect"));
+				return INPUT;
+			}
+			
+			//agreement code is valid, get the Eula for display.
+			
+			Eula validEula = target.readActive("CUSTOMERSHERCOLORWEB",reqObj.getCustomerID());
+	        if (validEula!=null) {
+	        	// Need to set the permission level here - store this in a session variable?
+	    		@SuppressWarnings("rawtypes")
+	    		Map session = (Map) ActionContext.getContext().get("session");
+	    		allEulas = new ArrayList<String>();
+	    		eulaText1 = validEula.getEulaText1();
+	    		allEulas.add(eulaText1);
+	    		eulaText2 = validEula.getEulaText2();
+	    		if (eulaText2!=null) {
+		    		if (!eulaText2.isEmpty()) {
+		    			allEulas.add(eulaText2);
+		    		}
 	    		}
-    		}
-    		eulaText3 = validEula.getEulaText3();
-    		if (eulaText3!=null) {
-	    		if (!eulaText3.isEmpty()) {
-	    			allEulas.add(eulaText3);
+	    		eulaText3 = validEula.getEulaText3();
+	    		if (eulaText3!=null) {
+		    		if (!eulaText3.isEmpty()) {
+		    			allEulas.add(eulaText3);
+		    		}
 	    		}
-    		}
-    		eulaText4 = validEula.getEulaText4();
-    		if (eulaText4!=null) {
-	    		if (!eulaText4.isEmpty()) {
-	    			allEulas.add(eulaText4);
+	    		eulaText4 = validEula.getEulaText4();
+	    		if (eulaText4!=null) {
+		    		if (!eulaText4.isEmpty()) {
+		    			allEulas.add(eulaText4);
+		    		}
 	    		}
-    		}
-    		eulaText5 = validEula.getEulaText5();
-    		if (eulaText5!=null) {
-	    		if (!eulaText5.isEmpty()) {
-	    			allEulas.add(eulaText5);
+	    		eulaText5 = validEula.getEulaText5();
+	    		if (eulaText5!=null) {
+		    		if (!eulaText5.isEmpty()) {
+		    			allEulas.add(eulaText5);
+		    		}
 	    		}
-    		}
-    		eulaText6 = validEula.getEulaText6();
-    		if (eulaText6!=null) {
-	    		if (!eulaText6.isEmpty()) {
-	    			allEulas.add(eulaText6);
+	    		eulaText6 = validEula.getEulaText6();
+	    		if (eulaText6!=null) {
+		    		if (!eulaText6.isEmpty()) {
+		    			allEulas.add(eulaText6);
+		    		}
 	    		}
-    		}
-    		eulaText7 = validEula.getEulaText7();
-    		if (eulaText7!=null) {
-	    		if (!eulaText7.isEmpty()) {
-	    			allEulas.add(eulaText7);
+	    		eulaText7 = validEula.getEulaText7();
+	    		if (eulaText7!=null) {
+		    		if (!eulaText7.isEmpty()) {
+		    			allEulas.add(eulaText7);
+		    		}
 	    		}
-    		}
-    		eulaText8 = validEula.getEulaText8();
-    		if (eulaText8!=null) {
-	    		if (!eulaText8.isEmpty()) {
-	    			allEulas.add(eulaText8);
+	    		eulaText8 = validEula.getEulaText8();
+	    		if (eulaText8!=null) {
+		    		if (!eulaText8.isEmpty()) {
+		    			allEulas.add(eulaText8);
+		    		}
 	    		}
-    		}
-    		eulaText9 = validEula.getEulaText9();
-    		if (eulaText9!=null) {
-	    		if (!eulaText9.isEmpty()) {
-	    			allEulas.add(eulaText9);
+	    		eulaText9 = validEula.getEulaText9();
+	    		if (eulaText9!=null) {
+		    		if (!eulaText9.isEmpty()) {
+		    			allEulas.add(eulaText9);
+		    		}
 	    		}
-    		}
-    		eulaText10 = validEula.getEulaText10();
-    		if (eulaText10!=null) {
-	    		if (!eulaText10.isEmpty()) {
-	    			allEulas.add(eulaText10);
+	    		eulaText10 = validEula.getEulaText10();
+	    		if (eulaText10!=null) {
+		    		if (!eulaText10.isEmpty()) {
+		    			allEulas.add(eulaText10);
+		    		}
 	    		}
-    		}
-    		eulaSeqNbr = validEula.getSeqNbr();
-    		
+	    		eulaSeqNbr = validEula.getSeqNbr();
+	    		
 
-    		logger.info("in DisplayEulaActuionExecute, returning SUCCESS");
-            return SUCCESS;
-        } else {
-        	logger.info("in DisplayEulaActuionExecute, returning error, validEula is null");
-            return ERROR;
-        }
+	    		logger.info("in DisplayEulaActuionExecute, returning SUCCESS");
+	            return SUCCESS;
+	        } else {
+	        	logger.info("in DisplayEulaActuionExecute, returning error, validEula is null");
+	            return ERROR;
+	        }
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 	
 	public String start() {
