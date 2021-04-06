@@ -41,7 +41,7 @@ public class SpectroUtilityAction extends ActionSupport  implements SessionAware
 			
 			retVal = SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		

@@ -114,7 +114,7 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 			}
 				
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

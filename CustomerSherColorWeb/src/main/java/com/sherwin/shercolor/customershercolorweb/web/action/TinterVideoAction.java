@@ -37,7 +37,7 @@ public class TinterVideoAction extends ActionSupport  implements SessionAware, L
 			
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

@@ -76,8 +76,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			retVal = processTinterEvent();
 		
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -211,8 +210,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			retVal = processTinterEvent();
 
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 

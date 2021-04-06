@@ -60,7 +60,7 @@ public class ProcessVinylSafeAction  extends ActionSupport implements SessionAwa
 			 
 			 return INPUT;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -72,7 +72,7 @@ public class ProcessVinylSafeAction  extends ActionSupport implements SessionAwa
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -85,7 +85,7 @@ public class ProcessVinylSafeAction  extends ActionSupport implements SessionAwa
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

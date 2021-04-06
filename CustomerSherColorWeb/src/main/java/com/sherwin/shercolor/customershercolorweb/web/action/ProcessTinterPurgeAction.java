@@ -80,7 +80,7 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 			retVal = SUCCESS;
 
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

@@ -144,11 +144,11 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			}
 
 		} catch (HibernateException he) {
-			logger.error(he.getMessage() + ": ", he);
+			logger.error(he.getMessage(), he);
 			he.printStackTrace();
 			retVal = ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -241,7 +241,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -264,7 +264,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			retVal = this.execute();
 			logger.debug("inside action back from execute");
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}

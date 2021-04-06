@@ -50,7 +50,7 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -60,7 +60,7 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

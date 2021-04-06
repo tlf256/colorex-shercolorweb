@@ -22,7 +22,7 @@ public class SelectJobAction extends ActionSupport  implements SessionAware, Log
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -32,7 +32,7 @@ public class SelectJobAction extends ActionSupport  implements SessionAware, Log
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -42,7 +42,7 @@ public class SelectJobAction extends ActionSupport  implements SessionAware, Log
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

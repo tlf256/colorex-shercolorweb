@@ -24,7 +24,7 @@ public class VerifyDefaultSpectroSettingsAction extends ActionSupport implements
 			return SUCCESS;
 			
 			} catch (Exception e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 				return ERROR;
 			}
 	}
@@ -39,7 +39,7 @@ public class VerifyDefaultSpectroSettingsAction extends ActionSupport implements
 			
 		    return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
