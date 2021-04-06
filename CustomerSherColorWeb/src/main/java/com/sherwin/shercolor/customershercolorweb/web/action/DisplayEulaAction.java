@@ -147,7 +147,7 @@ public class DisplayEulaAction extends ActionSupport  implements SessionAware, L
 	    		logger.info("in DisplayEulaActuionExecute, returning SUCCESS");
 	            return SUCCESS;
 	        } else {
-	        	logger.info("in DisplayEulaActuionExecute, returning error, validEula is null");
+	        	logger.error("in DisplayEulaActuionExecute, returning error, validEula is null");
 	            return ERROR;
 	        }
 		} catch(Exception e) {

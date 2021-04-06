@@ -46,20 +46,33 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	private TinterInfo tinter;
 	
 	public String GetEcalTemplate(){
-		setEcalList(service.getEcalTemplate(colorantid, tintermodel));
-		return SUCCESS;
+		try {
+			setEcalList(service.getEcalTemplate(colorantid, tintermodel));
+			return SUCCESS;
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 	public String GetEcalsByCustomer(){
-		//we call this function from the ProcessConfig right now.
-		setEcalList(service.getEcalsByCustomer(customerid));
-		return SUCCESS;
+		try {
+			//we call this function from the ProcessConfig right now.
+			setEcalList(service.getEcalsByCustomer(customerid));
+			return SUCCESS;
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 
 	public String GetECalList(){
-
-		setEcalList(service.getEcalList(customerid,colorantid,tintermodel,tinterserial));		
-
-		return SUCCESS;
+		try {
+			setEcalList(service.getEcalList(customerid,colorantid,tintermodel,tinterserial));
+			return SUCCESS;
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 	
 	public String SelectEcal(){
