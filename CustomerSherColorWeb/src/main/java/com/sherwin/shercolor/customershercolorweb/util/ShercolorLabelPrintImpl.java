@@ -311,13 +311,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// ================================================================================================================================================
 			// 12/07/2020 | Product Information
 			errorLocation = "Size and Base";
-			if(reqObj.getBase() != null && reqObj.getSizeText() != null) {
 				// Abbreviating base type name to 16 characters to keep font size on label line.
-				if (reqObj.getBase().length() > 15)
-					reqObj.setBase(reqObj.getBase().substring(0, 16));
-	
-				createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
-			}
+			if (reqObj.getBase().length() > 15)
+				reqObj.setBase(reqObj.getBase().substring(0, 16));
+
+			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
 			//-------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Sales and Product Number";
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getProdNbr(), 50, haRight, vaMiddle, reqObj.getSalesNbr());
@@ -534,7 +532,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// Abbreviating base type name to 16 characters to keep font size on label line.
 			if (reqObj.getBase().length() > 15)
 				reqObj.setBase(reqObj.getBase().substring(0, 16));
-
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
 			//-------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Sales and Product Number";
@@ -947,6 +944,18 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}	
 	}
 	
+	boolean hasArabicCharacters(String string) {
+		boolean ret = false;
+		for (char ch : string.toCharArray()) {
+			int temp = (int)ch;
+			if(ch >= 0x600 && ch <= 0x6FF){
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	boolean hasUnicode(String string) {
 		boolean ret = false;
 		for (char ch : string.toCharArray()) {
@@ -996,7 +1005,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//if no unicode chars, just use helvetica
 			if(text!=null && text.length()>0) {
 				if(hasUnicode(text)){
-					fontBold = getUnicode();
+					fontBold = getUnicode(text);
 					if(fontBold == null) {
 						fontBold = helvetica;
 						cell.setText(replaceUnicode(text));
@@ -1234,14 +1243,22 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	public void setFontBold(PDFont fontBold) {
 		this.fontBold = fontBold;
 	}
-	public PDFont getUnicode() {
+	public PDFont getUnicode(String text) {
 		PDFont unicodeFont=null;
 		if(unicode == null) { //only get font once and read it into memory
 			//solaris
 			
-			File f = new File("/usr/share/fonts/TrueType/arphic-uming/uming.ttf");
+			File f = null;
+			
+			if(hasArabicCharacters(text)) {
+				f = new File("/usr/share/fonts/TrueType/arabeyes/ae_Arab.ttf");
+			} 
+
+			if(f == null || !f.exists()){
+				f = new File("/usr/share/fonts/TrueType/arphic-uming/uming.ttf");
+			}
 			if(!f.exists()) {
-				 f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
+				f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
 			}
 			if(!f.exists()) {
 				f = new File("c:\\Windows\\Fonts\\l_10646.ttf"); // Lucida Sans Unicode

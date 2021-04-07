@@ -69,7 +69,7 @@ public class TestSherColorLabel {
 	@Test
 	public void testGetUnicode() {
 
-		PDFont fontBold = testClass.getUnicode();
+		PDFont fontBold = testClass.getUnicode("");
 		
 		assertNotNull(fontBold);
 	}

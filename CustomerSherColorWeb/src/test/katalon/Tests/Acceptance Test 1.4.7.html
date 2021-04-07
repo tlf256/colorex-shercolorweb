@@ -114,6 +114,212 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-685</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=99656e39f44340a2ac150e0bc5369d29')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Config<datalist><option>Tinter Config</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>select</td><td>id=modelSelect<datalist><option>id=modelSelect</option><option>name=newtinter.Model</option><option>//select[@id='modelSelect']</option><option>//form[@id='frmSubmit']/fieldset/div[3]/div/div/select</option><option>//div[3]/div/div/select</option><option>css=#modelSelect</option></datalist></td><td>label=SANTINT COLORLINK</td>
+</tr>
+<tr><td>type</td><td>id=tSerialNbr<datalist><option>id=tSerialNbr</option><option>name=newtinter.serialNbr</option><option>//input[@id='tSerialNbr']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/div/div/input</option><option>//input</option><option>css=#tSerialNbr</option></datalist></td><td>SANTINTSIM-0123</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=btn_tinterConfig<datalist><option>id=btn_tinterConfig</option><option>//input[@id='btn_tinterConfig']</option><option>//form[@id='frmSubmit']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#btn_tinterConfig</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=detectStatusModal<datalist><option>id=detectStatusModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=detectStatusClose<datalist><option>id=detectStatusClose</option><option>//button[@id='detectStatusClose']</option><option>//div[@id='detectStatusModal']/div/div/div[3]/button</option><option>//div[4]/div/div/div[3]/button</option><option>css=#detectStatusClose</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=tinterNotify<datalist><option>id=tinterNotify</option><option>link=Tinter Status</option><option>//a[contains(text(),'Tinter Status')]</option><option>//a[@id='tinterNotify']</option><option>//ul[@id='menuPanelL']/li[3]/a</option><option>//a[contains(@href, 'javascript:void(0)')]</option><option>//li[3]/a</option><option>css=#tinterNotify</option></datalist></td><td></td>
+</tr>
+<tr><td>runScript</td><td>return $('#tinterStatusList li').length;<datalist><option>return $('#tinterStatusList li').length;</option></datalist></td><td>menuLength</td>
+</tr>
+<tr><td>store</td><td>0<datalist><option>0</option></datalist></td><td>index</td>
+</tr>
+<tr><td>while</td><td>menuLength &gt; ${index}<datalist><option>menuLength &gt; ${index}</option></datalist></td><td></td>
+</tr>
+<tr><td>assertEval</td><td>$('#tinterStatusList li:eq(${index}) a').text() != 'Ecal Status:'<datalist><option>$('#tinterStatusList li:eq(${index}) a').text() != 'Ecal Status:'</option><option>$('#tinterStatusList li strong').eq(${index}).val() != 'Ecal Status:'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>assertEval</td><td>$('#tinterStatusList li:eq(${index}) a').text() != 'Colorant Levels:'<datalist><option>$('#tinterStatusList li:eq(${index}) a').text() != 'Colorant Levels:'</option><option>$('#tinterStatusList li strong').eq(${index}).val() != 'Colorant Levels:'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>storeEval</td><td>${index}+1<datalist><option>${index}+1</option></datalist></td><td>index</td>
+</tr>
+<tr><td>endWhile</td><td><datalist><option></option></datalist></td><td></td>
+</tr>
+<tr><td>runScript</td><td>return $('#tintermenu li').length;<datalist><option>return $('#tintermenu li').length;</option><option>return $('#tinterStatusList li').length;</option></datalist></td><td>menuLength</td>
+</tr>
+<tr><td>store</td><td>0<datalist><option>0</option></datalist></td><td>index</td>
+</tr>
+<tr><td>while</td><td>menuLength &gt; ${index}<datalist><option>menuLength &gt; ${index}</option></datalist></td><td></td>
+</tr>
+<tr><td>assertEval</td><td>$('#tintermenu li:eq(${index}) a').text() != 'Calibration Manager'<datalist><option>$('#tintermenu li:eq(${index}) a').text() != 'Calibration Manager'</option><option>$('#tinterStatusList li strong').eq(${index}).val() != 'Ecal Status:'</option><option>$('#tintermenu li:eq(${index} a').text() != 'Calibration Manager'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>assertEval</td><td>$('#tintermenu li:eq(${index}) a').text() != 'Colorant Levels'<datalist><option>$('#tintermenu li:eq(${index}) a').text() != 'Colorant Levels'</option><option>$('#tinterStatusList li strong').eq(${index}).val() != 'Colorant Levels:'</option><option>$('#tintermenu li:eq(${index} a').text() != 'Colorant Levels'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>storeEval</td><td>${index}+1<datalist><option>${index}+1</option></datalist></td><td>index</td>
+</tr>
+<tr><td>endWhile</td><td><datalist><option></option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>xpath=(//button[@type='button'])[2]<datalist><option>xpath=(//button[@type='button'])[2]</option><option>//ul[@id='menuPanelL']/li/button</option><option>//li/button</option><option>css=button.btn.dropdown-toggle.bg-dark.pt-2</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Purge<datalist><option>link=Purge</option><option>//a[contains(text(),'Purge')]</option><option>//li[@id='tinterPurge']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterPurgeAction.action?reqGuid=99656e39f44340a2ac150e0bc5369d29')]</option><option>//li[3]/ul/li/a</option><option>css=#tinterPurge &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Purge<datalist><option>Tinter Purge</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurge<datalist><option>id=tinterPurge</option><option>//button[@id='tinterPurge']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[3]/button</option><option>//div[3]/button</option><option>css=#tinterPurge</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>300000<datalist><option>300000</option><option>60000</option><option></option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Purge Successful</td>
+</tr>
+<tr><td>assertText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Purge Successful</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>assertNotVisible</td><td>id=tinterCleanNozzle<datalist><option>id=tinterCleanNozzle</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurgeAction_userCancelAction<datalist><option>id=tinterPurgeAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='tinterPurgeAction_userCancelAction']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[4]/input</option><option>//div[4]/input</option><option>css=#tinterPurgeAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option><option>name=jobFieldList[5].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_5__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[7]/div[3]/div/div/input</option><option>//div[7]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>PSCWEB-685</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0022</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>650368392</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='setDispenseQuantityModal']/div/div/div/div/h5<datalist><option>//div[@id='setDispenseQuantityModal']/div/div/div/div/h5</option><option>//h5</option><option>css=h5.modal-title</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='verifyModal']/div/div/div<datalist><option>//div[@id='verifyModal']/div/div/div</option><option>//div[7]/div/div/div</option><option>css=div.modal-dialog &gt; div.modal-content &gt; div.modal-header</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div[7]/div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div[7]/div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>650368392</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[4]/button</option><option>//div[4]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='positionContainerModal']/div/div/div<datalist><option>//div[@id='positionContainerModal']/div/div/div</option><option>//div[8]/div/div/div</option><option>css=#positionContainerModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[4]/button</option><option>//div[8]/div/div/div[4]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>setTimeout</td><td>300000<datalist><option>300000</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>assertText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>assertText</td><td>id=qtyDispensed<datalist><option>id=qtyDispensed</option><option>//span[@id='qtyDispensed']</option><option>//div[@id='dispenseInfoRow']/div[2]/span</option><option>//div[2]/span</option><option>css=#qtyDispensed</option></datalist></td><td>1</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-550</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=99656e39f44340a2ac150e0bc5369d29')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Config<datalist><option>Tinter Config</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>select</td><td>id=modelSelect<datalist><option>id=modelSelect</option><option>name=newtinter.Model</option><option>//select[@id='modelSelect']</option><option>//form[@id='frmSubmit']/fieldset/div[3]/div/div/select</option><option>//div[3]/div/div/select</option><option>css=#modelSelect</option></datalist></td><td>label=ALFA COLORLAB</td>
+</tr>
+<tr><td>type</td><td>id=tSerialNbr<datalist><option>id=tSerialNbr</option><option>name=newtinter.serialNbr</option><option>//input[@id='tSerialNbr']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/div/div/input</option><option>//input</option><option>css=#tSerialNbr</option></datalist></td><td>ALFATEST-54321</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=btn_tinterConfig<datalist><option>id=btn_tinterConfig</option><option>//input[@id='btn_tinterConfig']</option><option>//form[@id='frmSubmit']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#btn_tinterConfig</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='detectErrorModal']/div/div/div<datalist><option>//div[@id='detectErrorModal']/div/div/div</option><option>//div[6]/div/div/div</option><option>css=#detectErrorModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=errorModalTitle<datalist><option>id=errorModalTitle</option><option>//h5[@id='errorModalTitle']</option><option>//div[@id='detectErrorModal']/div/div/div/h5</option><option>//div[6]/div/div/div/h5</option><option>css=#errorModalTitle</option></datalist></td><td>Tinter Detected. Config Complete....with errors.</td>
+</tr>
+<tr><td>assertText</td><td>id=detectErrorMessage<datalist><option>id=detectErrorMessage</option><option>//p[@id='detectErrorMessage']</option><option>//div[@id='detectErrorModal']/div/div/div[2]/p</option><option>//div[6]/div/div/div[2]/p</option><option>css=#detectErrorMessage</option></datalist></td><td>No response from tinter at ip: 0.0.0.0:80</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=detectErrorClose<datalist><option>id=detectErrorClose</option><option>//button[@id='detectErrorClose']</option><option>//div[@id='detectErrorModal']/div/div/div[3]/button</option><option>//div[5]/div/div/div[3]/button</option><option>css=#detectErrorClose</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='tinterErrorListModal']/div/div/div<datalist><option>//div[@id='tinterErrorListModal']/div/div/div</option><option>//div[7]/div/div/div</option><option>css=#tinterErrorListModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//ul[@id='tinterErrorList']/li<datalist><option>//ul[@id='tinterErrorList']/li</option><option>//div[7]/div/div/div[2]/div/ul/li</option><option>css=#tinterErrorList &gt; li</option></datalist></td><td>No response from tinter at ip: 0.0.0.0:80</td>
+</tr>
+<tr><td>assertText</td><td>id=tinterErrorListSummary<datalist><option>id=tinterErrorListSummary</option><option>//p[@id='tinterErrorListSummary']</option><option>//div[@id='tinterErrorListModal']/div/div/div[2]/p</option><option>//div[7]/div/div/div[2]/p</option><option>css=#tinterErrorListSummary</option></datalist></td><td>Issues need to be resolved before you try to dispense formulas.</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterErrorListOK<datalist><option>id=tinterErrorListOK</option><option>//button[@id='tinterErrorListOK']</option><option>//div[@id='tinterErrorListModal']/div/div/div[3]/button</option><option>//div[7]/div/div/div[3]/button</option><option>css=#tinterErrorListOK</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>assertText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Init Error: No response from tinter at ip: 0.0.0.0:80</td>
+</tr>
+<tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=99656e39f44340a2ac150e0bc5369d29')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Config<datalist><option>Tinter Config</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>select</td><td>id=modelSelect<datalist><option>id=modelSelect</option><option>name=newtinter.Model</option><option>//select[@id='modelSelect']</option><option>//form[@id='frmSubmit']/fieldset/div[3]/div/div/select</option><option>//div[3]/div/div/select</option><option>css=#modelSelect</option></datalist></td><td>label=SIMULATOR</td>
+</tr>
+<tr><td>type</td><td>id=tSerialNbr<datalist><option>id=tSerialNbr</option><option>name=newtinter.serialNbr</option><option>//input[@id='tSerialNbr']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/div/div/input</option><option>//input</option><option>css=#tSerialNbr</option></datalist></td><td>TESTSIM-1234</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=btn_tinterConfig<datalist><option>id=btn_tinterConfig</option><option>//input[@id='btn_tinterConfig']</option><option>//form[@id='frmSubmit']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#btn_tinterConfig</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=detectStatusModal<datalist><option>id=detectStatusModal</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=detectStatusClose<datalist><option>id=detectStatusClose</option><option>//button[@id='detectStatusClose']</option><option>//div[@id='detectStatusModal']/div/div/div[3]/button</option><option>//div[4]/div/div/div[3]/button</option><option>css=#detectStatusClose</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
 <tr><td rowspan="1" colspan="3">PSCWEB-687</td></tr>
 </thead>
 <tbody>
@@ -232,6 +438,446 @@
 <tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
 </tr>
 <tr><td>verifyElementNotPresent</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-677</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Logout<datalist><option>link=Logout</option><option>//a[contains(text(),'Logout')]</option><option>//div[@id='navbarContent']/ul[2]/li[6]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/logoutAction.action?reqGuid=67a603fa41324f1e9c3f36e82cd7c6c0')]</option><option>//ul[2]/li[6]/a</option><option>css=a.nav-link</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Logged Out<datalist><option>Logged Out</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginAgainAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[2]/input</option><option>//input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td>scdrawdown</td>
+</tr>
+<tr><td>typeAndWait</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>SherColor2#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p<datalist><option>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p</option><option>//div[4]/div/div/div[2]/p</option><option>css=#checkTinterStatusInProgressModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-body &gt; p</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p<datalist><option>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>//li[@id='tinterPurge']/a/span<datalist><option>//li[@id='tinterPurge']/a/span</option><option>//li[3]/ul/li/a/span</option><option>css=span.fa.fa-tint.pr-2</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Purge<datalist><option>Tinter Purge</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurge<datalist><option>id=tinterPurge</option><option>//button[@id='tinterPurge']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[3]/button</option><option>//div[3]/button</option><option>css=#tinterPurge</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Purge Successful</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurgeAction_userCancelAction<datalist><option>id=tinterPurgeAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='tinterPurgeAction_userCancelAction']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[4]/input</option><option>//div[4]/input</option><option>css=#tinterPurgeAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_3__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_3__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>PSCWEB-677</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>0022</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>640333845</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyText</td><td>//div[12]/div[3]<datalist><option>//div[12]/div[3]</option><option>css=div.col-lg-4.col-md-6.col-sm-7.col-xs-10</option></datalist></td><td>SHER-COLOR FORMULA</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row0<datalist><option>id=col1row0</option><option>//td[@id='col1row0']</option><option>//tr[@id='0']/td</option><option>//td</option><option>css=#col1row0</option></datalist></td><td>W1-White</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[2]<datalist><option>//tr[@id='0']/td[2]</option><option>//td[2]</option></datalist></td><td>4</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[3]<datalist><option>//tr[@id='0']/td[3]</option><option>//td[3]</option></datalist></td><td>14</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[4]<datalist><option>//tr[@id='0']/td[4]</option><option>//td[4]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='0']/td[5]<datalist><option>//tr[@id='0']/td[5]</option><option>//td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row1<datalist><option>id=col1row1</option><option>//td[@id='col1row1']</option><option>//tr[@id='1']/td</option><option>//tr[2]/td</option><option>css=#col1row1</option></datalist></td><td>B1-Black</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[2]<datalist><option>//tr[@id='1']/td[2]</option><option>//tr[2]/td[2]</option></datalist></td><td>2</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[3]<datalist><option>//tr[@id='1']/td[3]</option><option>//tr[2]/td[3]</option></datalist></td><td>60</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[4]<datalist><option>//tr[@id='1']/td[4]</option><option>//tr[2]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='1']/td[5]<datalist><option>//tr[@id='1']/td[5]</option><option>//tr[2]/td[5]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>id=col1row2<datalist><option>id=col1row2</option><option>//td[@id='col1row2']</option><option>//tr[@id='2']/td</option><option>//tr[3]/td</option><option>css=#col1row2</option></datalist></td><td>R2-Maroon</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[2]<datalist><option>//tr[@id='2']/td[2]</option><option>//tr[3]/td[2]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[3]<datalist><option>//tr[@id='2']/td[3]</option><option>//tr[3]/td[3]</option></datalist></td><td>53</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[4]<datalist><option>//tr[@id='2']/td[4]</option><option>//tr[3]/td[4]</option></datalist></td><td>0</td>
+</tr>
+<tr><td>verifyText</td><td>//tr[@id='2']/td[5]<datalist><option>//tr[@id='2']/td[5]</option><option>//tr[3]/td[5]</option></datalist></td><td>1</td>
+</tr>
+<tr><td>assertElementPresent</td><td>id=roomsList<datalist><option>id=roomsList</option><option>//select[@id='roomsList']</option><option>//div/select</option><option>css=#roomsList</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>select</td><td>id=roomsList<datalist><option>id=roomsList</option><option>//select[@id='roomsList']</option><option>//div/select</option><option>css=#roomsList</option></datalist></td><td>label=Door</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserSaveAction<datalist><option>id=formulaUserPrintAction_formulaUserSaveAction</option><option>name=action:formulaUserSaveAction</option><option>//input[@id='formulaUserPrintAction_formulaUserSaveAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[2]</option><option>//div[2]/input[2]</option><option>css=#formulaUserPrintAction_formulaUserSaveAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//form[@id='formulaUserPrintAction']/fieldset/div/div[2]/div/p<datalist><option>//form[@id='formulaUserPrintAction']/fieldset/div/div[2]/div/p</option><option>//p</option><option>css=p</option></datalist></td><td>**Successfully Saved as Job Number**</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForEditable</td><td>//*[@id="job_table_filter"]/label/input<datalist><option>//*[@id="job_table_filter"]/label/input</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//*[@id="job_table_filter"]/label/input<datalist><option>//*[@id="job_table_filter"]/label/input</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>//*[@id="job_table_filter"]/label/input<datalist><option>//*[@id="job_table_filter"]/label/input</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>PSCWEB-677</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>assertEval</td><td>$("select[id='roomsList'] option:selected").text()=='Door'<datalist><option>$("select[id='roomsList'] option:selected").text()=='Door'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>select</td><td>id=roomsList<datalist><option>id=roomsList</option><option>//select[@id='roomsList']</option><option>//div/select</option><option>css=#roomsList</option></datalist></td><td>label=Other</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>typeAndWait</td><td>id=otherRoom<datalist><option>id=otherRoom</option><option>//input[@id='otherRoom']</option><option>//input</option><option>css=#otherRoom</option></datalist></td><td>Custom</td>
+</tr>
+<tr><td>click</td><td>//div[12]/div[3]<datalist><option>//div[12]/div[3]</option><option>css=div.col-lg-4.col-md-6.col-sm-7.col-xs-10</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_formulaUserSaveAction<datalist><option>id=formulaUserPrintAction_formulaUserSaveAction</option><option>name=action:formulaUserSaveAction</option><option>//input[@id='formulaUserPrintAction_formulaUserSaveAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[2]</option><option>//div[2]/input[2]</option><option>css=#formulaUserPrintAction_formulaUserSaveAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//form[@id='formulaUserPrintAction']/fieldset/div/div[2]/div/p<datalist><option>//form[@id='formulaUserPrintAction']/fieldset/div/div[2]/div/p</option><option>//p</option><option>css=p</option></datalist></td><td>**Successfully Updated Job Number**</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJob_listJobsAction<datalist><option>id=startNewJob_listJobsAction</option><option>name=action:listJobsAction</option><option>//input[@id='startNewJob_listJobsAction']</option><option>//form[@id='startNewJob']/fieldset/div/input[9]</option><option>//input[9]</option><option>css=#startNewJob_listJobsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Lookup Existing Jobs<datalist><option>Lookup Existing Jobs</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForEditable</td><td>//*[@id="job_table_filter"]/label/input<datalist><option>//*[@id="job_table_filter"]/label/input</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//*[@id="job_table_filter"]/label/input<datalist><option>//*[@id="job_table_filter"]/label/input</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>//*[@id="job_table_filter"]/label/input<datalist><option>//*[@id="job_table_filter"]/label/input</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search:'])[1]/input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Showing 1 to 3,703 of 3,703 entries'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Copy'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CSV'])[1]/preceding::input[1]</option><option>//input[@type='search']</option><option>//div[@id='job_table_filter']/label/input</option><option>//input</option><option>css=input.form-control.form-control-sm</option></datalist></td><td>PSCWEB-677</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>//*[@id="job_table"]/tbody/tr[1]<datalist><option>//*[@id="job_table"]/tbody/tr[1]</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>assertEval</td><td>$("select[id='roomsList'] option:selected").text()=='Custom'<datalist><option>$("select[id='roomsList'] option:selected").text()=='Custom'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-682</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>link=Remove Tinter</option><option>//a[contains(text(),'Remove Tinter')]</option><option>//a[@onclick='showRemoveTinterModal();']</option><option>//li[@id='tinterRemove']/a</option><option>xpath=(//a[contains(@href, '#')])[5]</option><option>//li[8]/a</option><option>css=#tinterRemove &gt; a.dropdown-item</option><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=f93e165e71fc452d8e06b6b43ceb1fa4')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>assertElementPresent</td><td>id=modelSelect<datalist><option>id=modelSelect</option><option>name=newtinter.Model</option><option>//select[@id='modelSelect']</option><option>//form[@id='frmSubmit']/fieldset/div[3]/div/div/select</option><option>//div[3]/div/div/select</option><option>css=#modelSelect</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>select</td><td>id=modelSelect<datalist><option>id=modelSelect</option><option>name=newtinter.Model</option><option>//select[@id='modelSelect']</option><option>//form[@id='frmSubmit']/fieldset/div[3]/div/div/select</option><option>//div[3]/div/div/select</option><option>css=#modelSelect</option></datalist></td><td>SIMULATOR</td>
+</tr>
+<tr><td>typeAndWait</td><td>id=tSerialNbr<datalist><option>id=tSerialNbr</option><option>name=newtinter.serialNbr</option><option>//input[@id='tSerialNbr']</option><option>//form[@id='frmSubmit']/fieldset/div[4]/div/div/input</option><option>//input</option><option>css=#tSerialNbr</option></datalist></td><td>PSCWEB682TEST</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=btn_tinterConfig<datalist><option>id=btn_tinterConfig</option><option>//input[@id='btn_tinterConfig']</option><option>//form[@id='frmSubmit']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#btn_tinterConfig</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='detectInProgressModal']/div/div/div<datalist><option>//div[@id='detectInProgressModal']/div/div/div</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>//div[@id='detectInProgressModal']/div/div/div<datalist><option>//div[@id='detectInProgressModal']/div/div/div</option><option>//div[3]/div/div/div</option><option>css=div.modal-header</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=detectStatusClose<datalist><option>id=detectStatusClose</option><option>//button[@id='detectStatusClose']</option><option>//div[@id='detectStatusModal']/div/div/div[3]/button</option><option>//div[5]/div/div/div[3]/button</option><option>css=#detectStatusClose</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p<datalist><option>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p</option><option>//div[4]/div/div/div[2]/p</option><option>css=#checkTinterStatusInProgressModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-body &gt; p</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p<datalist><option>//div[@id='checkTinterStatusInProgressModal']/div/div/div[2]/p</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>//li[@id='tinterPurge']/a/span<datalist><option>//li[@id='tinterPurge']/a/span</option><option>//li[3]/ul/li/a/span</option><option>css=span.fa.fa-tint.pr-2</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Tinter Purge<datalist><option>Tinter Purge</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurge<datalist><option>id=tinterPurge</option><option>//button[@id='tinterPurge']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[3]/button</option><option>//div[3]/button</option><option>css=#tinterPurge</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//ul[@id='tinterAlertList']/li<datalist><option>//ul[@id='tinterAlertList']/li</option><option>//div[2]/div/ul/li</option><option>css=#tinterAlertList &gt; li</option></datalist></td><td>Purge Successful</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=tinterPurgeAction_userCancelAction<datalist><option>id=tinterPurgeAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='tinterPurgeAction_userCancelAction']</option><option>//form[@id='tinterPurgeAction']/fieldset/div[4]/div[4]/input</option><option>//div[4]/input</option><option>css=#tinterPurgeAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[7]</option><option>//input[7]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_3__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_3__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>PSCWEB-682</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>7004</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>650902612</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>assertElementPresent</td><td>id=roomsList<datalist><option>id=roomsList</option><option>//select[@id='roomsList']</option><option>//div/select</option><option>css=#roomsList</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>select</td><td>id=roomsList<datalist><option>id=roomsList</option><option>//select[@id='roomsList']</option><option>//div/select</option><option>css=#roomsList</option></datalist></td><td>label=Kitchen</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseSampleButton<datalist><option>id=dispenseSampleButton</option><option>name=action:displaySampleDispenseAction</option><option>//input[@id='dispenseSampleButton']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input</option><option>//div[5]/div[2]/input</option><option>css=#dispenseSampleButton</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyChecked</td><td>id=includeBaseCheckBox<datalist><option>id=includeBaseCheckBox</option><option>//input[@id='includeBaseCheckBox']</option><option>//div[@id='baseDispenseRow']/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#includeBaseCheckBox</option></datalist></td><td>true</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseSampleButton<datalist><option>id=dispenseSampleButton</option><option>//input[@id='dispenseSampleButton']</option><option>//form[@id='displaySampleDispenseAction']/fieldset/div[7]/div[2]/input</option><option>//div[7]/div[2]/input</option><option>css=#dispenseSampleButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>650902612</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='positionContainerModal']/div/div/div/h5<datalist><option>//div[@id='positionContainerModal']/div/div/div/h5</option><option>//div[20]/div/div/div/h5</option><option>css=#positionContainerModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[4]/button</option><option>//div[20]/div/div/div[4]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=tinterInProgressTitle<datalist><option>id=tinterInProgressTitle</option><option>//h5[@id='tinterInProgressTitle']</option><option>//div[@id='tinterInProgressModal']/div/div/div/h5</option><option>//div[16]/div/div/div/h5</option><option>css=#tinterInProgressTitle</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressTitle<datalist><option>id=tinterInProgressTitle</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>waitForText</td><td>id=qtyDispensed<datalist><option>id=qtyDispensed</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Qty Dispensed:'])[1]/following::span[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='R2-Maroon'])[1]/following::span[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Last Dispense: Complete'])[1]/preceding::span[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/preceding::span[1]</option><option>//span[@id='qtyDispensed']</option><option>//div[@id='dispenseInfoRow']/div[2]/span</option><option>//div[2]/span</option><option>css=#qtyDispensed</option></datalist></td><td>1</td>
+</tr>
+<tr><td>uncheck</td><td>id=includeBaseCheckBox<datalist><option>id=includeBaseCheckBox</option><option>//input[@id='includeBaseCheckBox']</option><option>//div[@id='baseDispenseRow']/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#includeBaseCheckBox</option></datalist></td><td></td>
+</tr>
+<tr><td>verifyNotChecked</td><td>id=includeBaseCheckBox<datalist><option>id=includeBaseCheckBox</option><option>//input[@id='includeBaseCheckBox']</option><option>//div[@id='baseDispenseRow']/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#includeBaseCheckBox</option></datalist></td><td>true</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=dispenseSampleButton<datalist><option>id=dispenseSampleButton</option><option>//input[@id='dispenseSampleButton']</option><option>//form[@id='displaySampleDispenseAction']/fieldset/div[7]/div[2]/input</option><option>//div[7]/div[2]/input</option><option>css=#dispenseSampleButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>650902612</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option><option>id=formulaDispense</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>//div[@id='positionContainerModal']/div/div/div/h5<datalist><option>//div[@id='positionContainerModal']/div/div/div/h5</option><option>//div[20]/div/div/div/h5</option><option>css=#positionContainerModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[4]/button</option><option>//div[20]/div/div/div[4]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=tinterInProgressTitle<datalist><option>id=tinterInProgressTitle</option><option>//h5[@id='tinterInProgressTitle']</option><option>//div[@id='tinterInProgressModal']/div/div/div/h5</option><option>//div[16]/div/div/div/h5</option><option>css=#tinterInProgressTitle</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressTitle<datalist><option>id=tinterInProgressTitle</option></datalist></td><td></td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>2000</td>
+</tr>
+<tr><td>waitForText</td><td>id=qtyDispensed<datalist><option>id=qtyDispensed</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Qty Dispensed:'])[1]/following::span[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='R2-Maroon'])[1]/following::span[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Last Dispense: Complete'])[1]/preceding::span[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/preceding::span[1]</option><option>//span[@id='qtyDispensed']</option><option>//div[@id='dispenseInfoRow']/div[2]/span</option><option>//div[2]/span</option><option>css=#qtyDispensed</option></datalist></td><td>2</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=displaySampleDispenseAction_userCancelAction<datalist><option>id=displaySampleDispenseAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='displaySampleDispenseAction_userCancelAction']</option><option>//form[@id='displaySampleDispenseAction']/fieldset/div[7]/div[2]/input[2]</option><option>//input[2]</option><option>css=#displaySampleDispenseAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>runScript</td><td>#Check CustWebDrawdownTran to see if the first dispense included HRB as one of the colorants<datalist><option>#Check CustWebDrawdownTran to see if the first dispense included HRB as one of the colorants</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">PSCWEB-686</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>https://qa-shercolor.sherwin.com/CustomerSherColorWeb/<datalist><option>https://qa-shercolor.sherwin.com/CustomerSherColorWeb/</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Login<datalist><option>Login</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td>swapactest</td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>SherColor2#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option><option>name=jobFieldList[5].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_5__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[7]/div[3]/div/div/input</option><option>//div[7]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>PSCWEB-686a</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>6250</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//div[@id='nextBtnDiv']/input</option><option>//div[2]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>k36</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>runScript</td><td>return $("#ui-id-1 li").length<datalist><option>id=ui-id-38</option><option>//div[@id='ui-id-38']</option><option>//ul[@id='ui-id-1']/li[2]/div</option><option>//li[2]/div</option><option>css=#ui-id-38</option><option>return $("#ui-id-38").length</option><option>return $("#ui-id li").length</option><option>return $(".ui-autocomplete-input").length</option><option>return $(".ui-autocomplete-input li").length</option><option>return $("#ui-id-1 li").length</option></datalist></td><td>prodListLength</td>
+</tr>
+<tr><td>assertEval</td><td>${prodListLength} == 5<datalist><option>${prodListLength} == 5</option></datalist></td><td>true</td>
+</tr>
+<tr><td>store</td><td>0<datalist><option>0</option></datalist></td><td>index</td>
+</tr>
+<tr><td>while</td><td>prodListLength &gt; ${index}<datalist><option>menuLength &gt; ${index}</option><option>prodListLength &gt; ${index}</option></datalist></td><td></td>
+</tr>
+<tr><td>assertEval</td><td>$('#ui-id-1li').eq(${index}).text() != 'K36WQ8453 650881865 EMERALD ACRYLIC MATTE QUART INTERIOR DEEP'<datalist><option>$('#tinterStatusList li:eq(${index}) a').text() != 'Ecal Status:'</option><option>$('#tinterStatusList li strong').eq(${index}).val() != 'Ecal Status:'</option><option>$('#ui-id-1li').eq(${index}).text() != 'K36WQ8453 650881865 EMERALD ACRYLIC MATTE QUART INTERIOR DEEP'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>assertEval</td><td>$('#ui-id-1li').eq(${index}).text() != 'K36W00353 650139595 EMERALD LATEX MATTE QUART INTERIOR DEEP'<datalist><option>$('#tinterStatusList li:eq(${index}) a').text() != 'Colorant Levels:'</option><option>$('#tinterStatusList li strong').eq(${index}).val() != 'Colorant Levels:'</option><option>$('#ui-id-1li').eq(${index}).text() != 'K36W00353 650139595 EMERALD LATEX MATTE QUART INTERIOR DEEP'</option></datalist></td><td>true</td>
+</tr>
+<tr><td>storeEval</td><td>${index}+1<datalist><option>${index}+1</option></datalist></td><td>index</td>
+</tr>
+<tr><td>endWhile</td><td><datalist><option></option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_userCancelAction<datalist><option>id=productUserNextAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='productUserNextAction_userCancelAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[3]/input[2]</option><option>//input[2]</option><option>css=#productUserNextAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>#</td><td>PSCWEB-686b part of this test is here as a placeholder until APAC specific products are in place<datalist><option>PSCWEB-686b part of this test is here as a placeholder until APAC specific products are in place</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option><option>Enter Job Info</option><option>Enter Job Field Info</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option><option>Enter Job Field Info</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option><option>name=jobFieldList[5].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_5__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[7]/div[3]/div/div/input</option><option>//div[7]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>PSCWEB-686b</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=selectedCoTypes-1<datalist><option>id=selectedCoTypes-1</option><option>//input[@id='selectedCoTypes-1']</option><option>//form[@id='colorUserNextAction']/fieldset/div/div[2]/div/div/div[2]/input</option><option>//div[2]/input</option><option>css=#selectedCoTypes-1</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//div[@id='colorEntry']/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>44C-4D</td>
+</tr>
+<tr><td>pause</td><td><datalist><option></option></datalist></td><td>1000</td>
+</tr>
+<tr><td>typeAndWait</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option></datalist></td><td>NIPPON PAINT 44C-4D</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>650041361</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>//form[@id='productUserNextAction']/fieldset/div[6]/div[2]/div/p/span[2]<datalist><option>//form[@id='productUserNextAction']/fieldset/div[6]/div[2]/div/p/span[2]</option><option>//span[2]</option></datalist></td><td>WARNING - Product base type INTERIOR EXTRA WHITE is not the primary base type. Click Next to override and continue.</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Primary Light Source<datalist><option>Primary Light Source</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=GetLightSourceAction_lsUserNextAction<datalist><option>id=GetLightSourceAction_lsUserNextAction</option><option>name=action:lsUserNextAction</option><option>//input[@id='GetLightSourceAction_lsUserNextAction']</option><option>//form[@id='GetLightSourceAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#GetLightSourceAction_lsUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Better Performance With Different Base<datalist><option>Better Performance With Different Base</option><option>Confirm Color And Base</option><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=submitNext<datalist><option>id=submitNext</option><option>name=action:prodFamilyUserNextAction</option><option>//input[@id='submitNext']</option><option>//form[@id='GetProdFamily']/fieldset/div[7]/div[2]/input</option><option>//div[2]/input</option><option>css=#submitNext</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=noProductChoosenErrorText<datalist><option>id=noProductChoosenErrorText</option><option>//div[@id='noProductChoosenErrorText']</option><option>//form[@id='GetProdFamily']/fieldset/div[5]/div[2]/div</option><option>//div[5]/div[2]/div</option><option>css=#noProductChoosenErrorText</option></datalist></td><td>Please select a product.</td>
+</tr>
+<tr><td>waitForTitle</td><td>Better Performance With Different Base<datalist><option>Better Performance With Different Base</option><option>Confirm Color And Base</option><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//table[@id='prodFamily_table']/tbody/tr/td<datalist><option>//table[@id='prodFamily_table']/tbody/tr/td</option><option>//td</option><option>css=td</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=submitNext<datalist><option>id=submitNext</option><option>name=action:prodFamilyUserNextAction</option><option>//input[@id='submitNext']</option><option>//form[@id='GetProdFamily']/fieldset/div[7]/div[2]/input</option><option>//div[2]/input</option><option>css=#submitNext</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>link=Logout<datalist><option>link=Logout</option><option>//a[contains(text(),'Logout')]</option><option>//div[@id='navbarContent']/ul[2]/li[6]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/logoutAction.action?reqGuid=719697b76d2f4f33b3db43b919b4c105')]</option><option>//ul[2]/li[6]/a</option><option>css=a.nav-link</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Logged Out<datalist><option>Logged Out</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginAgainAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[2]/input</option><option>//input</option><option>css=#LoginFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Login<datalist><option>Login</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td>shercolortest</td>
+</tr>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Winter2021#</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
 </tr>
 </tbody></table>
 </body>

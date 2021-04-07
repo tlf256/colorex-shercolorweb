@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +16,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsClrntSys;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
+import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaConversion;
@@ -45,6 +48,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private int lookupControlNbr;
 	private FormulaInfo displayFormula;
 	private List<Integer> exportColList;
+	private boolean accountIsDrawdownCenter = false;
+	private boolean copyJobFields = false;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -78,6 +83,15 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
+			// check if this account is a drawdown center for display of can type 
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				String customerType = profile.getCustomerType();
+				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+					setAccountIsDrawdownCenter(true);
+				}
+			}
+			
 			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			
 			if(custWebJobFields.size()>0){
@@ -105,6 +119,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			logger.info("# of Webtran objects in tranHistory: " + tranHistory.size());
 			
 			for (CustWebTran webTran : tranHistory) {
+				// see if there's an associated drawdown transaction
+				CustWebDrawdownTran drawdownTran = tranHistoryService.readDrawdownTran(webTran.getCustomerId(), webTran.getControlNbr(), webTran.getLineNbr());
 				
 				long startJob = System.currentTimeMillis();
 				String clrntSysId = webTran.getClrntSysId();
@@ -119,6 +135,9 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				job.setQuantityDispensed(webTran.getQuantityDispensed());
 				job.setRgbHex(webTran.getRgbHex());
 				job.setSizeCode(webTran.getSizeCode());
+				if (drawdownTran != null) {
+					job.setCanType(drawdownTran.getCanType());
+				}
 				
 				switch (clrntSysId) {
 					case "CCE":
@@ -196,6 +215,18 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		
 	}
 	
+	
+	public String getJobFields() {
+		try { 
+			setCopyJobFields(true);
+			return this.display();
+		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			return ERROR;
+		}		
+	}
+	
+	
 	public String execute(){
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -203,6 +234,11 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			String customerId = reqObj.getCustomerID();
 			
 			CustWebTran webTran = tranHistoryService.readTranHistory(customerId, lookupControlNbr, 1);
+			CustWebDrawdownTran drawdownTran = tranHistoryService.readDrawdownTran(customerId, lookupControlNbr, 1);
+			if (drawdownTran != null) {
+				reqObj.setCanType(drawdownTran.getCanType());
+				reqObj.setDispenseBase(drawdownTran.getDispenseBase());
+			}
 			
 			mapCustWebTranToRequestObject(webTran, reqObj);
 						
@@ -343,18 +379,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setJobFieldList(jobFields);
 		
 		// lookup fields not stored to DB tran record
-		CdsProd cdsProd = productService.readCdsProd(webTran.getSalesNbr());
-		if(cdsProd!=null){
-			reqObj.setBase(cdsProd.getBase());
-			if(cdsProd.getComposite()==null) {cdsProd.setComposite("");}
-			reqObj.setComposite(cdsProd.getComposite());
-			reqObj.setFinish(cdsProd.getFinish());
-			reqObj.setIntExt(cdsProd.getIntExt());
-			reqObj.setKlass(cdsProd.getKlass());
-			if(cdsProd.getQuality()==null) {cdsProd.setQuality("");}
-			reqObj.setQuality(cdsProd.getQuality());
-		}
-		
+		Optional<CdsProd> cdsProd = productService.readCdsProd(webTran.getSalesNbr());
+		reqObj.setBase(cdsProd.map(CdsProd::getBase).orElse(""));
+		reqObj.setComposite(cdsProd.map(CdsProd::getComposite).orElse(""));
+		reqObj.setFinish(cdsProd.map(CdsProd::getFinish).orElse(""));
+		reqObj.setIntExt(cdsProd.map(CdsProd::getIntExt).orElse(""));
+		reqObj.setKlass(cdsProd.map(CdsProd::getKlass).orElse(""));
+		reqObj.setQuality(cdsProd.map(CdsProd::getQuality).orElse(""));
+			
 		// lookup color fields
 		CdsColorMast cdsColorMast = colorMastService.read(webTran.getColorComp(), webTran.getColorId());
 		if(cdsColorMast!=null){
@@ -535,6 +567,23 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		}
 		
 		return jobFields;
+	}
+
+	public boolean isAccountIsDrawdownCenter() {
+		return accountIsDrawdownCenter;
+	}
+
+	public void setAccountIsDrawdownCenter(boolean accountIsDrawdownCenter) {
+		this.accountIsDrawdownCenter = accountIsDrawdownCenter;
+	}
+
+
+	public boolean isCopyJobFields() {
+		return copyJobFields;
+	}
+
+	public void setCopyJobFields(boolean copyJobFields) {
+		this.copyJobFields = copyJobFields;
 	}
 
 }
