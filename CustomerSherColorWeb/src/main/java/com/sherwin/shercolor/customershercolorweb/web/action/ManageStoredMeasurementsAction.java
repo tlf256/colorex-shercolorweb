@@ -136,7 +136,6 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			return SUCCESS;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			e.printStackTrace();
 			return ERROR;
 		}
 	}
@@ -265,7 +264,6 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			return SUCCESS;
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			e.printStackTrace();
 			return ERROR;
 		}
 	}

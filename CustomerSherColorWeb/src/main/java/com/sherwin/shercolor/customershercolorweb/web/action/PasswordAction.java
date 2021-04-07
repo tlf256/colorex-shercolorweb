@@ -99,7 +99,6 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			e.printStackTrace();
 			returnStatus = ERROR;
 		}
 		logger.info("change end, returning " + returnStatus);
@@ -114,7 +113,6 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			e.printStackTrace();
 			return ERROR;
 		}
 	}
