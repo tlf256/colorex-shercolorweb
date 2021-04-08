@@ -82,27 +82,27 @@ badge {
 	var printJsonIN = "";
 	var processingDispense = false;
 	var sendingTinterCommand = "false";
-	 var ws_tinter = new WSWrapper("tinter");
-	 var tinterErrorList;
-	 var _rgbArr = [];
-	 var formSubmitting = false;
+	var ws_tinter = new WSWrapper("tinter");
+	var tinterErrorList;
+	var _rgbArr = [];
+	var formSubmitting = false;
 	 
 	// now build the dispense formula object
-		var sendingDispCommand = "false";
+	var sendingDispCommand = "false";
 
-		// using strut2 to build shotlist...
-		var shotList = [];
-		<s:iterator value="dispenseFormula" status="clrnt">
-		var color<s:property value="#clrnt.index"/> = new Colorant(
-				"<s:property value="clrntCode"/>", <s:property value="shots"/>,
-				<s:property value="position"/>, <s:property value="uom"/>);
-		shotList.push(color<s:property value="#clrnt.index"/>);
-		</s:iterator>
-		//setup rgb display for progress bars
-		<s:iterator value="tinter.canisterList" status="i">
-		
-				_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
-		</s:iterator>
+	// using strut2 to build shotlist...
+	var shotList = [];
+	<s:iterator value="dispenseFormula" status="clrnt">
+	var color<s:property value="#clrnt.index"/> = new Colorant(
+			"<s:property value="clrntCode"/>", <s:property value="shots"/>,
+			<s:property value="position"/>, <s:property value="uom"/>);
+	shotList.push(color<s:property value="#clrnt.index"/>);
+	</s:iterator>
+	//setup rgb display for progress bars
+	<s:iterator value="tinter.canisterList" status="i">
+	
+			_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
+	</s:iterator>
 
 </script>
 <script type="text/javascript">
@@ -637,6 +637,242 @@ function ParsePrintMessage() {
 	}
 	
 	
+	
+	
+	/* ------ Drawdown / Room By Room functions --------- */
+	
+	
+	$(function() {
+		// if account is profiled as room by room and a room choice is in session, show it in dropdown
+		var roomByRoomFlag = "${accountUsesRoomByRoom}";
+		var userRoomChoice = "${roomByRoom}";
+		var optionSelected = $("select[id='roomsList'] option:selected").text();
+		
+		// account uses room by room, and user already has a room choice stored in session
+		if (roomByRoomFlag == "true" && userRoomChoice != null && userRoomChoice != ""){
+			// room choice was a customized one; otherwise they match because the dropdown has already been updated
+			if (optionSelected != userRoomChoice){
+				$("select[id='roomsList']").val('Other');
+				$("#otherRoom").removeClass('d-none');
+				$("#otherRoom").val(userRoomChoice);
+			}
+		}
+		
+		if ("${accountIsDrawdownCenter}"){			
+			// warn user if tinter has no can types profiled for it
+			var canTypesLength = $("select[id='canTypesList']").children('option').length;
+			if (canTypesLength == 0){ 
+				$("#canTypesErrorText").removeClass('d-none');
+				$("#dispenseSampleButton").prop('disabled', true);
+			} else {
+				// check that saved option is still available in dropdown
+				var canTypeMatch = $('#canTypesList option').filter(function() { 
+				    return $(this).text() === "${canType}"; 
+				}).length;
+				
+				// show job's can type if one is saved
+				if ("${canType}" != null && "${canType}" != "" && canTypeMatch > 0){		
+					$("select[id='canTypesList']").val("${canType}");
+				}
+				
+				// tinter does base dispense, and the base is loaded in a canister
+				if ("${tinterDoesBaseDispense}" == "true" && "${baseDispense != null}" == "true"){
+					// show checkbox
+					$("#baseDispenseRow").removeClass("d-none");
+					
+					// uncheck base dispense because user saved it as false or unchecked it in this session
+					if ("${dispenseBase}" == "0"){
+						$("#includeBaseCheckBox").prop("checked", false);
+					}
+				}
+				
+				// update table, save default to session
+				canTypesUpdate();	
+			}
+			$("#roomsList").focus();
+		}
+	});
+	
+	
+	function canTypesUpdate(){
+		// update colorant and base amounts
+		calculateDecimalOunces();
+		updateSampleFill();
+		
+		// save can type to session
+		saveCanType($("select[id='canTypesList'] option:selected").text());
+	}
+				
+	
+	function calculateDecimalOunces(){
+		clrntAmtList = "";
+		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
+		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
+		
+		var sampleSizeFloat = parseFloat(sampleSize);
+		var sizeConversion = "${sizeConversion}";
+		var dispenseFloor = "${dispenseFloor}";
+		var dispenseFloorFloat = parseFloat(dispenseFloor);
+		var sizeConvFloat = parseFloat(sizeConversion);
+		
+		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
+		$("#dispenseFloorErrorText").addClass('d-none');
+		$("#dispenseSampleButton").prop('disabled', false);
+		$("#drawdownSaveButton").prop('disabled', false);
+		$('.decimalOuncesDisplay').css("color", "black");
+		$('.colorantName').css("color", "black");
+		
+		if (!isNaN(sampleSizeFloat) && !isNaN(sizeConvFloat)){
+			$(".formulaRow").each(function(){
+				var colorantName = $(this).find('.colorantName').text();
+				var numShots = $(this).find('.origNumShots').text();
+				var shotSize = $(this).find('.shotSize').val();
+				var shotsToOunces = Number(numShots) / Number(shotSize);
+				if (!isNaN(shotsToOunces)){
+					// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
+					var decimalOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
+				
+					// update table for save submission
+					var updatedNumShots = Math.round(decimalOunces * shotSize);
+					$(this).find('.numShots').val(updatedNumShots);
+					
+					// warn user if colorant amount is lower than tinter dispense floor, make them choose a larger can type
+					if (!isNaN(dispenseFloorFloat) && decimalOunces < dispenseFloorFloat){
+						$("#dispenseFloorErrorText").removeClass('d-none');
+						$("#dispenseSampleButton").prop('disabled', true);
+						$("#drawdownSaveButton").prop('disabled', true);
+						// highlight colorant name and amount in red that is too low
+						$(this).find('.decimalOuncesDisplay').css("color", "red");
+						$(this).find('.colorantName').css("color", "red");
+					}
+					
+					// round colorant amount to 5 decimal places for screen display and labels
+					decimalOunces = decimalOunces.toFixed(5);
+					clrntAmtList += colorantName + "," + decimalOunces.toString() + ",";
+					
+					// calculated amount displayed to the user and saved to table
+					$(this).find('.decimalOuncesDisplay').text(decimalOunces);
+					$(this).find('.decimalOunces').val(decimalOunces);
+					
+				} else {
+					console.log("problem calculating shots to ounces");
+				}
+			});
+		} else {
+			console.log("problem parsing the sample size or conversion size");
+		}
+		//console.log("CLRNT AMT LIST: " + clrntAmtList);
+	}
+	
+
+	function updateSampleFill(){
+		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
+		canType = $("select[id='canTypesList'] option:selected").text();
+		var factoryFill = "${factoryFill}";
+		// get the sample size for this can type
+		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
+		var sampleSizeFloat = parseFloat(sampleSize);
+		
+		if (!isNaN(sampleSizeFloat)){
+			// calculate amount of base in the sample:   Sample Size / 128 * Factory Fill
+			// don't need to do size conversion because factory fill is already scaled to a gallon
+			var productSampleFill = sampleSizeFloat / 128 * factoryFill;
+			// round to 5 digits without trailing zeroes
+			$("#sampleFill").val(parseFloat(productSampleFill.toFixed(5)));
+			
+			// calculate shots in case user wants to dispense the base
+			if ("${baseDispense != null}"){
+				var baseShots = Math.round(productSampleFill * $("#baseUom").val()); 
+				$("#baseShots").val(baseShots);
+				$("#baseOunces").val(productSampleFill);
+			}
+		} else {
+			console.log("problem parsing the sample size");
+		}
+	}
+	
+	
+	function saveCanType(canType){
+		var myGuid = "${reqGuid}";
+		$.ajax({
+			url : "saveCanType.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				canType : canType
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved can type");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	function saveDispenseBase(){
+		var myGuid = "${reqGuid}";
+		// set 1 if checked, 0 if unchecked 
+		var dispenseBase = $("#includeBaseCheckBox").prop("checked") ? 1 : 0;
+		
+		$.ajax({
+			url : "saveDispenseBase.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				dispenseBase : dispenseBase
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved dispense base");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	function saveRoomSelection(roomChoice){
+		var myGuid = "${reqGuid}";
+		$.ajax({
+			url : "saveRoomByRoom.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				roomByRoom : roomChoice
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved room");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	
+	/* -------- Validation functions ----------- */
+	
 	function validateRoomChoice(){
 		// clear out old error messages
 		$("#roomsDropdownErrorText").addClass("d-none");
@@ -709,51 +945,7 @@ function ParsePrintMessage() {
 		} else {
 			return true;
 		}
-	}
-	
-	
-	function saveRoomSelection(roomChoice){
-		var myGuid = "${reqGuid}";
-		
-		$.ajax({
-			url : "saveRoomByRoom.action",
-			type : "POST",
-			data : {
-				reqGuid : myGuid,
-				roomByRoom : roomChoice
-			},
-			datatype : "json",
-			async : true,
-			success : function(data) {
-				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-				} else {
-					//console.log("successfully saved room");
-				}
-			},
-			error : function(err) {
-				alert('<s:text name="global.failureColon"/>' + err);
-			}
-		});
-	}
-	
-	
-	$(function() {
-		// if account is profiled as room by room and a room choice is in session, show it in dropdown
-		var roomByRoomFlag = "${accountUsesRoomByRoom}";
-		var userRoomChoice = "${roomByRoom}";
-		var optionSelected = $("select[id='roomsList'] option:selected").text();
-		
-		// account uses room by room, and user already has a room choice stored in session
-		if (roomByRoomFlag == "true" && userRoomChoice != null && userRoomChoice != ""){
-			// room choice was a customized one; otherwise they match because the dropdown has already been updated
-			if (optionSelected != userRoomChoice){
-				$("select[id='roomsList']").val('Other');
-				$("#otherRoom").removeClass('d-none');
-				$("#otherRoom").val(userRoomChoice);
-			}
-		}
-	});
+	}			
 	
 		
 	/* check that the user has set the room by room dropdown 
@@ -911,36 +1103,7 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
-		<s:if test="%{accountUsesRoomByRoom==true}">
-			<div class="row mt-3">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
-				</div>
-				<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-					<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
-						listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
-					<div id="roomsDropdownErrorText" style="color:red" class="d-none">
-						<s:text name="displayFormula.pleaseSelectARoom"/>
-					</div>
-					<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateCustomRoom()"/>
-					<s:hidden name="roomChoice" value="" />
-					<div id="otherRoomErrorText" style="color:red" class="d-none">
-						<s:text name="displayFormula.thisFieldCannotBeBlank"/>
-					</div>
-				</div>
-				<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-			</div>
-		</s:if>
-	<br>
-	<div class="row mt-3">
-		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
-		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
-			${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
-		</div>
-		<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
-	</div>
+	
 	<s:if 
 		test="%{
 		#session[reqGuid].displayFormula.deltaEWarning == null ||
@@ -949,6 +1112,99 @@ function ParsePrintMessage() {
 		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
+			<s:if test = "%{accountIsDrawdownCenter==true}">
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.factoryFillColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:property value="%{factoryFill}"/>
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<s:if test="%{accountUsesRoomByRoom==true}">
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+							listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseSelectARoom"/>
+						</div>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateCustomRoom()"/>
+						<s:hidden name="roomChoice" value="" />
+						<div id="otherRoomErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+						</div>
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<s:if test = "%{accountIsDrawdownCenter==true && sessionHasTinter == true}">
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.canTypeColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="canTypesList" onchange="canTypesUpdate();" list="canTypesList" autofocus="true"
+							listKey="canType" listValue="canType" />
+						<ul class="d-none" id="canTypeSampleSizes">
+						<s:iterator value="canTypesList" status="outerStat">
+							<li class="sampleSize"><s:property value="sampleSize" /></li>
+						</s:iterator>
+						</ul>
+						<div id="canTypesErrorText" style="color:red" class="d-none">
+							<s:text name="sampleDispense.noCanTypesProfiledForTinter"/>
+						</div>
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.productSampleFill"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:textfield id="sampleFill" readonly="true" />
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3 d-none" id="baseDispenseRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
+						<input type="checkbox" id="includeBaseCheckBox" name="dispenseBase" onchange="saveDispenseBase();" checked>
+						<label for="includeBaseCheckBox"><s:text name="sampleDispense.includeBaseInDispense"/></label>
+					</div>	
+					<div>
+					<s:if test="%{baseDispense != null}">
+						<s:hidden name="baseDispense.clrntCode" />
+						<s:hidden id="baseShots" name="baseDispense.shots" />
+						<s:hidden id="baseUom" name="baseDispense.uom" />
+						<s:hidden id="baseOunces" name="baseDispense.decimalOunces" />
+					</s:if>
+					</div>	
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<br>
+			
+			<s:if test="%{accountIsDrawdownCenter==false}">
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
+						${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
+					</div>
+					<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+				</div>
+			</s:if>
+							
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
@@ -968,6 +1224,10 @@ function ParsePrintMessage() {
 					<s:hidden value="%{#session[reqGuid].packageColor}" id="isPackageColor" />
 					<s:hidden value="%{#session[reqGuid].pkgClrTintable}" id="isTintable" />
 				</div>
+				
+				
+				
+	
 				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
 					<s:if test="hasActionMessages()">
 						<s:actionmessage />
@@ -978,8 +1238,8 @@ function ParsePrintMessage() {
 			<br>
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				<s:if test="!displayFormula.ingredients.isEmpty">
+				<div class="col-lg-4 col-md-6 col-sm-10 col-xs-12">
+				<s:if test="%{!displayFormula.ingredients.isEmpty && (!accountIsDrawdownCenter || !sessionHasTinter)}">
 					<table class="table" id="ingredients_table">
 						<thead>
 							<tr>
@@ -1004,10 +1264,42 @@ function ParsePrintMessage() {
 						</tbody>
 					</table>
 				</s:if>
+				
+				<s:if test = "%{accountIsDrawdownCenter && sessionHasTinter}">
+					<table class="table" id="decimalOuncesTable">
+						<thead>
+							<tr>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*<s:text name="global.colorant"/></strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="drawdownShotList" status="i">
+								<tr id="<s:property value="%{#i.index}"/>" class="formulaRow">
+									<td class="colorantName col-lg-5 col-md-6 col-sm-4 col-xs-4">
+										<s:property value="clrntCode" />-<s:property value="clrntName"/>
+									</td>
+									<s:hidden name="drawdownShotList[%{#i.index}].clrntCode" />
+									<s:hidden name="drawdownShotList[%{#i.index}].clrntName" />
+									<td class="origNumShots d-none"><s:property value="shots" /></td>
+									<s:hidden class="numShots" name="drawdownShotList[%{#i.index}].shots" />
+									<s:hidden class="shotSize" name="drawdownShotList[%{#i.index}].uom" />
+									<td class="decimalOuncesDisplay"></td>
+									<s:hidden class="decimalOunces" name="drawdownShotList[%{#i.index}].decimalOunces" />
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+					<div id="dispenseFloorErrorText" style="color:red" class="d-none">
+						<s:text name="sampleDispense.colorantLowerThanDispenseFloor"/>
+					</div>
+				</s:if>
+				
 				</div>
 			</div>
 			<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
 			<br>
+
 			<s:if test="%{siteHasTinter==true}">
 				<div class="row" id="dispenseInfoRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1033,6 +1325,7 @@ function ParsePrintMessage() {
 				</div>
 			</s:else>
 			<br>
+			
 			<s:if test = "%{accountIsDrawdownCenter==true}">
 			<!-- validation methods: validationWithoutModal() verifies room by room dropdown is set and lets the user nav away from the page
 			without modal prompt for unsaved changes. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box.  
@@ -1040,10 +1333,12 @@ function ParsePrintMessage() {
 				<div class="d-flex flex-row justify-content-around mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<s:if test = "%{sessionHasTinter}">
 						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
-							onclick="return validationWithoutModal();" action="displaySampleDispenseAction" />
-						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
+							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
+						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
+						</s:if>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
@@ -1368,6 +1663,7 @@ function ParsePrintMessage() {
 		</s:form>
 	</s:if>
 	<s:else>
+	<br><br>
 		<s:form action="formulaUserPrintAsJsonAction" validate="true"
 			theme="bootstrap">
 			<div class="row">
@@ -1674,7 +1970,7 @@ function ParsePrintMessage() {
 						$("#dispenseInfoRow").hide();
 					} else {
 						// check if any colorants are available for dispense
-						if($("#ingredients_table").is(":visible")){
+						if($("#decimalOuncesTable").is(":visible")){
 							$("#dispenseSampleButton").show();
 						}
 					}

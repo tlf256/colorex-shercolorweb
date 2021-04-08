@@ -242,6 +242,13 @@
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="copyExistingJobFieldsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="getJobFields">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="deleteJobAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeleteJobAction" method="execute">
 			<interceptor-ref name="defaultStack"/>
 		    <interceptor-ref name="json" />
@@ -790,7 +797,31 @@
 			</result>
 			<result name="success" type="json"></result>
 		</action>
-		<action name="displaySampleDispenseAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessSampleDispenseAction" method="display">
+		<action name="saveCanType" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveCanType">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="saveDispenseBase" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveDispenseBase">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
+		<action name="saveDrawdownAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="execute">
+	        <result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displaySampleDispenseAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displaySampleDispenseAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="displaySampleDispense">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
