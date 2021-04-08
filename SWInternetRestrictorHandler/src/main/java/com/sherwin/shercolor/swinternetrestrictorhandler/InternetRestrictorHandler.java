@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InternetRestrictorHandler implements HttpHandler {
@@ -17,7 +18,8 @@ public class InternetRestrictorHandler implements HttpHandler {
     private HttpHandler next;
 
     public InternetRestrictorHandler(HttpHandler next) {
-        this.next = next;
+        LOGGER.setLevel(Level.WARNING);
+    	this.next = next;
     }
     
 
@@ -43,7 +45,7 @@ public class InternetRestrictorHandler implements HttpHandler {
 			LOGGER.info("Request is External App Request");
 			next.handleRequest(exchange);
 		} else {
-			LOGGER.info("Request is Unauthorized");
+			LOGGER.warning("Request is Unauthorized");
 			unauthorized(exchange);
 		}
         
