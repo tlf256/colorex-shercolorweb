@@ -1161,6 +1161,7 @@
 										<li id="spectroVerifyDefaultSettings"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroVerifyDefaultSettingsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-check-square-o'></span>  <s:text name="global.verifyDefaultSpectroSettings"/></a></li>
 										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="global.colorEyeInformation"/></a></li>
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
+										<li id="compareColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCompareColorsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-adjust pr-1'></span> <s:text name=""/>Compare Two Colors</a></li>
 				        			</ul>
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">

@@ -116,7 +116,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				 curvesList.add(curve);
 			 }
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -155,7 +155,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		catch (SherColorException e){
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(message, e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -209,7 +209,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 
 		if (colorData.equals("")) {
@@ -424,7 +424,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				return SUCCESS;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -453,7 +453,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			}
 		     
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -465,7 +465,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			 
 		    return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -481,7 +481,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -493,7 +493,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	public void setOptions(List<autoComplete> options) {
 		this.options = options;
 	}
-	
 
 	public String getPartialColorNameOrId() {
 		return partialColorNameOrId;
@@ -511,7 +510,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		this.message = Encode.forHtml(message);
 	}
 
-	
 	public ColorMastService getColorMastService() {
 		return colorMastService;
 	}
