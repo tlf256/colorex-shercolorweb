@@ -446,7 +446,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setColorVinylOnly(false);
 			sessionMap.put(reqGuid, reqObj);
 			
-			if(reqObj.getJobFieldList().size() > 0) {
+			if(reqObj.getJobFieldList() != null && reqObj.getJobFieldList().size() > 0) {
 				return SUCCESS;
 			} else {
 				return "restart";
