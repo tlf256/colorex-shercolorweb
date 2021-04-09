@@ -207,6 +207,11 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 		String retVal=null;
 
 		try{
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
 			getItemsFromSession();
 			retVal = processTinterEvent();
 
