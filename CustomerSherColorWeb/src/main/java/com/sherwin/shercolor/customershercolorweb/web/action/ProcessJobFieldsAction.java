@@ -12,6 +12,7 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -31,6 +32,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	private FormulaInfo displayFormula;
 	private int updateMode;
 	private int lookupControlNbr = 0;
+	private boolean accountIsDrawdownCenter = false;
 	
 	@Autowired
 	CustomerService customerService;
@@ -49,6 +51,15 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			List<CustWebJobFields> custWebJobFields;
 			CustWebTran webTran = null;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			// show Copy From Existing Job Fields button if account is a drawdown center
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				String customerType = profile.getCustomerType();
+				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+					setAccountIsDrawdownCenter(true);
+				}
+			}
 			
 			// look up custwebtran if we are copying in existing job fields
 			if (lookupControlNbr > 0) {
@@ -281,6 +292,14 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 
 	public void setLookupControlNbr(int lookupControlNbr) {
 		this.lookupControlNbr = lookupControlNbr;
+	}
+
+	public boolean isAccountIsDrawdownCenter() {
+		return accountIsDrawdownCenter;
+	}
+
+	public void setAccountIsDrawdownCenter(boolean accountIsDrawdownCenter) {
+		this.accountIsDrawdownCenter = accountIsDrawdownCenter;
 	}
 
 }
