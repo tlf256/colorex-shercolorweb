@@ -53,6 +53,7 @@ public class AcceptEulaAction extends ActionSupport implements SessionAware {
 				if (target.disableActivationRecord("CUSTOMERSHERCOLORWEB", origReqObj.getCustomerID())) {
 					return SUCCESS;
 				} else {
+					logger.error("Database Error: Could not disable activation record");
 					return ERROR;
 				}
 			} else  {

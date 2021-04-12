@@ -103,6 +103,7 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 				}
 		} catch(Exception e) {
 			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
 
 		return SUCCESS;

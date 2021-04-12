@@ -28,7 +28,7 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 
 //Opens Help Menu links on the welcome page - edo78r
 	
-	public String execute() throws Exception {
+	public String execute() {
 		String pdfFileName = "";
 		try {
 			switch(pdfFile) {
@@ -71,7 +71,7 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 		 } catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
-		}
+		 }
 	}
 
 	public void setSession(Map<String, Object> sessionMap) {

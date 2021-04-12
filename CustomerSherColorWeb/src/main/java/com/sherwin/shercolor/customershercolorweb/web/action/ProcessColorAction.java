@@ -155,10 +155,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		catch (SherColorException e){
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			message = e.getMessage();
+			logger.error(e.getMessage(), e);
 		}
 		
 		return SUCCESS;
@@ -424,7 +425,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				return SUCCESS;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -453,7 +454,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			}
 		     
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -465,23 +466,19 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			 
 		    return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
 	
-	public void buildCompaniesList() {
-		try {
-			colorCompanies.add(getText("processColorAction.all")); 
-			 
-			String [] colorCompaniesArray = colorMastService.listColorCompanies(false);
-			for (String company : colorCompaniesArray) {
-				if (!company.equals("SHERWIN-WILLIAMS")){
-					colorCompanies.add(company);
-				}
+	private void buildCompaniesList() {
+		colorCompanies.add(getText("processColorAction.all")); 
+		 
+		String [] colorCompaniesArray = colorMastService.listColorCompanies(false);
+		for (String company : colorCompaniesArray) {
+			if (!company.equals("SHERWIN-WILLIAMS")){
+				colorCompanies.add(company);
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
 		}
 	}
 	

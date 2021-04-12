@@ -110,12 +110,12 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 				}
 				retVal = SUCCESS;
 			} else {
+				logger.error("Database Error: ColorantsTxt could not be updated");
 				retVal = ERROR;
 			}
 				
 		} catch (Exception e) {
 			logger.error(e.toString() + " " + e.getMessage(), e);
-			e.printStackTrace();
 			retVal = ERROR;
 		}
 		return retVal;

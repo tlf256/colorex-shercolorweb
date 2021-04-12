@@ -54,6 +54,7 @@ public class DeclineEulaAction extends ActionSupport implements SessionAware, Lo
 			if (target.createEulaHist(newEulaRec)) {
 				return SUCCESS;
 			} else  {
+				logger.error("Database Error: Could not create EulaHist record");
 				return ERROR;
 			}
 		} catch (Exception e) {

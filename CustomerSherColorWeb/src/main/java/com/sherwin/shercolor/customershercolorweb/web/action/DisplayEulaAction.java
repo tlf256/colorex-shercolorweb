@@ -2,13 +2,9 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -50,7 +46,7 @@ public class DisplayEulaAction extends ActionSupport  implements SessionAware, L
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			Eula validEula = target.readActive("CUSTOMERSHERCOLORWEB",reqObj.getCustomerID());
-			logger.error("in print");
+			logger.info("in print");
     		//Don't forget to set the PDF document.
     		eulaPDF = validEula.getEulaPdf();
     		if (eulaPDF==null) {

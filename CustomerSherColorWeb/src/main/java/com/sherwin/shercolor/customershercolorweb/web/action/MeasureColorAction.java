@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CustWebParms;
@@ -20,7 +19,6 @@ import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
-import com.sherwin.shercolor.util.domain.SwMessage;
 
 
 public class MeasureColorAction extends ActionSupport implements SessionAware, LoginRequired {
@@ -67,7 +65,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -77,7 +75,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -131,7 +129,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			return SUCCESS;
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -142,7 +140,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			 measureColor = true;
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -152,7 +150,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		 try {
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

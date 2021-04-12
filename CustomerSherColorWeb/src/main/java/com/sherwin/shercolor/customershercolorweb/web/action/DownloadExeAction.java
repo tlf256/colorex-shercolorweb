@@ -25,7 +25,7 @@ public class DownloadExeAction extends ActionSupport  implements SessionAware, L
 		return fileInputStream;
 	}
 
-	public String execute() throws Exception {
+	public String execute() {
 		try {
 			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/SWDHSetup.exe"));
 	    	return SUCCESS;

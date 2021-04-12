@@ -847,6 +847,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="percentAdjustmentAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="percentAdjustment">
 	        <interceptor-ref name="defaultStack"/>
@@ -865,6 +866,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="postCorrectionStatusAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="postContainerStatus">
 	        <interceptor-ref name="defaultStack"/>
@@ -874,6 +876,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="saveCorrectionStepAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="saveCorrectionStep">
 	        <interceptor-ref name="defaultStack"/>
@@ -883,6 +886,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="mergeCorrWithStartingFormAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="mergeCorrWithStartForm">
 	        <interceptor-ref name="defaultStack"/>
@@ -934,6 +938,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="stampSessionTinterInitAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="stampSessionTinterInit">
 	        <interceptor-ref name="defaultStack"/>
@@ -943,6 +948,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="getSessionTinterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="getSession">
 			<result name="loginRedirect" type="redirectAction">
@@ -999,6 +1005,7 @@
 				<param name="contentDisposition">attachment;filename="${vidFileName}"</param>
 				<param name="bufferSize">1024</param>
 			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="tinterPurgeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterPurgeAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
