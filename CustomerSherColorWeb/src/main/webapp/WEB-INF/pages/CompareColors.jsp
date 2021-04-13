@@ -35,55 +35,43 @@
 				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
 					selectedValue = $("[id^=selectedCoTypes]:checked").val();
-					console.log("selected value - " + selectedValue);
-					
-					if (selectedValue === "COMPET"){
-						$('#colorCompanies').removeClass('d-none');
-					} else {
-						$('#colorCompanies').addClass('d-none');
+					//console.log("selected value - " + selectedValue);
+
+					switch(selectedValue){
+						case "SW":
+							enableTextInput();
+							$('#colorCompanies').addClass('d-none');
+							break;
+						case "COMPET":
+							$('#colorCompanies').removeClass('d-none');
+							enableTextInput();
+							break;
+						case "CUSTOMMATCH":
+							disableTextInput();
+							$('#colorCompanies').addClass('d-none');
+							break;
+						case "MEASURE":
+							disableTextInput();
+							$('#colorCompanies').addClass('d-none');
+							break;
+						default:
+							enableTextInput();
+							$('#colorCompanies').addClass('d-none');
+							break;
 					}
-					
-					if(this.checked) {
-						$('.form-control-feedback, .help-block').remove();
-						$('.has-feedback').removeClass('has-error has-feedback');
-						$('#partialColorNameOrId').val('');
-				    }
 					
 				});
-				
-				//validate partialColorNameOrId if custom manual or custom match
-				//prevent special characters < or > from being entered
-				$(document).on({
-					'keypress blur': function(){
-						if(selectedValue == "CUSTOMMATCH"){
-							try{
-								if(event.key == ">" || event.key == "<"){
-									//console.log("< or > keypress");
-									throw '<s:text name="global.noLtOrGt"/>'; 
-								}
-								if($(this).val().includes(">") || $(this).val().includes("<")){
-									throw '<s:text name="global.invalidEntryLtGt"/>';
-								}
-								$(document).find('#errortxt').remove();
-								$('input:submit').attr('disabled', false);
-							} catch(msg){
-								if(event.type=="keypress"){
-									event.preventDefault();
-								}
-								if(!$(document).find('#errortxt').is(':visible')){
-									$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
-								}
-								$(document).find('#errortxt').text(msg);
-								if(event.type=="blur"){
-									$(this).focus();
-									$('input:submit').attr('disabled', true);
-								}
-							}
-						}
-					}
-				}, '#partialColorNameOrId');
-				
 			});
+
+			function disableTextInput(){
+				$('#partialColorNameOrId').val('MANUAL');
+				$('#partialColorNameOrId').prop('disabled', true);
+			}
+
+			function enableTextInput(){
+				$('#partialColorNameOrId').val('');
+				$('#partialColorNameOrId').prop('disabled', false);
+			}
 		</script>
 	</head>
 	
