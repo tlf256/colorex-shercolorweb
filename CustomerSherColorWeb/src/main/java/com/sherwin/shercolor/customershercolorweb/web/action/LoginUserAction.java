@@ -220,17 +220,13 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		int returnDays = 90;
 		Date currentDate = new Date();
 		
-		try {
-			//logger.debug("currentDate is " + currentDate);
-			//logger.debug("changePasswordDate is " + changePasswordDate);
-			long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
-			//logger.debug("diffInMillies is " + diffInMillies);
-		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-		    //logger.debug("diff is " + diff);
-		    returnDays = (int) diff;
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-		}
+		//logger.debug("currentDate is " + currentDate);
+		//logger.debug("changePasswordDate is " + changePasswordDate);
+		long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
+		//logger.debug("diffInMillies is " + diffInMillies);
+	    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	    //logger.debug("diff is " + diff);
+	    returnDays = (int) diff;
 		
 		return returnDays;
 	}

@@ -186,11 +186,11 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				
 		
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
 			logger.debug("End ERROR (Hibernate Exception) - LookupJobAction: display");
 			return ERROR;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			logger.debug("End ERROR (Exception) - LookupJobAction: display");
 			return ERROR;
 		}
@@ -217,7 +217,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 		

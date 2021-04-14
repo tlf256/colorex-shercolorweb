@@ -41,7 +41,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(SpectroConfigureAction.class);
+	static Logger logger = LogManager.getLogger(ManageStoredMeasurementsAction.class);
 	private String reqGuid;
 
 	private CustWebSpectroRemote custWebSpectroRemote;

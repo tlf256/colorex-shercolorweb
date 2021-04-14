@@ -85,39 +85,35 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String measuredName;
 	
 	
-	public void buildCotypesMap() {
-		try {
-			SW = getText("processColorAction.SherwinWilliams");
-			COMPETITIVE = getText("processColorAction.competitive");
-			CUSTOM = getText("processColorAction.customManual");
-			CUSTOMMATCH = getText("processColorAction.customMatch");
-			SAVEDMEASURE = getText("processColorAction.savedCi62Measurement");
-			
-			cotypes.put("SW",SW);
-			cotypes.put("COMPET",COMPETITIVE);
-			cotypes.put("CUSTOM",CUSTOM);
-			cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
-			cotypes.put("SAVEDMEASURE", SAVEDMEASURE);
-			
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			if (reqObj.getSpectro().getSerialNbr()==null) {
-				 //No  device, so remove the Custom Match option from cotypes.
-				 cotypes.remove("CUSTOMMATCH");
-			 }
-			 // load saved Ci62 remote measurements for the Saved Measure option
-			 String customerId = reqObj.getCustomerID();
-			 savedMeasurements = customerService.getCustWebSpectroRemotes(customerId);
-			 if (savedMeasurements.size() == 0) {
-				 cotypes.remove("SAVEDMEASURE");
-			 }
-			 curvesList = new ArrayList<String>();
-			 for (CustWebSpectroRemote measure : savedMeasurements) {
-				 String curve = Arrays.toString(measure.getMeasuredCurve()).replace("[", "").replace("]", "");
-				 curvesList.add(curve);
-			 }
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
+	private void buildCotypesMap() {
+		SW = getText("processColorAction.SherwinWilliams");
+		COMPETITIVE = getText("processColorAction.competitive");
+		CUSTOM = getText("processColorAction.customManual");
+		CUSTOMMATCH = getText("processColorAction.customMatch");
+		SAVEDMEASURE = getText("processColorAction.savedCi62Measurement");
+		
+		cotypes.put("SW",SW);
+		cotypes.put("COMPET",COMPETITIVE);
+		cotypes.put("CUSTOM",CUSTOM);
+		cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
+		cotypes.put("SAVEDMEASURE", SAVEDMEASURE);
+		
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		if (reqObj.getSpectro().getSerialNbr()==null) {
+			 //No  device, so remove the Custom Match option from cotypes.
+			 cotypes.remove("CUSTOMMATCH");
+		 }
+		 // load saved Ci62 remote measurements for the Saved Measure option
+		 String customerId = reqObj.getCustomerID();
+		 savedMeasurements = customerService.getCustWebSpectroRemotes(customerId);
+		 if (savedMeasurements.size() == 0) {
+			 cotypes.remove("SAVEDMEASURE");
+		 }
+		 curvesList = new ArrayList<String>();
+		 for (CustWebSpectroRemote measure : savedMeasurements) {
+			 String curve = Arrays.toString(measure.getMeasuredCurve()).replace("[", "").replace("]", "");
+			 curvesList.add(curve);
+		 }
 	}
 	
 	//return company type list for radio options
@@ -205,7 +201,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		return outList;
 	}
 	
-	public void parseColorData(String colorData) {
+	private void parseColorData(String colorData) {
 		
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");

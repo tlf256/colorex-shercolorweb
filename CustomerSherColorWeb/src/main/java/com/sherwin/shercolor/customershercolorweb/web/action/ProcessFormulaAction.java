@@ -3,6 +3,8 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -198,9 +200,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 			}
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			e.printStackTrace();
 			retVal = ERROR;
 		}
 
@@ -211,9 +212,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	public String execute() {
 
 		try {
-
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -248,12 +248,10 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];
 
-
 			// Reads up to certain bytes of data from this input stream into an array of bytes.
 			fin.read(fileContent);
 			setData(fileContent);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
-
 
 			return SUCCESS;
 		} catch (Exception e) {
@@ -265,9 +263,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	public String save() {
 
 		try {
-
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -283,9 +280,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				sessionMap.put(reqGuid, reqObj);
 			}
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			e.printStackTrace();
 			return ERROR;
 		}
 	}

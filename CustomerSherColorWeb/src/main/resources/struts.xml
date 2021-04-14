@@ -779,8 +779,6 @@
 			</result>
 			<result name="success" type="json"></result>
    			<result name="input" type="json"></result>
-			<result name="error" type="json"></result>           
-			
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="saveRoomByRoom" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveRoomByRoom">
