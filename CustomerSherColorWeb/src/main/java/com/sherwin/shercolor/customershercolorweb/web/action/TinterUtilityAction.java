@@ -198,6 +198,10 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 		
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
 
 			tinter = reqObj.getTinter();
 			
@@ -230,7 +234,11 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 		
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
+			
 			tinter = reqObj.getTinter();
 			logger.debug("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
 			

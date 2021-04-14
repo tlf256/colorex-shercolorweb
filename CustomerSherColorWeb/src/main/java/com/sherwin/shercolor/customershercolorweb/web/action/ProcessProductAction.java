@@ -1,6 +1,8 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -230,6 +232,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		String theLabel;
 		String theValue;
 		String[] prepComment;
+		
+		// sort by product number and then by size code
+		Collections.sort(prodList, Comparator.comparing(CdsProd::getPrepComment));
 		
 		for (CdsProd item : prodList) {
 			prepComment = item.getPrepComment().split("-");

@@ -3,9 +3,13 @@ package com.sherwin.shercolor.customershercolorweb.web.model;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.owasp.encoder.Encode;
 
+import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.colormath.domain.ColorDifference;
+import com.sherwin.shercolor.common.domain.CdsColorStand;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -74,6 +78,8 @@ public class RequestObject {
 	private String roomByRoom;
 	private boolean packageColor;
 	private boolean pkgClrTintable;
+	private Map<String, ColorCoordinates> colorCoordMap;
+	private ColorDifference colorDiff;
 	private String canType;
 	private int dispenseBase = -1;
 
@@ -518,6 +524,18 @@ public class RequestObject {
 	}
 	public void setPkgClrTintable(boolean pkgClrTintable) {
 		this.pkgClrTintable = pkgClrTintable;
+	}
+	public Map<String, ColorCoordinates> getColorCoordMap() {
+		return colorCoordMap;
+	}
+	public void setColorCoordMap(Map<String, ColorCoordinates> colorCoordMap) {
+		this.colorCoordMap = colorCoordMap;
+	}
+	public ColorDifference getColorDiff() {
+		return colorDiff;
+	}
+	public void setColorDiff(ColorDifference colorDiff) {
+		this.colorDiff = colorDiff;
 	}
 	public String getCanType() {
 		return canType;

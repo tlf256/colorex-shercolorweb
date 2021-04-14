@@ -99,8 +99,10 @@
 					<div class="col-lg-4 col-md-6 col-sm-10 col-xs-10">
 						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
 							action="processJobFieldsAction" />
-						<s:submit cssClass="btn btn-secondary" value="%{getText('getJobFields.copyFromExistingJob')}"
-							action="copyExistingJobFieldsAction" />
+						<s:if test = "%{accountIsDrawdownCenter==true}">
+							<s:submit cssClass="btn btn-secondary" value="%{getText('getJobFields.copyFromExistingJob')}"
+								action="copyExistingJobFieldsAction" />
+						</s:if>
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}"
 							action="userCancelAction" />
 					</div>

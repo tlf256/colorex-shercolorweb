@@ -72,6 +72,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	List<CustWebTran> tranHistory;
 	
 	List<JobHistoryInfo> jobHistory;
+	private boolean match;
 	
 	public String display() {
 		
@@ -107,7 +108,13 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-			tranHistory = tranHistoryService.getActiveCustomerJobs(reqObj.getCustomerID(),false);
+			if(match) {
+				//only pull CUSTOMMATCH records for compare colors selection
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByColorType(reqObj.getCustomerID(), "CUSTOMMATCH", false);
+			} else {
+				tranHistory = tranHistoryService.getActiveCustomerJobs(reqObj.getCustomerID(),false);
+			}
+			
 			jobHistory = new ArrayList<JobHistoryInfo>();
 			
 			//Obtain ClrntSys Profiles for each colorant system;
@@ -199,7 +206,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 					exportColList.add(index);
 				}
 			}
-						
+			
 			return SUCCESS;
 				
 		
@@ -567,6 +574,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		}
 		
 		return jobFields;
+	}
+
+	public boolean isMatch() {
+		return match;
+	}
+
+	public void setMatch(boolean match) {
+		this.match = match;
 	}
 
 	public boolean isAccountIsDrawdownCenter() {
