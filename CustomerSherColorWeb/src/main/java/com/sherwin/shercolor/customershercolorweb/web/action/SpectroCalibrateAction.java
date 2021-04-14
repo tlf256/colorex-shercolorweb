@@ -27,6 +27,8 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 	private String reqGuid;
 	private String message;
 	private boolean measureColor;
+	private boolean measure;
+	private boolean compare;
 	
 	public SpectroCalibrateAction(){
 		
@@ -107,6 +109,22 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 
 	public void setMeasureColor(boolean measureColor) {
 		this.measureColor = measureColor;
+	}
+
+	public boolean isMeasure() {
+		return measure;
+	}
+
+	public void setMeasure(boolean measure) {
+		this.measure = measure;
+	}
+
+	public boolean isCompare() {
+		return compare;
+	}
+
+	public void setCompare(boolean compare) {
+		this.compare = compare;
 	}
 
 }

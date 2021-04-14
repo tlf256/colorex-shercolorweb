@@ -10,9 +10,12 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
+import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -26,9 +29,15 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	private List<JobField> jobFieldList;
 	private FormulaInfo displayFormula;
 	private int updateMode;
+	private int lookupControlNbr = 0;
+	private boolean accountIsDrawdownCenter = false;
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	TranHistoryService tranHistoryService;
+
 
 	private boolean debugOn = false;
 	
@@ -38,18 +47,76 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			updateMode = 0;
 			jobFieldList = new ArrayList<JobField>();
 			List<CustWebJobFields> custWebJobFields;
-			
+			CustWebTran webTran = null;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			// show Copy From Existing Job Fields button if account is a drawdown center
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				String customerType = profile.getCustomerType();
+				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+					setAccountIsDrawdownCenter(true);
+				}
+			}
+			
+			// look up custwebtran if we are copying in existing job fields
+			if (lookupControlNbr > 0) {
+				webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), lookupControlNbr, 1);
+			}
 
 			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			
 			if(custWebJobFields.size()>0){
+				int ctr = 1;
 				for(CustWebJobFields custField : custWebJobFields){
 					JobField jobField = new JobField();
 					jobField.setScreenLabel(custField.getScreenLabel());
-					jobField.setEnteredValue(custField.getFieldDefault());
-					logger.debug("Adding field " + jobField.getScreenLabel() + " default is " + jobField.getEnteredValue());
+					
+					// get job field from custwebtran record
+					if (webTran != null) {
+						String existingJobField = "";
+						switch (ctr) {
+						case 1:
+							existingJobField = webTran.getJobField01();
+							break;
+						case 2:
+							existingJobField = webTran.getJobField02();
+							break;
+						case 3:
+							existingJobField = webTran.getJobField03();
+							break;
+						case 4:
+							existingJobField = webTran.getJobField04();
+							break;
+						case 5:
+							existingJobField = webTran.getJobField05();
+							break;
+						case 6:
+							existingJobField = webTran.getJobField06();
+							break;
+						case 7:
+							existingJobField = webTran.getJobField07();
+							break;
+						case 8:
+							existingJobField = webTran.getJobField08();
+							break;
+						case 9:
+							existingJobField = webTran.getJobField09();
+							break;
+						case 10:
+							existingJobField = webTran.getJobField10();
+							break;
+						}
+						// copy in existing field
+						jobField.setEnteredValue(existingJobField);
+					
+					// otherwise set default
+					} else {
+						jobField.setEnteredValue(custField.getFieldDefault());
+					}
+					logger.debug("Adding field " + jobField.getScreenLabel() + " value is " + jobField.getEnteredValue());
 					jobFieldList.add(jobField);
+					ctr++;
 				}
 				retVal = INPUT;
 			} else{
@@ -215,6 +282,22 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 
 	public void setDisplayFormula(FormulaInfo displayFormula) {
 		this.displayFormula = displayFormula;
+	}
+
+	public int getLookupControlNbr() {
+		return lookupControlNbr;
+	}
+
+	public void setLookupControlNbr(int lookupControlNbr) {
+		this.lookupControlNbr = lookupControlNbr;
+	}
+
+	public boolean isAccountIsDrawdownCenter() {
+		return accountIsDrawdownCenter;
+	}
+
+	public void setAccountIsDrawdownCenter(boolean accountIsDrawdownCenter) {
+		this.accountIsDrawdownCenter = accountIsDrawdownCenter;
 	}
 
 }

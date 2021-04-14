@@ -151,7 +151,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		catch (SherColorException e){
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
-			logger.error(e.getMessage(), e);
+			logger.error(message, e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			message = e.getMessage();
@@ -206,7 +206,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 
 		if (colorData.equals("")) {
@@ -443,7 +443,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setColorVinylOnly(false);
 			sessionMap.put(reqGuid, reqObj);
 			
-			if(reqObj.getJobFieldList().size() > 0) {
+			if(reqObj.getJobFieldList() != null && reqObj.getJobFieldList().size() > 0) {
 				return SUCCESS;
 			} else {
 				return "restart";
@@ -486,7 +486,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	public void setOptions(List<autoComplete> options) {
 		this.options = options;
 	}
-	
 
 	public String getPartialColorNameOrId() {
 		return partialColorNameOrId;
@@ -504,7 +503,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		this.message = Encode.forHtml(message);
 	}
 
-	
 	public ColorMastService getColorMastService() {
 		return colorMastService;
 	}

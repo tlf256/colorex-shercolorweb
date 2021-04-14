@@ -24,6 +24,7 @@ public class JobHistoryInfo{
 	private List<FormulaIngredient> recipe;
 	private String formulaDisplay;
 	private String sizeCode;
+	private String canType;
 	
 	public String getClrntSysId() {
 		return clrntSysId;
@@ -99,6 +100,14 @@ public class JobHistoryInfo{
 	public void setFormulaDisplay(String formulaDisplay) {
 		this.formulaDisplay = formulaDisplay;
 	}
+	
+	public String getCanType() {
+		return canType;
+	}
+	public void setCanType(String canType) {
+		this.canType = canType;
+	}
+
 	
 	
 	
