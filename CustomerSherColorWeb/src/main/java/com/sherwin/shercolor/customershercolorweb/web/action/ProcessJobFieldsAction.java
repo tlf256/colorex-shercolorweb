@@ -127,7 +127,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			
 			sessionMap.put(reqGuid, reqObj);
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
@@ -155,7 +155,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			
 			sessionMap.put(reqGuid, reqObj);
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
@@ -218,7 +218,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 				} // end else no messages
 			} // end else jobFieldList is not null
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}

@@ -114,7 +114,7 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 				retVal = ERROR;
 			}
 				
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
@@ -122,7 +122,7 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 	}
 	
 	
-	public Map<String, String> buildRgbHexList() {
+	private Map<String, String> buildRgbHexList() {
 		Map<String, String> rgbHexList = new HashMap<String, String>();
 		rgbHexList.put("B1", "#000000");
 		rgbHexList.put("LB", "#000000");

@@ -13,7 +13,7 @@ public class VerifyDefaultSpectroSettingsAction extends ActionSupport implements
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(SpectroConfigureAction.class);
+	static Logger logger = LogManager.getLogger(VerifyDefaultSpectroSettingsAction.class);
 	private String reqGuid;
 	
 	public String backItUp() {
@@ -23,7 +23,7 @@ public class VerifyDefaultSpectroSettingsAction extends ActionSupport implements
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 			
-			} catch (Exception e) {
+			} catch (RuntimeException e) {
 				logger.error(e.getMessage(), e);
 				return ERROR;
 			}
@@ -38,7 +38,7 @@ public class VerifyDefaultSpectroSettingsAction extends ActionSupport implements
 			String customerId = reqObj.getCustomerID();
 			
 		    return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

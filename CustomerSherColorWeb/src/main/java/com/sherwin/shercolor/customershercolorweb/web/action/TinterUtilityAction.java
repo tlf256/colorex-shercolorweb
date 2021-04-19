@@ -185,7 +185,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
@@ -221,7 +221,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}
@@ -250,7 +250,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 				retVal = ERROR;
 			}
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}
@@ -342,7 +342,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			} // end santint check
 		
 			retVal = SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}

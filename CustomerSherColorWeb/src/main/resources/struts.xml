@@ -986,7 +986,6 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
-			<result name="error" type="json"></result>
 		</action>
 		<action name="stampSessionTinterInitAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterUtilityAction" method="stampSessionTinterInit">
 	        <interceptor-ref name="defaultStack"/>
@@ -1117,8 +1116,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="input">/WEB-INF/pages/TinterConfig.jsp</result>
-			<result name="error">/WEB-INF/pages/TinterConfig.jsp</result>
-
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="removeTinter"
 			class="com.sherwin.shercolor.customershercolorweb.web.action.RemoveTinterAction"
@@ -1352,6 +1350,7 @@
 		</action>
 		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
 			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 	</package>
 </struts>

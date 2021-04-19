@@ -63,7 +63,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -90,7 +90,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 					spectrotypes.remove("Ci62",CI62);
 				}
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -131,7 +131,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 					addActionError(getText("spectroConfigureAction.invalidColorEyeData"));
 					return ERROR;
 				}
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

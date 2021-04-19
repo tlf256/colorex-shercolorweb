@@ -44,7 +44,7 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessPctIntExtAction.class);
 	
-	public void buildIntExtTypesMap() {
+	private void buildIntExtTypesMap() {
 		INTERIOR = getText("getPercentageIntExt.interior");
 		EXTERIOR = getText("getPercentageIntExt.exterior");
 		
@@ -97,7 +97,7 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 			sessionMap.put(reqGuid, reqObj);
 			
 			return returnStatus;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -108,7 +108,7 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 		 try {
 			 buildIntExtTypesMap();
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
