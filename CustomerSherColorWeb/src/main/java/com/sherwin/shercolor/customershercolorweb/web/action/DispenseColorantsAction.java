@@ -71,7 +71,7 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 			}
 			else logger.error("reqGuid is empty");
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
@@ -103,7 +103,7 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 				return ERROR;
 			}
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}

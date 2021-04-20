@@ -238,156 +238,123 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	
 	
 	public void setupSizeConversion() {
-		try {
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			// look up size conversion for adapting the sample fill and colorant amount calculations
-			String sizeCode = reqObj.getSizeCode();
-			if (sizeCode != null) {
-				// default size for calculation is one gallon, so only look up other size codes than 16
-				if (sizeCode.equals("16")) {
-					setSizeConversion(1.0);
-				} else {
-					String miscCode = sizeCode + "16";
-					CdsMiscCodes miscCodeRecord = utilityService.getCdsMiscCodes("SZCNV", miscCode);
-					if (miscCodeRecord != null) {
-						setSizeConversion(Double.parseDouble(miscCodeRecord.getMiscName()));
-					}
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		// look up size conversion for adapting the sample fill and colorant amount calculations
+		String sizeCode = reqObj.getSizeCode();
+		if (sizeCode != null) {
+			// default size for calculation is one gallon, so only look up other size codes than 16
+			if (sizeCode.equals("16")) {
+				setSizeConversion(1.0);
+			} else {
+				String miscCode = sizeCode + "16";
+				CdsMiscCodes miscCodeRecord = utilityService.getCdsMiscCodes("SZCNV", miscCode);
+				if (miscCodeRecord != null) {
+					setSizeConversion(Double.parseDouble(miscCodeRecord.getMiscName()));
 				}
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 		}
 	}
 	
 	
 	public void buildCanList() {
-		try {
-			List<CustWebTinterProfileCanTypes> tinterCanList = tinterService.listOfCustWebTinterProfileCanTypesByTinterModel(tinter.getModel());
-			canTypesList = new ArrayList<CustWebCanTypes>();
-			
-			for (CustWebTinterProfileCanTypes tinterCan : tinterCanList) {
-				CustWebCanTypes canType = new CustWebCanTypes();
-				canType = tinterService.getCustWebCanType(tinterCan.getCanType());
-				canTypesList.add(canType);
-			}
-			
-			// sort by sample size, largest to smallest 
-			Collections.sort(canTypesList, Comparator.comparing(CustWebCanTypes::getSampleSize).reversed());
+		List<CustWebTinterProfileCanTypes> tinterCanList = tinterService.listOfCustWebTinterProfileCanTypesByTinterModel(tinter.getModel());
+		canTypesList = new ArrayList<CustWebCanTypes>();
 		
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+		for (CustWebTinterProfileCanTypes tinterCan : tinterCanList) {
+			CustWebCanTypes canType = new CustWebCanTypes();
+			canType = tinterService.getCustWebCanType(tinterCan.getCanType());
+			canTypesList.add(canType);
 		}
+		
+		// sort by sample size, largest to smallest 
+		Collections.sort(canTypesList, Comparator.comparing(CustWebCanTypes::getSampleSize).reversed());
 	}
 	
 	
 	public void buildRoomList() {
-		try {
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			String intExt = reqObj.getIntExt();
-			setRoomByRoomList(utilityService.listCdsRoomsForListName(intExt));
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		String intExt = reqObj.getIntExt();
+		setRoomByRoomList(utilityService.listCdsRoomsForListName(intExt));
+		
+		// add option for user to choose Other and enter in a custom name 
+		CdsRoomList otherOption = new CdsRoomList();
+		otherOption.setRoomUse("Other");
+		roomByRoomList.add(otherOption);
+		// if user has already saved a room to session, display it on the page
+		setRoomByRoom(reqObj.getRoomByRoom());
+	}
+	
+	
+	private void lookupFactoryFill() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		// get factory fill for the product
+		String prodNbr = reqObj.getProdNbr();
+		String clrntSysId = reqObj.getClrntSys();
+		CdsProdCharzd cdsProdCharzd = productService.readCdsProdCharzd(prodNbr, clrntSysId);
+		if (cdsProdCharzd != null) {
+			setFactoryFill(cdsProdCharzd.getFactoryFill());
+		}
+	}
+	
+	
+	private void setupDrawdownTinter() {
+		// check tinter properties
+		CustWebTinterProfile tinterProfile = tinterService.getCustWebTinterProfile(tinter.getModel());
+		if (tinterProfile != null) {
+			setTinterDoesBaseDispense(tinterProfile.isDoesDispenseBase());
+			setDispenseFloor(tinterProfile.getColorantDispenseFloor());
+		}
+	}
+	
+	
+	private void buildBaseDispense(HashMap<String,CustWebColorantsTxt> colorantMap) {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		// check if product is profiled for base dispense 
+		CustWebBase custWebBase = productService.readCustWebBase(reqObj.getProdNbr());
+		if (custWebBase != null) {
+			String baseCode = custWebBase.getBaseCode();
 			
-			// add option for user to choose Other and enter in a custom name 
-			CdsRoomList otherOption = new CdsRoomList();
-			otherOption.setRoomUse("Other");
-			roomByRoomList.add(otherOption);
-			// if user has already saved a room to session, display it on the page
-			setRoomByRoom(reqObj.getRoomByRoom());
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-	
-	
-	public void lookupFactoryFill() {
-		try {
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			// get factory fill for the product
-			String prodNbr = reqObj.getProdNbr();
-			String clrntSysId = reqObj.getClrntSys();
-			CdsProdCharzd cdsProdCharzd = productService.readCdsProdCharzd(prodNbr, clrntSysId);
-			if (cdsProdCharzd != null) {
-				setFactoryFill(cdsProdCharzd.getFactoryFill());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-	
-	
-	public void setupDrawdownTinter() {
-		try {
-			// check tinter properties
-			CustWebTinterProfile tinterProfile = tinterService.getCustWebTinterProfile(tinter.getModel());
-			if (tinterProfile != null) {
-				setTinterDoesBaseDispense(tinterProfile.isDoesDispenseBase());
-				setDispenseFloor(tinterProfile.getColorantDispenseFloor());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-	
-	
-	public void buildBaseDispense(HashMap<String,CustWebColorantsTxt> colorantMap) {
-		try {
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			// check if product is profiled for base dispense 
-			CustWebBase custWebBase = productService.readCustWebBase(reqObj.getProdNbr());
-			if (custWebBase != null) {
-				String baseCode = custWebBase.getBaseCode();
-				
-				// check if tinter is profiled for base dispense and base is loaded into a tinter canister
-				if (colorantMap.containsKey(baseCode) && tinterDoesBaseDispense == true) {
-					baseDispense = new DispenseItem();
-					baseDispense.setClrntCode(baseCode);
-					baseDispense.setPosition(colorantMap.get(baseCode).getPosition());
-					if (dispenseFormula.get(0) != null) {
-						baseDispense.setUom(dispenseFormula.get(0).getUom());
-					}
-					// if base dispense is available based on above conditions, set default true option unless they already declined it for this job
-					if (reqObj.getDispenseBase() == -1) {
-						reqObj.setDispenseBase(1);
-					}
+			// check if tinter is profiled for base dispense and base is loaded into a tinter canister
+			if (colorantMap.containsKey(baseCode) && tinterDoesBaseDispense == true) {
+				baseDispense = new DispenseItem();
+				baseDispense.setClrntCode(baseCode);
+				baseDispense.setPosition(colorantMap.get(baseCode).getPosition());
+				if (dispenseFormula.get(0) != null) {
+					baseDispense.setUom(dispenseFormula.get(0).getUom());
+				}
+				// if base dispense is available based on above conditions, set default true option unless they already declined it for this job
+				if (reqObj.getDispenseBase() == -1) {
+					reqObj.setDispenseBase(1);
 				}
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 		}
 	}
 	
 	
-	public void buildDrawdownShotList() {
-		try {
-			// build shotList for table display and to save transaction
-			drawdownShotList = new ArrayList<DispenseItem>();
-			for (FormulaIngredient ingr : displayFormula.getIngredients()) {
-				DispenseItem drawdownItem = new DispenseItem(); 
-				drawdownItem.setClrntCode(ingr.getTintSysId());
-				drawdownItem.setClrntName(ingr.getName());
-				drawdownItem.setShots(ingr.getShots());
-				drawdownItem.setUom(ingr.getShotSize());
-				drawdownShotList.add(drawdownItem);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+	private void buildDrawdownShotList() {
+		// build shotList for table display and to save transaction
+		drawdownShotList = new ArrayList<DispenseItem>();
+		for (FormulaIngredient ingr : displayFormula.getIngredients()) {
+			DispenseItem drawdownItem = new DispenseItem(); 
+			drawdownItem.setClrntCode(ingr.getTintSysId());
+			drawdownItem.setClrntName(ingr.getName());
+			drawdownItem.setShots(ingr.getShots());
+			drawdownItem.setUom(ingr.getShotSize());
+			drawdownShotList.add(drawdownItem);
 		}
 	}
 	
 	
-	public void lookupCustomerProfile() {
-		try {
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
-			if (profile != null) {
-				String customerType = profile.getCustomerType();
-				
-				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
-					setAccountIsDrawdownCenter(true);
-				}
-				setAccountUsesRoomByRoom(profile.isUseRoomByRoom());
+	private void lookupCustomerProfile() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+		if (profile != null) {
+			String customerType = profile.getCustomerType();
+			
+			if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+				setAccountIsDrawdownCenter(true);
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			setAccountUsesRoomByRoom(profile.isUseRoomByRoom());
 		}
 	}
 	
@@ -468,7 +435,6 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			}		
 		} catch (Exception e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			e.printStackTrace();
 			retVal = ERROR;
 		}
 		return retVal;
@@ -563,9 +529,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				sessionMap.put(reqGuid, reqObj);
 			}
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			e.printStackTrace();
 			return ERROR;
 		}
 	}
@@ -578,9 +543,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			e.printStackTrace();
 			return ERROR;
 		}
 	}

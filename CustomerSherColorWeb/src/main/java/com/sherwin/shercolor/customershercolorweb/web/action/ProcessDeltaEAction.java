@@ -29,7 +29,7 @@ public class ProcessDeltaEAction extends ActionSupport implements SessionAware, 
 			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -42,7 +42,7 @@ public class ProcessDeltaEAction extends ActionSupport implements SessionAware, 
 			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

@@ -59,7 +59,7 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 	public String display() {
 		try {
 			setIsPrinterConfigured();
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 		}
 		
@@ -101,7 +101,7 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 					addActionError("Printer Model is blank");
 					return ERROR;
 				}
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

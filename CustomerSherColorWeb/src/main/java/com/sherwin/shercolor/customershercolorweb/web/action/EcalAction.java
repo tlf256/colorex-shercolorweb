@@ -49,7 +49,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 		try {
 			setEcalList(service.getEcalTemplate(colorantid, tintermodel));
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -59,7 +59,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 			//we call this function from the ProcessConfig right now.
 			setEcalList(service.getEcalsByCustomer(customerid));
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -69,7 +69,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 		try {
 			setEcalList(service.getEcalList(customerid,colorantid,tintermodel,tinterserial));
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -83,7 +83,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 				setData(cal.getData());
 			}
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -97,7 +97,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 				setData(cal.getData());
 			}
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -134,7 +134,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 			}
 			service.uploadEcal(ecal);
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -169,7 +169,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 			logger.debug("CustomerID=" +reqObj.getCustomerID());
 
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

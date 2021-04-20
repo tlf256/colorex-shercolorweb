@@ -56,7 +56,7 @@ public class DisplayEulaAction extends ActionSupport  implements SessionAware, L
 			inputStream = new DataInputStream(new ByteArrayInputStream(eulaPDF));
 
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -146,7 +146,7 @@ public class DisplayEulaAction extends ActionSupport  implements SessionAware, L
 	        	logger.error("in DisplayEulaActuionExecute, returning error, validEula is null");
 	            return ERROR;
 	        }
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

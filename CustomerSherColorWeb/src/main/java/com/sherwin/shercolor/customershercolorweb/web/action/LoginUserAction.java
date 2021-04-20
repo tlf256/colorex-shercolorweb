@@ -69,10 +69,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			logger.debug("passing through LogerUserAction display method");
 			return SUCCESS;
 		
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
@@ -231,7 +228,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		return returnDays;
 	}
 	
-	private String checkExpiredPassword() throws Exception {
+	private String checkExpiredPassword() {
 		String returnStatus = "";
 		
 		// Check Password Expiration (Unless they logged in with RSA or System Token or Clear Trust Only

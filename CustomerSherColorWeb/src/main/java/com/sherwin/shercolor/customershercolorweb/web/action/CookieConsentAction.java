@@ -32,7 +32,7 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 			
 			logger.debug("display success");
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -50,7 +50,7 @@ public class CookieConsentAction extends ActionSupport implements SessionAware, 
 			
 			logger.debug("execute success");
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

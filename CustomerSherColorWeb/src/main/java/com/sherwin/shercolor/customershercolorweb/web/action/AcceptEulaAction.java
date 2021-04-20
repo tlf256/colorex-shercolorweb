@@ -62,7 +62,7 @@ public class AcceptEulaAction extends ActionSupport implements SessionAware {
 			}
 			
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

@@ -34,7 +34,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		try {
 			 whereFrom = "EXPIRED";
 			returnStatus = SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 		}
 		return returnStatus;
@@ -46,7 +46,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		try {
 			whereFrom = "USERCHANGE";
 			returnStatus = SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 		}
 		return returnStatus;
@@ -97,7 +97,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 				//return success to redirect to loginAction
 				returnStatus = SUCCESS;
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			returnStatus = ERROR;
 		}
@@ -111,7 +111,7 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 			
 			return SUCCESS;
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

@@ -69,7 +69,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 			
-			} catch (Exception e) {
+			} catch (RuntimeException e) {
 				logger.error(e.getMessage(), e);
 				return ERROR;
 			}
@@ -91,7 +91,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 		    return SUCCESS;
 		    
 		    
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -134,7 +134,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 				i++;
 			}
 			return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
@@ -153,7 +153,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 		    return SUCCESS;
 		    
 		    
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

@@ -420,7 +420,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			} else {
 				return SUCCESS;
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -449,7 +449,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				return "restart";
 			}
 		     
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -461,7 +461,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			buildCompaniesList();
 			 
 		    return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

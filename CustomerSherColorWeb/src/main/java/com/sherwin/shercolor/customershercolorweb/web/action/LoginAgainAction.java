@@ -35,7 +35,7 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			 return SUCCESS;
 		     
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

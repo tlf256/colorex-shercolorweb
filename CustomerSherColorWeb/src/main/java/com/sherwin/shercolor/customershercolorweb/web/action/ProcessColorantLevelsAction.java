@@ -39,7 +39,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 			}
 			else logger.error("reqGuid is empty");
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
@@ -197,7 +197,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 			}
 			return SUCCESS;
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
