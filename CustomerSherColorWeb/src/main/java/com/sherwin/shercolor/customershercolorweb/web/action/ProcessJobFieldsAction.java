@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -31,6 +30,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 	private FormulaInfo displayFormula;
 	private int updateMode;
 	private int lookupControlNbr = 0;
+	private boolean accountIsDrawdownCenter = false;
 	
 	@Autowired
 	CustomerService customerService;
@@ -49,6 +49,15 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			List<CustWebJobFields> custWebJobFields;
 			CustWebTran webTran = null;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			// show Copy From Existing Job Fields button if account is a drawdown center
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				String customerType = profile.getCustomerType();
+				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+					setAccountIsDrawdownCenter(true);
+				}
+			}
 			
 			// look up custwebtran if we are copying in existing job fields
 			if (lookupControlNbr > 0) {
@@ -118,8 +127,8 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			
 			sessionMap.put(reqGuid, reqObj);
 
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -146,8 +155,8 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			
 			sessionMap.put(reqGuid, reqObj);
 
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -209,8 +218,8 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 				} // end else no messages
 			} // end else jobFieldList is not null
 			
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -234,7 +243,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			}
 
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;
@@ -281,6 +290,14 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 
 	public void setLookupControlNbr(int lookupControlNbr) {
 		this.lookupControlNbr = lookupControlNbr;
+	}
+
+	public boolean isAccountIsDrawdownCenter() {
+		return accountIsDrawdownCenter;
+	}
+
+	public void setAccountIsDrawdownCenter(boolean accountIsDrawdownCenter) {
+		this.accountIsDrawdownCenter = accountIsDrawdownCenter;
 	}
 
 }

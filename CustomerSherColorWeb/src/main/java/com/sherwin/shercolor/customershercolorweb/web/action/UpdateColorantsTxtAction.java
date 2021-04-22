@@ -110,19 +110,19 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 				}
 				retVal = SUCCESS;
 			} else {
+				logger.error("Database Error: ColorantsTxt could not be updated");
 				retVal = ERROR;
 			}
 				
-		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;
 	}
 	
 	
-	public Map<String, String> buildRgbHexList() {
+	private Map<String, String> buildRgbHexList() {
 		Map<String, String> rgbHexList = new HashMap<String, String>();
 		rgbHexList.put("B1", "#000000");
 		rgbHexList.put("LB", "#000000");

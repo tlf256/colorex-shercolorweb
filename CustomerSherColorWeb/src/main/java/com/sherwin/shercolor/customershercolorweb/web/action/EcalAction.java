@@ -46,100 +46,133 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	private TinterInfo tinter;
 	
 	public String GetEcalTemplate(){
-		setEcalList(service.getEcalTemplate(colorantid, tintermodel));
-		return SUCCESS;
+		try {
+			setEcalList(service.getEcalTemplate(colorantid, tintermodel));
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 	public String GetEcalsByCustomer(){
-		//we call this function from the ProcessConfig right now.
-		setEcalList(service.getEcalsByCustomer(customerid));
-		return SUCCESS;
+		try {
+			//we call this function from the ProcessConfig right now.
+			setEcalList(service.getEcalsByCustomer(customerid));
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 
 	public String GetECalList(){
-
-		setEcalList(service.getEcalList(customerid,colorantid,tintermodel,tinterserial));		
-
-		return SUCCESS;
+		try {
+			setEcalList(service.getEcalList(customerid,colorantid,tintermodel,tinterserial));
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 	
 	public String SelectEcal(){
-		logger.debug("selecting ecal for " + filename);
-		CustWebEcal cal = service.selectEcal(filename);	
-		if(cal != null){			
-			setData(cal.getData());
+		try {
+			logger.debug("selecting ecal for " + filename);
+			CustWebEcal cal = service.selectEcal(filename);	
+			if(cal != null){			
+				setData(cal.getData());
+			}
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
-		return SUCCESS;
 	}
 
 	public String SelectGData(){
-		logger.debug("selecting gdata for " + colorantid);
-		CustWebEcal cal = service.selectGData(colorantid);	
-		if(cal != null){			
-			setData(cal.getData());
+		try {
+			logger.debug("selecting gdata for " + colorantid);
+			CustWebEcal cal = service.selectGData(colorantid);	
+			if(cal != null){			
+				setData(cal.getData());
+			}
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
-		return SUCCESS;
 	}
 	
 	public String UploadEcal(){
-		logger.debug("inside EcalAction");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		logger.debug("inside EcalAction, got reqObj, now getting tinter");
-		tinter = reqObj.getTinter();
-		logger.debug("inside Ecal, got tinter, returning success");
+		try {
+			logger.debug("inside EcalAction");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			logger.debug("inside EcalAction, got reqObj, now getting tinter");
+			tinter = reqObj.getTinter();
+			logger.debug("inside Ecal, got tinter, returning success");
 
-		//TODO get last Config date info to be shown on screen...
+			//TODO get last Config date info to be shown on screen...
 
-		// setup tinter stuff if needed
-		if(tinter==null) logger.error("inside ProcessConfigAction_display and tinter object is null");
-		
-		CustWebEcal ecal = new CustWebEcal();
-		ecal.setCustomerid(reqObj.getCustomerID());
-		ecal.setColorantid(tinter.getClrntSysId());
-		ecal.setTintermodel(tinter.getModel());
-		ecal.setTinterserial(tinter.getSerialNbr());
-		ecal.setUploaddate(this.getUploaddate());
-		ecal.setUploadtime(this.getUploadtime());
-		ecal.setFilename(this.getFilename());
-		ecal.setData(this.getData());
-		if(this.getData()!=null){
-			logger.info("Upload Ecal size=" + this.getData().length);
-		}
-		else{
-			logger.error("Upload Ecal data array is null");
+			// setup tinter stuff if needed
+			if(tinter==null) logger.error("inside ProcessConfigAction_display and tinter object is null");
+			
+			CustWebEcal ecal = new CustWebEcal();
+			ecal.setCustomerid(reqObj.getCustomerID());
+			ecal.setColorantid(tinter.getClrntSysId());
+			ecal.setTintermodel(tinter.getModel());
+			ecal.setTinterserial(tinter.getSerialNbr());
+			ecal.setUploaddate(this.getUploaddate());
+			ecal.setUploadtime(this.getUploadtime());
+			ecal.setFilename(this.getFilename());
+			ecal.setData(this.getData());
+			if(this.getData()!=null){
+				logger.info("Upload Ecal size=" + this.getData().length);
+			}
+			else{
+				logger.error("Upload Ecal data array is null");
+				return ERROR;
+			}
+			service.uploadEcal(ecal);
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
-		service.uploadEcal(ecal);
-		return SUCCESS;
 	}
 
 	public String display(){
-		logger.debug("inside EcalAction");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		logger.debug("inside EcalAction, got reqObj, now getting tinter");
-		tinter = reqObj.getTinter();
-		logger.debug("inside Ecal, got tinter, returning success");
+		try {
+			logger.debug("inside EcalAction");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			logger.debug("inside EcalAction, got reqObj, now getting tinter");
+			tinter = reqObj.getTinter();
+			logger.debug("inside Ecal, got tinter, returning success");
 
-		//TODO get last Config date info to be shown on screen...
+			//TODO get last Config date info to be shown on screen...
 
-		// setup tinter stuff if needed
-		if(tinter==null) logger.error("inside EcalAction_display and tinter object is null");
-		
-		//get List of Ecals
-		if(reqObj.getCustomerID()!=null && tinter !=null){
-			setEcalList(service.getEcalList(reqObj.getCustomerID(),tinter.getClrntSysId(),tinter.getModel(),tinter.getSerialNbr()));		
-		}
-		else if(reqObj.getCustomerID()!=null){
+			// setup tinter stuff if needed
+			if(tinter==null) logger.error("inside EcalAction_display and tinter object is null");
 			
-			this.setEcalList(service.getEcalsByCustomer(reqObj.getCustomerID()));
-		}
-		else{
-			String customerID="TEST";
-			this.setEcalList(service.getEcalsByCustomer(customerID));
-		}
-		//get List of Template Cals
-		logger.debug("CustomerID=" +reqObj.getCustomerID());
+			//get List of Ecals
+			if(reqObj.getCustomerID()!=null && tinter !=null){
+				setEcalList(service.getEcalList(reqObj.getCustomerID(),tinter.getClrntSysId(),tinter.getModel(),tinter.getSerialNbr()));		
+			}
+			else if(reqObj.getCustomerID()!=null){
+				
+				this.setEcalList(service.getEcalsByCustomer(reqObj.getCustomerID()));
+			}
+			else{
+				String customerID="TEST";
+				this.setEcalList(service.getEcalsByCustomer(customerID));
+			}
+			//get List of Template Cals
+			logger.debug("CustomerID=" +reqObj.getCustomerID());
 
-		return SUCCESS;
+			return SUCCESS;
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 	}
 	public String test(){
 		return SUCCESS;

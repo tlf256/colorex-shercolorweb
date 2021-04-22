@@ -199,8 +199,8 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 			sessionMap.put(reqGuid, reqObj);
 			return theFormula.getStatus().toLowerCase();
 			
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

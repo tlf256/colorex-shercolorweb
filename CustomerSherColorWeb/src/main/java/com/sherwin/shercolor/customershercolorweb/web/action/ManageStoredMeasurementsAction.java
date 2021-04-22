@@ -41,7 +41,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(SpectroConfigureAction.class);
+	static Logger logger = LogManager.getLogger(ManageStoredMeasurementsAction.class);
 	private String reqGuid;
 
 	private CustWebSpectroRemote custWebSpectroRemote;
@@ -69,8 +69,8 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 			
-			} catch (Exception e) {
-				logger.error(e.getMessage());
+			} catch (RuntimeException e) {
+				logger.error(e.getMessage(), e);
 				return ERROR;
 			}
 	}
@@ -91,8 +91,8 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 		    return SUCCESS;
 		    
 		    
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -134,9 +134,8 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 				i++;
 			}
 			return SUCCESS;
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -154,8 +153,8 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 		    return SUCCESS;
 		    
 		    
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -264,8 +263,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			
 			return SUCCESS;
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -281,6 +279,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			customerService.deleteCustWebSpectroRemote(customerId, dateTime, measurementSerialNbr);
 			return SUCCESS;
 		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -316,6 +315,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 			
 			return SUCCESS;
 		} catch (Exception e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}

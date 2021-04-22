@@ -30,7 +30,7 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 			setCompare(true);
 			
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -44,7 +44,7 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
 			
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
