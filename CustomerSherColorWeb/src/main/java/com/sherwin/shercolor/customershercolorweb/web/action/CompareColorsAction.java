@@ -61,7 +61,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			buildCompaniesList();
 			
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -120,7 +120,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			}
 			
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -141,18 +141,14 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private void buildCompaniesList() {
-		try {
-			colorCompanies = new ArrayList<String>();
-			colorCompanies.add(getText("processColorAction.all")); 
-			 
-			String [] colorCompaniesArray = colorMastService.listColorCompanies(false);
-			for (String company : colorCompaniesArray) {
-				if (!company.equals("SHERWIN-WILLIAMS")){
-					colorCompanies.add(company);
-				}
+		colorCompanies = new ArrayList<String>();
+		colorCompanies.add(getText("processColorAction.all")); 
+		 
+		String [] colorCompaniesArray = colorMastService.listColorCompanies(false);
+		for (String company : colorCompaniesArray) {
+			if (!company.equals("SHERWIN-WILLIAMS")){
+				colorCompanies.add(company);
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -223,7 +219,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 		return outList;
 	}
 	
-public void parseColorData(String colorData) {
+	private void parseColorData(String colorData) {
 		
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");

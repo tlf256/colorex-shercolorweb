@@ -805,8 +805,6 @@
 			</result>
 			<result name="success" type="json"></result>
    			<result name="input" type="json"></result>
-			<result name="error" type="json"></result>           
-			
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="saveRoomByRoom" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveRoomByRoom">
@@ -897,6 +895,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="percentAdjustmentAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="percentAdjustment">
 	        <interceptor-ref name="defaultStack"/>
@@ -915,6 +914,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="postCorrectionStatusAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="postContainerStatus">
 	        <interceptor-ref name="defaultStack"/>
@@ -924,6 +924,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="saveCorrectionStepAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="saveCorrectionStep">
 	        <interceptor-ref name="defaultStack"/>
@@ -933,6 +934,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="mergeCorrWithStartingFormAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="mergeCorrWithStartForm">
 	        <interceptor-ref name="defaultStack"/>
@@ -1050,6 +1052,7 @@
 				<param name="contentDisposition">attachment;filename="${vidFileName}"</param>
 				<param name="bufferSize">1024</param>
 			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="tinterPurgeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessTinterPurgeAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
@@ -1113,8 +1116,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="input">/WEB-INF/pages/TinterConfig.jsp</result>
-			<result name="error">/WEB-INF/pages/TinterConfig.jsp</result>
-
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="removeTinter"
 			class="com.sherwin.shercolor.customershercolorweb.web.action.RemoveTinterAction"
@@ -1348,6 +1350,7 @@
 		</action>
 		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
 			<result name="success" type="json"></result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 	</package>
 </struts>

@@ -73,9 +73,8 @@ public class RemoveTinterAction extends ActionSupport implements SessionAware, L
 			
 			return SUCCESS;
 			
-		} catch(Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			e.printStackTrace();
+		} catch(RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
