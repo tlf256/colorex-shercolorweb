@@ -1286,6 +1286,7 @@
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+			<result name="input">/WEB-INF/pages/CompareColors.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="selectColorMatchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsCustomMatchAction" method="execute">
