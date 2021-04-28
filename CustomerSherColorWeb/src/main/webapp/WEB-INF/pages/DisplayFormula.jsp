@@ -673,6 +673,11 @@ function ParsePrintMessage() {
 				// show job's can type if one is saved
 				if ("${canType}" != null && "${canType}" != "" && canTypeMatch > 0){		
 					$("select[id='canTypesList']").val("${canType}");
+					// if they've already dispensed, don't let them change the can type
+					if ("${qtyDispensed}" != null  && "${qtyDispensed}" != "" && "${qtyDispensed}" > 0){
+						$("#canTypesList").prop('disabled', true);
+						$("#includeBaseCheckBox").prop('disabled', true);
+					}
 				}
 				
 				// tinter does base dispense, and the base is loaded in a canister
@@ -1334,7 +1339,7 @@ function ParsePrintMessage() {
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:if test = "%{sessionHasTinter}">
-						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
+						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
 							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
 						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />

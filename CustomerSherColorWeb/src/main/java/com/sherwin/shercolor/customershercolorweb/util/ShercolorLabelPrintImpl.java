@@ -400,8 +400,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			errorLocation = "Customer";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Customer:",cell2Width,haLeft,vaMiddle,customer);
-			errorLocation = "Store CNN";
-			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CNN:",cell2Width,haLeft,vaMiddle,storeCCN);
+			errorLocation = "Store CCN";
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CCN:",cell2Width,haLeft,vaMiddle,storeCCN);
 			errorLocation = "Date Prepared and Control Nbr";
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
