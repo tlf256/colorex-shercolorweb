@@ -210,7 +210,8 @@
 			$('#SNValidationError').text(
 					'<s:text name="tinterConfig.invalidSerialNbrLength"/>');
 			rc = -1;
-		} else if (SN.substring(0, 2) == SN.substring(3, 5)) {
+		} 
+		/* else if (SN.substring(0, 2) == SN.substring(3, 5)) {
 			$('#SNValidationError')
 					.text(
 							'<s:text name="tinterConfig.invalidRepeatOfSame"/>');
@@ -235,7 +236,9 @@
 					.text(
 							'<s:text name="tinterConfig.invalidConsecutiveNbrs"/>');
 			rc = -1;
-		} else {
+		}
+		*/
+		 else {
 			for (var i = 0; i < SN.length; i++) {
 				var code = SN.charCodeAt(i);
 				if (code == 45 || // '-' is the only special char allowed
