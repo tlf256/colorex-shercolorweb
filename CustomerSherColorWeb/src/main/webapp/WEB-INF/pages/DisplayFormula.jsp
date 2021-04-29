@@ -676,7 +676,7 @@ function ParsePrintMessage() {
 					// set previously saved can type
 					if (canTypeMatch > 0){		
 						$("select[id='canTypesList']").val("${canType}");
-						// update table, save default to session
+						// update table
 						canTypesUpdate();	
 					
 					// the job's saved can type isn't available for this tinter
@@ -689,6 +689,10 @@ function ParsePrintMessage() {
 						$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>'); 
 						$("#savedCanTypeError").removeClass('d-none');
 					}
+				// no can type saved yet
+				} else {
+					// update table, save default to session
+					canTypesUpdate();
 				}
 					
 				// if they've already dispensed, don't let them change the can type
