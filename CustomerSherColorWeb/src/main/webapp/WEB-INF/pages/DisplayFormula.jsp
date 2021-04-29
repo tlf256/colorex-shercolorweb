@@ -665,19 +665,36 @@ function ParsePrintMessage() {
 				$("#canTypesErrorText").removeClass('d-none');
 				$("#dispenseSampleButton").prop('disabled', true);
 			} else {
-				// check that saved option is still available in dropdown
+				
+				// check if saved option is still available in dropdown
 				var canTypeMatch = $('#canTypesList option').filter(function() { 
 				    return $(this).text() === "${canType}"; 
 				}).length;
 				
-				// show job's can type if one is saved
-				if ("${canType}" != null && "${canType}" != "" && canTypeMatch > 0){		
-					$("select[id='canTypesList']").val("${canType}");
-					// if they've already dispensed, don't let them change the can type
-					if ("${qtyDispensed}" != null  && "${qtyDispensed}" != "" && "${qtyDispensed}" > 0){
-						$("#canTypesList").prop('disabled', true);
-						$("#includeBaseCheckBox").prop('disabled', true);
+				// job has a saved can type
+				if ("${canType}" != null && "${canType}" != ""){
+					// set previously saved can type
+					if (canTypeMatch > 0){		
+						$("select[id='canTypesList']").val("${canType}");
+						// update table, save default to session
+						canTypesUpdate();	
+					
+					// the job's saved can type isn't available for this tinter
+					} else {
+						// blank out formula, disallow save or dispense, show error
+						$("select[id='canTypesList']").val("${canType}");
+						$("#sampleFill").val("");
+						$("#dispenseSampleButton").prop('disabled', true);
+						$("#drawdownSaveButton").prop('disabled', true);
+						$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>'); 
+						$("#savedCanTypeError").removeClass('d-none');
 					}
+				}
+					
+				// if they've already dispensed, don't let them change the can type
+				if ("${qtyDispensed}" != null  && "${qtyDispensed}" != "" && "${qtyDispensed}" > 0){
+					$("#canTypesList").prop('disabled', true);
+					$("#includeBaseCheckBox").prop('disabled', true);
 				}
 				
 				// tinter does base dispense, and the base is loaded in a canister
@@ -690,9 +707,6 @@ function ParsePrintMessage() {
 						$("#includeBaseCheckBox").prop("checked", false);
 					}
 				}
-				
-				// update table, save default to session
-				canTypesUpdate();	
 			}
 			$("#roomsList").focus();
 		}
@@ -722,6 +736,7 @@ function ParsePrintMessage() {
 		
 		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
 		$("#dispenseFloorErrorText").addClass('d-none');
+		$("#savedCanTypeError").addClass('d-none');
 		$("#dispenseSampleButton").prop('disabled', false);
 		$("#drawdownSaveButton").prop('disabled', false);
 		$('.decimalOuncesDisplay').css("color", "black");
@@ -1166,6 +1181,9 @@ function ParsePrintMessage() {
 						</ul>
 						<div id="canTypesErrorText" style="color:red" class="d-none">
 							<s:text name="sampleDispense.noCanTypesProfiledForTinter"/>
+						</div>
+						<div></div>
+							<p id="savedCanTypeError" style="color:red" class="d-none"></p>
 						</div>
 					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
