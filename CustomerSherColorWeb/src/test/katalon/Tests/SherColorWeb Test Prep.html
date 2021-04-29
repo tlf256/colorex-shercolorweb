@@ -13,7 +13,7 @@
 <tbody>
 <tr><td>open</td><td>https://dev-shercolor.sherwin.com/CustomerSherColorWeb/<datalist><option>https://dev-shercolor.sherwin.com/CustomerSherColorWeb/</option></datalist></td><td></td>
 </tr>
-<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Password'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='User ID'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='sherlink@sherwin.com'])[1]/preceding::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[3]</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Spring2019#</td>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Password'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='User ID'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='sherlink@sherwin.com'])[1]/preceding::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[3]</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Winter2021#</td>
 </tr>
 <tr><td>click</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Password'])[1]/following::input[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='User ID'])[1]/following::input[3]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='sherlink@sherwin.com'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::input[2]</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
 </tr>
@@ -23,6 +23,10 @@
 <tr><td rowspan="1" colspan="3">Tinter Purge</td></tr>
 </thead>
 <tbody>
+<tr><td>clickAndWait</td><td>//button[@type='button']<datalist><option>//button[@type='button']</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=tinterNotify<datalist><option>id=tinterNotify</option></datalist></td><td></td>
+</tr>
 <tr><td>clickAndWait</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
 </tr>
 <tr><td>clickAndWait</td><td>link=Purge<datalist><option>link=Purge</option><option>//a[contains(text(),'Purge')]</option><option>//li[@id='tinterPurge']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterPurgeAction.action?reqGuid=f64d275ab0844dda94c6b99593663cfa')]</option><option>//li[3]/ul/li/a</option><option>css=#tinterPurge &gt; a.dropdown-item</option></datalist></td><td></td>
@@ -43,9 +47,9 @@
 <tbody>
 <tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
 </tr>
-<tr><td>waitForTitle</td><td>Colorant Levels<datalist><option>Colorant Levels</option></datalist></td><td></td>
+<tr><td>clickAndWait</td><td>link=Colorant Levels<datalist><option>link=Colorant Levels</option></datalist></td><td></td>
 </tr>
-<tr><td>click</td><td>link=Colorant Levels<datalist><option>link=Colorant Levels</option><option>//a[contains(text(),'Colorant Levels')]</option><option>//li[@id='colorantLevels']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/processColorantLevelsAction.action?reqGuid=c92bc8ce963848d797042f8fcecb9634')]</option><option>//li[3]/ul/li[2]/a</option><option>css=#colorantLevels &gt; a.dropdown-item</option></datalist></td><td></td>
+<tr><td>waitForTitle</td><td>Colorant Levels<datalist><option>Colorant Levels</option></datalist></td><td></td>
 </tr>
 <tr><td>click</td><td>id=setallfull<datalist><option>id=setallfull</option><option>link=Set All Full</option><option>//a[contains(text(),'Set All Full')]</option><option>//a[@id='setallfull']</option><option>//a[contains(@href, '/CustomerSherColorWeb/clrntLevelsUpdateAction.action?reqGuid=c92bc8ce963848d797042f8fcecb9634&amp;updateType=setAllFull')]</option><option>//div[3]/a</option><option>css=#setallfull</option></datalist></td><td></td>
 </tr>
@@ -69,7 +73,7 @@
 </tr>
 <tr><td>pause</td><td><datalist><option></option></datalist></td><td>10000</td>
 </tr>
-<tr><td>waitForText</td><td>class=calsuccess<datalist><option>#colorUserNextAction &gt; fieldset &gt; div:nth-child(1) &gt; div.col-sm-8 &gt; h2.calsuccess</option><option>class=</option><option>class=calsuccess</option></datalist></td><td>Successful Calibration</td>
+<tr><td>waitForText</td><td>class=calsuccess<datalist><option>#colorUserNextAction &gt; fieldset &gt; div:nth-child(1) &gt; div.col-sm-8 &gt; h2.calsuccess</option><option>class=</option><option>class=calsuccess</option></datalist></td><td>Calibration Successful</td>
 </tr>
 <tr><td>click</td><td>id=colorUserNextAction_goodCalibrateAction<datalist><option>id=colorUserNextAction_goodCalibrateAction</option><option>name=action:goodCalibrateAction</option><option>//input[@id='colorUserNextAction_goodCalibrateAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[10]/div[2]/div/input</option><option>//div[10]/div[2]/div/input</option><option>css=#colorUserNextAction_goodCalibrateAction</option></datalist></td><td></td>
 </tr>

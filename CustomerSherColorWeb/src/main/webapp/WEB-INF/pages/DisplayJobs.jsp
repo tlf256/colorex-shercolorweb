@@ -35,8 +35,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.6.js"></script>
-		
+		<script type="text/javascript" src="script/displayjobs-1.4.7.js"></script>
 	</head>
 	<body>
 		<div class="modal fade" tabindex="-1" role="dialog" id="deletemodal">
@@ -72,6 +71,7 @@
 				</div>
 				<div class="col-sm-3">
 					<s:set var="thisGuid" value="reqGuid" />
+					<s:hidden name="filter" id="filter" value="%{filter}"/>
 				</div>
 			</div>
 <br>
@@ -80,6 +80,7 @@
 				<div class="col-lg-0 col-md-0">
 				</div>
 				<div class="col-lg-12 col-md-12">
+					<h3 id="title"></h3>
 					<h6 id="dltmsg" class="text-danger d-none"></h6>
 					<s:if test="hasActionMessages()">
 					      <s:actionmessage cssClass="alert-danger"/>
@@ -96,6 +97,9 @@
 								<th><s:text name="displayJobs.chip"/></th>
 								<th><s:text name="global.product"/></th>
 								<th><s:text name="displayJobs.szCode"/></th>
+								<s:if test="%{accountIsDrawdownCenter==true}">
+									<th><s:text name="displayJobs.canType"/></th>
+								</s:if>
 								<th><s:text name="displayJobs.qtyDisp"/></th>
 								<th style=""><s:text name="displayJobs.clrntSystem"/></th>
 								<th style=""><s:text name="displayJobs.formulaHdr"/></th>
@@ -114,6 +118,9 @@
 									<td bgcolor="<s:property value="#job.rgbhex"/>"> </td>
 									<td><s:property value="#job.prodNbr" /></td>
 									<td><s:property value="#job.sizeCode"/></td>
+									<s:if test="%{accountIsDrawdownCenter==true}">
+										<td><s:property value="#job.canType"/></td>
+									</s:if>
 									<td><s:property value="#job.quantityDispensed" /></td>
 									<!-- What needs to be included in the table (but won't be shown) -->
 									<td style=""><s:property value="#job.clrntSysId"/></td>
@@ -150,6 +157,7 @@
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
  						<s:hidden id="controlNbr" name="lookupControlNbr" value=""/>
+ 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 					</div>
 
 					<div class="col-sm-10">
@@ -167,6 +175,10 @@
 		<br>
 		<br>
 		<script>
+		// update action if user is here to copy existing job fields
+		if ("${copyJobFields}" == "true"){
+			$("#mainForm").prop("action", "displayJobFieldsAction");
+		}
 		<!--
 		  function HF_openSherwin() {
 		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");

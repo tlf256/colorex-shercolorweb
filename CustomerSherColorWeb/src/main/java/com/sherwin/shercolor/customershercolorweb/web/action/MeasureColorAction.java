@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,17 +11,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
-import com.sherwin.shercolor.util.domain.SwMessage;
 
 
 public class MeasureColorAction extends ActionSupport implements SessionAware, LoginRequired {
@@ -43,7 +44,11 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String intBases;
 	
 	private String extBases;
+	private boolean measure;
+	private boolean compare;
 	
+	@Autowired
+	private ColorCoordinatesCalculator colorCoordCalc;
 
 	public MeasureColorAction(){
 		
@@ -66,8 +71,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setColorVinylOnly(false);
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -76,8 +81,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 		 try {
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -101,9 +106,48 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			
 			// Try getting an RGB value for the object.
 			ColorCoordinates colorCoord = colorService.getColorCoordinates(curveArray, "D65");
+			
+			if(measure || compare) {
+				if(colorCoord == null) {
+					colorCoord = new ColorCoordinates();
+					double[] curveArrDouble = new double[40];
+					
+					for(int i = 0; i < curveArray.length; i++) {
+						curveArrDouble[i] = curveArray[i].doubleValue();
+					}
+					
+					if(colorCoord != null) {
+						colorCoord = colorCoordCalc.getColorCoordinates(curveArrDouble);
+					}
+				}
+				
+				Map<String, ColorCoordinates> coordMap = reqObj.getColorCoordMap();
+				
+				if(coordMap == null) {
+					coordMap = new HashMap<String, ColorCoordinates>();
+				}
+				
+				if(compare) {
+					coordMap.put("sample", colorCoord);
+				} else {
+					coordMap.put("standard", colorCoord);
+				}
+				
+				reqObj.setColorCoordMap(coordMap);
+				
+				sessionMap.put(reqGuid, reqObj);
+				
+				if(compare) {
+					return "result";
+				} else {
+					return "sample";
+				}
+			}
+			
 			if (colorCoord != null) {
 				rgbHex = colorCoord.getRgbHex();
 			}
+			
 			//2018-01-15 BKP - copied from below to here to calculated bases based on curve.
 			//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
 			//call the autobase routine.
@@ -127,11 +171,11 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setCurveArray(curveArray);
 
 			sessionMap.put(reqGuid, reqObj);
-
+			
 			return SUCCESS;
 
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -141,8 +185,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		 try {
 			 measureColor = true;
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -150,9 +194,15 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	public String measure() {
 
 		 try {
-		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+			 if(measure) {
+				 return "measure";
+			 } else if(compare) {
+				 return "sample";
+			 } else {
+				 return SUCCESS;
+			 }
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -228,6 +278,22 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 	public void setIntBases(String intBases) {
 		this.intBases = Encode.forHtml(intBases);
+	}
+
+	public boolean isMeasure() {
+		return measure;
+	}
+
+	public void setMeasure(boolean measure) {
+		this.measure = measure;
+	}
+
+	public boolean isCompare() {
+		return compare;
+	}
+
+	public void setCompare(boolean compare) {
+		this.compare = compare;
 	}
 
 }

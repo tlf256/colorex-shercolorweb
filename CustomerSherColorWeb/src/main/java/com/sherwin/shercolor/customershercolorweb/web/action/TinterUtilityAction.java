@@ -185,8 +185,8 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -198,6 +198,10 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 		
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
 
 			tinter = reqObj.getTinter();
 			
@@ -217,7 +221,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}
@@ -230,7 +234,11 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 		
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
+			
 			tinter = reqObj.getTinter();
 			logger.debug("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
 			
@@ -242,7 +250,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 				retVal = ERROR;
 			}
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}
@@ -334,7 +342,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			} // end santint check
 		
 			retVal = SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}

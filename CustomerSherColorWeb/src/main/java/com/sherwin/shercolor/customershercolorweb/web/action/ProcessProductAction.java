@@ -1,8 +1,11 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.Level;
 import org.apache.struts2.interceptor.SessionAware;
@@ -156,48 +159,30 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		 	if(posProd!=null && posProd.getUpc()!=null) reqObj.setUpc(posProd.getUpc());
 		 	else reqObj.setUpc("");
 		 	
-		 	CdsProd goodProd = productService.readCdsProd(salesNbr);
-		 	
-			//String[] prepCmt = new String[2];
-		 	String[] prepCmt = {"",""};
+		 	Optional<CdsProd> goodProd = productService.readCdsProd(salesNbr);
 			
 		 	//Check for CdsProd, if not, build prepCmt for PosProd
-			if (goodProd!=null) {
-				prepCmt = goodProd.getPrepComment().split("-");
-			}
-			else{
-				prepCmt[0] = posProd.getProdNbr();
-				prepCmt[1] = posProd.getSzCd();
-			}
+		 	String[] prepCmt = goodProd.map(CdsProd::getPrepComment)
+                    .map(x -> x.split("-"))
+                    .orElse(new String[]{posProd.getProdNbr(),posProd.getSzCd()});
 			 
 			//set the successful information into the request object.
-			
 			reqObj.setSalesNbr(salesNbr);
 			reqObj.setProdNbr(prepCmt[0]);
-			if (goodProd!=null) {
-				reqObj.setFinish(goodProd.getFinish());
-				reqObj.setKlass(goodProd.getKlass());
-				reqObj.setIntExt(goodProd.getIntExt());
-				reqObj.setBase(goodProd.getBase());
-				if(goodProd.getComposite()==null) {goodProd.setComposite("");}
-				reqObj.setComposite(goodProd.getComposite());
-				if(goodProd.getQuality()==null) {goodProd.setQuality("");}
-				reqObj.setQuality(goodProd.getQuality());
-				if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
-					if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
-						reqObj.setIntBases(goodProd.getBase());
-					} else {
-						reqObj.setExtBases(goodProd.getBase());
-					}
+			reqObj.setFinish(goodProd.map(CdsProd::getFinish).orElse(""));
+			reqObj.setKlass(goodProd.map(CdsProd::getKlass).orElse(""));
+			reqObj.setIntExt(goodProd.map(CdsProd::getIntExt).orElse(""));
+			reqObj.setBase(goodProd.map(CdsProd::getBase).orElse(""));
+			reqObj.setComposite(goodProd.map(CdsProd::getComposite).orElse(""));
+			reqObj.setQuality(goodProd.map(CdsProd::getQuality).orElse(""));
+			if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
+				if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
+					reqObj.setIntBases(reqObj.getBase());
+				} else {
+					reqObj.setExtBases(reqObj.getBase());
 				}
-			} else {
-				reqObj.setFinish("");
-				reqObj.setKlass("");
-				reqObj.setIntExt("");
-				reqObj.setBase("");
-				reqObj.setComposite("");
-				reqObj.setQuality("");
 			}
+			
 			reqObj.setSizeCode(prepCmt[1]);
 			reqObj.setSizeText(productService.getSizeText(reqObj.getSizeCode()));
 			reqObj.setValidationWarning(false);
@@ -205,7 +190,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		     
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -248,6 +233,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		String theValue;
 		String[] prepComment;
 		
+		// sort by product number and then by size code
+		Collections.sort(prodList, Comparator.comparing(CdsProd::getPrepComment));
+		
 		for (CdsProd item : prodList) {
 			prepComment = item.getPrepComment().split("-");
 			prepComment[1] = getSizeText(prepComment[1]);
@@ -278,7 +266,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setClosestSwColorName("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

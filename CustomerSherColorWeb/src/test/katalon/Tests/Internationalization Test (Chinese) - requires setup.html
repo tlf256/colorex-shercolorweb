@@ -17,11 +17,11 @@
 </tr>
 <tr><td>assertText</td><td>//form[@id='loginForm']/fieldset/div[4]/label<datalist><option>//form[@id='loginForm']/fieldset/div[4]/label</option><option>//div[4]/label</option></datalist></td><td>密码</td>
 </tr>
-<tr><td>assertText</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td>登录</td>
+<tr><td>assertValue</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td>登录</td>
 </tr>
 <tr><td>type</td><td>id=userID<datalist><option>id=userID</option><option>name=userId</option><option>//input[@id='userID']</option><option>//form[@id='loginForm']/fieldset/div[3]/div/div/input</option><option>//input</option><option>css=#userID</option></datalist></td><td>shercolortest</td>
 </tr>
-<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Fall2020#</td>
+<tr><td>type</td><td>id=userPass<datalist><option>id=userPass</option><option>name=userPass</option><option>//input[@id='userPass']</option><option>//form[@id='loginForm']/fieldset/div[4]/div/div/input</option><option>//div[4]/div/div/input</option><option>css=#userPass</option></datalist></td><td>Winter2021#</td>
 </tr>
 <tr><td>clickAndWait</td><td>id=LoginFocus<datalist><option>id=LoginFocus</option><option>name=action:loginUserAction</option><option>//input[@id='LoginFocus']</option><option>//form[@id='loginForm']/fieldset/div[5]/input</option><option>//div[5]/input</option><option>css=#LoginFocus</option></datalist></td><td></td>
 </tr>
@@ -35,7 +35,7 @@
 </tr>
 <tr><td>assertText</td><td>//p<datalist><option>//p</option><option>css=p</option></datalist></td><td>首次访问SherColor Web 网站上的Color Formulation System（颜色配方系统）之前，您必须阅读并接受许可协议。</td>
 </tr>
-<tr><td>assertText</td><td>id=startEulaFocus<datalist><option>id=startEulaFocus</option><option>name=action:startEulaAction</option><option>//input[@id='startEulaFocus']</option><option>//form[@id='startEulaAction']/fieldset/div/div[3]/input</option><option>//div[3]/input</option><option>css=#startEulaFocus</option></datalist></td><td>继续</td>
+<tr><td>assertValue</td><td>id=startEulaFocus<datalist><option>id=startEulaFocus</option><option>name=action:startEulaAction</option><option>//input[@id='startEulaFocus']</option><option>//form[@id='startEulaAction']/fieldset/div/div[3]/input</option><option>//div[3]/input</option><option>css=#startEulaFocus</option></datalist></td><td>继续</td>
 </tr>
 <tr><td>type</td><td>id=eulaAgreementCode<datalist><option>id=eulaAgreementCode</option><option>name=eulaAgreementCode</option><option>//input[@id='eulaAgreementCode']</option><option>//form[@id='startEulaAction']/fieldset/div/div[2]/div/div/input</option><option>//input</option><option>css=#eulaAgreementCode</option></datalist></td><td>654321</td>
 </tr>
@@ -71,7 +71,7 @@
 </tr>
 <tr><td>click</td><td>id=t6<datalist><option>id=t6</option><option>name=t6</option><option>//input[@id='t6']</option><option>//div[@id='collapseExampleLast']/div[2]/div[2]/div/div/div[2]/div/label/input</option><option>//div[9]/div[2]/div[2]/div/div/div[2]/div/label/input</option><option>css=#t6</option></datalist></td><td></td>
 </tr>
-<tr><td>assertText</td><td>id=acceptEulaBtn<datalist><option>id=acceptEulaBtn</option><option>name=action:acceptEulaAction</option><option>//input[@id='acceptEulaBtn']</option><option>//form[@id='AcceptEulaAction']/fieldset/div/input[3]</option><option>//input[3]</option><option>css=#acceptEulaBtn</option></datalist></td><td>接受协议</td>
+<tr><td>assertValue</td><td>id=acceptEulaBtn<datalist><option>id=acceptEulaBtn</option><option>name=action:acceptEulaAction</option><option>//input[@id='acceptEulaBtn']</option><option>//form[@id='AcceptEulaAction']/fieldset/div/input[3]</option><option>//input[3]</option><option>css=#acceptEulaBtn</option></datalist></td><td>接受协议</td>
 </tr>
 <tr><td>clickAndWait</td><td>id=acceptEulaBtn<datalist><option>id=acceptEulaBtn</option><option>name=action:acceptEulaAction</option><option>//input[@id='acceptEulaBtn']</option><option>//form[@id='AcceptEulaAction']/fieldset/div/input[3]</option><option>//input[3]</option><option>css=#acceptEulaBtn</option></datalist></td><td></td>
 </tr>
@@ -85,17 +85,17 @@
 </tr>
 <tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
 </tr>
-<tr><td>assertText</td><td>link=Tinter Menu<datalist><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+<tr><td>assertText</td><td>link=调色机菜单<datalist><option>link=调色机菜单</option><option>//a[contains(text(),'调色机菜单')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
 </tr>
 <tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
 </tr>
-<tr><td>click</td><td>link=Tinter Menu<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option></datalist></td><td></td>
+<tr><td>click</td><td>link=调色机菜单<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>link=调色机菜单</option></datalist></td><td></td>
 </tr>
 <tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
 </tr>
-<tr><td>assertText</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td>添加新调色机</td>
+<tr><td>assertText</td><td>link=添加新调色机<datalist><option>link=添加新调色机</option><option>//a[contains(text(),'添加新调色机')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=a52f4412d6f54f8ba57c84c295afb4ad')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td>添加新调色机</td>
 </tr>
-<tr><td>clickAndWait</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>link=Calibration Manager</option><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option></datalist></td><td></td>
+<tr><td>clickAndWait</td><td>link=添加新调色机<datalist><option>link=Add New Tinter</option><option>link=Calibration Manager</option><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=添加新调色机</option></datalist></td><td></td>
 </tr>
 <tr><td>waitForTitle</td><td>调色机配置<datalist><option>调色机配置</option><option>校准管理器</option><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option></datalist></td><td></td>
 </tr>
@@ -103,15 +103,15 @@
 </tr>
 <tr><td>assertText</td><td>//div[@id='configErrorModal']/div/div/div/h5<datalist><option>//div[@id='configErrorModal']/div/div/div/h5</option><option>//div[4]/div/div/div/h5</option><option>css=#configErrorModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td>配置错误</td>
 </tr>
-<tr><td>assertText</td><td>link=Troubleshoot<datalist><option>link=Troubleshoot</option><option>//a[contains(text(),'Troubleshoot')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhTroubleshootAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//div[3]/a</option><option>css=a.btn.btn-primary</option></datalist></td><td>故障排除</td>
+<tr><td>assertText</td><td>link=故障排除<datalist><option>link=Troubleshoot</option><option>//a[contains(text(),'Troubleshoot')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhTroubleshootAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//div[3]/a</option><option>css=a.btn.btn-primary</option><option>link=故障排除</option></datalist></td><td>故障排除</td>
 </tr>
-<tr><td>click</td><td>link=Troubleshoot<datalist><option>link=Troubleshoot</option><option>//a[contains(text(),'Troubleshoot')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhTroubleshootAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//div[3]/a</option><option>css=a.btn.btn-primary</option></datalist></td><td></td>
+<tr><td>click</td><td>link=故障排除<datalist><option>link=Troubleshoot</option><option>//a[contains(text(),'Troubleshoot')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhTroubleshootAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//div[3]/a</option><option>css=a.btn.btn-primary</option><option>link=故障排除</option></datalist></td><td></td>
 </tr>
-<tr><td>waitForTitle</td><td><datalist><option></option></datalist></td><td></td>
+<tr><td>waitForTitle</td><td>SWDeviceHandler故障排除<datalist><option>SWDeviceHandler故障排除</option></datalist></td><td></td>
 </tr>
 <tr><td>assertText</td><td>//form[@id='swdhInstallAction']/fieldset/div[2]/div[2]/h2<datalist><option>//form[@id='swdhInstallAction']/fieldset/div[2]/div[2]/h2</option><option>//h2</option><option>css=h2</option></datalist></td><td>对 SWDeviceHandler服务进行故障排除:</td>
 </tr>
-<tr><td>assertText</td><td>id=swdhInstallAction_userCancelAction<datalist><option>id=swdhInstallAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='swdhInstallAction_userCancelAction']</option><option>//form[@id='swdhInstallAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#swdhInstallAction_userCancelAction</option></datalist></td><td>下一步</td>
+<tr><td>assertValue</td><td>id=swdhInstallAction_userCancelAction<datalist><option>id=swdhInstallAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='swdhInstallAction_userCancelAction']</option><option>//form[@id='swdhInstallAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#swdhInstallAction_userCancelAction</option></datalist></td><td>下一步</td>
 </tr>
 <tr><td>click</td><td>xpath=(//input[@id='swdhInstallAction_userCancelAction'])[2]<datalist><option>xpath=(//input[@id='swdhInstallAction_userCancelAction'])[2]</option><option>//form[@id='swdhInstallAction']/fieldset/div[8]/div[3]/input</option><option>//div[3]/input</option></datalist></td><td></td>
 </tr>
@@ -125,17 +125,17 @@
 </tr>
 <tr><td>click</td><td>//ul[@id='menuPanelL']/li/button/i<datalist><option>//ul[@id='menuPanelL']/li/button/i</option><option>//i</option><option>css=i.fa.fa-bars</option></datalist></td><td></td>
 </tr>
-<tr><td>assertText</td><td>link=Tinter Menu<datalist><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option></datalist></td><td>调色机菜单</td>
+<tr><td>assertText</td><td>link=调色机菜单<datalist><option>link=Tinter Menu</option><option>//a[contains(text(),'Tinter Menu')]</option><option>//ul[@id='menuPanelL']/li/ul/li[3]/a</option><option>xpath=(//a[contains(@href, '#')])[2]</option><option>//li/ul/li[3]/a</option><option>link=调色机菜单</option></datalist></td><td>调色机菜单</td>
 </tr>
 <tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
 </tr>
-<tr><td>click</td><td>link=Tinter Menu<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option></datalist></td><td></td>
+<tr><td>click</td><td>link=调色机菜单<datalist><option>link=Tinter Menu</option><option>link=Color Eye Menu</option><option>link=调色机菜单</option></datalist></td><td></td>
 </tr>
 <tr><td>pause</td><td><datalist><option></option></datalist></td><td>500</td>
 </tr>
-<tr><td>assertText</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option></datalist></td><td>添加新调色机</td>
+<tr><td>assertText</td><td>link=添加新调色机<datalist><option>link=Add New Tinter</option><option>//a[contains(text(),'Add New Tinter')]</option><option>//li[@id='tinterAdd']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/tinterConfigAction.action?reqGuid=3f77e0a3f06e4b0284d96058aeda9673')]</option><option>//li[7]/a</option><option>css=#tinterAdd &gt; a.dropdown-item</option><option>link=添加新调色机</option></datalist></td><td>添加新调色机</td>
 </tr>
-<tr><td>clickAndWait</td><td>link=Add New Tinter<datalist><option>link=Add New Tinter</option><option>link=Calibration Manager</option><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option></datalist></td><td></td>
+<tr><td>clickAndWait</td><td>link=添加新调色机<datalist><option>link=Add New Tinter</option><option>link=Calibration Manager</option><option>link=Colorant Levels</option><option>link=Purge</option><option>link=Configure</option><option>link=Verify Default Spectro Settings</option><option>//a[contains(text(),'Verify Default Spectro Settings')]</option><option>//li[@id='spectroVerifyDefaultSettings']/a</option><option>//a[contains(@href, '/CustomerSherColorWeb/spectroVerifyDefaultSettingsAction.action?reqGuid=040098d36dac49f69052fbb18572abbe')]</option><option>//li[2]/ul/li[3]/a</option><option>css=#spectroVerifyDefaultSettings &gt; a.dropdown-item</option><option>link=添加新调色机</option></datalist></td><td></td>
 </tr>
 <tr><td>waitForTitle</td><td>调色机配置<datalist><option>调色机配置</option><option>校准管理器</option><option>色浆含量</option><option>清洁调色机</option><option>设置读色器</option></datalist></td><td></td>
 </tr>
@@ -143,15 +143,15 @@
 </tr>
 <tr><td>assertText</td><td>//div[@id='configErrorModal']/div/div/div/h5<datalist><option>//div[@id='configErrorModal']/div/div/div/h5</option><option>//div[4]/div/div/div/h5</option><option>css=#configErrorModal &gt; div.modal-dialog &gt; div.modal-content &gt; div.modal-header &gt; h5.modal-title</option></datalist></td><td>配置错误</td>
 </tr>
-<tr><td>assertText</td><td>link=Install<datalist><option>link=Install</option><option>//a[contains(text(),'Install')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a[2]</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhInstallAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//a[2]</option><option>css=a.btn.btn-success</option></datalist></td><td>安装</td>
+<tr><td>assertText</td><td>link=安装<datalist><option>link=Install</option><option>//a[contains(text(),'Install')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a[2]</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhInstallAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//a[2]</option><option>css=a.btn.btn-success</option><option>link=安装</option></datalist></td><td>安装</td>
 </tr>
-<tr><td>clickAndWait</td><td>link=Install<datalist><option>link=Install</option><option>//a[contains(text(),'Install')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a[2]</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhInstallAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//a[2]</option><option>css=a.btn.btn-success</option></datalist></td><td></td>
+<tr><td>clickAndWait</td><td>link=安装<datalist><option>link=Install</option><option>//a[contains(text(),'Install')]</option><option>//div[@id='configErrorModal']/div/div/div[3]/a[2]</option><option>//a[contains(@href, '/CustomerSherColorWeb/swdhInstallAction.action?reqGuid=43803d42b7f547b69d3643420775353b')]</option><option>//a[2]</option><option>css=a.btn.btn-success</option><option>link=安装</option></datalist></td><td></td>
 </tr>
 <tr><td>waitForTitle</td><td>SWDeviceHandler 服务 安装<datalist><option>SWDeviceHandler 服务 安装</option></datalist></td><td></td>
 </tr>
 <tr><td>assertText</td><td>//form[@id='swdhInstallAction']/fieldset/div[2]/div[2]/h2<datalist><option>//form[@id='swdhInstallAction']/fieldset/div[2]/div[2]/h2</option><option>//h2</option><option>css=h2</option></datalist></td><td>欲安装SWDeviceHandler服务：</td>
 </tr>
-<tr><td>assertText</td><td>id=swdhInstallAction_downloadExeAction<datalist><option>id=swdhInstallAction_downloadExeAction</option><option>name=action:downloadExeAction</option><option>//input[@id='swdhInstallAction_downloadExeAction']</option><option>//form[@id='swdhInstallAction']/fieldset/div[10]/div[2]/input</option><option>//div[2]/input</option><option>css=#swdhInstallAction_downloadExeAction</option></datalist></td><td>下载</td>
+<tr><td>assertValue</td><td>id=swdhInstallAction_downloadExeAction<datalist><option>id=swdhInstallAction_downloadExeAction</option><option>name=action:downloadExeAction</option><option>//input[@id='swdhInstallAction_downloadExeAction']</option><option>//form[@id='swdhInstallAction']/fieldset/div[10]/div[2]/input</option><option>//div[2]/input</option><option>css=#swdhInstallAction_downloadExeAction</option></datalist></td><td>下载</td>
 </tr>
 <tr><td>clickAndWait</td><td>id=swdhInstallAction_userCancelAction<datalist><option>id=swdhInstallAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='swdhInstallAction_userCancelAction']</option><option>//form[@id='swdhInstallAction']/fieldset/div[10]/div[3]/input</option><option>//div[3]/input</option><option>css=#swdhInstallAction_userCancelAction</option></datalist></td><td></td>
 </tr>
