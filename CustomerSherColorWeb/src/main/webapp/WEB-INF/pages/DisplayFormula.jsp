@@ -1221,16 +1221,16 @@ function ParsePrintMessage() {
 			</s:if>
 			<br>
 			
-			<s:if test="%{accountIsDrawdownCenter==false}">
-				<div class="row mt-3">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
-						${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
-					</div>
-					<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+			
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+				<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
+					${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
 				</div>
-			</s:if>
+				<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+			</div>
+			
 							
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
