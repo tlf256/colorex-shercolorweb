@@ -921,6 +921,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		if(listJobField != null && listJobField.size() > 0){
 			// Process each instance of the listJobField objects.
 			for(JobField job : listJobField){
+				// use local strings so we don't modify the reqObj contents for other labels
+				String screenLabel = job.getScreenLabel();
+				String enteredValue = job.getEnteredValue();
 				//only process non-null values	
 				if (job.getScreenLabel() != null &&  job.getEnteredValue() != null){
 					//Modify input values, replace / and " with -
@@ -930,14 +933,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 						// 01/20/2017 - Begin Job
 						// Truncate Screen Label to fit the line space.
 						if (job.getScreenLabel().length() > 13){
-							job.setScreenLabel(job.getScreenLabel().substring(0, 13));
+							screenLabel = job.getScreenLabel().substring(0, 13);
 						}
 						// Truncate Entered Value to fit the line space.
 						if (job.getEnteredValue().length() > 16){
-							job.setEnteredValue(job.getEnteredValue().substring(0, 16));
+							enteredValue = job.getEnteredValue().substring(0, 16);
 						}
 						// 01/20/2017 - End Job 
-						createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, job.getScreenLabel() + ": ", 50, haLeft, vaMiddle, job.getEnteredValue());
+						createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, screenLabel + ": ", 50, haLeft, vaMiddle, enteredValue);
 					}
 				}
 			}
