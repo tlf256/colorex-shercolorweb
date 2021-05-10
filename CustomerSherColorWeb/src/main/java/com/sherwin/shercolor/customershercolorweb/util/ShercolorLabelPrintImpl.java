@@ -725,7 +725,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	
 	// ==========================================================================================================================================
 	// Label Row Creation Methods
-	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are neccessary
+	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are necessary
 	//				to help assist in providing more instruction and less static values 
 	// ==========================================================================================================================================
 
@@ -930,17 +930,24 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					job.setEnteredValue(StringEscapeUtils.unescapeHtml(job.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
 					// Only process defined job data.
 					if(job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ) {
-						// 01/20/2017 - Begin Job
 						// Truncate Screen Label to fit the line space.
 						if (job.getScreenLabel().length() > 13){
 							screenLabel = job.getScreenLabel().substring(0, 13);
 						}
-						// Truncate Entered Value to fit the line space.
-						if (job.getEnteredValue().length() > 16){
-							enteredValue = job.getEnteredValue().substring(0, 16);
+						// left justify job fields for drawdown customers
+						CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+						if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN")){
+							if (job.getEnteredValue().length() > 21){
+								enteredValue = job.getEnteredValue().substring(0, 21);
+							}
+							createTwoColumnRow(table, 7, 8, 43, haLeft, vaMiddle, screenLabel + ": ", 57, haLeft, vaMiddle, enteredValue);
+						} else {
+							// Truncate Entered Value to fit the line space.
+							if (job.getEnteredValue().length() > 16){
+								enteredValue = job.getEnteredValue().substring(0, 16);
+							}
+							createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, screenLabel + ": ", 50, haLeft, vaMiddle, enteredValue);
 						}
-						// 01/20/2017 - End Job 
-						createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, screenLabel + ": ", 50, haLeft, vaMiddle, enteredValue);
 					}
 				}
 			}
