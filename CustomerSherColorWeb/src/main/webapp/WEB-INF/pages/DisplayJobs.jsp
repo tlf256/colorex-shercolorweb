@@ -38,6 +38,92 @@
 		<script type="text/javascript" src="script/displayjobs-1.4.7.js"></script>
 	</head>
 	<body>
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h5 class="modal-title"><s:text name="displayJobs.existingJobSearch"/></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <s:form>
+			      <div class="modal-body">
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<s:textfield id="cntrlnbr" name="jobSearch.controlNbr" label="Control Number" labelposition="top" 
+			      				placeholder="%{getText('displayJobs.allControlNumbers')}" labelSeparator=":"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			        <div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<s:textfield id="fdate" name="jobSearch.fromDate" label="From Date" labelposition="top" 
+			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<s:textfield id="tdate" name="jobSearch.toDate" label="To Date" labelposition="top" 
+			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<s:textfield id="custid" name="jobSearch.customerId" label="Customer ID" labelposition="top" 
+			      				placeholder="%{getText('displayJobs.allCustomers')}" labelSeparator=":"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<s:textfield id="clrid" name="jobSearch.colorId" label="Color ID" labelposition="top" 
+			      				placeholder="%{getText('displayJobs.allColorIds')}" labelSeparator=":"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<s:textfield id="clrnm" name="jobSearch.colorName" label="Color Name" labelposition="top" 
+			      				placeholder="%{getText('displayJobs.allColorNames')}" labelSeparator=":"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			
+			      		</div>
+			      		<div class="col-sm-5">
+			      		
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<s:if test="roomByRoomList != null && !roomByRoomList.isEmpty">
+			      		<div class="row" id="roomuse">
+				      		<div class="col-sm-1"></div>
+				      		<div class="col-sm-5">
+				      			<s:select list="roomByRoomList" id="roomlist" onchange="toggleOther(this.value)" label="Room Use"
+				      				labelposition="top" labelSeparator=":" emptyOption="true"></s:select>
+				      		</div>
+				      		<div class="col-sm-5">
+				      			<s:textfield style="display:none;"></s:textfield>
+				      		</div>
+				      		<div class="col-sm-1"></div>
+				      	</div>
+			      	</s:if>
+			      </div>
+			      <div class="modal-footer">
+			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
+			      	<s:submit class="btn btn-primary" value="%{getText('displayJobs.search')}"></s:submit>
+				    <s:submit class="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"></s:submit>
+			      </div>
+		      </s:form>
+		    </div>
+		  </div>
+		</div>
 		<div class="modal fade" tabindex="-1" role="dialog" id="deletemodal">
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">

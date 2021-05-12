@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsClrntSys;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
+import com.sherwin.shercolor.common.domain.CdsRoomList;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
@@ -30,6 +31,7 @@ import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
+import com.sherwin.shercolor.common.service.UtilityService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobHistoryInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -49,6 +51,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private List<Integer> exportColList;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean copyJobFields = false;
+	private List<CdsRoomList> roomByRoomList;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -68,13 +71,50 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	@Autowired
 	FormulationService formulationService;
 	
+	@Autowired 
+	private UtilityService utilityService;
+	
 	List<CustWebTran> tranHistory;
 	
 	List<JobHistoryInfo> jobHistory;
 	private boolean match;
 	
 	public String display() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			// check if this account uses room by room
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				String customerType = profile.getCustomerType();
+				boolean useroom = profile.isUseRoomByRoom();
+				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+					setAccountIsDrawdownCenter(true);
+				}
+				if(useroom) {
+					buildRoomList(reqObj);
+				}
+			}
+			
+			return SUCCESS;
+				
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	private void buildRoomList(RequestObject reqObj) {
+		String intExt = reqObj.getIntExt();
+		setRoomByRoomList(utilityService.listCdsRoomsForListName(intExt));
 		
+		// add option for user to choose Other and enter in a custom name 
+		CdsRoomList otherOption = new CdsRoomList();
+		otherOption.setRoomUse("Other");
+		roomByRoomList.add(otherOption);
+	}
+	
+	public String search() { // Ajax function?
 		long startAction = System.currentTimeMillis();
 		double jobTimeAverage = 0;
 		try {
@@ -83,14 +123,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
-			// check if this account is a drawdown center for display of can type 
-			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			// check if this account is a drawdown center or store and uses room by room
+			/*CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			if (profile != null) {
 				String customerType = profile.getCustomerType();
 				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
 					setAccountIsDrawdownCenter(true);
 				}
-			}
+			}*/
 			
 			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			
@@ -214,9 +254,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			logger.debug("End ERROR (Exception) - LookupJobAction: display");
 			return ERROR;
 		}
-		
 	}
-	
 	
 	public String getJobFields() {
 		try { 
@@ -594,6 +632,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setCopyJobFields(boolean copyJobFields) {
 		this.copyJobFields = copyJobFields;
+	}
+
+	public List<CdsRoomList> getRoomByRoomList() {
+		return roomByRoomList;
+	}
+
+	public void setRoomByRoomList(List<CdsRoomList> roomByRoomList) {
+		this.roomByRoomList = roomByRoomList;
 	}
 
 }

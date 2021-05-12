@@ -2,6 +2,8 @@ var jobTable;
 
 
 $(document).ready(function() {
+	$('#searchmodal').modal('show');
+
 	var match = $.urlParam('match');
 	//$("#listJobsAction_formulaUserCorrectAction")
 	var exportColList = $("#listJobsAction_exportColList").val();
@@ -180,6 +182,14 @@ $(document).ready(function() {
     	jobTable.row(deleteRow).remove().draw();
     });
     
+    $('#searchmodal').on('shown.bs.modal', function(){
+    	$('.container-fluid').hide();
+    });
+    
+    $('#searchmodal').on('hidden.bs.modal', function(){
+    	$('.container-fluid').show();
+    });
+    
 });
 
 //function parses url to get value of specified param name
@@ -192,7 +202,10 @@ var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href
     }
 }
 
-
+//function toggles other textfield
+function toggleOther(val){
+	$('#roomlist').style.display = (val=="other") ? "block" : "none";
+}
 
 //function displayJobTable(){
 //	$('#job_table').dataTable({
