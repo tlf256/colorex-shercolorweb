@@ -73,8 +73,7 @@
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="custid" name="jobSearch.customerId" label="Customer ID" labelposition="top" 
-			      				placeholder="%{getText('displayJobs.allCustomers')}" labelSeparator=":"></s:textfield>
+			      			
 			      		</div>
 			      		<div class="col-sm-5"></div>
 			      		<div class="col-sm-1"></div>
