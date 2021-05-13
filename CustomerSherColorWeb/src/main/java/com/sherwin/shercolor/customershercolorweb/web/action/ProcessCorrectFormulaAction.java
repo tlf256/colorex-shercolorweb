@@ -155,8 +155,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			clrntSpaceAvail = maxClrntLoad - currClrntLoad;
 
 			retVal = INPUT;
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 
@@ -188,8 +188,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			}
 
 			retVal = SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");  
 			retVal = ERROR;
 		}
@@ -290,8 +290,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 			
 			retVal = SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");
 		}
@@ -404,8 +404,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 				errorMessage = result.getMessage();
 			}
 
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 			errorMessage = getText("processCorrectFormulaAction.exceptionThrownWriteFailed");
 		}
@@ -450,8 +450,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 				retVal = ERROR;
 				errorMessage = getText("processCorrectFormulaAction.missingStatusPostFailed"); 
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");
 			retVal = ERROR;
 		}

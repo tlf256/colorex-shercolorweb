@@ -120,6 +120,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		//sessionMap.put(reqGuid, reqObj);
 		return SUCCESS;
 	}
+	
 	@SuppressWarnings("unchecked")
 	public String SaveNewTinter(){
 		/*
@@ -148,44 +149,49 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		logger.debug("Begin Saving colorantsTxt.");
 		
-		if(reqObj !=null) {this.setCustomerId(reqObj.getCustomerID());}
-		List<CustWebColorantsTxt> colorantsTxtList = (List<CustWebColorantsTxt>) sessionMap.get("colorantsTxtList");
-		if(colorantsTxtList ==null) {
-			logger.error("ColorantsTxt is null");
-			addActionError(getText("processTinterConfigAction.nullClrntsTxt"));
-			return INPUT;
-		}
-		else{
-		
-			for(CustWebColorantsTxt colorant:colorantsTxtList){
-				colorant.setCustomerId(getCustomerId()); // change customer id so we can add this back into colorantstxt
-				colorant.setTinterSerialNbr(Encode.forHtml(this.getNewtinter().getSerialNbr()));
-				
-
-			}
-			//2018-05-06 BKP Corrected comparison on string to use .equals instead of != based on Veracode scan
-			//if(this.getCustomerId()!=null && this.getCustomerId()!= "DEFAULT" && this.getNewtinter().getSerialNbr() != null
-			if(this.getCustomerId()!=null && !this.getCustomerId().equals("DEFAULT") && this.getNewtinter().getSerialNbr() != null
-					&& this.getNewtinter().getSerialNbr().length()>1){
-				logger.info("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
-				logger.debug("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
-					// create records if they don't already exist, and colorant code may be different than expected because of layout update
-					if(tinterService.conditionalSaveColorantsTxtByPosition(colorantsTxtList) < 0){
-						//save if new customer id otherwise do nothing.  If error return error
-						addActionError(getText("processTinterConfigAction.configNotCompleteColorantsTxt"));
-						return ERROR;
-					}
-					
-				
-			}
-			else {
-				addActionError(getText("processTinterConfigAction.invalidSerialNbr", new String[]{this.getNewtinter().getSerialNbr()}));
+		try {
+			if(reqObj !=null) {this.setCustomerId(reqObj.getCustomerID());}
+			List<CustWebColorantsTxt> colorantsTxtList = (List<CustWebColorantsTxt>) sessionMap.get("colorantsTxtList");
+			if(colorantsTxtList ==null) {
+				logger.error("ColorantsTxt is null");
+				addActionError(getText("processTinterConfigAction.nullClrntsTxt"));
 				return INPUT;
 			}
+			else{
+			
+				for(CustWebColorantsTxt colorant:colorantsTxtList){
+					colorant.setCustomerId(getCustomerId()); // change customer id so we can add this back into colorantstxt
+					colorant.setTinterSerialNbr(Encode.forHtml(this.getNewtinter().getSerialNbr()));
+					
+
+				}
+				//2018-05-06 BKP Corrected comparison on string to use .equals instead of != based on Veracode scan
+				//if(this.getCustomerId()!=null && this.getCustomerId()!= "DEFAULT" && this.getNewtinter().getSerialNbr() != null
+				if(this.getCustomerId()!=null && !this.getCustomerId().equals("DEFAULT") && this.getNewtinter().getSerialNbr() != null
+						&& this.getNewtinter().getSerialNbr().length()>1){
+					logger.info("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
+					logger.debug("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
+						// create records if they don't already exist, and colorant code may be different than expected because of layout update
+						if(tinterService.conditionalSaveColorantsTxtByPosition(colorantsTxtList) < 0){
+							//save if new customer id otherwise do nothing.  If error return error
+							addActionError(getText("processTinterConfigAction.configNotCompleteColorantsTxt"));
+							return INPUT;
+						}
+				}
+				else {
+					addActionError(getText("processTinterConfigAction.invalidSerialNbr", new String[]{this.getNewtinter().getSerialNbr()}));
+					return INPUT;
+				}
+			}
+			reReadLocalHostTinter = true;
+		} catch(RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
 		}
-		reReadLocalHostTinter = true;
+		
 		return SUCCESS;
 	}
+	
 	public String display(){
 		String retVal = null;
 
@@ -216,9 +222,8 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 			retVal = SUCCESS;
 
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 

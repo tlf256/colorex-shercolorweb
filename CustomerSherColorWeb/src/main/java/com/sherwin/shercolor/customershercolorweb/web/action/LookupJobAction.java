@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -210,12 +209,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			return SUCCESS;
 				
 		
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
-			logger.debug("End ERROR (Hibernate Exception) - LookupJobAction: display");
-			return ERROR;
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			logger.debug("End ERROR (Exception) - LookupJobAction: display");
 			return ERROR;
 		}
@@ -227,7 +222,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		try { 
 			setCopyJobFields(true);
 			return this.display();
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
 			return ERROR;
 		}		
@@ -258,8 +253,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 		

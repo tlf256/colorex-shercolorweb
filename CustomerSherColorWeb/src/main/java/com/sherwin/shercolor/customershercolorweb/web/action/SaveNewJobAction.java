@@ -7,11 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -149,13 +147,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr());
 			}
 
-		} catch (HibernateException he) {
-			logger.error(he.getMessage() + ": ", he);
-			he.printStackTrace();
-			retVal = ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 
@@ -252,7 +245,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
@@ -275,9 +268,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			logger.debug("inside action about to execute");
 			retVal = this.execute();
 			logger.debug("inside action back from execute");
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -366,9 +358,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			} else {
 				retVal = ERROR;
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;

@@ -71,7 +71,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setColorVinylOnly(false);
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -81,7 +81,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 		 try {
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -174,7 +174,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			
 			return SUCCESS;
 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -185,7 +185,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		 try {
 			 measureColor = true;
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -201,7 +201,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			 } else {
 				 return SUCCESS;
 			 }
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

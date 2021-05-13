@@ -1,7 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -64,8 +63,8 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -91,8 +90,8 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 					spectrotypes.remove("Ci62",CI62);
 				}
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -101,37 +100,41 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 		CustWebDevices custWebDev = new CustWebDevices();
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		logger.debug("Begin Saving CustWebDevice.");
-		
-		if(reqObj !=null) {
-			logger.debug("request object getSpectro getMmodel is " + reqObj.getSpectro().getModel());
-			logger.debug("request object  getSpectroMmodel is " + reqObj.getSpectroModel());
-			custWebDev.setCustomerId(reqObj.getCustomerID());
-			custWebDev.setSerialNbr(reqObj.getSpectro().getSerialNbr());
-			custWebDev.setDeviceModel(reqObj.getSpectro().getModel());
-			custWebDev.setDeviceType("SPECTRO");
-		}
+		try {
+			if(reqObj !=null) {
+				logger.debug("request object getSpectro getMmodel is " + reqObj.getSpectro().getModel());
+				logger.debug("request object  getSpectroMmodel is " + reqObj.getSpectroModel());
+				custWebDev.setCustomerId(reqObj.getCustomerID());
+				custWebDev.setSerialNbr(reqObj.getSpectro().getSerialNbr());
+				custWebDev.setDeviceModel(reqObj.getSpectro().getModel());
+				custWebDev.setDeviceType("SPECTRO");
+			}
 
-			if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
-					&& custWebDev.getDeviceModel() != null){
-				logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
-				SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
-				logger.debug("back from saveCustDevice without error");
-				if(returnMessage!=null){
-					//save if new customer id otherwise do nothing.  If error return error
-					addActionError(getText("global.configNotComplete"));
+				if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
+						&& custWebDev.getDeviceModel() != null){
+					logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
+					SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
+					logger.debug("back from saveCustDevice without error");
+					if(returnMessage!=null){
+						//save if new customer id otherwise do nothing.  If error return error
+						addActionError(getText("global.configNotComplete"));
+						return ERROR;
+					}
+					logger.debug("made it past returnMessage check");
+					siteHasSpectro = true;
+					spectro = new SpectroInfo();
+					spectro.setSerialNbr(custWebDev.getSerialNbr());
+					spectro.setModel(custWebDev.getDeviceModel());
+					logger.debug("set the spectro object");
+				}
+				else {
+					addActionError(getText("spectroConfigureAction.invalidColorEyeData"));
 					return ERROR;
 				}
-				logger.debug("made it past returnMessage check");
-				siteHasSpectro = true;
-				spectro = new SpectroInfo();
-				spectro.setSerialNbr(custWebDev.getSerialNbr());
-				spectro.setModel(custWebDev.getDeviceModel());
-				logger.debug("set the spectro object");
-			}
-			else {
-				addActionError(getText("spectroConfigureAction.invalidColorEyeData"));
-				return ERROR;
-			}
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 
 		return SUCCESS;
 	}

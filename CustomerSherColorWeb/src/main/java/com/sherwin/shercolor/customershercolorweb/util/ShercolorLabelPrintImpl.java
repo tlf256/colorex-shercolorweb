@@ -400,8 +400,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			errorLocation = "Customer";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Customer:",cell2Width,haLeft,vaMiddle,customer);
-			errorLocation = "Store CNN";
-			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CNN:",cell2Width,haLeft,vaMiddle,storeCCN);
+			errorLocation = "Store CCN";
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CCN:",cell2Width,haLeft,vaMiddle,storeCCN);
 			errorLocation = "Date Prepared and Control Nbr";
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
@@ -725,7 +725,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	
 	// ==========================================================================================================================================
 	// Label Row Creation Methods
-	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are neccessary
+	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are necessary
 	//				to help assist in providing more instruction and less static values 
 	// ==========================================================================================================================================
 
@@ -921,23 +921,33 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		if(listJobField != null && listJobField.size() > 0){
 			// Process each instance of the listJobField objects.
 			for(JobField job : listJobField){
+				// use local strings so we don't modify the reqObj contents for other labels
+				String screenLabel = job.getScreenLabel();
+				String enteredValue = job.getEnteredValue();
 				//only process non-null values	
 				if (job.getScreenLabel() != null &&  job.getEnteredValue() != null){
 					//Modify input values, replace / and " with -
 					job.setEnteredValue(StringEscapeUtils.unescapeHtml(job.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
 					// Only process defined job data.
 					if(job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ) {
-						// 01/20/2017 - Begin Job
 						// Truncate Screen Label to fit the line space.
 						if (job.getScreenLabel().length() > 13){
-							job.setScreenLabel(job.getScreenLabel().substring(0, 13));
+							screenLabel = job.getScreenLabel().substring(0, 13);
 						}
-						// Truncate Entered Value to fit the line space.
-						if (job.getEnteredValue().length() > 16){
-							job.setEnteredValue(job.getEnteredValue().substring(0, 16));
+						// left justify job fields for drawdown customers
+						CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+						if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN")){
+							if (job.getEnteredValue().length() > 21){
+								enteredValue = job.getEnteredValue().substring(0, 21);
+							}
+							createTwoColumnRow(table, 7, 8, 43, haLeft, vaMiddle, screenLabel + ": ", 57, haLeft, vaMiddle, enteredValue);
+						} else {
+							// Truncate Entered Value to fit the line space.
+							if (job.getEnteredValue().length() > 16){
+								enteredValue = job.getEnteredValue().substring(0, 16);
+							}
+							createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, screenLabel + ": ", 50, haLeft, vaMiddle, enteredValue);
 						}
-						// 01/20/2017 - End Job 
-						createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, job.getScreenLabel() + ": ", 50, haLeft, vaMiddle, job.getEnteredValue());
 					}
 				}
 			}

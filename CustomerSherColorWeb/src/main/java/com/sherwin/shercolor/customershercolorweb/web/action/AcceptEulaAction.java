@@ -1,8 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,15 +53,17 @@ public class AcceptEulaAction extends ActionSupport implements SessionAware {
 				if (target.disableActivationRecord("CUSTOMERSHERCOLORWEB", origReqObj.getCustomerID())) {
 					return SUCCESS;
 				} else {
+					logger.error("Database Error: Could not disable activation record");
 					return ERROR;
 				}
 			} else  {
+				logger.error("create eula hist record unsuccessful");
 				return ERROR;
 			}
 			
 
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		

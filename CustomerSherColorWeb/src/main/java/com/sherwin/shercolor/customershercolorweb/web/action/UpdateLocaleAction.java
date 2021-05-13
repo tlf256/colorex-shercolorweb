@@ -59,7 +59,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 	    	
 	    	return SUCCESS;
     	
-    	} catch (Exception e) {
+    	} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}
@@ -87,7 +87,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 	    	
 	    	return SUCCESS;
     	
-    	} catch (Exception e) {
+    	} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}

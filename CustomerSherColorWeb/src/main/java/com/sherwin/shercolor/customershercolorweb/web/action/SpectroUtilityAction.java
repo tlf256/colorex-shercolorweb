@@ -40,8 +40,8 @@ public class SpectroUtilityAction extends ActionSupport  implements SessionAware
 			sessionMap.put(reqGuid, reqObj);
 			
 			retVal = SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
