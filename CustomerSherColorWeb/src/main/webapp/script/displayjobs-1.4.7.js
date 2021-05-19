@@ -2,7 +2,6 @@ var jobTable;
 
 
 $(document).ready(function() {
-	$('#searchmodal').modal('show');
 
 	var match = $.urlParam('match');
 	//$("#listJobsAction_formulaUserCorrectAction")
@@ -104,9 +103,16 @@ $(document).ready(function() {
     
     console.log('match is ' + match);
     
+    // display the job search filter modal unless match is true
+    // and in this case the jobs have already been filtered
     if(match != null && match == "true"){
     	$('#mainForm').attr('action', 'selectColorMatchAction');
     	$('#title').text(i18n['compareColors.chooseFirstSample']);
+    } else {
+    	console.log("pathname is " + window.location.pathname);
+    	if(window.location.pathname == '/CustomerSherColorWeb/loginAction.action'){
+    		jobSearch();
+    	}
     }
 	
 	/*var cell = jobTable.cell(this);
@@ -136,6 +142,7 @@ $(document).ready(function() {
     	var lookupControlNbr = jobTable.row(this).data()[0];
     	//window.alert("job number clicked is " + lookupControlNbr);
     	document.getElementById('controlNbr').value = lookupControlNbr;
+    	//document.getElementById('mainForm').setAttribute('action', 'startNewJob');
     	document.getElementById('mainForm').submit();
     });
     
@@ -205,6 +212,11 @@ var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href
 //function toggles other textfield
 function toggleOther(val){
 	$('#roomlist').style.display = (val=="other") ? "block" : "none";
+}
+
+//display job search modal for search
+function jobSearch() {
+	$('#searchmodal').modal('show');
 }
 
 //function displayJobTable(){

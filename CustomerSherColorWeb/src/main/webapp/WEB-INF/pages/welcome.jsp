@@ -1304,7 +1304,7 @@
 				<div class="col-xl-4 col-lg-3 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-xl-4 col-lg-6 col-sm-10 col-xs-12">
-					<s:form action="startNewJob" method="post" align="center" theme="bootstrap" focusElement="startNewJobFocus">
+					<s:form method="post" align="center" theme="bootstrap" focusElement="startNewJobFocus">
 						<div class="form-group" style="margin-top: 20px;">
 							<s:hidden name="reqGuid" value="%{reqGuid}"/>
 							<s:hidden name="newSession" value="%{newSession}"/>
@@ -1314,7 +1314,7 @@
 							<s:hidden name="siteHasSpectro" value="%{siteHasSpectro}"/>
 							<s:hidden name="daysUntilPwdExp" value="%{daysUntilPwdExp}"/>
 							<s:submit cssClass="btn btn-primary btn-lg pull-left" id="startNewJobFocus" autofocus="autofocus" value="%{getText('welcome.startNewJob')}" action="startNewJob"/>
-							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="%{getText('welcome.lookupExistingJob')}" action="listJobsAction"/>
+							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="%{getText('welcome.lookupExistingJob')}" action="searchJobsAction"/>
 				    	</div>  
 			    	
 			    	<!-- Updated Canister Layout Modal Window -->

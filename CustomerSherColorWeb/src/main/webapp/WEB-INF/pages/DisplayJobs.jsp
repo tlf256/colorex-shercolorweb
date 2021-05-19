@@ -47,12 +47,12 @@
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
-		      <s:form>
+		      <s:form action="listJobsAction">
 			      <div class="modal-body">
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="cntrlnbr" name="jobSearch.controlNbr" label="Control Number" labelposition="top" 
+			      			<s:textfield id="cntrlnbr" name="js.controlNbr" label="Control Number" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allControlNumbers')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5"></div>
@@ -61,11 +61,11 @@
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="fdate" name="jobSearch.fromDate" label="From Date" labelposition="top" 
+			      			<s:textfield id="fdate" name="js.fromDate" label="From Date" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="tdate" name="jobSearch.toDate" label="To Date" labelposition="top" 
+			      			<s:textfield id="tdate" name="js.toDate" label="To Date" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-1"></div>
@@ -81,11 +81,11 @@
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="clrid" name="jobSearch.colorId" label="Color ID" labelposition="top" 
+			      			<s:textfield id="clrid" name="js.colorId" label="Color ID" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allColorIds')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="clrnm" name="jobSearch.colorName" label="Color Name" labelposition="top" 
+			      			<s:textfield id="clrnm" name="js.colorName" label="Color Name" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allColorNames')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-1"></div>
@@ -105,7 +105,7 @@
 				      		<div class="col-sm-1"></div>
 				      		<div class="col-sm-5">
 				      			<s:select list="roomByRoomList" id="roomlist" onchange="toggleOther(this.value)" label="Room Use"
-				      				labelposition="top" labelSeparator=":" emptyOption="true"></s:select>
+				      				name="js.roomUse" labelposition="top" labelSeparator=":" emptyOption="true"></s:select>
 				      		</div>
 				      		<div class="col-sm-5">
 				      			<s:textfield style="display:none;"></s:textfield>
@@ -116,8 +116,9 @@
 			      </div>
 			      <div class="modal-footer">
 			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
+			      	<s:hidden name="js.customerId" value="%{sessionMap[reqGuid].customerId}"/>
 			      	<s:submit class="btn btn-primary" value="%{getText('displayJobs.search')}"></s:submit>
-				    <s:submit class="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"></s:submit>
+				    <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
 			      </div>
 		      </s:form>
 		    </div>
@@ -237,7 +238,7 @@
 				</div>
 			</div>
 <br>
-			<s:form id="mainForm" action="selectJobAction" validate="true"  theme="bootstrap">
+			<s:form id="mainForm" action="startNewJob" validate="true"  theme="bootstrap">
 				<div class="row">
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
@@ -246,6 +247,9 @@
 					</div>
 
 					<div class="col-sm-10">
+						<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="jobSearch()">
+							<s:text name="displayJobs.newSearch" />
+						</button>
 						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">

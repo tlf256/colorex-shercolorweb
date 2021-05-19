@@ -24,6 +24,7 @@ import com.sherwin.shercolor.common.domain.FormulaConversion;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
+import com.sherwin.shercolor.common.domain.JobSearch;
 import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorantService;
@@ -52,6 +53,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private boolean accountIsDrawdownCenter = false;
 	private boolean copyJobFields = false;
 	private List<CdsRoomList> roomByRoomList;
+	private JobSearch js;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -79,18 +81,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	List<JobHistoryInfo> jobHistory;
 	private boolean match;
 	
-	public String display() {
+	public String search() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			// check if this account uses room by room
 			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			if (profile != null) {
-				String customerType = profile.getCustomerType();
 				boolean useroom = profile.isUseRoomByRoom();
-				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
-					setAccountIsDrawdownCenter(true);
-				}
 				if(useroom) {
 					buildRoomList(reqObj);
 				}
@@ -114,7 +112,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		roomByRoomList.add(otherOption);
 	}
 	
-	public String search() { // Ajax function?
+	public String display() {
 		long startAction = System.currentTimeMillis();
 		double jobTimeAverage = 0;
 		try {
@@ -123,14 +121,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
-			// check if this account is a drawdown center or store and uses room by room
-			/*CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			// check if this account is a drawdown center
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			if (profile != null) {
 				String customerType = profile.getCustomerType();
 				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
 					setAccountIsDrawdownCenter(true);
 				}
-			}*/
+			}
 			
 			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			
@@ -149,9 +147,17 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			if(match) {
 				//only pull CUSTOMMATCH records for compare colors selection
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByColorType(reqObj.getCustomerID(), "CUSTOMMATCH", false);
+				JobSearch jobSearch = new JobSearch();
+				jobSearch.setCustomerId(reqObj.getCustomerID());
+				jobSearch.setColorType("CUSTOMMATCH");
+				
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(jobSearch, false);
 			} else {
-				tranHistory = tranHistoryService.getActiveCustomerJobs(reqObj.getCustomerID(),false);
+				// pass JobSearch object to service for criteria
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(js, false);
+				
+				//clear criteria from job search after read
+				js = new JobSearch();
 			}
 			
 			jobHistory = new ArrayList<JobHistoryInfo>();
@@ -640,6 +646,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setRoomByRoomList(List<CdsRoomList> roomByRoomList) {
 		this.roomByRoomList = roomByRoomList;
+	}
+
+	public JobSearch getJs() {
+		return js;
+	}
+
+	public void setJs(JobSearch js) {
+		this.js = js;
 	}
 
 }
