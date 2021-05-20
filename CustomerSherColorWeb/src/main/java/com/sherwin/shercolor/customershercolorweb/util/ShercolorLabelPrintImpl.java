@@ -509,10 +509,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			CustWebCustomerProfile custProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			CdsColorMast colorMast = colorMastService.read(reqObj.getColorComp(), reqObj.getColorID());
-			if (custProfile.isUseLocatorId() && colorMast!= null && colorMast.getLocId() != null) {
-				createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, colorMast.getLocId() + " " + reqObj.getColorID() + " " + reqObj.getColorName() );
-			} else {
-				createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, reqObj.getColorID() + " " + reqObj.getColorName() );
+			createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, reqObj.getColorID() + " " + reqObj.getColorName() );
+			
+			if (custProfile.isUseLocatorId() && colorMast != null && colorMast.getLocId() != null) {
+				errorLocation = "Locator ID";
+				createOneColumnRow(table, 8, 8, 100, haCenter, vaMiddle, colorMast.getLocId());
 			}
 			
 			// ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -795,31 +796,20 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
 			reqObj.setColorName(StringEscapeUtils.unescapeHtml(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-")));
 		}
-
-		// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
-		// for the Color name.
-		if (totalCharsLength >= 22){
-			int colorNameLength = 22 - reqObj.getColorID().length();
-			if (reqObj.getColorName().length() > colorNameLength){
-				reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
-			}
-		}
-		// 01/20/2017 - Begin Color I.D. and Color Name field build.
-		totalCharsLength = reqObj.getColorID().length() + reqObj.getColorName().length();
-
-		//Modify input values, replace / and " with -
-		if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
-			reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
-			reqObj.setColorName(StringEscapeUtils.unescapeHtml(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-")));
-		}
-
-		// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
-		// for the Color name.
-		if (totalCharsLength >= 22){
-			int colorNameLength = 22 - reqObj.getColorID().length();
-			if (reqObj.getColorName().length() > colorNameLength){
-				reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
-			}
+		
+		// check customer profile
+		CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+		if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN")){
+		// don't truncate for drawdown customers
+		} else {
+			// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
+			// for the Color name.
+			if (totalCharsLength >= 22){
+				int colorNameLength = 22 - reqObj.getColorID().length();
+				if (reqObj.getColorName().length() > colorNameLength){
+					reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
+				}
+			} 
 		}
 	}
 	
