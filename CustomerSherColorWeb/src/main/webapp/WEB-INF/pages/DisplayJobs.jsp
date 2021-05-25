@@ -20,19 +20,20 @@
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" src="script/displayjobs-1.4.7.js"></script>
@@ -47,12 +48,19 @@
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
-		      <s:form action="listJobsAction">
+		      <s:form id="jobSearchForm" action="listJobsAction">
 			      <div class="modal-body">
+			        <div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5 text-danger" id="searchError"></div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<br>
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="cntrlnbr" name="js.controlNbr" label="Control Number" labelposition="top" 
+			      			<s:textfield id="cntrlnbr" name="js.controlNbr" label="%{getText('displayJobs.controlNumber')}" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allControlNumbers')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5"></div>
@@ -61,11 +69,11 @@
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="fdate" name="js.fromDate" label="From Date" labelposition="top" 
+			      			<s:textfield id="fdate" name="js.fromDate" label="%{getText('displayJobs.fromDate')}" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="tdate" name="js.toDate" label="To Date" labelposition="top" 
+			      			<s:textfield id="tdate" name="js.toDate" label="%{getText('displayJobs.toDate')}" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-1"></div>
@@ -73,30 +81,12 @@
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			
-			      		</div>
-			      		<div class="col-sm-5"></div>
-			      		<div class="col-sm-1"></div>
-			      	</div>
-			      	<div class="row">
-			      		<div class="col-sm-1"></div>
-			      		<div class="col-sm-5">
-			      			<s:textfield id="clrid" name="js.colorId" label="Color ID" labelposition="top" 
+			      			<s:textfield id="clrid" name="js.colorId" label="%{getText('global.colorId')}" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allColorIds')}" labelSeparator=":"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="clrnm" name="js.colorName" label="Color Name" labelposition="top" 
+			      			<s:textfield id="clrnm" name="js.colorName" label="%{getText('global.colorName')}" labelposition="top" 
 			      				placeholder="%{getText('displayJobs.allColorNames')}" labelSeparator=":"></s:textfield>
-			      		</div>
-			      		<div class="col-sm-1"></div>
-			      	</div>
-			      	<div class="row">
-			      		<div class="col-sm-1"></div>
-			      		<div class="col-sm-5">
-			      			
-			      		</div>
-			      		<div class="col-sm-5">
-			      		
 			      		</div>
 			      		<div class="col-sm-1"></div>
 			      	</div>
@@ -104,11 +94,12 @@
 			      		<div class="row" id="roomuse">
 				      		<div class="col-sm-1"></div>
 				      		<div class="col-sm-5">
-				      			<s:select list="roomByRoomList" id="roomlist" onchange="toggleOther(this.value)" label="Room Use"
-				      				name="js.roomUse" labelposition="top" labelSeparator=":" emptyOption="true"></s:select>
+				      			<s:select list="roomByRoomList" id="roomlist" onchange="toggleOther(this.value)" label="%{getText('displayJobs.roomUse')}"
+				      				name="js.roomUse" labelposition="top" labelSeparator=":" listKey="roomUse" listValue="roomUse" 
+				      				headerKey="" headerValue="--" value="%{roomByRoom}"></s:select>
 				      		</div>
 				      		<div class="col-sm-5">
-				      			<s:textfield style="display:none;"></s:textfield>
+				      			<s:textfield class="d-none" id="other" name="" style="margin-top:30px" placeholder="%{getText('displayJobs.allRooms')}"></s:textfield>
 				      		</div>
 				      		<div class="col-sm-1"></div>
 				      	</div>
@@ -117,7 +108,7 @@
 			      <div class="modal-footer">
 			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
 			      	<s:hidden name="js.customerId" value="%{sessionMap[reqGuid].customerId}"/>
-			      	<s:submit class="btn btn-primary" value="%{getText('displayJobs.search')}"></s:submit>
+			      	<button type="button" class="btn btn-primary" onclick="validate()"><s:text name="displayJobs.search"/></button>
 				    <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
 			      </div>
 		      </s:form>
@@ -238,7 +229,7 @@
 				</div>
 			</div>
 <br>
-			<s:form id="mainForm" action="startNewJob" validate="true"  theme="bootstrap">
+			<s:form id="mainForm" action="searchJobsAction" validate="true"  theme="bootstrap">
 				<div class="row">
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
@@ -247,9 +238,9 @@
 					</div>
 
 					<div class="col-sm-10">
-						<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="jobSearch()">
-							<s:text name="displayJobs.newSearch" />
-						</button>
+						<s:if test="match != true">
+							<s:submit id="newSearchBtn" class="btn btn-primary" value="%{getText('displayJobs.newSearch')}"></s:submit>
+						</s:if>
 						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">

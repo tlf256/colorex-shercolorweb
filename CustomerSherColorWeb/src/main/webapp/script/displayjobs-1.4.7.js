@@ -1,8 +1,8 @@
 var jobTable;
-
+var valid = true;
 
 $(document).ready(function() {
-
+	
 	var match = $.urlParam('match');
 	//$("#listJobsAction_formulaUserCorrectAction")
 	var exportColList = $("#listJobsAction_exportColList").val();
@@ -14,6 +14,15 @@ $(document).ready(function() {
 			return result;
 		}
 	});
+	
+	$('#fdate').datepicker({
+		defaultDate: null
+	});
+	
+	$('#tdate').datepicker({
+		defaultDate: null
+	});
+	
 	jobTable = $('#job_table').DataTable({
 		columnDefs: [
 			{
@@ -108,10 +117,12 @@ $(document).ready(function() {
     if(match != null && match == "true"){
     	$('#mainForm').attr('action', 'selectColorMatchAction');
     	$('#title').text(i18n['compareColors.chooseFirstSample']);
+    	$('#searchmodal').modal('hide');
     } else {
     	console.log("pathname is " + window.location.pathname);
-    	if(window.location.pathname == '/CustomerSherColorWeb/loginAction.action'){
-    		jobSearch();
+    	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action' || 
+    			window.location.pathname == '/CustomerSherColorWeb/searchJobsAction.action'){
+    		$('#searchmodal').modal('show');
     	}
     }
 	
@@ -137,12 +148,31 @@ $(document).ready(function() {
 		};
 	};*/
     
+    /*validation for job search form*/
+    $('#cntrlnbr').on('blur focusout', function(){
+    	var controlNbr = $(this).val();
+    	var parsedCntrlNbr = parseInt(controlNbr);
+    	//console.log("parsed control number is " + parsedCntrlNbr);
+    	try {
+    		if(controlNbr && Number.isNaN(parsedCntrlNbr)) {
+    			console.log('Control number is Not a Number');
+    			throw i18n['displayJobs.controlNbrMustBeInteger'];
+    		}
+    		removeWarningPopover();
+    		$('#cntrlnbr').removeClass('border-danger');
+    		$('#searchError').text('');
+    	} catch(msg) {
+    		addWarningPopover('#cntrlnbr', msg);
+    		valid = false;
+    	}
+    });
+    
     $('#job_table tbody').on('click','tr',function(event){
     	//window.alert("row clicked ");
     	var lookupControlNbr = jobTable.row(this).data()[0];
     	//window.alert("job number clicked is " + lookupControlNbr);
     	document.getElementById('controlNbr').value = lookupControlNbr;
-    	//document.getElementById('mainForm').setAttribute('action', 'startNewJob');
+    	document.getElementById('mainForm').setAttribute('action', 'selectJobAction');
     	document.getElementById('mainForm').submit();
     });
     
@@ -195,6 +225,10 @@ $(document).ready(function() {
     
     $('#searchmodal').on('hidden.bs.modal', function(){
     	$('.container-fluid').show();
+    	if($('.popover').is(':visible')) {
+    		//console.log("popover is visible");
+    		removeWarningPopover();
+    	}
     });
     
 });
@@ -211,12 +245,47 @@ var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href
 
 //function toggles other textfield
 function toggleOther(val){
-	$('#roomlist').style.display = (val=="other") ? "block" : "none";
+	if(val == "Other") {
+		$('#other').removeClass('d-none');
+		$('#roomlist').attr('name', '');
+		$('#other').attr('name', 'js.roomUse');
+	} else {
+		$('#other').addClass('d-none');
+		$('#roomlist').attr('name', 'js.roomUse');
+		$('#other').attr('name', '');
+	}
 }
 
-//display job search modal for search
-function jobSearch() {
-	$('#searchmodal').modal('show');
+function addWarningPopover(selector,msg){
+	$(selector).attr("data-toggle", "popover");
+	$(selector).attr("data-placement","left");
+	$(selector).attr("data-content", msg);
+	$(selector).popover({trigger : 'manual'});
+	$(selector).popover('show');
+	$('.popover').addClass('border-danger');
+	$('.popover-body').addClass('text-danger');
+	$(selector).addClass('border-danger');
+	$(selector).select();
+}
+
+function removeWarningPopover(){
+	$('.popover').each(function(){
+    	$(this).popover('hide');
+        $('input[data-toggle="popover"]').each(function(){
+        	$(this).removeAttr('data-placement');
+            $(this).removeAttr('data-content');
+            $(this).removeAttr('data-toggle');
+        });
+	});
+}
+
+function validate() {
+	if(valid) {
+		$('#jobSearchForm').submit();
+	} else {
+		removeWarningPopover();
+		$('#searchError').text(i18n['displayJobs.pleaseFixErrors']);
+	}
 }
 
 //function displayJobTable(){

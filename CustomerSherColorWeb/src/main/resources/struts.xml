@@ -240,6 +240,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="input">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="listJobsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="display">
@@ -247,6 +248,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="input">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="copyExistingJobFieldsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="getJobFields">

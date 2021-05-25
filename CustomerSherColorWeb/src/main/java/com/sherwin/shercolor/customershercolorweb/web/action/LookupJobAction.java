@@ -90,7 +90,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			if (profile != null) {
 				boolean useroom = profile.isUseRoomByRoom();
 				if(useroom) {
-					buildRoomList(reqObj);
+					buildRoomList();
 				}
 			}
 			
@@ -102,9 +102,9 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		}
 	}
 	
-	private void buildRoomList(RequestObject reqObj) {
-		String intExt = reqObj.getIntExt();
-		setRoomByRoomList(utilityService.listCdsRoomsForListName(intExt));
+	private void buildRoomList() {
+		//get all int/ext rooms
+		setRoomByRoomList(utilityService.listCdsRoomsForListName("INT/EXT"));
 		
 		// add option for user to choose Other and enter in a custom name 
 		CdsRoomList otherOption = new CdsRoomList();
@@ -156,8 +156,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				// pass JobSearch object to service for criteria
 				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(js, false);
 				
-				//clear criteria from job search after read
-				js = new JobSearch();
+				//set job search object to null to clear values for new search
+				js = null;
 			}
 			
 			jobHistory = new ArrayList<JobHistoryInfo>();
