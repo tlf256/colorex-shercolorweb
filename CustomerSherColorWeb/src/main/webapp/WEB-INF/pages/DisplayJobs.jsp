@@ -39,11 +39,11 @@
 		<script type="text/javascript" src="script/displayjobs-1.4.7.js"></script>
 	</head>
 	<body>
-		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal">
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">
 		  <div class="modal-dialog modal-lg" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
-		        <h5 class="modal-title"><s:text name="displayJobs.existingJobSearch"/></h5>
+		        <h5 class="modal-title"><s:text name="displayJobs.jobHistorySearch"/></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
@@ -60,8 +60,8 @@
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="cntrlnbr" name="js.controlNbr" label="%{getText('displayJobs.controlNumber')}" labelposition="top" 
-			      				placeholder="%{getText('displayJobs.allControlNumbers')}" labelSeparator=":"></s:textfield>
+			      			<strong><s:text name="displayJobs.controlNumber"/><s:text name="global.colonDelimiter"/></strong>
+			      			<s:textfield id="cntrlnbr" name="thc.controlNbr" placeholder="%{getText('displayJobs.allControlNumbers')}"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5"></div>
 			      		<div class="col-sm-1"></div>
@@ -69,34 +69,46 @@
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="fdate" name="js.fromDate" label="%{getText('displayJobs.fromDate')}" labelposition="top" 
-			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
+			      			<strong><s:text name="displayJobs.fromDate"/><s:text name="global.colonDelimiter"/></strong>
+			      			<s:textfield id="fdate" name="thc.fromDate" placeholder="%{getText('displayJobs.allDates')}" autocomplete="off"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="tdate" name="js.toDate" label="%{getText('displayJobs.toDate')}" labelposition="top" 
-			      				placeholder="%{getText('displayJobs.allDates')}" labelSeparator=":"></s:textfield>
+			      			<strong><s:text name="displayJobs.toDate"/><s:text name="global.colonDelimiter"/></strong>
+			      			<s:textfield id="tdate" name="thc.toDate" placeholder="%{getText('displayJobs.allDates')}" autocomplete="off"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-1"></div>
 			      	</div>
 			      	<div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="clrid" name="js.colorId" label="%{getText('global.colorId')}" labelposition="top" 
-			      				placeholder="%{getText('displayJobs.allColorIds')}" labelSeparator=":"></s:textfield>
+			      			<strong><s:text name="global.colorIdColon"/></strong>
+			      			<s:textfield id="clrid" name="thc.colorId" placeholder="%{getText('displayJobs.allColorIds')}"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-5">
-			      			<s:textfield id="clrnm" name="js.colorName" label="%{getText('global.colorName')}" labelposition="top" 
-			      				placeholder="%{getText('displayJobs.allColorNames')}" labelSeparator=":"></s:textfield>
+			      			<strong><s:text name="global.colorNameColon"/></strong>
+			      			<s:textfield id="clrnm" name="thc.colorName" placeholder="%{getText('displayJobs.allColorNames')}"></s:textfield>
 			      		</div>
 			      		<div class="col-sm-1"></div>
 			      	</div>
-			      	<s:if test="roomByRoomList != null && !roomByRoomList.isEmpty">
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.salesNumberColon"/></strong>
+			      			<s:textfield id="slsnbr" name="thc.salesNbr" placeholder="%{getText('displayJobs.allSalesNumbers')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.productNumberColon"/></strong>
+			      			<s:textfield id="prdnbr" name="thc.prodNbr" placeholder="%{getText('displayJobs.allProductNumbers')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<s:if test="%{sessionMap[reqGuid].allRooms != null && !sessionMap[reqGuid].allRooms.isEmpty}">
 			      		<div class="row" id="roomuse">
 				      		<div class="col-sm-1"></div>
 				      		<div class="col-sm-5">
-				      			<s:select list="roomByRoomList" id="roomlist" onchange="toggleOther(this.value)" label="%{getText('displayJobs.roomUse')}"
-				      				name="js.roomUse" labelposition="top" labelSeparator=":" listKey="roomUse" listValue="roomUse" 
-				      				headerKey="" headerValue="--" value="%{roomByRoom}"></s:select>
+				      			<strong><s:text name="displayJobs.roomUse"/> <s:text name="global.colonDelimiter"/></strong>
+				      			<s:select list="%{sessionMap[reqGuid].allRooms}" id="roomlist" onchange="toggleOther(this.value)" name="thc.roomUse" listKey="roomUse" 
+				      			listValue="roomUse" headerKey="" headerValue="--" value="%{roomByRoom}"></s:select>
 				      		</div>
 				      		<div class="col-sm-5">
 				      			<s:textfield class="d-none" id="other" name="" style="margin-top:30px" placeholder="%{getText('displayJobs.allRooms')}"></s:textfield>
@@ -104,12 +116,24 @@
 				      		<div class="col-sm-1"></div>
 				      	</div>
 			      	</s:if>
+		      		<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
+				      	<div class="row">
+				      		<div class="col-sm-1"></div>
+				      		<div class="col-sm-5">
+				      			<strong><s:property value="screenLabel" /><s:text name="global.colonDelimiter"/></strong>
+				      			<s:textfield id="jbfld%{#stat.count}" class="jobfield" name="thc.jobField%{#stat.count}" placeholder="%{getText('displayJobs.allValues')}"></s:textfield>
+				      		</div>
+				      		<div class="col-sm-5"></div>
+				      		<div class="col-sm-1"></div>
+				      	</div>
+			      	</s:iterator>
 			      </div>
 			      <div class="modal-footer">
 			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
-			      	<s:hidden name="js.customerId" value="%{sessionMap[reqGuid].customerId}"/>
+			      	<s:hidden name="thc.customerId" value="%{sessionMap[reqGuid].customerId}"/>
 			      	<button type="button" class="btn btn-primary" onclick="validate()"><s:text name="displayJobs.search"/></button>
-				    <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
+			      	<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
+				    <%-- <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button> --%>
 			      </div>
 		      </s:form>
 		    </div>
@@ -161,6 +185,9 @@
 					<h6 id="dltmsg" class="text-danger d-none"></h6>
 					<s:if test="hasActionMessages()">
 					      <s:actionmessage cssClass="alert-danger"/>
+					</s:if>
+					<s:if test="match != true">
+						<button type="button" id="newSearchBtn" class="btn btn-primary pull-right" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
 					</s:if>
 					<table id="job_table" class="table table-striped table-bordered">
 						<thead>
@@ -229,7 +256,7 @@
 				</div>
 			</div>
 <br>
-			<s:form id="mainForm" action="searchJobsAction" validate="true"  theme="bootstrap">
+			<s:form id="mainForm" action="selectJobAction" validate="true"  theme="bootstrap">
 				<div class="row">
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
@@ -238,9 +265,9 @@
 					</div>
 
 					<div class="col-sm-10">
-						<s:if test="match != true">
-							<s:submit id="newSearchBtn" class="btn btn-primary" value="%{getText('displayJobs.newSearch')}"></s:submit>
-						</s:if>
+						<%-- <s:if test="match != true">
+							<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
+						</s:if> --%>
 						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">

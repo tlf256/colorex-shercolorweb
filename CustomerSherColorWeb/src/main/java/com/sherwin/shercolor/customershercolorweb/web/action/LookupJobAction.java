@@ -24,7 +24,7 @@ import com.sherwin.shercolor.common.domain.FormulaConversion;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
-import com.sherwin.shercolor.common.domain.JobSearch;
+import com.sherwin.shercolor.common.domain.TranHistoryCriteria;
 import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorantService;
@@ -52,8 +52,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private List<Integer> exportColList;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean copyJobFields = false;
-	private List<CdsRoomList> roomByRoomList;
-	private JobSearch js;
+	private TranHistoryCriteria thc;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -90,47 +89,13 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			if (profile != null) {
 				boolean useroom = profile.isUseRoomByRoom();
 				if(useroom) {
-					buildRoomList();
+					reqObj.setAllRooms(buildRoomList());
 				}
 			}
 			
-			return SUCCESS;
-				
-		} catch (RuntimeException e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
-			return ERROR;
-		}
-	}
-	
-	private void buildRoomList() {
-		//get all int/ext rooms
-		setRoomByRoomList(utilityService.listCdsRoomsForListName("INT/EXT"));
-		
-		// add option for user to choose Other and enter in a custom name 
-		CdsRoomList otherOption = new CdsRoomList();
-		otherOption.setRoomUse("Other");
-		roomByRoomList.add(otherOption);
-	}
-	
-	public String display() {
-		long startAction = System.currentTimeMillis();
-		double jobTimeAverage = 0;
-		try {
+			// get jobfields for use in filter criteria
+			List<CustWebJobFields> custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			jobFieldList = new ArrayList<JobField>();
-			List<CustWebJobFields> custWebJobFields;
-
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			
-			// check if this account is a drawdown center
-			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
-			if (profile != null) {
-				String customerType = profile.getCustomerType();
-				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
-					setAccountIsDrawdownCenter(true);
-				}
-			}
-			
-			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			
 			if(custWebJobFields.size()>0){
 				for(CustWebJobFields custField : custWebJobFields){
@@ -145,19 +110,58 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			sessionMap.put(reqGuid, reqObj);
 			
+			return SUCCESS;
+				
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	private List<CdsRoomList> buildRoomList() {
+		List<CdsRoomList> roomList = new ArrayList<CdsRoomList>();
+		//get all int/ext rooms
+		roomList = utilityService.listCdsRoomsForListName("INT/EXT");
+		
+		// add option for user to choose Other and enter in a custom name 
+		CdsRoomList otherOption = new CdsRoomList();
+		otherOption.setRoomUse("Other");
+		roomList.add(otherOption);
+		return roomList;
+	}
+	
+	public String display() {
+		long startAction = System.currentTimeMillis();
+		double jobTimeAverage = 0;
+		try {
+			List<CustWebJobFields> custWebJobFields;
+
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			// check if this account is a drawdown center
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				String customerType = profile.getCustomerType();
+				if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+					setAccountIsDrawdownCenter(true);
+				}
+			}
+			
+			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
+						
 			if(match) {
 				//only pull CUSTOMMATCH records for compare colors selection
-				JobSearch jobSearch = new JobSearch();
-				jobSearch.setCustomerId(reqObj.getCustomerID());
-				jobSearch.setColorType("CUSTOMMATCH");
+				TranHistoryCriteria TranCriteria = new TranHistoryCriteria();
+				TranCriteria.setCustomerId(reqObj.getCustomerID());
+				TranCriteria.setColorType("CUSTOMMATCH");
 				
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(jobSearch, false);
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(TranCriteria, false);
 			} else {
 				// pass JobSearch object to service for criteria
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(js, false);
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(thc, false);
 				
 				//set job search object to null to clear values for new search
-				js = null;
+				thc = null;
 			}
 			
 			jobHistory = new ArrayList<JobHistoryInfo>();
@@ -640,20 +644,12 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		this.copyJobFields = copyJobFields;
 	}
 
-	public List<CdsRoomList> getRoomByRoomList() {
-		return roomByRoomList;
+	public TranHistoryCriteria getThc() {
+		return thc;
 	}
 
-	public void setRoomByRoomList(List<CdsRoomList> roomByRoomList) {
-		this.roomByRoomList = roomByRoomList;
-	}
-
-	public JobSearch getJs() {
-		return js;
-	}
-
-	public void setJs(JobSearch js) {
-		this.js = js;
+	public void setThc(TranHistoryCriteria thc) {
+		this.thc = thc;
 	}
 
 }

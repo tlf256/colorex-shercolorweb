@@ -120,8 +120,7 @@ $(document).ready(function() {
     	$('#searchmodal').modal('hide');
     } else {
     	console.log("pathname is " + window.location.pathname);
-    	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action' || 
-    			window.location.pathname == '/CustomerSherColorWeb/searchJobsAction.action'){
+    	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action'){
     		$('#searchmodal').modal('show');
     	}
     }
@@ -149,7 +148,7 @@ $(document).ready(function() {
 	};*/
     
     /*validation for job search form*/
-    $('#cntrlnbr').on('blur focusout', function(){
+    $('#cntrlnbr').on('blur', function(){
     	var controlNbr = $(this).val();
     	var parsedCntrlNbr = parseInt(controlNbr);
     	//console.log("parsed control number is " + parsedCntrlNbr);
@@ -172,7 +171,7 @@ $(document).ready(function() {
     	var lookupControlNbr = jobTable.row(this).data()[0];
     	//window.alert("job number clicked is " + lookupControlNbr);
     	document.getElementById('controlNbr').value = lookupControlNbr;
-    	document.getElementById('mainForm').setAttribute('action', 'selectJobAction');
+    	//document.getElementById('mainForm').setAttribute('action', 'selectJobAction');
     	document.getElementById('mainForm').submit();
     });
     
@@ -248,10 +247,10 @@ function toggleOther(val){
 	if(val == "Other") {
 		$('#other').removeClass('d-none');
 		$('#roomlist').attr('name', '');
-		$('#other').attr('name', 'js.roomUse');
+		$('#other').attr('name', 'thc.roomUse');
 	} else {
 		$('#other').addClass('d-none');
-		$('#roomlist').attr('name', 'js.roomUse');
+		$('#roomlist').attr('name', 'thc.roomUse');
 		$('#other').attr('name', '');
 	}
 }
@@ -286,6 +285,10 @@ function validate() {
 		removeWarningPopover();
 		$('#searchError').text(i18n['displayJobs.pleaseFixErrors']);
 	}
+}
+
+function showSearchModal() {
+	$('#searchmodal').modal('show');
 }
 
 //function displayJobTable(){
