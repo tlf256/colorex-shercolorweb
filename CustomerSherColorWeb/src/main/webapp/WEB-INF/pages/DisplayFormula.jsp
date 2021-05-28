@@ -665,14 +665,40 @@ function ParsePrintMessage() {
 				$("#canTypesErrorText").removeClass('d-none');
 				$("#dispenseSampleButton").prop('disabled', true);
 			} else {
-				// check that saved option is still available in dropdown
+				
+				// check if saved option is still available in dropdown
 				var canTypeMatch = $('#canTypesList option').filter(function() { 
 				    return $(this).text() === "${canType}"; 
 				}).length;
 				
-				// show job's can type if one is saved
-				if ("${canType}" != null && "${canType}" != "" && canTypeMatch > 0){		
-					$("select[id='canTypesList']").val("${canType}");
+				// job has a saved can type
+				if ("${canType}" != null && "${canType}" != ""){
+					// set previously saved can type
+					if (canTypeMatch > 0){		
+						$("select[id='canTypesList']").val("${canType}");
+						// update table
+						canTypesUpdate();	
+					
+					// the job's saved can type isn't available for this tinter
+					} else {
+						// blank out formula, disallow save or dispense, show error
+						$("select[id='canTypesList']").val("${canType}");
+						$("#sampleFill").val("");
+						$("#dispenseSampleButton").prop('disabled', true);
+						$("#drawdownSaveButton").prop('disabled', true);
+						$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>'); 
+						$("#savedCanTypeError").removeClass('d-none');
+					}
+				// no can type saved yet
+				} else {
+					// update table, save default to session
+					canTypesUpdate();
+				}
+					
+				// if they've already dispensed, don't let them change the can type
+				if ("${qtyDispensed}" != null  && "${qtyDispensed}" != "" && "${qtyDispensed}" > 0){
+					$("#canTypesList").prop('disabled', true);
+					$("#includeBaseCheckBox").prop('disabled', true);
 				}
 				
 				// tinter does base dispense, and the base is loaded in a canister
@@ -685,9 +711,6 @@ function ParsePrintMessage() {
 						$("#includeBaseCheckBox").prop("checked", false);
 					}
 				}
-				
-				// update table, save default to session
-				canTypesUpdate();	
 			}
 			$("#roomsList").focus();
 		}
@@ -717,6 +740,7 @@ function ParsePrintMessage() {
 		
 		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
 		$("#dispenseFloorErrorText").addClass('d-none');
+		$("#savedCanTypeError").addClass('d-none');
 		$("#dispenseSampleButton").prop('disabled', false);
 		$("#drawdownSaveButton").prop('disabled', false);
 		$('.decimalOuncesDisplay').css("color", "black");
@@ -1162,6 +1186,9 @@ function ParsePrintMessage() {
 						<div id="canTypesErrorText" style="color:red" class="d-none">
 							<s:text name="sampleDispense.noCanTypesProfiledForTinter"/>
 						</div>
+						<div></div>
+							<p id="savedCanTypeError" style="color:red" class="d-none"></p>
+						</div>
 					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
@@ -1194,16 +1221,16 @@ function ParsePrintMessage() {
 			</s:if>
 			<br>
 			
-			<s:if test="%{accountIsDrawdownCenter==false}">
-				<div class="row mt-3">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
-					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
-						${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
-					</div>
-					<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+			
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+				<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
+					${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
 				</div>
-			</s:if>
+				<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+			</div>
+			
 							
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
@@ -1239,7 +1266,7 @@ function ParsePrintMessage() {
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 				<div class="col-lg-4 col-md-6 col-sm-10 col-xs-12">
-				<s:if test="%{!displayFormula.ingredients.isEmpty && (!accountIsDrawdownCenter || !sessionHasTinter)}">
+				<s:if test="%{!accountIsDrawdownCenter || !sessionHasTinter}">
 					<table class="table" id="ingredients_table">
 						<thead>
 							<tr>
@@ -1334,7 +1361,7 @@ function ParsePrintMessage() {
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:if test = "%{sessionHasTinter}">
-						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('global.dispenseSample')}"
+						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
 							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
 						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
@@ -1785,6 +1812,17 @@ function ParsePrintMessage() {
 				$("#formulaDispense").hide();
 				// make Save primary unless dispense is available
 				makeSavePrimary();
+				//console.log("is package color? " + $("#isPackageColor").val());
+				//console.log("is package color tintable? " + $("#isTintable").val());
+				// check if color/product is package color and is tintable
+				if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+					console.log("package color is not tintable");
+					$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
+					$("#formulaUserPrintAction_formulaUserEditAction").hide();
+					// hide dispense info row and ingredients table as well
+					$("#dispenseInfoRow").hide();
+					$("#ingredients_table").hide();
+				}
 				var btnCount = 2; //Next Job and Print always shown so start at 2
 				if ($("#formulaUserPrintAction_midCorrection").val() == "true") {
 					$("#formulaUserPrintAction_formulaUserCorrectAction").show();
@@ -1801,28 +1839,25 @@ function ParsePrintMessage() {
 						console.log("button on/off");
 						console.log("hasTinter is true");
 						// Has a tinter at this station
-						console.log("isPackageColor = " + $("#isPackageColor").val() + " isTintable = " + $("#isTintable").val());
-						// check if color/product is package color and is tintable
-						if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
-							console.log("package color is not tintable");
-							// tinter is available but the package color is not tintable
-							
-							$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
-							$("#formulaUserPrintAction_formulaUserEditAction").hide();
-							// hide dispense info row as well
-							$("#dispenseInfoRow").hide();
-							
-						} else {
-							
-							// check if there are any colorants to dispense
-							console.log("formula table is visible " + $("#ingredients_table").is(":visible"));
-							if($("#ingredients_table").is(":visible")){
-								// Show Dispense button and make it Primary
-								console.log("formula is visible, display dispense");
+						// Show Dispense button and make it Primary
+						// first check if product is package color
+						if($("#isPackageColor").val() == "true"){
+							//console.log("ingredients table has data? " + $("#ingredients_table tbody td").is(":visible"));
+							// check if any colorant has been added for dispense
+							if($("#ingredients_table tbody td").is(":visible")){
+								console.log("formula is available for dispense");
 								$("#formulaDispense").show();
 								btnCount += 1;
 								makeDispensePrimary();
+							} else {
+								console.log("no formula to dispense");
+								$("#formulaDispense").hide();
 							}
+						} else {
+							//console.log("not a package color");
+							$("#formulaDispense").show();
+							btnCount += 1;
+							makeDispensePrimary();
 						}
 						// has it been dispensed?
 						var myint = parseInt($.trim($("#qtyDispensed").text()));
@@ -1835,19 +1870,20 @@ function ParsePrintMessage() {
 							$("#formulaUserPrintAction_formulaUserSaveAction").hide();
 							$("#formulaUserPrintAction_formulaUserEditAction").hide();
 							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
-							$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+							btnCount += 1;
+							// only show correct if product is not package color
+							if($("#isPackageColor").val() == "false"){
+								$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+								btnCount += 1;
+							}
 							console.log("Value of Dirty is");
 							console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<"); 
-							btnCount += 2;
 						} else {
 							console.log("qDisped is zero");
 							console.log(">>" + $.trim($("#qtyDispensed").text()) + "<<");
 							// check if color/product is package color and is tintable
 							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
-								console.log("package color cannot be dispensed");
-								// nothing dispensed but package color is not tintable
-								$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
-								$("#formulaUserPrintAction_formulaUserEditAction").hide();
+								console.log("package color cannot be edited");
 							} else {
 								// Has not been dispensed, never show Correct always show Edit
 								$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
@@ -1887,10 +1923,8 @@ function ParsePrintMessage() {
 					} else {
 						console.log("button on/off");
 						console.log("hasTinter is false");
-						// No Tinter, hide dispense and correct button
-						
+						// No Tinter, hide correct button
 						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
-						
 	
 						// if dispensed (could have been done at another station)
 						var myint = parseInt($.trim($("#qtyDispensed").text()));
@@ -1906,8 +1940,14 @@ function ParsePrintMessage() {
 							makePrintPrimary()
 						} else {
 							// Has not been dispensed, always show Edit
-							$("#formulaUserPrintAction_formulaUserEditAction").show();
-							btnCount += 1;
+							// unless product is package color and cannot be tinted
+							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+								console.log("package color cannot be tinted");
+								//$("#formulaUserPrintAction_formulaUserEditAction").hide();
+							} else {
+								$("#formulaUserPrintAction_formulaUserEditAction").show();
+								btnCount += 1;
+							}
 							var myint2 = parseInt($.trim($("#controlNbr").text()));
 							if (isNaN(myint2))
 								myint2 = 0;
@@ -1954,25 +1994,34 @@ function ParsePrintMessage() {
 				$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
 			// account is drawdown center
 			} else {
-				// hide dispense sample button
-				$("#dispenseSampleButton").hide();
-				// session doesn't have tinter or it's an incompatible colorant system for formula, so hide dispense button
-				if ($("#formulaUserPrintAction_sessionHasTinter").val() != "true" ||
-						$("#formulaUserPrintAction_tinterClrntSysId").val() != $("#formulaUserPrintAction_formulaClrntSysId").val()) {
+				// check if color/product is package color and is tintable
+				//console.log("is package color? " + $("#isPackageColor").val());
+				//console.log("is package color tintable? " + $("#isTintable").val());
+				if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+					console.log("package color is not tintable");
+					$("#formulaUserPrintAction_formulaUserEditAction").hide();
+					// hide dispense info row and ingredients table as well
+					$("#dispenseInfoRow").hide();
+					$("#decimalOuncesTable").hide();
+					$("#ingredients_table").hide();
 					$("#dispenseSampleButton").hide();
 				} else {
-					// session does have tinter
-					// check if color/product is package color and is tintable
-					if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+					// session doesn't have tinter or it's an incompatible colorant system for formula, so hide dispense button
+					if ($("#formulaUserPrintAction_sessionHasTinter").val() != "true" ||
+							$("#formulaUserPrintAction_tinterClrntSysId").val() != $("#formulaUserPrintAction_formulaClrntSysId").val()) {
 						$("#dispenseSampleButton").hide();
-						$("#formulaUserPrintAction_formulaUserEditAction").hide();
-						// hide dispense info row as well
-						$("#dispenseInfoRow").hide();
 					} else {
-						// check if any colorants are available for dispense
-						if($("#decimalOuncesTable").is(":visible")){
-							$("#dispenseSampleButton").show();
-						}
+						// session does have tinter
+						// check if color/product is package color
+						if($("#isPackageColor").val() == "true"){
+							if($("#ingredients_table tbody td").is(":visible") || $("#decimalOuncesTable tbody td").is(":visible")){
+								console.log("formula is available for dispense");
+								$("#dispenseSampleButton").show();
+							} else {
+								console.log("no formula to dispense");
+								$("#dispenseSampleButton").hide();
+							}
+						} 
 					}
 				}
 			}
