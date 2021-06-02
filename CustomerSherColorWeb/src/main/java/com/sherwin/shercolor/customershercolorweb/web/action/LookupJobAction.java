@@ -95,16 +95,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			// get jobfields for use in filter criteria
 			List<CustWebJobFields> custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
-			jobFieldList = new ArrayList<JobField>();
 			
-			if(custWebJobFields.size()>0){
-				for(CustWebJobFields custField : custWebJobFields){
-					JobField jobField = new JobField();
-					jobField.setScreenLabel(custField.getScreenLabel());
-					jobField.setEnteredValue(custField.getFieldDefault());
-					jobFieldList.add(jobField);
-				}
-			}
+			jobFieldList = createJobFieldList(custWebJobFields);
 			
 			reqObj.setJobFieldList(jobFieldList);
 			
@@ -148,6 +140,15 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			}
 			
 			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
+			
+			// check if jobFieldList has already been created
+			if(reqObj.getJobFieldList() == null) {
+				jobFieldList = createJobFieldList(custWebJobFields);
+				
+				reqObj.setJobFieldList(jobFieldList);
+				
+				sessionMap.put(reqGuid, reqObj);
+			}
 						
 			if(match) {
 				//only pull CUSTOMMATCH records for compare colors selection
@@ -155,10 +156,10 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				TranCriteria.setCustomerId(reqObj.getCustomerID());
 				TranCriteria.setColorType("CUSTOMMATCH");
 				
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(TranCriteria, false);
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(TranCriteria, false);
 			} else {
 				// pass JobSearch object to service for criteria
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByJobSearchCriteria(thc, false);
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(thc, false);
 				
 				//set job search object to null to clear values for new search
 				thc = null;
@@ -306,6 +307,21 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			return ERROR;
 		}
 		
+	}
+	
+	private List<JobField> createJobFieldList(List<CustWebJobFields> custWebJobFields) {
+		List<JobField> jobFieldList = new ArrayList<JobField>();
+		
+		if(custWebJobFields.size()>0){
+			for(CustWebJobFields custField : custWebJobFields){
+				JobField jobField = new JobField();
+				jobField.setScreenLabel(custField.getScreenLabel());
+				jobField.setEnteredValue(custField.getFieldDefault());
+				jobFieldList.add(jobField);
+			}
+		}
+		
+		return jobFieldList;
 	}
 
 	private void mapCustWebTranToRequestObject(CustWebTran webTran, RequestObject reqObj){

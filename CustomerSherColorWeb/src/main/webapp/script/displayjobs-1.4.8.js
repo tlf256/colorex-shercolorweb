@@ -16,11 +16,21 @@ $(document).ready(function() {
 	});
 	
 	$('#fdate').datepicker({
-		defaultDate: null
+		defaultDate: null,
+		onClose: function(input, obj){
+			var dateInput = $(this).val();
+			console.log("from date is " + dateInput);
+			validateDateFormat($(this), dateInput);
+		}
 	});
 	
 	$('#tdate').datepicker({
-		defaultDate: null
+		defaultDate: null,
+		onClose: function(input, obj){
+			var dateInput = $(this).val();
+			console.log("to date is " + dateInput);
+			validateDateFormat($(this), dateInput);
+		}
 	});
 	
 	jobTable = $('#job_table').DataTable({
@@ -82,6 +92,16 @@ $(document).ready(function() {
                     head.appendChild(style);
              }
             },
+            {
+            	text: i18n['displayJobs.newSearch'],
+            	action: function(){
+            		showSearchModal()
+            	},
+            	attr:{
+            		id: 'newSearch',
+            		class: 'btn btn-primary'
+            	}
+            }
         ],
         /*"columnDefs": [
         	{
@@ -100,17 +120,20 @@ $(document).ready(function() {
             }
         ],*/
         "language": {
-        	"emptyTable" : i18n['displayJobs.noJobsAvailable']
+        	"emptyTable" : i18n['displayJobs.noJobsAvailable'],
+        	"search": i18n['displayJobs.filterColon']
         },
         "ordering": true,
         "order": [ 0, 'desc' ],
         "paginate": false,
         "scrollY" : 500,
         "scrollX": true,
-        "pagingType": "full",
+        "pagingType": "full"
     });
     
     console.log('match is ' + match);
+    
+    var newSearchBtn = jobTable.buttons(['#newSearch']);
     
     // display the job search filter modal unless match is true
     // and in this case the jobs have already been filtered
@@ -118,10 +141,11 @@ $(document).ready(function() {
     	$('#mainForm').attr('action', 'selectColorMatchAction');
     	$('#title').text(i18n['compareColors.chooseFirstSample']);
     	$('#searchmodal').modal('hide');
+    	newSearchBtn.disable();
     } else {
     	console.log("pathname is " + window.location.pathname);
     	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action'){
-    		$('#searchmodal').modal('show');
+    		showSearchModal();
     	}
     }
 	
@@ -147,11 +171,33 @@ $(document).ready(function() {
 		};
 	};*/
     
-    /*validation for job search form*/
-    $('#cntrlnbr').on('blur', function(){
-    	var controlNbr = $(this).val();
+    // prevent enter key from being used on text imput, except for scanner
+    $(document).on({
+    	keypress: function(event) {
+    		console.log("enter keypress on text input");
+	    	if (event.keyCode == 13) {
+				event.preventDefault();
+				console.log("this is " + $(this).attr("id"));
+				if($(this).attr("id") == 'cntrlnbr') {
+					var inputStr = $('#cntrlnbr').val();
+		    		if(inputStr.includes("-")) {
+		    			var strArr = inputStr.split("-");
+		    			var controlNbr = strArr[0];
+		            	var lineNbr = strArr[1];
+			            $('#controlnbr').val(controlNbr);
+			    		$('#linenbr').val(lineNbr);
+			    		$('#jobSearchForm').submit();
+		    		}
+				}
+			}
+    	}
+	}, "input:text");
+    
+    $(document).on('blur', "#cntrlnbr", function(){
+		console.log("blur event");
+		var controlNbr = $(this).val();
     	var parsedCntrlNbr = parseInt(controlNbr);
-    	//console.log("parsed control number is " + parsedCntrlNbr);
+    	console.log("parsed control number is " + parsedCntrlNbr);
     	try {
     		if(controlNbr && Number.isNaN(parsedCntrlNbr)) {
     			console.log('Control number is Not a Number');
@@ -160,18 +206,19 @@ $(document).ready(function() {
     		removeWarningPopover();
     		$('#cntrlnbr').removeClass('border-danger');
     		$('#searchError').text('');
+    		$('#controlnbr').val(controlNbr);
+    		valid = true;
     	} catch(msg) {
     		addWarningPopover('#cntrlnbr', msg);
     		valid = false;
     	}
-    });
+	});
     
     $('#job_table tbody').on('click','tr',function(event){
     	//window.alert("row clicked ");
     	var lookupControlNbr = jobTable.row(this).data()[0];
     	//window.alert("job number clicked is " + lookupControlNbr);
     	document.getElementById('controlNbr').value = lookupControlNbr;
-    	//document.getElementById('mainForm').setAttribute('action', 'selectJobAction');
     	document.getElementById('mainForm').submit();
     });
     
@@ -220,6 +267,7 @@ $(document).ready(function() {
     
     $('#searchmodal').on('shown.bs.modal', function(){
     	$('.container-fluid').hide();
+    	$('#cntrlnbr').focus();
     });
     
     $('#searchmodal').on('hidden.bs.modal', function(){
@@ -265,6 +313,7 @@ function addWarningPopover(selector,msg){
 	$('.popover-body').addClass('text-danger');
 	$(selector).addClass('border-danger');
 	$(selector).select();
+	$(selector).focus();
 }
 
 function removeWarningPopover(){
@@ -282,13 +331,32 @@ function validate() {
 	if(valid) {
 		$('#jobSearchForm').submit();
 	} else {
-		removeWarningPopover();
 		$('#searchError').text(i18n['displayJobs.pleaseFixErrors']);
+		$('#searchmodal').animate({
+			scrollTop: 0
+		}, 1000);
 	}
 }
 
 function showSearchModal() {
 	$('#searchmodal').modal('show');
+}
+
+function validateDateFormat(selector, value) {
+	var regex = new RegExp("[0-9]{2}\/[0-9]{2}\/[0-9]{4}");
+	try {
+		if(value && !regex.test(value)) {
+			console.log('date is wrong format');
+			throw i18n['displayJobs.dateMustBeCorrectFormat'];
+		}
+		removeWarningPopover();
+		$(selector).removeClass('border-danger');
+		$('#searchError').text('');
+		valid = true;
+	} catch(msg) {
+		addWarningPopover($(selector), msg);
+		valid = false;
+	}
 }
 
 //function displayJobTable(){
