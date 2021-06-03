@@ -53,7 +53,7 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			reqObj.setClrntSys(selectedClrntSys);
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -67,7 +67,7 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			reqObj.setClrntSys("");
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -150,7 +150,7 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			}
 			
 		    
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

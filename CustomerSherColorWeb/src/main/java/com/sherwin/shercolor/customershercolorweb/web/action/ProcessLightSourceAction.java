@@ -24,7 +24,7 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 	private String selectedLightSources;
 	
 	
-	public void buildLightSourcesMap() {
+	private void buildLightSourcesMap() {
 		lightSources = new HashMap<String, String>();
 		lightSources.put("A", getText("processLightSourceAction.incandescent"));
 		lightSources.put("D65", getText("processLightSourceAction.daylight"));
@@ -54,10 +54,9 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 					 return SUCCESS;
 			 }
 			 
-		 
 			 return INPUT;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -69,8 +68,8 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			reqObj.setLightSource(selectedLightSources);
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -87,8 +86,8 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			reqObj.setLightSource("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

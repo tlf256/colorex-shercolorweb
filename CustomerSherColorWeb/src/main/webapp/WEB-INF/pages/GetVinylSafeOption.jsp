@@ -129,38 +129,51 @@
 			<br>
 			<br>
 	
-			<s:form action="GetVinylSafeAction" validate="true" theme="bootstrap">
+			<s:form action="GetVinylSafeAction" validate="true" theme="bootstrap">						
 				<div class="row">
-  						<div class="col-sm-2">
-						</div>
-	            		<div class="col-sm-4">
-							<s:text name="getVinylSafeOption.canBeUsedForVinylSafe"/>
-						</div>
+ 					<div class="col-sm-2">
+					</div>
+            		<div class="col-sm-8">
+						<s:text name="getVinylSafeOption.canBeUsedForVinylSafe"/>
+					</div>
 				</div>
+				<br>
+				
 				<div class="row">
-  						<div class="col-sm-2">
-						</div>
-	            		<div class="col-sm-4">
-   								<s:hidden name="reqGuid" value="%{reqGuid}"/>
-   								<s:checkbox id="makeVinylSafeFormulaCk" name="makeVinylSafeFormula" label="%{getText('getVinylSafeOption.createVinylSafe')}" cssClass="mt-3"/>
-						</div>
+ 					<div class="col-sm-2">
+					</div>
+            		<div class="col-sm-8">
+            			<strong><s:text name="getVinylSafeOption.createVinylSafe"/></strong>
+					</div>
 				</div>
 				
-					
 				<div class="row">
-						<div class="col-sm-2">
-						</div>	
-						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="vsUserNextAction"/>
-						</div>
-						<div class="col-sm-2">	
-							<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="vsUserBackAction"/>
-   						</div>
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
-			    		</div>
+ 					<div class="col-sm-2">
+					</div>
+            		<div class="col-sm-4 d-none">
+						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+						<s:checkbox id="makeVinylSafeFormulaCk" name="makeVinylSafeFormula" label=""/>
+					</div>
+				</div>
+				<br>				
+					
+				<div class="row mt-3">
+					<div class="col-sm-2">
+					</div>	
+					<div class="col-sm-1">
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.yes')}" onclick="chooseYes();" action="vsUserNextAction"/>
+					</div>	
+					<div class="col-sm-1">
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.no')}" onclick="chooseNo();" action="vsUserNextAction"/>
+					</div>
+					<div class="col-sm-1">	
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="vsUserBackAction"/>
+  					</div>
+					<div class="col-sm-2">
+					</div>
+					<div class="col-sm-2">
+		    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
+		    		</div>
 		    	</div>
 			</s:form>
 		</div>
@@ -173,6 +186,14 @@
 		 $(window).on('load', function () {
 			 $( "#makeVinylSafeFormulaCk" ).focus();
 		 });
+		 
+		 function chooseYes(){
+			 $("#makeVinylSafeFormulaCk").prop("checked", true);
+		 }
+		 
+		 function chooseNo(){
+			 $("#makeVinylSafeFormulaCk").prop("checked", false);
+		 }
 		
 
 		<!--

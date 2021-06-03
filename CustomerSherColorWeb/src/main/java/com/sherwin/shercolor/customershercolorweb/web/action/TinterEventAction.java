@@ -75,9 +75,8 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			
 			retVal = processTinterEvent();
 		
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -85,7 +84,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 
 
 	}
-	public void getItemsFromSession() {
+	private void getItemsFromSession() {
 		if(sessionMap !=null) {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid); // when this is null during config we have issues.
 			if(reqGuid != null) {
@@ -215,9 +214,8 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			getItemsFromSession();
 			retVal = processTinterEvent();
 
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 

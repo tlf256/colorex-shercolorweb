@@ -14,7 +14,7 @@ public class AccessDeterminator {
 
 	public static boolean isSherwinNetworkAccess(HttpServerExchange request) {
 		String ipAddr = getRemoteAddr(request);
-		LOG.info("remote ip list is " + ipAddr);
+		LOG.fine("remote ip list is " + ipAddr);
 		logAllHeaders(request);
 		return isSherwinInternalIP(ipAddr);
 	}
@@ -23,14 +23,14 @@ public class AccessDeterminator {
 		String ipAddr = request.getSourceAddress().getAddress().toString();
 		//the request source address has a slash in the front.  Let's replace slashes with spaces and trim.
 		ipAddr = ipAddr.replace("/", " ").trim();
-		LOG.info("sourceaddress IP is " + ipAddr);
+		LOG.fine("sourceaddress IP is " + ipAddr);
 		HeaderValues headers = request.getRequestHeaders().get("X-FORWARDED-FOR");
 		
 		if (headers!=null) {
 
 			for(String thisHeader: headers) {
 				final String ips = thisHeader;
-				LOG.info("X-FORWARDED-FOR IPs are " + ips);
+				LOG.fine("X-FORWARDED-FOR IPs are " + ips);
 				if (ips != null) {
 					String[] addrs = ips.split(",");
 					ipAddr = addrs[addrs.length - 1].trim();
@@ -98,7 +98,7 @@ public class AccessDeterminator {
 			LOG.severe("Cannot lookup address: " + dottedQuad + ": " + e.getMessage());
 		}
 	
-		LOG.info("isPrivateIP(" + dottedQuad + ") ->" + ret);
+		LOG.fine("isPrivateIP(" + dottedQuad + ") ->" + ret);
 
 		return ret;
 	}
@@ -136,8 +136,8 @@ public class AccessDeterminator {
 				for(HttpString theHeaderName : headerNames) {
 					HeaderValues headerNameVals = requestHeaders.get(theHeaderName);
 					for(String thisVal : headerNameVals) {
-						//LOG.fine(String.format("%s: %s", theHeaderName, thisVal));
-						LOG.info(String.format("%s: %s", theHeaderName, thisVal));
+						LOG.fine(String.format("%s: %s", theHeaderName, thisVal));
+						//LOG.info(String.format("%s: %s", theHeaderName, thisVal));
 					}
 	
 				}

@@ -47,7 +47,7 @@ public class CompareColorsCustomMatchAction extends ActionSupport implements Ses
 			sessionMap.put(reqGuid, reqObj);
 			
 			return SUCCESS;
-		} catch(Exception e) {
+		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

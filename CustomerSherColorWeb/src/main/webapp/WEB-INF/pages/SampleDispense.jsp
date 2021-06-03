@@ -778,7 +778,7 @@ badge {
 					onclick="printDrawdownCanLabel();return false;"><s:text name="sampleDispense.canLabel"/></button>
 			<button type="button" class="btn btn-secondary" id="storeLabelPrint"
 					onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
-			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('sampleDispense.done')}"
+			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.done')}"
                    	action="userCancelAction" />
         </div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>

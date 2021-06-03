@@ -48,8 +48,8 @@ public class SpectroGetInfoAction extends ActionSupport implements SessionAware,
 			reqObj.setColorVinylOnly(false);
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -58,8 +58,8 @@ public class SpectroGetInfoAction extends ActionSupport implements SessionAware,
 
 		 try {
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

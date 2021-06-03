@@ -40,6 +40,20 @@
 				<div class="col-sm-1"></div>
 			</div>
 			<br>
+			<br>
+			<div class="row">
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10">
+					<p style="font-size: 1.4em;"><strong><s:text name="compareColorsResult.deltaEcolon"/></strong> 
+						<span class="badge badge-secondary" style="font-size: 1em;" id="delta-e">
+							<s:property value="getText('{0, number, #.##}', {colorDiff.deDiff})" />
+						</span>
+					</p>
+				</div>
+				<div class="col-sm-1"></div>
+			</div>
+			<br>
+			<br>
 			<div class="row">
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
@@ -111,17 +125,6 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-				<div class="col-sm-1"></div>
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-1"></div>
-				<div class="col-sm-10">
-					<strong><s:text name="compareColorsResult.deltaEcolon"/> </strong>
-					<span class="badge badge-secondary"style="font-size: .9rem;" id="delta-e">
-						<s:property value="getText('{0, number, #.##}', {colorDiff.deDiff})" />
-					</span>
 				</div>
 				<div class="col-sm-1"></div>
 			</div>
