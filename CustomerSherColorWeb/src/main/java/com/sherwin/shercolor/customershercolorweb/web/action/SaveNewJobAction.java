@@ -194,52 +194,50 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					int shots = item.getShots();
 					double decimalOunces = item.getDecimalOunces();
 					
-					if(code != null && shots != 0 && decimalOunces != 0 && uom != 0){
-						switch (ctr) {
-						case 1:
-							drawdownTran.setClrnt1(code);
-							drawdownTran.setClrntShots1(shots);
-							drawdownTran.setClrntOz1(decimalOunces);
-							drawdownTran.setUom(uom);
-							break;
-						case 2:
-							drawdownTran.setClrnt2(code);
-							drawdownTran.setClrntShots2(shots);
-							drawdownTran.setClrntOz2(decimalOunces);
-							break;
-						case 3:
-							drawdownTran.setClrnt3(code);
-							drawdownTran.setClrntShots3(shots);
-							drawdownTran.setClrntOz3(decimalOunces);
-							break;
-						case 4:
-							drawdownTran.setClrnt4(code);
-							drawdownTran.setClrntShots4(shots);
-							drawdownTran.setClrntOz4(decimalOunces);
-							break;
-						case 5:
-							drawdownTran.setClrnt5(code);
-							drawdownTran.setClrntShots5(shots);
-							drawdownTran.setClrntOz5(decimalOunces);
-							break;
-						case 6:
-							drawdownTran.setClrnt6(code);
-							drawdownTran.setClrntShots6(shots);
-							drawdownTran.setClrntOz6(decimalOunces);
-							break;
-						case 7:
-							drawdownTran.setClrnt7(code);
-							drawdownTran.setClrntShots7(shots);
-							drawdownTran.setClrntOz7(decimalOunces);
-							break;
-						case 8:
-							drawdownTran.setClrnt8(code);
-							drawdownTran.setClrntShots8(shots);
-							drawdownTran.setClrntOz8(decimalOunces);
-							break;
-						}
-						ctr++;
-					}// end null check
+					switch (ctr) {
+					case 1:
+						drawdownTran.setClrnt1(code);
+						drawdownTran.setClrntShots1(shots);
+						drawdownTran.setClrntOz1(decimalOunces);
+						drawdownTran.setUom(uom);
+						break;
+					case 2:
+						drawdownTran.setClrnt2(code);
+						drawdownTran.setClrntShots2(shots);
+						drawdownTran.setClrntOz2(decimalOunces);
+						break;
+					case 3:
+						drawdownTran.setClrnt3(code);
+						drawdownTran.setClrntShots3(shots);
+						drawdownTran.setClrntOz3(decimalOunces);
+						break;
+					case 4:
+						drawdownTran.setClrnt4(code);
+						drawdownTran.setClrntShots4(shots);
+						drawdownTran.setClrntOz4(decimalOunces);
+						break;
+					case 5:
+						drawdownTran.setClrnt5(code);
+						drawdownTran.setClrntShots5(shots);
+						drawdownTran.setClrntOz5(decimalOunces);
+						break;
+					case 6:
+						drawdownTran.setClrnt6(code);
+						drawdownTran.setClrntShots6(shots);
+						drawdownTran.setClrntOz6(decimalOunces);
+						break;
+					case 7:
+						drawdownTran.setClrnt7(code);
+						drawdownTran.setClrntShots7(shots);
+						drawdownTran.setClrntOz7(decimalOunces);
+						break;
+					case 8:
+						drawdownTran.setClrnt8(code);
+						drawdownTran.setClrntShots8(shots);
+						drawdownTran.setClrntOz8(decimalOunces);
+						break;
+					}
+					ctr++;
 				}// end for loop drawdownShotList
 			}// end drawdownShotList null check		
 			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);

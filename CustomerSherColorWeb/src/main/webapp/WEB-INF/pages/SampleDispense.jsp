@@ -112,8 +112,8 @@ badge {
 			if (baseDispense != null){
 				var baseShots = Math.round(productSampleFill * baseDispense.uom); 
 				baseDispense.shots = baseShots;
-				// only set decimal ounces field for alfa tinters and lab corob 
-				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB") || tinterModel.includes("SIMULATOR"))){
+				// only set decimal ounces field for alfa and corob tinters
+				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB") || tinterModel.includes("SIMULATOR"))){
 					baseDispense.decimalOunces = productSampleFill;
 				}
 			}
@@ -154,8 +154,8 @@ badge {
 					var colorantName = $(this).find('.colorantName').text();
 					shotList.forEach(function (item, index) {
 						if (colorantName.includes(item.code)){
-							// only set decimal ounces field for alfa tinters and lab corob 
-							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB") || tinterModel.includes("SIMULATOR"))){
+							// only set decimal ounces field for alfa and corob tinters
+							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB")|| tinterModel.includes("SIMULATOR"))){
 								item.decimalOunces = decimalOunces;
 							}
 							//console.log(colorantName + " unrounded: " + decimalOunces);
