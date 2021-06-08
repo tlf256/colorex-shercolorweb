@@ -154,7 +154,7 @@ badge {
 					var colorantName = $(this).find('.colorantName').text();
 					shotList.forEach(function (item, index) {
 						if (colorantName.includes(item.code)){
-							// only set decimal ounces field for alfa tinters and lab corob 
+							// only set decimal ounces field for alfa and corob tinters
 							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB")|| tinterModel.includes("SIMULATOR"))){
 								item.decimalOunces = decimalOunces;
 							}
