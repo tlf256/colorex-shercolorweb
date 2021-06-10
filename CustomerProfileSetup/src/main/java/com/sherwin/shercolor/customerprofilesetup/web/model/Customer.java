@@ -25,6 +25,9 @@ public class Customer {
 	private String acceptCode;
 	private boolean activateEula;
 	private byte[] eulapdf;
+	private String custType;
+	private boolean useLocatorId;
+	private boolean useRoomByRoom;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -190,6 +193,24 @@ public class Customer {
 	}
 	public void setEulapdf(byte[] eulapdf) {
 		this.eulapdf = eulapdf;
+	}
+	public String getCustType() {
+		return custType;
+	}
+	public void setCustType(String custType) {
+		this.custType = custType;
+	}
+	public boolean isUseLocatorId() {
+		return useLocatorId;
+	}
+	public void setUseLocatorId(boolean useLocatorId) {
+		this.useLocatorId = useLocatorId;
+	}
+	public boolean isUseRoomByRoom() {
+		return useRoomByRoom;
+	}
+	public void setUseRoomByRoom(boolean useRoomByRoom) {
+		this.useRoomByRoom = useRoomByRoom;
 	}
 	
 }

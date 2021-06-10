@@ -9,6 +9,9 @@ $(document).ready(function() {
 	$("#cdsadlfld").hide();
 	$("#clrnt").hide();
 	$("#loginnext-btn").hide();
+	$("#custtype").hide();
+	$(".rmbyrm").hide();
+	$(".locid").hide();
 	$("#eula").hide();
 	
 	$("#loginnext-btn").prop("disabled", true);
@@ -232,6 +235,9 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#custtype").show();
+		$(".rmbyrm").show();
+		$(".locid").show();
 		$("#eula").show();
 	}
 	
@@ -242,6 +248,9 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#custtype").show();
+		$(".rmbyrm").show();
+		$(".locid").show();
 		$("#eula").show();
 	}
 	
@@ -252,7 +261,20 @@ $(document).ready(function() {
 		$("#cdsadlfld").show();
 		$("#clrnt").show();
 		$("#loginnext-btn").show();
+		$("#custtype").show();
+		$(".rmbyrm").show();
+		$(".locid").show();
 		$("#eula").show();
 	}
 	
 });
+
+function toggleProfileInput(value){
+	if(value == 'CUSTOMER') {
+		$(".rmbyrm").hide();
+		$(".locid").hide();
+	} else {
+		$(".rmbyrm").show();
+		$(".locid").show();
+	}
+}

@@ -12,6 +12,7 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebLoginTransform;
 import com.sherwin.shercolor.common.domain.CustWebParms;
@@ -22,6 +23,7 @@ import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
@@ -138,6 +140,17 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				}
 				
 				reqObj.setLoginList(ltlist);
+			}
+			
+			// get CustWebCustomerProfile record
+			CustWebCustomerProfile custProfile = customerService.getCustWebCustomerProfile(lookupCustomerId);
+			
+			if(custProfile != null) {
+				CustProfile profile = new CustProfile();
+				profile.setCustType(custProfile.getCustomerType());
+				profile.setUseRoomByRoom(custProfile.isUseRoomByRoom());
+				profile.setUseLocatorId(custProfile.isUseLocatorId());
+				reqObj.setProfile(profile);
 			}
 			
 			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", lookupCustomerId);

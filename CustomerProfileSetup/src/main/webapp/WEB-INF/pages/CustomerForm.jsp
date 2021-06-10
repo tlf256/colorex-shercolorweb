@@ -155,6 +155,50 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
 	<br>
+	<div class="row" id="custtype">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<s:select label="Customer Type" list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="customer.custType" onchange="toggleProfileInput(this.value)"></s:select>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row rmbyrm" id="">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1">
+			<strong>Use Room By Room?</strong>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+	</div>
+	<div class="row rmbyrm" id="">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+			<input type="radio" id="rbryes" name="customer.useRoomByRoom" class="mt-1 mb-1 rbr" value="true" /> Yes
+		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+			<input type="radio" id="rbrno" name="customer.useRoomByRoom" class="mt-1 mb-1 rbr" value="false" checked /> No
+		</div>
+		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row locid" id="">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1">
+			<strong>Use Locator ID?</strong>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+	</div>
+	<div class="row locid" id="">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+			<input type="radio" id="locyes" name="customer.useLocatorId" class="mt-1 mb-1 loc" value="true" /> Yes
+		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+			<input type="radio" id="locno" name="customer.useLocatorId" class="mt-1 mb-1 loc" value="false" checked /> No
+		</div>
+		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
+	</div>
 	<div class="row">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
