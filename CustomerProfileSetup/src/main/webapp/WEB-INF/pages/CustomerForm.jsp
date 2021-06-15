@@ -171,13 +171,13 @@
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
 	</div>
-	<div class="row rmbyrm" id="">
+	<div class="row rmbyrm mb-3" id="">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-			<input type="radio" id="rbryes" name="customer.useRoomByRoom" class="mt-1 mb-1 rbr" value="true" /> Yes
+			<input type="radio" id="rbryes" name="customer.useRoomByRoom" class="mt-1 mb-1 rbr" value="true" checked /> Yes
 		</div>
 		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-			<input type="radio" id="rbrno" name="customer.useRoomByRoom" class="mt-1 mb-1 rbr" value="false" checked /> No
+			<input type="radio" id="rbrno" name="customer.useRoomByRoom" class="mt-1 mb-1 rbr" value="false" /> No
 		</div>
 		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
 	</div>
@@ -189,13 +189,13 @@
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
 	</div>
-	<div class="row locid" id="">
+	<div class="row locid mb-3" id="">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-			<input type="radio" id="locyes" name="customer.useLocatorId" class="mt-1 mb-1 loc" value="true" /> Yes
+			<input type="radio" id="locyes" name="customer.useLocatorId" class="mt-1 mb-1 loc" value="true" checked /> Yes
 		</div>
 		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-			<input type="radio" id="locno" name="customer.useLocatorId" class="mt-1 mb-1 loc" value="false" checked /> No
+			<input type="radio" id="locno" name="customer.useLocatorId" class="mt-1 mb-1 loc" value="false" /> No
 		</div>
 		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
 	</div>

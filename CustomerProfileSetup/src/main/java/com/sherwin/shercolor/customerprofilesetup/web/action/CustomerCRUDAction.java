@@ -38,6 +38,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	private Map<String, Object> sessionMap;
 	private String lookupCustomerId;
 	private String crudmsg;
+	private static final String CSW = "CUSTOMERSHERCOLORWEB";
 	
 	@Autowired
 	CustomerService customerService;
@@ -67,10 +68,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			if(jobHistory.isEmpty()) {
 				reqObj.setHistory(false);
-				System.out.println("Job history not found");
+				logger.debug("Job history not found");
 			}else {
 				reqObj.setHistory(true);
-				System.out.println("Job history found");
+				logger.debug("Job history found");
 			}
 			//map custwebparms to model object
 			for(CustWebParms webparms : custParms) {
@@ -102,44 +103,35 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			reqObj.setClrntList(clrntlist);
 			
 			List<CustWebJobFields> jobFields = customerService.getCustJobFields(lookupCustomerId);
-			
-			//map custwebjobfields to model object
-			for(CustWebJobFields jobs : jobFields) {
-				JobFields fields = new JobFields();
-				fields.setSeqNbr(jobs.getSeqNbr());
-				fields.setScreenLabel(jobs.getScreenLabel());
-				fields.setFieldDefault(jobs.getFieldDefault());
-				fields.setEntryRequired(jobs.isEntryRequired());
-				fields.setActive(jobs.isActive());
-				jobFieldList.add(fields);
+			//6-14-21 first check if jobFields is null or empty 
+			//since some accounts will be set up without them now
+			if(jobFields != null && !jobFields.isEmpty()) {
+				//map custwebjobfields to model object
+				for(CustWebJobFields jobs : jobFields) {
+					JobFields fields = new JobFields();
+					fields.setSeqNbr(jobs.getSeqNbr());
+					fields.setScreenLabel(jobs.getScreenLabel());
+					fields.setFieldDefault(jobs.getFieldDefault());
+					fields.setEntryRequired(jobs.isEntryRequired());
+					fields.setActive(jobs.isActive());
+					jobFieldList.add(fields);
+				}
+				
+				reqObj.setJobFieldList(jobFieldList);
 			}
-			
-			reqObj.setJobFieldList(jobFieldList);
 			
 			List<CustWebLoginTransform> loginTrans = customerService.getCustLoginTrans(lookupCustomerId);
 			//if customer has login ids, map custweblogintransform to model object
-			if(!loginTrans.isEmpty()) {
+			if(loginTrans != null && !loginTrans.isEmpty()) {
 				for(CustWebLoginTransform logtran : loginTrans) {
 					LoginTrans trans = new LoginTrans();
-					trans.setKeyField(Encode.forHtml(logtran.getKeyField()));
-					trans.setMasterAcctName(Encode.forHtml(logtran.getMasterAcctName()));
-					trans.setAcctComment(Encode.forHtml(logtran.getAcctComment()));
+					trans.setKeyField(allowCharacters(Encode.forHtml(logtran.getKeyField())));
+					trans.setMasterAcctName(allowCharacters(Encode.forHtml(logtran.getMasterAcctName())));
+					trans.setAcctComment(allowCharacters(Encode.forHtml(logtran.getAcctComment())));
 					loginList.add(trans);
 				}
 				
-				// create new arraylist to hold fields with allowed special characters
-				List<LoginTrans> ltlist = new ArrayList<LoginTrans>();
-				
-				// allow certain special characters 
-				for(LoginTrans lt : loginList) {
-					LoginTrans login = new LoginTrans();
-					login.setKeyField(allowCharacters(lt.getKeyField()));
-					login.setMasterAcctName(allowCharacters(lt.getMasterAcctName()));
-					login.setAcctComment(allowCharacters(lt.getAcctComment()));
-					ltlist.add(login);
-				}
-				
-				reqObj.setLoginList(ltlist);
+				reqObj.setLoginList(loginList);
 			}
 			
 			// get CustWebCustomerProfile record
@@ -153,7 +145,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				reqObj.setProfile(profile);
 			}
 			
-			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", lookupCustomerId);
+			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite(CSW, lookupCustomerId);
 			
 			if(scwEulaList != null) {
 				List<EulaHist> ehlist = new ArrayList<EulaHist>();
@@ -169,7 +161,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				reqObj.setEulaHistList(ehlist);
 			} 
 			
-			Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", lookupCustomerId);
+			Eula sherColorWebEula = eulaService.readActive(CSW, lookupCustomerId);
 			
 			if(sherColorWebEula.getCustomerId() != null) {
 				reqObj.setEula(sherColorWebEula);
@@ -180,10 +172,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						
 			return SUCCESS;
 	
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}
@@ -197,18 +186,27 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
 			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(reqObj.getCustomerId());
+			//CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerId());
 			
 			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
 			List<CustWebJobFields> jobList = new ArrayList<CustWebJobFields>();
 			List<CustWebLoginTransform> loginList = new ArrayList<CustWebLoginTransform>();
+			CustWebCustomerProfile profile = new CustWebCustomerProfile();
 			
+			// boolean for result of CRUD operations
 			boolean result = false;
+			// 
 			boolean saveOrUpdateCwp = false;
 			boolean saveOrUpdateCwjf = false;
 			boolean saveOrUpdateCwlt = false;
-			boolean addOrDeleteCwp = false;
-			boolean addOrDeleteCwjf = false;
-			boolean addOrDeleteCwlt = false;
+			// CustWebCustomerProfile can only be saved
+			boolean saveCwcp = false;
+			// boolean to determine whether records need to be deleted then recreated.
+			// Set only if a record has been added or deleted from result set.
+			// not applicable to CustWebCustomerProfile records.
+			boolean deleteCwp = false;
+			boolean deleteCwjf = false;
+			boolean deleteCwlt = false;
 			
 			if(!reqObj.isCustUnchanged()) {
 				logger.info("CustWebParms records have been modified or need to be created");
@@ -246,7 +244,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					// customer already exists and
 					// one or more records have been deleted or added
 					// delete existing records, then recreate CustWebParms records
-					addOrDeleteCwp = true;
+					deleteCwp = true;
 					saveOrUpdateCwp = true;
 					logger.info("CustWebParms record has been added or deleted");
 				} else {
@@ -254,6 +252,15 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					// and the data has been changed or it is a new
 					// customer, then save or update
 					saveOrUpdateCwp = true;
+				}
+			}
+			
+			// check if CustWebCustomerProfile records need saved
+			if(reqObj.getProfile() != null) {
+				// customer type CUSTOMER does not get a CustWebCustomerProfile record
+				if(!reqObj.getProfile().getCustType().equals("CUSTOMER")) {
+					saveCwcp = true;
+					profile = mapCustomerProfile(reqObj.getProfile(), reqObj.getCustomerId());
 				}
 			}
 			
@@ -293,7 +300,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				if(reqObj.isJobAdded() || reqObj.isJobDeleted()) {
 					// one or more records have been deleted or added
 					// delete existing records, then recreate CustWebJobFields records
-					addOrDeleteCwjf = true;
+					deleteCwjf = true;
 					saveOrUpdateCwjf = true;
 					logger.info("CustWebJobFields records have been added or deleted");
 				} else {
@@ -320,7 +327,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						// one or more records have been deleted
 						// delete existing records, then
 						// recreate CustWebLoginTransform records
-						addOrDeleteCwlt = true;
+						deleteCwlt = true;
 						saveOrUpdateCwlt = true;
 						logger.info("CustWebLoginTransform records have been added or deleted");
 					} else {
@@ -332,25 +339,32 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			if(!addOrDeleteCwp) existingRecords = null;
-			if(!addOrDeleteCwjf) existingJobs = null;
-			if(!addOrDeleteCwlt) existingLogins = null;
+			// set empty data to null if records 
+			// do not need saved, updated or deleted
+			if(!deleteCwp) existingRecords = null;
+			if(!deleteCwjf) existingJobs = null;
+			if(!deleteCwlt) existingLogins = null;
 			if(!saveOrUpdateCwp) customerList = null;
 			if(!saveOrUpdateCwjf) jobList = null;
 			if(!saveOrUpdateCwlt) loginList = null;
+			if(!saveCwcp) profile = null;
 			
-			if(addOrDeleteCwp || addOrDeleteCwjf || addOrDeleteCwlt) {
-				// delete, then save or update all records
-				result = modifyCustWebData(customerList, jobList, loginList, existingRecords, existingJobs, existingLogins);
+			// check if data has been modified or new data needs saved
+			if(deleteCwp || deleteCwjf || deleteCwlt) {
+				// One or more customer records have been either deleted or added to existing records.
+				// Delete, then save all data which has not been set to null.
+				// Currently, existing CustWebCustomerProfile records cannot be modified 
+				// through this application, so pass null as CustWebCustomerProfile data
+				result = modifyCustWebData(customerList, jobList, loginList, null, existingRecords, existingJobs, existingLogins);
 				logger.info("Result of modification of CustomerSherColor Web customer data is " + result);
 				if(!result) {
 					addActionError("Error - Unable to modify CustWeb Data");
 				}
 				
-			} else if((saveOrUpdateCwp || saveOrUpdateCwjf || saveOrUpdateCwlt) && 
-					(!addOrDeleteCwp && !addOrDeleteCwjf && !addOrDeleteCwlt)) {
-				// save or update all records
-				result = customerService.saveOrUpdateAllCustWebData(customerList, jobList, loginList);
+			} else if((saveOrUpdateCwp || saveOrUpdateCwjf || saveOrUpdateCwlt || saveCwcp) && 
+					(!deleteCwp && !deleteCwjf && !deleteCwlt)) {
+				// save or update all data which has not been set to null
+				result = customerService.saveOrUpdateAllCustWebData(customerList, jobList, loginList, profile);
 				logger.info("Result of creation of CustomerSherColor Web customer data is " + result);
 				if(!result) {
 					addActionError("Error - Unable to save CustWeb Data");
@@ -365,13 +379,20 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 			
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
+	}
+	
+	private CustWebCustomerProfile mapCustomerProfile(CustProfile profile, String customerId) {
+		CustWebCustomerProfile cwcp = new CustWebCustomerProfile();
+		cwcp.setCustomerId(customerId);
+		cwcp.setCustomerType(profile.getCustType());
+		cwcp.setUseRoomByRoom(profile.isUseRoomByRoom());
+		cwcp.setUseLocatorId(profile.isUseLocatorId());
+		
+		return cwcp;
 	}
 	
 	public String delete() {
@@ -382,7 +403,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
 			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(reqObj.getCustomerId());
-			
+			CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerId());
 			
 			// check if job history exists
 			if(!reqObj.isHistory()) {
@@ -391,7 +412,14 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					
 					boolean result = true;
 					
-					if(!existingRecords.isEmpty()) {
+					// no job history and EULA has not been signed
+					result = customerService.deleteAllCustWebData(existingRecords, existingJobfields, existingLogins, existingProfile);
+					
+					if(!result) {
+						addActionError("Error - Unable to delete Customer record(s), please contact administrator");
+					}
+					
+					/*if(!existingRecords.isEmpty()) {
 						result = customerService.deleteAllCustWebParms(existingRecords);
 						if(!result) {
 							addActionError("Error - Unable to delete CustWebParms record(s)");
@@ -408,7 +436,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 						if(!result) {
 							addActionError("Error - Unable to delete CustWebJobFields record(s)");
 						}
-					}
+					}*/
+					
+					// EULA records deleted through EulaService, not CustomerService
 					// check for toactivate record
 					if(reqObj.getEulaHistToActivate() != null || (reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode())) {
 						EulaHist eulaHistToActivate = reqObj.getEulaHistToActivate();
@@ -444,10 +474,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 			
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -465,7 +492,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				updatedRecords.add(record);
 			}
 			
-			customerService.saveOrUpdateAllCustWebData(updatedRecords, null, null);
+			customerService.saveOrUpdateAllCustWebData(updatedRecords, null, null, null);
 			
 			sessionMap.clear();
 			crudmsg = "Customer has been set to inactive";
@@ -473,10 +500,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 			
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
@@ -496,12 +520,14 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	}
 	
 	public boolean modifyCustWebData(List<CustWebParms> custList, List<CustWebJobFields> jobFieldsList, List<CustWebLoginTransform> loginList,
-			List<CustWebParms> existingParmsList, List<CustWebJobFields> existingJFList, List<CustWebLoginTransform> existingLoginList) {
+			CustWebCustomerProfile profile, List<CustWebParms> existingParmsList, List<CustWebJobFields> existingJFList, List<CustWebLoginTransform> existingLoginList) {
 		boolean result = false;
 		
-		result = customerService.deleteAllCustWebData(existingParmsList, existingJFList, existingLoginList);
+		// modified CustWebCustomerProfile does not need to be deleted, only updated, if necessary
+		// All other modified CustomerSherColorWeb customer data first needs deleted then saved
+		result = customerService.deleteAllCustWebData(existingParmsList, existingJFList, existingLoginList, null);
 		
-		result = customerService.saveOrUpdateAllCustWebData(custList, jobFieldsList, loginList);
+		result = customerService.saveOrUpdateAllCustWebData(custList, jobFieldsList, loginList, profile);
 		
 		return result;
 		

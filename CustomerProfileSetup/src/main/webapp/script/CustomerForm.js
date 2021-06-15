@@ -228,46 +228,40 @@ $(document).ready(function() {
 		}
 	});
 	
-	function natlWdigits(){
-		$("#ntlacct").show();
-		$("#intntlacct").hide();
-		$("#cstmrnm").show();
-		$("#cdsadlfld").show();
-		$("#clrnt").show();
-		$("#loginnext-btn").show();
-		$("#custtype").show();
-		$(".rmbyrm").show();
-		$(".locid").show();
-		$("#eula").show();
-	}
-	
-	function intnatlWdigits(){
-		$("#intntlacct").show();
-		$("#ntlacct").hide();
-		$("#cstmrnm").show();
-		$("#cdsadlfld").show();
-		$("#clrnt").show();
-		$("#loginnext-btn").show();
-		$("#custtype").show();
-		$(".rmbyrm").show();
-		$(".locid").show();
-		$("#eula").show();
-	}
-	
-	function acctWOdigits(){
-		$("#ntlacct").hide();
-		$("#intntlacct").hide();
-		$("#cstmrnm").show();
-		$("#cdsadlfld").show();
-		$("#clrnt").show();
-		$("#loginnext-btn").show();
-		$("#custtype").show();
-		$(".rmbyrm").show();
-		$(".locid").show();
-		$("#eula").show();
-	}
-	
 });
+
+function natlWdigits(){
+	$("#ntlacct").show();
+	$("#intntlacct").hide();
+	$("#cstmrnm").show();
+	$("#cdsadlfld").show();
+	$("#clrnt").show();
+	$("#loginnext-btn").show();
+	$("#custtype").show();
+	$("#eula").show();
+}
+
+function intnatlWdigits(){
+	$("#intntlacct").show();
+	$("#ntlacct").hide();
+	$("#cstmrnm").show();
+	$("#cdsadlfld").show();
+	$("#clrnt").show();
+	$("#loginnext-btn").show();
+	$("#custtype").show();
+	$("#eula").show();
+}
+
+function acctWOdigits(){
+	$("#ntlacct").hide();
+	$("#intntlacct").hide();
+	$("#cstmrnm").show();
+	$("#cdsadlfld").show();
+	$("#clrnt").show();
+	$("#loginnext-btn").show();
+	$("#custtype").show();
+	$("#eula").show();
+}
 
 function toggleProfileInput(value){
 	if(value == 'CUSTOMER') {

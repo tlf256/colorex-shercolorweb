@@ -70,7 +70,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			}
 			
 			reqObj.setCustList(newcustlist);
-			reqObj.setProfile(custProfile(customer));
+			reqObj.setProfile(mapCustProfile(customer));
 			
 			List<EulaHist> ehlist = new ArrayList<EulaHist>();
 			EulaHist eh = new EulaHist();
@@ -216,7 +216,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return clrntlist;
 	}
 	
-	private CustProfile custProfile(Customer customer) {
+	private CustProfile mapCustProfile(Customer customer) {
 		CustProfile profile = null;
 		
 		if(!customer.getCustType().equals("CUSTOMER")) {

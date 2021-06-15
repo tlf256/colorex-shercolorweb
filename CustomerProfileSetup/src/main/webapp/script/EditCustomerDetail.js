@@ -2,6 +2,8 @@
  * 
  */
 $(document).ready(function() {
+	$("#rmbyrm").hide();
+	$("#locid").hide();
 	var existinglogins = $(".kyfld").map(function(index){
 		if($(this).val()!=""){
 			return $(this).val();
@@ -468,3 +470,13 @@ $(document).ready(function() {
 	});
 	
 });
+
+function toggleProfileInput(value){
+	if(value == 'CUSTOMER') {
+		$("#rmbyrm").hide();
+		$("#locid").hide();
+	} else {
+		$("#rmbyrm").show();
+		$("#locid").show();
+	}
+}
