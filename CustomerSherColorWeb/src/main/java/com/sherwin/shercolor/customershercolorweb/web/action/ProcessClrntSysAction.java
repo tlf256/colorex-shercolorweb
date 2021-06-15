@@ -53,8 +53,8 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			reqObj.setClrntSys(selectedClrntSys);
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -67,8 +67,8 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			reqObj.setClrntSys("");
 			sessionMap.put(reqGuid, reqObj);
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -89,40 +89,57 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			 
 			//get the customer's colorant system(s)
 			custList = customerService.getAllCustWebParms(custID);
-			for (CustWebParms item:custList) {
-				custClrntSysIds.add(item.getClrntSysId());
+			
+			// check if package color
+			// if true, skip clrnt sys selection
+			if(reqObj.isPackageColor()) {
+				// add only default clrnt sys to selectClrntSysIds
+				// so that choose colorant system screen is not displayed
+				for (CustWebParms item:custList) {
+					if(item.getSeqNbr() == 1) {
+						String defaultClrntSysId = item.getClrntSysId();
+						selectClrntSysIds.add(defaultClrntSysId);
+						this.setDefaultClrntSys(defaultClrntSysId);
+						break;
+					}
+				}
+			} else {
+				
+				for (CustWebParms item:custList) {
+					custClrntSysIds.add(item.getClrntSysId());
+				}
+				
+				//get a list of the available colorant systems, less any exclusions
+				availableClrntSyses = colorantService.getAvailableColorantSystems(reqObj.getSalesNbr());
+				for (CdsClrntSys item:availableClrntSyses) {
+					availClrntSysIds.add(item.getClrntSysId());
+				}
+				
+				//now get the overlap of the two lists.  That will be the list of colorant systems.
+				boolean addit;
+				boolean defaultset = false;
+				for (String item:custClrntSysIds) {
+					addit = false;
+					for (String item2:availClrntSysIds){
+						if (item.equals(item2)) {
+							addit = true;
+						}
+					}
+					if (addit) {
+						selectClrntSysIds.add(item);
+						if (!defaultset) {
+							this.setDefaultClrntSys(item);
+							defaultset = true;
+						}
+					}
+				} 
 			}
 			 
-			//get a list of the available colorant systems, less any exclusions
-			availableClrntSyses = colorantService.getAvailableColorantSystems(reqObj.getSalesNbr());
-			for (CdsClrntSys item:availableClrntSyses) {
-				availClrntSysIds.add(item.getClrntSysId());
-			}
-			
-			//now get the overlap of the two lists.  That will be the list of colorant systems.
-			boolean addit;
-			boolean defaultset = false;
-			for (String item:custClrntSysIds) {
-				addit = false;
-				for (String item2:availClrntSysIds){
-					if (item.equals(item2)) {
-						addit = true;
-					}
-				}
-				if (addit) {
-					selectClrntSysIds.add(item);
-					if (!defaultset) {
-						this.setDefaultClrntSys(item);
-						defaultset = true;
-					}
-				}
-			} 
-			
 			//Now that the selectClrntSysIds is set, see how many there are.  If there are none,
 			// report an error.  If one, we don't want to display the page, just continue forward
 			//using the only colorant system available.  If multiple, we want to display the page.
 			if (selectClrntSysIds.size()==0) {
-				addFieldError("clrntSys","No applicable colorant systems available");
+				addFieldError("clrntSys", getText("processClrntSysAction.noApplicableClrntSysAvail"));
 				return NONE;
 			} else if (selectClrntSysIds.size()==1) {
 				reqObj.setClrntSys(selectClrntSysIds.get(0));
@@ -133,8 +150,8 @@ public class ProcessClrntSysAction extends ActionSupport implements SessionAware
 			}
 			
 		    
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

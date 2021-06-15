@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Formula</title>
+<title><s:text name="global.formula"/></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -24,17 +24,15 @@
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.2.js"></script>
+	src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/Printer.js?1"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
-	background-color: ${sessionScope[thisGuid].rgbHex
-}
-
-;
+	background-color: ${sessionScope[thisGuid].rgbHex};
 }
 #dispenseQuantityInputError {
 	font-weight: bold;
@@ -55,100 +53,157 @@ badge {
 	margin-left: 3px;
 	margin-right: 3px;
 }
+.chip {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 10px;
+  min-height: 10px;
+  height: 52px;
+  width: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
 </style>
 <script type="text/javascript">
 //global vars
+	var myPrintLabelType = "";
+	var myPrintOrientation = "";
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
-	var dispenseTracker = "Container: " + numberOfDispenses + " out of "
-			+ dispenseQuantity;
+	var dispenseTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
 	var printerConfig;
+	var isCorrectionDispense = false;
+	var printJsonIN = "";
 	var processingDispense = false;
 	var sendingTinterCommand = "false";
-	 var ws_tinter = new WSWrapper("tinter");
-	 var tinterErrorList;
-	 var _rgbArr = [];
-	 var formSubmitting = false;
+	var ws_tinter = new WSWrapper("tinter");
+	var tinterErrorList;
+	var _rgbArr = [];
+	var formSubmitting = false;
 	 
 	// now build the dispense formula object
-		var sendingDispCommand = "false";
+	var sendingDispCommand = "false";
 
-		// using strut2 to build shotlist...
-		var shotList = [];
-		<s:iterator value="dispenseFormula" status="clrnt">
-		var color<s:property value="#clrnt.index"/> = new Colorant(
-				"<s:property value="clrntCode"/>", <s:property value="shots"/>,
-				<s:property value="position"/>, <s:property value="uom"/>);
-		shotList.push(color<s:property value="#clrnt.index"/>);
-		</s:iterator>
-		//setup rgb display for progress bars
-		<s:iterator value="tinter.canisterList" status="i">
-		
-				_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
-		</s:iterator>
+	// using strut2 to build shotlist...
+	var shotList = [];
+	<s:iterator value="dispenseFormula" status="clrnt">
+	var color<s:property value="#clrnt.index"/> = new Colorant(
+			"<s:property value="clrntCode"/>", <s:property value="shots"/>,
+			<s:property value="position"/>, <s:property value="uom"/>);
+	shotList.push(color<s:property value="#clrnt.index"/>);
+	</s:iterator>
+	//setup rgb display for progress bars
+	<s:iterator value="tinter.canisterList" status="i">
+	
+			_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
+	</s:iterator>
 
 </script>
 <script type="text/javascript">
 //printer scripts
-function prePrintSave() {
-	// save before print
-	var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
-	if (isNaN(myCtlNbr))
-		myCtlNbr = 0;
-	if (myCtlNbr == 0) {
-		console.log("ctlNbr is zero");
-	}
-	var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
-			.val()));
-	if (isNaN(myDirty))
-		myDirty = 0;
-	if (myDirty > 0) {
-		console.log("dirty is true");
-	}
-	if (myCtlNbr == 0 || myDirty > 0) {
-		//save needed before print
-		// 			$("#tinterInProgressTitle").text("Saving Changes");
-		// 			$("#tinterInProgressMessage").text("Saving Changes before print...");
-		// 			$("#tinterInProgressModal").modal('show');
 
-		var curDate = new Date();
-		$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
-		var myGuid = $("#formulaUserPrintAction_reqGuid").val();
-		$
-				.ajax({
-					url : "saveOnPrintAction.action",
-					type : "POST",
-					data : {
-						reqGuid : myGuid,
-						jsDateString : curDate.toString()
-					},
-					datatype : "json",
-					async : true,
-					success : function(data) {
-						if (data.sessionStatus === "expired") {
-							window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-						} else {
-							$("#controlNbr").text(data.controlNbr);
-							$("#controlNbrDisplay").show();
-							//    	 				$("#tinterInProgressModal").modal('hide');
-							updateButtonDisplay();
-							showPrintModal();
-							var saveActionDirty = parseInt(data.recDirty);
-							if (!isNaN(saveActionDirty)){
-								$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+function setLabelPrintEmbedContainer(labelType,orientation) {
+	var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	$("#printLabelEmbedContainer").html(embedString);
+}
+
+function printStoreLabel() {
+	
+	myPrintLabelType = "storeLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
+	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
+}
+
+function printDrawdownStoreLabel() {
+	myPrintLabelType = "drawdownStoreLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
+	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
+}
+
+function printDrawdownLabel() {
+	myPrintLabelType = "drawdownLabel";
+	myPrintOrientation = "LANDSCAPE";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
+	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
+}
+
+function prePrintSave(labelType, orientation) {
+	// check whether room dropdown needs to be set first
+	if (verifyRoomSelected() == true){
+		// save before print
+		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
+		if (isNaN(myCtlNbr))
+			myCtlNbr = 0;
+		if (myCtlNbr == 0) {
+			console.log("ctlNbr is zero");
+		}
+		var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
+				.val()));
+		if (isNaN(myDirty))
+			myDirty = 0;
+		if (myDirty > 0) {
+			console.log("dirty is true");
+		}
+		if (myCtlNbr == 0 || myDirty > 0) {
+			//save needed before print
+			// 			$("#tinterInProgressTitle").text("Saving Changes");
+			// 			$("#tinterInProgressMessage").text("Saving Changes before print...");
+			// 			$("#tinterInProgressModal").modal('show');
+	
+			var curDate = new Date();
+			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
+			var myGuid = $("#reqGuid").val();
+			$
+					.ajax({
+						url : "saveOnPrintAction.action",
+						type : "POST",
+						data : {
+							reqGuid : myGuid,
+							jsDateString : curDate.toString()
+						},
+						datatype : "json",
+						async : true,
+						success : function(data) {
+							if (data.sessionStatus === "expired") {
+								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+							} else {
+								$("#controlNbr").text(data.controlNbr);
+								$("#controlNbrDisplay").show();
+								//    	 				$("#tinterInProgressModal").modal('hide');
+								updateButtonDisplay();
+								showPrintModal();
+								var saveActionDirty = parseInt(data.recDirty);
+								if (!isNaN(saveActionDirty)){
+									$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+								}
 							}
+						},
+						error : function(err) {
+							alert("failure: " + err);
 						}
-					},
-					error : function(err) {
-						alert("failure: " + err);
-					}
-				});
-
-	} else {
-
-		showPrintModal();
+					});
+	
+		} else {
+	
+			showPrintModal();
+		}
 	}
 }
+
 
 function showPrintModal(){
 	if(printerConfig && printerConfig.model){
@@ -164,30 +219,19 @@ function showPrintModal(){
 		$("#printLabelPrint").hide();
 		$("#numLabels").hide();
 	}
+	
 	$("#printLabelModal").modal('show');
 
 	
 }
 
-function printOnDispenseGetJson() {
-	if (printerConfig && printerConfig.model) {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
-
-		var myPdf = new pdf(myguid);
-		$("#printerInProgressMessage").text("Printer: In Progress ");
-		var numLabels = null;
-
-		numLabels = printerConfig.numLabels;
-		print(myPdf, numLabels);
-	}
-
-}
 function printButtonClickGetJson() {
 	if (printerConfig && printerConfig.model) {
-		var myguid = $("#formulaUserPrintAction_reqGuid").val();
-
-		var myPdf = new pdf(myguid);
-		$("#printerInProgressMessage").text("Printer: In Progress ");
+		var myguid = $("#reqGuid").val();
+		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+		printJsonIN = JSON.stringify(str);
+		var myPdf = new pdf(myguid,printJsonIN);
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
 
 		numLabels = printerConfig.numLabels;
@@ -195,17 +239,17 @@ function printButtonClickGetJson() {
 		if(numLabelsVal && numLabelsVal !=0){
 			numLabels = numLabelsVal;
 		}
-		print(myPdf, numLabels);
+		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 
 }
 
 function printButtonClick() {
-	var myValue = $("#formulaUserPrintAction_reqGuid").val();
+	var myValue = $("#reqGuid").val();
 	console.log("calling print window open for print action with guid "
 			+ myValue);
 	window.open('formulaUserPrintAction.action?reqGuid=' + myValue,
-			'Print Label', 'width=500, height=1000');
+			'<s:text name="displayFormula.printLabel"/>', 'width=500, height=1000');
 }
 function ParsePrintMessage() {
 	var parsed = false;
@@ -222,7 +266,7 @@ function ParsePrintMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerInProgressModal").modal('show');
 					$("#printerInProgressMessage").text(
-							"Print Result: " + return_message.errorMessage);
+							'<s:text name="displayFormula.printResultColon"/>' + return_message.errorMessage);
 					console.log(return_message);
 					//waitForShowAndHide("#tinterInProgressModal");
 				}
@@ -235,7 +279,7 @@ function ParsePrintMessage() {
 					// save a dispense (will bump the counter)
 					$("#printerResponseModal").modal('show');
 					$("#printerResponseMessage").text(
-							"Get Printer Result: "
+							'<s:text name="displayFormula.getPrinterResult"/>'
 									+ return_message.errorMessage);
 					console.log(return_message);
 				} else {
@@ -277,242 +321,12 @@ function ParsePrintMessage() {
 
 <script type="text/javascript">
 	//global variables moved up above
-	//tinter stuff
+	//tinter stuff moved to dispense-x.x.x.js
 
-	    function fkey(e){
-	    	if(sendingTinterCommand == "true"){
-	        e = e || window.event;
-	        
-	        if (e.code === 'F4') {
-	        	abort();
-	            console.log(e);
-	            e.preventDefault();
-	        }
-	    }
-	}
-	function getRGB(colorantCode){
-		var rgb = "";
-		if(colorantCode != null){
-			rgb = _rgbArr[colorantCode];
-		}
-		return rgb;
-	}
-	
-	function buildProgressBars(return_message) {
-		var count = 1;
-		var keys=[];
-		$(".progress-wrapper").empty();
-		keys = Object.keys(return_message.statusMessages);
-		if (keys !=null && keys.length > 0) {
-			return_message.statusMessages
-					.forEach(function(item) {
-						var colorList = item.message.split(" ");
-						var color = colorList[0];
-						var pct = colorList[1];
-						//fix bug where we are done, but not all pumps report as 100%
-						if (return_message.errorMessage.indexOf("done") > 1
-								&& (return_message.errorNumber == 0 && return_message.status == 0)) {
-							pct = "100%";
-						}
-						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
-
-						var $clone = $("#progress-0").clone();
-						$clone.attr("id", "progress-" + count);
-						var $bar = $clone.children(".progress-bar");
-						$bar.attr("id", "bar-" + count);
-						$bar.attr("aria-valuenow", pct);
-						$bar.css("width", pct);
-						$clone.css("display", "block");
-						var color_rgb = getRGB(color);
-						//change color of text based on background color
-						switch (color) {
-						case "WHT":
-						case "TW":
-						case "W1":
-							$bar.children("span").css("color", "black");
-							$bar.css("background-color", "#efefef");
-							break;
-						case "OY":
-						case "Y1":
-						case "YGS":
-							$bar.children("span").css("color", "black");
-							$bar.css("background-color", color_rgb);
-							break;
-						default:
-							$bar.css("background-color", color_rgb);
-							$bar.children("span").css("color", "white");
-							break;
-						}
-
-						$bar.children("span").text(color + " " + pct);
-						console.log("barring " + item.message);
-						//console.log($clone);
-
-						$clone.appendTo(".progress-wrapper");
-
-						count++;
-					});
-		}
-	}
-	function FMXDispenseProgress() {
-		console.log('before dispense progress send');
-
-		rotateIcon();
-		var cmd = "DispenseProgress";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd, null, null, null, null);
-		var json = JSON.stringify(tintermessage);
-		sendingTinterCommand = "true";
-		ws_tinter.send(json);
-	}
-	function dispense() {
-
-		var cmd = "Dispense";
-
-		var tintermessage = new TinterMessage(cmd, shotList, null, null, null);
-
-		var json = JSON.stringify(tintermessage);
-		sendingDispCommand = "true";
-		if (ws_tinter != null && ws_tinter.isReady == "false") {
-			console
-					.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
-			ws_tinter = new WSWrapper("tinter");
-		}
-		$("#dispenseStatus").text("Last Dispense: In Progress ");
-		// Send to tinter
-		ws_tinter.send(json);
-	}
-	function dispenseProgressResp(return_message) {
-
-		//$("#progress-message").text(return_message.errorMessage);
-		$("#abort-message").show();
-		$('#progressok').addClass('d-none'); //hide ok button
-		if (return_message.errorMessage.indexOf("done") == -1
-				&& (return_message.errorNumber == 1 || return_message.status == 1)) {
-			$("#tinterProgressList").empty();
-			tinterErrorList = [];
-			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
-				//keep updating modal with status
-				//$("#progress-message").text(return_message.errorMessage);
-				if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
-					buildProgressBars(return_message);
-				}
-				
-				} else {
-					tinterErrorList.push(return_message.errorMessage);
-					$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-				}
-
-			console.log(return_message);
-			setTimeout(function() {
-				FMXDispenseProgress();
-			}, 500); //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
-
-		} else if (return_message.errorMessage.indexOf("done") > 0
-				|| return_message.errorNumber != 0) {
-			if (return_message.errorNumber == 4226) {
-				return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
-			}
-			FMXDispenseComplete(return_message);
-		}
-
-	}
-	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
-		$("#tinterErrorList").empty();
-		$("#tinterErrorListModal").modal('show');
-		$("#abort-message").hide();
-		processingDispense = false; // allow user to start another dispense after tinter error
-		startSessionTimeoutTimers();
-	    if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
-	    	if(my_return_message.statusMessages.length > 0){
-	    		buildProgressBars(my_return_message);  // on an abort, for example, we will have a progress update to do.
-	    	}
-			/*
-			my_return_message.errorList.forEach(function(item){
-			    $("#tinterErrorList").append( '</li>' + item.message + '</li>');
-			});
-			 */
-		}
-		if (my_return_message.errorNumber == 4226) {
-			my_return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
-		}
-		$("#tinterErrorList").append(
-				'<li class="alert alert-danger">'
-						+ my_return_message.errorMessage + '</li>');
-
-		if (myTitle != null)
-			$("#tinterErrorListTitle").text(myTitle);
-		else
-			$("#tinterErrorListTitle").text("Tinter Error");
-		if (mySummary != null)
-			$("#tinterErrorListSummary").text(mySummary);
-		else
-			$("#tinterErrorListSummary").text("");
-
-	}
-	function showTinterErrorModal(myTitle, mySummary, my_return_message) {
-		$("#tinterErrorList").empty();
-		if (my_return_message.errorList != null
-				&& my_return_message.errorList[0] != null) {
-			my_return_message.errorList.forEach(function(item) {
-				$("#tinterErrorList").append(
-						'<li class="alert alert-danger">' + item.message
-								+ '</li>');
-			});
-		} else {
-			$("#tinterErrorList").append(
-					'<li class="alert alert-danger">'
-							+ my_return_message.errorMessage + '</li>');
-		}
-		if (myTitle != null)
-			$("#tinterErrorListTitle").text(myTitle);
-		else
-			$("#tinterErrorListTitle").text("Tinter Error");
-		if (mySummary != null)
-			$("#tinterErrorListSummary").text(mySummary);
-		else
-			$("#tinterErrorListSummary").text("");
-		$("#tinterErrorListModal").modal('show');
-	}
-	function FMXDispenseComplete(return_message) {
-		if(return_message != null && return_message.statusMessages !=null && return_message.statusMessages.length > 0){
-			buildProgressBars(return_message);
-		}
-		$("#abort-message").hide();
-
-		if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
-				|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
-			// save a dispense (will bump the counter)
-
-			$("#tinterInProgressDispenseStatus").text("");
-			$("#dispenseStatus").text("Last Dispense: Complete ");
-			rotateIcon();
-			//$('#progressok').removeClass('d-none');
-			$('#tinterInProgressTitle').text('Tinter Progress');
-			$('#tinterInProgressMessage').text('');
-			$("#tinterProgressList").empty();
-			tinterErrorList = [];
-			$(".progress-wrapper").empty();
-
-			writeDispense(return_message); // will also send tinter event
-			waitForShowAndHide("#tinterInProgressModal");
-		} else {
-			$("#tinterInProgressDispenseStatus").text(
-					"Last Dispense: " + return_message.errorMessage);
-			$("#dispenseStatus").text(
-					"Last Dispense: " + return_message.errorMessage);
-			waitForShowAndHide("#tinterInProgressModal");
-			console.log('hide done');
-			//Show a modal with error message to make sure the user is forced to read it.
-			FMXShowTinterErrorModal("Dispense Error", null, return_message);
-		}
-		sendingTinterCommand = "false";
-	}
-		
 	function writeDispense(myReturnMessage) {
-		var myValue = $("#formulaUserPrintAction_reqGuid").val();
+		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
+		$("#dispenseStatus").text('<s:text name="global.lastDispenseComplete"/>');
 		$
 				.getJSON(
 						"bumpDispenseCounterAction.action?reqGuid=" + myValue
@@ -530,7 +344,7 @@ function ParsePrintMessage() {
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
 								// send tinter event (no blocking here)
 								var myGuid = $(
-										"#formulaUserPrintAction_reqGuid")
+										"#reqGuid")
 										.val();
 								var teDetail = new TintEventDetail(
 										"ORDER NUMBER",
@@ -541,125 +355,22 @@ function ParsePrintMessage() {
 
 								if (printerConfig
 										&& printerConfig.printOnDispense) {
-									printOnDispenseGetJson(); //new print on dispense
+									// Currently only storeLabels can be printed through dispense
+									myPrintLabelType = "storeLabel";
+									myPrintOrientation = "PORTRAIT";
+									var myguid = $("#reqGuid").val();
+									var correctionStr = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+									printJsonIN = JSON.stringify(correctionStr);
+									printOnDispenseGetJson(myguid,printJsonIN);
 								}
-
+								waitForShowAndHide("#tinterInProgressModal");
 								if (numberOfDispenses != dispenseQuantity) {
 									numberOfDispenses++;
-									console
-											.log("Dispense Complete: Going to the next container.");
+									console.log("Dispense Complete: Going to the next container.");
 									preDispenseCheck();
 								}
 							}
 						});
-	}
-	function abort() {
-		console.log('before abort');
-
-		var cmd = "Abort";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd, null, null, null, null);
-		var json = JSON.stringify(tintermessage);
-
-		ws_tinter.send(json);
-	}
-	function RecdMessage() {
-		var printMessageParsed = false;
-		console.log("Received Message");
-		//parse the spectro
-
-		if (ws_printer) {
-			printMessageParsed = ParsePrintMessage();
-		}
-		if (!printMessageParsed && typeof ws_tinter !== 'undefined'
-				&& ws_tinter) {
-			if (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-				console.log("isReady is " + ws_tinter.isReady + "BTW");
-				if (sendingDispCommand == "true") {
-					// received an error from WSWrapper so we won't get any JSON result
-					// Since we are sending a dispense command, show as dispense error
-					$("#dispenseStatus").text(
-							"Last Dispense: " + ws_tinter.wserrormsg);
-					//Show a modal with error message to make sure the user is forced to read it.
-					$("#tinterSocketError").text(ws_tinter.wserrormsg);
-					waitForShowAndHide("#tinterInProgressModal");
-					processingDispense = false; // allow user to start another dispense after socket error
-					startSessionTimeoutTimers();
-					
-					$("#tinterSocketErrorModal").modal('show');
-
-				} else {
-					console.log("Received unsolicited error "
-							+ ws_tinter.wserrormsg);
-					// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-					// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-				}
-			} else {
-				// is result (wsmsg) JSON?
-				var isTintJSON = false;
-				try {
-					if (ws_tinter != null && ws_tinter.wsmsg != null) {
-						var return_message = JSON.parse(ws_tinter.wsmsg);
-						isTintJSON = true;
-					}
-				} catch (error) {
-					console
-							.log("Caught error is = "
-									+ error
-									+ " If response is for printer message, this error trying to parse tinter message is expected.");
-					console.log("Message is junk, throw it out");
-					//console.log("Junk Message is " + ws_tinter.wsmsg);
-				}
-				if (isTintJSON) {
-					var return_message = JSON.parse(ws_tinter.wsmsg);
-					switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'Abort':
-						var tinterModel = $("#tinterModel").val();
-						if (tinterModel != null
-								&& tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
-							dispenseProgressResp(return_message);
-						} else if ((return_message.errorNumber == 0 && return_message.commandRC == 0)
-								|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
-							// save a dispense (will bump the counter)
-							$("#dispenseStatus").text(
-									"Last Dispense: Complete ");
-							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
-						} else {
-							processingDispense = false; // allow user to start another dispense after tinter error
-							startSessionTimeoutTimers();
-							// send tinter event
-							var curDate = new Date();
-							var myGuid = $("#formulaUserPrintAction_reqGuid")
-									.val();
-							var teDetail = new TintEventDetail("ORDER NUMBER",
-									$("#controlNbr").text(), 0);
-							var tedArray = [ teDetail ];
-							sendTinterEvent(myGuid, curDate, return_message,
-									tedArray);
-							$("#dispenseStatus").text(
-									"Last Dispense: "
-											+ return_message.errorMessage);
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Dispense Error", null,
-									return_message);
-						}
-						sendingDispCommand = "false";
-						break;
-					default:
-						//Not an response we expected...
-						console
-								.log("Message from different command is junk, throw it out");
-					} // end switch statement
-				} else {
-					console.log("Message is junk, throw it out");
-				}
-			}
-		}
 	}
 
 	$(function() {
@@ -702,7 +413,7 @@ function ParsePrintMessage() {
 								$("#positionContainerModal").modal('show');
 							} else {
 								$("#verifyScanInputError").text(
-										"Product Scanned does not match order");
+										'<s:text name="displayFormula.productScannedDoesNotMatch"/>');
 								$("#verifyScanInput").select();
 							}
 						});
@@ -740,7 +451,7 @@ function ParsePrintMessage() {
 												+ quantity);
 								$("#dispenseQuantityInputError")
 										.text(
-												"Invalid input: Please enter a number of containers from 1 to 999");
+												'<s:text name="displayFormula.invalidInput"/>');
 								$("#dispenseQuantityInput").select();
 							}
 						});
@@ -763,10 +474,10 @@ function ParsePrintMessage() {
 								$("#tinterInProgressModal").modal('show');
 								rotateIcon();
 								$("#tinterInProgressTitle").text(
-										"Dispense In Progress");
+										'<s:text name="global.dispenseInProgress"/>');
 								$("#tinterInProgressMessage")
 										.text(
-												"Please wait while tinter performs the dispense...");
+												'<s:text name="global.pleaseWaitTinterDispense"/>');
 
 								// Call decrement colorants which will call dispense
 								decrementColorantLevels();
@@ -782,7 +493,7 @@ function ParsePrintMessage() {
 							curDate.toString());
 				});
 	});
-
+/*
 	//Used to rotate loader icon in modals
 	function rotateIcon() {
 		let n = 0;
@@ -803,37 +514,40 @@ function ParsePrintMessage() {
 				clearInterval(interval);
 			}
 		});
+		*/
 		jQuery(document).on("keydown", fkey); // capture F4
-	}
 	
 </script>
 <script type="text/javascript">
 //callback stuff
-
 	function setDispenseQuantity() {
-		$("#dispenseQuantityInputError").text("");
-		$("#dispenseQuantityInput").val("1");
-		$("#dispenseQuantityInput").attr("value", "1");
-		$("#setDispenseQuantityModal").modal('show');
-		$("#dispenseQuantityInput").select();
+		// check that user doesn't need to set rooms dropdown
+		if (verifyRoomSelected() == true){
+			$("#dispenseQuantityInputError").text("");
+			$("#dispenseQuantityInput").val("1");
+			$("#dispenseQuantityInput").attr("value", "1");
+			$("#setDispenseQuantityModal").modal('show');
+			$("#dispenseQuantityInput").select();
+		}
 	}
+	
 
 	function preDispenseCheck() {
-		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
+		$(".progress-wrapper").empty();
+		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress"/>');
 		$("#tinterInProgressMessage")
 				.text(
-						"Please wait while we Check the Colorant Levels for your tinter...");
+						'<s:text name="global.pleaseWaitClrntLevelCheck"/>');
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#formulaUserPrintAction_reqGuid").val(),
+		getSessionTinterInfo($("#reqGuid").val(),
 				preDispenseCheckCallback);
 
 	}
 
 	function preDispenseCheckCallback() {
-		dispenseNumberTracker = "Container: " + numberOfDispenses + " out of "
-				+ dispenseQuantity;
+		dispenseNumberTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
 		$(".dispenseNumberTracker").text(dispenseNumberTracker);
 		// comes from getSessionTinterInfo
 		// check if purge required...
@@ -844,15 +558,15 @@ function ParsePrintMessage() {
 				|| dateFromString.getDate() < today.getDate()) {
 			$("#tinterErrorList").empty();
 			$("#tinterErrorList").append(
-					'<li class="alert alert-danger">Tinter Purge is Required. Last done on '
-							+ moment(dateFromString).format('ddd MMM DD YYYY')
-							+ '</li>');
+					'<li class="alert alert-danger"><s:text name="global.tinterPurgeIsRequiredLastDoneOnDate">'
+							+ '<s:param>'+ moment(dateFromString).format('ddd MMM DD YYYY')
+							+ '</s:param></s:text></li>');
 			waitForShowAndHide("#tinterInProgressModal");
 			$("#tinterErrorListModal").modal('show');
-			$("#tinterErrorListTitle").text("Purge Required");
+			$("#tinterErrorListTitle").text('<s:text name="global.purgeRequired"/>');
 			$("#tinterErrorListSummary")
 					.text(
-							"Save your formula and go to the SherColor Home page to perform Tinter Purge. ");
+							'<s:text name="global.saveGoHomeToPurge"/>');
 
 		} else {
 			// Check Levels
@@ -871,10 +585,10 @@ function ParsePrintMessage() {
 				//Show it in a modal they can't go on
 				waitForShowAndHide("#tinterInProgressModal");
 				$("#tinterErrorListModal").modal('show');
-				$("#tinterErrorListTitle").text("Colorant Level Too Low");
+				$("#tinterErrorListTitle").text('<s:text name="global.colorantLevelTooLow"/>');
 				$("#tinterErrorListSummary")
 						.text(
-								"Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
+								'<s:text name="global.saveFillGoHomeToUpdateClrnts"/>');
 
 			} else {
 				var warnList = checkDispenseColorantLow(shotList,
@@ -888,7 +602,7 @@ function ParsePrintMessage() {
 					});
 					//Show in modal, they can say OK to continue
 					waitForShowAndHide("#tinterInProgressModal");
-					$("#tinterWarningListTitle").text("Low Colorant Levels");
+					$("#tinterWarningListTitle").text('<s:text name="global.lowColorantLevels"/>');
 					$("#tinterWarningListModal").modal('show');
 				} else {
 					console.log("about to show verify modal");
@@ -907,7 +621,7 @@ function ParsePrintMessage() {
 	function decrementColorantLevels() {
 		console.log("Calling decrementColorantLevels");
 		decrementColorantForDispense(
-				$("#formulaUserPrintAction_reqGuid").val(), shotList,
+				$("#reqGuid").val(), shotList,
 				decrementCallback);
 	}
 
@@ -921,8 +635,361 @@ function ParsePrintMessage() {
 			waitForShowAndHide("#tinterInProgressModal");
 		}
 	}
+	
+	
+	
+	
+	/* ------ Drawdown / Room By Room functions --------- */
+	
+	
+	$(function() {
+		// if account is profiled as room by room and a room choice is in session, show it in dropdown
+		var roomByRoomFlag = "${accountUsesRoomByRoom}";
+		var userRoomChoice = "${roomByRoom}";
+		var optionSelected = $("select[id='roomsList'] option:selected").text();
+		
+		// account uses room by room, and user already has a room choice stored in session
+		if (roomByRoomFlag == "true" && userRoomChoice != null && userRoomChoice != ""){
+			// room choice was a customized one; otherwise they match because the dropdown has already been updated
+			if (optionSelected != userRoomChoice){
+				$("select[id='roomsList']").val('Other');
+				$("#otherRoom").removeClass('d-none');
+				$("#otherRoom").val(userRoomChoice);
+			}
+		}
+		
+		if ("${accountIsDrawdownCenter}"){			
+			// warn user if tinter has no can types profiled for it
+			var canTypesLength = $("select[id='canTypesList']").children('option').length;
+			if (canTypesLength == 0){ 
+				$("#canTypesErrorText").removeClass('d-none');
+				$("#dispenseSampleButton").prop('disabled', true);
+			} else {
+				
+				// check if saved option is still available in dropdown
+				var canTypeMatch = $('#canTypesList option').filter(function() { 
+				    return $(this).text() === "${canType}"; 
+				}).length;
+				
+				// job has a saved can type
+				if ("${canType}" != null && "${canType}" != ""){
+					// set previously saved can type
+					if (canTypeMatch > 0){		
+						$("select[id='canTypesList']").val("${canType}");
+						// update table
+						canTypesUpdate();	
+					
+					// the job's saved can type isn't available for this tinter
+					} else {
+						// blank out formula, disallow save or dispense, show error
+						$("select[id='canTypesList']").val("${canType}");
+						$("#sampleFill").val("");
+						$("#dispenseSampleButton").prop('disabled', true);
+						$("#drawdownSaveButton").prop('disabled', true);
+						$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>'); 
+						$("#savedCanTypeError").removeClass('d-none');
+					}
+				// no can type saved yet
+				} else {
+					// update table, save default to session
+					canTypesUpdate();
+				}
+					
+				// if they've already dispensed, don't let them change the can type
+				if ("${qtyDispensed}" != null  && "${qtyDispensed}" != "" && "${qtyDispensed}" > 0){
+					$("#canTypesList").prop('disabled', true);
+					$("#includeBaseCheckBox").prop('disabled', true);
+				}
+				
+				// tinter does base dispense, and the base is loaded in a canister
+				if ("${tinterDoesBaseDispense}" == "true" && "${baseDispense != null}" == "true"){
+					// show checkbox
+					$("#baseDispenseRow").removeClass("d-none");
+					
+					// uncheck base dispense because user saved it as false or unchecked it in this session
+					if ("${dispenseBase}" == "0"){
+						$("#includeBaseCheckBox").prop("checked", false);
+					}
+				}
+			}
+			$("#roomsList").focus();
+		}
+	});
+	
+	
+	function canTypesUpdate(){
+		// update colorant and base amounts
+		calculateDecimalOunces();
+		updateSampleFill();
+		
+		// save can type to session
+		saveCanType($("select[id='canTypesList'] option:selected").text());
+	}
+				
+	
+	function calculateDecimalOunces(){
+		clrntAmtList = "";
+		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
+		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
+		
+		var sampleSizeFloat = parseFloat(sampleSize);
+		var sizeConversion = "${sizeConversion}";
+		var dispenseFloor = "${dispenseFloor}";
+		var dispenseFloorFloat = parseFloat(dispenseFloor);
+		var sizeConvFloat = parseFloat(sizeConversion);
+		
+		// re-enable dispense and remove error text when user updates dropdown, then re-check colorant amounts
+		$("#dispenseFloorErrorText").addClass('d-none');
+		$("#savedCanTypeError").addClass('d-none');
+		$("#dispenseSampleButton").prop('disabled', false);
+		$("#drawdownSaveButton").prop('disabled', false);
+		$('.decimalOuncesDisplay').css("color", "black");
+		$('.colorantName').css("color", "black");
+		
+		if (!isNaN(sampleSizeFloat) && !isNaN(sizeConvFloat)){
+			$(".formulaRow").each(function(){
+				var colorantName = $(this).find('.colorantName').text();
+				var numShots = $(this).find('.origNumShots').text();
+				var shotSize = $(this).find('.shotSize').val();
+				var shotsToOunces = Number(numShots) / Number(shotSize);
+				if (!isNaN(shotsToOunces)){
+					// calculate amount of each colorant:   Sample Size / 128 * ((Number of Shots / Shot Size) * Gallon Conversion) 
+					var decimalOunces = sampleSizeFloat / 128 * (shotsToOunces * sizeConvFloat);
+				
+					// update table for save submission
+					var updatedNumShots = Math.round(decimalOunces * shotSize);
+					$(this).find('.numShots').val(updatedNumShots);
+					
+					// warn user if colorant amount is lower than tinter dispense floor, make them choose a larger can type
+					if (!isNaN(dispenseFloorFloat) && decimalOunces < dispenseFloorFloat){
+						$("#dispenseFloorErrorText").removeClass('d-none');
+						$("#dispenseSampleButton").prop('disabled', true);
+						$("#drawdownSaveButton").prop('disabled', true);
+						// highlight colorant name and amount in red that is too low
+						$(this).find('.decimalOuncesDisplay').css("color", "red");
+						$(this).find('.colorantName').css("color", "red");
+					}
+					
+					// round colorant amount to 5 decimal places for screen display and labels
+					decimalOunces = decimalOunces.toFixed(5);
+					clrntAmtList += colorantName + "," + decimalOunces.toString() + ",";
+					
+					// calculated amount displayed to the user and saved to table
+					$(this).find('.decimalOuncesDisplay').text(decimalOunces);
+					$(this).find('.decimalOunces').val(decimalOunces);
+					
+				} else {
+					console.log("problem calculating shots to ounces");
+				}
+			});
+		} else {
+			console.log("problem parsing the sample size or conversion size");
+		}
+		//console.log("CLRNT AMT LIST: " + clrntAmtList);
+	}
+	
 
-function setFormSubmitting() { formSubmitting = true; };
+	function updateSampleFill(){
+		var selectedIndex = $("select[id='canTypesList'] option:selected").index();
+		canType = $("select[id='canTypesList'] option:selected").text();
+		var factoryFill = "${factoryFill}";
+		// get the sample size for this can type
+		var sampleSize = $("#canTypeSampleSizes li").eq(selectedIndex).text();
+		var sampleSizeFloat = parseFloat(sampleSize);
+		
+		if (!isNaN(sampleSizeFloat)){
+			// calculate amount of base in the sample:   Sample Size / 128 * Factory Fill
+			// don't need to do size conversion because factory fill is already scaled to a gallon
+			var productSampleFill = sampleSizeFloat / 128 * factoryFill;
+			// round to 5 digits without trailing zeroes
+			$("#sampleFill").val(parseFloat(productSampleFill.toFixed(5)));
+			
+			// calculate shots in case user wants to dispense the base
+			if ("${baseDispense != null}"){
+				var baseShots = Math.round(productSampleFill * $("#baseUom").val()); 
+				$("#baseShots").val(baseShots);
+				$("#baseOunces").val(productSampleFill);
+			}
+		} else {
+			console.log("problem parsing the sample size");
+		}
+	}
+	
+	
+	function saveCanType(canType){
+		var myGuid = "${reqGuid}";
+		$.ajax({
+			url : "saveCanType.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				canType : canType
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved can type");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	function saveDispenseBase(){
+		var myGuid = "${reqGuid}";
+		// set 1 if checked, 0 if unchecked 
+		var dispenseBase = $("#includeBaseCheckBox").prop("checked") ? 1 : 0;
+		
+		$.ajax({
+			url : "saveDispenseBase.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				dispenseBase : dispenseBase
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved dispense base");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	function saveRoomSelection(roomChoice){
+		var myGuid = "${reqGuid}";
+		$.ajax({
+			url : "saveRoomByRoom.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				roomByRoom : roomChoice
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved room");
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
+	
+	
+	
+	/* -------- Validation functions ----------- */
+	
+	function validateRoomChoice(){
+		// clear out old error messages
+		$("#roomsDropdownErrorText").addClass("d-none");
+		$("#otherRoomErrorText").addClass("d-none");
+		
+		// if user chose Other in room list, show textfield to enter custom name
+		var selectedRoom = $("select[id='roomsList'] option:selected").text();
+		if (selectedRoom == "Other"){
+			$("#otherRoom").removeClass('d-none');
+			$("#otherRoom").focus();
+		// otherwise hide custom room textbox
+		} else {
+			$("#otherRoom").addClass('d-none');
+			//  save the room choice if it's not the default blank option
+			if (selectedRoom != ""){
+				// call ajax method to save room choice to session
+				saveRoomSelection(selectedRoom);
+			}
+		}
+	}
+	
+	
+	function validateCustomRoom(){
+		var clickedElement;
+		$("#otherRoomErrorText").addClass("d-none");
+		// need the timeout for the event processing so we can grab the element that was clicked on
+		setTimeout(function(){
+	        // let the user click away from the rooms textfield to update the dropdown, 
+	        // otherwise focus back on the textfield if they haven't entered text
+	        if (document.activeElement != null){
+	        	clickedElement = document.activeElement.id;
+	        }
+	     	// check textfield input, make sure it is not left blank
+	        if (clickedElement == null || clickedElement != "roomsList"){
+				var enteredText = $("#otherRoom").val();
+				if (enteredText == null || enteredText.trim() == ""){
+					$("#otherRoomErrorText").removeClass("d-none");
+					$("#otherRoom").focus();
+				} else {
+					// call ajax method to save room choice to session
+					saveRoomSelection(enteredText);
+				}
+			}
+	    }, 0);
+	}
+	
+	
+	function verifyRoomSelected(){
+		if ("${accountUsesRoomByRoom}" == "true"){
+			// main room by room selection dropdown
+			var roomText = $("select[id='roomsList'] option:selected").text();
+			// custom text if they chose Other
+			var enteredText = $("#otherRoom").val();
+			
+			// they left the room dropdown blank
+			if (roomText == null || roomText == ""){
+				$("#roomsList").focus();
+				$("#roomsDropdownErrorText").removeClass("d-none");
+				return false;
+			// they picked Other but didn't enter text
+			} else if (roomText == "Other" && (enteredText == null || enteredText.trim() == "")){
+				$("#otherRoomErrorText").removeClass("d-none");
+				$("#otherRoom").focus();
+				return false;
+			// input is validated
+			} else {
+				return true;
+			}
+		// skip this validation if user doesn't use room by room option
+		} else {
+			return true;
+		}
+	}			
+	
+		
+	/* check that the user has set the room by room dropdown 
+	and allow them to leave the page with unsaved changes
+	*/
+	function validationWithoutModal(){
+		// check if rooms dropdown is set first, if applicable
+		var retVal = verifyRoomSelected();
+		//console.log("verifyRoomSelected: " + retVal);
+		
+		// set the flag which lets user navigate away from 
+		// the page without being prompted to save changes
+		if (retVal == true){
+			setFormSubmitting();
+		}
+		return retVal;			
+	}
+	
+	
+	function setFormSubmitting() { formSubmitting = true; };
     
     window.onload = function() {
     window.addEventListener("beforeunload", function (e) {
@@ -967,7 +1034,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		</s:else>
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Job Number:</strong>
+			<strong><s:text name="global.jobNumber"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8" id="controlNbr">
 			${sessionScope[thisGuid].controlNbr}</div>
@@ -994,7 +1061,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Color Company:</strong>
+			<strong><s:text name="global.colorCompanyColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].colorComp}</div>
@@ -1003,7 +1070,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Color ID:</strong>
+			<strong><s:text name="global.colorIdColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			<s:property value="#session[reqGuid].colorID" /></div>
@@ -1012,18 +1079,26 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Color Name:</strong>
+			<strong><s:text name="global.colorNameColon"/></strong>
 		</div>
-		<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
 			<s:property value="#session[reqGuid].colorName" /><br>
-			<div class="card card-body sw-bg-main"></div>
+			<div class="chip sw-bg-main mt-1"></div>
+			<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
+				<em>
+					<s:text name="global.closestSWColorIs">
+	 					<s:param><s:property value="#session[reqGuid].closestSwColorId" /></s:param>
+						<s:param><s:property value="#session[reqGuid].closestSwColorName" /></s:param>
+					</s:text>
+				</em>
+			</s:if>
 		</div>
-		<div class="col-lg-6 col-md-5 col-sm-4 col-xs-2"></div>
+		<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2"></div>
 	</div>
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Sales Number:</strong>
+			<strong><s:text name="global.salesNumberColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].salesNbr}<br>
@@ -1033,7 +1108,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Product Number:</strong>
+			<strong><s:text name="global.productNumberColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].prodNbr} -
@@ -1043,7 +1118,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-			<strong>Product Descr:</strong>
+			<strong><s:text name="global.productDescrColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 			${sessionScope[thisGuid].intExt} ${sessionScope[thisGuid].quality}
@@ -1052,27 +1127,120 @@ function setFormSubmitting() { formSubmitting = true; };
 		</div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
-	<br>
-	<div class="row mt-3">
-		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
-		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
-			${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
-		</div>
-		<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
-	</div>
-
-	<s:if
-		test="%{#session[reqGuid].displayFormula.deltaEWarning == '' || #session[reqGuid].displayFormula.deltaEWarning == null}">
+	
+	<s:if 
+		test="%{
+		#session[reqGuid].displayFormula.deltaEWarning == null ||
+		#session[reqGuid].displayFormula.deltaEWarning == '' ||
+		#session[reqGuid].productChoosenFromDifferentBase == true
+		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
+			<s:if test = "%{accountIsDrawdownCenter==true}">
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.factoryFillColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:property value="%{factoryFill}"/>
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<s:if test="%{accountUsesRoomByRoom==true}">
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+							listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseSelectARoom"/>
+						</div>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateCustomRoom()"/>
+						<s:hidden name="roomChoice" value="" />
+						<div id="otherRoomErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+						</div>
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<s:if test = "%{accountIsDrawdownCenter==true && sessionHasTinter == true}">
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.canTypeColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="canTypesList" onchange="canTypesUpdate();" list="canTypesList" autofocus="true"
+							listKey="canType" listValue="canType" />
+						<ul class="d-none" id="canTypeSampleSizes">
+						<s:iterator value="canTypesList" status="outerStat">
+							<li class="sampleSize"><s:property value="sampleSize" /></li>
+						</s:iterator>
+						</ul>
+						<div id="canTypesErrorText" style="color:red" class="d-none">
+							<s:text name="sampleDispense.noCanTypesProfiledForTinter"/>
+						</div>
+						<div></div>
+							<p id="savedCanTypeError" style="color:red" class="d-none"></p>
+						</div>
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.productSampleFill"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:textfield id="sampleFill" readonly="true" />
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3 d-none" id="baseDispenseRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
+						<input type="checkbox" id="includeBaseCheckBox" name="dispenseBase" onchange="saveDispenseBase();" checked>
+						<label for="includeBaseCheckBox"><s:text name="sampleDispense.includeBaseInDispense"/></label>
+					</div>	
+					<div>
+					<s:if test="%{baseDispense != null}">
+						<s:hidden name="baseDispense.clrntCode" />
+						<s:hidden id="baseShots" name="baseDispense.shots" />
+						<s:hidden id="baseUom" name="baseDispense.uom" />
+						<s:hidden id="baseOunces" name="baseDispense.decimalOunces" />
+					</s:if>
+					</div>	
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<br>
+			
+			
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+				<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
+					${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
+				</div>
+				<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
+			</div>
+			
+							
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 					<s:hidden name="jsDateString" value="" />
 					<s:hidden name="siteHasTinter" value="%{siteHasTinter}" />
 					<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
 					<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}" />
+					<s:hidden name="accountIsDrawdownCenter" value="%{accountIsDrawdownCenter}" />	
+			 		<s:hidden name="accountUsesRoomByRoom" value="%{accountUsesRoomByRoom}" /> 
 					<s:hidden name="tinterClrntSysId"
 						value="%{#session[reqGuid].tinter.clrntSysId}" />
 					<s:hidden name="formulaClrntSysId"
@@ -1080,7 +1248,13 @@ function setFormSubmitting() { formSubmitting = true; };
 					<s:hidden name="recDirty" value="%{recDirty}" />
 					<s:hidden name="midCorrection" value="%{midCorrection}" />
 					<s:hidden value="%{tinter.model}" id="tinterModel"></s:hidden>
+					<s:hidden value="%{#session[reqGuid].packageColor}" id="isPackageColor" />
+					<s:hidden value="%{#session[reqGuid].pkgClrTintable}" id="isTintable" />
 				</div>
+				
+				
+				
+	
 				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
 					<s:if test="hasActionMessages()">
 						<s:actionmessage />
@@ -1091,11 +1265,12 @@ function setFormSubmitting() { formSubmitting = true; };
 			<br>
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-					<table class="table">
+				<div class="col-lg-4 col-md-6 col-sm-10 col-xs-12">
+				<s:if test="%{!accountIsDrawdownCenter || !sessionHasTinter}">
+					<table class="table" id="ingredients_table">
 						<thead>
 							<tr>
-								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*COLORANT</strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*<s:text name="global.colorant"/></strong></th>
 								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</strong></th>
 								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[1]}</strong></th>
 								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[2]}</strong></th>
@@ -1115,15 +1290,48 @@ function setFormSubmitting() { formSubmitting = true; };
 							</s:iterator>
 						</tbody>
 					</table>
+				</s:if>
+				
+				<s:if test = "%{accountIsDrawdownCenter && sessionHasTinter}">
+					<table class="table" id="decimalOuncesTable">
+						<thead>
+							<tr>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*<s:text name="global.colorant"/></strong></th>
+								<th class="bg-light"><strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="drawdownShotList" status="i">
+								<tr id="<s:property value="%{#i.index}"/>" class="formulaRow">
+									<td class="colorantName col-lg-5 col-md-6 col-sm-4 col-xs-4">
+										<s:property value="clrntCode" />-<s:property value="clrntName"/>
+									</td>
+									<s:hidden name="drawdownShotList[%{#i.index}].clrntCode" />
+									<s:hidden name="drawdownShotList[%{#i.index}].clrntName" />
+									<td class="origNumShots d-none"><s:property value="shots" /></td>
+									<s:hidden class="numShots" name="drawdownShotList[%{#i.index}].shots" />
+									<s:hidden class="shotSize" name="drawdownShotList[%{#i.index}].uom" />
+									<td class="decimalOuncesDisplay"></td>
+									<s:hidden class="decimalOunces" name="drawdownShotList[%{#i.index}].decimalOunces" />
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+					<div id="dispenseFloorErrorText" style="color:red" class="d-none">
+						<s:text name="sampleDispense.colorantLowerThanDispenseFloor"/>
+					</div>
+				</s:if>
+				
 				</div>
 			</div>
 			<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
 			<br>
+
 			<s:if test="%{siteHasTinter==true}">
 				<div class="row" id="dispenseInfoRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong>Qty Dispensed: </strong> <span
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
 						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
@@ -1135,7 +1343,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="row" id="dispenseInfoRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong>Qty Dispensed: </strong> <span
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
 							class="dispenseInfo d-none badge badge-secondary"
 							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
 						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
@@ -1144,27 +1352,62 @@ function setFormSubmitting() { formSubmitting = true; };
 				</div>
 			</s:else>
 			<br>
-			<div class="d-flex flex-row justify-content-around mt-3">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
-				<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
-					<button type="button" class="btn btn-primary" id="formulaDispense"
-						onclick="setFormSubmitting; setDispenseQuantity()" autofocus="autofocus">Dispense</button>
-					<s:submit cssClass="btn btn-secondary" value="Save" onclick="setFormSubmitting();"
-						action="formulaUserSaveAction" autofocus="autofocus" />
-					<%-- 								<s:submit cssClass="btn " value="Print" onclick="prePrintSave();return false;" /> --%>
-					<button type="button" class="btn btn-secondary" id="formulaPrint"
-						onclick="prePrintSave();return false;">Print</button>
-					<s:submit cssClass="btn btn-secondary" value="Edit Formula" onclick="setFormSubmitting();"
-						action="formulaUserEditAction" />
-					<s:submit cssClass="btn btn-secondary" value="Correct" onclick="setFormSubmitting();"
-						action="formulaUserCorrectAction" />
-					<s:submit cssClass="btn btn-secondary" value="Copy to New Job"
-						action="displayJobFieldUpdateAction" />
-					<s:submit cssClass="btn btn-secondary pull-right" value="Next Job"
-                        action="userCancelAction" onclick="return promptToSave();" />
+			
+			<s:if test = "%{accountIsDrawdownCenter==true}">
+			<!-- validation methods: validationWithoutModal() verifies room by room dropdown is set and lets the user nav away from the page
+			without modal prompt for unsaved changes. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box.  
+			promptToSave() shows modal asking user to save their unsaved changes before leaving the page, without checking rooms dropdown -->
+				<div class="d-flex flex-row justify-content-around mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<s:if test = "%{sessionHasTinter}">
+						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
+							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
+						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
+							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
+						</s:if>
+						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
+							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
+							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+                        	onclick="return promptToSave();" action="userCancelAction" />
+                	</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
-				<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
-			</div>
+				<div class="d-flex flex-row justify-content-around mt-2">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
+							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
+						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
+							onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
+                	</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+				</div>
+			</s:if>
+			<s:else>
+				<div class="d-flex flex-row justify-content-around mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<button type="button" class="btn btn-primary" id="formulaDispense"
+							onclick="setDispenseQuantity()" autofocus="autofocus"><s:text name="global.dispense"/></button>
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
+							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<button type="button" class="btn btn-secondary" id="formulaPrint"
+							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
+							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
+							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
+							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+	                        onclick="return promptToSave();" action="userCancelAction" />
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+				</div>
+			</s:else>
 
 			<!-- Set Dispense Quantity Modal Window -->
 			<div class="modal" aria-labelledby="setDispenseQuantityModal"
@@ -1173,8 +1416,7 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="modal-content">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Enter Number of Containers to
-									Dispense</h5>
+								<h5 class="modal-title"><s:text name="displayFormula.enterNumberofContainersToDispense"/></h5>
 								<button type="button" class="close" data-dismiss="modal"
 									aria-label="Close">
 									<span aria-hidden="true">&times;</span>
@@ -1187,7 +1429,7 @@ function setFormSubmitting() { formSubmitting = true; };
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary"
-									data-dismiss="modal" id="setDispenseQuantityButton">Next</button>
+									data-dismiss="modal" id="setDispenseQuantityButton"><s:text name="global.next"/></button>
 							</div>
 						</div>
 					</div>
@@ -1201,7 +1443,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Scan Product to Verify Dispense</h5>
+							<h5 class="modal-title"><s:text name="displayFormula.scanProductToVerifyDispense"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1217,7 +1459,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								data-dismiss="modal" id="verifyButton">Verify</button>
+								data-dismiss="modal" id="verifyButton"><s:text name="displayFormula.verify"/></button>
 						</div>
 					</div>
 				</div>
@@ -1229,15 +1471,14 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Prepare for Dispense</h5>
+							<h5 class="modal-title"><s:text name="global.prepareforDispense"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
-							<p font-size="4">Position Container and Click Start Dispense
-								when Ready</p>
+							<p font-size="4"><s:text name="global.positionContainerandClickStartDispensewhenReady"/></p>
 						</div>
 						<div class="modal-body">
 							<span class="dispenseNumberTracker mx-auto"
@@ -1245,7 +1486,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								id="startDispenseButton">Start Dispense</button>
+								id="startDispenseButton"><s:text name="global.startDispense"/></button>
 						</div>
 					</div>
 				</div>
@@ -1257,13 +1498,13 @@ function setFormSubmitting() { formSubmitting = true; };
 							<div class="modal-content">
 								<div class="modal-header">
 									<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-									<h5 class="modal-title" id="tinterInProgressTitle">Dispense In Progress</h5>
+									<h5 class="modal-title" id="tinterInProgressTitle"><s:text name="global.dispenseInProgress"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
 									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F4 to abort </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>
@@ -1282,7 +1523,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Dispense Error</h5>
+							<h5 class="modal-title"><s:text name="global.dispenseError"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1294,7 +1535,7 @@ function setFormSubmitting() { formSubmitting = true; };
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
 								id="tinterSocketErrorButton" data-dismiss="modal"
-								aria-label="Close">Close</button>
+								aria-label="Close"><s:text name="global.close"/></button>
 						</div>
 					</div>
 				</div>
@@ -1305,7 +1546,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				    	<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
+									<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
 								</div>
 								<div class="modal-body">
@@ -1322,7 +1563,7 @@ function setFormSubmitting() { formSubmitting = true; };
 									<p id="tinterErrorListSummary" font-size="4"></p>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+									<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" ><s:text name="global.ok"/></button>
 								</div>
 							</div>
 						</div> 
@@ -1334,8 +1575,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="tinterWarningListTitle">Tinter
-								Error</h5>
+							<h5 class="modal-title" id="tinterWarningListTitle"><s:text name="global.tinterError"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1346,15 +1586,14 @@ function setFormSubmitting() { formSubmitting = true; };
 								<ul class="p-0" id="tinterWarningList" style="list-style: none;">
 								</ul>
 							</div>
-							<p id="tinterWarningListSummary" font-size="4">Click OK to
-								continue or Cancel to return to formula page.</p>
+							<p id="tinterWarningListSummary" font-size="4"><s:text name="global.clickOKtoContinue"/></p>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								id="tinterWarningListOK" data-dismiss="modal" aria-label="Close">OK</button>
+								id="tinterWarningListOK" data-dismiss="modal" aria-label="Close"><s:text name="global.ok"/></button>
 							<button type="button" class="btn btn-secondary"
 								id="tinterWarningListCancel" data-dismiss="modal"
-								aria-label="Close">Cancel</button>
+								aria-label="Close"><s:text name="global.cancel"/></button>
 						</div>
 					</div>
 				</div>
@@ -1366,8 +1605,7 @@ function setFormSubmitting() { formSubmitting = true; };
 					<div class="modal-content">
 						<div class="modal-header">
 							<!-- 	<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i> -->
-							<h5 class="modal-title" id="printerInProgressTitle">Label
-								Printer Error</h5>
+							<h5 class="modal-title" id="printerInProgressTitle"><s:text name="displayFormula.labelPrinterError"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -1386,24 +1624,21 @@ function setFormSubmitting() { formSubmitting = true; };
 				<div class="modal-dialog modal-md">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="printLabelTitle">Print Label</h5>
+							<h5 class="modal-title" id="printLabelTitle"><s:text name="displayFormula.printLabel"/></h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
-							<div class="embed-responsive embed-responsive-1by1">
-								<embed
-									src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>"
-									frameborder="0" class="embed-responsive-item">
+							<div id="printLabelEmbedContainer" class="embed-responsive embed-responsive-1by1">
+								
 							</div>
-
 						</div>
 						<div class="modal-footer">
 							<div class="col-xs-6">
 								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()">Print</button>
+									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
 							</div>
 							<div class="col-xs-4">
 								
@@ -1423,7 +1658,7 @@ function setFormSubmitting() { formSubmitting = true; };
 							</div>
 							 <div class="col-xs-2 ">
 								<button type="button" class="btn btn-secondary"
-								id="printLabelClose" data-dismiss="modal" aria-label="Close">Close</button>
+								id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
 						</div>
 						</div>
 					</div>
@@ -1436,17 +1671,17 @@ function setFormSubmitting() { formSubmitting = true; };
 	    	<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Continue To Next Job</h5>
+						<h5 class="modal-title"><s:text name="displayFormula.continueToNextJob"/></h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
-						<p id="skipConfirmText" font-size="4">Do you want to save the formula before continuing to the Next Job?</p>
+						<p id="skipConfirmText" font-size="4"><s:text name="displayFormula.saveFormula"/></p>
 					</div>
 					<div class="modal-footer">
-						<s:submit cssClass="btn btn-primary" value="Yes" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
-						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="No" onclick="setFormSubmitting();" action="userCancelAction"/>
-						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="Cancel"/>
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.yes')}" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="%{getText('global.no')}" onclick="setFormSubmitting();" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="%{getText('global.cancel')}"/>
 					</div>
 				</div>
 			</div>
@@ -1455,6 +1690,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		</s:form>
 	</s:if>
 	<s:else>
+	<br><br>
 		<s:form action="formulaUserPrintAsJsonAction" validate="true"
 			theme="bootstrap">
 			<div class="row">
@@ -1469,7 +1705,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			<div class="row">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-8">
-					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
 
 					<Strong>${sessionScope[thisGuid].displayFormula.deltaEWarning}</Strong>
 				</div>
@@ -1480,7 +1716,7 @@ function setFormSubmitting() { formSubmitting = true; };
 			<div class="row">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
-					<strong>Still Use (Yes/No)?</strong>
+					<strong><s:text name="displayFormula.stillUse"/></strong>
 				</div>
 			</div>
 			<br>
@@ -1489,11 +1725,11 @@ function setFormSubmitting() { formSubmitting = true; };
 
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-primary" value="No" onclick="setFormSubmitting();"
+					<s:submit cssClass="btn btn-primary" value="%{getText('global.no')}" onclick="setFormSubmitting();"
 						action="deltaENoAction" autofocus="autofocus" />
 				</div>
 				<div class="col-sm-2">
-					<s:submit cssClass="btn btn-secondary" value="Yes" onclick="setFormSubmitting();"
+					<s:submit cssClass="btn btn-secondary" value="%{getText('global.yes')}" onclick="setFormSubmitting();"
 						action="deltaEYesAction" />
 				</div>
 
@@ -1501,7 +1737,7 @@ function setFormSubmitting() { formSubmitting = true; };
 		</s:form>
 	</s:else>
 		<!-- dummy div to clone -->
-	<div id="progress-0" class="progress" style="margin:10px;">
+	<div id="progress-0" class="progress d-none" style="margin:10px;">
         <div id="bar-0" class="progress-bar" role="progressbar" aria-valuenow="0"
 				 aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-color: blue">
 				 <span></span>
@@ -1511,7 +1747,7 @@ function setFormSubmitting() { formSubmitting = true; };
 	<br>
 	<br>
 	<br>
-	
+	<br>
 	<script>
 	<!--
 		function HF_openSherwin() {
@@ -1548,6 +1784,7 @@ function setFormSubmitting() { formSubmitting = true; };
 				getPrinterConfig();
 			}
 			// init which buttons user can see
+			
 			updateButtonDisplay();
 			
 			//Enable enter key to print.  No need for mouse click
@@ -1569,196 +1806,225 @@ function setFormSubmitting() { formSubmitting = true; };
 		});
 
 		function updateButtonDisplay() {
-			var btnCount = 2; //Next Job and Print always shown so start at 2
-			if ($("#formulaUserPrintAction_midCorrection").val() == "true") {
-				$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+			// update button display only if account is customer, not drawdown center
+			if ($("#formulaUserPrintAction_accountIsDrawdownCenter").val() == "false"){
+				// hide dispense button unless conditions for dispense are met
 				$("#formulaDispense").hide();
-				$("#formulaUserPrintAction_formulaUserSaveAction").hide();
-				$("#formulaPrint").hide(); //print button
-				$("#formulaUserPrintAction_formulaUserEditAction").hide();
-				$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide(); // copy button
-				btnCount += 1;
-			} else {
-				if ($("#formulaUserPrintAction_sessionHasTinter").val() == "true"
-						&& $("#formulaUserPrintAction_tinterClrntSysId").val() == $(
-								"#formulaUserPrintAction_formulaClrntSysId")
-								.val()) {
-					console.log("button on/off");
-					console.log("hasTinter is true");
-					// Has a tinter at this station
-					// Show Dispense button and make it Primary
-					$("#formulaDispense").show();
+				// make Save primary unless dispense is available
+				makeSavePrimary();
+				//console.log("is package color? " + $("#isPackageColor").val());
+				//console.log("is package color tintable? " + $("#isTintable").val());
+				// check if color/product is package color and is tintable
+				if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+					console.log("package color is not tintable");
+					$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
+					$("#formulaUserPrintAction_formulaUserEditAction").hide();
+					// hide dispense info row and ingredients table as well
+					$("#dispenseInfoRow").hide();
+					$("#ingredients_table").hide();
+				}
+				var btnCount = 2; //Next Job and Print always shown so start at 2
+				if ($("#formulaUserPrintAction_midCorrection").val() == "true") {
+					$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+					
+					$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+					$("#formulaPrint").hide(); //print button
+					$("#formulaUserPrintAction_formulaUserEditAction").hide();
+					$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide(); // copy button
 					btnCount += 1;
-					makeDispensePrimary();
-					// has it been dispensed?
-					var myint = parseInt($.trim($("#qtyDispensed").text()));
-					if (isNaN(myint))
-						myint = 0;
-					if (myint > 0) {
-						console.log("qDisped is not zero");
-						console.log(">>" + $.trim($("#qtyDispensed").text())
-								+ "<<");
-						// has been dispensed hide Save and Edit, show Copy and Correct
-						$("#formulaUserPrintAction_formulaUserSaveAction")
-								.hide();
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.hide();
-						$("#formulaUserPrintAction_displayJobFieldUpdateAction")
-								.show();
-						$("#formulaUserPrintAction_formulaUserCorrectAction")
-								.show();
-						console.log("Value of Dirty is");
-						console
-								.log(">>"
-								+ $
-												.trim($(
-														"#formulaUserPrintAction_recDirty")
-														.val()) + "<<"); 
-						btnCount += 2;
-					} else {
-						console.log("qDisped is zero");
-						console.log(">>" + $.trim($("#qtyDispensed").text())
-								+ "<<");
-						// Has not been dispensed, never show Correct always show Edit
-						$("#formulaUserPrintAction_formulaUserCorrectAction")
-								.hide();
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.show();
-						btnCount += 1;
-						var myint2 = parseInt($.trim($("#controlNbr").text()));
-						if (isNaN(myint2))
-							myint2 = 0;
-						if (myint2 == 0) {
-							console.log("ctlNbr is zero");
-							// has not been saved, hide Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.hide();
-							$("#formulaUserPrintAction_formulaUserSaveAction")
-									.show();
-							btnCount += 1;
-						} else {
-							console.log("ctlNbr is not zero");
-							// has been saved show Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.show();
-							btnCount += 1;
-							//We can also hide the Save button if the record is not dirty
-							var myint3 = parseInt($.trim($(
-									"#formulaUserPrintAction_recDirty").val()));
-							if (isNaN(myint3))
-								myint3 = 0;
-							if (myint3 > 0) {
-								console.log("dirty is true");
-								console
-										.log(">>"
-												+ $
-														.trim($(
-																"#formulaUserPrintAction_recDirty")
-																.val()) + "<<");
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.show();
-								btnCount += 1;
-							} else {
-								console.log("dirty is false");
-								console
-										.log(">>"
-												+ $
-														.trim($(
-																"#formulaUserPrintAction_recDirty")
-																.val()) + "<<");
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.hide();
-							} // end else not dirty
-						} // end else saved 
-					} //end else not dispensed
 				} else {
-					console.log("button on/off");
-					console.log("hasTinter is false");
-					// No Tinter, hide dispense and correct button
-					$("#formulaDispense").hide();
-					$("#formulaUserPrintAction_formulaUserCorrectAction")
-							.hide();
-					// make Save primary
-					makeSavePrimary()
-
-					// if dispensed (could have been done at another station)
-					var myint = parseInt($.trim($("#qtyDispensed").text()));
-					if (isNaN(myint))
-						myint = 0;
-					if (myint > 0) {
-						// has been dispensed hide Save and Edit, show Copy
-						$("#formulaUserPrintAction_formulaUserSaveAction")
-								.hide();
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.hide();
-						$("#formulaUserPrintAction_displayJobFieldUpdateAction")
-								.show();
-						btnCount += 1;
-						// make Print primary
-						makePrintPrimary()
-					} else {
-						// Has not been dispensed, always show Edit
-						$("#formulaUserPrintAction_formulaUserEditAction")
-								.show();
-						btnCount += 1;
-						var myint2 = parseInt($.trim($("#controlNbr").text()));
-						if (isNaN(myint2))
-							myint2 = 0;
-						if (myint2 == 0) {
-							// has not been saved, hide Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.hide();
-							$("#formulaUserPrintAction_formulaUserSaveAction")
-									.show();
-							btnCount += 1;
-						} else {
-							// has been saved show Copy
-							$(
-									"#formulaUserPrintAction_displayJobFieldUpdateAction")
-									.show();
-							btnCount += 1;
-							// has been saved, we can hide the Save button if the record is not dirty
-							var myint3 = parseInt($.trim($(
-									"#formulaUserPrintAction_recDirty").val()));
-							if (isNaN(myint3))
-								myint3 = 0;
-							if (myint3 > 0) {
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.show();
+					if ($("#formulaUserPrintAction_sessionHasTinter").val() == "true"
+							&& $("#formulaUserPrintAction_tinterClrntSysId").val() == $(
+									"#formulaUserPrintAction_formulaClrntSysId").val()) {
+						console.log("button on/off");
+						console.log("hasTinter is true");
+						// Has a tinter at this station
+						// Show Dispense button and make it Primary
+						// first check if product is package color
+						if($("#isPackageColor").val() == "true"){
+							//console.log("ingredients table has data? " + $("#ingredients_table tbody td").is(":visible"));
+							// check if any colorant has been added for dispense
+							if($("#ingredients_table tbody td").is(":visible")){
+								console.log("formula is available for dispense");
+								$("#formulaDispense").show();
 								btnCount += 1;
-								// make Save primary
-								makeSavePrimary()
+								makeDispensePrimary();
 							} else {
-								$(
-										"#formulaUserPrintAction_formulaUserSaveAction")
-										.hide();
-								// make Print primary
-								makePrintPrimary()
-							} // end else (not dirty)
-						} // end else (saved) 
-					} // end else (not dispensed)
-				} // end else (no tinter)
+								console.log("no formula to dispense");
+								$("#formulaDispense").hide();
+							}
+						} else {
+							//console.log("not a package color");
+							$("#formulaDispense").show();
+							btnCount += 1;
+							makeDispensePrimary();
+						}
+						// has it been dispensed?
+						var myint = parseInt($.trim($("#qtyDispensed").text()));
+						if (isNaN(myint))
+							myint = 0;
+						if (myint > 0) {
+							console.log("qDisped is not zero");
+							console.log(">>" + $.trim($("#qtyDispensed").text()) + "<<");
+							// has been dispensed hide Save and Edit, show Copy and Correct
+							$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+							$("#formulaUserPrintAction_formulaUserEditAction").hide();
+							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+							btnCount += 1;
+							// only show correct if product is not package color
+							if($("#isPackageColor").val() == "false"){
+								$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+								btnCount += 1;
+							}
+							console.log("Value of Dirty is");
+							console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<"); 
+						} else {
+							console.log("qDisped is zero");
+							console.log(">>" + $.trim($("#qtyDispensed").text()) + "<<");
+							// check if color/product is package color and is tintable
+							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+								console.log("package color cannot be edited");
+							} else {
+								// Has not been dispensed, never show Correct always show Edit
+								$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
+								$("#formulaUserPrintAction_formulaUserEditAction").show();
+								btnCount += 1;
+							}
+							var myint2 = parseInt($.trim($("#controlNbr").text()));
+							if (isNaN(myint2))
+								myint2 = 0;
+							if (myint2 == 0) {
+								console.log("ctlNbr is zero");
+								// has not been saved, hide Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide();
+								$("#formulaUserPrintAction_formulaUserSaveAction").show();
+								btnCount += 1;
+							} else {
+								console.log("ctlNbr is not zero");
+								// has been saved show Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+								btnCount += 1;
+								//We can also hide the Save button if the record is not dirty
+								var myint3 = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+								if (isNaN(myint3))
+									myint3 = 0;
+								if (myint3 > 0) {
+									console.log("dirty is true");
+									console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<");
+									$("#formulaUserPrintAction_formulaUserSaveAction").show();
+									btnCount += 1;
+								} else {
+									console.log("dirty is false");
+									console.log(">>" + $.trim($("#formulaUserPrintAction_recDirty").val()) + "<<");
+									$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+								} // end else not dirty
+							} // end else saved 
+						} //end else not dispensed
+					} else {
+						console.log("button on/off");
+						console.log("hasTinter is false");
+						// No Tinter, hide correct button
+						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
+	
+						// if dispensed (could have been done at another station)
+						var myint = parseInt($.trim($("#qtyDispensed").text()));
+						if (isNaN(myint))
+							myint = 0;
+						if (myint > 0) {
+							// has been dispensed hide Save and Edit, show Copy
+							$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+							$("#formulaUserPrintAction_formulaUserEditAction").hide();
+							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+							btnCount += 1;
+							// make Print primary
+							makePrintPrimary()
+						} else {
+							// Has not been dispensed, always show Edit
+							// unless product is package color and cannot be tinted
+							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+								console.log("package color cannot be tinted");
+								//$("#formulaUserPrintAction_formulaUserEditAction").hide();
+							} else {
+								$("#formulaUserPrintAction_formulaUserEditAction").show();
+								btnCount += 1;
+							}
+							var myint2 = parseInt($.trim($("#controlNbr").text()));
+							if (isNaN(myint2))
+								myint2 = 0;
+							if (myint2 == 0) {
+								// has not been saved, hide Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").hide();
+								$("#formulaUserPrintAction_formulaUserSaveAction").show();
+								btnCount += 1;
+							} else {
+								// has been saved show Copy
+								$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
+								btnCount += 1;
+								// has been saved, we can hide the Save button if the record is not dirty
+								var myint3 = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+								if (isNaN(myint3))
+									myint3 = 0;
+								if (myint3 > 0) {
+									$("#formulaUserPrintAction_formulaUserSaveAction").show();
+									btnCount += 1;
+									// make Save primary
+									makeSavePrimary()
+								} else {
+									$("#formulaUserPrintAction_formulaUserSaveAction").hide();
+									// make Print primary
+									makePrintPrimary()
+								} // end else (not dirty)
+							} // end else (saved) 
+						} // end else (not dispensed)
+					} // end else (no tinter)
+				}
+				console.log("button count is " + btnCount);
+				// adjust margin-left on all buttons based on number of buttons shown
+				/* var pct = '5%';
+				if(btnCount===6) pct = '1%';
+				else if(btnCount===5) pct = '2%';
+				else if(btnCount===4) pct='3%';
+				else if(btnCount===3) pct = '10%';
+				else if(btnCount===2) pct = '10%';
+				if(!$("#formulaDispense").hasClass("pull-left")) $("#formulaDispense").css('margin-left',pct);
+				if(!$("#formulaUserPrintAction_formulaUserSaveAction").hasClass("pull-left")) $("#formulaUserPrintAction_formulaUserSaveAction").css('margin-left',pct);
+				if(!$("#formulaPrint").hasClass("pull-left")) $("#formulaPrint").css('margin-left',pct);
+				$("#formulaUserPrintAction_formulaUserEditAction").css('margin-left',pct);
+				$("#formulaUserPrintAction_formulaUserCorrectAction").css('margin-left',pct);
+				$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
+			// account is drawdown center
+			} else {
+				// check if color/product is package color and is tintable
+				//console.log("is package color? " + $("#isPackageColor").val());
+				//console.log("is package color tintable? " + $("#isTintable").val());
+				if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
+					console.log("package color is not tintable");
+					$("#formulaUserPrintAction_formulaUserEditAction").hide();
+					// hide dispense info row and ingredients table as well
+					$("#dispenseInfoRow").hide();
+					$("#decimalOuncesTable").hide();
+					$("#ingredients_table").hide();
+					$("#dispenseSampleButton").hide();
+				} else {
+					// session doesn't have tinter or it's an incompatible colorant system for formula, so hide dispense button
+					if ($("#formulaUserPrintAction_sessionHasTinter").val() != "true" ||
+							$("#formulaUserPrintAction_tinterClrntSysId").val() != $("#formulaUserPrintAction_formulaClrntSysId").val()) {
+						$("#dispenseSampleButton").hide();
+					} else {
+						// session does have tinter
+						// check if color/product is package color
+						if($("#isPackageColor").val() == "true"){
+							if($("#ingredients_table tbody td").is(":visible") || $("#decimalOuncesTable tbody td").is(":visible")){
+								console.log("formula is available for dispense");
+								$("#dispenseSampleButton").show();
+							} else {
+								console.log("no formula to dispense");
+								$("#dispenseSampleButton").hide();
+							}
+						} 
+					}
+				}
 			}
-			console.log("button count is " + btnCount);
-			// adjust margin-left on all buttons based on number of buttons shown
-			/* var pct = '5%';
-			if(btnCount===6) pct = '1%';
-			else if(btnCount===5) pct = '2%';
-			else if(btnCount===4) pct='3%';
-			else if(btnCount===3) pct = '10%';
-			else if(btnCount===2) pct = '10%';
-			if(!$("#formulaDispense").hasClass("pull-left")) $("#formulaDispense").css('margin-left',pct);
-			if(!$("#formulaUserPrintAction_formulaUserSaveAction").hasClass("pull-left")) $("#formulaUserPrintAction_formulaUserSaveAction").css('margin-left',pct);
-			if(!$("#formulaPrint").hasClass("pull-left")) $("#formulaPrint").css('margin-left',pct);
-			$("#formulaUserPrintAction_formulaUserEditAction").css('margin-left',pct);
-			$("#formulaUserPrintAction_formulaUserCorrectAction").css('margin-left',pct);
-			$("#formulaUserPrintAction_displayJobFieldUpdateAction").css('margin-left',pct); */
 		}
 
 		function makeDispensePrimary() {
@@ -1876,7 +2142,6 @@ function setFormSubmitting() { formSubmitting = true; };
 	    }
 		
 	</script>
-	
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
 </body>

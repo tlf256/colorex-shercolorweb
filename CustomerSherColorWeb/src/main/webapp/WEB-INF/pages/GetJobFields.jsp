@@ -10,14 +10,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Enter Job Info</title>
+<title><s:text name="global.enterJobInfo" /></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 <link rel=StyleSheet href="js/smoothness/jquery-ui.css"
 	type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<link
+<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"><link
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
 	rel="stylesheet">
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
@@ -25,7 +24,13 @@
 	src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.2.js"></script>
+	src="script/customershercolorweb-1.4.6.js"></script>
+<style>
+.btn {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+</style>
 </head>
 
 <body>
@@ -60,7 +65,7 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-1"></div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
-						<strong><s:property value="screenLabel" />:</strong>
+						<strong><s:property value="screenLabel" /><s:text name="global.colonDelimiter"/></strong>
 					</div>
 					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
 						<%-- 							<s:if test="%{#setFirstFieldFocus==%{'false'}}"> --%>
@@ -79,22 +84,26 @@
 				</div>
 			</s:iterator>
 
-			<div class="row">
+			<div class="row mt-2">
 
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-1"></div>
 				<s:if test="updateMode==1">
 					<div class="col-lg-4 col-md-4 col-sm-10 col-xs-1">
-						<s:submit cssClass="btn btn-primary" value="Next"
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
 							action="processJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="Cancel"
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}"
 							action="userCancelAction" />
 					</div>
 				</s:if>
 				<s:else>
 					<div class="col-lg-4 col-md-6 col-sm-10 col-xs-10">
-						<s:submit cssClass="btn btn-primary" value="Next"
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
 							action="processJobFieldsAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="Cancel"
+						<s:if test = "%{accountIsDrawdownCenter==true}">
+							<s:submit cssClass="btn btn-secondary" value="%{getText('getJobFields.copyFromExistingJob')}"
+								action="copyExistingJobFieldsAction" />
+						</s:if>
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}"
 							action="userCancelAction" />
 					</div>
 				</s:else>
@@ -108,9 +117,15 @@
 	<br>
 	<br>
 	<script>
-		 $(document).ready(function () {
-			 var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
-			 txtBox.focus();
+		$(document).ready(function () {
+			// if fields have been copied in, highlight Next
+			if ("${lookupControlNbr}" > 0){
+				$(".btn-primary").first().focus();
+			// otherwise highlight first field
+			} else {
+				var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
+				txtBox.focus();
+			}
 			 
 			//validate jobFields enteredValue
 			//prevent special characters < or > from being entered
@@ -118,10 +133,10 @@
 				'keypress blur':function(){
 					try{
 						if(event.key == ">" || event.key == "<"){
-							throw "Special characters \"<\" or \">\" not allowed";
+							throw '<s:text name="global.noLtOrGt"/>';
 						}
 						if($(this).val().includes(">") || $(this).val().includes("<")){
-							throw "Invalid entry. Please remove these characters: < >";
+							throw '<s:text name="global.invalidEntryLtGt"/>';
 						}
 						$('.entval').each(function(){
 							$(this).parents('.row').find('#errortxt').remove();

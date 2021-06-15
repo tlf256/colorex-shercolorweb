@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Test JIRA Fixes</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Print Special Characters on Label</td></tr>
+</thead>
+<tbody>
+<tr><td>waitForTitle</td><td>New or Existing Job?<datalist><option>New or Existing Job?</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startNewJobFocus<datalist><option>id=startNewJobFocus</option><option>name=action:startNewJob</option><option>//input[@id='startNewJobFocus']</option><option>//form[@id='startNewJob']/fieldset/div/input[8]</option><option>//input[8]</option><option>css=#startNewJobFocus</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Enter Job Info<datalist><option>Enter Job Info</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_1__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_1__enteredValue</option><option>name=jobFieldList[1].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_1__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[3]/div[3]/div/div/input</option><option>//div[3]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_1__enteredValue</option></datalist></td><td>'123-45'</td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_2__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_2__enteredValue</option><option>name=jobFieldList[2].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_2__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[4]/div[3]/div/div/input</option><option>//div[4]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_2__enteredValue</option></datalist></td><td>&lt;12&gt;</td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_3__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_3__enteredValue</option><option>name=jobFieldList[3].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_3__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[5]/div[3]/div/div/input</option><option>//div[5]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_3__enteredValue</option></datalist></td><td>/123?/</td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_4__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_4__enteredValue</option><option>name=jobFieldList[4].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_4__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[6]/div[3]/div/div/input</option><option>//div[6]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_4__enteredValue</option></datalist></td><td>\wall\</td>
+</tr>
+<tr><td>type</td><td>id=processJobFieldsAction_jobFieldList_5__enteredValue<datalist><option>id=processJobFieldsAction_jobFieldList_5__enteredValue</option><option>name=jobFieldList[5].enteredValue</option><option>//input[@id='processJobFieldsAction_jobFieldList_5__enteredValue']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[7]/div[3]/div/div/input</option><option>//div[7]/div[3]/div/div/input</option><option>css=#processJobFieldsAction_jobFieldList_5__enteredValue</option></datalist></td><td>!@#$%^&amp;*()</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=processJobFieldsAction_processJobFieldsAction<datalist><option>id=processJobFieldsAction_processJobFieldsAction</option><option>name=action:processJobFieldsAction</option><option>//input[@id='processJobFieldsAction_processJobFieldsAction']</option><option>//form[@id='processJobFieldsAction']/fieldset/div[8]/div[2]/input</option><option>//div[2]/input</option><option>css=#processJobFieldsAction_processJobFieldsAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Color<datalist><option>Choose Color</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialColorNameOrId<datalist><option>id=partialColorNameOrId</option><option>name=partialColorNameOrId</option><option>//input[@id='partialColorNameOrId']</option><option>//form[@id='colorUserNextAction']/fieldset/div[2]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialColorNameOrId</option></datalist></td><td>6787</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=colorUserNextAction_colorUserNextAction<datalist><option>id=colorUserNextAction_colorUserNextAction</option><option>name=action:colorUserNextAction</option><option>//input[@id='colorUserNextAction_colorUserNextAction']</option><option>//form[@id='colorUserNextAction']/fieldset/div[3]/div[2]/input</option><option>//div[3]/div[2]/input</option><option>css=#colorUserNextAction_colorUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Product<datalist><option>Choose Product</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=partialProductNameOrId<datalist><option>id=partialProductNameOrId</option><option>name=partialProductNameOrId</option><option>//input[@id='partialProductNameOrId']</option><option>//form[@id='productUserNextAction']/fieldset/div[7]/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#partialProductNameOrId</option></datalist></td><td>A29W00053-16</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=productUserNextAction_productUserNextAction<datalist><option>id=productUserNextAction_productUserNextAction</option><option>name=action:productUserNextAction</option><option>//input[@id='productUserNextAction_productUserNextAction']</option><option>//form[@id='productUserNextAction']/fieldset/div[8]/div[2]/input</option><option>//div[8]/div[2]/input</option><option>css=#productUserNextAction_productUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Choose Colorant System<datalist><option>Choose Colorant System</option></datalist></td><td></td>
+</tr>
+<tr><td>select</td><td>id=clrntUserNextAction_selectedClrntSys<datalist><option>id=clrntUserNextAction_selectedClrntSys</option><option>name=selectedClrntSys</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Select Colorant System'])[1]/following::select[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='A29W00053 INTERIOR ARCHITECTURAL'])[1]/following::select[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Session Expiration'])[1]/preceding::select[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Extend'])[1]/preceding::select[1]</option><option>//select[@id='clrntUserNextAction_selectedClrntSys']</option><option>//form[@id='clrntUserNextAction']/fieldset/div/div[2]/div/div/select</option><option>//select</option><option>css=#clrntUserNextAction_selectedClrntSys</option></datalist></td><td>CCE</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=clrntUserNextAction_clrntUserNextAction<datalist><option>id=clrntUserNextAction_clrntUserNextAction</option><option>name=action:clrntUserNextAction</option><option>//input[@id='clrntUserNextAction_clrntUserNextAction']</option><option>//form[@id='clrntUserNextAction']/fieldset/div[2]/div[2]/input</option><option>//div[2]/div[2]/input</option><option>css=#clrntUserNextAction_clrntUserNextAction</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForTitle</td><td>Formula<datalist><option>Formula</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaDispense<datalist><option>id=formulaDispense</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Qty Dispensed:'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/preceding::button[1]</option><option>xpath=//*/text()[normalize-space(.)='Dispense']/parent::*</option><option>//button[@id='formulaDispense']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/button</option><option>//div[2]/button</option><option>css=#formulaDispense</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=setDispenseQuantityModal<datalist><option>id=setDispenseQuantityModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=setDispenseQuantityButton<datalist><option>id=setDispenseQuantityButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Container: 1 out of 1'])[1]/preceding::button[2]</option><option>xpath=//*/text()[normalize-space(.)='Next']/parent::*</option><option>//button[@id='setDispenseQuantityButton']</option><option>//div[@id='setDispenseQuantityModal']/div/div/div/div[3]/button</option><option>//div[3]/button</option><option>css=#setDispenseQuantityButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=verifyModal<datalist><option>id=verifyModal</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=verifyScanInput<datalist><option>id=verifyScanInput</option><option>//input[@id='verifyScanInput']</option><option>//div[@id='verifyModal']/div/div/div[2]/input</option><option>//div[7]/div/div/div[2]/input</option><option>css=#verifyScanInput</option></datalist></td><td>640513636</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=verifyButton<datalist><option>id=verifyButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Container: 1 out of 1'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Scan Product to Verify Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Container: 1 out of 1'])[2]/preceding::button[2]</option><option>xpath=//*/text()[normalize-space(.)='Verify']/parent::*</option><option>//button[@id='verifyButton']</option><option>//div[@id='verifyModal']/div/div/div[4]/button</option><option>//div[4]/button</option><option>css=#verifyButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForVisible</td><td>id=positionContainerModal<datalist><option>id=positionContainerModal</option></datalist></td><td></td>
+</tr>
+<tr><td>clickAndWait</td><td>id=startDispenseButton<datalist><option>id=startDispenseButton</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Container: 1 out of 1'])[2]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Prepare for Dispense'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Colorant Level Check In Progress'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Container: 1 out of 1'])[3]/preceding::button[2]</option><option>xpath=//*/text()[normalize-space(.)='Start Dispense']/parent::*</option><option>//button[@id='startDispenseButton']</option><option>//div[@id='positionContainerModal']/div/div/div[4]/button</option><option>//div[8]/div/div/div[4]/button</option><option>css=#startDispenseButton</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForNotVisible</td><td>id=tinterInProgressModal<datalist><option>id=tinterInProgressModal</option></datalist></td><td></td>
+</tr>
+<tr><td>waitForText</td><td>id=dispenseStatus<datalist><option>id=dispenseStatus</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Qty Dispensed:'])[1]/following::strong[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='N1-Raw Umber'])[1]/following::strong[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Dispense'])[1]/preceding::strong[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Print'])[1]/preceding::strong[1]</option><option>xpath=//*/text()[normalize-space(.)='Last Dispense: Complete']/parent::*</option><option>//strong[@id='dispenseStatus']</option><option>//div[@id='dispenseInfoRow']/div[2]/strong[2]</option><option>//fieldset/div[4]/div[2]/strong[2]</option><option>css=#dispenseStatus</option></datalist></td><td>Last Dispense: Complete</td>
+</tr>
+<tr><td>clickAndWait</td><td>id=formulaUserPrintAction_userCancelAction<datalist><option>id=formulaUserPrintAction_userCancelAction</option><option>name=action:userCancelAction</option><option>//input[@id='formulaUserPrintAction_userCancelAction']</option><option>//form[@id='formulaUserPrintAction']/fieldset/div[5]/div[2]/input[5]</option><option>//div[2]/input[5]</option><option>css=#formulaUserPrintAction_userCancelAction</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

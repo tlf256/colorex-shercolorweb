@@ -41,7 +41,7 @@ public class ProcessPctAction extends ActionSupport implements SessionAware, Log
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			FormulationResponse oldFormula = (FormulationResponse) reqObj.getFormResponse();
-			 
+			
 			//and set the forced percentage
 			if (percentOfFormula.isEmpty()) {
 				percentOfFormula = "0";
@@ -74,8 +74,8 @@ public class ProcessPctAction extends ActionSupport implements SessionAware, Log
 			sessionMap.put(reqGuid, reqObj);
 			
 			return returnStatus;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

@@ -23,15 +23,14 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 	
 	private String selectedLightSources;
 	
-	public ProcessLightSourceAction(){
-		
+	
+	private void buildLightSourcesMap() {
 		lightSources = new HashMap<String, String>();
-		lightSources.put("A","INCANDESCENT");
-		lightSources.put("D65","DAYLIGHT");
-		lightSources.put("F2","FLUORESCENT");
+		lightSources.put("A", getText("processLightSourceAction.incandescent"));
+		lightSources.put("D65", getText("processLightSourceAction.daylight"));
+		lightSources.put("F2", getText("processLightSourceAction.fluorescent"));
 		
 	}
-	
 
 	
 	//return default light source value
@@ -46,6 +45,7 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 	
 	public String display() {
 		 try {
+			 buildLightSourcesMap();
 			 //check and see if we even need to display this screen.  Only needs to be displayed for competitive and custom
 			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			 if (reqObj.getColorType().equals("SHERWIN-WILLIAMS") || reqObj.getColorType().equalsIgnoreCase("CUSTOM")) {
@@ -54,10 +54,9 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 					 return SUCCESS;
 			 }
 			 
-		 
 			 return INPUT;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -69,8 +68,8 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			reqObj.setLightSource(selectedLightSources);
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		 
@@ -87,8 +86,8 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			reqObj.setLightSource("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

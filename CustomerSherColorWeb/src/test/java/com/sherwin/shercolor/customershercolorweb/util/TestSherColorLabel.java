@@ -9,6 +9,16 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Test;
 import org.junit.internal.runners.TestClass;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.DrawdownLabelService;
+import com.sherwin.shercolor.common.service.FormulationService;
 
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
@@ -16,8 +26,21 @@ import be.quodlibet.boxable.HorizontalAlignment;
 import be.quodlibet.boxable.Row;
 import be.quodlibet.boxable.VerticalAlignment;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
+@Transactional
 public class TestSherColorLabel {
-	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl();
+	
+	@Autowired
+	DrawdownLabelService drawdownLabelService;
+	@Autowired
+	CustomerService customerService;
+	@Autowired
+	ColorMastService colorMastService;
+	@Autowired
+	FormulationService formulationService;
+	
+	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
 	// Create a new empty document
 	PDDocument document = new PDDocument();
 
@@ -46,11 +69,11 @@ public class TestSherColorLabel {
 	@Test
 	public void testGetUnicode() {
 
-		PDFont fontBold = testClass.getUnicode();
-		String name = fontBold.getName();
-		boolean check = (name.contentEquals("LucidaSansUnicode") || (name.contentEquals("DejaVuSansMono-Bold"))) ;
-		assertTrue(check);
+		PDFont fontBold = testClass.getUnicode("");
+		
+		assertNotNull(fontBold);
 	}
+	
 	@Test 
 	public void testCellSettings1() {
 		int fontSize = 10;

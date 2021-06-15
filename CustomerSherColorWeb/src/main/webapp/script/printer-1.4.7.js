@@ -1,17 +1,24 @@
 
 var ws_printer = new WSWrapper("printer");
 
+function printOnDispenseGetJson(myguid,printJsonIN) {
+	if (printerConfig && printerConfig.model) {
+		var myPdf = new pdf(myguid,printJsonIN);
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
+		var numLabels = null;
+		numLabels = printerConfig.numLabels;
+		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+	}
+}
 
-function getPdfFromServer(myGuid){
+function getPdfFromServer(myGuid, jsonIN){
+	console.log("JSON IN BEFORE SENDING: " + jsonIN);
 	var pdfobj=null;
 	if(myGuid !=null){
 		$.ajax({
 			url : "formulaUserPrintAsJsonAction",
-			context : document.body,
-			data : {
-				reqGuid : myGuid //without this guid you will get a login exception and you won't even get an error
-				//filename: uFilename
-			},
+			contentType : "application/json; charset=utf-8",
+			data : jsonIN,
 			async : false,
 			type: "POST",
 			dataType: "json",
@@ -28,29 +35,29 @@ function getPdfFromServer(myGuid){
 			error: function(error){
 				pdfobj="error";
 				console.log(error);
-				alert("Could not generate pdf for " + printing);
+				alert(i18n['printer.couldNotGeneratePdf']);
 			}
 		});
 	}
 	else {
-		alert("Not logged in.  ReqGuid not found");
+		alert(i18n['global.notLoggedInReqGuidNotFound']);
 	}
 
 	return pdfobj;
 }
 
-function pdf(myguid){
+function pdf(myguid, jsonIN){
 
 	this.data = null;
 
 	
-	var pdf_file = getPdfFromServer(myguid);
+	var pdf_file = getPdfFromServer(myguid, jsonIN);
 	if(pdf_file !=null && pdf_file.data != null){
 	
 		this.data=pdf_file.data;
 	}
 	else{
-		alert("Could not find Default pdf for colorant:" + mycolorant  );
+		alert(i18n['printer.couldNotFindDefaultPdf']+ myguid);
 	}
 }
 
@@ -73,13 +80,15 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function PrinterMessage(mycommand, mydata, myconfig, mynumlabels){
+function PrinterMessage(mycommand, mydata, myconfig, mynumlabels,mylabeltype,myprintorientation){
 	console.log("In PrinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
 	this.messageName="PrinterMessage";
 	this.command=mycommand;
 	this.data=mydata;
+	this.labelType = mylabeltype;
+	this.printOrientation = myprintorientation;
 	if(mynumlabels){
 		this.numLabels=mynumlabels;
 	}
@@ -112,10 +121,10 @@ function createUUID() {
     return uuid;
 }
 
-function print(myPdf,myNumLabels) {
+function print(myPdf,myNumLabels,myLabelType,myPrintOrientation) {
 
 	
-	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels);
+	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels,myLabelType,myPrintOrientation);
 
 	var json = JSON.stringify(printermessage);
 	
@@ -132,7 +141,7 @@ function print(myPdf,myNumLabels) {
 function getPrinters() {
 
 	
-	var printermessage = new PrinterMessage("GetPrinters",null,null,null);
+	var printermessage = new PrinterMessage("GetPrinters",null,null,null,null,null);
 
 	var json = JSON.stringify(printermessage);
 	
@@ -152,7 +161,7 @@ function getPrinters() {
 function getPrinterConfig() {
 
 	
-	var printermessage = new PrinterMessage("GetConfig",null,null,null);
+	var printermessage = new PrinterMessage("GetConfig",null,null,null,null,null);
 
 	var json = JSON.stringify(printermessage);
 	if (ws_printer != null && ws_printer.isReady == "false") {
@@ -171,7 +180,7 @@ function getPrinterConfig() {
 function setPrinterConfig(myconfig) {
 
 		
-		var printermessage = new PrinterMessage("SetConfig",null,myconfig,null);
+		var printermessage = new PrinterMessage("SetConfig",null,myconfig,null,null,null);
 
 		var json = JSON.stringify(printermessage);
 		

@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Calibration Manager</title>
+<title><s:text name="global.calibrationManager"/></title>
 <!-- JQuery -->
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -22,9 +22,9 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 
 
 
@@ -137,8 +137,8 @@
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				}
-				$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-				$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 				
 				
 				//Show alerts in main alert section in middle of screen
@@ -165,11 +165,17 @@
 		var curDate = new Date();
 	
 		sendTinterEvent(reqGuid, curDate, return_message, null); 
+		// update canister layout if tinter is corob custom
+		if(return_message.configuration != null && return_message.configuration.model != null 
+				&& return_message.configuration.model.includes("COROB CUSTOM")){
+			updateColorantsTxt(reqGuid, return_message, false, null);
+		}
+		
 		if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 			// Detected and no errors from tinter 
             waitForShowAndHide("#initTinterInProgressModal");
 			$("#tinterAlertList").empty();
-			$("#tinterAlertList").append("<li>Tinter Init Successful</li>");
+			$("#tinterAlertList").append('<li><s:text name="ecal.tinterInitSuccessful"/></li>');
 			if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
 			if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
 			if(!$("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").addClass("alert-success");
@@ -196,8 +202,8 @@
 					initErrorList.push(return_message.errorMessage);
 					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				}
-				$("#tinterErrorListTitle").text("Tinter Detect and Initialization Failed");
-				$("#tinterErrorListSummary").text("Issues need to be resolved before you try to dispense formulas.");
+				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 				
 				
 				if(initErrorList[0]!=null){
@@ -256,7 +262,7 @@
     					$("#ecalStatusModal").modal('show');
     					$("#ecalStatus")
     							.text(
-    									"Cal Upload complete for " + msg.calibration.filename);
+    									'<s:text name="ecal.calUploadComplete"><s:param>'+ msg.calibration.filename +'</s:param></s:text>');
     					console.log(result);
     					window.location.reload();
 
@@ -266,14 +272,16 @@
 					calobj="error";
 					//alert("Could not upload calibration  for " + msg.calibration.filename + " " + event.statusText);
 					console.log(event);
-					$("#ecalError").text("Could not upload calibration  for " + msg.calibration.filename + " " + event.statusText);
+					$("#ecalError").text('<s:text name="ecal.couldNotUploadCalibration"><s:param>'+ 
+										msg.calibration.filename +'</s:param><s:param>'+
+										event.statusText +'</s:param></s:text>');
 					$("#ecalErrorModal").modal('show');	
 				}
 			});
 			}
 			else {
 				//alert("Not logged in.  ReqGuid not found");
-				$("#ecalError").text("Not logged in.  ReqGuid not found");
+				$("#ecalError").text('<s:text name="global.notLoggedInReqGuidNotFound"/>');
 				$("#ecalErrorModal").modal('show');	
 			}
 		}
@@ -350,7 +358,7 @@
 					
 					$("#detectStatus")
 							.text(
-									"Tinter Detected.  Configuration Complete. Click to continue");
+									'<s:text name="global.tinterDetectConfigurationComplete"/>');
 					console.log(return_message);
 					//$("#frmSubmit").submit();  // action to save colorants txt and move to welcome page.
 				}
@@ -362,13 +370,13 @@
 					case -3084:
 						$("#errorModalTitle")
 								.text(
-										"Tinter Detected. Config Complete.  Click to continue");
+										'<s:text name="global.tinterDetectConfigurationComplete"/>');
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
 					default:
 						$("#errorModalTitle").text(
-								"Tinter Init Error(s)  Click to continue")
+								'<s:text name="global.tinterInitErrorsClickContinue"/>')
 						$("#detectErrorMessage").text(
 								return_message.errorMessage);
 						break;
@@ -435,7 +443,7 @@
 				ws_tinter.send(json);
 				//alert("Calibration for " + filename + " sent to tinter.");
 				$("#tinterAlertList").empty();
-				$("#tinterAlertList").append("<li>Calibration for " + filename + " sent to tinter.</li>");
+				$("#tinterAlertList").append('<li><s:text name="ecal.calibrationSentToTinter"><s:param>'+ filename +'</s:param></s:text>');
 				if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
 				if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
 				if(!$("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").addClass("alert-success");
@@ -444,7 +452,7 @@
 				}
 			else{
 					//alert("There is no filename for the selected line. Please choose again.");
-					$("#ecalError").text("Valid file not selected. Please choose again.");
+					$("#ecalError").text('<s:text name="ecal.noValidFileSelected"/>');
 					$("#ecalErrorModal").modal('show');	
 				}
 
@@ -519,13 +527,13 @@
 				<!--  <img class="mb-4"
 				src="graphics/shercolor-lg.jpg"
 				alt="" width="72" height="72"> -->
-				<h1 class="h3 mb-3 font-weight-normal">Calibration Manager</h1>
+				<h1 class="h3 mb-3 font-weight-normal"><s:text name="global.calibrationManager"/></h1>
 
 				<p>
 					<a href="#" data-toggle="tooltip"
 						title="Use 'Upload' to save your calibration to SW.  Then you can download it later if you change computers or 
 						you need fix a tinter error caused by a bad calibration">
-						Your Calibration Files</a>
+						<s:text name="ecal.yourCalibrationFiles"/></a>
 				</p>
 			</div>
 
@@ -534,12 +542,12 @@
 				<table id="ecals_table" class="table  table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>Clrnt</th>
-							<th>Tinter Model</th>
-							<th>Tinter Serial</th>
-							<th>Upload Date</th>
-							<th>Upload Time</th>
-							<th>Choose</th>
+							<th><s:text name="ecal.clrnt"/></th>
+							<th><s:text name="ecal.tinterModel"/></th>
+							<th><s:text name="ecal.tinterSerial"/></th>
+							<th><s:text name="ecal.uploadDate"/></th>
+							<th><s:text name="ecal.uploadTime"/></th>
+							<th><s:text name="ecal.choose"/></th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -564,10 +572,10 @@
 			<div>
 				<button  type="button" class="btn btn-primary " id="btn_downloadEcal"
 					data-toggle="modal" data-target="#verifyModal"
-					autofocus="autofocus">Download Calibration</button>
+					autofocus="autofocus"><s:text name="ecal.downloadCalibration"/></button>
 			
-				<button style="float:right" class="btn btn-primary mr-auto" id="upload_ecal">Upload
-					Calibration</button>
+				<button style="float:right" class="btn btn-primary mr-auto" id="upload_ecal">
+					<s:text name="ecal.uploadCalibration"/></button>
 			</div>
 				
 			<div class="form-row">
@@ -576,7 +584,7 @@
 			<hr/>
 			<div class="form-row">
 
-				<s:submit class="btn btn-secondary btn-block" id="btn_done"  action="loginAction" value="Done" />
+				<s:submit class="btn btn-secondary btn-block" id="btn_done"  action="loginAction" value="%{getText('global.done')}" />
 			</div>
 
 		</s:form>
@@ -595,10 +603,10 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">Detect In Progress</h4>
+					<h4 class="modal-title"><s:text name="ecal.detectInProgress"/></h4>
 				</div>
 				<div class="modal-body">
-					<p >Please wait while tinter detects...</p>
+					<p ><s:text name="ecal.pleaseWaitTinterDetect"/></p>
 				</div>
 				<div class="modal-footer">
 					<!-- 									<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button> -->
@@ -614,15 +622,14 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					
-					<h4 class="modal-title">Tinter Detection and Initialization</h4>
+					<h4 class="modal-title"><s:text name="global.tinterDetectionAndInitialization"/></h4>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<p id="progress-message" >Please wait while we
-						detect and initialize the tinter...</p>
+					<p id="progress-message" ><s:text name="global.pleaseWaitDetectInitTinter"/></p>
 				</div>
 				<div class="modal-footer"></div>
 			</div>
@@ -638,14 +645,14 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">Error</h4>
+					<h4 class="modal-title"><s:text name="ecal.error"/></h4>
 				</div>
 				<div class="modal-body">
 					<p id="swDeviceError" ></p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" id="errorButton"
-						data-dismiss="modal" aria-label="Close">Close</button>
+						data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
 				</div>
 			</div>
 		</div>
@@ -657,7 +664,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 
-					<h4 class="modal-title">Tinter Init Status</h4>
+					<h4 class="modal-title"><s:text name="ecal.tinterInitStatus"/></h4>
 				</div>
 				<div class="modal-body">
 					<p id="detectStatus"></p>
@@ -666,7 +673,7 @@
 				<div class="modal-footer">
 					<button id="detectStatusClose" type="button"
 						class="btn btn-primary" id="detectStatusButton"
-						data-dismiss="modal" aria-label="Close">Continue</button>
+						data-dismiss="modal" aria-label="Close"><s:text name="global.continue"/></button>
 				</div>
 			</div>
 		</div>
@@ -678,7 +685,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 
-					<h4 id="errorModalTitle" class="modal-title">Tinter Init Error</h4>
+					<h4 id="errorModalTitle" class="modal-title"><s:text name="ecal.tinterInitError"/></h4>
 				</div>
 				<div class="modal-body">
 					<p id="detectErrorMessage" ></p>
@@ -689,7 +696,7 @@
 				</div>
 				<div class="modal-footer">
 					<button id="detectErrorClose" type="button" class="btn btn-primary"
-						 data-dismiss="modal" aria-label="Close">Close</button>
+						 data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
 				</div>
 			</div>
 		</div>
@@ -703,7 +710,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Calibration Transfer Error</h5>
+					<h5 class="modal-title"><s:text name="ecal.calibrationTransferError"/></h5>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -714,7 +721,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="ecalErrorButton"
-						data-dismiss="modal" aria-label="Close">Close</button>
+						data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
 				</div>
 			</div>
 		</div>
@@ -725,7 +732,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Calibration Transfer Status</h5>
+					<h5 class="modal-title"><s:text name="ecal.calibrationTransferStatus"/></h5>
 				</div>
 				<div class="modal-body">
 					<p id="ecalStatus" ></p>
@@ -733,7 +740,7 @@
 				</div>
 				<div class="modal-footer">
 					<button id="ecalStatusClose" type="button" class="btn btn-primary"
-						 data-dismiss="modal" aria-label="Close">Continue</button>
+						 data-dismiss="modal" aria-label="Close"><s:text name="global.continue"/></button>
 				</div>
 			</div>
 		</div>
@@ -748,7 +755,7 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="tinterErrorListTitle">Tinter Error</h4>
+					<h4 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"/></h4>
 				</div>
 				<div class="modal-body">
 					<div>
@@ -759,7 +766,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary"
-						id="tinterErrorListOK" data-dismiss="modal" aria-label="Close">OK</button>
+						id="tinterErrorListOK" data-dismiss="modal" aria-label="Close"><s:text name="global.ok"/></button>
 				</div>
 			</div>
 		</div>

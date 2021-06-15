@@ -46,11 +46,11 @@ public class ListDealerCustomersAction extends ActionSupport implements SessionA
 			listCustWebDealerCustDto = new CustWebDealerCustDtoBuilder().build(listCustWebDealerCust);
 		}	
 		catch (HibernateException he){
-			logger.error("Hibernation Exception caught" + he.toString() + " " + he.getMessage() );
+			logger.error("Hibernation Exception caught" + he.toString() + " " + he.getMessage(), he);
 			return ERROR;
 		}
 		catch (Exception e){
-			logger.error("Exception caught" + e.toString() + " " + e.getMessage() );
+			logger.error("Exception caught" + e.toString() + " " + e.getMessage(), e);
 			return ERROR;
 		}
 		return SUCCESS;

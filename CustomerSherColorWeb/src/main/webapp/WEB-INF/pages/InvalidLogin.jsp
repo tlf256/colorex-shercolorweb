@@ -8,7 +8,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Logged Out</title>
+		<title><s:text name="global.loggedOut"/></title>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
@@ -17,7 +17,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 	</head>
 	
 	<body>
@@ -53,7 +53,7 @@
 					
 				</div>
 				<div class="col-sm-4">
-					<h2>You have been logged out.</h2>
+					<h2><s:text name="global.youHaveBeenLoggedOut"/></h2>
 				</div>
 				<div class="col-sm-4">
 

@@ -4,6 +4,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <html>
-	<s:action name="loginGetUserAction" executeResult="true" namespace="/" />
+	<!-- first check if we have a locale saved in a cookie, then forward to login -->
+	<s:action name="checkLocaleCookieAction" executeResult="true" namespace="/" />
 
 </html>

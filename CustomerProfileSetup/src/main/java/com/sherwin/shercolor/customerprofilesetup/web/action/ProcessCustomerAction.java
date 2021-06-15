@@ -48,7 +48,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			//check for entered account number
 			switch(customer.getAccttype()) {
 			case "natlWdigits":  //customerid = account number
-				reqObj.setCustomerId(customer.getNtlacctnbr());
+				String custId = customer.getNtlacctnbr();
+				if(custId.startsWith("4")) {
+					customer.setAccttype("internal");
+				}
+				reqObj.setCustomerId(custId);
 				break;
 			case "natlWOdigits":  //create customerid
 				//lookup national customer ids
@@ -183,17 +187,17 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			
 			sessionMap.put("CustomerDetail", reqObj);	
 			
-			if(customer.getAccttype().equals("natlWdigits")) {
+			if(reqObj.getAccttype().equals("natlWdigits")) {
 				return "nologin";
 			} else {
 				return SUCCESS;
 			}
 			
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -224,10 +228,10 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				setResult("false");
 			}
 		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
+			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
 			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		return SUCCESS;

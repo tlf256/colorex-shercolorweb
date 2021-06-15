@@ -3,9 +3,21 @@
  */
 $(document).ready(function(){
 	
-	var jsvalue = String($.trim($("#customerid").text()));
+	//$("#jobnext-btn").addClass("d-none");
+	$("#loginInfo").find("input:eq(0)").focus();
 	
-	$("#jobnext-btn").addClass("d-none");
+	var jsvalue = String($.trim($("#customerid").text()));
+	var req = true;
+	if(jsvalue.length == 9){
+		if(jsvalue.startsWith("4")){
+			req = false;
+		}
+	} else {
+		if(!jsvalue.startsWith("99") && !jsvalue.startsWith("INTL")){
+			req = false;
+		}
+	}
+	//console.log("required = " + req);
 	
 	$("#loginInfo").on("click", "#btnAdd", function(){
 		if($(".cloned-row").length < 10){
@@ -54,11 +66,7 @@ $(document).ready(function(){
 			}).toArray();
 			logins.slice(-1);
 		},
-		"focusout":function(){
-			$("#jobnext-btn").removeClass("d-none");
-		},
 		"blur":function(){
-			$("#jobnext-btn").removeClass("d-none");
 			var keyfldval = $.trim($(this).val());
 			var keyfld = $(this);
 			var result;
@@ -66,7 +74,7 @@ $(document).ready(function(){
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
 				dataType:"json",
-				//async:false,
+				async:false,
 				success:function(data){
 					result = data.result;
 				},
@@ -89,7 +97,7 @@ $(document).ready(function(){
 				$("#formerror").text("");
 				keyfld.removeClass("border-danger");
 			}catch(msg){
-				keyfld.focus();
+				keyfld.select();
 				keyfld.addClass("border-danger");
 				$("#loginformerror").text(msg);
 				$("html, body").animate({
@@ -101,7 +109,7 @@ $(document).ready(function(){
 	
 	var mstraccts;
 	
-	$(document).on("blur change", ".mstracctnm", function(){
+	$(document).on("blur", ".mstracctnm", function(){
 		try{
 			var mstracct = $.trim($(this).val());
 			if(mstracct.length > 50){
@@ -111,7 +119,7 @@ $(document).ready(function(){
 			$("#loginformerror").text("");
 			$("#formerror").text("");
 		}catch(msg){
-			$(this).focus();
+			$(this).select();
 			$(this).addClass("border-danger");
 			$("#loginformerror").text(msg);
 			$("html, body").animate({
@@ -126,7 +134,7 @@ $(document).ready(function(){
 				throw "Please fix form error(s):";
 			}
 			$(".keyfield").each(function(i){
-				if(!jsvalue.startsWith("99")){
+				if(req){
 					if(!$(this).val() && $(this).is(":visible")){
 						$(this).addClass("border-danger");
 						throw "Please enter a value for Login ID";

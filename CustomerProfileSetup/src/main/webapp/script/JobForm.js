@@ -6,7 +6,7 @@ $(document).ready(function(){
 	$("#locField").focus();
 	$("#locField").select();
 		
-	$(document).on("blur change", ".scrnlbl", function(){
+	$(document).on("blur", ".scrnlbl", function(){
 		try{
 			var scrnlbl = $.trim($(this).val());
 			if(scrnlbl.length > 15){
@@ -17,7 +17,7 @@ $(document).ready(function(){
 			$("#formerror").text("");
 		}catch(msg){
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 			$("#jobformerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
@@ -25,7 +25,7 @@ $(document).ready(function(){
 		}
 	});
 		
-	$(document).on("blur change", ".flddefault", function(){
+	$(document).on("blur", ".flddefault", function(){
 		try{
 			var flddflt = $.trim($(this).val());
 			if(flddflt.length > 15){
@@ -36,7 +36,7 @@ $(document).ready(function(){
 			$("#formerror").text("");
 		}catch(msg){
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 			$("#jobformerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top

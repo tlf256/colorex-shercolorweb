@@ -28,12 +28,15 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 
 //Opens Help Menu links on the welcome page - edo78r
 	
-	public String execute() throws Exception {
+	public String execute() {
 		String pdfFileName = "";
 		try {
 			switch(pdfFile) {
 				case "SherColor_Web_Customer_Guide.pdf":
 					pdfFileName = "SherColor_Web_Customer_Guide.pdf";
+					break;
+				case "SherColor_Web_XProtint_Tinter_Installation_Guide.pdf":
+					pdfFileName = "SherColor_Web_XProtint_Tinter_Installation_Guide.pdf";
 					break;
 				case "SherColor_Web_Accutinter_Installation_Guide.pdf":
 					pdfFileName = "SherColor_Web_Accutinter_Installation_Guide.pdf";
@@ -60,14 +63,15 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 					pdfFileName = "INVALID";
 			}
 			if (pdfFileName.equals("INVALID")) {
+				logger.error("pdf filename is invalid");
 				return ERROR;
 			}
 			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/" + pdfFileName));
 	    	return SUCCESS;
 		 } catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
-		}
+		 }
 	}
 
 	public void setSession(Map<String, Object> sessionMap) {

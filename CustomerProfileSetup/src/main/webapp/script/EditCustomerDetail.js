@@ -115,7 +115,7 @@ $(document).ready(function() {
 		input.eq(0).select();
 	});
 		
-	$("#customername").on("blur change", function(){
+	$("#customername").on("blur", function(){
 		try{
 			var swuititle = $.trim($(this).val());
 			if(swuititle.length > 20){
@@ -133,11 +133,11 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
-	$("#cdsadlfld").on("blur change", function(){
+	$("#cdsadlfld").on("blur", function(){
 		try{
 			var cdsadlfld = $.trim($(this).val());
 			if(cdsadlfld.length > 20){
@@ -152,11 +152,11 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
-	$("#acceptcode").on("blur change", function(){
+	$("#acceptcode").on("blur", function(){
 		try{
 			var acceptcode = $.trim($(this).val());
 			if(acceptcode.length != 6){
@@ -171,7 +171,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -193,7 +193,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -221,7 +221,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
@@ -242,7 +242,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 	
@@ -256,7 +256,7 @@ $(document).ready(function() {
 				}
 			}).toArray();
 		},
-		"blur change":function(e){
+		"blur":function(e){
 			var keyfldval = $.trim($(this).val());
 			var keyfld = $(this);
 			var result;
@@ -264,6 +264,7 @@ $(document).ready(function() {
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
 				dataType:"json",
+				async: false,
 				success:function(data){
 					result = data.result;
 					console.log(result);
@@ -292,14 +293,14 @@ $(document).ready(function() {
 				}, 1500);
 				$("#custediterror").text(msg);
 				keyfld.addClass("border-danger");
-				keyfld.focus();
+				keyfld.select();
 			}
 		}
 	},".kyfld");
 	
 	var mstraccts;
 	
-	$(document).on("blur change", ".mstraccntnm", function(){
+	$(document).on("blur", ".mstraccntnm", function(){
 		try{
 			var mstracct = $.trim($(this).val());
 			if(mstracct.length > 50){
@@ -314,11 +315,11 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
-	$(document).on("blur change", ".scrnlbl", function(){
+	$(document).on("blur", ".scrnlbl", function(){
 		try{
 			var scrnlbl = $.trim($(this).val());
 			if(scrnlbl.length > 15){
@@ -336,11 +337,11 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		
-	$(document).on("blur change", ".flddflt", function(){
+	$(document).on("blur", ".flddflt", function(){
 		try{
 			var flddflt = $.trim($(this).val());
 			if(flddflt.length > 15){
@@ -355,7 +356,7 @@ $(document).ready(function() {
 			}, 1500);
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
-			$(this).focus();
+			$(this).select();
 		}
 	});
 		

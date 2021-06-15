@@ -1,54 +1,50 @@
 var jobTable;
 
+
 $(document).ready(function() {
+	var match = $.urlParam('match');
+	//$("#listJobsAction_formulaUserCorrectAction")
+	var exportColList = $("#listJobsAction_exportColList").val();
+	var columnList = exportColList.split(',').map(function(item) {
+		var result = parseInt(item, 10);
+		if (isNaN(result)) {
+			return 0;
+		} else {
+			return result;
+		}
+	});
 	jobTable = $('#job_table').DataTable({
-		columns: [
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
+		columnDefs: [
 			{
-				"render": function(data, type, row){
-					return data.split(" | ").join("<br/>");
+				targets: [columnList[columnList.length-1]], render: function(data, type, row){
+					return data.split(" | ").join("  <br/>");
 				}
-			},
-			null,
-			null,
+			}
 		],
 		dom: 'ifBrtp',
 		buttons : [
 			{ extend: 'copy',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
+            		columns: columnList
             	},
             },
 			{ extend: 'csv',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
+            		columns: columnList
             	},
             },
 			{ extend: 'excel',
             	exportOptions: {
             		stripHtml: true,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,16]
+            		columns: columnList
             	},
             },
             { extend: 'print',
             	exportOptions: {
             		stripHtml: false,
-            		columns: [0,1,2,3,4,5,6,7,8,10,11,12,13,14]
+            		columns: columnList
             	},
             	customize: function(win)
                 {
@@ -94,7 +90,7 @@ $(document).ready(function() {
             }
         ],*/
         "language": {
-        	"emptyTable" : "No jobs available"
+        	"emptyTable" : i18n['displayJobs.noJobsAvailable']
         },
         "ordering": true,
         "order": [ 0, 'desc' ],
@@ -103,6 +99,13 @@ $(document).ready(function() {
         "scrollX": true,
         "pagingType": "full",
     });
+    
+    console.log('match is ' + match);
+    
+    if(match != null && match == "true"){
+    	$('#mainForm').attr('action', 'selectColorMatchAction');
+    	$('#title').text(i18n['compareColors.chooseFirstSample']);
+    }
 	
 	/*var cell = jobTable.cell(this);
 	var celldata = cell.data();
@@ -133,6 +136,7 @@ $(document).ready(function() {
     	document.getElementById('controlNbr').value = lookupControlNbr;
     	document.getElementById('mainForm').submit();
     });
+    
     $("#job_table").addClass("table-hover");
     
     $('#job_table tbody').on({
@@ -162,19 +166,31 @@ $(document).ready(function() {
 			data:{"controlNbr": controlNbr, "reqGuid": reqGuid},
 			type: "POST",
 			dataType:"json",
-			success:function(){
+			success:function(data){
 				console.log("Success");
+				if (data != null){
+					$('#dltmsg').removeClass('d-none');
+					$('#dltmsg').text(data.deleteSuccessMsg);
+				}
 			},
 			error:function(request, status, error){
 				console.log("Error: " + status + " (" + error + ")");
 			}
 		});
     	jobTable.row(deleteRow).remove().draw();
-    	$('#dltmsg').removeClass('d-none');
-    	$('#dltmsg').text("Job " + controlNbr + " deleted successfully");
     });
     
 });
+
+//function parses url to get value of specified param name
+$.urlParam = function(name){
+var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    } else{
+       return results[1] || 0;
+    }
+}
 
 
 

@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Formula Correction</title>
+		<title><s:text name="correctFormula.formulaCorrection" /></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -22,9 +22,11 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -46,10 +48,10 @@
 		}
 		</style>
 	<script type="text/javascript">
-
 	// global vars for tinter
 	var sendingDispCommand = "false";
 	var shotList = [];
+	var printJsonIN = "";
 	var processingDispense = false;
 	// global vars for correction
 	var method;
@@ -66,6 +68,13 @@
 	
 	var _rgbArr = [];
 	
+	//global vars for printer
+	var printerConfig;
+	// Currently only storeLabels can be printed through dispense here
+	var myPrintLabelType = "storeLabel";
+	var myPrintOrientation = "PORTRAIT";
+	var dispenseAccepted = false;
+
 	<s:iterator value="tinter.canisterList" status="i">
 	booya=0;
 			_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
@@ -75,7 +84,7 @@
 		if(sessionTinterInfo.tinterOnFile===true){
 			
 			// load colorant into dropdown menu for Manual Add
-			console.log("loading colorant dropdown");
+			//console.log("loading colorant dropdown");
 			
 			$("#clrntList").empty();
 			sessionTinterInfo.canisterList.sort(function(a,b){
@@ -127,9 +136,8 @@
 		// Update current cycle & container steps to ACCEPTED
 		var curDate = new Date();
 		// ajax call to convert correctionList to dispenseItems
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "ACCEPTED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -138,13 +146,19 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
-    					console.log("Write Successful!");
+    					//console.log("Write Successful!");
+    					if (printerConfig && printerConfig.printOnDispense) {
+    						data.dispenseItemList.forEach(addToShotList);
+        					var correctionStr = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
+        					var printJsonIN = JSON.stringify(correctionStr);
+        					printOnDispenseGetJson(data.reqGuid, printJsonIN);
+    					}
     					if(data.mergeCorrWithStartingForm == true){
     						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
     					} else {
@@ -152,30 +166,35 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (acceptContainerClick).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAcceptContClick" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
-
+	
+	function addToShotList(dispenseItem){
+		shotList.push(new Colorant(dispenseItem.clrntCode,dispenseItem.shots,dispenseItem.position,dispenseItem.uom));
+	}
+	
 	function dispenseAcceptedClick(){
 		method="DISPENSE ACCEPTED";
+		dispenseAccepted = true;
 		// if dispenseItemList avail on display then it is the accepted formula
 	<s:iterator value="dispenseItemList">
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
 	</s:iterator>
-		console.log(shotList);
-		$("#reason").val("Dispense same as Container #"+$("#mainForm_acceptedContNbr").val());
+		//console.log(shotList);
+		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
 		preDispenseCheck();
@@ -185,9 +204,9 @@
 		// mark open steps for this container as discarded.
 		var curDate = new Date();
 		// ajax call to post correction status to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "postCorrectionStatusAction.action",
             type: "POST",
@@ -196,7 +215,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -206,18 +225,18 @@
     					mistintClickCallback();
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (postCorrectionStatus).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdPostCorrStatus" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -227,10 +246,10 @@
 		//Build mistint step info and save to DB
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Failed Correction for Container #"+$("#mainForm_nextUnitNbr").val(), "stepStatus": "DISCARDED", "stepMethod":method, "shotList" : []};
+        //var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
+        //console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -239,7 +258,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -253,18 +272,18 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (saveCorrectionStep).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSaveCorr" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
             },
             error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                //console.log("JSON Write Correction failed here");
+                //console.log(textStatus + "" + errorThrown);
             }
         });
 	}
@@ -279,10 +298,8 @@
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to save discarded step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : []};
-        //var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(), "stepStatus" : "DISCARDED"};
+		var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#skipConfirmInput").val(), "stepStatus": "SKIPPED", "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -291,7 +308,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -302,11 +319,11 @@
     					reloadScreen();
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (skipConfirmClick).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdSkipConfirm" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
@@ -346,7 +363,7 @@
 		method="AUTO SKIP";
 		var curDate = new Date();
 		// ajax call to save mistint step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Skipped. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY SKIPPED", "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -357,7 +374,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -371,11 +388,11 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (autoSkip).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAutoSkip" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
@@ -391,7 +408,7 @@
 		method="AUTO DISCARD";
 		var curDate = new Date();
 		// ajax call to save discard step to db
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Discarded. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY DISCARDED", "stepMethod":method, "shotList" : []};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : "Previously Discarded. Cannot make any more corrections.", "stepStatus": "PREVIOUSLY DISCARDED", "stepMethod":method, "shotList" : []};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -402,7 +419,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -416,11 +433,11 @@
     					}
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (autoDiscard).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdAutoDiscard" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
@@ -435,7 +452,7 @@
 	function mergeCorrWithStartingForm(myCycle){
 		var curDate = new Date();
 		// ajax call to merge Correction Cycle formula with Starting Formula
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : myCycle};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : myCycle};
         var jsonIN = JSON.stringify(str);
         console.log(jsonIN);
         $.ajax({	
@@ -446,7 +463,7 @@
             async: true,
             data : jsonIN,
             success : function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -456,11 +473,11 @@
     					reloadScreen()
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (mergeCorrWithStartingForm).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdMerge" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
@@ -503,7 +520,7 @@
 	function percentConfirmClick(){
 		method="PERCENT ADDITION";
 		$("#formulaAdditions > tbody").empty();
-		var mydata = {reqGuid:$("#mainForm_reqGuid").val(), percentOfFormula:parseInt($("#pct").val())};
+		var mydata = {reqGuid:$("#reqGuid").val(), percentOfFormula:parseInt($("#pct").val())};
 		var jsonIn = JSON.stringify(mydata);
 		console.log("in percentAddClick and jsonIn is");
 		console.log(jsonIn);
@@ -521,15 +538,28 @@
             	else{
             		// walk through result formula
     				var newRow = "";
+    				var safeTintSysId = "";
+    				var safeName = "";
+    				var safeIncr0 = "";
+    				var safeIncr1 = "";
+    				var safeIncr2 = "";
+    				var safeIncr3 = "";
     				data.ingredientList.forEach(function(item){
-    					console.log(item);
+        				safeTintSysId = encodeURIComponent(item.tintSysId.toString());
+        				safeName = encodeURIComponent(item.name.toString());
+        				safeName = safeName.replace(/%20/g, " ");
+        				safeIncr0 = encodeURIComponent(item.increment[0].toString());
+        				safeIncr1 = encodeURIComponent(item.increment[1].toString());
+        				safeIncr2 = encodeURIComponent(item.increment[2].toString());
+        				safeIncr3 = encodeURIComponent(item.increment[3].toString());
+    					//console.log("in the modified code");
     					newRow = "";
     					newRow = newRow + '<tr>';
-    					newRow = newRow + '<td id="clrntString">'+item.tintSysId+"-"+item.name+'</td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[0]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[1]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[2]+'"></td>'
-    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+item.increment[3]+'"></td>'
+    					newRow = newRow + '<td id="clrntString">'+safeTintSysId+"-"+safeName+'</td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr0+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr1+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr2+'"></td>'
+    					newRow = newRow + '<td><input type="text" class="form-control number-only" value="'+safeIncr3+'"></td>'
     					newRow = newRow + '</tr>';
     					$("#formulaAdditions > tbody:last-child").append(newRow);
     					$('#pct').text('');
@@ -539,7 +569,7 @@
             	}
 			},
 			error: function(err){
-				alert("failure: " + err);
+				alert('<s:text name="global.failurePlusErr"><s:param>' + err + '</s:param></s:text>');
 			}
 		});
 	}
@@ -583,7 +613,7 @@
 				  console.log("Invalid entries detected.");
 	              $(this).attr("data-toggle", "popover");
 	              $(this).attr("data-placement","bottom");
-	              $(this).attr("data-content", "Input must be a positive whole number between 0-99, please re-enter.");
+	              $(this).attr("data-content", '<s:text name="global.positiveNbr" />');
 	              $(this).popover({trigger : 'manual'});
 	              $(this).popover('toggle');
 	              $(this).next('.popover').addClass('popover-danger');
@@ -622,7 +652,7 @@
 		
 		// ajax call to convert correctionList to dispenseItems
 		if(!invalidFlag && !tmpInvalidFlag){
-			var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "correctionList" : correctionList};
+			var str = { "reqGuid" : $('#reqGuid').val(), "correctionList" : correctionList};
 	        var jsonIN = JSON.stringify(str);
 	        console.log(jsonIN);
 	        $.ajax({	
@@ -633,7 +663,7 @@
 	            async: true,
 	            data : jsonIN,
 	            success : function(data){
-	            	console.log(data);
+	            	//console.log(data);
 	            	if(data.sessionStatus === "expired"){
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
@@ -654,7 +684,7 @@
 	            },
 	            error: function(textStatus, errorThrown ) {
 	                console.log("JSON dispense failed here");
-	                console.log(textStatus + "" + errorThrown);
+	                console.log(textStatus + " " + errorThrown);
 	            }
 	        });
 		}
@@ -670,7 +700,7 @@
 			console.log("Invalid entries detected.");
 			$('#formulaAdditions').attr("data-toggle", "popover");
 			$('#formulaAdditions').attr("data-placement","top");
-			$('#formulaAdditions').attr("data-content", "Addition must be set, please input either Percent Addition or Manual Addition.");
+			$('#formulaAdditions').attr("data-content", '<s:text name="correctFormula.additionSet" />');
 			$('#formulaAdditions').popover({trigger : 'manual'});
 			$('#formulaAdditions').popover('toggle');
 			$('.popover').addClass('popover-danger');
@@ -690,7 +720,7 @@
 				console.log("Invalid entries detected.");
 				$('#formulaAdditions').attr("data-toggle", "popover");
 				$('#formulaAdditions').attr("data-placement","top");
-				$('#formulaAdditions').attr("data-content", "Addition must be set, values cannot all be zero");
+				$('#formulaAdditions').attr("data-content", '<s:text name="correctFormula.additionSetNotAllZero" />');
 				$('#formulaAdditions').popover({trigger : 'manual'});
 				$('#formulaAdditions').popover('toggle');
 				$('.popover').addClass('popover-danger');
@@ -708,7 +738,7 @@
 			console.log("Invalid entries detected.");
 			$('#reason').attr("data-toggle", "popover");
 			$('#reason').attr("data-placement","top");
-			$('#reason').attr("data-content", "Reason must be 2 characters or more, please re-enter.");
+			$('#reason').attr("data-content", '<s:text name="correctFormula.reasonMustBeGtTwoChar" />');
 			$('#reason').popover({trigger : 'manual'});
 			$('#reason').popover('toggle');
 			$('.popover').addClass('popover-danger');
@@ -734,26 +764,26 @@
 			console.log("show product fill warning or error");
 			if($("#maxLoadType").val()=="ACTUAL_ENFORCE"){
 				$("#tinterErrorList").empty();
-				$("#tinterErrorList").append('<li class="alert alert-danger">Maximum colorant load for this product is ' + $("#maxClrntLoad").text() + 'oz.</li>');
-				$("#tinterErrorList").append('<li class="alert alert-danger">Current colorant load for this product is ' + $("#currClrntLoad").text() + 'oz.</li>');
-				$("#tinterErrorList").append('<li class="alert alert-danger">The colorant addition for this dispense (' + ozEntered + 'oz) would exceed the maximum limit.</li>');
-				$("#tinterErrorListTitle").text("ERROR! Colorant Addition Exceeds Product Limit");
-				$("#tinterErrorListSummary").text("You must reduce the amount of colorant being added. This product does not allow Maximum Colorant Load overrides.");
+				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.maxColorantLoadIs"><s:param>' + $("#maxClrntLoad").text() + '</s:param></s:text></li>');
+				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.currentClrntLoadProduct"><s:param>' + $("#currClrntLoad").text() + '</s:param></s:text></li>');
+				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.exceedMaxLimit"><s:param>' + ozEntered + '</s:param></s:text></li>');
+				$("#tinterErrorListTitle").text('<s:text name="correctFormula.exceedsLimitError" />');
+				$("#tinterErrorListSummary").text('<s:text name="correctFormula.mustReduceColorantAmt" />');
 				$("#tinterErrorListModal").modal('show');
 			} else {
 				$("#fillWarningList").empty();
 				if($("#maxLoadType").val()=="ACTUAL_WARN") {
-					$("#fillWarningList").append('<li class="alert alert-warning">Maximum colorant load for this product is ' + $("#maxClrntLoad").text() + 'oz.</li>');
-					$("#fillWarningList").append('<li class="alert alert-warning">Current colorant load for this product is ' + $("#currClrntLoad").text() + 'oz.</li>');
-					$("#fillWarningList").append('<li class="alert alert-warning">The colorant addition for this dispense (' + ozEntered + 'oz) would exceed the maximum limit.</li>');
-					$("#fillWarningListTitle").text("WARNING! Colorant Addition Exceeds Product Limit");
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.maxColorantLoadIs"><s:param>' + $("#maxClrntLoad").text() + '</s:param></s:text></li>');
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.currentClrntLoadProduct"><s:param>' + $("#currClrntLoad").text() + '</s:param></s:text></li>');
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.exceedMaxLimit"><s:param>' + ozEntered + '</s:param></s:text></li>');
+					$("#fillWarningListTitle").text('<s:text name="correctFormula.warningExceedsProductLimit" />');
 				} else {
-					$("#fillWarningList").append('<li class="alert alert-warning">Estimated Maximum colorant load for this container is ' + $("#maxClrntLoad").text() + 'oz.</li>');
-					$("#fillWarningList").append('<li class="alert alert-warning">Current colorant load for this container is ' + $("#currClrntLoad").text() + 'oz.</li>');
-					$("#fillWarningList").append('<li class="alert alert-warning">The colorant addition for this dispense (' + ozEntered + 'oz) would exceed the maximum limit.</li>');
-					$("#fillWarningListTitle").text("WARNING! Colorant Addition Exceeds Estimated Container Limit");
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.estMaxClrnt"><s:param>' + $("#maxClrntLoad").text() + '</s:param></s:text></li>');
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.currentClrntLoadContainer"><s:param>' + $("#currClrntLoad").text() + '</s:param></s:text></li>');
+					$("#fillWarningList").append('<li class="alert alert-warning"><s:text name="correctFormula.exceedMaxLimit"><s:param>' + ozEntered + '</s:param></s:text></li>');
+					$("#fillWarningListTitle").text('<s:text name="correctFormula.warningExceedsContainerLimit" />');
 				}
-				$("#fillWarningListSummary").text("Click Continue to override this warning or Click Cancel to stop and change the amount of colorant being added.");
+				$("#fillWarningListSummary").text('<s:text name="correctFormula.clickContinue2" />');
 				$('#fillWarningListOK').focus();
 				$('#fillWarningListModal').modal('show');
 			}
@@ -764,12 +794,12 @@
 	}
 
 	function preDispenseCheck(){
-		$("#tinterInProgressTitle").text("Colorant Level Check In Progress");
-		$("#tinterInProgressMessage").text("Please wait while we Check the Colorant Levels for your tinter...");
+		$("#tinterInProgressTitle").text('<s:text name="global.colorantLevelCheckInProgress" />');
+		$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitClrntLevelCheck" />');
 		$("#tinterInProgressModal").modal('show');
 		rotateIcon();
 		// Get SessionTinter, this is async ajax call so the rest of the logic is in the callback below
-		getSessionTinterInfo($("#mainForm_reqGuid").val(),preDispenseCheckCallback);
+		getSessionTinterInfo($("#reqGuid").val(),preDispenseCheckCallback);
 	}
 	
 	function preDispenseCheckCallback(){
@@ -780,11 +810,11 @@
 		var today = new Date();
 		if (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() || dateFromString.getDate()<today.getDate()){
 			$("#tinterErrorList").empty();
-			$("#tinterErrorList").append('<li class="alert alert-danger">Tinter Purge is Required. Last done on ' + moment(dateFromString).format('ddd MMM DD YYYY') + "</li>");
+			$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="global.tinterPurgeIsRequiredLastDoneOnDate"><s:param>' + moment(dateFromString).format('ddd MMM DD YYYY') + "</s:param></s:text></li>");
 			waitForShowAndHide("#tinterInProgressModal");
 			$("#tinterErrorListModal").modal('show');
-			$("#tinterErrorListTitle").text("Purge Required");
-			$("#tinterErrorListSummary").text("Save your formula and go to the SherColor Home page to perform Tinter Purge. ");	
+			$("#tinterErrorListTitle").text('<s:text name="global.purgeRequired" />');
+			$("#tinterErrorListSummary").text('<s:text name="global.saveGoHomeToPurge" />');	
 		} else {
 			// Check Levels
 			console.log("about to check levels");
@@ -798,8 +828,8 @@
 				//Show it in a modal they can't go on
             	waitForShowAndHide("#tinterInProgressModal");
 				$("#tinterErrorListModal").modal('show');
-				$("#tinterErrorListTitle").text("Colorant Level Too Low");
-				$("#tinterErrorListSummary").text("Save your formula, fill your empty canister and go to the SherColor Home page to update Colorant Levels. ");
+				$("#tinterErrorListTitle").text('<s:text name="global.colorantLevelTooLow" />');
+				$("#tinterErrorListSummary").text('<s:text name="global.saveFillGoHomeToUpdateClrnts" />');
 				
 			} else {
 				var warnList = checkDispenseColorantLow(shotList, sessionTinterInfo.canisterList);
@@ -811,7 +841,7 @@
 					//Show in modal, they can say OK to continue
 	            	waitForShowAndHide("#tinterInProgressModal");
 					$("#tinterWarningListModal").modal('show');
-					$("#tinterWarningListTitle").text("Low Colorant Levels");
+					$("#tinterWarningListTitle").text('<s:text name="global.lowColorantLevels" />');
 					
 				} else {
 					//OK to verify
@@ -824,7 +854,7 @@
 
 	function decrementColorantLevels(){
 		console.log("Calling decrementColorantLevels");
-		decrementColorantForDispense($("#mainForm_reqGuid").val(), shotList, decrementCallback);
+		decrementColorantForDispense($("#reqGuid").val(), shotList, decrementCallback);
 	}
 
 	function decrementCallback(myPassFail){
@@ -835,233 +865,21 @@
 			// Error Tell the user
 			console.log("Write Failed!" + data.errorMessage);
 			$("#tinterErrorList").empty();
-			$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (decrementCallback).</li>');
-			$("#tinterErrorListTitle").text("Internal Database Error");
-			$("#tinterErrorListSummary").text("Please Retry.");
+			$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdDecrementCallback" /></li>');
+			$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+			$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
 			$("#tinterErrorListModal").modal('show');
 		}
 	}
 	</script>
 	<script type="text/javascript"> //dispense
-    function fkey(e){
-    	if(sendingTinterCommand == "true"){
-        e = e || window.event;
-        
-        if (e.code === 'F4') {
-        	abort();
-            console.log(e);
-            e.preventDefault();
-        }
-    }
-}
-	function getRGB(colorantCode){
-		var rgb = "";
-		if(colorantCode != null){
-			rgb = _rgbArr[colorantCode];
-		}
-		return rgb;
-	}
-	function buildProgressBars(return_message){
-		var count = 1;
-		var keys=[];
-		$(".progress-wrapper").empty();
-		keys = Object.keys(return_message.statusMessages);
-		if (keys !=null && keys.length > 0) {
-			return_message.statusMessages.forEach(function(item){
-				var colorList = item.message.split(" ");
-				var color= colorList[0];
-				var pct = colorList[1];
-				//fix bug where we are done, but not all pumps report as 100%
-				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
-						 return_message.status == 0)) {
-					  pct = "100%";
-				  }
-				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
-				
-				var $clone = $("#progress-0").clone();
-				$clone.attr("id","progress-" + count);
-				var $bar = $clone.children(".progress-bar");
-				$bar.attr("id","bar-" + count);
-				$bar.attr("aria-valuenow",pct);
-				$bar.css("width", pct);
-				$clone.css("display", "block");
-				var color_rgb = getRGB(color);
-	//change color of text based on background color
-				switch(color){
-				case "WHT":
-				case "TW":
-				case "W1":
-					$bar.children("span").css("color", "black");
-					$bar.css("background-color", "#efefef");
-					break;
-				case "OY":
-				case "Y1":
-				case "YGS":
-					$bar.children("span").css("color", "black");
-					$bar.css("background-color", color_rgb);
-					break;
-				default:
-					$bar.css("background-color", color_rgb);
-					$bar.children("span").css("color", "white");
-					break;
-				}
-				
-				
-				$bar.children("span").text(color + " " + pct);
-				console.log("barring " + item.message);
-				//console.log($clone);
-				
-				$clone.appendTo(".progress-wrapper");
-				
-				count++;
-			});
-		}
-	}
-	function FMXDispenseProgress(){
-		console.log('before dispense progress send');
-		
-		rotateIcon();
-		var cmd = "DispenseProgress";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-		var json = JSON.stringify(tintermessage);
-		sendingTinterCommand = "true";
-		ws_tinter.send(json);
-	}
-	function dispense(){
-		var cmd = "Dispense";
-    
-    	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
 
-    	var json = JSON.stringify(tintermessage);
-		sendingDispCommand = "true";
-		if(ws_tinter!=null && ws_tinter.isReady=="false") {
-    		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
-    		ws_tinter = new WSWrapper("tinter");
-		}
-		// Send to tinter
-    	ws_tinter.send(json);
-	}
-	function dispenseProgressResp(return_message){
-		
-		//$("#progress-message").text(return_message.errorMessage);
-		$("#abort-message").show();
-		$('#progressok').addClass('d-none');  //hide ok button
-		if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
-				 return_message.status == 1)) {
-			$("#tinterProgressList").empty();
-			 tinterErrorList = [];
-			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
-			//keep updating modal with status
-				if(return_message.statusMessages.length > 0){
-				   buildProgressBars(return_message);
-				}
-			
-			} 
-			if(return_message.errorList!=null && return_message.errorList[0]!=null){
-				// show errors
-				return_message.errorList.forEach(function(item){
-						$("#tinterProgressList").append("<li>" + item.message + "</li>");
-						tinterErrorList.push(item.message);
-					});
-			}
-			if(return_message.errorMessage !=null) {
-				tinterErrorList.push(return_message.errorMessage);
-				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-			}
-			console.log(return_message);
-			setTimeout(function(){
-				FMXDispenseProgress();
-			}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
-			
-		}
-		else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0){
-			  if(return_message.errorNumber == 4226){
-			    	return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
-				    }
-			FMXDispenseComplete(return_message);
-			
-			}
-			
-	}
-	function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message){
-	    $("#tinterErrorList").empty();
-	    $("#tinterErrorListModal").modal('show');
-	    $("#abort-message").hide();
-	    processingDispense = false; // allow user to start another dispense after tinter error
-	    
-		if(my_return_message.statusMessages!=null && my_return_message.statusMessages[0]!=null){
-			//keep updating modal with status
-				if(my_return_message.statusMessages.length > 0){
-				   buildProgressBars(return_message);
-				}
-			
-		} 
-
-	    if(my_return_message.errorNumber == 4226){
-	    	my_return_message.errorMessage = "Tinter Driver busy.  Please re-initialize tinter and retry command."
-		}
-	    $("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
-	    
-	    if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-	    else $("#tinterErrorListTitle").text("Tinter Error");
-	    if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
-	    else $("#tinterErrorListSummary").text("");
-	  
-	}
-	function showTinterErrorModal(myTitle, mySummary, my_return_message){
-		$("#tinterErrorList").empty();
-		if(my_return_message.errorList!=null && my_return_message.errorList[0]!=null){
-			my_return_message.errorList.forEach(function(item){
-				$("#tinterErrorList").append('<li class="alert alert-danger">' + item.message + '</li>');
-			});
-		} else {
-			$("#tinterErrorList").append('<li class="alert alert-danger">' + my_return_message.errorMessage + '</li>');
-		}
-		if(myTitle!=null) $("#tinterErrorListTitle").text(myTitle);
-		else $("#tinterErrorListTitle").text("Tinter Error");
-		if(mySummary!=null) $("#tinterErrorListSummary").text(mySummary);
-		else $("#tinterErrorListSummary").text("");
-		$("#tinterErrorListModal").modal('show');
-	}
-	function FMXDispenseComplete(return_message){
-		
-		buildProgressBars(return_message);
-		 $("#abort-message").hide();
-			
-	    if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
-	        // save a dispense (will bump the counter)
-
-	        $("#tinterInProgressDispenseStatus").text("");
-	        $("#dispenseStatus").text("Last Dispense: Complete ");
-	        rotateIcon();
-	        //$('#progressok').removeClass('d-none');
-	        $('#tinterInProgressTitle').text('Tinter Progress');
-	        $('#tinterInProgressMessage').text('');
-	        $("#tinterProgressList").empty();
-			tinterErrorList = [];
-			$(".progress-wrapper").empty();
-		
-			writeDispense(return_message); // will also send tinter event
-			waitForShowAndHide("#tinterInProgressModal");
-	    } else {
-	        $("#tinterInProgressDispenseStatus").text("Last Dispense: "+return_message.errorMessage);
-	        $("#dispenseStatus").text("Last Dispense: "+return_message.errorMessage );
-	        waitForShowAndHide("#tinterInProgressModal");
-	        console.log('hide done');
-	        //Show a modal with error message to make sure the user is forced to read it.
-	        FMXShowTinterErrorModal("Dispense Error",null,return_message);
-	    }
-	    sendingTinterCommand = "false";
-	}
 	function writeDispense(return_message) {
 		//Build correction step info and save to DB
 		var curDate = new Date();
 		// ajax call to convert correctionList to dispenseItems
-        var str = { "reqGuid" : $('#mainForm_reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
+        var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
-        console.log(jsonIN);
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -1071,7 +889,7 @@
             data : jsonIN,
             success : function(data){
             	processingDispense = false;
-				console.log(data);
+				//console.log(data);
 				if(data.sessionStatus === "expired"){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
@@ -1085,10 +903,16 @@
     						// not end of cycle just refresh page
     						reloadScreen()
     					}
+    					if (dispenseAccepted == true && printerConfig && printerConfig.printOnDispense) {
+    						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
+    						printJsonIN = JSON.stringify(str);
+    						printOnDispenseGetJson(data.reqGuid,printJsonIN);
+    						dispenseAccepted == false;
+    					}
     					sendingDispCommand = "false";
 						// send tinter event (no blocking here)
 						var curDate = new Date();
-						var myGuid = $( "#mainForm_reqGuid" ).val();
+						var myGuid = $( "#reqGuid" ).val();
 						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 						var tedArray = [teDetail];
 						sendTinterEvent(myGuid, curDate, return_message, tedArray);
@@ -1096,114 +920,82 @@
     					//alert("Write Successful");
     				} else {
     					// Error Tell the user
-    					console.log("Write Failed!" + data.errorMessage);
+    					//console.log("Write Failed!" + data.errorMessage);
     					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger">Failed to update the database (writeDispense).</li>');
-    					$("#tinterErrorListTitle").text("Internal Database Error");
-    					$("#tinterErrorListSummary").text("Please Retry.");
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdWriteDispense" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
     					$("#tinterErrorListModal").modal('show');
     				}
             	}
             },
             error: function(textStatus, errorThrown ) {
                 console.log("JSON Write Correction failed here");
-                console.log(textStatus + "" + errorThrown);
+                console.log(textStatus + " " + errorThrown);
 				// Error Tell the user
-				console.log("Write Failed!" + data.errorMessage);
+				console.log("Write Failed! " + data.errorMessage);
 				$("#tinterErrorList").empty();
-				$("#tinterErrorList").append('<li class="alert alert-danger">Failed to Call Action (writeDispense).</li>');
-				$("#tinterErrorListTitle").text("Internal Action Error");
-				$("#tinterErrorListSummary").text("Please Retry.");
+				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedToCallAction" /></li>');
+				$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+				$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
 				$("#tinterErrorListModal").modal('show');
             }
         });
 	}
-	function abort(){
-		console.log('before abort');
-		
-		
-		var cmd = "Abort";
-		var shotList = null;
-		var configuration = null;
-		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-		var json = JSON.stringify(tintermessage);
-
-		ws_tinter.send(json);
-	}
-	function RecdMessage() {
-		console.log("Received Message");
-		//parse the spectro
-		console.log("isReady is " + ws_tinter.isReady + "BTW");
-		if(ws_tinter.wserrormsg!=null && ws_tinter.wserrormsg!=""){
-			if(sendingDispCommand == "true"){
-				// received an error from WSWrapper so we won't get any JSON result
-				// Since we are sending a dispense command, show as dispense error
-				//Show a modal with error message to make sure the user is forced to read it.
-				$("#tinterSocketError").text(ws_tinter.wserrormsg);
-				
-				waitForShowAndHide("#tinterInProgressModal");
-	            
-					$("#tinterSocketErrorModal").modal('show');
-				
-			} else {
-				console.log("Received unsolicited error " + ws_tinter.wserrormsg);
-				// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-				// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-			}
-		} else {
-			// is result (wsmsg) JSON?
-			var isTintJSON = false;
-			try{
-				if(ws_tinter!=null && ws_tinter.wsmsg!=null){
-					var return_message=JSON.parse(ws_tinter.wsmsg);
-					isTintJSON = true;
-				}
-			}
-			catch(error){
-                console.log("Caught error is = " + error);
-				console.log("Message is junk, throw it out");
-				//console.log("Junk Message is " + ws_tinter.wsmsg);
-			}
-			if(isTintJSON){
-				var return_message=JSON.parse(ws_tinter.wsmsg);
-				switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'Abort':
-						var tinterModel = sessionTinterInfo.model; 
-						if(tinterModel !=null && tinterModel.startsWith("FM X")){ //only FM X series has purge in progress % done
-							dispenseProgressResp(return_message);
-						}
-						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
-							// save a dispense (will bump the counter)
-							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
-						} else {
-							
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Dispense Error",null,return_message);
-							processingDispense = false; // allow user to start another dispense after tinter error
-							sendingDispCommand = "false";
-							// send tinter event (no blocking here)
-							var curDate = new Date();
-							var myGuid = $( "#mainForm_reqGuid" ).val();
-							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-							var tedArray = [teDetail];
-							sendTinterEvent(myGuid, curDate, return_message, tedArray);
-						}
-						break;
-					default:
-						//Not an response we expected...
-						console.log("Message from different command is junk, throw it out");
-				} // end switch statement
-			} else {
-				console.log("Message is junk, throw it out");
-			}
-		}
-	}
 	</script>
+	<script type="text/javascript"> //print functions
+	function ParsePrintMessage() {
+		var parsed = false;
+		try {
+			if (ws_printer != null && ws_printer.wsmsg != null
+					&& ws_printer.wserror == null) {
+				var return_message = JSON.parse(ws_printer.wsmsg);
+				if(return_message){
+				switch (return_message.command) {
+				case 'Print':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerInProgressModal").modal('show');
+						$("#printerInProgressMessage").text(
+								'<s:text name="displayFormula.printResultColon"/>' + return_message.errorMessage);
+						console.log(return_message);
+						//waitForShowAndHide("#tinterInProgressModal");
+					}
+					
+					break;
+				case 'GetConfig':
+					parsed = true;
+					ws_printer.wsmsg = null; //set to null so it can't be read twice
+					if (return_message.errorNumber != 0) {
+						// save a dispense (will bump the counter)
+						$("#printerResponseModal").modal('show');
+						$("#printerResponseMessage").text(
+								'<s:text name="displayFormula.getPrinterResult"/>'
+										+ return_message.errorMessage);
+						console.log(return_message);
+					} else {
+						printerConfig = return_message.printerConfig;
+
+					}
+					break;
+				default:
+					//Not an response we expected...
+					console
+							.log("Message from different command is junk, throw it out");
+				}
+				} // end switch statement
+			} else {}
+		} catch (error) {
+			console.log("Caught error is = " + error + " If response is for tinter message, this error trying to parse printer message is expected.");
+			console.log("Message is junk, throw it out");
+			//console.log("Junk Message is " + ws_tinter.wsmsg);
+		}
+		return parsed;
+	}
 	
+	</script>
 	<script type="text/javascript"> // document functions
 	function reloadScreen(){
 		document.getElementById("mainForm").submit();
@@ -1229,7 +1021,7 @@
 			if (value.length>0) {
 				skipConfirmOKClick();
 			} else {
-		        $("#skipConfirmInputError").text("You must enter a reason to skip the container");
+		        $("#skipConfirmInputError").text('<s:text name="correctFormula.mustEnterAReason" />');
 		        $("#skipConfirmInput").select();
 			}
 		});
@@ -1259,8 +1051,8 @@
 				waitForShowAndHide("#positionContainerModal");
 				$("#tinterInProgressModal").modal('show');
 				rotateIcon();
-				$("#tinterInProgressTitle").text("Dispense In Progress");
-				$("#tinterInProgressMessage").text("Please wait while tinter performs the dispense...");
+				$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress" />');
+				$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense" />');
 				
 				
 				// Call decrement colorants which will call dispense
@@ -1273,10 +1065,10 @@
 			'keypress blur':function(){
 				try{
 					if(event.key == ">" || event.key == "<"){
-						throw "Special characters \"<\" or \">\" not allowed";
+						throw '<s:text name="global.noLtOrGt" />';
 					}
 					if($(this).val().includes(">") || $(this).val().includes("<")){
-						throw "Invalid entry. Please remove these characters: < >";
+						throw '<s:text name="global.invalidEntryLtGt" />';
 					}
 					$(document).find('#errortxt').remove();
 					$(':button').attr('disabled', false);
@@ -1310,7 +1102,7 @@
 					dupText.push(val);
 					$('tr[id='+ val +']').first().attr('style','background-color: rgba(0,0,0,.05);');
 					$('td[id='+ val +']').first().each(function(){
-						$(this).prepend("<a href='javascript:void(0);' title='Click to expand rows' class='slider' style='color: green;'><i id='icon' class='fa fa-plus-circle' style='font-size: 1.4rem;'></i></a>&nbsp;");
+						$(this).prepend("<a href='javascript:void(0);' title='%{getText(\'correctFormula.clickToExpandRows\')}' class='slider' style='color: green;'><i id='icon' class='fa fa-plus-circle' style='font-size: 1.4rem;'></i></a>&nbsp;");
 						$('tr[id='+ val +']:not(:first)').hide();
 					});
 				}
@@ -1346,6 +1138,8 @@
 			$('#pct').text('');
 			$('#percentPrompt').toggle();
 		});
+		
+		jQuery(document).on("keydown", fkey); // for abort
 	});
 	
 	//Used to rotate loader icon in modals
@@ -1383,12 +1177,12 @@
 				<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 					<div class="card card-body bg-light">
 						<table id="origWrapper" class="table table-sm">
-							<tr><td><span class="badge badge-secondary mr-1 mb-1 mt-1" style="font-size: 1.2rem;">Color Correction</span></td></tr>
+							<tr><td><span class="badge badge-secondary mr-1 mb-1 mt-1" style="font-size: 1.2rem;"><s:text name="correctFormula.colorCorrection"></s:text></span></td></tr>
 							<tr>
 								<td style="width: 20%;">
- 									<h5 class="text-primary"><strong>Starting Formula</strong></h5>
-									<p><strong>Job Number: </strong><span id="controlNbr">${sessionScope[thisGuid].controlNbr}</span></p>
-									<p><strong>Containers: </strong><span id="quantityDispensed">${sessionScope[thisGuid].quantityDispensed}</span></p>
+ 									<h5 class="text-primary"><strong><s:text name="correctFormula.startingFormula"></s:text></strong></h5>
+									<p><strong><s:text name="global.jobNumber"></s:text> </strong><span id="controlNbr">${sessionScope[thisGuid].controlNbr}</span></p>
+									<p><strong><s:text name="correctFormula.containersColon"></s:text> </strong><span id="quantityDispensed">${sessionScope[thisGuid].quantityDispensed}</span></p>
 								</td>
 								<td style="width: 50%;">
 									<table id="origFormula" class="table">
@@ -1414,10 +1208,10 @@
 									</table>
 								</td>
 								<td style="width: 30%;" class="pl-5">
- 									<h5 class="text-primary"><strong>Colorant Fill Levels</strong></h5>
-									<p><strong>Maximum Load Oz: </strong><span id="maxClrntLoad"><s:property value="maxClrntLoad"/></span></p>
-									<p><strong>Current Load Oz: </strong><span id="currClrntLoad"><s:property value="currClrntLoad"/></span></p>
-									<p><strong>Available Fill Oz: </strong><span id="clrntSpaceAvail"><s:property value="clrntSpaceAvail"/></span></p>
+ 									<h5 class="text-primary"><strong><s:text name="correctFormula.colorantFillLevels"></s:text></strong></h5>
+									<p><strong><s:text name="correctFormula.maximumLoadOzColon"></s:text> </strong><span id="maxClrntLoad"><s:property value="maxClrntLoad"/></span></p>
+									<p><strong><s:text name="correctFormula.currentLoadOzColon"></s:text> </strong><span id="currClrntLoad"><s:property value="currClrntLoad"/></span></p>
+									<p><strong><s:text name="correctFormula.availableFillOzColon"></s:text> </strong><span id="clrntSpaceAvail"><s:property value="clrntSpaceAvail"/></span></p>
 									<s:hidden name="maxLoadType" value="%{maxLoadType}"/>
 								</td>
 							</tr>
@@ -1431,9 +1225,10 @@
 				<!-- Correction Attempts -->
 				<div class="row mb-3">
 					<div class="col-lg-1 col-md-1 col-sm-0 col-xs-0">
- 						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+ 						<s:hidden name="reqGuid" value="%{reqGuid}" id="reqGuid"/>
  						<s:hidden name="jsDateString" value=""/>
 						<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}"/>
+						<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
  						<s:hidden name="currCycle" value="%{cycle}"/>
  						<s:hidden name="nextUnitNbr" value="%{nextUnitNbr}"/>
  						<s:hidden name="lastStep" value="%{lastStep}"/>
@@ -1444,17 +1239,17 @@
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
-						<h5 class="text-primary"><strong>Correction Attempts</strong></h5>
+						<h5 class="text-primary"><strong><s:text name="correctFormula.correctionAttempts"></s:text></strong></h5>
 							<table id="correctionAttempts" class="table table-bordered">
 								<thead>
 									<tr>
-										<th>Cycle</th>
-										<th>Cont #</th>
-										<th>Step</th>
-										<th>Reason</th>
-										<th>Ingredients</th>
-										<th>Dispensed</th>
-										<th>Status</th>
+										<th><s:text name="correctFormula.cycle"></s:text></th>
+										<th><s:text name="correctFormula.containerNbr"></s:text></th>
+										<th><s:text name="correctFormula.step"></s:text></th>
+										<th><s:text name="correctFormula.reason"></s:text></th>
+										<th><s:text name="correctFormula.ingredients"></s:text></th>
+										<th><s:text name="correctFormula.dispensed"></s:text></th>
+										<th><s:text name="correctFormula.status"></s:text></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -1503,21 +1298,38 @@
 						<div class="col-lg-1 col-md-1 col-sm-0 col-xs-0"></div>
 						<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 							<div class="card card-body bg-light">
-								<h5 id="currentPrompt" class="text-primary"><strong>Currently Correcting Container <s:property value="%{nextUnitNbr}"/> of ${sessionScope[thisGuid].quantityDispensed}</strong></h5>
+								<h5 id="currentPrompt" class="text-primary"><strong>
+									<s:text name="correctFormula.currentlyCorrectingContainer">
+										<s:param><s:property value="%{nextUnitNbr}"/></s:param>
+										<s:param>${sessionScope[thisGuid].quantityDispensed}</s:param>
+									</s:text></strong>
+								</h5>
 							<br>
 								<div class="d-flex">
 									<div class="p-2">
-										<button type="button" class="btn btn-primary" id="startNewCycle" onclick="startNewCycleClick()" autofocus="autofocus">Start New Cycle</button>
-										<button type="button" class="btn btn-primary" id="addStep" onclick="addStepClick()" autofocus="autofocus">Add Colorant</button>
+										<button type="button" class="btn btn-primary" id="startNewCycle" onclick="startNewCycleClick()" autofocus="autofocus">
+											<s:text name="correctFormula.startNewCycle"></s:text>
+										</button>
+										<button type="button" class="btn btn-primary" id="addStep" onclick="addStepClick()" autofocus="autofocus">
+											<s:text name="correctFormula.addColorant"></s:text>
+										</button>
 									</div>
 									<div class="p-2">
-										<button type="button" class="btn btn-secondary" id="acceptContainer" onclick="acceptContainerClick()">Accept Container</button>
-										<button type="button" class="btn btn-secondary" id="mistintContainer" onclick="mistintContainerClick()">Mistint Container</button>
-										<button type="button" class="btn btn-secondary" id="dispenseAccepted" onclick="dispenseAcceptedClick()">Dispense Accepted</button>
-										<button type="button" class="btn btn-secondary" id="skipContainer" onclick="skipContainerClick()">Skip Container</button>
+										<button type="button" class="btn btn-secondary" id="acceptContainer" onclick="acceptContainerClick()">
+											<s:text name="correctFormula.acceptContainer"></s:text>
+										</button>
+										<button type="button" class="btn btn-secondary" id="mistintContainer" onclick="mistintContainerClick()">
+											<s:text name="correctFormula.mistintContainer"></s:text>
+										</button>
+										<button type="button" class="btn btn-secondary" id="dispenseAccepted" onclick="dispenseAcceptedClick()">
+											<s:text name="correctFormula.dispenseAccepted"></s:text>
+										</button>
+										<button type="button" class="btn btn-secondary" id="skipContainer" onclick="skipContainerClick()">
+											<s:text name="correctFormula.skipContainer"></s:text>
+										</button>
 									</div>
 									<div class="p-2 ml-auto">
-										<s:submit cssClass="btn btn-secondary pull-right" value="Leave" action="displayFormulaAction"/>
+										<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('correctFormula.leave')}" action="displayFormulaAction"/>
 									</div>
 								</div>
 			    			</div>
@@ -1531,15 +1343,22 @@
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
-							<h5 class="text-primary"><strong>Add Colorant to Container #<span id="currentCont">1</span></strong></h5>
-							<p><strong>Reason: </strong><input type="text" class="form-control btn-block" id="reason" placeholder="Enter reason for correction" maxlength="100" /></p>
+							<h5 class="text-primary"><strong>
+								<s:text name="correctFormula.addColorantToContainerNbr">
+									<s:param><span id="currentCont">1</span></s:param>
+								</s:text></strong>
+							</h5>
+							<p><strong><s:text name="correctFormula.reasonColon"></s:text></strong>
+								<s:textfield class="form-control btn-block" id="reason" placeholder="%{getText('correctFormula.enterCorrectionReason')}" maxlength="100" />
+							</p>
 							<table>
 							<tr>
 							<td style="width: 20%;">
 								<table id="addColorantActions" class="table">
 								<tr><td>
-									<button type="button" class="btn btn-secondary btn-block dropdown-toggle" id="manualAdd" data-toggle="dropdown">Manual Addition
-									<span class="caret"></span>
+									<button type="button" class="btn btn-secondary btn-block dropdown-toggle" id="manualAdd" data-toggle="dropdown">
+										<s:text name="correctFormula.manualAddition"></s:text>
+										<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" id="clrntList">
 <!-- 											<li><a href="#">B1-Black</a></li> -->
@@ -1547,15 +1366,27 @@
 <!-- 											<li><a href="#">L1-Blue</a></li> -->
 									</ul>
 								</td></tr>
-								<tr><td><button type="button" class="btn btn-secondary btn-block" id="percentAdd" onclick="percentAddClick()">Percent Addition</button></td></tr>
-								<tr><td><button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">Dispense Addition</button></td></tr>
-								<tr><td><button type="button" class="btn btn-secondary btn-block" id="cancelAdd" onclick="cancelAddClick()">Cancel Addition</button></td></tr>
+								<tr><td>
+									<button type="button" class="btn btn-secondary btn-block" id="percentAdd" onclick="percentAddClick()">
+										<s:text name="correctFormula.percentAddition"></s:text>
+									</button>
+								</td></tr>
+								<tr><td>
+									<button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">
+										<s:text name="correctFormula.dispenseAddition"></s:text>
+									</button>
+								</td></tr>
+								<tr><td>
+									<button type="button" class="btn btn-secondary btn-block" id="cancelAdd" onclick="cancelAddClick()">
+										<s:text name="correctFormula.cancelAddition"></s:text>
+									</button>
+								</td></tr>
 								</table>
 							</td>
 							<td style="width: 15%;">
 							<div id="percentPrompt" data-toggle="collapse" class="p-4">
 								<div class="form-group">
-									<input type="text" class="number-only form-control input-sm" id="pct" placeholder="Enter Percent">
+									<s:textfield class="number-only form-control input-sm" id="pct" placeholder="%{getText('correctFormula.enterPercent')}" />
 								</div>
 								<button type="button" class="btn btn-secondary btn-sm" id="percentOk" onclick="percentConfirmClick()">
 									<span class="fa fa-check"></span>
@@ -1601,14 +1432,14 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Prepare for Dispense</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="global.prepareforDispense"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
-								<p font-size="4">Position Container and Click Start Dispense when Ready</p>
+								<p font-size="4"><s:text name="global.positionContainerandClickStartDispensewhenReady"></s:text></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="startDispenseButton">Start Dispense</button>
+								<button type="button" class="btn btn-primary" id="startDispenseButton"><s:text name="global.startDispense"></s:text></button>
 							</div>
 						</div>
 					</div>
@@ -1620,16 +1451,16 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<i id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></i>
-								<h5 class="modal-title" id="tinterInProgressTitle">Dispense In Progress</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="tinterInProgressTitle"><s:text name="global.dispenseInProgress"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<p id="dispenseStatus" font-size="4"></p>
 								<p id="tinterInProgressMessage" font-size="4"></p>
-								<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> Press F4 to abort </p>
+								<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"><s:text name="global.pressF4ToAbort"></s:text></p>
 								<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
-								<div class="progress-wrapper "></div>
+								<div class="progress-wrapper"></div>
 							</div>
 							<div class="modal-footer">
 							</div>
@@ -1642,14 +1473,16 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Dispense Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title"><s:text name="global.dispenseError"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<p id="tinterSocketError" font-size="4"></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="Close" >Close</button>
+								<button type="button" class="btn btn-primary" id="tinterSocketErrorButton" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.close"></s:text>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1660,8 +1493,8 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="tinterErrorListTitle">Tinter Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="tinterErrorListTitle"><s:text name="global.tinterError"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<div class="progress-wrapper "></div>
@@ -1672,7 +1505,9 @@
 								<p id="tinterErrorListSummary" font-size="4"></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="Close" >OK</button>
+								<button type="button" class="btn btn-primary" id="tinterErrorListOK" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.ok"></s:text>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1683,19 +1518,23 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="fillWarningListTitle">Product Fill Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="fillWarningListTitle"><s:text name="correctFormula.productFillError"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<div>
 									<ul class="p-0" id="fillWarningList" style="list-style: none;">
 									</ul>
 								</div>
-								<p id="fillWarningListSummary" font-size="4">Click Continue to override or Cancel to return to formula page.</p>
+								<p id="fillWarningListSummary" font-size="4"><s:text name="correctFormula.clickContinue1"></s:text></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="fillWarningListOK" data-dismiss="modal" aria-label="Close" >Continue</button>
-								<button type="button" class="btn btn-secondary" id="fillWarningListCancel" data-dismiss="modal" aria-label="Close" >Cancel</button>
+								<button type="button" class="btn btn-primary" id="fillWarningListOK" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.continue"></s:text>
+								</button>
+								<button type="button" class="btn btn-secondary" id="fillWarningListCancel" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.cancel"></s:text>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1706,19 +1545,23 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="tinterWarningListTitle">Tinter Error</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="tinterWarningListTitle"><s:text name="global.tinterError"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<div>
 									<ul class="p-0" id="tinterWarningList" style="list-style: none;">
 									</ul>
 								</div>
-								<p id="tinterWarningListSummary" font-size="4">Click OK to continue or Cancel to return to formula page.</p>
+								<p id="tinterWarningListSummary" font-size="4"><s:text name="global.clickOKtoContinue"></s:text></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" aria-label="Close" >OK</button>
-								<button type="button" class="btn btn-secondary" id="tinterWarningListCancel" data-dismiss="modal" aria-label="Close" >Cancel</button>
+								<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.ok"></s:text>
+								</button>
+								<button type="button" class="btn btn-secondary" id="tinterWarningListCancel" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.cancel"></s:text>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1729,16 +1572,20 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="mistintConfirmTitle">Confirm Mistint</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="mistintConfirmTitle"><s:text name="correctFormula.confirmMistint"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
-								<p id="mistintConfirmText" font-size="4">Clicking Mistint Container indicates the correction attempts on this container have failed. This container will be discarded for use on this job.</p>
-								<p id="mistintConfirmSummary" font-size="4">Click OK to Confirm Mistinting this Container</p>
+								<p id="mistintConfirmText" font-size="4"><s:text name="correctFormula.containerWillBeDiscarded"></s:text></p>
+								<p id="mistintConfirmSummary" font-size="4"><s:text name="correctFormula.clickOKtoConfirmMistintingthisContainer"></s:text></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="mistintConfirmOK" data-dismiss="modal" aria-label="Close" >OK</button>
-								<button type="button" class="btn btn-secondary" id="mistintConfirmCancel" data-dismiss="modal" aria-label="Close" >Cancel</button>
+								<button type="button" class="btn btn-primary" id="mistintConfirmOK" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.ok"></s:text>
+								</button>
+								<button type="button" class="btn btn-secondary" id="mistintConfirmCancel" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.cancel"></s:text>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1749,19 +1596,27 @@
 			    	<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="skipConfirmTitle">Confirm Skipping this Container #<s:property value="%{nextUnitNbr}"/></h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="skipConfirmTitle">
+									<s:text name="correctFormula.confirmSkippingThisContainer">
+										<s:param><s:property value="%{nextUnitNbr}"/></s:param>
+									</s:text>
+								</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
-								<p id="skipConfirmText" font-size="4">Skipping a Container means it should be left as is and no corrections will be applied to the container (including future corrections).</p>
-								Reason: 
+								<p id="skipConfirmText" font-size="4"><s:text name="correctFormula.skippingAContainer"></s:text></p>
+								<s:text name="correctFormula.reasonColon"></s:text>
 								<input type="text" class="form-control" id="skipConfirmInput" autofocus="autofocus">
 								<strong id="skipConfirmInputError" style="color: red"></strong>
-								<p id="skipConfirmSummary" font-size="4">Enter a description of why this container will be skipped and then Click OK to Confirm Skipping this Container</p>
+								<p id="skipConfirmSummary" font-size="4"><s:text name="correctFormula.enterDescription"></s:text></p>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="skipConfirmOK" data-dismiss="modal" aria-label="Close" >OK</button>
-								<button type="button" class="btn btn-secondary" id="skipConfirmCancel" data-dismiss="modal" aria-label="Close" >Cancel</button>
+								<button type="button" class="btn btn-primary" id="skipConfirmOK" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.ok"></s:text>
+								</button>
+								<button type="button" class="btn btn-secondary" id="skipConfirmCancel" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.cancel"></s:text>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1794,6 +1649,10 @@
 		  }
 		//-->
 		$(document).ready(function(){
+			//get user printer config
+			if ($("#mainForm_siteHasPrinter").val() == "true") {
+				getPrinterConfig();
+			}
 			// init which buttons user can see
 			updateButtonDisplay();
 			// if middle of cycle, check and possibly auto process next container if it has been skpped or discarded 
@@ -1839,10 +1698,10 @@
 
 		function updateButtonDisplay(){
 			$("#mainForm_displayFormulaAction").show(); //Leave button
-			
 			if($("#mainForm_sessionHasTinter").val()=="true"){
 				if($("#mainForm_corrStatus").val()=="NONE"){
-					$("#currentPrompt").text("Start Correcting Container <s:property value="%{nextUnitNbr}"/> of ${sessionScope[thisGuid].quantityDispensed}");
+					$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
+							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
 					$("#startNewCycle").hide();
 					$("#addStep").show();
 					$("#acceptContainer").hide();
@@ -1852,7 +1711,7 @@
 				} 
 				if($("#mainForm_corrStatus").val()=="NEWCYCLE"){
 					var prevCycle = <s:property value="%{cycle}"/> - 1;
-					$("#currentPrompt").text("Correction Cycle " + prevCycle + " Completed." );
+					$("#currentPrompt").text('<s:text name="correctFormula.correctionCycleCompleted"><s:param>' + prevCycle + '</s:param></s:text>');
 					$("#startNewCycle").show();
 					$("#addStep").hide();
 					$("#acceptContainer").hide();
@@ -1861,7 +1720,8 @@
 					$("#skipContainer").hide();
 				}
 				if($("#mainForm_corrStatus").val()=="MIDUNIT"){
-					$("#currentPrompt").text("Currently Correcting Container <s:property value="%{nextUnitNbr}"/> of ${sessionScope[thisGuid].quantityDispensed}");
+					$("#currentPrompt").text('<s:text name="correctFormula.currentlyCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' + 
+							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
 					$("#startNewCycle").hide();
 					$("#addStep").show();
 					$("#acceptContainer").show();
@@ -1871,7 +1731,8 @@
 				}
 				if($("#mainForm_corrStatus").val()=="MIDCYCLE"){
 					if($("#mainForm_acceptedContNbr").val()>0){
-						$("#currentPrompt").text("Choose Action for Container <s:property value="%{nextUnitNbr}"/> of ${sessionScope[thisGuid].quantityDispensed}");
+						$("#currentPrompt").text('<s:text name="correctFormula.chooseAction"><s:param><s:property value="%{nextUnitNbr}"/>' + 
+								'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
 						$("#startNewCycle").hide();
 						$("#addStep").hide();
 						$("#acceptContainer").hide();
@@ -1879,7 +1740,8 @@
 						$("#dispenseAccepted").show();
 						$("#skipContainer").show();
 					} else {
-						$("#currentPrompt").text("Start Correcting Container <s:property value="%{nextUnitNbr}"/> of ${sessionScope[thisGuid].quantityDispensed}");
+						$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
+								'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
 						$("#startNewCycle").hide();
 						$("#addStep").show();
 						$("#acceptContainer").hide();
@@ -1889,7 +1751,7 @@
 					}
 				}
 				// go get tinter info to load colorant dropdown
-				getSessionTinterInfo($("#mainForm_reqGuid").val(),sessionTinterInfoCallback);
+				getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
 			} else {
 				$("#currentPrompt").text("");
 				$("#addStep").hide();

@@ -69,11 +69,8 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			logger.debug("passing through LogerUserAction display method");
 			return SUCCESS;
 		
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
-			return ERROR;
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -83,6 +80,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		int loginAttemptCnt = 0;
 		int sleepSeconds = 0;
 		int sleepPower = 0;
+		boolean isDisabledLogin = false;
 		HttpServletRequest request = ServletActionContext.getRequest();
 		Pattern pattern = Pattern.compile("[A-Za-z0-9_]+");
 		
@@ -131,6 +129,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				
 				// Is Login Active
 				if (isloginActive(userId) != true) {
+					isDisabledLogin = true;
 					if (logger.isDebugEnabled())
 						logger.debug("authentication failed, inactive login  -> " + Encode.forHtml(userId));
 					throw new Exception("Login failed. This login has been disabled.");
@@ -200,11 +199,15 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				logger.info("sleeping for " + sleepSeconds + " seconds after login failure attempt " + loginAttemptCnt); 
 				TimeUnit.SECONDS.sleep(sleepSeconds);
 				sessionMap.put("sher-link-login-attempt", loginAttemptCnt);
-				addFieldError("userId","Login/password combination failed. Please retry your request.");
+				if (isDisabledLogin) {
+					addFieldError("userId",getText("loginUserAction.tooManyFailedAttempts"));//"Too many failed login attempts. Please contact shercolor@sherwin.com for required action.");
+				} else {
+					addFieldError("userId",getText("loginUserAction.loginPasswordFailed"));//"Login/password combination failed. Please retry your request.");
+				}
 				return INPUT;
 			}			
 		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 		
@@ -214,22 +217,18 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		int returnDays = 90;
 		Date currentDate = new Date();
 		
-		try {
-			//logger.debug("currentDate is " + currentDate);
-			//logger.debug("changePasswordDate is " + changePasswordDate);
-			long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
-			//logger.debug("diffInMillies is " + diffInMillies);
-		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-		    //logger.debug("diff is " + diff);
-		    returnDays = (int) diff;
-		} catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-		}
+		//logger.debug("currentDate is " + currentDate);
+		//logger.debug("changePasswordDate is " + changePasswordDate);
+		long diffInMillies = Math.abs(changePasswordDate.getTime() - currentDate.getTime());
+		//logger.debug("diffInMillies is " + diffInMillies);
+	    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	    //logger.debug("diff is " + diff);
+	    returnDays = (int) diff;
 		
 		return returnDays;
 	}
 	
-	private String checkExpiredPassword() throws Exception {
+	private String checkExpiredPassword() {
 		String returnStatus = "";
 		
 		// Check Password Expiration (Unless they logged in with RSA or System Token or Clear Trust Only
@@ -249,7 +248,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				}
 				//what if the change password date is null? Is this initialized when the user is created?
 			} catch (Exception e) {
-				logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
+				logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 				returnStatus = INPUT;
 			}
 //		}
@@ -259,14 +258,10 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 
 	
 	private void disableActiveUser(String theUserId) {
-		try {
-			if(!swUserService.disableActiveUser(theUserId)) {
-				//log an error that something happened (odds are, the DAO also logged it too)
-				//then continue on. 
-				logger.error("Attempt to disable active user " + theUserId + " failed");
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		if(!swUserService.disableActiveUser(theUserId)) {
+			//log an error that something happened (odds are, the DAO also logged it too)
+			//then continue on. 
+			logger.error("Attempt to disable active user " + theUserId + " failed");
 		}
 	}
 
@@ -363,7 +358,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				loginAttemptCnt = 0;
 			} 
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.error(e1.getMessage(), e1);
 			//reset the login attempts if there's an error - don't want to end up having a timeout.
 			loginAttemptCnt = 0;
 		}		

@@ -149,6 +149,10 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 					case "W1":
 					case "TW":
 					case "WHT":
+					case "EW":
+					case "UD":
+					case "HRB":
+					case "DB":
 						canister.setRgbHex("#ffffff");
 						break;
 					case "MY":
@@ -181,8 +185,8 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		
@@ -194,6 +198,10 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 		
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
 
 			tinter = reqObj.getTinter();
 			
@@ -213,7 +221,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			
 			sessionMap.put(reqGuid, reqObj);
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}
@@ -226,7 +234,11 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 		
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-
+			if(reqObj == null) {
+				logger.error("Session expired");
+				return ERROR;
+			}
+			
 			tinter = reqObj.getTinter();
 			logger.debug("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
 			
@@ -238,7 +250,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 				retVal = ERROR;
 			}
 			
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}
@@ -277,56 +289,60 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 
 			tinter = reqObj.getTinter();
 			
-			List<CustWebColorantsTxt> writeColorantList = new ArrayList<CustWebColorantsTxt>();
-			if(shotList!=null){
-				if(shotList.size()>0){
-					for(Map<String,Object> item : shotList){
-						String code=null; Double shots=null; Double uom=null;
-						if(item.containsKey("code")) code = item.get("code").toString();
-						if(item.containsKey("shots")) shots = Double.parseDouble(item.get("shots").toString());
-						if(item.containsKey("uom")) uom = Double.parseDouble(item.get("uom").toString());
-						if(code!=null && uom!=null && shots!=null){
-							// TODO find item in tinter.canisterList, decrement and put in list to be written to DB
-							for(TinterCanister canister : tinter.getCanisterList()){
-								if(canister.getClrntCode().equalsIgnoreCase(code)){
-									CustWebColorantsTxt addClrnt = new CustWebColorantsTxt();
-									addClrnt.setCustomerId(reqObj.getCustomerID());
-									addClrnt.setClrntSysId(tinter.getClrntSysId());
-									addClrnt.setTinterModel(tinter.getModel());
-									addClrnt.setTinterSerialNbr(tinter.getSerialNbr());
-									addClrnt.setClrntCode(canister.getClrntCode());
-									addClrnt.setPosition(canister.getPosition());
-									addClrnt.setMaxCanisterFill(canister.getMaxCanisterFill());
-									addClrnt.setFillAlarmLevel(canister.getFillAlarmLevel());
-									addClrnt.setFillStopLevel(canister.getFillStopLevel());
-									Double newLevel = canister.getCurrentClrntAmount() - (shots/uom);
-									canister.setCurrentClrntAmount(newLevel);
-									addClrnt.setCurrentClrntAmount(canister.getCurrentClrntAmount());
-									writeColorantList.add(addClrnt);
-								} // end if codes match
-							} // end for each canister in the tinter
-						} // end if shotList item is good
-					} // end for each shotList
-					// Write to db through tinterService...
-					List<SwMessage> errorList = tinterService.updateColorantLevels(writeColorantList);
-					if(errorList==null || errorList.size()<=0) adjustedColorantLevels = true;
-					else adjustedColorantLevels = false;
+			if (tinter != null && tinter.getModel() != null && tinter.getModel().contains("SANTINT")){
+				// don't decrement santint colorant levels
+				adjustedColorantLevels = true;
+			} else {
+				List<CustWebColorantsTxt> writeColorantList = new ArrayList<CustWebColorantsTxt>();
+				if(shotList!=null){
+					if(shotList.size()>0){
+						for(Map<String,Object> item : shotList){
+							String code=null; Double shots=null; Double uom=null;
+							if(item.containsKey("code")) code = item.get("code").toString();
+							if(item.containsKey("shots")) shots = Double.parseDouble(item.get("shots").toString());
+							if(item.containsKey("uom")) uom = Double.parseDouble(item.get("uom").toString());
+							if(code!=null && uom!=null && shots!=null){
+								// TODO find item in tinter.canisterList, decrement and put in list to be written to DB
+								for(TinterCanister canister : tinter.getCanisterList()){
+									if(canister.getClrntCode().equalsIgnoreCase(code)){
+										CustWebColorantsTxt addClrnt = new CustWebColorantsTxt();
+										addClrnt.setCustomerId(reqObj.getCustomerID());
+										addClrnt.setClrntSysId(tinter.getClrntSysId());
+										addClrnt.setTinterModel(tinter.getModel());
+										addClrnt.setTinterSerialNbr(tinter.getSerialNbr());
+										addClrnt.setClrntCode(canister.getClrntCode());
+										addClrnt.setPosition(canister.getPosition());
+										addClrnt.setMaxCanisterFill(canister.getMaxCanisterFill());
+										addClrnt.setFillAlarmLevel(canister.getFillAlarmLevel());
+										addClrnt.setFillStopLevel(canister.getFillStopLevel());
+										Double newLevel = canister.getCurrentClrntAmount() - (shots/uom);
+										canister.setCurrentClrntAmount(newLevel);
+										addClrnt.setCurrentClrntAmount(canister.getCurrentClrntAmount());
+										writeColorantList.add(addClrnt);
+									} // end if codes match
+								} // end for each canister in the tinter
+							} // end if shotList item is good
+						} // end for each shotList
+						// Write to db through tinterService...
+						List<SwMessage> errorList = tinterService.updateColorantLevels(writeColorantList);
+						if(errorList==null || errorList.size()<=0) adjustedColorantLevels = true;
+						else adjustedColorantLevels = false;
+					} else {
+						// empty list passed in
+						adjustedColorantLevels = false;
+					}
 				} else {
-					// empty list passed in
+					// null list passed in
 					adjustedColorantLevels = false;
 				}
-			} else {
-				// null list passed in
-				adjustedColorantLevels = false;
-			}
-			
-			reqObj.setTinter(tinter);
-			// TODO put reqObj back in session
-			sessionMap.put(reqGuid, reqObj);
-			
-			
+				
+				reqObj.setTinter(tinter);
+				// TODO put reqObj back in session
+				sessionMap.put(reqGuid, reqObj);
+			} // end santint check
+		
 			retVal = SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage());
 			retVal = ERROR;
 		}

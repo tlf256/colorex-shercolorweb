@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Calibrate Color Eye</title>
+		<title><s:text name="calibrateSpectro.calibrateColorEye" /></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" src="script/spectro.js"></script>
 		<script type="text/javascript" src="script/WSWrapper.js"></script>
 		<script>
@@ -33,10 +33,8 @@
 			$(".whitecal").hide();
 			$(".blackcal").hide();
 			$(".greenmeas").hide();
-			$(".error").hide();
-			$(".calsuccess").hide();
-			$(".calincomplete").hide();
-			$(".done").hide();
+			$('#closeModal').hide();
+			$('#spectroCalModal').modal('show');
 		}
 
 		function GetCalSteps() {
@@ -62,6 +60,7 @@
 			$(".blackcal").hide();
 			$(".greenmeas").hide();
 			$(".whitecal").show();
+			$('#closeModal').show();
 		}
 
 		function CalibrateBlack() {
@@ -78,6 +77,7 @@
 			$(".whitecal").hide();
 			$(".greenmeas").hide();
 			$(".blackcal").show();
+			$('#closeModal').show();
 		}
 
 		function MeasureGreen() {
@@ -94,40 +94,39 @@
 			$(".whitecal").hide();
 			$(".blackcal").hide();
 			$(".greenmeas").show();
+			$('#closeModal').show();
 		}
 
 		function DisplayError() {
-			$('#spectroCalModal').modal().hide();
-			$('.modal-backdrop').remove();
+			$('#spectroCalModal').modal('hide');
 		  	console.log("DisplayError")
 		  	calibrate_step = "DisplayError";
 		  	
-			$(".calsuccess").hide();
-			$(".calincomplete").hide();
-			$(".error").show();
-			$(".done").show();
+			$(".calsuccess").addClass('d-none');
+			$(".calincomplete").addClass('d-none');
+			$(".error").removeClass('d-none');
+			$(".done").removeClass('d-none');
 		}
 			  	  	  	
 		function CalibrateSuccess() {
-			$('#spectroCalModal').modal().hide();
-			$('.modal-backdrop').remove();
+			$('#spectroCalModal').modal('hide');
 			console.log("CalibrateSuccess")
 		  	calibrate_step = "CalibrateSuccess";
 		  	
-			$(".calincomplete").hide();
-			$(".error").hide();
-			$(".calsuccess").show();
-			$(".done").show();
+			$(".calincomplete").addClass('d-none');
+			$(".error").addClass('d-none');
+			$(".calsuccess").removeClass('d-none');
+			$(".done").removeClass('d-none');
 		}
 		
 		function CalibrateIncomplete() {
 			console.log("CalibrateIncomplete")
 		  	calibrate_step = "CalibrateIncomplete";
 		  	
-			$(".calsuccess").hide();
-			$(".error").hide();
-			$(".calincomplete").show();
-			$(".done").show();
+			$(".calsuccess").addClass('d-none');
+			$(".error").addClass('d-none');
+			$(".calincomplete").removeClass('d-none');
+			$(".done").removeClass('d-none');
 		}
 		  	
 		function RecdMessage() {
@@ -136,7 +135,7 @@
 		  	console.log("Message is " + ws_coloreye.wsmsg);
 		  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
 		  	if (ws_coloreye.wserrormsg != "") {
-			  	$("#errmsg").text("WebSocketError " + ws_coloreye.wserrormsg);
+			  	$("#errmsg").text('<s:text name="global.webSocketErrorPlusErr"><s:param>' + ws_coloreye.wserrormsg + '</s:param></s:text>');
 		  		DisplayError();
 		  		return;
 		  	}
@@ -175,7 +174,7 @@
 					break;
 				default:
 					//Not an response we expected...
-					$("#errmsg").text("Unexpected call to " + return_message.command);
+					$("#errmsg").text('<s:text name="global.unexpectedCallToErr"><s:param>' + return_message.command + '</s:param></s:text>');
 			  		DisplayError();
 			}
 		  	
@@ -186,9 +185,7 @@
 			//this loads on startup! 
 			
 			var cntr = 1;
-			
-			$('#spectroCalModal').modal().show();
-			
+
 			InitializeCalibrationScreen();
 
 			console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
@@ -224,6 +221,8 @@
 					<div class="col-sm-3">
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
+						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
+						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
 						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>
 				</div>
@@ -232,9 +231,9 @@
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-6">
-						<h2 class="error">A Calibration Error has occurred:</h2>
-		 	            <h2 class="calsuccess">Successful Calibration</h2>
-		 	            <h2 class="calincomplete">Cancel Calibration?</h2>
+						<h2 class="error d-none"><s:text name="calibrateSpectro.calibrationError" /></h2>
+		 	            <h2 class="calsuccess d-none"><s:text name="calibrateSpectro.successfulCalibration" /></h2>
+		 	            <h2 class="calincomplete d-none"><s:text name="calibrateSpectro.cancelCalibration" /></h2>
 					</div>
 					<div class="col-sm-3"></div>
 				</div>
@@ -257,33 +256,33 @@
 				<div class="row">
 					<div class="col-sm-3"></div>
 					<div class="col-sm-4">
-						<div class="calincomplete">
-							<s:submit class="btn btn-primary" id="calibrate" value="Calibrate" action="spectroCalibrateAction"></s:submit>
+						<div class="calincomplete d-none">
+							<s:submit class="btn btn-primary" id="calibrate" value="%{getText('global.calibrate')}" action="spectroCalibrateAction"></s:submit>
 						</div>
-						<div class="calsuccess">
+						<div class="calsuccess d-none">
 						<s:if test="measureColor">
-							<s:submit cssClass="btn btn-primary" value="Next" action="measureColorReturnAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="measureColorReturnAction"/>
 						</s:if>
 						<s:else>
-							<s:submit cssClass="btn btn-primary" value="Next" action="goodCalibrateAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="goodCalibrateAction"/>
 						</s:else>
 						</div>
 					</div>
 					<div class="col-sm-5">
-						<div class="done">
-							<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+						<div class="done d-none">
+							<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 					</div>
 				</div>
 			</div>
 		</s:form>
-		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="spectroCalModal">
+		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="spectroCalModal" data-backdrop="static">
 		  <div class="modal-dialog modal-lg">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light clearfix">
-		        <h2 class="modal-title ml-3">Calibrate Color Eye</h2>
+		        <h2 class="modal-title ml-3"><s:text name="calibrateSpectro.calibrateColorEye" /></h2>
 		        <span class="dot d-none" id="calcrcl"></span>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CalibrateIncomplete()">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CalibrateIncomplete();">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
@@ -296,9 +295,9 @@
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
 	            			<h3 class="pleasewait"></h3>
- 	            			<h3 class="whitecal">1. Remove the plastic cap from the white tile on the Calibration base.</h3>
- 	            			<h3 class="blackcal">1. Replace the plastic cap on the white tile.</h3>
- 	            			<h3 class="greenmeas">1. Flip the base and remove the plastic cap from the green tile.</h3>
+ 	            			<h3 class="whitecal"><s:text name="calibrateSpectro.removeWhitePlasticCap" /></h3>
+ 	            			<h3 class="blackcal"><s:text name="calibrateSpectro.replaceWhitePlasticCap" /></h3>
+ 	            			<h3 class="greenmeas"><s:text name="calibrateSpectro.flipBase" /></h3>
 						</div>
 					</div>
 					<div class="row">
@@ -309,9 +308,9 @@
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
 	            			<h3 class="pleasewait"></h3>
- 	            			<h3 class="whitecal">2. Position the target window on top of the white tile.</h3>
- 	            			<h3 class="blackcal">2. Position the target window on top of the black opening.</h3>
- 	            			<h3 class="greenmeas">2. Position the target window on top of the green tile.</h3>
+ 	            			<h3 class="whitecal"><s:text name="calibrateSpectro.positionWhite" /></h3>
+ 	            			<h3 class="blackcal"><s:text name="calibrateSpectro.positionBlack" /></h3>
+ 	            			<h3 class="greenmeas"><s:text name="calibrateSpectro.positionGreen" /></h3>
  	            		</div>
 					</div>
 					<div class="row">
@@ -321,10 +320,10 @@
 					<div class="row">
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
-	            			<h3 class="pleasewait">Connecting to color eye, please wait...</h3>
- 	            			<h3 class="whitecal">3. Press the instrument firmly down until the next prompt appears.</h3>
- 	            			<h3 class="blackcal">3. Press the instrument firmly down until the next prompt appears.</h3>
- 	            			<h3 class="greenmeas">3. Press the instrument firmly down until the next prompt appears.</h3>
+	            			<h3 class="pleasewait"><s:text name="calibrateSpectro.connectingColorEye" /></h3>
+ 	            			<h3 class="whitecal"><s:text name="calibrateSpectro.pressFirmly" /></h3>
+ 	            			<h3 class="blackcal"><s:text name="calibrateSpectro.pressFirmly" /></h3>
+ 	            			<h3 class="greenmeas"><s:text name="calibrateSpectro.pressFirmly" /></h3>
 						</div>
 					</div>
 					<div class="row">
@@ -336,33 +335,15 @@
 						<div class="col-sm-1"></div>
 	            		<div class="col-sm-10">
 	            			<h5 class="pleasewait"></h5>
- 	            			<h5 class="whitecal">Note: the two status lights on the instrument should change</h5>
- 	            			<h5 class="blackcal">Note: the two status lights on the instrument should change</h5>
- 	            			<h5 class="greenmeas">Note: the two status lights on the instrument should change</h5>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-1"></div>
-	            		<div class="col-sm-10">
-	            			<h5 class="pleasewait"></h5>
- 	            			<h5 class="whitecal">from red to green on successful measurement.</h5>
- 	            			<h5 class="blackcal">from red to green and the calibration light should change</h5>
- 	            			<h5 class="greenmeas">from red to green on successful measurement.</h5>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-1"></div>
-	            		<div class="col-sm-10">
-	            			<h5 class="pleasewait"></h5>
- 	            			<h5 class="whitecal"></h5>
- 	            			<h5 class="blackcal"> to yellow on successful measurement.</h5>
- 	            			<h5 class="greenmeas"></h5>
+ 	            			<h5 class="whitecal"><s:text name="calibrateSpectro.fromRedToGreenSuccess" /></h5>
+ 	            			<h5 class="blackcal"><s:text name="calibrateSpectro.toYellowOnSuccess" /></h5>
+ 	            			<h5 class="greenmeas"><s:text name="calibrateSpectro.fromRedToGreenSuccess" /></h5>
 						</div>
 					</div>
 				</div>
 		      </div>
 		      <div class="modal-footer">
-			       <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CalibrateIncomplete()">Close</button>
+			       <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal" onclick="CalibrateIncomplete();"><s:text name="global.close"></s:text></button>
 			  </div>
 		    </div>
 		  </div>

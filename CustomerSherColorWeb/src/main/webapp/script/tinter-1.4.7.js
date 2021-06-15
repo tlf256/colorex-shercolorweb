@@ -48,7 +48,7 @@ function getModels(){
 			    },
 				error: function(){
 					callist="error";
-					alert("Could not find calibration files");
+					alert(i18n['tinter.couldNotFindCalibFiles']);
 				}
 	});
 	 
@@ -84,12 +84,12 @@ function getGDataFromServer(colorantid){
 			error: function(error){
 				gdataobj="error";
 				console.log(error);
-				alert("Could not find gdata for " + colorantid);
+				alert(i18n['tinter.couldNotFindGdata'] + " " + colorantid);
 			}
 		});
 	}
 	else {
-		alert("Not logged in.  ReqGuid not found");
+		alert(i18n['global.notLoggedInReqGuidNotFound']);
 	}
 
 	return gdataobj;
@@ -123,12 +123,12 @@ function getCalFromServer(uFilename){
 			error: function(error){
 				calobj="error";
 				console.log(error);
-				alert("Could not find calibration template for " + uFilename);
+				alert(i18n['tinter.couldNotFindCalibTemplate'] + " " + uFilename);
 			}
 		});
 	}
 	else {
-		alert("Not logged in.  ReqGuid not found");
+		alert(i18n['global.notLoggedInReqGuidNotFound']);
 	}
 
 	return calobj;
@@ -145,7 +145,7 @@ function Calibration_Download(filename){
 		this.data=cal.data;
 	}
 	else{
-		alert("Could not find Calibration for colorant:" + mycolorant + " and model:" + mymodel);
+		alert(i18n['tinter.couldNotFindCalibForColorant'] + " " + mycolorant + " " + mymodel);
 	}
 	
 }
@@ -198,13 +198,14 @@ function Calibration(mycolorant,mymodel,myserial){
 }
 
 
-function Colorant(code,shots,pos,uom){
+function Colorant(code,shots,pos,uom,decimalOunces){
 	this.code=code;
 	this.shots=shots;
 	this.uom=uom;
 	this.position=pos;
-	
+	this.decimalOunces=decimalOunces;	
 }
+
     /* String clrntCode;
 	
 	short clrntShots;   // colorant shot array
@@ -264,7 +265,7 @@ function Error(num,message){
 	this.num=num;
 	this.message=message;
 }
-function TinterMessage(command,shotList,myconfig,mycalibration,mygdata){
+function TinterMessage(command,shotList,myconfig,mycalibration,mygdata,mymessageId){
 	console.log("In TinterMessage");
 	console.log(myconfig);
 	this.id=createUUID();
@@ -294,6 +295,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata){
 	this.errorMessage=0;
 	this.errorList=null;
 	this.statusMessages=null;
+	this.msgId = mymessageId;
 }
 function createUUID() {
     // http://www.ietf.org/rfc/rfc4122.txt
@@ -350,6 +352,48 @@ function sendTinterEvent(myGuid, myDate, myMessage, teDetail){
         	}
 		}
 	});
+}
+
+function updateColorantsTxt(myGuid, myMessage, layoutUpdateChosen, callback){
+	if (myMessage.configuration != null){
+		var colorantSystem = myMessage.configuration.colorantSystem;
+		var tinterModel = myMessage.configuration.model;
+		var tinterSerial = myMessage.configuration.serial;
+		var colorantsTxtList = myMessage.custWebColorantsTxtList;
+	
+		/* use global variable if null sent for myGuid*/
+		if(myGuid == null){
+			if(reqGuid != null){
+				myGuid=reqGuid;
+			}
+		}
+		if (colorantsTxtList != null && colorantsTxtList.length){
+			var params = {reqGuid:myGuid, colorantsTxtList:colorantsTxtList, colorantSystem:colorantSystem, tinterModel:tinterModel, tinterSerial:tinterSerial};
+			var jsonIn = JSON.stringify(params);
+			console.log("Logging UpdateColorants event: " + jsonIn);
+			$.ajax({
+				url: "updateColorantsTxtAction.action",
+				contentType: "application/json; charset=utf-8",
+				type: "POST",
+				data: jsonIn,
+				datatype: "json",
+				success: function (data) {
+					if(data.sessionStatus === "expired"){
+		        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		        	}
+		        	else{
+		        		/* show the updated canister layout modal if user chose that menu item 
+		        		 * (as opposed to some other reason for a detect message being sent)*/
+		        		if (layoutUpdateChosen){
+		        			if(typeof callback == 'function'){
+			    				callback(data);
+			    			}
+		        		}
+		        	}
+				}
+			});
+		}
+	}
 }
 
 function SessionTinterInfo(myClrntSysId, myModel, mySerial, myLastPurgeDate, myLastPurgeUser, myEcalOnFile, myTinterOnFile, myLastInitErrorList, myCanisterList){
@@ -410,7 +454,7 @@ function saveConfigToSession(myGuid, myclrnt, mymodel, myserial) {
         	}
 		},
 		error: function(err){
-			alert("failure: " + err);
+			alert(i18n['global.failure'] + " " + err);
 		}
 	});
 }
@@ -436,7 +480,7 @@ function saveInitErrorsToSession(myGuid, myInitErrorList){
         	}
 		},
 		error: function(err){
-			alert("failure: " + err);
+			alert(i18n['global.failure'] + " " + err);
 		}
 	});
 	
@@ -477,7 +521,7 @@ function getSessionTinterInfo(myGuid, callback) {
         	}
 		},
 		error: function(err){
-			alert("failure: " + err);
+			alert(i18n['global.failure'] + " " + err);
 		}
 	});
 }
@@ -496,7 +540,7 @@ function checkDispenseColorantEmpty(myShotList, mySessionCanList){
 				var adjLevel = myCan.currentClrntAmount - (myShot.shots / myShot.uom);
 				console.log("empty check adj=" + adjLevel + " stop is " + myCan.fillStopLevel);
 				if (adjLevel<=myCan.fillStopLevel) {
-					messageList.push("Not enough " + myCan.clrntCode + "-" + myCan.clrntName + " available to dispense.");
+					messageList.push(i18n['tinter.notEnoughClrntToDisp'] + " " + myCan.clrntCode + "-" + myCan.clrntName);
 				}
 			}
 		});
@@ -517,7 +561,7 @@ function checkDispenseColorantLow(myShotList, mySessionCanList){
 			if(myShot.code==myCan.clrntCode){
 				console.log("low check " + myCan.clrntCode + " curr=" + myCan.currentClrntAmount + " alarm=" + myCan.fillAlarmLevel);
 				if(myCan.currentClrntAmount<=myCan.fillAlarmLevel){
-					messageList.push("Warning " + myCan.clrntCode + "-" + myCan.clrntName + " is low.");
+					messageList.push(i18n['tinter.clrntIsLowWarning'] + " " + myCan.clrntCode + "-" + myCan.clrntName);
 				}
 			}
 		});
@@ -534,7 +578,7 @@ function checkColorantEmpty(mySessionCanList){
 	var messageList = [];
 	mySessionCanList.forEach(function(myCan){
 		if(myCan.currentClrntAmount<=myCan.fillStopLevel && myCan.clrntCode!="NA"){
-			messageList.push("Error " + myCan.clrntCode + "-" + myCan.clrntName + " is empty.");
+			messageList.push(i18n['tinter.errorClrntEmpty'] + " " + myCan.clrntCode + "-" + myCan.clrntName);
 		}
 	});
 	return messageList;
@@ -549,10 +593,10 @@ function checkColorantLow(mySessionCanList){
 	var messageList = [];
 	mySessionCanList.forEach(function(myCan){
 		if(myCan.currentClrntAmount<=myCan.fillStopLevel && myCan.clrntCode!="NA"){
-			messageList.push("Error " + myCan.clrntCode + "-" + myCan.clrntName + " is empty.");
+			messageList.push(i18n['tinter.errorClrntEmpty'] + " " + myCan.clrntCode + "-" + myCan.clrntName);
 		} else {
 			if(myCan.currentClrntAmount<=myCan.fillAlarmLevel && myCan.clrntCode!="NA"){
-				messageList.push("Warning " + myCan.clrntCode + "-" + myCan.clrntName + " is low.");
+				messageList.push(i18n['tinter.clrntIsLowWarning'] + " " + myCan.clrntCode + "-" + myCan.clrntName);
 			}
 		}
 	});

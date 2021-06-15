@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,9 +29,7 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	private CustomerService customerService;
 	private ProductService productService;
 	
-	private Map<String, String> colorProdFamilies;
-	private Map<String, String> colorProdFamilies2;
-	private String firstFormula;
+	private Map<Integer, List<String>> colorProdFamilies;
 
 	private String selectedProdFamily;
 	private FormulaInfo displayFormula;
@@ -49,24 +48,35 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	
 	}
 	
+	// User hit the backup button on the "Better Performance Found in Different Base" page
+		public String backItUp() {
+			try {
+
+				RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+				//reset colorant system and vinyl safe setting.
+				reqObj.setClrntSys("");
+				reqObj.setVinylExclude(false);
+				reqObj.setLightSource("");
+				sessionMap.put(reqGuid, reqObj);
+			    return SUCCESS;
+			} catch (RuntimeException e) {
+				logger.error(e.getMessage(), e);
+				return ERROR;
+			}
+		}
+		
 	public String execute() {
 		//wherein we formulate!
-		String selectedProdNbr = "";
+		String selectedProdNbr = selectedProdFamily;
 
-		
 		try {
-			//break up the requested color base
 			//logger.debug("in ProcessProdFamilyAction Execute");
-			String[] selectedSplit = new String[3];
-			selectedSplit = selectedProdFamily.split(Character.toString((char) 31));
-			selectedProdNbr = selectedSplit[1].trim();
 			//logger.debug("selectedProdNbr=" + selectedProdNbr);
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			FormulationResponse oldFormula = (FormulationResponse) reqObj.getFormResponse();
 			reqObj.setPercentageFactor(100);
-
 			
 			for(FormulaInfo item:oldFormula.getFormulas()) {
 				if (item.getProdNbr().equals(selectedProdNbr)) {
@@ -83,34 +93,21 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 					PosProd posprod = productService.readPosProd(item.getSalesNbr());
 					reqObj.setUpc(posprod.getUpc());
 					//logger.debug("set reqObjprodnbr, sizecode and salesnbr");
-					CdsProd goodProd = productService.readCdsProd(item.getSalesNbr());
-					String[] prepCmt = new String[2];
-					
-
-					if (goodProd!=null) {
-						//logger.debug("got goodprod and its not null");
-						prepCmt = goodProd.getPrepComment().split("-");
-						reqObj.setFinish(goodProd.getFinish());
-						reqObj.setKlass(goodProd.getKlass());
-						reqObj.setIntExt(goodProd.getIntExt());
-						reqObj.setBase(goodProd.getBase());
-						reqObj.setComposite(goodProd.getComposite());
-						reqObj.setQuality(goodProd.getQuality());
-						if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
-							if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
-								reqObj.setIntBases(goodProd.getBase());
-							} else {
-								reqObj.setExtBases(goodProd.getBase());
-							}
+					Optional<CdsProd> goodProd = productService.readCdsProd(item.getSalesNbr());
+					reqObj.setFinish(goodProd.map(CdsProd::getFinish).orElse(""));
+					reqObj.setKlass(goodProd.map(CdsProd::getKlass).orElse(""));
+					reqObj.setIntExt(goodProd.map(CdsProd::getIntExt).orElse(""));
+					reqObj.setBase(goodProd.map(CdsProd::getBase).orElse(""));
+					reqObj.setComposite(goodProd.map(CdsProd::getComposite).orElse(""));
+					reqObj.setQuality(goodProd.map(CdsProd::getQuality).orElse(""));
+					if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
+						if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
+							reqObj.setIntBases(reqObj.getBase());
+						} else {
+							reqObj.setExtBases(reqObj.getBase());
 						}
-					} else {
-						reqObj.setFinish("");
-						reqObj.setKlass("");
-						reqObj.setIntExt("");
-						reqObj.setBase("");
-						reqObj.setComposite("");
-						reqObj.setQuality("");
 					}
+					
 					reqObj.setSizeText(productService.getSizeText(reqObj.getSizeCode()));
 					//logger.debug("ready to validate and set validationmessages");
 					validationMsgs = formulationService.validateFormulation(displayFormula);
@@ -124,69 +121,55 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 		
 			sessionMap.put(reqGuid, reqObj);
 			//logger.debug("put reqObj back in session");
-			
+			reqObj.setProductChoosenFromDifferentBase(true);
 			return returnStatus;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
 	
 	public String display() {
-		CdsProd theCdsProd;
+		Optional<CdsProd> theCdsProd;
 		String theQuality = "";
 		String theBase    = "";
-		String theComment = "comment";
+		String theComment = getText("global.comment");
 		DecimalFormat dffmt = new DecimalFormat("###.##");
 		 try {
-				colorProdFamilies = new HashMap<String, String>();
-				colorProdFamilies2 = new HashMap<String, String>();
-				firstFormula = "";
+				colorProdFamilies = new HashMap<Integer, List<String>>();
 				RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 				String theValue;
 				String theKey;
 				int hashCntr = 0;
 				FormulationResponse oldFormula = (FormulationResponse) reqObj.getFormResponse();
 				for(FormulaInfo item:oldFormula.getFormulas()) {
+					List<String> rowData = new ArrayList<String>();
 					theCdsProd = productService.readCdsProd(item.getSalesNbr());
-					if (theCdsProd!=null) {
-						 theQuality = theCdsProd.getQuality();
-						 theBase    = theCdsProd.getBase();
-					} else {
-						 theQuality = "";
-						 theBase    = "";
-					}
-					if (theComment.equals("Best Performance")) {
-						theComment = "Product Entered";
+					theQuality = theCdsProd.map(CdsProd::getQuality).orElse("");
+					theBase = theCdsProd.map(CdsProd::getBase).orElse("");
+					if (theComment.equals(getText("processProdFamilyAction.bestPerformance"))) {
+						theComment = getText("processProdFamilyAction.productEntered");
 						bothFormulas.add(item);
 					}
-					if (theComment.equals("comment")) {
-						theComment = "Best Performance";
+					if (theComment.equals(getText("global.comment"))) {
+						theComment = getText("processProdFamilyAction.bestPerformance");
 						bothFormulas.add(item);
 					}
-					theValue = item.getProdNbr() + " " 
-							+ theQuality  + " "
-							+ theBase + " " 
-							+ dffmt.format(item.getAverageDeltaE()) + " " 
-							+ item.getContrastRatioThick() + " "
-							+ theComment;
-					theKey = hashCntr + Character.toString((char) 31)  + item.getProdNbr() + Character.toString((char) 31) + " " 
-							+ theQuality + Character.toString((char) 31) + " "
-							+ theBase + Character.toString((char) 31) + " " 
-							+ dffmt.format(item.getAverageDeltaE()) + Character.toString((char) 31) + " " 
-							+ item.getContrastRatioThin() + Character.toString((char) 31) + " "
-							+ theComment;
-					colorProdFamilies.put(theKey, theValue);
-					colorProdFamilies2.put(String.valueOf(hashCntr), theKey);
-					if (firstFormula.isEmpty()) {
-						firstFormula = theKey;
-					}
-					//logger.debug("colorProdFamilies2.get(0) = " + colorProdFamilies2.get("0"));
+					
+					rowData.add(item.getProdNbr());
+					rowData.add(theQuality);
+					rowData.add(theBase);
+					rowData.add(dffmt.format(item.getAverageDeltaE()));
+					rowData.add(item.getContrastRatioThick().toString());
+					rowData.add(theComment);
+					
+					colorProdFamilies.put(hashCntr, rowData);
+					//logger.debug("Choose Product: Row " + hashCntr + " = " + colorProdFamilies.get(hashCntr));
 					hashCntr = hashCntr + 1;
 				}
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -247,11 +230,11 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 	}
 
 
-	public Map<String, String> getColorProdFamilies() {
+	public Map<Integer, List<String>> getColorProdFamilies() {
 		return colorProdFamilies;
 	}
 
-	public void setColorProdFamilies(Map<String, String> colorProdFamilies) {
+	public void setColorProdFamilies(Map<Integer, List<String>> colorProdFamilies) {
 		this.colorProdFamilies = colorProdFamilies;
 	}
 
@@ -277,30 +260,14 @@ public class ProcessProdFamilyAction extends ActionSupport implements SessionAwa
 		if (sizeCode==null) {
 			sizeText = "";
 		} else if (sizeCode.equals("14")) {
-			sizeText = "QT";
+			sizeText = getText("processProdFamilyAction.qt");
 		} else if (sizeCode.equals("16")) {
-			sizeText = "GAL";
+			sizeText = getText("processProdFamilyAction.gal");
 		} else if (sizeCode.equals("20")) {
-			sizeText = "5GAL";
+			sizeText = getText("processProdFamilyAction.5Gal");
 		}
 		
 		return sizeText;
 	}
-
-	public Map<String, String> getColorProdFamilies2() {
-		return colorProdFamilies2;
-	}
-
-	public void setColorProdFamilies2(Map<String, String> colorProdFamilies2) {
-		this.colorProdFamilies2 = colorProdFamilies2;
-	}
-
-	public String getFirstFormula() {
-		return firstFormula;
-	}
-
-	public void setFirstFormula(String firstFormula) {
-		this.firstFormula = Encode.forHtml(firstFormula);
-	}
-
+	
 }

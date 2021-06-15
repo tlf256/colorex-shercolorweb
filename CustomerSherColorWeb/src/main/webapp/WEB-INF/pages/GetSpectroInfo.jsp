@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Color Eye Information</title>
+		<title><s:text name="global.colorEyeInformation"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
@@ -200,7 +200,7 @@
   				
 				default:
 					//Not an response we expected...
-					$("#errmsg").text("Unexpected call to " + return_message.command);
+					$("#errmsg").text('<s:text name="global.unexpectedCallToErr"><s:param>'+ return_message.command +'</s:param></s:text>');
 	  		  		DisplayError();
   			}
   		  	
@@ -256,13 +256,13 @@
 					
 					</div>
 					<div class="col-sm-3">
-						<div class="goodcal"><strong>Calibration Status</strong></div>
-						<div class="badcal"><strong>Calibration Status</strong></div>
+						<div class="goodcal"><strong><s:text name="getSpectroInfo.calibrationStatus"/></strong></div>
+						<div class="badcal"><strong><s:text name="getSpectroInfo.calibrationStatus"/></strong></div>
 						
 					</div>
 					<div class="col-sm-3">
-						<div class="goodcal"><p class="text-success"><strong>OK</strong></p></div>
-						<div class="badcal"><p class="text-danger"><strong>EXPIRED</strong></p></div>
+						<div class="goodcal"><p class="text-success"><strong><s:text name="global.ok"/></strong></p></div>
+						<div class="badcal"><p class="text-danger"><strong><s:text name="global.expired"/></strong></p></div>
 					</div>
 				</div>
 				<div class="row">
@@ -270,13 +270,13 @@
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error" id="errmsg"></h2>
-						<div class="goodcal"><strong>Calibration Internal Temperature <button type="button" id="degreeTypeButton" class="btn btn-secondary btn-xs">(C)</button></strong></div>
+						<div class="goodcal"><strong><s:text name="getSpectroInfo.calibrationInternalTemperature"/> <button type="button" id="degreeTypeButton" class="btn btn-secondary btn-xs">(C)</button></strong></div>
 						<div class="badcal"></div>
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
 						<div class="goodcal" id="calIntTemp"></div>
-						<div class="badcal">Unit is not ready for measurement.</div>
+						<div class="badcal"><s:text name="getSpectroInfo.unitNotReady"/></div>
 					</div>
 				</div>
 				<div class="row">
@@ -284,13 +284,13 @@
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
-						<div class="goodcal"><strong>Remaining Calibration Time (HH:MM)</strong></div>
+						<div class="goodcal"><strong><s:text name="getSpectroInfo.remainingCalibTime"/></strong></div>
 						<div class="badcal"></div>
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
 						<div class="goodcal" id="calRemainTime"></div>
-						<div class="badcal">Please calibrate the Color Eye</div>
+						<div class="badcal"><s:text name="getSpectroInfo.pleaseCalibrateColorEye"/></div>
 					</div>
 				</div>
 				<div class="row">
@@ -298,7 +298,7 @@
 					<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 					</div>
 					<div class="col-sm-3">
-						<div class="info"><strong>Color Eye S/N</strong></div>
+						<div class="info"><strong><s:text name="getSpectroInfo.colorEyeSn"/></strong></div>
 						
 					</div>
 					<div class="col-sm-3">
@@ -311,7 +311,7 @@
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error" id="errmsg"></h2>
-						<div class="info"><strong>White Tile S/N</strong></div>
+						<div class="info"><strong><s:text name="getSpectroInfo.whiteTileSn"/></strong></div>
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
@@ -323,7 +323,7 @@
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
-						<div class="info"><strong>Check Tile S/N</strong></div>
+						<div class="info"><strong><s:text name="getSpectroInfo.checkTileSn"/></strong></div>
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
@@ -336,7 +336,7 @@
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
-						<div class="info"><strong>Version</strong></div>
+						<div class="info"><strong><s:text name="getSpectroInfo.version"/></strong></div>
 					</div>
 					<div class="col-sm-3">
 						<h2 class="error"></h2>
@@ -356,7 +356,7 @@
 					<div class="col-sm-3">
 					</div>
 					<div class="col-sm-3">
-						<div class="goodcal">Unit is ready for measurement</div>
+						<div class="goodcal"><s:text name="getSpectroInfo.unitReady"/></div>
 					</div>
 					<div class="col-sm-3">
 					
@@ -397,7 +397,7 @@
 							
 						</div>
 						<div class="col-sm-2">	
-							<s:submit cssClass="btn btn-secondary" value="Cancel" action="userCancelAction"/>
+							<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
    						</div>
 						<div class="col-sm-2">
 						</div>

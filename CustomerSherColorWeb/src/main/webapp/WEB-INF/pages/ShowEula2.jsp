@@ -8,7 +8,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>End User License Agreement</title>
+		<title><s:text name="global.endUserLicenseAgreement"/></title>
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
@@ -18,7 +18,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 
 	
 	<style>
@@ -67,9 +67,6 @@
 		    margin-bottom: 14px;
 		    margin-top: 13.5px;
 		}
-	 	.navbar-text{
-	 		padding-bottom: 0px;
-	 	}
 	 	.dropdown-toggle::after {
 		    display: none;
 		}
@@ -158,6 +155,43 @@
 		function printEula(){
 			$("#printEulaModal").modal('show');
 		}
+		
+		//update user's language preference
+		function updateLanguage(){
+			var selectedLang = $("select[id='languageList'] option:selected").val();
+			console.log(selectedLang);
+			
+			$.ajax({
+				url : "updateLocale.action",
+				type : "POST",
+				data : {
+					request_locale : selectedLang,
+				},
+				datatype : "json",
+				async : true,
+				success : function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						// reload page to update the language
+						location.reload();
+					}
+				},
+				error : function(err) {
+					alert('<s:text name="global.failureColon"/>' + err);
+				}
+			});
+		}
+
+		$(document).ready(function() {
+		    // update dropdown to display the language that the user picked if they have done so
+		    var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
+		    if (userLanguage != null && userLanguage != ""){
+			    $("#languageList").val(userLanguage);
+		    } else {
+		    	$("#languageList").val("en_US");
+		    }
+		});
 
 	</script>
   </head>
@@ -165,8 +199,8 @@
 	  <div class="modal-dialog modal-xl">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title">Print EULA</h5>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	        <h5 class="modal-title"><s:text name="showEula2.printEULA"/></h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
 	      </div>
@@ -176,7 +210,7 @@
 			</div>
 	      </div>
 	      <div class="modal-footer">
-		    <button type="button" id="cancelbtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		    <button type="button" id="cancelbtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
 	      </div>
 	    </div>
 	  </div>
@@ -202,11 +236,23 @@
 <!-- 			      	</ul> -->
 			   		<s:set var="thisGuid" value="reqGuid" />
 			     	<ul class="navbar-nav ml-auto">
-			     		<li class="nav-item"><span class='navbar-text'>Logged in as ${sessionScope[thisGuid].firstName} ${sessionScope[thisGuid].lastName}</span></li>
+			     		<li class="nav-item">
+			     		<s:text name="global.loggedInAsFirstNameLastName">
+			     				<s:param>${sessionScope[thisGuid].firstName}</s:param>
+			     				<s:param>${sessionScope[thisGuid].lastName}</s:param>
+							</s:text></span>
+			     		</li>
 			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
 			     		<li class="nav-item"><span class='navbar-text'>${sessionScope[thisGuid].customerName}</span></li>
+			     		<li class="nav-item p-2 pl-3 pr-3"><span id="bar"><strong style="color: dimgrey;">|</strong></span></li>
+			     		<li class="nav-item"><select class="bg-dark navbar-text" id="languageList" onchange="updateLanguage();">
+							    <option value="en_US">English</option>
+							    <option value="es_ES" class="d-none">Español</option>
+							    <option value="zh_CN">中文</option>
+						    </select>
+						</li>
 			     		<s:url var="loUrl" action="logoutAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
-			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />">Logout <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
+			     		<li class="nav-item pl-3"><a class="nav-link" href="<s:property value="loUrl" />"><s:text name="global.logout"/> <span class='fa fa-sign-out' style="font-size: 18px;"></span></a></li> 
 			     	</ul>
 			   </div><!--/.nav-collapse -->
 		</nav>
@@ -270,10 +316,10 @@
 						<div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
 							<div class="custom-control custom-checkbox">
 								<s:if test="#outerStat.last == false">
-    								<s:checkbox name="t%{#outerStat.index}" id="t%{#outerStat.index}" onchange="document.getElementById('eulaText%{#outerStat.index}AcceptBtn').disabled = !this.checked; document.getElementById('eulaText%{#outerStat.index}AcceptBtn').style.visibility='visible';" label="I have read the above" />
+    								<s:checkbox name="t%{#outerStat.index}" id="t%{#outerStat.index}" onchange="document.getElementById('eulaText%{#outerStat.index}AcceptBtn').disabled = !this.checked; document.getElementById('eulaText%{#outerStat.index}AcceptBtn').style.visibility='visible';" label="%{getText('showEula2.iHaveReadTheAbove')}" />
     							</s:if>
     							<s:else>
-    								<s:checkbox name="t%{#outerStat.index}" id="t%{#outerStat.index}" onchange="document.getElementById('acceptEulaBtn').disabled = !this.checked; document.getElementById('acceptEulaBtn').style.visibility='visible';" label="I have read the above" />
+    								<s:checkbox name="t%{#outerStat.index}" id="t%{#outerStat.index}" onchange="document.getElementById('acceptEulaBtn').disabled = !this.checked; document.getElementById('acceptEulaBtn').style.visibility='visible';" label="%{getText('showEula2.iHaveReadTheAbove')}" />
     							</s:else>
 <%--     							<s:label>I have read the above</s:label> --%>
 							</div>
@@ -286,12 +332,14 @@
 						<div class="col-lg-4 col-md-3 col-xs-2 col-xs-0">
 							<s:if test="#outerStat.last == false">
 								<s:if test="#outerStat.index==allEulas.size()-2">
-	           						<button class="btn btn-primary" type="button" id="eulaText${outerStat.index}AcceptBtn" data-toggle="collapse" data-target="#collapseExampleLast" aria-expanded="false" aria-controls="collapseExampleLast"  disabled>
-										Continue</button> 
+	           						<button class="btn btn-primary" type="button" id="eulaText${outerStat.index}AcceptBtn" data-toggle="collapse" 
+	           								data-target="#collapseExampleLast" aria-expanded="false" aria-controls="collapseExampleLast"  disabled>
+										<s:text name="global.continue"/></button> 
 								</s:if>
 								<s:else>
-									<button class="btn btn-primary" type="button" id="eulaText${outerStat.index}AcceptBtn" data-toggle="collapse" data-target="#collapseExample${outerStat.index + 1}" aria-expanded="false" aria-controls="collapseExample${outerStat.index + 1}"  disabled>
-										Continue</button> 
+									<button class="btn btn-primary" type="button" id="eulaText${outerStat.index}AcceptBtn" data-toggle="collapse" 
+											data-target="#collapseExample${outerStat.index + 1}" aria-expanded="false" aria-controls="collapseExample${outerStat.index + 1}"  disabled>
+										<s:text name="global.continue"/></button> 
 								</s:else>
 							</s:if>
 						</div>
@@ -309,23 +357,24 @@
 						<div class="form-group" style="margin-top: 20px;">
  							<s:hidden name="reqGuid" value="%{reqGuid}"/> 
  							<s:hidden name="eulaSeqNbr" value="%{eulaSeqNbr}"/> 
-							<s:submit cssClass="btn btn-primary btn-lg pull-left" style="visibility:hidden" id="acceptEulaBtn" autofocus="autofocus" value="Accept Agreement" action="acceptEulaAction" disabled="true"/>
-							<s:submit cssClass="btn btn-secondary" id="eulaTextNotAcceptBtn" value="I Do Not Agree" action="declineEulaAction"/>
-							<button class="btn btn-secondary pull-right" id="printEulaBtn" onclick="printEula();return false;">Print</button>
+							<s:submit cssClass="btn btn-primary btn-lg pull-left" style="visibility:hidden" id="acceptEulaBtn" autofocus="autofocus" 
+									value="%{getText('showEula2.acceptAgreement')}" action="acceptEulaAction" disabled="true"/>
+							<s:submit cssClass="btn btn-secondary" id="eulaTextNotAcceptBtn" value="%{getText('showEula2.iDoNotAgree')}" action="declineEulaAction"/>
+							<button class="btn btn-secondary pull-right" id="printEulaBtn" onclick="printEula();return false;"><s:text name="global.print"/></button>
 						</div>  
 <!-- 		    			Unsupported Browser Modal Window -->
 					    <div class="modal fade" aria-labelledby="unsupportedBrowserModal" aria-hidden="true"  id="unsupportedBrowserModal" role="dialog">
 					    	<div class="modal-dialog" role="document">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h5 class="modal-title" id="unsupportedBrowserTitle">Unsupported Browser</h5>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+										<h5 class="modal-title" id="unsupportedBrowserTitle"><s:text name="global.unsupportedBrowser"/></h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-danger" role="alert" id="wsserror">You are currently using an unsupported browser, if you are using a <strong>Tinter</strong> or <strong>Color-Eye</strong>, please use <strong>Google Chrome</strong> (Version 43 and above) in order to assure proper Tinter/Color-Eye communication.</div>
+										<div class="alert alert-danger" role="alert" id="wsserror"><s:text name="global.currentlyUsingUnsupportedBrowser"/></div>
 									</div>
 									<div class="modal-footer">
-										<button type="button" class="btn btn-success" id="unsupportedBrowserOK" data-dismiss="modal" aria-label="Close" >OK</button>
+										<button type="button" class="btn btn-success" id="unsupportedBrowserOK" data-dismiss="modal" aria-label="%{getText('global.ok')}" ><s:text name="global.ok"/></button>
 									</div>
 								</div>
 							</div>

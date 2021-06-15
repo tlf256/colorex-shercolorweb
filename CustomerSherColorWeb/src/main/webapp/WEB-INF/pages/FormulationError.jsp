@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Formulation Error</title>
+		<title><s:text name="formulationError.formulationError" /></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 	</head>
 
 	<body>
@@ -47,7 +47,7 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Color Company:</strong>
+					<strong><s:text name="global.colorCompanyColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].colorComp}
@@ -57,7 +57,7 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Color ID:</strong>
+					<strong><s:text name="global.colorIdColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].colorID}
@@ -67,7 +67,7 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Color Name:</strong>
+					<strong><s:text name="global.colorNameColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].colorName}
@@ -77,7 +77,7 @@
 				<div class="col-sm-2">
 				</div>
 				<div class="col-sm-2">
-					<strong>Sales Number:</strong>
+					<strong><s:text name="global.salesNumberColon"/></strong>
 				</div>
 				<div class="col-sm-6">
 					${sessionScope[thisGuid].salesNbr} ${sessionScope[thisGuid].quality} ${sessionScope[thisGuid].composite} ${sessionScope[thisGuid].finish}
@@ -107,12 +107,12 @@
 						<div class="col-sm-2">
 						</div>	
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="Back" action="clrntUserBackAction"/>
+							<s:submit cssClass="btn btn-primary" value="%{getText('global.back')}" action="clrntUserBackAction"/>
 						</div>
 						<div class="col-sm-2">	
    						</div>
 						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-secondary pull-right" value="Cancel" action="userCancelAction"/>
+							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-sm-2">
 			    		</div>

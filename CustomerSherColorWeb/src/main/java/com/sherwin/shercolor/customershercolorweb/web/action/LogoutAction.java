@@ -62,7 +62,7 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 			try {
 				((org.apache.struts2.dispatcher.SessionMap) sessionMap).invalidate();
 			} catch (IllegalStateException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 			}
 			//AND/OR
 			SessionMap mySession = (SessionMap) ActionContext.getContext().getSession();
@@ -74,11 +74,11 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 			
 				
 			//logger.info("in logoutAction.execute - end, sherLinkURL is " + sherLinkURL);
-			loMessage = "You have been logged out.";
+			loMessage = getText("global.youHaveBeenLoggedOut");// 
 			return returnStatus; 
 		     
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

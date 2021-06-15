@@ -141,6 +141,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					logger.info("DEBUG reqGuid not empty " + reqGuid);
 					logger.debug("Guid1 = " + guid1);
 					RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
+					if (loginReqObj==null) {
+						 logger.info("DEBUG loginReqObj is null - probably a session timeout");
+						 loMessage = getText("global.yourSessionHasExpired");
+						 return LOGIN;
+					 }
 					acct = loginReqObj.getCustomerID();
 					first = loginReqObj.getFirstName();
 					last = loginReqObj.getLastName();
@@ -234,7 +239,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
 				 if (origReqObj==null) {
 					 logger.info("DEBUG origReqObj is null - probably a session timeout");
-					 loMessage = "Your session has expired.";
+					 loMessage = getText("global.yourSessionHasExpired");
 					 return LOGIN;
 				 }
 				 acct = origReqObj.getCustomerID();
@@ -320,7 +325,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			 }
 		     
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -416,7 +421,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return theCustWebParmsKey;
 	}

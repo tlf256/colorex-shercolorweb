@@ -57,44 +57,54 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 	}
 
 	public String display() {
-		setIsPrinterConfigured();
+		try {
+			setIsPrinterConfigured();
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+		}
+		
 		return SUCCESS;
 
 	}
 	
 	public String saveNewPrinter(){
-		CustWebDevices custWebDev = new CustWebDevices();
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		logger.debug("Begin Saving CustWebDevice.");
-		
-		if(reqObj !=null) {
-			//.out.println("request object getPrinter getMmodel is " + reqObj.getSpectro().getModel());
-			//logger.debug("request object  getPrinterMmodel is " + reqObj.getPrinterModel());
-			custWebDev.setCustomerId(reqObj.getCustomerID());
-			custWebDev.setSerialNbr("Default");//reqObj.getSpectro().getSerialNbr());
-			custWebDev.setDeviceModel(getPrinterModel());//reqObj.getSpectro().getModel());
-			custWebDev.setDeviceType("PRINTER");
-			reqObj.setPrinterConfigured(true);
-		}
+		try {
+			CustWebDevices custWebDev = new CustWebDevices();
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			logger.debug("Begin Saving CustWebDevice.");
+			
+			if(reqObj !=null) {
+				//.out.println("request object getPrinter getMmodel is " + reqObj.getSpectro().getModel());
+				//logger.debug("request object  getPrinterMmodel is " + reqObj.getPrinterModel());
+				custWebDev.setCustomerId(reqObj.getCustomerID());
+				custWebDev.setSerialNbr("Default");//reqObj.getSpectro().getSerialNbr());
+				custWebDev.setDeviceModel(getPrinterModel());//reqObj.getSpectro().getModel());
+				custWebDev.setDeviceType("PRINTER");
+				reqObj.setPrinterConfigured(true);
+			}
 
-			if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
-					&& custWebDev.getDeviceModel() != null){
-				logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
-				SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
-				logger.debug("back from saveCustDevice without error");
-				if(returnMessage!=null){
-					//save if new customer id otherwise do nothing.  If error return error
-					addActionError("Config not complete.  Critical DB error saving color eye device data.  Please try again.  Call support if this persists.");
+				if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
+						&& custWebDev.getDeviceModel() != null){
+					logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
+					SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
+					logger.debug("back from saveCustDevice without error");
+					if(returnMessage!=null){
+						//save if new customer id otherwise do nothing.  If error return error
+						addActionError(getText("global.configNotComplete"));
+						return ERROR;
+					}
+					logger.debug("made it past returnMessage check");
+					setSiteHasPrinter(true);
+
+				}
+				else {
+					addActionError("Printer Model is blank");
 					return ERROR;
 				}
-				logger.debug("made it past returnMessage check");
-				setSiteHasPrinter(true);
-
-			}
-			else {
-				addActionError("Printer Model is blank");
-				return ERROR;
-			}
+		} catch(RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
 
 		return SUCCESS;
 	}

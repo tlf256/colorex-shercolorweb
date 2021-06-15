@@ -100,8 +100,8 @@ public class ProcessPctFormulaBookBaseAction extends ActionSupport implements Se
 			sessionMap.put(reqGuid, reqObj);
 			
 			return returnStatus;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -124,8 +124,8 @@ public class ProcessPctFormulaBookBaseAction extends ActionSupport implements Se
 					hashCntr = hashCntr + 1;
 				}
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

@@ -35,8 +35,8 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			 return SUCCESS;
 		     
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -67,9 +67,9 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 				reqObj = null;
 			}
 			if (reqObj == null) {
-				loMessage = "Your session has expired.";
+				 loMessage = getText("global.yourSessionHasExpired");//"Your session has expired.";
 			} else {
-				loMessage = "You have been logged out.";
+				 loMessage = getText("global.youHaveBeenLoggedOut");
 			}
 			
 			//Check for AJAX
@@ -80,7 +80,7 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 			else return SUCCESS;
 		     
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Edit Formula</title>
+		<title><s:text name="editFormula.editFormula"/></title>
 			<!-- JQuery -->
 		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
@@ -19,8 +19,8 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script>
 		function moveDown(selector){
@@ -58,7 +58,7 @@
 			var safeName = encodeURIComponent(colorantItem.name.toString());
 			$(selector).attr("data-toggle", "popover");
 			$(selector).attr("data-placement","left");
-			$(selector).attr("data-content", "Colorant " + safeTintSysId + "-" + safeName + " removed due to percent calculation");
+			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"><s:param>'+ safeTintSysId +'-'+ safeName +'</s:param></s:text>');
 			$(selector).popover({trigger : 'manual'});
 			$(selector).popover('toggle');
 			$('.popover').addClass('popover-warning');
@@ -120,7 +120,8 @@
 							});
 							
 							//Show adjustment info alert
-							$('#adj-info').text($('#pct').val() + '% of Formula');
+							var pct = $('#pct').val()
+							$('#adj-info').text('<s:text name="editFormula.pctOfFormula"><s:param>'+ pct +'</s:param></s:text>');
 							$('#adj_info_row').show();
 							
 							//clear remaining colorants
@@ -155,6 +156,13 @@
 			  return element === 0;
 		}
 		
+		
+		// let user override the warning message 
+		function setOverride(){
+			$("input[name='userWarningOverride']").val("true"); 
+		}
+		
+		
 		$(function(){
 			moveDown('#source_row');
 			
@@ -173,10 +181,10 @@
 				'keypress blur':function(){
 					try{
 						if(event.key == ">" || event.key == "<"){
-							throw "Special characters \"<\" or \">\" not allowed";
+							throw '<s:text name="global.noLtOrGt"/>';
 						}
 						if($(this).val().includes("<") || $(this).val().includes(">")){
-							throw "Invalid entry. Please remove these characters: < >";
+							throw '<s:text name="global.invalidEntryLtGt"/>';
 						}
 						$('input[name^="color"]').each(function(){
 							$(this).parents().find('#errortxt').remove();
@@ -206,7 +214,42 @@
 			
 		});
 		
+		$(function(){
+    		var colorCompany;
+    		var colorID;
+    		var sourceDesc;
+    		
+    		// internationalize CUSTOM and the source description
+	    	switch("${sessionScope[thisGuid].colorComp}"){
+	    		case "CUSTOM":
+	    			colorCompany = '<s:text name="processColorAction.custom"/>';
+	    			break;
+	    		default:
+	    			colorCompany = "${sessionScope[thisGuid].colorComp}";
+	    	}
+	    	switch("${sessionScope[thisGuid].displayFormula.sourceDescr}"){
+	    		case "CUSTOM MANUAL MATCH":
+	    			sourceDesc = '<s:text name="editFormula.customManualMatch"/>';
+	    			break;
+	    		case "CUSTOM MANUAL VINYL SAFE MATCH":
+	    			sourceDesc = '<s:text name="editFormula.customManualVinyl"/>';
+	    			break;
+	    		default:
+	    			sourceDesc = "${sessionScope[thisGuid].displayFormula.sourceDescr}";
+    		}
+	    	$("#colorComp").text(colorCompany);
+	    	$("#colorID").text(colorID);
+	    	$("#sourceDesc").text(sourceDesc);
+    	});
+		
 		</script>
+		
+		<s:if test="hasActionMessages()">
+			<script>
+				$(function(){ $("#actionMsgModal").modal('show'); });
+			</script>
+		</s:if>
+		
 		<style>
 	        .sw-bg-main {
 	            background-color: ${sessionScope[thisGuid].rgbHex};
@@ -244,6 +287,23 @@
 			.popover-body{
 				color: white;
 			}
+			.chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}
+			
 	    </style>
 	</head>
 	
@@ -284,7 +344,7 @@
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 					<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
-						<strong><s:property value="screenLabel"/>:</strong><br>
+						<strong><s:property value="screenLabel"/><s:text name="global.colonDelimiter"/></strong><br>
 					</s:iterator>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
@@ -301,10 +361,10 @@
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Color Company:</strong>
+						<strong><s:text name="global.colorCompanyColon"/></strong>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
-						${sessionScope[thisGuid].colorComp}
+						<span id="colorComp"></span>
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">
 					</div>
@@ -313,7 +373,7 @@
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Color ID:</strong>
+						<strong><s:text name="global.colorIdColon"/></strong>
 					</div>
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
 						<s:textfield name="colorId" size="20" maxlength="10" />
@@ -324,21 +384,21 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Color Name:</strong>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+						<strong><s:text name="global.colorNameColon"/></strong>
 					</div>
-					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8">
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 mb-1">
 						<s:textfield name="colorName" size="20" maxlength="30" />
-						<div class="card card-body sw-bg-main"></div>
+						<div class="chip sw-bg-main"></div>
 					</div>
-					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
+					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-3 errormsg">
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Sales Number:</strong>
+						<strong><s:text name="global.salesNumberColon"/></strong>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 						${sessionScope[thisGuid].salesNbr}<br>
@@ -350,7 +410,7 @@
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Product Number:</strong>
+						<strong><s:text name="global.productNumberColon"/></strong>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 						${sessionScope[thisGuid].prodNbr} - ${sessionScope[thisGuid].sizeText}
@@ -362,7 +422,7 @@
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong>Product Descr:</strong>
+						<strong><s:text name="global.productDescrColon"/></strong>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
 						${sessionScope[thisGuid].intExt} ${sessionScope[thisGuid].quality} ${sessionScope[thisGuid].composite} ${sessionScope[thisGuid].finish}<br>
@@ -421,22 +481,31 @@
 					</div>
 				</s:if>
 				<s:if test="hasActionMessages()">
-					<div class="row mb-4" id="alertmsg">
-	            		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+					<div class="warningModalWrapper">
+						<div class="modal fade" aria-labelledby="actionMsgModal" aria-hidden="true"  id="actionMsgModal" role="dialog">
+					    	<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title"><s:text name="editFormula.overrideWarning"/></h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
+									</div>
+									<div class="modal-body">
+										<s:actionmessage style="color:black; background-color:#FAFF98; border-color:#FAFF98"/>
+									</div>
+									<div class="modal-footer">
+										<s:submit cssClass="btn btn-primary" id="overrideWarning" value="%{getText('global.yes')}" onclick="setOverride();" action="MfUserNextAction"/>
+										<button type="button" class="btn btn-secondary" id="cancelWarning" data-dismiss="modal" aria-label="%{getText('global.close')}" ><s:text name="global.close"/></button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" style="background-color:#FAFF98">
-							<s:actionmessage escape="false" style="color:black;background-color:#FAFF98;border-color:#FAFF98"/>
-							<span style="text-indent:8px">
-								<s:checkbox name="userWarningOverride" label="Check this box and click Next to Override of Warning(s)" />
-							</span>
-							<s:iterator value="previousWarningMessages" status="stat">
-								<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
-							</s:iterator>
-						</div>
-						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
-			    		</div>
+						<s:hidden name="userWarningOverride" value="false" /> 
+						<s:iterator value="previousWarningMessages" status="stat">
+							<s:hidden name="previousWarningMessages[%{#stat.index}]"/>
+						</s:iterator>
 					</div>
 				</s:if>
+				
 			    <div id="table_row" class="row mb-3">
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>	
@@ -445,7 +514,7 @@
 							    <thead>
 							      <tr>
 							        <th class="bg-light" style="width: 30%;"><s:hidden name="reqGuid" value="%{reqGuid}"/>
-										<Strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*COLORANT</Strong>
+										<Strong>${sessionScope[thisGuid].displayFormula.clrntSysId}*<s:text name="global.colorant"/></Strong>
 									</th>
 							        <th class="bg-light text-center" style="width: 17.5%;"><Strong>${sessionScope[thisGuid].displayFormula.incrementHdr[0]}</Strong></th>
 							        <th class="bg-light text-center" style="width: 17.5%;"><Strong>${sessionScope[thisGuid].displayFormula.incrementHdr[1]}</Strong></th>
@@ -456,7 +525,7 @@
 							    <tbody>
 							    	<s:iterator value="ingredientList" status="outerStat">
 							    		<tr>
-											<td class=""><s:select headerKey="-1" headerValue="Select Colorant"
+											<td class=""><s:select headerKey="-1" headerValue="%{getText('global.selectColorant')}"
 													list="availClrntNameId"
 													name="ingredientList[%{#outerStat.index}].selectedColorant" /></td>
 											<s:iterator value="increments" status="stat">
@@ -476,11 +545,11 @@
 						
 					</div>	
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-3">
-						<s:submit cssClass="btn btn-primary" value="Next" action="MfUserNextAction"/>
-						<button type="button" onclick="$('#adjustByPctModal').modal('show');" class="btn btn-secondary ml-3" id="adjByPct">Adjust By %</button>
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="MfUserNextAction"/>
+						<button type="button" onclick="$('#adjustByPctModal').modal('show');" class="btn btn-secondary ml-3" id="adjByPct"><s:text name="editFormula.adjustByPct"/></button>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-9 col-xs-9">	
-						<s:submit cssClass="btn btn-secondary pull-right" value="Cancel" action="userCancelAction"/>
+						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
 		    		</div>
@@ -516,16 +585,16 @@
 	    	<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Adjust By Percent</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+						<h5 class="modal-title"><s:text name="editFormula.adjustByPercent"/></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 					</div>
 					<div class="modal-body">
-						<p id="skipConfirmText" font-size="4">Enter the desired percentage of the current Formula. When finished, click <strong>Calculate</strong> to adjust the formula.</p>
+						<p id="skipConfirmText" font-size="4"><s:text name="editFormula.enterDesiredPct"/></p>
 						<input type="text" class="number-only form-control mt-1 mb-2" id="pct" size="10" placeholder="100" maxlength="3" style="font-size: 16px;" autofocus="autofocus" onkeypress="return isNumber(event);">
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="percentAddBtn" data-dismiss="modal" onclick="percentConfirmClick();">Calculate</button>
-						<button type="button" class="btn btn-secondary" id="skipConfirmCancel" data-dismiss="modal" aria-label="Close" >Cancel</button>
+						<button type="button" class="btn btn-primary" id="percentAddBtn" data-dismiss="modal" onclick="percentConfirmClick();"><s:text name="editFormula.calculate"/></button>
+						<button type="button" class="btn btn-secondary" id="skipConfirmCancel" data-dismiss="modal" aria-label="%{getText('global.cancel')}" ><s:text name="global.cancel"/></button>
 					</div>
 				</div>
 			</div>

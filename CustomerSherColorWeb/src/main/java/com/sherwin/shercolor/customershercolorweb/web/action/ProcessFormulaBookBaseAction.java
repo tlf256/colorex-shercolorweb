@@ -74,8 +74,6 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 
 			FormulationResponse oldFormula = (FormulationResponse) reqObj.getFormResponse();
 			
-		
-
 			//reqObj.setPercentageFactor(Integer.valueOf(percentOfFormula)); 
 			
 			reqObj.setPercentageFactor(100); 
@@ -106,8 +104,8 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 			sessionMap.put(reqGuid, reqObj);
 			
 			return returnStatus;
-		} catch (Exception e) {
-			logger.error("ERROR -" + e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error("ERROR -" + e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -130,8 +128,8 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 					hashCntr = hashCntr + 1;
 				}
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
