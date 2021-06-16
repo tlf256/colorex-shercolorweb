@@ -369,7 +369,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		return profile;
 	}
 	
-	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();

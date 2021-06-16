@@ -3,123 +3,11 @@
  */
 $(document).ready(function() {
 	
-	$("#ntlacct").hide();
-	$("#intntlacct").hide();
-	$("#cstmrnm").hide();
-	$("#cdsadlfld").hide();
-	$("#clrnt").hide();
-	$("#loginnext-btn").hide();
-	$("#custtype").hide();
-	$(".rmbyrm").hide();
-	$(".locid").hide();
-	$("#eula").hide();
+	var result;
 	
 	$("#loginnext-btn").prop("disabled", true);
 	
-	$("#selectedAccttype-0").click(function(){
-		natlWdigits();
-		$("#ntlacctnbr").focus();
-		$("html, body").animate({
-			scrollTop: $("#ntlacct").offset().top
-		}, 1000);
-	});
-	
-	$("#selectedAccttype-1").click(function(){
-		acctWOdigits();
-		$("#swuititle").focus();
-		$("html, body").animate({
-			scrollTop: $("#cstmrnm").offset().top
-		}, 1000);
-	});
-	
-	$("#selectedAccttype-2").click(function(){
-		intnatlWdigits();
-		$("#intntlacctnbr").focus();
-		$("html, body").animate({
-			scrollTop: $("#intntlacct").offset().top
-		}, 1000);
-	});
-	
-	$("#selectedAccttype-3").click(function(){
-		acctWOdigits();
-		$("#swuititle").focus();
-		$("html, body").animate({
-			scrollTop: $("#cstmrnm").offset().top
-		}, 1000);
-	});
-		
-	$(document).on("blur", "#ntlacctnbr", function(){
-		var ntlval = $.trim($("#ntlacctnbr").val());
-		var ntl = $("#ntlacctnbr");
-		var result;
-		$.ajax({
-			url:"ajaxAcctNbrResult.action",
-			data:{acctNbr: ntlval},
-			dataType:"json",
-			async: false,
-			success:function(data){
-				result = data.result;
-			},
-			error:function(request, status){
-				alert(status + ": could not validate account number. Please retry.");
-			}
-		});
-		try{
-			if(ntl.is(":visible") && ntlval.length!=9){
-				throw "Please enter a 9 digit account number";
-			}
-			if(ntl.is(":visible") && isNaN(ntlval)) {
-				throw "Account number must be a number";
-			}
-			if(ntl.is(":visible") && result=="true"){
-				throw "Account Number already exists";
-			}
-			$(this).removeClass("border-danger");
-			$("#ntlaccterror").text("");
-			$("#formerror").text("");
-		}catch(msg){
-			$(this).addClass("border-danger");
-			$(this).select();
-			$("#ntlaccterror").text(msg);
-		}
-	});
-		
-	$(document).on("blur", "#intntlacctnbr", function(){
-		var intntlval = $.trim($("#intntlacctnbr").val());
-		var intntl = $("#intntlacctnbr");
-		var result;
-		$.ajax({
-			url:"ajaxAcctNbrResult.action",
-			data:{acctNbr: intntlval},
-			dataType:"json",
-			async: false,
-			success:function(data){
-				result = data.result;
-				console.log("result = " + result);
-			},
-			error:function(request, status){
-				alert(status + ": could not validate account number. Please retry.");
-			}
-		});
-		try{
-			if(intntl.is(":visible") && intntlval.length!=7){
-				throw "Please enter a 7 digit account number";
-			}
-			if(intntl.is(":visible") && isNaN(intntlval)) {
-				throw "Account number must be a number";
-			}
-			if(intntl.is(":visible") && result=="true"){
-				throw "Account Number already exists";
-			}
-			$("#intntlaccterror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			$("#intntlaccterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).select();
-		}
-	});
+	hideInput();
 		
 	$(document).on("blur", "#swuititle", function(){
 		var title = $.trim($("#swuititle").val());
@@ -230,37 +118,156 @@ $(document).ready(function() {
 	
 });
 
-function natlWdigits(){
-	$("#ntlacct").show();
-	$("#intntlacct").hide();
-	$("#cstmrnm").show();
-	$("#cdsadlfld").show();
-	$("#clrnt").show();
-	$("#loginnext-btn").show();
-	$("#custtype").show();
-	$("#eula").show();
+function validateAcctNbr(selector) {
+	var acctnbr = selector.val();
+	var selectorError;
+	try{
+		if(selector.attr('id') == "ntlacctnbr") {
+			selectorError = $("#ntlaccterror");
+			if(selector.is(":visible") && (acctnbr.length!=9 || isNaN(acctnbr))){
+				throw "Please enter a 9 digit account number";
+			}
+		} else {
+			selectorError = $("#intntlaccterror");
+			if(selector.is(":visible") && (acctnbr.length!=7 || isNaN(acctnbr))){
+				throw "Please enter a 7 digit account number";
+			}
+		}
+		if(selector.is(":visible") && result=="true"){
+			throw "Account Number already exists";
+		}
+		$(selector).removeClass("border-danger");
+		$(selectorError).text("");
+		$("#formerror").text("");
+		showHiddenInput();
+		showHideCustTypeOptions(acctnbr);
+	}catch(msg){
+		$(selector).addClass("border-danger");
+		$(selector).select();
+		$(selectorError).text(msg);
+	}
 }
 
-function intnatlWdigits(){
-	$("#intntlacct").show();
-	$("#ntlacct").hide();
-	$("#cstmrnm").show();
-	$("#cdsadlfld").show();
-	$("#clrnt").show();
-	$("#loginnext-btn").show();
-	$("#custtype").show();
-	$("#eula").show();
+function checkAccountNbr() {
+	var selector = $(".acctnbr:visible");
+	var value = selector.val().trim();
+	console.log("account number is " + value);
+	$.ajax({
+		url:"ajaxAcctNbrResult.action",
+		data:{acctNbr: value},
+		dataType:"json",
+		async: false,
+		success:function(data){
+			result = data.result;
+			console.log("result is " + data.result);
+			console.log("Ajax success: custId is " + value);
+			validateAcctNbr(selector);
+		},
+		error:function(request, status){
+			console.log("Ajax error: " + status);
+			alert(status + ": could not validate account number. Please retry.");
+		}
+	});
 }
 
-function acctWOdigits(){
-	$("#ntlacct").hide();
+function showHideCustTypeOptions(custId) {
+	console.log("show/hide cust type option(s)");
+	if(custId != null && custId != 'undefined') {
+		console.log("custId is not null or undefined");
+		if(custId.length == 6) {
+			if(!custId.startsWith('7')) {
+				$("#typelist option[value='STORE']").hide();
+				console.log("custId is 6 digits, but is not a cost center");
+				console.log("STORE option hidden");
+			}
+		} else {
+			$("#typelist option[value='STORE']").hide();
+			console.log("custId not 6 digit cost center");
+			console.log("STORE option hidden");
+		}
+	} else {
+		console.log("custId is null or undefined");
+	}
+}
+
+function showHideInput(value) {
+	clearAllErrors();
+	switch(value) {
+	case 'natlWdigits':
+		hideInput();
+		showNtlAcctInput();
+		break;
+	case 'intnatlWdigits':
+		hideInput();
+		showIntnatlAcctInput();
+		break;
+	case 'natlWOdigits':
+	case 'intnatlWOdigits':
+		clearAcctNbr();
+		showHiddenInput();
+		break;
+	default:
+		hideInput();
+	}
+}
+
+function showNtlAcctInput() {
+	$(".ntlacct").show();
 	$("#intntlacct").hide();
-	$("#cstmrnm").show();
+	$(".intntlacct").val('');
+	$("#cont").show();
+	$("#ntlacctnbr").focus();
+}
+
+function showIntnatlAcctInput() {
+	$(".ntlacct").hide();
+	$("#ntlacct").val('');
+	$(".intntlacct").show();
+	$("#cont").show();
+	$("#intntlacctnbr").focus();
+}
+
+function showHiddenInput() {
+	$(".cstmrnm").show();
 	$("#cdsadlfld").show();
-	$("#clrnt").show();
+	$(".clrnt").show();
 	$("#loginnext-btn").show();
 	$("#custtype").show();
-	$("#eula").show();
+	$(".eula").show();
+	$("#cont").hide();
+	$("#swuititle").focus();
+}
+
+function hideInput() {
+	$(".ntlacct").hide();
+	$(".intntlacct").hide();
+	$("#cont").hide();
+	$(".cstmrnm").hide();
+	$("#cdsadlfld").hide();
+	$(".clrnt").hide();
+	$("#loginnext-btn").hide();
+	$("#custtype").hide();
+	$(".rmbyrm").hide();
+	$(".locid").hide();
+	$(".eula").hide();
+}
+
+function clearAcctNbr() {
+	$("#ntlacct").hide();
+	$("#ntlacct").val('');
+	$("#intntlacct").hide();
+	$("#intntlacct").val('');
+	$("#cont").hide();
+}
+
+function clearAllErrors() {
+	$('.errorfld').each(function(){
+		$(this).text('');
+	});
+	
+	$('input:text').each(function(){
+		$(this).removeClass('border-danger');
+	});
 }
 
 function toggleProfileInput(value){

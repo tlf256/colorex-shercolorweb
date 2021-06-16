@@ -229,7 +229,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return profile;
 	}
 	
-	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();
@@ -254,17 +254,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			} else {
 				setResult("false");
 			}
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		return SUCCESS;
 	}
 	
-	public String allowCharacters(String escapedString) {
+	private String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
 			if(escapedString.contains("&amp;")) {

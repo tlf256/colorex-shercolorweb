@@ -46,8 +46,8 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
 			<strong>* Denotes Required Field</strong>
-			<div id="formerror" class="text-danger"></div>
-			<div id="validationerror" class="text-danger"></div>
+			<div id="formerror" class="text-danger errorfld"></div>
+			<div id="validationerror" class="text-danger errorfld"></div>
 			<s:actionmessage/>
 			<s:actionerror/>
 		</div>
@@ -59,60 +59,68 @@
 		<div class="col-lg-4 col-md-4 col-sm-2 col-xs-2">
 		<strong>Account Type *</strong>
 			<div class="custom-radio ml-1">
-			<input type="radio" id="selectedAccttype-0" name="customer.accttype" class="mt-1 mb-1" value="natlWdigits" />
+			<input type="radio" id="selectedAccttype-0" name="customer.accttype" class="mt-1 mb-1" onchange="showHideInput(this.value)" value="natlWdigits" />
 				National with 9 digit account<br>
-			<input type="radio" id="selectedAccttype-1" name="customer.accttype" class="mt-2 mb-1" value="natlWOdigits" />
+			<input type="radio" id="selectedAccttype-1" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="natlWOdigits" />
 				National without 9 digit account<br>
-			<input type="radio" id="selectedAccttype-2" name="customer.accttype" class="mt-2 mb-1" value="intnatlWdigits" />
+			<input type="radio" id="selectedAccttype-2" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="intnatlWdigits" />
 				International with 7 digit account<br>
-			<input type="radio" id="selectedAccttype-3" name="customer.accttype" class="mt-2 mb-1" value="intnatlWOdigits" />
+			<input type="radio" id="selectedAccttype-3" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="intnatlWOdigits" />
 				International without 7 digit account<br>
 			</div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
 	<br>
-	<div class="row">
+	<div class="row ntlacct">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-			<div id="ntlaccterror" class="text-danger"></div>
+			<div id="ntlaccterror" class="text-danger errorfld"></div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row" id="ntlacct">
+	<div class="row ntlacct" id="ntlacct">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<!-- <div id="ntlaccterror" class="text-danger"></div> -->
-			<s:textfield label="Account Number" name="customer.ntlacctnbr" id="ntlacctnbr" requiredLabel="true" class="req" />
+			<s:textfield label="Account Number" name="customer.ntlacctnbr" id="ntlacctnbr" requiredLabel="true" class="req acctnbr" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row">
+	<div class="row intntlacct">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-			<div id="intntlaccterror" class="text-danger"></div>
+			<div id="intntlaccterror" class="text-danger errorfld"></div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row" id="intntlacct">
+	<div class="row intntlacct" id="intntlacct">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<!-- <div id="intntlaccterror" class="text-danger"></div> -->
-			<s:textfield label="Account Number" name="customer.intntlacctnbr" id="intntlacctnbr" requiredLabel="true" class="req" />
+			<s:textfield label="Account Number" name="customer.intntlacctnbr" id="intntlacctnbr" requiredLabel="true" class="req acctnbr" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row">
+	<div class="row" id="cont">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<a href="#" onclick="checkAccountNbr()">Continue</a>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row cstmrnm">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-			<div id="swuititlerror" class="text-danger"></div>
-			<div id="cdsadlflderror" class="text-danger"></div>
+			<div id="swuititlerror" class="text-danger errorfld"></div>
+			<div id="cdsadlflderror" class="text-danger errorfld"></div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	 <div class="row" id="cstmrnm">
+	 <div class="row cstmrnm" id="cstmrnm">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-4 col-md-4 col-sm-2 col-xs-2">
 			<!-- <div id="swuititlerror" class="text-danger"></div> -->
@@ -122,14 +130,14 @@
 		</div>
 		<div class="col-lg-5 col-md-5 col-sm-3 col-xs-3"></div>
 	</div>
-	<div class="row">
+	<div class="row clrnt">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-			<div id="clrntsyserror" class="text-danger"></div>
+			<div id="clrntsyserror" class="text-danger errorfld"></div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row" id="clrnt">
+	<div class="row clrnt" id="clrnt">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 		<strong>Colorant System *</strong><br>
@@ -199,14 +207,14 @@
 		</div>
 		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row">
+	<div class="row eula">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-			<div id="eulaerror" class="text-danger"></div>
+			<div id="eulaerror" class="text-danger errorfld"></div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row" id="eula">
+	<div class="row eula" id="eula">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<s:select label="Activate EULA" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="customer.website" headerValue="None"></s:select>
