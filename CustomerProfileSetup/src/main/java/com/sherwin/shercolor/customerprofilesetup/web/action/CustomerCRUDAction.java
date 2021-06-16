@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +37,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	private Map<String, Object> sessionMap;
 	private String lookupCustomerId;
 	private String crudmsg;
-	private static final String CSW = "CUSTOMERSHERCOLORWEB";
 	
 	@Autowired
 	CustomerService customerService;
@@ -145,7 +143,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				reqObj.setProfile(profile);
 			}
 			
-			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite(CSW, lookupCustomerId);
+			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", lookupCustomerId);
 			
 			if(scwEulaList != null) {
 				List<EulaHist> ehlist = new ArrayList<EulaHist>();
@@ -161,7 +159,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				reqObj.setEulaHistList(ehlist);
 			} 
 			
-			Eula sherColorWebEula = eulaService.readActive(CSW, lookupCustomerId);
+			Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", lookupCustomerId);
 			
 			if(sherColorWebEula.getCustomerId() != null) {
 				reqObj.setEula(sherColorWebEula);
@@ -418,25 +416,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					if(!result) {
 						addActionError("Error - Unable to delete Customer record(s), please contact administrator");
 					}
-					
-					/*if(!existingRecords.isEmpty()) {
-						result = customerService.deleteAllCustWebParms(existingRecords);
-						if(!result) {
-							addActionError("Error - Unable to delete CustWebParms record(s)");
-						}
-					}
-					if(!existingLogins.isEmpty()) {
-						result = customerService.deleteAllCustWebLoginTrans(existingLogins);
-						if(!result) {
-							addActionError("Error - Unable to delete CustWebLoginTransform record(s)");
-						}
-					}
-					if(!existingJobfields.isEmpty()) {
-						result = customerService.deleteAllCustWebJobFields(existingJobfields);
-						if(!result) {
-							addActionError("Error - Unable to delete CustWebJobFields record(s)");
-						}
-					}*/
 					
 					// EULA records deleted through EulaService, not CustomerService
 					// check for toactivate record
