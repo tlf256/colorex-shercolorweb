@@ -10,6 +10,7 @@ public class Customer {
 	private String accttype;
 	private String ntlacctnbr;
 	private String intntlacctnbr;
+	private String costCenter;
 	private String cce;
 	private String bac;
 	private String eff;
@@ -66,6 +67,12 @@ public class Customer {
 		} else {
 			this.intntlacctnbr = intntlacctnbr;
 		}
+	}
+	public String getCostCenter() {
+		return costCenter;
+	}
+	public void setCostCenter(String costCenter) {
+		this.costCenter = costCenter;
 	}
 	public String getCce() {
 		return cce;

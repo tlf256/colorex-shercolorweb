@@ -41,6 +41,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public String execute() {
 		try {	
+			logger.trace("begin ProcessCustomerAction.execute");
 			RequestObject reqObj = new RequestObject();
 			
 			reqObj.setNewCustomer(true);
@@ -92,7 +93,9 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				reqObj.setEulaHistList(ehlist);
 			}
 			
-			sessionMap.put("CustomerDetail", reqObj);	
+			sessionMap.put("CustomerDetail", reqObj);
+			
+			logger.trace("end ProcessCustomerAction.execute");
 			
 			if(reqObj.getAccttype().equals("natlWdigits")) {
 				return "nologin";
@@ -178,9 +181,12 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			}
 			
 			break;
+		case "intnatlCostCntr":
+			custId = customer.getCostCenter();
+			break;
 		default:
 			// result not expected
-			System.out.println("String is junk, return to form");
+			logger.error("String is junk, return to form");
 			addActionError("Error - Unexpected value. Please retry request.");
 			return INPUT;
 		}

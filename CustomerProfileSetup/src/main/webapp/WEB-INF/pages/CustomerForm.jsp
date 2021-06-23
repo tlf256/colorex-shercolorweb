@@ -16,9 +16,30 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/CustomerForm.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/cps.js"></script>
 <title>Customer Form</title>
 </head>
 <body>
+<div class="modal fade" tabindex="-1" role="dialog" id="warn_modal" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-warning">Warning</h5>
+      </div>
+      <div class="modal-body">
+        <p id="">
+        	You are attempting to create a SherColor Web account using a Sher-Link account number. Do you wish to proceed?
+        </p>
+      </div>
+      <div class="modal-footer">
+      <s:form>
+	        <button type="button" id="yes_btn" class="btn btn-warning" onclick="proceedYes()">Yes</button>
+	        <button type="button" id="no_btn" class="btn btn-secondary" onclick="proceedNo()">No</button>
+       </s:form>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- including Header -->
 <s:include value="Header.jsp"></s:include>
 <div class="container-fluid">
@@ -34,11 +55,11 @@
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-md-3 col-sm-2"></div>
-		<div class="col-md-4 col-sm-3">
+		<div class="col-md-3 col-sm-1"></div>
+		<div class="col-md-6 col-sm-4">
 			<h3>Enter Customer Information</h3>
 		</div>
-		<div class="col-md-3 col-sm-2"></div>
+		<div class="col-md-3 col-sm-1"></div>
 	</div>
 	<br>
 	<s:form id="customerInfo" action="getCustomerInfo" method="post">
@@ -56,17 +77,19 @@
 	<br>
 	<div class="row" id="acctype">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
-		<div class="col-lg-4 col-md-4 col-sm-2 col-xs-2">
+		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
 		<strong>Account Type *</strong>
 			<div class="custom-radio ml-1">
-			<input type="radio" id="selectedAccttype-0" name="customer.accttype" class="mt-1 mb-1" onchange="showHideInput(this.value)" value="natlWdigits" />
-				National with 9 digit account<br>
 			<input type="radio" id="selectedAccttype-1" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="natlWOdigits" />
-				National without 9 digit account<br>
-			<input type="radio" id="selectedAccttype-2" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="intnatlWdigits" />
-				International with 7 digit account<br>
+				Internal SW Account<br>
 			<input type="radio" id="selectedAccttype-3" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="intnatlWOdigits" />
-				International without 7 digit account<br>
+				International SW Account<br>
+			<input type="radio" id="selectedAccttype-0" name="customer.accttype" class="mt-1 mb-1" onchange="showHideInput(this.value)" value="natlWdigits" />
+				Enter 9 Digit National Account Number<br>
+			<input type="radio" id="selectedAccttype-2" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="intnatlWdigits" />
+				Enter 7 Digit International Account Number<br>
+			<input type="radio" id="selectedAccttype-4" name="customer.accttype" class="mt-2 mb-1" onchange="showHideInput(this.value)" value="intnatlCostCntr" />
+				Enter 6 Digit Cost Center<br>
 			</div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
@@ -82,7 +105,6 @@
 	<div class="row ntlacct" id="ntlacct">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<!-- <div id="ntlaccterror" class="text-danger"></div> -->
 			<s:textfield label="Account Number" name="customer.ntlacctnbr" id="ntlacctnbr" requiredLabel="true" class="req acctnbr" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
@@ -98,8 +120,22 @@
 	<div class="row intntlacct" id="intntlacct">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<!-- <div id="intntlaccterror" class="text-danger"></div> -->
 			<s:textfield label="Account Number" name="customer.intntlacctnbr" id="intntlacctnbr" requiredLabel="true" class="req acctnbr" />
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row costcntr">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+			<div id="costcntrerror" class="text-danger errorfld"></div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row costcntr" id="costcntr">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<s:textfield label="Account Number" name="customer.costCenter" id="cstcntr" requiredLabel="true" class="req acctnbr" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
@@ -107,7 +143,7 @@
 	<div class="row" id="cont">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<a href="#" onclick="checkAccountNbr()">Continue</a>
+			<a href="#" onclick="validateAcctNbr()">Continue</a>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
@@ -123,9 +159,7 @@
 	 <div class="row cstmrnm" id="cstmrnm">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-4 col-md-4 col-sm-2 col-xs-2">
-			<!-- <div id="swuititlerror" class="text-danger"></div> -->
 			<s:textfield label="Customer Name" name="customer.swuiTitle" id="swuititle" requiredLabel="true" class="req" />
-			<!-- <div id="cdsadlflderror" class="text-danger"></div> -->
 			<s:textfield label="Additional Info (SherCust Database ID)" name="customer.cdsAdlFld" id="cdsadlfld" />
 		</div>
 		<div class="col-lg-5 col-md-5 col-sm-3 col-xs-3"></div>
@@ -149,10 +183,8 @@
 			<input type="checkbox" id="844" name="customer.eff" class="form-check-input clrntid" value="844"></input>
 			<label class="form-check-label font-weight-normal" for="884">844</label><br>
 		</div>
-		<!-- <div id="clrntsyserror" class="text-danger"></div> -->
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<!-- <div id="defaulterror" class="text-danger"></div> -->
 			<strong>Default *</strong><br>
 			<div class="custom-radio ml-1">
 				<input type="radio" id="CCEdefault" name="customer.defaultClrntSys" class="mt-1 mb-1 clrntdefault" value="CCE" /><br>
@@ -163,10 +195,18 @@
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
 	<br>
-	<div class="row" id="custtype">
+	<div class="row custtype" id="">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1">
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+	</div>
+	<div class="row custtype" id="">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<s:select label="Customer Type" list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="customer.custType" onchange="toggleProfileInput(this.value)"></s:select>
+			<s:select label="Customer Type" list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="customer.custType" 
+				onchange="toggleProfileInput(this.value)"></s:select>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>

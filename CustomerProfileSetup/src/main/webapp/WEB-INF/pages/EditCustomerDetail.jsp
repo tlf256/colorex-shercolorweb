@@ -173,7 +173,9 @@
 	<br>
 	<s:if test="sessionMap['CustomerDetail'].profile == null || (sessionMap['CustomerDetail'].profile != null && !sessionMap['CustomerDetail'].updateMode)">
 		<div class="row">
-			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-2 col-md-2">
+				<s:hidden id="acctType" value="%{sessionMap['CustomerDetail'].accttype}"></s:hidden>
+			</div>
 			<div class="col-lg-8 col-md-8">
 				<table id="custprofile" class="table table-striped table-bordered">
 					<tr>
@@ -183,7 +185,7 @@
 								value="sessionMap['CustomerDetail'].profile.custType"></s:select>
 						</td>
 					</tr>
-					<tr id="rmbyrm">
+					<tr class="rmbyrm" id="rmbyrm">
 						<td><strong>Use Room By Room</strong></td>
 						<td>
 							<s:if test="sessionMap['CustomerDetail'].profile == null || sessionMap['CustomerDetail'].profile.useRoomByRoom">
@@ -196,7 +198,7 @@
 							</s:else>
 						</td>
 					</tr>
-					<tr id="locid">
+					<tr class="locid" id="locid">
 						<td><strong>Use Locator ID</strong></td>
 						<td>
 							<s:if test="sessionMap['CustomerDetail'].profile == null || sessionMap['CustomerDetail'].profile.useLocatorId">

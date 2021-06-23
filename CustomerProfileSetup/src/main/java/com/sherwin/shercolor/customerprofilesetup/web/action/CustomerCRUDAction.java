@@ -75,15 +75,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			for(CustWebParms webparms : custParms) {
 				CustParms cp = new CustParms();
 				cp.setCustomerId(webparms.getCustomerId());
-				if(webparms.getCustomerId().length()==9) {
-					if(webparms.getCustomerId().startsWith("4")) {
-						reqObj.setAccttype("internal");
-					} else {
-						reqObj.setAccttype("natlWdigits");
-					}
-				}else {
-					reqObj.setAccttype("loginRequired");
-				}
+				reqObj.setAccttype(getAcctType(webparms.getCustomerId()));
 				cp.setSeqNbr(webparms.getSeqNbr());
 				cp.setSwuiTitle(webparms.getSwuiTitle());
 				cp.setCdsAdlFld(webparms.getCdsAdlFld());
@@ -175,6 +167,34 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			return ERROR;
 		}
 		
+	}
+	
+	private String getAcctType(String custId) {
+		String acctType = "";
+		
+		switch(custId.length()) {
+		case 6:
+			if(custId.substring(0, 2).equals("99")) {
+				acctType = "natlWOdigits";
+			} else {
+				acctType = "intnatlCostCntr";
+			}
+			break;
+		case 7:
+			acctType = "intnatlWdigits";
+			break;
+		case 8:
+			acctType = "intnatlWOdigits";
+			break;
+		case 9:
+			acctType = "natlWdigits";
+			break;
+		default:
+			//unexpected custId length
+			logger.error("unrecognized customer ID");
+		}
+		
+		return acctType;
 	}
 
 	public String createOrUpdate() {

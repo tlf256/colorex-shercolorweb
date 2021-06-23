@@ -8,38 +8,40 @@ $(document).ready(function() {
 	$("#loginnext-btn").prop("disabled", true);
 	
 	hideInput();
-		
-	$(document).on("blur", "#swuititle", function(){
-		var title = $.trim($("#swuititle").val());
-		try{
-			if(title.length > 20 || title.length == 0){
-				throw "Please enter a Customer Name not greater than 20 characters";
-			} 
-			$("#swuititlerror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			$("#swuititlerror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).select();
-		}
-	});
 	
-	$(document).on("blur", "#cdsadlfld", function(){
+	$(document).on({
+		"blur": function(){
 		var info = $.trim($("#cdsadlfld").val());
-		try{
-			if(info.length > 20){
-				throw "Additional Info cannot be greater than 20 characters";
+			try{
+				if(info.length > 20){
+					throw "Additional Info cannot be greater than 20 characters";
+				}
+				$("#cdsadlflderror").text("");
+				$("#formerror").text("");
+				$(this).removeClass("border-danger");
+			} catch(msg) {
+				$("#cdsadlflderror").text(msg);
+				$(this).addClass("border-danger");
+				$(this).select();
 			}
-			$("#cdsadlflderror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		} catch(msg) {
-			$("#cdsadlflderror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).select();
+		},
+		"focusin": function(){
+			var selector = $("#swuititle");
+			var title = selector.val().trim();
+			try{
+				if(selector.is(':visible') && (title.length > 20 || title.length == 0)){
+					throw "Please enter a Customer Name not greater than 20 characters";
+				} 
+				$("#swuititlerror").text("");
+				$("#formerror").text("");
+				selector.removeClass("border-danger");
+			}catch(msg){
+				$("#swuititlerror").text(msg);
+				selector.addClass("border-danger");
+				selector.select();
+			}
 		}
-	});
+	}, "#cdsadlfld");
 	
 	$(document).on("change", ".clrntid, .clrntdefault", function(){
 		try{
@@ -90,6 +92,9 @@ $(document).ready(function() {
 	
 	$(document).on("click", "#loginnext-btn", function(){
 		try{
+			if($("#swuititle").val() == '') {
+				throw "Customer Name is required";
+			}
 			if((!$("#CCE").is(":checked") && !$("#BAC").is(":checked") && !$("#844").is(":checked")) || 
 					(!$("#CCEdefault").is(":checked") && !$("#BACdefault").is(":checked") && !$("#844default").is(":checked"))){
 				throw "Please correct the colorant system(s)";
@@ -118,29 +123,51 @@ $(document).ready(function() {
 	
 });
 
-function validateAcctNbr(selector) {
-	var acctnbr = selector.val();
+function checkIfWarningNeeded(acctnbr) {
+	console.log("checking if warning should be shown...");
+	if(acctnbr >= '400000000' && acctnbr <= '400000012') {
+		$('#warn_modal').modal('show');
+	} else {
+		var selectedType = $('#typelist option:selected').val();
+		showHiddenInput();
+		toggleProfileInput(selectedType);
+	}
+}
+
+function validateAcctNbr() {
+	console.log("validating account number...");
+	var selector = $(".acctnbr:visible");
+	var acctnbr = selector.val().trim();
 	var selectorError;
 	try{
 		if(selector.attr('id') == "ntlacctnbr") {
 			selectorError = $("#ntlaccterror");
-			if(selector.is(":visible") && (acctnbr.length!=9 || isNaN(acctnbr))){
+			if(acctnbr.length!=9 || isNaN(acctnbr)){
 				throw "Please enter a 9 digit account number";
 			}
-		} else {
+		} else if(selector.attr('id') == "intntlacctnbr") {
 			selectorError = $("#intntlaccterror");
-			if(selector.is(":visible") && (acctnbr.length!=7 || isNaN(acctnbr))){
+			if(acctnbr.length!=7 || isNaN(acctnbr)){
 				throw "Please enter a 7 digit account number";
 			}
+		} else {
+			selectorError = $("#costcntrerror");
+			if(acctnbr.length!=6 || isNaN(acctnbr)){
+				throw "Please enter a 6 digit cost center";
+			}
+			if(acctnbr.startsWith('99')) {
+				throw "Invalid cost center account";
+			}
 		}
-		if(selector.is(":visible") && result=="true"){
+		//account number is valid, check if it already exists
+		checkAccountNbr(selector);
+		if(result=="true"){
 			throw "Account Number already exists";
 		}
 		$(selector).removeClass("border-danger");
 		$(selectorError).text("");
 		$("#formerror").text("");
-		showHiddenInput();
-		showHideCustTypeOptions(acctnbr);
+		checkIfWarningNeeded(acctnbr);
 	}catch(msg){
 		$(selector).addClass("border-danger");
 		$(selector).select();
@@ -148,8 +175,8 @@ function validateAcctNbr(selector) {
 	}
 }
 
-function checkAccountNbr() {
-	var selector = $(".acctnbr:visible");
+function checkAccountNbr(selector) {
+	console.log("checking if the account number already exists...");
 	var value = selector.val().trim();
 	console.log("account number is " + value);
 	$.ajax({
@@ -161,7 +188,6 @@ function checkAccountNbr() {
 			result = data.result;
 			console.log("result is " + data.result);
 			console.log("Ajax success: custId is " + value);
-			validateAcctNbr(selector);
 		},
 		error:function(request, status){
 			console.log("Ajax error: " + status);
@@ -170,51 +196,65 @@ function checkAccountNbr() {
 	});
 }
 
-function showHideCustTypeOptions(custId) {
-	console.log("show/hide cust type option(s)");
-	if(custId != null && custId != 'undefined') {
-		console.log("custId is not null or undefined");
-		if(custId.length == 6) {
-			if(!custId.startsWith('7')) {
-				$("#typelist option[value='STORE']").hide();
-				console.log("custId is 6 digits, but is not a cost center");
-				console.log("STORE option hidden");
-			}
-		} else {
-			$("#typelist option[value='STORE']").hide();
-			console.log("custId not 6 digit cost center");
-			console.log("STORE option hidden");
-		}
-	} else {
-		console.log("custId is null or undefined");
-	}
-}
-
 function showHideInput(value) {
+	console.log("account type is " + value);
 	clearAllErrors();
+	clearAllTextInput();
+	var custTypes = [];
+	var selectList = $('#typelist');
+	var selectedCustType;
 	switch(value) {
 	case 'natlWdigits':
+		console.log("internal SW account");
+		custTypes = ["CUSTOMER"];
+		selectedCustType = "CUSTOMER";
 		hideInput();
 		showNtlAcctInput();
 		break;
 	case 'intnatlWdigits':
+		console.log("international account");
+		custTypes = ["CUSTOMER"];
+		selectedCustType = "CUSTOMER";
 		hideInput();
 		showIntnatlAcctInput();
 		break;
+	case 'intnatlCostCntr':
+		console.log("store account");
+		custTypes = ["STORE"];
+		selectedCustType = "STORE";
+		hideInput();
+		showCostCenterInput();
+		break;
 	case 'natlWOdigits':
-	case 'intnatlWOdigits':
-		clearAcctNbr();
+		console.log("generate national account number");
+		custTypes = ["CUSTOMER", "DRAWDOWN"];
+		selectedCustType = "CUSTOMER";
+		hideAcctNbr();
 		showHiddenInput();
+		toggleProfileInput(custTypes[0]);
+		break;
+	case 'intnatlWOdigits':
+		console.log("generate international account number");
+		custTypes = ["CUSTOMER"];
+		selectedCustType = "CUSTOMER";
+		hideAcctNbr();
+		showHiddenInput();
+		toggleProfileInput(custTypes[0]);
 		break;
 	default:
+		//unexpected value, do not allow user to proceed
 		hideInput();
 	}
+	
+	buildCustTypesList(custTypes, selectList, selectedCustType);
 }
 
 function showNtlAcctInput() {
 	$(".ntlacct").show();
 	$("#intntlacct").hide();
 	$(".intntlacct").val('');
+	$(".costcntr").hide();
+	$("#cstcntr").val('');
 	$("#cont").show();
 	$("#ntlacctnbr").focus();
 }
@@ -222,9 +262,21 @@ function showNtlAcctInput() {
 function showIntnatlAcctInput() {
 	$(".ntlacct").hide();
 	$("#ntlacct").val('');
+	$(".costcntr").hide();
+	$("#cstcntr").val('');
 	$(".intntlacct").show();
 	$("#cont").show();
 	$("#intntlacctnbr").focus();
+}
+
+function showCostCenterInput() {
+	$(".ntlacct").hide();
+	$("#ntlacct").val('');
+	$("#intntlacct").hide();
+	$(".intntlacct").val('');
+	$(".costcntr").show();
+	$("#cont").show();
+	$("#cstcntr").focus();
 }
 
 function showHiddenInput() {
@@ -232,31 +284,32 @@ function showHiddenInput() {
 	$("#cdsadlfld").show();
 	$(".clrnt").show();
 	$("#loginnext-btn").show();
-	$("#custtype").show();
+	$(".custtype").show();
 	$(".eula").show();
 	$("#cont").hide();
 	$("#swuititle").focus();
 }
 
 function hideInput() {
+	console.log("waiting for account type/number...");
 	$(".ntlacct").hide();
 	$(".intntlacct").hide();
+	$(".costcntr").hide();
 	$("#cont").hide();
 	$(".cstmrnm").hide();
 	$("#cdsadlfld").hide();
 	$(".clrnt").hide();
 	$("#loginnext-btn").hide();
-	$("#custtype").hide();
+	$(".custtype").hide();
 	$(".rmbyrm").hide();
 	$(".locid").hide();
 	$(".eula").hide();
 }
 
-function clearAcctNbr() {
-	$("#ntlacct").hide();
-	$("#ntlacct").val('');
-	$("#intntlacct").hide();
-	$("#intntlacct").val('');
+function hideAcctNbr() {
+	$(".ntlacct").hide();
+	$(".intntlacct").hide();
+	$(".costcntr").hide();
 	$("#cont").hide();
 }
 
@@ -270,7 +323,13 @@ function clearAllErrors() {
 	});
 }
 
-function toggleProfileInput(value){
+function clearAllTextInput() {
+	$('input:text').each(function(){
+		$(this).val('');
+	});
+}
+
+/*function toggleProfileInput(value){
 	if(value == 'CUSTOMER') {
 		$(".rmbyrm").hide();
 		$(".locid").hide();
@@ -278,4 +337,19 @@ function toggleProfileInput(value){
 		$(".rmbyrm").show();
 		$(".locid").show();
 	}
+}*/
+
+function proceedYes() {
+	console.log("proceed with form completion");
+	showHiddenInput();
+	$('#warn_modal').modal('hide');
+	$("#swuititle").focus();
+}
+
+function proceedNo() {
+	console.log("reset form");
+	clearAllErrors();
+	clearAllTextInput();
+	hideInput();
+	$('#warn_modal').modal('hide');
 }
