@@ -138,8 +138,14 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 			
-			if(cust.getCustType() != "CUSTOMER") {
-				reqObj.setProfile(mapCustProfile(cust));
+			String custType = cust.getCustType();
+			
+			if(custType != null) {
+				if(custType.equals("CUSTOMER")) {
+					reqObj.setProfile(null);
+				} else {
+					reqObj.setProfile(mapCustProfile(cust));
+				}
 			}
 			
 			if(eulafile != null) {

@@ -44,9 +44,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			logger.trace("begin ProcessCustomerAction.execute");
 			RequestObject reqObj = new RequestObject();
 			
+			String custId = customerId(customer);
+			
 			reqObj.setNewCustomer(true);
 			reqObj.setCustUnchanged(false);
-			reqObj.setCustomerId(customerId(customer));
+			reqObj.setCustomerId(custId);
 			reqObj.setAccttype(customer.getAccttype());
 			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
@@ -98,7 +100,13 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			logger.trace("end ProcessCustomerAction.execute");
 			
 			if(reqObj.getAccttype().equals("natlWdigits")) {
-				return "nologin";
+				int custIdNum = Integer.parseInt(custId);
+				if(custIdNum >= 400000000 && custIdNum <= 400000012) {
+					//internal account, login records are optional
+					return SUCCESS;
+				} else {
+					return "nologin";
+				}
 			} else {
 				return SUCCESS;
 			}
@@ -118,18 +126,12 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		switch(customer.getAccttype()) {
 		case "natlWdigits":  //customerid = account number
 			custId = customer.getNtlacctnbr();
-			if(custId.startsWith("4")) {
-				customer.setAccttype("internal");
-			}
-			//reqObj.setCustomerId(custId);
 			break;
 		case "natlWOdigits":  //create customerid
 			//lookup national customer ids
 			List<CustWebParms> custWebParms = customerService.getNatlCustomerIds();
 			
 			if(custWebParms.isEmpty()) {
-				//first national id created with '99'
-				//reqObj.setCustomerId("990001");
 				// list should not be empty
 				addActionError("Database Error - National customer cannot be created. Please contact administrator.");
 			} else {
@@ -145,13 +147,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 						newResult.insert(2, 0);
 					}
 				}
-				//reqObj.setCustomerId(newResult.toString());
 				custId = newResult.toString();
 			}
 			
 			break;
 		case "intnatlWdigits":  //customerid = account number
-			//reqObj.setCustomerId(customer.getIntntlacctnbr());
 			custId = customer.getIntntlacctnbr();
 			break;
 		case "intnatlWOdigits":  //create customerid
@@ -176,7 +176,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 						newId.insert(4, 0);
 					}
 				}
-				//reqObj.setCustomerId(newId.toString());
 				custId = newId.toString();
 			}
 			

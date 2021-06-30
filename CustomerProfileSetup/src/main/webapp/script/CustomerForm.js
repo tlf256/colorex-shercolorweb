@@ -126,6 +126,10 @@ $(document).ready(function() {
 function checkIfWarningNeeded(acctnbr) {
 	console.log("checking if warning should be shown...");
 	if(acctnbr >= '400000000' && acctnbr <= '400000012') {
+		var selectList = $('#typelist');
+		var custTypes = ["CUSTOMER", "DRAWDOWN"];
+		var selectedCustType = custTypes[0];
+		buildCustTypesList(custTypes, selectList, selectedCustType);
 		$('#warn_modal').modal('show');
 	} else {
 		var selectedType = $('#typelist option:selected').val();
@@ -207,45 +211,45 @@ function showHideInput(value) {
 	case 'natlWdigits':
 		console.log("internal SW account");
 		custTypes = ["CUSTOMER"];
-		selectedCustType = "CUSTOMER";
+		selectedCustType = custTypes[0];
 		hideInput();
 		showNtlAcctInput();
 		break;
 	case 'intnatlWdigits':
 		console.log("international account");
 		custTypes = ["CUSTOMER"];
-		selectedCustType = "CUSTOMER";
+		selectedCustType = custTypes[0];
 		hideInput();
 		showIntnatlAcctInput();
 		break;
 	case 'intnatlCostCntr':
 		console.log("store account");
 		custTypes = ["STORE"];
-		selectedCustType = "STORE";
+		selectedCustType = custTypes[0];
 		hideInput();
 		showCostCenterInput();
 		break;
 	case 'natlWOdigits':
 		console.log("generate national account number");
 		custTypes = ["CUSTOMER", "DRAWDOWN"];
-		selectedCustType = "CUSTOMER";
+		selectedCustType = custTypes[0];
 		hideAcctNbr();
 		showHiddenInput();
-		toggleProfileInput(custTypes[0]);
+		toggleProfileInput(selectedCustType);
 		break;
 	case 'intnatlWOdigits':
 		console.log("generate international account number");
 		custTypes = ["CUSTOMER"];
-		selectedCustType = "CUSTOMER";
+		selectedCustType = custTypes[0];
 		hideAcctNbr();
 		showHiddenInput();
-		toggleProfileInput(custTypes[0]);
+		toggleProfileInput(selectedCustType);
 		break;
 	default:
 		//unexpected value, do not allow user to proceed
 		hideInput();
 	}
-	
+		
 	buildCustTypesList(custTypes, selectList, selectedCustType);
 }
 

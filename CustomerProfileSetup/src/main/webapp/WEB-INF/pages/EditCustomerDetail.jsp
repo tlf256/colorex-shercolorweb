@@ -172,7 +172,7 @@
 	</div>
 	<br>
 	<s:if test="sessionMap['CustomerDetail'].profile == null || (sessionMap['CustomerDetail'].profile != null && !sessionMap['CustomerDetail'].updateMode)">
-		<div class="row">
+		<div class="row" id="custProfile">
 			<div class="col-lg-2 col-md-2">
 				<s:hidden id="acctType" value="%{sessionMap['CustomerDetail'].accttype}"></s:hidden>
 			</div>

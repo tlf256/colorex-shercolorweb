@@ -56,6 +56,8 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			List<CustWebParms> custParms = customerService.getAllCustWebParms(lookupCustomerId);
 			
+			String custId = custParms.get(0).getCustomerId();
+			
 			RequestObject reqObj = new RequestObject();
 			
 			reqObj.setExistingCustomer(true);
@@ -75,7 +77,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			for(CustWebParms webparms : custParms) {
 				CustParms cp = new CustParms();
 				cp.setCustomerId(webparms.getCustomerId());
-				reqObj.setAccttype(getAcctType(webparms.getCustomerId()));
 				cp.setSeqNbr(webparms.getSeqNbr());
 				cp.setSwuiTitle(webparms.getSwuiTitle());
 				cp.setCdsAdlFld(webparms.getCdsAdlFld());
@@ -86,7 +87,8 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			}
 			
 			reqObj.setCustList(custList);
-			reqObj.setCustomerId(allowCharacters(custParms.get(0).getCustomerId()));
+			reqObj.setAccttype(getAcctType(custId));
+			reqObj.setCustomerId(custId);
 			reqObj.setSwuiTitle(allowCharacters(custParms.get(0).getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(custParms.get(0).getCdsAdlFld()));
 			reqObj.setActive(custParms.get(0).isActive());

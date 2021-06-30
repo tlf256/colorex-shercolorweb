@@ -214,8 +214,8 @@
 				<table id="profile_detail" class="table table-striped table-bordered">
 					<tr>
 						<th>Customer Type</th>
-						<th>Use Locator ID</th>
 						<th>Use Room By Room</th>
+						<th>Use Locator ID</th>
 					</tr>
 					<tr>
 						<td>

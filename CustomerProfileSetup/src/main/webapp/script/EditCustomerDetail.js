@@ -2,17 +2,20 @@
  * 
  */
 $(document).ready(function() {
-	var selectList = $('#typelist');
-	var selectedCustType = $('#typelist option:selected').val();
 	
-	buildSelectList($('#acctType').val(), selectList, selectedCustType);
-	
-	if($('#typelist option:selected').val() == 'CUSTOMER') {
-		$("#rmbyrm").hide();
-		$("#locid").hide();
-	} else {
-		$("#rmbyrm").show();
-		$("#locid").show();
+	if($('#custProfile').is(':visible')) {
+		var selectList = $('#typelist');
+		var selectedCustType = $('#typelist option:selected').val();
+		
+		buildSelectList($('#customerid').text(), $('#acctType').val(), selectList, selectedCustType);
+		
+		if($('#typelist option:selected').val() == 'CUSTOMER') {
+			$("#rmbyrm").hide();
+			$("#locid").hide();
+		} else {
+			$("#rmbyrm").show();
+			$("#locid").show();
+		}
 	}
 	
 	var existinglogins = $(".kyfld").map(function(index){
@@ -482,20 +485,27 @@ $(document).ready(function() {
 	
 });
 
-function buildSelectList(accttype, selectList, selectedCustType) {
+function buildSelectList(custId, accttype, selectList, selectedCustType) {
+	customerId = custId.trim();
+	console.log("setting options for select list, custId is " + customerId);
 	var custTypes = [];
 	console.log("accttype is " + accttype);
 	switch(accttype) {
 	case 'natlWdigits':
-		console.log("national 9 digit account");
-		custTypes = ["CUSTOMER"];
+		if(customerId >= '400000000' && customerId <= '400000012') {
+			console.log("internal 9 digit account");
+			custTypes = ["CUSTOMER", "DRAWDOWN"];
+		} else {
+			console.log("national 9 digit account");
+			custTypes = ["CUSTOMER"];
+		}
 		break;
 	case 'intnatlWdigits':
 		console.log("international 7 digit account");
 		custTypes = ["CUSTOMER"];
 		break;
 	case 'intnatlCostCntr':
-		console.log("6 digit cost center")
+		console.log("6 digit cost center");
 		custTypes = ["STORE"];
 		break;
 	case 'natlWOdigits':
@@ -508,7 +518,6 @@ function buildSelectList(accttype, selectList, selectedCustType) {
 		break;
 	default:
 		console.log("account type is undefined")
-		custTypes = ["CUSTOMER", "DRAWDOWN", "STORE"];
 	}
 	
 	buildCustTypesList(custTypes, selectList, selectedCustType);
