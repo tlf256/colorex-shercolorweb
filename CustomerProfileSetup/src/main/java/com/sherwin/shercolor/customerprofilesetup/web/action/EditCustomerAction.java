@@ -22,6 +22,7 @@ import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
@@ -134,6 +135,16 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			} else {
 				if(!reqObj.isNewCustomer() && !reqObj.isCustAdded() && !reqObj.isCustDeleted()) {
 					reqObj.setCustUnchanged(true);
+				}
+			}
+			
+			String custType = cust.getCustType();
+			
+			if(custType != null) {
+				if(custType.equals("CUSTOMER")) {
+					reqObj.setProfile(null);
+				} else {
+					reqObj.setProfile(mapCustProfile(cust));
 				}
 			}
 			
@@ -347,16 +358,24 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 			
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
-			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
 	
-	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+	private CustProfile mapCustProfile(Customer customer) {
+		CustProfile profile = null;
+		
+		profile = new CustProfile();
+		profile.setCustType(customer.getCustType());
+		profile.setUseRoomByRoom(customer.isUseRoomByRoom());
+		profile.setUseLocatorId(customer.isUseLocatorId());
+		
+		return profile;
+	}
+	
+	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();

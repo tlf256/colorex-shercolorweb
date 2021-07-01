@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsClrntSys;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
+import com.sherwin.shercolor.common.domain.CdsRoomList;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
@@ -23,6 +24,7 @@ import com.sherwin.shercolor.common.domain.FormulaConversion;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
+import com.sherwin.shercolor.common.domain.TranHistoryCriteria;
 import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorantService;
@@ -30,6 +32,7 @@ import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
+import com.sherwin.shercolor.common.service.UtilityService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobHistoryInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -49,6 +52,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private List<Integer> exportColList;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean copyJobFields = false;
+	private TranHistoryCriteria thc;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -68,22 +72,65 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	@Autowired
 	FormulationService formulationService;
 	
+	@Autowired 
+	private UtilityService utilityService;
+	
 	List<CustWebTran> tranHistory;
 	
 	List<JobHistoryInfo> jobHistory;
 	private boolean match;
 	
-	public String display() {
+	public String search() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			// check if this account uses room by room
+			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+			if (profile != null) {
+				boolean useroom = profile.isUseRoomByRoom();
+				if(useroom) {
+					reqObj.setAllRooms(buildRoomList());
+				}
+			}
+			
+			// get jobfields for use in filter criteria
+			List<CustWebJobFields> custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
+			
+			jobFieldList = createJobFieldList(custWebJobFields);
+			
+			reqObj.setJobFieldList(jobFieldList);
+			
+			sessionMap.put(reqGuid, reqObj);
+			
+			return SUCCESS;
+				
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	private List<CdsRoomList> buildRoomList() {
+		List<CdsRoomList> roomList = new ArrayList<CdsRoomList>();
+		//get all int/ext rooms
+		roomList = utilityService.listCdsRoomsForListName("INT/EXT");
 		
+		// add option for user to choose Other and enter in a custom name 
+		CdsRoomList otherOption = new CdsRoomList();
+		otherOption.setRoomUse("Other");
+		roomList.add(otherOption);
+		return roomList;
+	}
+	
+	public String display() {
 		long startAction = System.currentTimeMillis();
 		double jobTimeAverage = 0;
 		try {
-			jobFieldList = new ArrayList<JobField>();
 			List<CustWebJobFields> custWebJobFields;
 
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
-			// check if this account is a drawdown center for display of can type 
+			// check if this account is a drawdown center
 			CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			if (profile != null) {
 				String customerType = profile.getCustomerType();
@@ -94,24 +141,28 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			custWebJobFields = customerService.getCustJobFields(reqObj.getCustomerID());
 			
-			if(custWebJobFields.size()>0){
-				for(CustWebJobFields custField : custWebJobFields){
-					JobField jobField = new JobField();
-					jobField.setScreenLabel(custField.getScreenLabel());
-					jobField.setEnteredValue(custField.getFieldDefault());
-					jobFieldList.add(jobField);
-				}
+			// check if jobFieldList has already been created
+			if(reqObj.getJobFieldList() == null) {
+				jobFieldList = createJobFieldList(custWebJobFields);
+				
+				reqObj.setJobFieldList(jobFieldList);
+				
+				sessionMap.put(reqGuid, reqObj);
 			}
-			
-			reqObj.setJobFieldList(jobFieldList);
-			
-			sessionMap.put(reqGuid, reqObj);
-			
+						
 			if(match) {
 				//only pull CUSTOMMATCH records for compare colors selection
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByColorType(reqObj.getCustomerID(), "CUSTOMMATCH", false);
+				TranHistoryCriteria TranCriteria = new TranHistoryCriteria();
+				TranCriteria.setCustomerId(reqObj.getCustomerID());
+				TranCriteria.setColorType("CUSTOMMATCH");
+				
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(TranCriteria, false);
 			} else {
-				tranHistory = tranHistoryService.getActiveCustomerJobs(reqObj.getCustomerID(),false);
+				// pass JobSearch object to service for criteria
+				tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(thc, false);
+				
+				//set job search object to null to clear values for new search
+				thc = null;
 			}
 			
 			jobHistory = new ArrayList<JobHistoryInfo>();
@@ -214,9 +265,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			logger.debug("End ERROR (Exception) - LookupJobAction: display");
 			return ERROR;
 		}
-		
 	}
-	
 	
 	public String getJobFields() {
 		try { 
@@ -258,6 +307,21 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			return ERROR;
 		}
 		
+	}
+	
+	private List<JobField> createJobFieldList(List<CustWebJobFields> custWebJobFields) {
+		List<JobField> jobFieldList = new ArrayList<JobField>();
+		
+		if(custWebJobFields.size()>0){
+			for(CustWebJobFields custField : custWebJobFields){
+				JobField jobField = new JobField();
+				jobField.setScreenLabel(custField.getScreenLabel());
+				jobField.setEnteredValue(custField.getFieldDefault());
+				jobFieldList.add(jobField);
+			}
+		}
+		
+		return jobFieldList;
 	}
 
 	private void mapCustWebTranToRequestObject(CustWebTran webTran, RequestObject reqObj){
@@ -594,6 +658,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setCopyJobFields(boolean copyJobFields) {
 		this.copyJobFields = copyJobFields;
+	}
+
+	public TranHistoryCriteria getThc() {
+		return thc;
+	}
+
+	public void setThc(TranHistoryCriteria thc) {
+		this.thc = thc;
 	}
 
 }
