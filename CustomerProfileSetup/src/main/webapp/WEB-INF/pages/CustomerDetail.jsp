@@ -207,6 +207,33 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
+	<s:if test="sessionMap['CustomerDetail'].profile != null">
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+				<table id="profile_detail" class="table table-striped table-bordered">
+					<tr>
+						<th>Customer Type</th>
+						<th>Use Room By Room</th>
+						<th>Use Locator ID</th>
+					</tr>
+					<tr>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].profile.custType" />
+						</td>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].profile.useRoomByRoom" />
+						</td>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].profile.useLocatorId" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	<br>
+	</s:if>
 	<s:if test="sessionMap['CustomerDetail'].eula != null">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>

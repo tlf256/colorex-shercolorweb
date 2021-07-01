@@ -46,12 +46,8 @@ public class ProcessEulaAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 	  
-		} catch (HibernateException he) { 
-			logger.error("HibernateException Caught: "
-					+ he.toString() + " " + he.getMessage()); 
-			return ERROR; 
 		} catch (Exception e){ 
-			logger.error(e.getMessage()); 
+			logger.error(e.getMessage(), e); 
 			return ERROR; 
 		} 
 	}

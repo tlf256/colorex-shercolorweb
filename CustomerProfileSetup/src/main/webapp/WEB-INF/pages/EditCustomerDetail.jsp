@@ -171,6 +171,52 @@
 		<div class="col-lg-2 col-md-2"></div>
 	</div>
 	<br>
+	<s:if test="sessionMap['CustomerDetail'].profile == null || (sessionMap['CustomerDetail'].profile != null && !sessionMap['CustomerDetail'].updateMode)">
+		<div class="row" id="custProfile">
+			<div class="col-lg-2 col-md-2">
+				<s:hidden id="acctType" value="%{sessionMap['CustomerDetail'].accttype}"></s:hidden>
+			</div>
+			<div class="col-lg-8 col-md-8">
+				<table id="custprofile" class="table table-striped table-bordered">
+					<tr>
+						<td class="align-middle"><strong>Customer Type</strong></td>
+						<td id="custtype">
+							<s:select list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="cust.custType" onchange="toggleProfileInput(this.value)"
+								value="sessionMap['CustomerDetail'].profile.custType"></s:select>
+						</td>
+					</tr>
+					<tr class="rmbyrm" id="rmbyrm">
+						<td><strong>Use Room By Room</strong></td>
+						<td>
+							<s:if test="sessionMap['CustomerDetail'].profile == null || sessionMap['CustomerDetail'].profile.useRoomByRoom">
+								<input type="radio" id="rbryes" name="cust.useRoomByRoom" class="mt-1 mb-1 rbr" value="true" checked /> Yes
+							<input type="radio" id="rbrno" name="cust.useRoomByRoom" class="mt-1 mb-1 ml-4 rbr" value="false" /> No
+							</s:if>
+							<s:else>
+								<input type="radio" id="rbryes" name="cust.useRoomByRoom" class="mt-1 mb-1 rbr" value="true" /> Yes
+								<input type="radio" id="rbrno" name="cust.useRoomByRoom" class="mt-1 mb-1 ml-4 rbr" value="false" checked /> No
+							</s:else>
+						</td>
+					</tr>
+					<tr class="locid" id="locid">
+						<td><strong>Use Locator ID</strong></td>
+						<td>
+							<s:if test="sessionMap['CustomerDetail'].profile == null || sessionMap['CustomerDetail'].profile.useLocatorId">
+								<input type="radio" id="locyes" name="cust.useLocatorId" class="mt-1 mb-1 loc" value="true" checked /> Yes
+								<input type="radio" id="locno" name="cust.useLocatorId" class="mt-1 mb-1 ml-4 loc" value="false" /> No
+							</s:if>
+							<s:else>
+								<input type="radio" id="locyes" name="cust.useLocatorId" class="mt-1 mb-1 loc" value="true" /> Yes
+								<input type="radio" id="locno" name="cust.useLocatorId" class="mt-1 mb-1 ml-4 loc" value="false" checked /> No
+							</s:else>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	<br>
+	</s:if>
 	<s:if test="!sessionMap['CustomerDetail'].uploadedEula && sessionMap['CustomerDetail'].updateMode && 
 		sessionMap['CustomerDetail'].eulaHistList == null">
 		<div class="row">

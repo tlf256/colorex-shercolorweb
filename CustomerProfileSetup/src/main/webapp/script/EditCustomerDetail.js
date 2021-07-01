@@ -2,6 +2,22 @@
  * 
  */
 $(document).ready(function() {
+	
+	if($('#custProfile').is(':visible')) {
+		var selectList = $('#typelist');
+		var selectedCustType = $('#typelist option:selected').val();
+		
+		buildSelectList($('#customerid').text(), $('#acctType').val(), selectList, selectedCustType);
+		
+		if($('#typelist option:selected').val() == 'CUSTOMER') {
+			$("#rmbyrm").hide();
+			$("#locid").hide();
+		} else {
+			$("#rmbyrm").show();
+			$("#locid").show();
+		}
+	}
+	
 	var existinglogins = $(".kyfld").map(function(index){
 		if($(this).val()!=""){
 			return $(this).val();
@@ -468,3 +484,41 @@ $(document).ready(function() {
 	});
 	
 });
+
+function buildSelectList(custId, accttype, selectList, selectedCustType) {
+	customerId = custId.trim();
+	console.log("setting options for select list, custId is " + customerId);
+	var custTypes = [];
+	console.log("accttype is " + accttype);
+	switch(accttype) {
+	case 'natlWdigits':
+		if(customerId >= '400000000' && customerId <= '400000012') {
+			console.log("internal 9 digit account");
+			custTypes = ["CUSTOMER", "DRAWDOWN"];
+		} else {
+			console.log("national 9 digit account");
+			custTypes = ["CUSTOMER"];
+		}
+		break;
+	case 'intnatlWdigits':
+		console.log("international 7 digit account");
+		custTypes = ["CUSTOMER"];
+		break;
+	case 'intnatlCostCntr':
+		console.log("6 digit cost center");
+		custTypes = ["STORE"];
+		break;
+	case 'natlWOdigits':
+		console.log("national 6 digit account")
+		custTypes = ["CUSTOMER", "DRAWDOWN"];
+		break;
+	case 'intnatlWOdigits':
+		console.log("international 8 digit account");
+		custTypes = ["CUSTOMER"];
+		break;
+	default:
+		console.log("account type is undefined")
+	}
+	
+	buildCustTypesList(custTypes, selectList, selectedCustType);
+}
