@@ -25,7 +25,12 @@ i18n['dispense.goHomeToPurge'] = '<s:text name="dispense.goHomeToPurge"/>';
 i18n['dispense.noValuesEntered'] = '<s:text name="dispense.noValuesEntered"/>';
 i18n['dispense.qtyError'] = '<s:text name="dispense.qtyError"/>';
 i18n['displayFormula.tinterPurgeIsRequiredLastDoneOn'] = '<s:text name="displayFormula.tinterPurgeIsRequiredLastDoneOn"/>';
+i18n['displayJobs.controlNbrMustBeInteger'] = '<s:text name="displayJobs.controlNbrMustBeInteger"/>';
+i18n['displayJobs.dateMustBeCorrectFormat'] = '<s:text name="displayJobs.dateMustBeCorrectFormat"/>';
+i18n['displayJobs.filterColon'] = '<s:text name="displayJobs.filterColon"/>';
+i18n['displayJobs.newSearch'] = '<s:text name="displayJobs.newSearch" />'
 i18n['displayJobs.noJobsAvailable'] = '<s:text name="displayJobs.noJobsAvailable"/>';
+i18n['displayJobs.pleaseFixErrors'] = '<s:text name="displayJobs.pleaseFixErrors"/>';
 i18n['displayStoredMeasurements.noMeasurementsAvailable'] = '<s:text name="displayStoredMeasurements.noMeasurementsAvailable"/>';
 i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionExpiredClickLogin"/>';
 i18n['global.colorantLevelCheckInProgress'] = '<s:text name="global.colorantLevelCheckInProgress"/>';
