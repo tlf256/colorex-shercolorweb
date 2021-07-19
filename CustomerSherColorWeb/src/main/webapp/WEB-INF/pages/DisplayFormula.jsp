@@ -76,6 +76,7 @@ badge {
 	var myPrintOrientation = "";
 	var dispenseQuantity = 0;
 	var numberOfDispenses = 0;
+	var isHandDispense = false;
 	var dispenseTracker = '<s:text name="displayFormula.contOutOfTotal"><s:param>' + numberOfDispenses + '</s:param><s:param>' + dispenseQuantity + '</s:param></s:text>';
 	var printerConfig;
 	var isCorrectionDispense = false;
@@ -240,6 +241,20 @@ function printButtonClickGetJson() {
 			numLabels = numLabelsVal;
 		}
 		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+	}
+
+}
+
+function printFromManualDispense(dispenseQuantity) {
+	if (printerConfig && printerConfig.model) {
+		myPrintLabelType = "storeLabel";
+		myPrintOrientation = "PORTRAIT";
+		var myguid = $("#reqGuid").val();
+		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
+		printJsonIN = JSON.stringify(str);
+		var myPdf = new pdf(myguid,printJsonIN);
+		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
+		print(myPdf, dispenseQuantity, myPrintLabelType, myPrintOrientation);
 	}
 
 }
@@ -444,7 +459,35 @@ function ParsePrintMessage() {
 								dispenseQuantity = quantity;
 								numberOfDispenses = 1;
 								waitForShowAndHide("#setDispenseQuantityModal");
-								preDispenseCheck();
+								if (isHandDispense == true) {
+									//TODO: manual qty disp counter and print num labels
+									printFromManualDispense(dispenseQuantity);
+									var i = 0
+									var myValue = $("#reqGuid").val();
+									var curDate = new Date();
+									while (i < dispenseQuantity) {
+										console.log("BUMPING DISPENSE #"+i);
+										$
+										.getJSON(
+												"bumpDispenseCounterAction.action?reqGuid=" + myValue
+														+ "&jsDateString=" + curDate.toString(),
+												function(data) {
+													if (data.sessionStatus === "expired") {
+														window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+													} else {
+														$("#controlNbr").text(data.controlNbr);
+														$("#controlNbrDisplay").show();
+														$("#qtyDispensed").text(data.qtyDispensed);
+														updateButtonDisplay();
+														console.log("UPDATED BUTTON DISPLAY")
+													}
+												});
+										i++;
+									}
+									console.log("END BUMP DISPENSE LOOP");
+								} else {
+									preDispenseCheck();
+								}
 							} else {
 								console
 										.log("Invalid input was entered. Input was: "
@@ -481,6 +524,7 @@ function ParsePrintMessage() {
 
 								// Call decrement colorants which will call dispense
 								decrementColorantLevels();
+								
 							}
 							// else do nothing
 
@@ -520,9 +564,10 @@ function ParsePrintMessage() {
 </script>
 <script type="text/javascript">
 //callback stuff
-	function setDispenseQuantity() {
+	function setDispenseQuantity(handDispense) {
 		// check that user doesn't need to set rooms dropdown
 		if (verifyRoomSelected() == true){
+			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
 			$("#dispenseQuantityInput").val("1");
 			$("#dispenseQuantityInput").attr("value", "1");
@@ -1391,7 +1436,9 @@ function ParsePrintMessage() {
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<button type="button" class="btn btn-primary" id="formulaDispense"
-							onclick="setDispenseQuantity()" autofocus="autofocus"><s:text name="global.dispense"/></button>
+							onclick="setDispenseQuantity(false)" autofocus="autofocus"><s:text name="global.dispense"/></button>
+						<button type="button" class="btn btn-primary" id="formulaManualDispense"
+							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
 						<button type="button" class="btn btn-secondary" id="formulaPrint"
@@ -1515,8 +1562,7 @@ function ParsePrintMessage() {
 							</div>
 						</div>
 					</div> 
-				
-
+					
 			<!-- Dispense Error Modal Window -->
 			<div class="modal" aria-labelledby="tinterSocketErrorModal"
 				aria-hidden="true" id="tinterSocketErrorModal" role="dialog">
