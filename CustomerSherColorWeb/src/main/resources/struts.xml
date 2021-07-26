@@ -915,6 +915,15 @@
 			</result>
 			<result name="success" type="json"></result>
 		</action>
+		<action name="sizeAdjustmentAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="sizeAdjustment">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
 		<action name="correctionConvertIncrementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="convertFormulaToDispenseItems">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
