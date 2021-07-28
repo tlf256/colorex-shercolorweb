@@ -4,8 +4,9 @@
 $(document).ready(function() {
 	
 	var result;
+	var valid;
 	
-	$("#loginnext-btn").prop("disabled", true);
+	//$("#loginnext-btn").prop("disabled", true);
 	
 	hideInput();
 	
@@ -19,10 +20,12 @@ $(document).ready(function() {
 				$("#cdsadlflderror").text("");
 				$("#formerror").text("");
 				$(this).removeClass("border-danger");
+				valid = true;
 			} catch(msg) {
 				$("#cdsadlflderror").text(msg);
 				$(this).addClass("border-danger");
 				$(this).select();
+				valid = false;
 			}
 		},
 		"focusin": function(){
@@ -35,10 +38,12 @@ $(document).ready(function() {
 				$("#swuititlerror").text("");
 				$("#formerror").text("");
 				selector.removeClass("border-danger");
+				valid = true;
 			}catch(msg){
 				$("#swuititlerror").text(msg);
 				selector.addClass("border-danger");
 				selector.select();
+				valid = false;
 			}
 		}
 	}, "#cdsadlfld");
@@ -67,30 +72,80 @@ $(document).ready(function() {
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 			$("#loginnext-btn").prop("disabled", false);
+			valid = true;
 		}catch(msg){
 			$("#clrntsyserror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).prop("checked", false);
+			valid = false;
 		}
 	});
 		
 	$(document).on("blur", "#acceptcode", function(){
 		try{
+			var eula = $("#eulalist").val();
 			var acceptcodeval = $.trim($("#acceptcode").val());
-			if(acceptcodeval.length != 6){
-				throw "Acceptace code is 6 digits";
+			if(eula != 'None' && acceptcodeval.length < 6){
+				throw "Please enter a 6 digit Acceptance Code";
+			}
+			if(eula == 'None' && acceptcodeval){
+				throw "Please choose a EULA";
 			}
 			$("#eulaerror").text("");
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
+			valid = true;
 		}catch(msg){
 			$("#eulaerror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).select();
+			valid = false;
 		}
 	});
 	
-	$(document).on("click", "#loginnext-btn", function(){
+	var prodComps = $.ajax({
+		url:"ajaxProdCompResult.action",
+		dataType:"json",
+		async: true,
+		success:function(data){
+			console.log("Ajax success: received prod comps");
+			var prodComps = data.prodCompList;
+			console.log("prod comps json result: " + data.prodCompList);
+			return prodComps;
+		},
+		error:function(request, status){
+			console.log("Ajax error: " + status);
+			alert(status + ": could not retrieve prod comps.");
+		}
+	});
+	
+	$(document).on("blur", "#prodcomps", function(){
+		try {
+			var prodCompStr = JSON.stringify(prodComps);
+			var prodCompInput = $("#prodcomps").val();
+			console.log('prod comp input: ' + prodCompInput);
+			var prodCompArr = prodCompInput.split(',');
+			
+			for(var i = 0; i < prodCompArr.length; i++) {
+				var enteredProdComp = prodCompArr[i].trim();
+				var prodComp = enteredProdComp.toUpperCase();
+				if(!prodCompStr.includes(prodComp)) {
+					throw "Invalid prod comp \"" + enteredProdComp + "\", please check spelling and try again.";
+				}
+			}
+			
+			$('#prodcomperror').text('');
+			$(this).removeClass("border-danger");
+			valid = true;
+		} catch(msg) {
+			$('#prodcomperror').text(msg);
+			$(this).addClass("border-danger");
+			$(this).select();
+			valid = false;
+		}
+	});
+	
+	/*$(document).on("click", "#loginnext-btn", function(){
 		try{
 			if($("#swuititle").val() == '') {
 				throw "Customer Name is required";
@@ -113,15 +168,29 @@ $(document).ready(function() {
 			}
 			$("#formerror").text("");
 		}catch(msg){
-			event.preventDefault();
 			$("#formerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
 		}
-	});
+	});*/
 	
 });
+
+function validate() {
+	try {
+		if(!valid) {
+			throw "Please fix form error(s)";
+		}
+		$("#formerror").text('');
+		$('#customerInfo').submit();
+	} catch(msg) {
+		$("#formerror").text(msg);
+		$("html, body").animate({
+			scrollTop: $(document.body).offset().top
+		}, 1500);
+	}
+}
 
 function checkIfWarningNeeded(acctnbr) {
 	console.log("checking if warning should be shown...");
@@ -172,10 +241,12 @@ function validateAcctNbr() {
 		$(selectorError).text("");
 		$("#formerror").text("");
 		checkIfWarningNeeded(acctnbr);
+		valid = true;
 	}catch(msg){
 		$(selector).addClass("border-danger");
 		$(selector).select();
 		$(selectorError).text(msg);
+		valid = false;
 	}
 }
 
@@ -332,16 +403,6 @@ function clearAllTextInput() {
 		$(this).val('');
 	});
 }
-
-/*function toggleProfileInput(value){
-	if(value == 'CUSTOMER') {
-		$(".rmbyrm").hide();
-		$(".locid").hide();
-	} else {
-		$(".rmbyrm").show();
-		$(".locid").show();
-	}
-}*/
 
 function proceedYes() {
 	console.log("proceed with form completion");

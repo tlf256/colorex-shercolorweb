@@ -125,6 +125,12 @@
              </result>
              <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
         </action>
+        <action name="ajaxProdCompResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="prodCompList">
+             <result name="success" type="json">
+             	<param name="result">${prodCompList}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
         <action name="ajaxAcctTypeResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="buildCustTypeList">
              <result name="success" type="json">
              	<param name="result">${result}</param>

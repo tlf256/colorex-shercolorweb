@@ -298,6 +298,31 @@
 		</div>
 	<br>
 	</s:if>
+	<s:if test="sessionMap['CustomerDetail'].prodCompList != null">
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+				<table id="prodComp_detail" class="table table-striped table-bordered">
+					<tr>
+						<th>Prod Comp</th>
+						<th>Primary Prod Comp</th>
+					</tr>
+					<s:iterator var="custProdComp" value="sessionMap['CustomerDetail'].prodCompList" status="i">
+					<tr>
+						<td>
+							<s:property value="#custProdComp.prodComp" />
+						</td>
+						<td>
+							<s:property value="#custProdComp.primaryProdComp" />
+						</td>
+					</tr>
+					</s:iterator>
+				</table>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	<br>
+	</s:if>
 	<s:if test="!sessionMap['CustomerDetail'].loginList.isEmpty">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>

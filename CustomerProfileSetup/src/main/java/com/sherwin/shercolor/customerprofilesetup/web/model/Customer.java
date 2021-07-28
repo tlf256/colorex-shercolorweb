@@ -27,6 +27,7 @@ public class Customer {
 	private String custType;
 	private boolean useLocatorId;
 	private boolean useRoomByRoom;
+	private String prodComps;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -216,6 +217,12 @@ public class Customer {
 	}
 	public void setUseRoomByRoom(boolean useRoomByRoom) {
 		this.useRoomByRoom = useRoomByRoom;
+	}
+	public String getProdComps() {
+		return prodComps;
+	}
+	public void setProdComps(String prodComps) {
+		this.prodComps = prodComps;
 	}
 	
 }

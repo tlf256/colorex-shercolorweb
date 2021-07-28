@@ -5,6 +5,7 @@ import java.util.List;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
@@ -49,6 +50,7 @@ public class RequestObject {
 	private boolean roomByRoom;
 	private CustProfile profile;
 	private List<String> custTypeList;
+	private List<CustProdComp> prodCompList;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -281,6 +283,12 @@ public class RequestObject {
 	}
 	public void setCustTypeList(List<String> custTypeList) {
 		this.custTypeList = custTypeList;
+	}
+	public List<CustProdComp> getProdCompList() {
+		return prodCompList;
+	}
+	public void setProdCompList(List<CustProdComp> prodCompList) {
+		this.prodCompList = prodCompList;
 	}
 	public void reset() {
 		this.customerId = "";

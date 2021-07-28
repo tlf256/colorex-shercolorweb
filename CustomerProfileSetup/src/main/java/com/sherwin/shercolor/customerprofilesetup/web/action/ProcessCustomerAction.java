@@ -16,7 +16,9 @@ import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
@@ -32,12 +34,16 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	private Map<String, Object> sessionMap;
 	private String result;
 	private String AcctNbr;
+	List<String> prodCompList;
 
 	@Autowired
 	CustomerService customerService;
 	
 	@Autowired
 	EulaService eulaService;
+	
+	@Autowired
+	ProductService productService;
 
 	public String execute() {
 		try {	
@@ -94,6 +100,8 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				reqObj.setEulaHistToActivate(eh);
 				reqObj.setEulaHistList(ehlist);
 			}
+			
+			reqObj.setProdCompList(prodCompList(customer));
 			
 			sessionMap.put("CustomerDetail", reqObj);
 			
@@ -251,6 +259,49 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return eh;
 	}
 	
+	private List<CustProdComp> prodCompList(Customer customer){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(customer.getProdComps() != null && !customer.getProdComps().isEmpty()) {
+			String[] prodCompsArr = customer.getProdComps().split(",");
+			for(int i = 0; i < prodCompsArr.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				//String enteredProdComp = prodCompsArr[i].trim();
+				String prodComp = prodCompsArr[i].trim().toUpperCase();
+				
+				//validate prod comp
+				//if(validateProdComp(prodComp)) {
+					cpc.setProdComp(prodComp);
+					if(i==0) {
+						cpc.setPrimaryProdComp(true);
+					} else {
+						cpc.setPrimaryProdComp(false);
+					}
+					custProdCompList.add(cpc);
+				//} else {
+					//addFieldError("customer.prodComps", "Prod Comp " + enteredProdComp + " invalid, please check spelling and try again");
+					//return INPUT;
+				//}
+			}
+		}
+		
+		return custProdCompList;
+	}
+	
+	public String prodCompList() {
+		//result = "false";
+		//prodCompList = new ArrayList<String>();
+		
+		//get CDS_PROD list of prod comps to compare against input
+		setProdCompList(productService.getDistinctProdComps());
+		
+		//if(prodCompList.contains(prodComp)) {
+			//result = "true";
+		//}
+		
+		return SUCCESS;
+	}
+	
 	public String checkAcctNbr() {
 		try {
 			List<Object> acctNbrList = customerService.getAllCustomerIds();
@@ -319,6 +370,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public void setAcctNbr(String acctNbr) {
 		AcctNbr = acctNbr;
+	}
+
+	public List<String> getProdCompList() {
+		return prodCompList;
+	}
+
+	public void setProdCompList(List<String> prodCompList) {
+		this.prodCompList = prodCompList;
 	}
 
 }

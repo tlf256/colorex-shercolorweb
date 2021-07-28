@@ -46,3 +46,12 @@ function toggleProfileInput(value){
 		$(".locid").show();
 	}
 }
+
+function toggleTextArea(value){
+	console.log("prod comp restriction " + value);
+	if(value == 'true') {
+		$("#prodComps").removeClass('d-none');
+	} else {
+		$("#prodComps").addClass('d-none');
+	}
+}
