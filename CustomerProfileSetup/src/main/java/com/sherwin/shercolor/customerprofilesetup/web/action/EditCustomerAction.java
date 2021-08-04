@@ -18,10 +18,12 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebProdComps;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
@@ -46,6 +48,8 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	private Date effDate;
 	private Date expDate;
 	private String eulaText;
+	private boolean prodCompDeleted;
+	private boolean prodCompAdded;
 	
 	@Autowired
 	EulaService eulaService;
@@ -145,6 +149,28 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 					reqObj.setProfile(null);
 				} else {
 					reqObj.setProfile(mapCustProfile(cust));
+				}
+			}
+			
+			String prodComps = cust.getProdComps();
+			List<CustProdComp> prodCompList = reqObj.getProdCompList();
+			
+			if(prodComps != null) {
+				// new data
+				reqObj.setProdCompList(mapProdCompList(prodComps));
+				
+			} else {
+				if(prodCompList != null) {
+					// records either already exist or were entered previously
+					// check if the list needs updating
+					// if null then there isn't any data to process
+					List<CustProdComp> editProdCompList = mapProdCompList(cust.getProdCompArr(), cust.getPrimaryProdComp());
+					
+					if(!editProdCompList.equals(prodCompList)) {
+						// change has been made
+						// save new data
+						reqObj.setProdCompList(editProdCompList);
+					}
 				}
 			}
 			
@@ -375,6 +401,44 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		return profile;
 	}
 	
+	private List<CustProdComp> mapProdCompList(String prodComps){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null && !prodComps.isEmpty()) {
+			String[] prodCompsArr = prodComps.split(",");
+			for(int i = 0; i < prodCompsArr.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodCompsArr[i].trim().toUpperCase();
+				
+				cpc.setProdComp(prodComp);
+				if(i==0) {
+					cpc.setPrimaryProdComp(true);
+				} else {
+					cpc.setPrimaryProdComp(false);
+				}
+				custProdCompList.add(cpc);
+			}
+		}
+		
+		return custProdCompList;
+	}
+	
+	private List<CustProdComp> mapProdCompList(String[] prodComps, boolean[] primaryProdComp){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null) {
+			for(int i = 0; i < prodComps.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodComps[i].trim().toUpperCase();
+				cpc.setProdComp(prodComp);
+				cpc.setPrimaryProdComp(primaryProdComp[i]);
+				custProdCompList.add(cpc);
+			}
+		}
+		
+		return custProdCompList;
+	}
+	
 	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
@@ -419,6 +483,29 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
          
         return fileBytes;
     }
+	
+	public void deleteProdComp(String prodComp) {
+		RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+		
+		List<CustProdComp> prodCompList = reqObj.getProdCompList();
+		List<CustProdComp> deletedProdComps = new ArrayList<CustProdComp>();
+		
+		if(prodCompList != null) {
+			for(CustProdComp pc : prodCompList) {
+				if(pc.getProdComp().equalsIgnoreCase(prodComp)) {
+					deletedProdComps.add(pc);
+					prodCompList.remove(pc);
+				}
+			}
+		}
+		
+		reqObj.setProdCompList(prodCompList);
+		reqObj.setDeletedProdComps(deletedProdComps);
+		
+		sessionMap.put("CustomerDetail", reqObj);
+		
+		setProdCompDeleted(true);
+	}
 
 	@Override
 	public void setSession(Map<String, Object> sessionMap) {
@@ -495,6 +582,22 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 
 	public void setEulaText(String eulaText) {
 		this.eulaText = allowCharacters(Encode.forHtml(eulaText.trim()));
+	}
+
+	public boolean isProdCompDeleted() {
+		return prodCompDeleted;
+	}
+
+	public void setProdCompDeleted(boolean prodCompDeleted) {
+		this.prodCompDeleted = prodCompDeleted;
+	}
+
+	public boolean isProdCompAdded() {
+		return prodCompAdded;
+	}
+
+	public void setProdCompAdded(boolean prodCompAdded) {
+		this.prodCompAdded = prodCompAdded;
 	}
 
 }

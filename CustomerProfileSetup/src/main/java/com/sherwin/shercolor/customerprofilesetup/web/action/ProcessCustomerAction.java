@@ -101,7 +101,8 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				reqObj.setEulaHistList(ehlist);
 			}
 			
-			reqObj.setProdCompList(prodCompList(customer));
+			//reqObj.setProdComps(customer.getProdComps());
+			reqObj.setProdCompList(mapProdCompList(customer.getProdComps()));
 			
 			sessionMap.put("CustomerDetail", reqObj);
 			
@@ -242,6 +243,28 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return profile;
 	}
 	
+	private List<CustProdComp> mapProdCompList(String prodComps){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null && !prodComps.isEmpty()) {
+			String[] prodCompsArr = prodComps.split(",");
+			for(int i = 0; i < prodCompsArr.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodCompsArr[i].trim().toUpperCase();
+				
+				cpc.setProdComp(prodComp);
+				if(i==0) {
+					cpc.setPrimaryProdComp(true);
+				} else {
+					cpc.setPrimaryProdComp(false);
+				}
+				custProdCompList.add(cpc);
+			}
+		}
+		
+		return custProdCompList;
+	}
+	
 	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
@@ -259,45 +282,9 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return eh;
 	}
 	
-	private List<CustProdComp> prodCompList(Customer customer){
-		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+	public String setActionProdCompList() {
 		
-		if(customer.getProdComps() != null && !customer.getProdComps().isEmpty()) {
-			String[] prodCompsArr = customer.getProdComps().split(",");
-			for(int i = 0; i < prodCompsArr.length; i++) {
-				CustProdComp cpc = new CustProdComp();
-				//String enteredProdComp = prodCompsArr[i].trim();
-				String prodComp = prodCompsArr[i].trim().toUpperCase();
-				
-				//validate prod comp
-				//if(validateProdComp(prodComp)) {
-					cpc.setProdComp(prodComp);
-					if(i==0) {
-						cpc.setPrimaryProdComp(true);
-					} else {
-						cpc.setPrimaryProdComp(false);
-					}
-					custProdCompList.add(cpc);
-				//} else {
-					//addFieldError("customer.prodComps", "Prod Comp " + enteredProdComp + " invalid, please check spelling and try again");
-					//return INPUT;
-				//}
-			}
-		}
-		
-		return custProdCompList;
-	}
-	
-	public String prodCompList() {
-		//result = "false";
-		//prodCompList = new ArrayList<String>();
-		
-		//get CDS_PROD list of prod comps to compare against input
 		setProdCompList(productService.getDistinctProdComps());
-		
-		//if(prodCompList.contains(prodComp)) {
-			//result = "true";
-		//}
 		
 		return SUCCESS;
 	}

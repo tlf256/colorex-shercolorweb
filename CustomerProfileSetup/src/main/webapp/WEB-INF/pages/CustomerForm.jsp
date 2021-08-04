@@ -288,11 +288,11 @@
 		</div>
 		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
 	</div>
-	<div class="row d-none" id="prodComps">
+	<div class="row prodcomps">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-1">
-			<s:textarea class="" id="prodcomps" name="customer.prodComps" label="Enter Prod Comp(s), separated by comma" 
-				placeholder="First listed designates primary Prod Comp"></s:textarea>
+			<s:textarea class="" id="prodcomps" name="customer.prodComps" label="Enter Prod Comp(s)" 
+				placeholder="List primary first, separated by comma"></s:textarea>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>

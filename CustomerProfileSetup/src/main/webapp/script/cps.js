@@ -50,8 +50,8 @@ function toggleProfileInput(value){
 function toggleTextArea(value){
 	console.log("prod comp restriction " + value);
 	if(value == 'true') {
-		$("#prodComps").removeClass('d-none');
+		$(".prodcomps").show();
 	} else {
-		$("#prodComps").addClass('d-none');
+		$(".prodcomps").hide();
 	}
 }

@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customerprofilesetup.web.model;
 
 import java.util.List;
 
+import com.sherwin.shercolor.common.domain.CustWebProdComps;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
@@ -51,6 +52,9 @@ public class RequestObject {
 	private CustProfile profile;
 	private List<String> custTypeList;
 	private List<CustProdComp> prodCompList;
+	private List<CustWebProdComps> prodCompRecordsList;
+	private List<CustProdComp> deletedProdComps;
+	private String prodComps;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -289,6 +293,24 @@ public class RequestObject {
 	}
 	public void setProdCompList(List<CustProdComp> prodCompList) {
 		this.prodCompList = prodCompList;
+	}
+	public List<CustWebProdComps> getProdCompRecordsList() {
+		return prodCompRecordsList;
+	}
+	public void setProdCompRecordsList(List<CustWebProdComps> prodCompRecordsList) {
+		this.prodCompRecordsList = prodCompRecordsList;
+	}
+	public List<CustProdComp> getDeletedProdComps() {
+		return deletedProdComps;
+	}
+	public void setDeletedProdComps(List<CustProdComp> deletedProdComps) {
+		this.deletedProdComps = deletedProdComps;
+	}
+	public String getProdComps() {
+		return prodComps;
+	}
+	public void setProdComps(String prodComps) {
+		this.prodComps = prodComps;
 	}
 	public void reset() {
 		this.customerId = "";

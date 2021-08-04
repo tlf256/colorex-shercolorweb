@@ -121,17 +121,21 @@ $(document).ready(function() {
 	
 	$(document).on("blur", "#prodcomps", function(){
 		try {
-			var prodCompStr = JSON.stringify(prodComps);
-			var prodCompInput = $("#prodcomps").val();
-			console.log('prod comp input: ' + prodCompInput);
-			var prodCompArr = prodCompInput.split(',');
-			
-			for(var i = 0; i < prodCompArr.length; i++) {
-				var enteredProdComp = prodCompArr[i].trim();
-				var prodComp = enteredProdComp.toUpperCase();
-				if(!prodCompStr.includes(prodComp)) {
-					throw "Invalid prod comp \"" + enteredProdComp + "\", please check spelling and try again.";
+			if(prodComps != null) {
+				var prodCompStr = JSON.stringify(prodComps);
+				var prodCompInput = $("#prodcomps").val();
+				console.log('prod comp input: ' + prodCompInput);
+				var prodCompArr = prodCompInput.split(',');
+				
+				for(var i = 0; i < prodCompArr.length; i++) {
+					var enteredProdComp = prodCompArr[i].trim();
+					var prodComp = enteredProdComp.toUpperCase();
+					if(!prodCompStr.includes(prodComp)) {
+						throw "Invalid prod comp \"" + enteredProdComp + "\", please check spelling and try again.";
+					}
 				}
+			} else {
+				throw "Could not validate prod comp(s), please refresh page and try again";
 			}
 			
 			$('#prodcomperror').text('');
@@ -362,6 +366,7 @@ function showHiddenInput() {
 	$(".custtype").show();
 	$(".eula").show();
 	$("#cont").hide();
+	$(".prodaccess").show();
 	$("#swuititle").focus();
 }
 
@@ -379,6 +384,9 @@ function hideInput() {
 	$(".rmbyrm").hide();
 	$(".locid").hide();
 	$(".eula").hide();
+	$(".prodaccess").hide();
+	$(".prodcomps").hide();
+	$("#restrictno").attr("checked", true);
 }
 
 function hideAcctNbr() {

@@ -18,6 +18,10 @@ $(document).ready(function() {
 		}
 	}
 	
+	if($('#prodCompAccess').is(':visible')) {
+		$('#restrictno').attr('checked', true);
+	}
+	
 	var existinglogins = $(".kyfld").map(function(index){
 		if($(this).val()!=""){
 			return $(this).val();
@@ -72,7 +76,7 @@ $(document).ready(function() {
 	$(document).on("click", ".dltrow", function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
 		//window.alert($(".cloned-loginrow").length);
-		if($(".cloned-loginrow").length==1){ 
+		if($(".cloned-row").length==1){ 
 			input.removeAttr("readonly");
 			input.val("");
 			input.eq(0).focus();
@@ -104,6 +108,21 @@ $(document).ready(function() {
 			$(this).addClass("d-none");
 		}
 		a++;
+	});
+	
+	$(document).on("click", ".addpcrow", function(){
+		var i = 0;
+		var prodCompRow = $('#newProdCompRow');
+		var clone = prodCompRow.clone(true);
+		var rowId = prodCompRow + i;
+		
+		clone.attr("id", rowid);
+		$("#prodComp_detail").append(clone);
+		clone.find("input").val("");
+		$("#"+rowid).find("input").each(function(){
+			$(this).attr("id", $(this).attr("id")+(i+1));
+		});
+		i++;
 	});
 	
 	$("#edt").on("click", function(){
@@ -253,6 +272,53 @@ $(document).ready(function() {
 			$("#formerror").text("");
 			$(this).removeClass("border-danger");
 		}catch(msg){
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).select();
+		}
+	});
+	
+	var prodComps = $.ajax({
+		url:"ajaxProdCompResult.action",
+		dataType:"json",
+		async: true,
+		success:function(data){
+			console.log("Ajax success: received prod comps");
+			var prodComps = data.prodCompList;
+			console.log("prod comps json result: " + data.prodCompList);
+			return prodComps;
+		},
+		error:function(request, status){
+			console.log("Ajax error: " + status);
+			alert(status + ": could not retrieve prod comps.");
+		}
+	});
+	
+	$(document).on("blur", "#prodcomps", function(){
+		try {
+			if(prodComps != null) {
+				var prodCompStr = JSON.stringify(prodComps);
+				var prodCompInput = $("#prodcomps").val();
+				console.log('prod comp input: ' + prodCompInput);
+				var prodCompArr = prodCompInput.split(',');
+				
+				for(var i = 0; i < prodCompArr.length; i++) {
+					var enteredProdComp = prodCompArr[i].trim();
+					var prodComp = enteredProdComp.toUpperCase();
+					if(!prodCompStr.includes(prodComp)) {
+						throw "Invalid prod comp \"" + enteredProdComp + "\", please check spelling and try again.";
+					}
+				}
+			} else {
+				throw "Could not validate prod comp(s), please refresh page and try again";
+			}
+			
+			$('#custediterror').text('');
+			$(this).removeClass("border-danger");
+		} catch(msg) {
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
 			}, 1500);
@@ -484,6 +550,27 @@ $(document).ready(function() {
 	});
 	
 });
+
+function deleteProdCompRow() {
+	$.ajax({
+		url:"ajaxDeleteProdComp.action",
+		dataType:"json",
+		async: true,
+		success:function(data){
+			result = data.prodCompDeleted;
+			console.log("Result of prod comp delete is " + result);
+			if(result) {
+				var input = $(this).parent('td').parent('tr').find("input");
+				input.val("");
+				$(this).parent('td').parent('tr').remove();
+			}
+			
+		},
+		error:function(request, status){
+			alert(status + ": could not delete prod comp. Please retry.");
+		}
+	});
+}
 
 function buildSelectList(custId, accttype, selectList, selectedCustType) {
 	customerId = custId.trim();

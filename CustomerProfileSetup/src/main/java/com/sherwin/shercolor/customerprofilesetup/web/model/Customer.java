@@ -28,6 +28,8 @@ public class Customer {
 	private boolean useLocatorId;
 	private boolean useRoomByRoom;
 	private String prodComps;
+	private boolean[] primaryProdComp;
+	private String[] prodCompArr;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -223,6 +225,18 @@ public class Customer {
 	}
 	public void setProdComps(String prodComps) {
 		this.prodComps = prodComps;
+	}
+	public boolean[] getPrimaryProdComp() {
+		return primaryProdComp;
+	}
+	public void setPrimaryProdComp(boolean[] primaryProdComp) {
+		this.primaryProdComp = primaryProdComp;
+	}
+	public String[] getProdCompArr() {
+		return prodCompArr;
+	}
+	public void setProdCompArr(String[] prodCompArr) {
+		this.prodCompArr = prodCompArr;
 	}
 	
 }
