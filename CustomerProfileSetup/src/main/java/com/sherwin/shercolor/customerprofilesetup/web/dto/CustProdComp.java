@@ -1,5 +1,7 @@
 package com.sherwin.shercolor.customerprofilesetup.web.dto;
 
+import java.util.Comparator;
+
 public class CustProdComp {
 	private String prodComp;
 	private boolean primaryProdComp;

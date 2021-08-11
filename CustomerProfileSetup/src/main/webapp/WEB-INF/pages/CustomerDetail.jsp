@@ -298,7 +298,7 @@
 		</div>
 	<br>
 	</s:if>
-	<s:if test="sessionMap['CustomerDetail'].prodCompList != null">
+	<s:if test="sessionMap['CustomerDetail'].prodCompList != null && !sessionMap['CustomerDetail'].prodCompList.isEmpty">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
 			<div class="col-lg-8 col-md-8">

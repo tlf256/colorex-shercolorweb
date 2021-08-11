@@ -1,10 +1,12 @@
 /**
  * 
  */
+
+var valid;
+
 $(document).ready(function() {
 	
 	var result;
-	var valid;
 	
 	//$("#loginnext-btn").prop("disabled", true);
 	

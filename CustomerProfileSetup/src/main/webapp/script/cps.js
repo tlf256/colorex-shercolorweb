@@ -53,5 +53,6 @@ function toggleTextArea(value){
 		$(".prodcomps").show();
 	} else {
 		$(".prodcomps").hide();
+		$("#prodcomps").val("");
 	}
 }

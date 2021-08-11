@@ -2,6 +2,8 @@ package com.sherwin.shercolor.customerprofilesetup.web.action;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +36,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	private Map<String, Object> sessionMap;
 	private String result;
 	private String AcctNbr;
-	List<String> prodCompList;
+	private List<String> prodCompList;
 
 	@Autowired
 	CustomerService customerService;
@@ -258,9 +260,12 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				} else {
 					cpc.setPrimaryProdComp(false);
 				}
+				
 				custProdCompList.add(cpc);
 			}
 		}
+		
+		Collections.sort(custProdCompList, Comparator.comparing(o -> o.getProdComp()));
 		
 		return custProdCompList;
 	}
