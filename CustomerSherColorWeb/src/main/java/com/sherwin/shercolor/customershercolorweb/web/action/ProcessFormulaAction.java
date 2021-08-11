@@ -63,6 +63,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private List<DispenseItem> dispenseFormula;
 	private List<DispenseItem> drawdownShotList;
 	private int qtyDispensed;
+	private int qtyOrdered;
 	private TinterInfo tinter;
 	private int recDirty;
 	private boolean siteHasTinter;
@@ -115,6 +116,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			displayFormula = reqObj.getDisplayFormula();
 			qtyDispensed = reqObj.getQuantityDispensed();
+			qtyOrdered = reqObj.getQuantityOrdered();
 			tinter = reqObj.getTinter();
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			
@@ -368,6 +370,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			setDisplayFormula(reqObj.getDisplayFormula());
 			setQtyDispensed(reqObj.getQuantityDispensed());
+			setQtyOrdered(reqObj.getQuantityOrdered());
 			setTinter(reqObj.getTinter());
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			
@@ -548,7 +551,6 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			return ERROR;
 		}
 	}
-	
 
 	public DataInputStream getInputStream() {
 		return inputStream;
@@ -599,6 +601,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setQtyDispensed(int qtyDispensed) {
 		this.qtyDispensed = qtyDispensed;
+	}
+	
+	public int getQtyOrdered() {
+		return qtyOrdered;
+	}
+
+	public void setQtyOrdered(int qtyOrdered) {
+		this.qtyOrdered = qtyOrdered;
 	}
 
 	public TinterInfo getTinter() {

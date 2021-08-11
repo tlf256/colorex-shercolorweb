@@ -69,6 +69,8 @@ public class RequestObject {
 	private BigDecimal[] curveArray;
 	private String upc;
 	private int quantityDispensed;
+	private int quantityOrdered;
+	private int tintQueueCount;
 	private TinterInfo tinter;
 	private SpectroInfo spectro;
 	private int daysUntilPasswdExpire;
@@ -470,6 +472,12 @@ public class RequestObject {
 	public void setQuantityDispensed(int quantityDispensed) {
 		this.quantityDispensed = quantityDispensed;
 	}
+	public int getQuantityOrdered() {
+		return quantityOrdered;
+	}
+	public void setQuantityOrdered(int quantityOrdered) {
+		this.quantityOrdered = quantityOrdered;
+	}
 	public void setTinter(TinterInfo tinter) {
 		this.tinter = tinter;
 	}
@@ -556,6 +564,12 @@ public class RequestObject {
 	}
 	public void setAllRooms(List<CdsRoomList> allRooms) {
 		this.allRooms = allRooms;
+	}
+	public int getTintQueueCount() {
+		return tintQueueCount;
+	}
+	public void setTintQueueCount(int tintQueueCount) {
+		this.tintQueueCount = tintQueueCount;
 	}
 
 }
