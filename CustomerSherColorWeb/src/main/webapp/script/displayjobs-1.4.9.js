@@ -2,6 +2,25 @@ var jobTable;
 var valid = true;
 
 $(document).ready(function() {
+	var displayTintQueue = $("#listJobsAction_displayTintQueue").val();
+	if (displayTintQueue) {
+		
+		var userLocale = "${session['WW_TRANS_I18N_LOCALE']}";
+		var langUrl = null;
+		// translate datatable text and make it sortable by that locale's date format 
+		switch(userLocale){
+			case("es_ES"):
+				langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json";
+				$.fn.dataTable.moment('DD-MMM-YYYY H:mm:ss', 'es');
+				break;
+			case("zh_CN"):
+				langUrl = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Chinese.json";
+				$.fn.dataTable.moment('YYYY-M-D H:mm:ss', 'zh-cn');
+				break;
+			default:
+				$.fn.dataTable.moment('MMM D, YYYY h:mm:ss A', 'en');
+		}
+	}
 	
 	var match = $.urlParam('match');
 	//$("#listJobsAction_formulaUserCorrectAction")
@@ -103,22 +122,6 @@ $(document).ready(function() {
             	}
             }
         ],
-        /*"columnDefs": [
-        	{
-        		"targets": "_all",
-        		"data": null,
-				"render": function(data, type, row){
-					console.log(data);
-					console.log(type);
-					console.log(row);
-					if(type === 'display'){
-						var str = $('td').text();
-						return $.parseHTML(str);
-					}
-					return data;
-				}
-            }
-        ],*/
         "language": {
         	"emptyTable" : i18n['displayJobs.noJobsAvailable'],
         	"search": i18n['displayJobs.filterColon']
@@ -147,6 +150,10 @@ $(document).ready(function() {
     	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action'){
     		showSearchModal();
     	}
+    }
+    
+    if (displayTintQueue) {
+    	$(".dt-buttons").hide();
     }
 	
 	/*var cell = jobTable.cell(this);

@@ -34,12 +34,7 @@
 .sw-bg-main {
 	background-color: ${sessionScope[thisGuid].rgbHex};
 }
-#dispenseQuantityInputError {
-	font-weight: bold;
-	color: red;
-}
-
-#verifyScanInputError {
+.inputError {
 	font-weight: bold;
 	color: red;
 }
@@ -145,7 +140,7 @@ function printDrawdownLabel() {
 function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
 	if (verifyRoomSelected() == true){
-		// save before print
+		// save before action
 		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
 		if (isNaN(myCtlNbr))
 			myCtlNbr = 0;
@@ -170,7 +165,7 @@ function prePrintSave(labelType, orientation) {
 			var myGuid = $("#reqGuid").val();
 			$
 					.ajax({
-						url : "saveOnPrintAction.action",
+						url : "saveBeforeAction.action",
 						type : "POST",
 						data : {
 							reqGuid : myGuid,
@@ -337,7 +332,83 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 	//global variables moved up above
 	//tinter stuff moved to dispense-x.x.x.js
-
+	
+	function showSetOrderQuantityModal() {
+		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
+		if (isNaN(myCtlNbr))
+			myCtlNbr = 0;
+		if (myCtlNbr == 0) {
+			console.log("ctlNbr is zero");
+		}
+		var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
+				.val()));
+		if (isNaN(myDirty))
+			myDirty = 0;
+		if (myDirty > 0) {
+			console.log("dirty is true");
+		}
+		if (myCtlNbr == 0 || myDirty > 0) {
+			var curDate = new Date();
+			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
+			var myGuid = $("#reqGuid").val();
+			$
+					.ajax({
+						url : "saveBeforeAction.action",
+						type : "POST",
+						data : {
+							reqGuid : myGuid,
+							jsDateString : curDate.toString()
+						},
+						datatype : "json",
+						async : true,
+						success : function(data) {
+							if (data.sessionStatus === "expired") {
+								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+							} else {
+								$("#controlNbr").text(data.controlNbr);
+								$("#controlNbrDisplay").show();
+								$('#setOrderQuantityModal').modal('show');
+								var saveActionDirty = parseInt(data.recDirty);
+								if (!isNaN(saveActionDirty)){
+									$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+								}
+							}
+						},
+						error : function(err) {
+							alert("failure: " + err);
+						}
+					});
+		} else {
+			console.log("Job is not dirty. Save not needed.");
+			$('#setOrderQuantityModal').modal('show');
+		}	
+	}
+	
+	function updateOrderQuantity(quantity) {
+		var i = 0
+		var myValue = $("#reqGuid").val();
+		var curDate = new Date();
+		$
+		.getJSON(
+				"updateOrderQuantityAction.action?reqGuid=" + myValue
+						+ "&jsDateString=" + curDate.toString()
+						+ "&quantity=" + quantity.toString(),
+				function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						var qtyDispensed = parseInt($("#qtyDispensed").text());
+						var qtyOrdered = $("#orderQuantityInput").val();
+						$("#qtyOrdered").text(qtyOrdered);
+						$("#qtyRemaining").text(parseInt(qtyOrdered)-qtyDispensed);
+						if (qtyOrdered == qtyDispensed) {
+							$("#formulaSetOrderQty").hide();
+						}
+					}
+				});
+		$('#setOrderQuantityModal').modal('hide');
+	}
+	
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
@@ -356,6 +427,14 @@ function ParsePrintMessage() {
 								$("#controlNbrDisplay").show();
 								$("#qtyDispensed").text(data.qtyDispensed);
 								updateButtonDisplay();
+								
+								qtyRemaining = $('#qtyRemaining');
+								qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+								if (parseInt(qtyRemaining.text())<=0) {
+									qtyRemaining.text(0);
+									$("#formulaSetOrderQty").hide();
+								}
+								
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
 								// send tinter event (no blocking here)
 								var myGuid = $(
@@ -432,7 +511,43 @@ function ParsePrintMessage() {
 								$("#verifyScanInput").select();
 							}
 						});
-
+		
+		$(document).on("shown.bs.modal", "#setOrderQuantityModal", function(event) {
+			$("#orderQuantityInput").val("");
+			$("#orderQuantityInputError").text("");
+			$("#orderQuantityInput").focus();
+		});
+		
+		$(document).on("keypress", "#orderQuantityInput", function(event) {
+			if (event.keyCode == 13) {
+				event.preventDefault();
+				$("#setOrderQuantityButton").click();
+			}
+		});
+		
+		$("#setOrderQuantityButton")
+		.on(
+				"click",
+				function(event) {
+					event.preventDefault();
+					event.stopPropagation();
+					// verify quantity input
+					var qtyOrdered = parseInt($("#orderQuantityInput").val());
+					var qtyDispensed = parseInt($("#qtyDispensed").text());
+					if (qtyOrdered > 0 && qtyOrdered < 1000 && qtyOrdered >= qtyDispensed) {
+						updateOrderQuantity(qtyOrdered);
+						waitForShowAndHide("#setDispenseQuantityModal");
+					} else {
+						if (qtyOrdered < qtyDispensed) {
+							$("#orderQuantityInputError").text('<s:text name="displayFormula.invalidInputDispQty"/>');
+						} else {
+							$("#orderQuantityInputError").text('<s:text name="displayFormula.invalidInput"/>');
+						}
+						
+						$("#orderQuantityInput").select();
+					}
+				});
+		
 		$(document).on("keypress", "#dispenseQuantityInput", function(event) {
 			if (event.keyCode == 13) {
 				event.preventDefault();
@@ -478,6 +593,14 @@ function ParsePrintMessage() {
 														$("#controlNbr").text(data.controlNbr);
 														$("#controlNbrDisplay").show();
 														$("#qtyDispensed").text(data.qtyDispensed);
+														
+														qtyRemaining = $('#qtyRemaining');
+														qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+														if (parseInt(qtyRemaining.text())<=0) {
+															qtyRemaining.text(0);
+															$("#formulaSetOrderQty").hide();
+														}
+
 														updateButtonDisplay();
 														console.log("UPDATED BUTTON DISPLAY")
 													}
@@ -1383,6 +1506,24 @@ function ParsePrintMessage() {
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
+				<div class="row" id="quantityInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyOrderedColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyOrdered">${sessionScope[thisGuid].quantityOrdered}</span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row" id="remainingInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyRemaining"></span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
 			</s:if>
 			<s:else>
 				<div class="row" id="dispenseInfoRow">
@@ -1411,6 +1552,8 @@ function ParsePrintMessage() {
 						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						</s:if>
+						<button type="button" class="btn btn-secondary" id="formulaSetOrderQty"
+							onclick="showSetOrderQuantityModal()"><s:text name="displayFormula.setOrderQty"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
@@ -1441,6 +1584,8 @@ function ParsePrintMessage() {
 							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<button type="button" class="btn btn-secondary" id="formulaSetOrderQty"
+							onclick="showSetOrderQuantityModal()"><s:text name="displayFormula.setOrderQty"/></button>
 						<button type="button" class="btn btn-secondary" id="formulaPrint"
 							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
@@ -1472,11 +1617,41 @@ function ParsePrintMessage() {
 							<div class="modal-body">
 								<input type="text" class="form-control"
 									id="dispenseQuantityInput" autofocus="autofocus"> <strong
-									id="dispenseQuantityInputError"></strong>
+									id="dispenseQuantityInputError" class="inputError"></strong>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary"
 									data-dismiss="modal" id="setDispenseQuantityButton"><s:text name="global.next"/></button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+			<!-- Set Order Quantity Modal Window -->
+			<div class="modal" aria-labelledby="setOrderQuantityModal"
+				aria-hidden="true" id="setOrderQuantityModal" role="dialog">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><s:text name="displayFormula.enterNumberofContainersToOrder"/></h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<input type="text" class="form-control"
+									id="orderQuantityInput" autofocus="autofocus"> <strong
+									id="orderQuantityInputError" class="inputError"></strong>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal" id="setOrderQuantityButton"><s:text name="global.next"/></button>
+								<button type="button" class="btn btn-secondary"
+								id="orderQuantityClose" data-dismiss="modal" aria-label="Cancel"><s:text name="global.cancel"/></button>
 							</div>
 						</div>
 					</div>
@@ -1498,7 +1673,7 @@ function ParsePrintMessage() {
 						</div>
 						<div class="modal-body">
 							<input type="text" class="form-control" id="verifyScanInput"
-								autofocus="autofocus"> <strong id="verifyScanInputError"></strong>
+								autofocus="autofocus"> <strong id="verifyScanInputError" class="inputError"></strong>
 						</div>
 						<div class="modal-body">
 							<span class="dispenseNumberTracker mx-auto"
@@ -1822,6 +1997,18 @@ function ParsePrintMessage() {
 		}
 		//-->
 		$(document).ready(function() {
+			// Display remaining qty. Don't display negative values if the user dispenses more than what was ordered.
+			var qtyOrdered = parseInt(${sessionScope[thisGuid].quantityOrdered});
+			var qtyDispensed = parseInt(${sessionScope[thisGuid].quantityDispensed});
+			var remaining = (qtyOrdered - qtyDispensed);
+			if (remaining < 0) {
+				remaining = 0;
+			}
+			if(remaining == 0 && qtyOrdered != 0) {
+				$("#formulaSetOrderQty").hide();
+			}
+			$("#qtyRemaining").text(remaining);
+			
 			//init comms to device handler for tinter
 			if ($("#formulaUserPrintAction_sessionHasTinter").val() == "true") {
 				ws_tinter = new WSWrapper("tinter");

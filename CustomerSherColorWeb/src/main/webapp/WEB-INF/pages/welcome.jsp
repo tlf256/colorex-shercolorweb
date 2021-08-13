@@ -1166,7 +1166,8 @@
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.tinterMenu"/></a>
-	        						<ul class="dropdown-menu" id="tintermenu">
+	        						<ul class="dropdown-menu" id="tintermenu"> 
+	        							<li id="tintQueue"><a class="dropdown-item" tabindex="-1" href='<s:url action="listJobsAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="displayTintQueue" value="true"/></s:url>'><span class='fa fa-list-ol pr-2'></span> <s:text name="welcome.tintQueue"/></a></li>
 								    	<li id="tinterPurge"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterPurgeAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-tint pr-2'></span> <s:text name="global.purge"/></a></li>
 								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> <s:text name="welcome.updateCanisterLayout"/></a></li>
 				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> <s:text name="global.colorantLevels"/></a></li>
@@ -1211,7 +1212,10 @@
 	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="tinterNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#tinterPopover" data-original-title="Tinter Status" data-animation="true"><span><i class="fa fa-certificate" style="color: limegreen;"></i></span>  <s:text name="welcome.tinterStatus"/></a></li>
 	        			<li class="nav-item p-2 pl-3 pr-3" id="colorEyeBar"><span class="bar"><strong style="color: dimgrey;">|</strong></span></li>
 	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="coloreyeNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#coloreyePopover" data-original-title="Color-Eye Status" data-animation="true"><span><i class="fa fa-exclamation-circle" style="color: red;"></i></span>  <s:text name="welcome.colorEyeStatus"/></a></li>
-	        			
+	        			<li class="nav-item p-2 pl-3 pr-3" id="tintQueueBar"><span class="bar"><strong style="color: dimgrey;">|</strong></span></li>
+	        			<li class="nav-item"><a class="navbar-text" href='<s:url action="listJobsAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="displayTintQueue" value="true"/></s:url>'>
+	        				<s:text name="global.tintQueueColon"></s:text><span class="badge badge-secondary" id="tintQueueCountText"></span></a>
+						</li>
 	        			
 	        			<!-- Content for Popovers -->
 						<div class="d-none" id="tinterPopover">
@@ -1493,7 +1497,7 @@
 // 				e.stopPropagation();
 // 				e.preventDefault();
 // 			});
-
+			$('#tintQueueCountText').text(${sessionScope[thisGuid].tintQueueCount});
 			$.ajax({
 		  		url: "spectroObtainAllStoredMeasurements.action",
 		  		type: "POST",

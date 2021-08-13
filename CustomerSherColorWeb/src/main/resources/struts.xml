@@ -248,6 +248,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="displayTintQueue">/WEB-INF/pages/TintQueue.jsp</result>
 			<result name="input">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
@@ -974,7 +975,7 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="saveOnPrintAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveOnPrint">
+		<action name="saveBeforeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveBeforeAction">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 				<param name="isAJAX">true</param>
@@ -982,6 +983,16 @@
 			<result name="success" type="json"></result>
 		</action>
 		<action name="bumpDispenseCounterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="bumpDispense">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+	        <result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateOrderQuantityAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="updateOrderQuantity">
 			<interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
 	        <result name="loginRedirect" type="redirectAction">

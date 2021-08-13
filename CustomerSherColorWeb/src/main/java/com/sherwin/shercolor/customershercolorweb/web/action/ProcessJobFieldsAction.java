@@ -124,7 +124,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			}
 			
 			reqObj.setJobFieldList(jobFieldList);
-			
+			reqObj.setQuantityOrdered(0);
 			sessionMap.put(reqGuid, reqObj);
 
 		} catch (RuntimeException e) {
@@ -145,7 +145,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 			jobFieldList = reqObj.getJobFieldList();
 			
 			reqObj.setQuantityDispensed(0);
-
+			reqObj.setQuantityOrdered(0);
 			
 			if(jobFieldList.size()>0){
 				retVal = INPUT;
