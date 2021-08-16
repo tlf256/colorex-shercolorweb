@@ -2,7 +2,6 @@ package com.sherwin.shercolor.customerprofilesetup.web.model;
 
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.CustWebProdComps;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
