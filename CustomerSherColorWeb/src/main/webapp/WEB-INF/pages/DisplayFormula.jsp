@@ -29,17 +29,14 @@
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
+<script type="text/javascript" charset="utf-8"	src="script/ProductChange.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 <style>
 .sw-bg-main {
 	background-color: ${sessionScope[thisGuid].rgbHex};
 }
-#dispenseQuantityInputError {
-	font-weight: bold;
-	color: red;
-}
-
-#verifyScanInputError {
+.inputError {
 	font-weight: bold;
 	color: red;
 }
@@ -87,6 +84,9 @@ badge {
 	var tinterErrorList;
 	var _rgbArr = [];
 	var formSubmitting = false;
+	var salesNbr = "${sessionScope[reqGuid].salesNbr}";
+	var colorComp = "${sessionScope[reqGuid].colorComp}";
+	var myGuid = "${reqGuid}";
 	 
 	// now build the dispense formula object
 	var sendingDispCommand = "false";
@@ -145,7 +145,7 @@ function printDrawdownLabel() {
 function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
 	if (verifyRoomSelected() == true){
-		// save before print
+		// save before action
 		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
 		if (isNaN(myCtlNbr))
 			myCtlNbr = 0;
@@ -170,7 +170,7 @@ function prePrintSave(labelType, orientation) {
 			var myGuid = $("#reqGuid").val();
 			$
 					.ajax({
-						url : "saveOnPrintAction.action",
+						url : "saveBeforeAction.action",
 						type : "POST",
 						data : {
 							reqGuid : myGuid,
@@ -337,7 +337,83 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 	//global variables moved up above
 	//tinter stuff moved to dispense-x.x.x.js
-
+	
+	function showSetOrderQuantityModal() {
+		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
+		if (isNaN(myCtlNbr))
+			myCtlNbr = 0;
+		if (myCtlNbr == 0) {
+			console.log("ctlNbr is zero");
+		}
+		var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty")
+				.val()));
+		if (isNaN(myDirty))
+			myDirty = 0;
+		if (myDirty > 0) {
+			console.log("dirty is true");
+		}
+		if (myCtlNbr == 0 || myDirty > 0) {
+			var curDate = new Date();
+			$("#formulaUserPrintAction_jsDateString").val(curDate.toString());
+			var myGuid = $("#reqGuid").val();
+			$
+					.ajax({
+						url : "saveBeforeAction.action",
+						type : "POST",
+						data : {
+							reqGuid : myGuid,
+							jsDateString : curDate.toString()
+						},
+						datatype : "json",
+						async : true,
+						success : function(data) {
+							if (data.sessionStatus === "expired") {
+								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+							} else {
+								$("#controlNbr").text(data.controlNbr);
+								$("#controlNbrDisplay").show();
+								$('#setOrderQuantityModal').modal('show');
+								var saveActionDirty = parseInt(data.recDirty);
+								if (!isNaN(saveActionDirty)){
+									$("#formulaUserPrintAction_recDirty").val(saveActionDirty);
+								}
+							}
+						},
+						error : function(err) {
+							alert("failure: " + err);
+						}
+					});
+		} else {
+			console.log("Job is not dirty. Save not needed.");
+			$('#setOrderQuantityModal').modal('show');
+		}	
+	}
+	
+	function updateOrderQuantity(quantity) {
+		var i = 0
+		var myValue = $("#reqGuid").val();
+		var curDate = new Date();
+		$
+		.getJSON(
+				"updateOrderQuantityAction.action?reqGuid=" + myValue
+						+ "&jsDateString=" + curDate.toString()
+						+ "&quantity=" + quantity.toString(),
+				function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						var qtyDispensed = parseInt($("#qtyDispensed").text());
+						var qtyOrdered = $("#orderQuantityInput").val();
+						$("#qtyOrdered").text(qtyOrdered);
+						$("#qtyRemaining").text(parseInt(qtyOrdered)-qtyDispensed);
+						if (qtyOrdered == qtyDispensed) {
+							$("#formulaSetOrderQty").hide();
+						}
+					}
+				});
+		$('#setOrderQuantityModal').modal('hide');
+	}
+	
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
@@ -356,6 +432,14 @@ function ParsePrintMessage() {
 								$("#controlNbrDisplay").show();
 								$("#qtyDispensed").text(data.qtyDispensed);
 								updateButtonDisplay();
+								
+								qtyRemaining = $('#qtyRemaining');
+								qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+								if (parseInt(qtyRemaining.text())<=0) {
+									qtyRemaining.text(0);
+									$("#formulaSetOrderQty").hide();
+								}
+								
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
 								// send tinter event (no blocking here)
 								var myGuid = $(
@@ -432,7 +516,43 @@ function ParsePrintMessage() {
 								$("#verifyScanInput").select();
 							}
 						});
-
+		
+		$(document).on("shown.bs.modal", "#setOrderQuantityModal", function(event) {
+			$("#orderQuantityInput").val("");
+			$("#orderQuantityInputError").text("");
+			$("#orderQuantityInput").focus();
+		});
+		
+		$(document).on("keypress", "#orderQuantityInput", function(event) {
+			if (event.keyCode == 13) {
+				event.preventDefault();
+				$("#setOrderQuantityButton").click();
+			}
+		});
+		
+		$("#setOrderQuantityButton")
+		.on(
+				"click",
+				function(event) {
+					event.preventDefault();
+					event.stopPropagation();
+					// verify quantity input
+					var qtyOrdered = parseInt($("#orderQuantityInput").val());
+					var qtyDispensed = parseInt($("#qtyDispensed").text());
+					if (qtyOrdered > 0 && qtyOrdered < 1000 && qtyOrdered >= qtyDispensed) {
+						updateOrderQuantity(qtyOrdered);
+						waitForShowAndHide("#setDispenseQuantityModal");
+					} else {
+						if (qtyOrdered < qtyDispensed) {
+							$("#orderQuantityInputError").text('<s:text name="displayFormula.invalidInputDispQty"/>');
+						} else {
+							$("#orderQuantityInputError").text('<s:text name="displayFormula.invalidInput"/>');
+						}
+						
+						$("#orderQuantityInput").select();
+					}
+				});
+		
 		$(document).on("keypress", "#dispenseQuantityInput", function(event) {
 			if (event.keyCode == 13) {
 				event.preventDefault();
@@ -478,6 +598,14 @@ function ParsePrintMessage() {
 														$("#controlNbr").text(data.controlNbr);
 														$("#controlNbrDisplay").show();
 														$("#qtyDispensed").text(data.qtyDispensed);
+														
+														qtyRemaining = $('#qtyRemaining');
+														qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+														if (parseInt(qtyRemaining.text())<=0) {
+															qtyRemaining.text(0);
+															$("#formulaSetOrderQty").hide();
+														}
+
 														updateButtonDisplay();
 														console.log("UPDATED BUTTON DISPLAY")
 													}
@@ -1049,6 +1177,7 @@ function ParsePrintMessage() {
             e.returnValue = ''; 
         });
     };
+    
 
 
 </script>
@@ -1383,6 +1512,24 @@ function ParsePrintMessage() {
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
+				<div class="row" id="quantityInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyOrderedColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyOrdered">${sessionScope[thisGuid].quantityOrdered}</span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row" id="remainingInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyRemaining"></span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
 			</s:if>
 			<s:else>
 				<div class="row" id="dispenseInfoRow">
@@ -1411,6 +1558,8 @@ function ParsePrintMessage() {
 						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						</s:if>
+						<button type="button" class="btn btn-secondary" id="formulaSetOrderQty"
+							onclick="showSetOrderQuantityModal()"><s:text name="displayFormula.setOrderQty"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
@@ -1423,6 +1572,8 @@ function ParsePrintMessage() {
 				<div class="d-flex flex-row justify-content-around mt-2">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<s:submit cssClass="btn btn-secondary" id="changeProductBtn" action="changeProductAction" 
+							onclick="return true;" value="%{getText('displayFormula.changeProduct')}"/>
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
@@ -1441,6 +1592,8 @@ function ParsePrintMessage() {
 							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<button type="button" class="btn btn-secondary" id="formulaSetOrderQty"
+							onclick="showSetOrderQuantityModal()"><s:text name="displayFormula.setOrderQty"/></button>
 						<button type="button" class="btn btn-secondary" id="formulaPrint"
 							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
@@ -1451,6 +1604,14 @@ function ParsePrintMessage() {
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
 	                        onclick="return promptToSave();" action="userCancelAction" />
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+				</div>
+				<div class="d-flex flex-row justify-content-around mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
+						<s:submit cssClass="btn btn-secondary" id="changeProductBtn" action="changeProductAction" 
+							onclick="return true;" value="%{getText('displayFormula.changeProduct')}"/>
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
@@ -1472,11 +1633,41 @@ function ParsePrintMessage() {
 							<div class="modal-body">
 								<input type="text" class="form-control"
 									id="dispenseQuantityInput" autofocus="autofocus"> <strong
-									id="dispenseQuantityInputError"></strong>
+									id="dispenseQuantityInputError" class="inputError"></strong>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary"
 									data-dismiss="modal" id="setDispenseQuantityButton"><s:text name="global.next"/></button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+			<!-- Set Order Quantity Modal Window -->
+			<div class="modal" aria-labelledby="setOrderQuantityModal"
+				aria-hidden="true" id="setOrderQuantityModal" role="dialog">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><s:text name="displayFormula.enterNumberofContainersToOrder"/></h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<input type="text" class="form-control"
+									id="orderQuantityInput" autofocus="autofocus"> <strong
+									id="orderQuantityInputError" class="inputError"></strong>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal" id="setOrderQuantityButton"><s:text name="global.next"/></button>
+								<button type="button" class="btn btn-secondary"
+								id="orderQuantityClose" data-dismiss="modal" aria-label="Cancel"><s:text name="global.cancel"/></button>
 							</div>
 						</div>
 					</div>
@@ -1498,7 +1689,7 @@ function ParsePrintMessage() {
 						</div>
 						<div class="modal-body">
 							<input type="text" class="form-control" id="verifyScanInput"
-								autofocus="autofocus"> <strong id="verifyScanInputError"></strong>
+								autofocus="autofocus"> <strong id="verifyScanInputError" class="inputError"></strong>
 						</div>
 						<div class="modal-body">
 							<span class="dispenseNumberTracker mx-auto"
@@ -1732,6 +1923,186 @@ function ParsePrintMessage() {
 				</div>
 			</div>
 		</div>
+		
+		
+		<!-- Change Product Modal -->
+	    <div class="modal fade" aria-labelledby="changeProductModal" aria-hidden="true"  id="changeProductModal" role="dialog">
+	    	<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title"><s:text name="displayFormula.changeProduct"/></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
+					</div>
+					<div class="modal-body ui-front mt-3">
+						<div>
+							<s:hidden id="reqGuid" value="%{reqGuid}"/>
+							<s:textfield name="partialProductNameOrId" id="partialProductNameOrId" placeholder="%{getText('displayFormula.enterProduct')}" autofocus="autofocus" 
+										 size="30" maxlength="20" cssStyle="font-size: 16px;"/>
+						</div>
+						<div id="actionMessageDisplay"></div>
+						<div id="vinylSafePrompt" class="mt-4 d-none">
+							<strong><s:text name="getVinylSafeOption.canBeUsedForVinylSafe"/><br><br><s:text name="getVinylSafeOption.createVinylSafe"/></strong>
+						</div>
+						<div id="prodChangeStatusMsg" class="mt-4 mx-1" style="font-weight: bold">
+						</div>
+						<div class="d-none mt-4" id="changeProductMenu">
+							<div class="form-check mt-1 nondefaultOptions d-none" id="optionAdjustSize">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="adjustSize" id="radioAdjustSize">
+								<label class="form-check-label" for="radioAdjustSize">
+								 <s:text name="displayFormula.adjustFormulaToSize"/>
+								</label>
+							</div>
+<!--							<div class="form-check mt-1 nondefaultOptions d-none" id="optionRematch">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="rematch" id="radioRematch">
+								<label class="form-check-label" for="radioRematch">
+								 <s:text name="displayFormula.rematchUsingColorEye"/>
+								</label>
+							</div> -->
+ 							<div class="form-check mt-1 nondefaultOptions d-none" id="optionReformulate">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="reformulate" id="radioReformulate">
+								<label class="form-check-label" for="radioReformulate">
+								 <s:text name="displayFormula.reformulateUsingSherColor"/>
+								</label>
+							</div>
+							<div class="form-check mt-1">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="manualAdjustment" id="radioManualAdjustment">
+								<label class="form-check-label" for="radioManualAdjustment">
+								 <s:text name="displayFormula.makeManualAdjustment"/>
+								</label>
+							</div>
+							<div class="form-check mt-1">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="doNotAdjust" id="radioDoNotAdjust">
+								<label class="form-check-label" for="radioDoNotAdjust">
+								  <s:text name="displayFormula.doNotAdjustFormula"/>
+								</label>
+							</div>
+						</div>	
+<!-- 						<div class="d-none mt-3" id="userIllumMenu">
+							<h5 class="mt-4 mb-3"><s:text name="displayFormula.chooseLightSource"/></h5>
+							<div class="form-check mt-1" id="optionIncandescent">
+								<input class="form-check-input" type="radio" name="radioIllumChoice" value="A" id="radioIncandescent">
+								<label class="form-check-label" for="radioIncandescent">
+								 <s:text name="displayFormula.a-incandescent"/>
+								</label>
+							</div>
+							<div class="form-check mt-1" id="optionDaylight">
+								<input class="form-check-input" type="radio" name="radioIllumChoice" value="D65" id="radioDaylight">
+								<label class="form-check-label" for="radioDaylight">
+								 <s:text name="displayFormula.d65-daylight"/>
+								</label>
+							</div>
+							<div class="form-check mt-1" id="optionFluorescent">
+								<input class="form-check-input" type="radio" name="radioIllumChoice" value="F2" id="radioFluorescent">
+								<label class="form-check-label" for="radioFluorescent">
+								 <s:text name="displayFormula.f2-fluorescent"/>
+								</label>
+							</div>
+						</div>	 -->
+						<div id="sizeChangeTable" class="d-none">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th colspan="4" class="bg-light" style="text-align: center"><s:text name="displayFormula.changeInProductSize"/></th>
+									</tr>
+									<tr>
+										<th scope="col"></th>
+										<th scope="col"><s:text name="global.old"/></th>
+										<th scope="col"><s:text name="global.new"/></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr id="row">
+										<th scope="row"><s:text name="global.product"/></th>
+										<td id="oldProdNbr"></td>
+										<td id="newProdNbr"></td>
+									</tr>
+									<tr id="row">
+										<th scope="row"><s:text name="global.size"/></th>
+										<td id="oldSizeCode"></td>
+										<td id="newSizeCode"></td>
+									</tr>
+									<tr id="row">
+										<th scope="row"><s:text name="displayFormula.tintStrength"/></th>
+										<td>100</td>
+										<td>100</td>
+									</tr>
+									
+								</tbody>
+							</table>
+							<br>
+							<p><strong><s:text name="displayFormula.clickNextToConvert"/></strong></p>
+						</div>
+						
+						<!-- 
+						<div id="prodFamily" class="row">
+							<table id="prodFamilyTable" class="table table-striped table-bordered mx-3 mt-4">
+								<caption style="caption-side:top;"><strong><s:text name="getProdFamily.betterPerformanceFoundinDifferentBase"/></strong></caption>
+								<thead>
+									<tr>
+										<th></th>
+										<th><s:text name="global.product"/></th>
+										<th><s:text name="getProdFamily.quality"/></th>
+										<th><s:text name="getProdFamily.base"/></th>
+										<th><s:text name="getProdFamily.deltaE"/></th>
+										<th><s:text name="getProdFamily.contrastRatio"/></th>
+										<th><s:text name="global.comment"/></th>
+										<th><s:text name="global.formula"/></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="border-bottom-1 border-dark" id="betterPerformanceRow">
+										<td><input type="radio" class="prodFamRadio" name="prodFamily" id="betterPerfRadio"/></td>
+										<td class="prodDetail"></td>
+										<td class="quality"></td>
+										<td class="base"></td>
+										<td class="deltaE"></td>
+										<td class="contrastRatio"></td>
+										<td class="comment"></td>
+										<td class="formula">
+											<div class="row">
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[0]"/></strong></div>
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[1]"/></strong></div>
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[2]"/></strong></div>
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[3]"/></strong></div>
+											</div>
+										</td>		
+												
+											
+									</tr>
+										
+									<tr class="border-bottom-1 border-dark" id="productEnteredRow">
+										<td><input type="radio" class="prodFamRadio" name="prodFamily" id="prodEnteredRadio"/></td>
+										<td class="prodDetail"></td>
+										<td class="quality"></td>
+										<td class="base"></td>
+										<td class="deltaE"></td>
+										<td class="contrastRatio"></td>
+										<td class="comment"></td>
+										<td class="formula">
+											<div class="row">
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[0]"/></strong></div>
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[1]"/></strong></div>
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[2]"/></strong></div>
+												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[3]"/></strong></div>
+											</div>
+										</td>	
+										
+									</tr>
+								</tbody>
+							</table>
+						</div> -->
+						
+						
+					</div>
+					<div class="modal-footer mt-3">
+						<button type="button" class="btn btn-primary" id="lookupProductNext" onclick="lookupNewProduct();"><s:text name="global.next"/></button>
+						<button type="button" class="btn btn-primary d-none" id="vinylSafeYes"><s:text name="global.yes"/></button>
+						<button type="button" class="btn btn-primary d-none" id="vinylSafeNo"><s:text name="global.no"/></button>
+						<button type="button" class="btn btn-secondary ml-auto" id="changeProdCancel" data-dismiss="modal" aria-label="%{getText('global.cancel')}" ><s:text name="global.cancel"/></button>
+					</div>
+				</div>
+			</div>
+		</div>
 			
 		</s:form>
 	</s:if>
@@ -1822,6 +2193,18 @@ function ParsePrintMessage() {
 		}
 		//-->
 		$(document).ready(function() {
+			// Display remaining qty. Don't display negative values if the user dispenses more than what was ordered.
+			var qtyOrdered = parseInt(${sessionScope[thisGuid].quantityOrdered});
+			var qtyDispensed = parseInt(${sessionScope[thisGuid].quantityDispensed});
+			var remaining = (qtyOrdered - qtyDispensed);
+			if (remaining < 0) {
+				remaining = 0;
+			}
+			if(remaining == 0 && qtyOrdered != 0) {
+				$("#formulaSetOrderQty").hide();
+			}
+			$("#qtyRemaining").text(remaining);
+			
 			//init comms to device handler for tinter
 			if ($("#formulaUserPrintAction_sessionHasTinter").val() == "true") {
 				ws_tinter = new WSWrapper("tinter");

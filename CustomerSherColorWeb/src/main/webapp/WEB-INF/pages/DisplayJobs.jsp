@@ -36,7 +36,7 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.8.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.9.js"></script>
 	</head>
 	<body>
 		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">

@@ -52,6 +52,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private List<Integer> exportColList;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean copyJobFields = false;
+	private boolean displayTintQueue = false;
 	private TranHistoryCriteria thc;
 
 	@Autowired
@@ -149,22 +150,25 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				
 				sessionMap.put(reqGuid, reqObj);
 			}
-						
-			if(match) {
-				//only pull CUSTOMMATCH records for compare colors selection
-				TranHistoryCriteria TranCriteria = new TranHistoryCriteria();
-				TranCriteria.setCustomerId(reqObj.getCustomerID());
-				TranCriteria.setColorType("CUSTOMMATCH");
-				
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(TranCriteria, false);
+			if (displayTintQueue) {
+				tranHistory = tranHistoryService.getCustomerTintQueue(reqObj.getCustomerID());
 			} else {
-				// pass JobSearch object to service for criteria
-				tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(thc, false);
-				
-				//set job search object to null to clear values for new search
-				thc = null;
+				if(match) {
+					//only pull CUSTOMMATCH records for compare colors selection
+					TranHistoryCriteria TranCriteria = new TranHistoryCriteria();
+					TranCriteria.setCustomerId(reqObj.getCustomerID());
+					TranCriteria.setColorType("CUSTOMMATCH");
+					
+					tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(TranCriteria, false);
+				} else {
+					// pass JobSearch object to service for criteria
+					tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(thc, false);
+					
+					//set job search object to null to clear values for new search
+					thc = null;
+				}
 			}
-			
+
 			jobHistory = new ArrayList<JobHistoryInfo>();
 			
 			//Obtain ClrntSys Profiles for each colorant system;
@@ -190,8 +194,10 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				job.setControlNbr(webTran.getControlNbr());
 				job.setProdNbr(webTran.getProdNbr());
 				job.setQuantityDispensed(webTran.getQuantityDispensed());
+				job.setQuantityOrdered(webTran.getQuantityOrdered());
 				job.setRgbHex(webTran.getRgbHex());
 				job.setSizeCode(webTran.getSizeCode());
+				job.setJobCreationDate(webTran.getInitTranDate());
 				if (drawdownTran != null) {
 					job.setCanType(drawdownTran.getCanType());
 				}
@@ -257,7 +263,12 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				}
 			}
 			
-			return SUCCESS;
+			if (displayTintQueue) {
+				return "displayTintQueue";
+			} else {
+				return SUCCESS;
+			}
+			
 				
 		
 		} catch (RuntimeException e) {
@@ -464,6 +475,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.getFormResponse().setMessages(new ArrayList<SwMessage>());
 		
 		reqObj.setQuantityDispensed(webTran.getQuantityDispensed());
+		reqObj.setQuantityOrdered(webTran.getQuantityOrdered());
 		reqObj.setRoomByRoom(webTran.getRoomByRoom());
 	}
 	
@@ -666,6 +678,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setThc(TranHistoryCriteria thc) {
 		this.thc = thc;
+	}
+
+	public boolean getDisplayTintQueue() {
+		return displayTintQueue;
+	}
+
+	public void setDisplayTintQueue(boolean displayTintQueue) {
+		this.displayTintQueue = displayTintQueue;
 	}
 
 }
