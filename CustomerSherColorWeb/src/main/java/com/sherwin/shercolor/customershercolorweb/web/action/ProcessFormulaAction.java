@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -551,7 +552,29 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			return ERROR;
 		}
 	}
+	
+	
+	public String displayUpdatedFormula() {
+		try {
+			recDirty = 1;
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			SwMessage saveReminder = new SwMessage();
+			saveReminder.setSeverity(Level.INFO);
+			saveReminder.setMessage(getText("processManualFormulaAction.changesNotYetSaved"));
+			if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
+			reqObj.getDisplayMsgs().add(saveReminder);
+			
+			String retVal = this.display();
+			return retVal;
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
 
+	
 	public DataInputStream getInputStream() {
 		return inputStream;
 	}

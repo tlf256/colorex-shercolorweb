@@ -24,6 +24,10 @@ i18n['dispense.fillEmptyCanister'] = '<s:text name="dispense.fillEmptyCanister"/
 i18n['dispense.goHomeToPurge'] = '<s:text name="dispense.goHomeToPurge"/>';
 i18n['dispense.noValuesEntered'] = '<s:text name="dispense.noValuesEntered"/>';
 i18n['dispense.qtyError'] = '<s:text name="dispense.qtyError"/>';
+i18n['processProductAction.clickNext'] = '<s:text name="processProductAction.clickNext"/>'
+i18n['productChange.checkingOptions'] = '<s:text name="productChange.checkingOptions"/>';
+i18n['productChange.reformulatingStatus'] = '<s:text name="productChange.reformulatingStatus"/>';
+i18n['productChange.somethingWentWrong'] = '<s:text name="productChange.somethingWentWrong"/>';
 i18n['displayFormula.tinterPurgeIsRequiredLastDoneOn'] = '<s:text name="displayFormula.tinterPurgeIsRequiredLastDoneOn"/>';
 i18n['displayJobs.controlNbrMustBeInteger'] = '<s:text name="displayJobs.controlNbrMustBeInteger"/>';
 i18n['displayJobs.dateMustBeCorrectFormat'] = '<s:text name="displayJobs.dateMustBeCorrectFormat"/>';
@@ -41,6 +45,7 @@ i18n['global.dispenseError'] = '<s:text name="global.dispenseError"/>';
 i18n['global.dispenseInProgress'] = '<s:text name="global.dispenseInProgress"/>';
 i18n['global.extend'] = '<s:text name="global.extend"/>';
 i18n['global.failure'] = '<s:text name="global.failure"/>';
+i18n['global.failureColon'] = '<s:text name="global.failureColon"/>';
 i18n['global.login'] = '<s:text name="global.login"/>';
 i18n['global.lastDispense'] = '<s:text name="global.lastDispense"/>';
 i18n['global.lastDispenseComplete'] = '<s:text name="global.lastDispenseComplete"/>';
