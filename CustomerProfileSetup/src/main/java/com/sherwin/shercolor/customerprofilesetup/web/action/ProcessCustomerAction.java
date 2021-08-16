@@ -16,7 +16,9 @@ import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
@@ -32,12 +34,16 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	private Map<String, Object> sessionMap;
 	private String result;
 	private String AcctNbr;
+	private List<String> prodCompList;
 
 	@Autowired
 	CustomerService customerService;
 	
 	@Autowired
 	EulaService eulaService;
+	
+	@Autowired
+	ProductService productService;
 
 	public String execute() {
 		try {	
@@ -94,6 +100,8 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				reqObj.setEulaHistToActivate(eh);
 				reqObj.setEulaHistList(ehlist);
 			}
+			
+			reqObj.setProdCompList(mapProdCompList(customer.getProdComps()));
 			
 			sessionMap.put("CustomerDetail", reqObj);
 			
@@ -234,6 +242,29 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return profile;
 	}
 	
+	private List<CustProdComp> mapProdCompList(String prodComps){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null && !prodComps.isEmpty()) {
+			String[] prodCompsArr = prodComps.split(",");
+			for(int i = 0; i < prodCompsArr.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodCompsArr[i].trim().toUpperCase();
+				
+				cpc.setProdComp(prodComp);
+				if(i==0) {
+					cpc.setPrimaryProdComp(true);
+				} else {
+					cpc.setPrimaryProdComp(false);
+				}
+				
+				custProdCompList.add(cpc);
+			}
+		}
+				
+		return custProdCompList;
+	}
+	
 	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
@@ -249,6 +280,13 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		eh.setActiveAcceptanceCode(true);
 		
 		return eh;
+	}
+	
+	public String setActionProdCompList() {
+		
+		setProdCompList(productService.getDistinctProdComps());
+		
+		return SUCCESS;
 	}
 	
 	public String checkAcctNbr() {
@@ -319,6 +357,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public void setAcctNbr(String acctNbr) {
 		AcctNbr = acctNbr;
+	}
+
+	public List<String> getProdCompList() {
+		return prodCompList;
+	}
+
+	public void setProdCompList(List<String> prodCompList) {
+		this.prodCompList = prodCompList;
 	}
 
 }

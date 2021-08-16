@@ -325,6 +325,89 @@
 		</s:if>
 	<br>
 	</s:else>
+
+	<s:if test="sessionMap['CustomerDetail'].prodCompList != null && !sessionMap['CustomerDetail'].prodCompList.isEmpty">
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+			<table id="prodcomp_detail" class="table table-striped table-bordered">
+				<tr>
+					<th>Prod Comp</th>
+					<th>Primary Prod Comp</th>
+					<th>Edit Row</th>
+				</tr>
+				<s:iterator var="prodcomp" value="sessionMap['CustomerDetail'].prodCompList" status="i">
+					<tr class="prodcomprow">
+					<td>
+						<s:textfield class="prdcmp" id="prdcmp%{#i.index}" name="cust.prodCompArr" value="%{#prodcomp.prodComp}" readonly="true"></s:textfield>
+					</td>
+					<td>
+						<s:if test="%{#prodcomp.primaryProdComp}">
+							<input type="checkbox" class="primprdcmp" id="primprdcmp%{#i.index}" name="cust.primaryProdComp" value="<s:property value='%{#prodcomp.prodComp}'/>" checked />
+						</s:if>
+						<s:else>
+							<input type="checkbox" class="primprdcmp" id="primprdcmp%{#i.index}" name="cust.primaryProdComp" value="<s:property value='%{#prodcomp.prodComp}'/>" />
+						</s:else>
+					</td>
+					<td>
+						<button type="button" id="editProdCompRow<s:property value='%{#i.index}'/>" class="btn btn-primary edtrow" title="Edit row">
+							<i class="far fa-edit"></i>
+						</button>
+						<button type="button" id="deleteProdCompRow<s:property value='%{#i.index}'/>" class="btn btn-danger dltpcrow" title="Delete row">
+							<i class="far fa-trash-alt"></i>
+						</button>
+					</td>
+				</tr>
+				</s:iterator>
+				<tr id="newProdCompRow" class="cloned-pcrow">
+					<td>
+						<s:textfield class="prdcmp" id="prdcmp0" name="cust.prodCompArr" />
+					</td>
+					<td>
+						<input type="checkbox" class="primprdcmp" id="primprdcmp0" name="cust.primaryProdComp" />
+					</td>
+					<td>
+						<button type="button" id="dltProdCompRow" class="btn btn-danger dltpcclonerow" title="Delete row">
+							<i class="far fa-trash-alt"></i>
+						</button>
+						<button type="button" id="addProdCompRow" class="btn btn-secondary addpcrow" title="Add row">
+							<i class="far fa-plus-square"></i>
+						</button>
+					</td>
+				</tr>
+			</table>
+			</div>
+			<div class="col-lg-2 col-md-2">
+			</div>
+		</div>
+	</s:if>
+	<s:else>
+		<div class="row">
+			<div class="col-lg-2 col-md-2"></div>
+			<div class="col-lg-8 col-md-8">
+			<table id="prodCompAccess" class="table table-striped table-bordered">
+				<tr>
+					<th colspan="2">Customer Prod Comps</th>
+				</tr>
+				<tr>
+					<td><strong>Restrict Product Access?</strong></td>
+					<td>
+						<input type="radio" id="restrictyes" name="restrictProdComp" class="mt-1 mb-1" onchange="toggleTextArea(this.value)" value="true" /> Yes
+						<input type="radio" id="restrictno" name="restrictProdComp" class="mt-1 mb-1 ml-2" onchange="toggleTextArea(this.value)" value="false" checked /> No
+					</td>
+				</tr>
+				<tr class="prodcomps">
+					<td colspan="2">
+						<s:textarea id="prodcomps" name="cust.prodComps" label="Enter Prod Comp(s)" 
+							placeholder="List primary first, separated by comma"></s:textarea>
+					</td>
+				</tr>
+			</table>
+			</div>
+			<div class="col-lg-2 col-md-2"></div>
+		</div>
+	</s:else>
+	<br>
 	
 	<s:if test="sessionMap['CustomerDetail'].accttype!='natlWdigits'">
 		<div class="row">
@@ -371,7 +454,7 @@
 					<s:textfield class="acctcomm" id="comment0" name="login.acctComment" />
 				</td>
 				<td>
-					<button type="button" id="deleteloginrow" class="btn btn-danger dltrow" title="Delete row">
+					<button type="button" id="deleteloginrow" class="btn btn-danger dltloginrow" title="Delete row">
 						<i class="far fa-trash-alt"></i>
 					</button>
 					<s:if test="sessionMap['CustomerDetail'].loginList.size!=10">
