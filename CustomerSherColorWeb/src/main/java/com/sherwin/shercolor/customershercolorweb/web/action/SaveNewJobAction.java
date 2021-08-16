@@ -36,6 +36,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	private FormulaInfo displayFormula;
 	private int controlNbr;
 	private int qtyDispensed;
+	private String quantity;
+	private int qtyOrdered;
 	private String jsDateString;
 	private int recDirty;
 	private List<DispenseItem> drawdownShotList;
@@ -157,8 +159,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	}
 
-	public String saveOnPrint(){
-		logger.debug("inside action to saveOnPrint");
+	public String saveBeforeAction(){
+		logger.debug("inside action to saveBeforeAction");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 		logger.debug("inside action about to execute");
@@ -269,6 +271,27 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			retVal = ERROR;
+		}
+		
+		return retVal;
+	}
+	
+	public String updateOrderQuantity() {
+		String retVal = null;
+		try {
+			// Update the Order Quantity with what the user has input into the textfield
+			logger.debug("inside action to updateOrderQuantity");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			reqObj.setQuantityOrdered(Integer.parseInt(quantity));
+			sessionMap.put(reqGuid, reqObj);
+			
+			logger.debug("inside action about to execute. qtyOrdered will be " + qtyOrdered);
+			retVal = this.execute();
+			logger.debug("inside action back from execute.");
+			
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
 		
 		return retVal;
@@ -528,6 +551,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		}
 		
 		custWebTran.setQuantityDispensed(reqObj.getQuantityDispensed());
+		custWebTran.setQuantityOrdered(reqObj.getQuantityOrdered());
 
 		if(origTran!=null){
 			// if correction and orig values are empty, fill them with origTran record fields
@@ -595,6 +619,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public int getQtyDispensed() {
 		return qtyDispensed;
 	}
+	
+	public void setQuantityOrdered(int qtyOrdered) {
+		this.qtyOrdered = qtyOrdered;
+	}
+	
+	public int getQtyOrdered() {
+		return qtyOrdered;
+	}
 
 	public void setJsDateString(String jsDateString) {
 		this.jsDateString = Encode.forHtml(jsDateString);
@@ -644,5 +676,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public void setDispenseBase(boolean dispenseBase) {
 		this.dispenseBase = dispenseBase;
 	}
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = Encode.forHtml(quantity);
+	}
+	
 
 }
