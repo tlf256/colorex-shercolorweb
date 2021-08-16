@@ -103,7 +103,6 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				reqObj.setEulaHistList(ehlist);
 			}
 			
-			//reqObj.setProdComps(customer.getProdComps());
 			reqObj.setProdCompList(mapProdCompList(customer.getProdComps()));
 			
 			sessionMap.put("CustomerDetail", reqObj);
@@ -264,9 +263,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				custProdCompList.add(cpc);
 			}
 		}
-		
-		Collections.sort(custProdCompList, Comparator.comparing(o -> o.getProdComp()));
-		
+				
 		return custProdCompList;
 	}
 	

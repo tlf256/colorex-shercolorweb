@@ -420,9 +420,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				custProdCompList.add(cpc);
 			}
 		}
-		
-		Collections.sort(custProdCompList, Comparator.comparing(o -> o.getProdComp()));
-		
+				
 		return custProdCompList;
 	}
 	
@@ -445,9 +443,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 			}
 		}
-		
-		Collections.sort(custProdCompList, Comparator.comparing(o -> o.getProdComp()));
-		
+				
 		return custProdCompList;
 	}
 	
@@ -501,20 +497,16 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 		
 		List<CustProdComp> prodCompList = reqObj.getProdCompList();
 		List<CustProdComp> deletedProdComps = new ArrayList<CustProdComp>();
-		//List<CustProdComp> newProdCompList = new ArrayList<CustProdComp>();
 		
 		if(prodCompList != null) {
 			for(CustProdComp pc : prodCompList) {
-				//newProdCompList.add(pc);
 				if(pc.getProdComp().equalsIgnoreCase(getProdComp())) {
 					deletedProdComps.add(pc);
-					//newProdCompList.remove(pc);
 					setProdCompDeleted(true);
 				}
 			}
 		}
 		
-		//reqObj.setProdCompList(newProdCompList);
 		reqObj.setDeletedProdComps(deletedProdComps);
 		
 		sessionMap.put("CustomerDetail", reqObj);

@@ -327,6 +327,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				custWebProdComps = mapCustWebProdComps(prodCompList, customerId);
 				
 				if(existingProdComps != null && !existingProdComps.isEmpty()) {
+					// sort records for comparison
+					// sort session records
+					Collections.sort(custWebProdComps, Comparator.comparing(o -> o.getProdComp()));
+					
 					// sort existing records
 					Collections.sort(existingProdComps, Comparator.comparing(o -> o.getProdComp()));
 					
@@ -344,16 +348,12 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 							// map deleted records
 							deleteCustWebProdComps = mapCustWebProdComps(deletedProdComps, customerId);
 							
-							/*List<CustWebProdComps> updatedProdComps = new ArrayList<CustWebProdComps>();
-							for(CustWebProdComps cwpc : existingProdComps) {
-								updatedProdComps.add(cwpc);
-							}*/
-							
 							// check if any deleted records still exist in
 							// custwebprodcomps list
 							for(CustWebProdComps cwpc : custWebProdComps) {
 								if(deleteCustWebProdComps.contains(cwpc)) {
 									// remove undeleted/re-added record
+									// so that it does not get deleted from table
 									deleteCustWebProdComps.remove(cwpc);
 								}
 							}
@@ -450,32 +450,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				addActionError("Error: Unable to modify CustWeb Data");
 			}
 			
-			// check if data has been modified or new data needs saved
-			// TODO booleans need to be set for cust profile and cust prod comps
-			/*if(deleteCwp || deleteCwjf || deleteCwlt) {
-				// One or more customer records have been either deleted or added to existing records.
-				// Delete, then save all data which has not been set to null.
-				// Currently, existing CustWebCustomerProfile records cannot be modified 
-				// through this application, so pass null as CustWebCustomerProfile data
-				result = modifyCustWebData(customerList, jobList, loginList, null, custWebProdCompList,
-						existingRecords, existingJobs, existingLogins, deleteCustWebProdComps);
-				logger.info("Result of modification of CustomerSherColor Web customer data is " + result);
-				if(!result) {
-					addActionError("Error - Unable to modify CustWeb Data");
-				}
-				
-			} else if((saveOrUpdateCwp || saveOrUpdateCwjf || saveOrUpdateCwlt || saveCwcp) && 
-					(!deleteCwp && !deleteCwjf && !deleteCwlt)) {
-				// save or update all data which has not been set to null
-				result = customerService.saveOrUpdateAllCustWebData(customerList, jobList, loginList, profile, custWebProdCompList);
-				logger.info("Result of creation of CustomerSherColor Web customer data is " + result);
-				if(!result) {
-					addActionError("Error - Unable to save CustWeb Data");
-				}
-			} else {
-				addActionError("Error - CustWeb Data has not been modified or created");
-			}*/
-			
 			sessionMap.clear();
 			crudmsg = "Save Successful";
 			sessionMap.put("msg", crudmsg);
@@ -508,9 +482,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			cwpc.setIsPrimaryProdComp(prodComp.isPrimaryProdComp());
 			cwpcList.add(cwpc);
 		}
-		
-		Collections.sort(cwpcList, Comparator.comparing(o -> o.getProdComp()));
-		
+				
 		return cwpcList;
 	}
 	
@@ -525,9 +497,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				custProdCompList.add(prodComp);
 			}
 		}
-		
-		Collections.sort(custProdCompList, Comparator.comparing(o -> o.getProdComp()));
-		
+				
 		return custProdCompList;
 	}
 	

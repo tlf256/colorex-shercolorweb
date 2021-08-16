@@ -151,36 +151,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	/*$(document).on("click", "#loginnext-btn", function(){
-		try{
-			if($("#swuititle").val() == '') {
-				throw "Customer Name is required";
-			}
-			if((!$("#CCE").is(":checked") && !$("#BAC").is(":checked") && !$("#844").is(":checked")) || 
-					(!$("#CCEdefault").is(":checked") && !$("#BACdefault").is(":checked") && !$("#844default").is(":checked"))){
-				throw "Please correct the colorant system(s)";
-			}
-			var acceptcodeval = $.trim($("#acceptcode").val());
-			var eula = $("#eulalist").val();
-			if(eula != 'None' && !acceptcodeval){
-				throw "Please enter an Acceptance Code";
-			}
-			if(eula == 'None' && acceptcodeval){
-				throw "Please choose a EULA";
-			}
-			if($("#ntlaccterror").text()!="" || $("#intntlaccterror").text()!="" || $("#swuititlerror").text()!="" 
-				|| $("#cdsadlflderror").text()!="" || $("#clrntsyserror").text()!="" || $("#eulaerror").text()!=""){
-				throw "Please fix form error(s)";
-			}
-			$("#formerror").text("");
-		}catch(msg){
-			$("#formerror").text(msg);
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-		}
-	});*/
-	
 });
 
 function validate() {

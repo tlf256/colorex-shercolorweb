@@ -52,7 +52,6 @@ public class RequestObject {
 	private CustProfile profile;
 	private List<String> custTypeList;
 	private List<CustProdComp> prodCompList;
-	private List<CustWebProdComps> prodCompRecordsList;
 	private List<CustProdComp> deletedProdComps;
 	private String prodComps;
 	
@@ -293,12 +292,6 @@ public class RequestObject {
 	}
 	public void setProdCompList(List<CustProdComp> prodCompList) {
 		this.prodCompList = prodCompList;
-	}
-	public List<CustWebProdComps> getProdCompRecordsList() {
-		return prodCompRecordsList;
-	}
-	public void setProdCompRecordsList(List<CustWebProdComps> prodCompRecordsList) {
-		this.prodCompRecordsList = prodCompRecordsList;
 	}
 	public List<CustProdComp> getDeletedProdComps() {
 		return deletedProdComps;
