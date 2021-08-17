@@ -151,7 +151,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				sessionMap.put(reqGuid, reqObj);
 			}
 			if (displayTintQueue) {
-				tranHistory = tranHistoryService.getCustomerTintQueue(reqObj.getCustomerID());
+				tranHistory = tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(),false);
 			} else {
 				if(match) {
 					//only pull CUSTOMMATCH records for compare colors selection

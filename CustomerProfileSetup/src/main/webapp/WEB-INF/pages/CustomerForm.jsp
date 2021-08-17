@@ -263,13 +263,46 @@
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 	</div>
+	<div class="row prodaccess">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+			<div id="prodcomperror" class="text-danger errorfld"></div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row prodaccess">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1">
+			<strong>Restrict Product Access?</strong>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-1"></div>
+	</div>
+	<div class="row prodaccess mb-3">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+			<input type="radio" id="restrictyes" name="restrictProdComp" class="mt-1 mb-1" onchange="toggleTextArea(this.value)" value="true" /> Yes
+		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+			<input type="radio" id="restrictno" name="restrictProdComp" class="mt-1 mb-1" onchange="toggleTextArea(this.value)" value="false" checked /> No
+		</div>
+		<div class="col-lg-7 col-md-7 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row prodcomps">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-1">
+			<s:textarea class="" id="prodcomps" name="customer.prodComps" label="Enter Prod Comp(s)" 
+				placeholder="List primary first, separated by comma"></s:textarea>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
 	<br>
 	<br>
 	<br>
 	<div class="row" id="nextform">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-			<s:submit cssClass="btn btn-primary pull-right ml-2" id="loginnext-btn" value="Next" />
+			<button class="btn btn-primary pull-right ml-2" id="loginnext-btn" onclick="validate()">Next</button>
 			<s:submit cssClass="btn btn-secondary pull-right" id="cancel-btn" value="Cancel" action="resetAction" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
