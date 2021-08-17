@@ -27,6 +27,9 @@ public class Customer {
 	private String custType;
 	private boolean useLocatorId;
 	private boolean useRoomByRoom;
+	private String prodComps;
+	private String primaryProdComp;
+	private String[] prodCompArr;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -216,6 +219,24 @@ public class Customer {
 	}
 	public void setUseRoomByRoom(boolean useRoomByRoom) {
 		this.useRoomByRoom = useRoomByRoom;
+	}
+	public String getProdComps() {
+		return prodComps;
+	}
+	public void setProdComps(String prodComps) {
+		this.prodComps = prodComps;
+	}
+	public String getPrimaryProdComp() {
+		return primaryProdComp;
+	}
+	public void setPrimaryProdComp(String primaryProdComp) {
+		this.primaryProdComp = primaryProdComp;
+	}
+	public String[] getProdCompArr() {
+		return prodCompArr;
+	}
+	public void setProdCompArr(String[] prodCompArr) {
+		this.prodCompArr = prodCompArr;
 	}
 	
 }
