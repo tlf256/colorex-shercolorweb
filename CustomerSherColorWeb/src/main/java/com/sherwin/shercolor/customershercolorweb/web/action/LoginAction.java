@@ -194,7 +194,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setSherLinkURL(sherLinkURL);
 							reqObj.setUserId(userId);
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
-							reqObj.setTintQueueCount(tranHistoryService.getCustomerTintQueue(reqObj.getCustomerID()).size());
+							reqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(), false).size());
 							
 							logger.debug("DEBUG new reqGuid created "+ reqGuid);
 							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
@@ -264,7 +264,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 origReqObj.setSherLinkURL(sherLinkURL);
 				 origReqObj.setUserId(userId);
 				 origReqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
-				 origReqObj.setTintQueueCount(tranHistoryService.getCustomerTintQueue(acct).size());
+				 origReqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(acct,false).size());
 
 				 newSession = false;
 				 tinter=origReqObj.getTinter();
