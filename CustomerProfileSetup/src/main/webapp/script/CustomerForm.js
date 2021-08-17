@@ -356,6 +356,7 @@ function hideInput() {
 	$(".rmbyrm").hide();
 	$(".locid").hide();
 	$(".eula").hide();
+	$(".eula-hidden").hide();
 	$(".prodaccess").hide();
 	$(".prodcomps").hide();
 	$("#restrictno").attr("checked", true);

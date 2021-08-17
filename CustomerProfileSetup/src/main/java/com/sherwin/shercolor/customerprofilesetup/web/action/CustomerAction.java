@@ -110,6 +110,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	private List<String> buildEulaTempList(){
 		List<String> eulaTempList = new ArrayList<String>();
 		
+		
+		
 		return eulaTempList;
 	}
 	

@@ -53,6 +53,7 @@ public class RequestObject {
 	private List<CustProdComp> prodCompList;
 	private List<CustProdComp> deletedProdComps;
 	private String prodComps;
+	private List<Template> eulaTempList;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -303,6 +304,12 @@ public class RequestObject {
 	}
 	public void setProdComps(String prodComps) {
 		this.prodComps = prodComps;
+	}
+	public List<Template> getEulaTempList() {
+		return eulaTempList;
+	}
+	public void setEulaTempList(List<Template> eulaTempList) {
+		this.eulaTempList = eulaTempList;
 	}
 	public void reset() {
 		this.customerId = "";

@@ -56,3 +56,16 @@ function toggleTextArea(value){
 		$("#prodcomps").val("");
 	}
 }
+
+function toggleSelectList(value) {
+	console.log("EULA type is " + value);
+	if(value != 'None') {
+		if(value == 'EULA Template') {
+			$('#templatelist').show();
+		}
+		$('#code').show();
+	} else {
+		$('#templatelist').hide();
+		$('#code').hide();
+	}
+}
