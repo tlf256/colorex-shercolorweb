@@ -102,6 +102,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			}
 		}
 		
+		eulaList.add("EULA Template");
+		
 		return eulaList;
 	}
 	
