@@ -1,19 +1,28 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
+import com.sherwin.shercolor.SherColorCommonApplication;
+import com.sherwin.shercolor.config.ApplicationConfiguration;
+import com.sherwin.shercolor.customershercolorweb.annotations.SherColorWebTest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +39,11 @@ import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@Transactional
+@SherColorWebTest
 public class PrintLabelTest  {
+
+	@Autowired
+	private Environment environment;
 	
 	@Autowired
 	DrawdownLabelService drawdownLabelService;

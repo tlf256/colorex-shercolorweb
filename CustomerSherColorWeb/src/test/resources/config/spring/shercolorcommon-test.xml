@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/tx 
+       	   http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.sherwin.shercolor"/>
+	<tx:annotation-driven />
+
+	<bean
+        class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+				<!-- add other properties file like *-qa.properties to locations but
+					only include one. -->
+<!--            	<value>file:/web_apps/server/shercolor/deploy/shercolorcommon.properties</value>-->
+            	<value>file:/Users/daniel.j.adamssherwin.com/web_apps/server/shercolor/deploy/shercolorcommontesting.properties</value>
+           <!--     <value>classpath:config/spring/shercolorcommon.properties</value> -->
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+
+	<beans profile="oracle">
+		<bean id="dataSource" class="oracle.ucp.jdbc.PoolDataSourceFactory" factory-method="getPoolDataSource">
+			<property name="URL" value="${oracle.jdbc.url.dev}" />
+			<property name="user" value="${jdbc.username.dev}" />
+			<property name="password" value="${jdbc.password.dev}" />
+			<property name="connectionFactoryClassName" value="oracle.jdbc.pool.OracleDataSource" />
+			<property name="connectionPoolName" value="ANAG_POOL" />
+			<property name="minPoolSize" value="5" />
+			<property name="maxPoolSize" value="20" />
+			<!-- does not work with jboss eap 6/tomcat 7 property name="initialPoolSize" value="5" /> -->
+			<property name="inactiveConnectionTimeout" value="120" />
+			<property name="validateConnectionOnBorrow" value="true" />
+			<property name="maxStatements" value="10" />
+		</bean>
+
+		<!-- Each domain file needs to registered here -->
+		<bean id="sessionFactory"
+			  class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+			<property name="packagesToScan" value="com.sherwin.shercolor"/>
+			<property name="dataSource" ref="dataSource" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.dialect">com.sherwin.shercolor.config.customdialects.OracleArraysDialect</prop>
+					<prop key="show_sql">true</prop>
+					<prop key="current_session_context_class">org.springframework.orm.hibernate5.SpringSessionContext</prop>
+				</props>
+			</property>
+		</bean>
+
+		<bean id="transactionManager"
+			  class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+			<property name="sessionFactory" ref="sessionFactory" />
+			<property name="dataSource" ref="dataSource" />
+		</bean>
+	</beans>
+
+	<beans profile="postgres">
+		<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="url" value="${postgres.jdbc.url.dev}" />
+			<property name="username" value="${jdbc.username.dev}" />
+			<property name="password" value="${jdbc.password.dev}" />
+			<property name="driverClassName" value="org.postgresql.Driver"/>
+		</bean>
+
+		<!-- Each domain file needs to registered here -->
+		<bean id="sessionFactory"
+			  class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+			<property name="packagesToScan" value="com.sherwin.shercolor"/>
+			<property name="dataSource" ref="dataSource" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.dialect">com.sherwin.shercolor.config.customdialects.PostgreSQL10ArraysDialect</prop>
+					<prop key="show_sql">true</prop>
+					<prop key="current_session_context_class">org.springframework.orm.hibernate5.SpringSessionContext</prop>
+				</props>
+			</property>
+		</bean>
+
+		<bean id="transactionManager"
+			  class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+			<property name="sessionFactory" ref="sessionFactory" />
+			<property name="dataSource" ref="dataSource" />
+		</bean>
+	</beans>
+</beans>
+

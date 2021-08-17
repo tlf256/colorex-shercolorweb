@@ -14,10 +14,16 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotations.SherColorWebTest;
+import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.apache.struts2.StrutsSpringTestCase;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
@@ -29,23 +35,13 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 
-@Transactional
-
-public class TinterEventActionTest extends StrutsSpringTestCase{
+@RunWith(SpringJUnit4ClassRunner.class)
+@SherColorWebTest
+public class TinterEventActionTest extends StrutsSpringJUnit4TestCase<TinterEventAction> {
 
 	TinterEventAction target;
 	RequestObject reqObj = new RequestObject();
-	String reqGuid = "12345";	
-
-	@Override
-	public String[] getContextLocations() {
-		String[] arrStr =  {
-				"classpath:config/spring/shercolorcommon.xml"
-
-		} ;  
-		return arrStr;
-
-	}
+	String reqGuid = "12345";
 
 	@Test
 	public void testTinterEventsAction(){

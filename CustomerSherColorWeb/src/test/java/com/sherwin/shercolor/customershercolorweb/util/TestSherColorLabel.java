@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import com.sherwin.shercolor.customershercolorweb.annotations.SherColorWebTest;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import org.junit.internal.runners.TestClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +29,7 @@ import be.quodlibet.boxable.Row;
 import be.quodlibet.boxable.VerticalAlignment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@Transactional
+@SherColorWebTest
 public class TestSherColorLabel {
 	
 	@Autowired
