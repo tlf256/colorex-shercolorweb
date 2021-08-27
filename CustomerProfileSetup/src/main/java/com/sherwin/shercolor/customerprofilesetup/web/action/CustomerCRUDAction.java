@@ -1,6 +1,8 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +17,16 @@ import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebJobFields;
 import com.sherwin.shercolor.common.domain.CustWebLoginTransform;
 import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebProdComps;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
@@ -46,6 +51,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	
 	@Autowired
 	EulaService eulaService;
+	
+	@Autowired
+	ProductService productService;
 	
 	public String read() {
 		try {
@@ -93,6 +101,8 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			reqObj.setCdsAdlFld(allowCharacters(custParms.get(0).getCdsAdlFld()));
 			reqObj.setActive(custParms.get(0).isActive());
 			reqObj.setClrntList(clrntlist);
+			
+			reqObj.setProdCompList(mapProdCompList(productService.getCustWebProdComps(lookupCustomerId)));
 			
 			List<CustWebJobFields> jobFields = customerService.getCustJobFields(lookupCustomerId);
 			//6-14-21 first check if jobFields is null or empty 
@@ -202,11 +212,13 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	public String createOrUpdate() {
 		try {			
 			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			String customerId = reqObj.getCustomerId();
 			
-			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
-			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
-			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(reqObj.getCustomerId());
+			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customerId);
+			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customerId);
+			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(customerId);
 			//CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerId());
+			List<CustWebProdComps> existingProdComps = productService.getCustWebProdComps(customerId);
 			
 			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
 			List<CustWebJobFields> jobList = new ArrayList<CustWebJobFields>();
@@ -303,6 +315,65 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				logger.info("Created Eula record");
 			}
 			
+			List<CustProdComp> prodCompList = reqObj.getProdCompList();
+			List<CustProdComp> deletedProdComps = reqObj.getDeletedProdComps();
+			List<CustWebProdComps> custWebProdComps = null;
+			List<CustWebProdComps> deleteCustWebProdComps = null;
+			
+			if(prodCompList != null) {
+				// prod comps either already existed or were created
+				// save/update records
+				custWebProdComps = mapCustWebProdComps(prodCompList, customerId);
+				
+				if(existingProdComps != null && !existingProdComps.isEmpty()) {
+					// sort records for comparison
+					// sort session records
+					Collections.sort(custWebProdComps, Comparator.comparing(o -> o.getProdComp()));
+					
+					// sort existing records
+					Collections.sort(existingProdComps, Comparator.comparing(o -> o.getProdComp()));
+					
+					// records were created/updated
+					// check existing records for changes
+					if(custWebProdComps.equals(existingProdComps)) {
+						// records exist but no changes were made
+						// do not update or delete
+						custWebProdComps = null;
+					} else {
+						// records exist and changes have been made
+						// check if any existing records were deleted
+						if(deletedProdComps != null && reqObj.isUpdateMode()) {
+							// existing records have been deleted
+							// map deleted records
+							deleteCustWebProdComps = mapCustWebProdComps(deletedProdComps, customerId);
+							
+							// check if any deleted records still exist in
+							// custwebprodcomps list
+							for(CustWebProdComps cwpc : custWebProdComps) {
+								if(deleteCustWebProdComps.contains(cwpc)) {
+									// remove undeleted/re-added record
+									// so that it does not get deleted from table
+									deleteCustWebProdComps.remove(cwpc);
+								}
+							}
+							
+							// remove deleted prod comp records from list
+							// and compare to see if existing records were updated
+							// or if the records were just deleted
+							for(CustWebProdComps cwpc : deleteCustWebProdComps) {
+								existingProdComps.remove(cwpc);
+							}
+							
+							if(existingProdComps.equals(custWebProdComps)) {
+								// records were only deleted, not updated
+								// do not update existing records
+								custWebProdComps = null;
+							}
+						}
+					}
+				}
+			}
+			
 			if(!reqObj.isJobUnchanged()) {
 				logger.info("CustWebJobFields records have been modified or need to be created");
 				// map model object to domain object
@@ -369,28 +440,13 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			if(!saveOrUpdateCwlt) loginList = null;
 			if(!saveCwcp) profile = null;
 			
-			// check if data has been modified or new data needs saved
-			if(deleteCwp || deleteCwjf || deleteCwlt) {
-				// One or more customer records have been either deleted or added to existing records.
-				// Delete, then save all data which has not been set to null.
-				// Currently, existing CustWebCustomerProfile records cannot be modified 
-				// through this application, so pass null as CustWebCustomerProfile data
-				result = modifyCustWebData(customerList, jobList, loginList, null, existingRecords, existingJobs, existingLogins);
-				logger.info("Result of modification of CustomerSherColor Web customer data is " + result);
-				if(!result) {
-					addActionError("Error - Unable to modify CustWeb Data");
-				}
-				
-			} else if((saveOrUpdateCwp || saveOrUpdateCwjf || saveOrUpdateCwlt || saveCwcp) && 
-					(!deleteCwp && !deleteCwjf && !deleteCwlt)) {
-				// save or update all data which has not been set to null
-				result = customerService.saveOrUpdateAllCustWebData(customerList, jobList, loginList, profile);
-				logger.info("Result of creation of CustomerSherColor Web customer data is " + result);
-				if(!result) {
-					addActionError("Error - Unable to save CustWeb Data");
-				}
-			} else {
-				addActionError("Error - CustWeb Data has not been modified or created");
+			// modify cust web data
+			// delete/save/update any records that are not null
+			result = modifyCustWebData(customerList, jobList, loginList, profile, custWebProdComps,
+					existingRecords, existingJobs, existingLogins, deleteCustWebProdComps);
+			logger.info("Result of modification of CustomerSherColor Web customer data is " + result);
+			if(!result) {
+				addActionError("Error: Unable to modify CustWeb Data");
 			}
 			
 			sessionMap.clear();
@@ -415,15 +471,46 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		return cwcp;
 	}
 	
+	private List<CustWebProdComps> mapCustWebProdComps(List<CustProdComp> prodCompList, String customerId) {
+		List<CustWebProdComps> cwpcList = new ArrayList<CustWebProdComps>();
+		
+		for(CustProdComp prodComp : prodCompList) {
+			CustWebProdComps cwpc = new CustWebProdComps();
+			cwpc.setCustomerId(customerId);
+			cwpc.setProdComp(prodComp.getProdComp());
+			cwpc.setIsPrimaryProdComp(prodComp.isPrimaryProdComp());
+			cwpcList.add(cwpc);
+		}
+				
+		return cwpcList;
+	}
+	
+	private List<CustProdComp> mapProdCompList(List<CustWebProdComps> cwpcList){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(cwpcList != null && !cwpcList.isEmpty()) {
+			for(CustWebProdComps cwpc : cwpcList) {
+				CustProdComp prodComp = new CustProdComp();
+				prodComp.setProdComp(cwpc.getProdComp());
+				prodComp.setPrimaryProdComp(cwpc.getIsPrimaryProdComp());
+				custProdCompList.add(prodComp);
+			}
+		}
+				
+		return custProdCompList;
+	}
+	
 	public String delete() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			String customerId = reqObj.getCustomerId();
 			
 			//check for existing records
-			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(reqObj.getCustomerId());
-			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(reqObj.getCustomerId());
-			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(reqObj.getCustomerId());
-			CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerId());
+			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customerId);
+			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customerId);
+			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(customerId);
+			CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(customerId);
+			List<CustWebProdComps> existingProdComps = productService.getCustWebProdComps(customerId);
 			
 			// check if job history exists
 			if(!reqObj.isHistory()) {
@@ -433,7 +520,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					boolean result = true;
 					
 					// no job history and EULA has not been signed
-					result = customerService.deleteAllCustWebData(existingRecords, existingJobfields, existingLogins, existingProfile);
+					result = customerService.deleteAllCustWebData(existingRecords, existingJobfields, existingLogins, existingProfile, existingProdComps);
 					
 					if(!result) {
 						addActionError("Error - Unable to delete Customer record(s), please contact administrator");
@@ -493,7 +580,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				updatedRecords.add(record);
 			}
 			
-			customerService.saveOrUpdateAllCustWebData(updatedRecords, null, null, null);
+			customerService.saveOrUpdateAllCustWebData(updatedRecords, null, null, null, null);
 			
 			sessionMap.clear();
 			crudmsg = "Customer has been set to inactive";
@@ -521,14 +608,16 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	}
 	
 	public boolean modifyCustWebData(List<CustWebParms> custList, List<CustWebJobFields> jobFieldsList, List<CustWebLoginTransform> loginList,
-			CustWebCustomerProfile profile, List<CustWebParms> existingParmsList, List<CustWebJobFields> existingJFList, List<CustWebLoginTransform> existingLoginList) {
+			CustWebCustomerProfile profile, List<CustWebProdComps> cwpcList, List<CustWebParms> existingParmsList, List<CustWebJobFields> existingJFList, 
+			List<CustWebLoginTransform> existingLoginList, List<CustWebProdComps> deletedProdComps) {
 		boolean result = false;
 		
-		// modified CustWebCustomerProfile does not need to be deleted, only updated, if necessary
+		// CustWebCustomerProfile does not need to be deleted, only saved, if necessary
 		// All other modified CustomerSherColorWeb customer data first needs deleted then saved
-		result = customerService.deleteAllCustWebData(existingParmsList, existingJFList, existingLoginList, null);
+		// except custWebProdComps, only the records necessary are deleted and/or saved/updated
+		result = customerService.deleteAllCustWebData(existingParmsList, existingJFList, existingLoginList, null, deletedProdComps);
 		
-		result = customerService.saveOrUpdateAllCustWebData(custList, jobFieldsList, loginList, profile);
+		result = customerService.saveOrUpdateAllCustWebData(custList, jobFieldsList, loginList, profile, cwpcList);
 		
 		return result;
 		
