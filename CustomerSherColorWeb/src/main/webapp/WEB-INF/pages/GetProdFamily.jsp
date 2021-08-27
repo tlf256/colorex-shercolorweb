@@ -287,23 +287,18 @@
 			    	var prodNbr = prodTable.row(this).data()[1];
 			    	// table has been sorted by Delta-E value, so grab the updated row position
 			    	var index = prodTable.rows( { order: 'applied' } ).nodes().indexOf(this);
-			    	console.log("row index " + index);
-			    	console.log("prod number " + prodNbr);
 			    	$("#selectedProdFamily").val(prodNbr);
 			    	$(".prodFamRadio:eq("+index+")").prop('checked', true);
 			    	userSelectedProduct = true;
 			    });
 
 				var rows = document.querySelectorAll("tr");
-				console.log("NUMBER OF ROWS IN THE DATATABLE: " + rows.length);
 				for (index=1; index<rows.length; index++) {
 					var row = rows[index];
 					var columns = row.querySelectorAll("td");
 					var colDeltaE = parseFloat(columns[4].textContent.trim());
-					console.log("ROW " + index + "DELTA E: " + colDeltaE);
 					var colComment = columns[6].textContent.trim();
 					if (colComment === "Best Performance") {
-						//row.css("background-color", "green");
 						row.style.background = "#b5e7a0";
 						var radio = row.querySelector("input");
 						radio.checked = true;
@@ -312,7 +307,6 @@
 						userSelectedProduct = true;
 					}
 					if (colDeltaE > 1) {
-						//$('#deltaEGreaterThanOne').removeClass('d-none');
 						columns[4].style.color = "red";
 						columns[4].style.fontWeight = "bold";
 						
