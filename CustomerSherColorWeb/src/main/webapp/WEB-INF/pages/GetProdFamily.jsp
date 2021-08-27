@@ -33,13 +33,57 @@
 			}
 		</style>
 		<script>
-		var userSelectedProduct = false;
+		// A Product should always be selected at start
+		var selectedProdFamily;
 		
-		function verifyProductSelected(){
-			if (!userSelectedProduct) {
-				$("#noProductChoosenErrorText").removeClass("d-none");
+		function processSelection(){
+			// Do Action
+			var myGuid = "${reqGuid}";
+			console.log("myGUid")
+			$.ajax({
+				url : "prodFamilyUserNextAction.action",
+				type : "POST",
+				data : {
+					reqGuid : myGuid,
+					selectedProdFamily : selectedProdFamily
+					
+				},
+				datatype : "json",
+				success : function(data) {
+					if (data.sessionStatus === "expired") {
+						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					} else {
+						console.log("Action did not redirect...");
+					}
+				},
+				error : function(err) {
+					alert('<s:text name="global.failureColon"/>' + err);
+				}
+			});
+		}
+		
+		function verifyUserSelection(overrideDeltaE) {
+			if (overrideDeltaE) {
+				return true;
+			} else {
+				var rows = document.querySelectorAll("tr");
+				for (index=1; index<rows.length; index++) {
+					var row = rows[index];
+					var columns = row.querySelectorAll("td");
+					var radio = row.querySelector("input");
+					if (radio.checked == 1) {
+						var colDeltaE = parseFloat(columns[4].textContent.trim());
+						if (colDeltaE > 1) {
+							//Show modal
+							$('#highDeltaEValue').text(colDeltaE);
+							$("#deltaEWarningModal").modal('show');
+							return false;
+						} else {
+							return true;
+						}
+					}
+				}
 			}
-			return userSelectedProduct;
 		}
 		</script>
 	</head>
@@ -175,7 +219,7 @@
 					<div class="col-sm-1"></div>
 					<div class="col-sm-2">
 						<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.next')}"
-								  onclick="return verifyProductSelected();" action="prodFamilyUserNextAction"/>
+								  onclick="return verifyUserSelection(false);" action="prodFamilyUserNextAction"/>
 					</div>
 					<div class="col-sm-2">
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="prodFamilyUserBackAction"/>
@@ -185,11 +229,47 @@
 					</div>
 					<div class="col-sm-1"></div>
 		    	</div>
-			</s:form>
 			<br>
+			
+			<!-- Delta E Warning Modal -->
+			<div class="modal" aria-labelledby="deltaEWarningModal"
+				aria-hidden="true" id="deltaEWarningModal" role="dialog">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><s:text name="getProdFamily.deltaEWarning"/></h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<s:text name="getProdFamily.verifyDeltaEGreaterThanOne" />
+								<br><br>
+								<s:text name="getProdFamily.deltaEGreaterThanOneWarning" />
+								<br><br>
+								<s:text name="compareColorsResult.deltaEcolon" /><span id="highDeltaEValue" class="badge badge-danger ml-2"></span>
+								<br><br>
+								<s:text name="getProdFamily.verifyUserChoice" />
+								
+							</div>
+							<div class="modal-footer">
+								<s:submit cssClass="btn btn-primary ml-3" id="submitNext" value="%{getText('global.continue')}"
+								  onclick="return verifyUserSelection(true);" action="prodFamilyUserNextAction"/>
+								<button type="button" class="btn btn-secondary"
+								id="overrideDeltaEClose" data-dismiss="modal" aria-label="Cancel"><s:text name="global.cancel"/></button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			</s:form>
 			<script>
 			$(document).ready(function() {
 				
+				$('#submitNext').focus();
 				var prodTable = $('#prodFamily_table').DataTable({
 					dom: 'rtp',
 			        "language": {
@@ -213,14 +293,32 @@
 			    	$(".prodFamRadio:eq("+index+")").prop('checked', true);
 			    	userSelectedProduct = true;
 			    });
-				
-				var pT = $('#prodFamily_table').DataTable();
-				for (index = 0; index < pT.data().count()/8; index++) {
-					var deltaE = prodTable.row(index).data()[4];
-					if (deltaE > 1) {
-						$('#deltaEGreaterThanOne').removeClass('d-none');
+
+				var rows = document.querySelectorAll("tr");
+				console.log("NUMBER OF ROWS IN THE DATATABLE: " + rows.length);
+				for (index=1; index<rows.length; index++) {
+					var row = rows[index];
+					var columns = row.querySelectorAll("td");
+					var colDeltaE = parseFloat(columns[4].textContent.trim());
+					console.log("ROW " + index + "DELTA E: " + colDeltaE);
+					var colComment = columns[6].textContent.trim();
+					if (colComment === "Best Performance") {
+						//row.css("background-color", "green");
+						row.style.background = "#b5e7a0";
+						var radio = row.querySelector("input");
+						radio.checked = true;
+						var prodNbr = columns[1].textContent.trim();
+						$("#selectedProdFamily").val(prodNbr);
+						userSelectedProduct = true;
+					}
+					if (colDeltaE > 1) {
+						//$('#deltaEGreaterThanOne').removeClass('d-none');
+						columns[4].style.color = "red";
+						columns[4].style.fontWeight = "bold";
+						
 					}
 				}
+				
 	
 			});
 			</script>

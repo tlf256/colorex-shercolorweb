@@ -69,6 +69,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private int recDirty;
 	private boolean siteHasTinter;
 	private boolean siteHasPrinter;
+	private boolean displayDeltaEColumn = false;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean accountUsesRoomByRoom = false;
 	private boolean tinterDoesBaseDispense = false;
@@ -230,7 +231,13 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				retVal = SUCCESS;
 
 			}
-
+			
+			// Add DeltaE Warning to Display Msgs if there is a warning to display
+			if (displayFormula.getAverageDeltaE() > 1) {
+				displayDeltaEColumn = true;
+				displayFormula.setAverageDeltaE(Double.parseDouble(String.format("%,.2f", displayFormula.getAverageDeltaE())));
+				addActionError(getText("compareColorsResult.deltaEgreaterThanOneWarning"));
+			}
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			retVal = ERROR;
@@ -698,6 +705,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
+	}
+
+	public boolean isDisplayDeltaEColumn() {
+		return displayDeltaEColumn;
+	}
+
+	public void setDisplayDeltaEColumn(boolean displayDeltaEColumn) {
+		this.displayDeltaEColumn = displayDeltaEColumn;
 	}
 
 	public DrawdownLabelService getDrawdownLabelService() {
