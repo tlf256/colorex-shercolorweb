@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +21,8 @@ import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
@@ -45,6 +46,9 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	private Date effDate;
 	private Date expDate;
 	private String eulaText;
+	private boolean prodCompDeleted;
+	private boolean prodCompAdded;
+	private String prodComp;
 	
 	@Autowired
 	EulaService eulaService;
@@ -134,6 +138,38 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			} else {
 				if(!reqObj.isNewCustomer() && !reqObj.isCustAdded() && !reqObj.isCustDeleted()) {
 					reqObj.setCustUnchanged(true);
+				}
+			}
+			
+			String custType = cust.getCustType();
+			
+			if(custType != null) {
+				if(custType.equals("CUSTOMER")) {
+					reqObj.setProfile(null);
+				} else {
+					reqObj.setProfile(mapCustProfile(cust));
+				}
+			}
+			
+			String prodComps = cust.getProdComps();
+			List<CustProdComp> prodCompList = reqObj.getProdCompList();
+			
+			if(prodComps != null) {
+				// new data
+				reqObj.setProdCompList(mapProdCompList(prodComps));
+				
+			} else {
+				if(prodCompList != null || cust.getProdCompArr() != null) {
+					// records either already exist or were entered previously
+					// check if the list needs updating
+					// if null then there isn't any data to process
+					List<CustProdComp> editProdCompList = mapProdCompList(cust.getProdCompArr(), cust.getPrimaryProdComp());
+					
+					if(!editProdCompList.equals(prodCompList)) {
+						// change has been made
+						// save new data
+						reqObj.setProdCompList(editProdCompList);
+					}
 				}
 			}
 			
@@ -347,16 +383,69 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 			
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage());
-			return ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
 	
-	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+	private CustProfile mapCustProfile(Customer customer) {
+		CustProfile profile = null;
+		
+		profile = new CustProfile();
+		profile.setCustType(customer.getCustType());
+		profile.setUseRoomByRoom(customer.isUseRoomByRoom());
+		profile.setUseLocatorId(customer.isUseLocatorId());
+		
+		return profile;
+	}
+	
+	private List<CustProdComp> mapProdCompList(String prodComps){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null && !prodComps.isEmpty()) {
+			String[] prodCompsArr = prodComps.split(",");
+			for(int i = 0; i < prodCompsArr.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodCompsArr[i].trim().toUpperCase();
+				
+				cpc.setProdComp(prodComp);
+				if(i==0) {
+					cpc.setPrimaryProdComp(true);
+				} else {
+					cpc.setPrimaryProdComp(false);
+				}
+				custProdCompList.add(cpc);
+			}
+		}
+				
+		return custProdCompList;
+	}
+	
+	private List<CustProdComp> mapProdCompList(String[] prodComps, String primaryProdComp){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null) {
+			String primProdComp = primaryProdComp.trim().toUpperCase();
+			for(int i = 0; i < prodComps.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodComps[i].trim().toUpperCase();
+				if(!prodComp.isEmpty()) {
+					cpc.setProdComp(prodComp);
+					if(prodComp.equals(primProdComp)) {
+						cpc.setPrimaryProdComp(true);
+					} else {
+						cpc.setPrimaryProdComp(false);
+					}
+					custProdCompList.add(cpc);
+				}
+			}
+		}
+				
+		return custProdCompList;
+	}
+	
+	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();
@@ -400,6 +489,28 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
          
         return fileBytes;
     }
+	
+	public String deleteProdComp() {
+		RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+		
+		List<CustProdComp> prodCompList = reqObj.getProdCompList();
+		List<CustProdComp> deletedProdComps = new ArrayList<CustProdComp>();
+		
+		if(prodCompList != null) {
+			for(CustProdComp pc : prodCompList) {
+				if(pc.getProdComp().equalsIgnoreCase(getProdComp())) {
+					deletedProdComps.add(pc);
+					setProdCompDeleted(true);
+				}
+			}
+		}
+		
+		reqObj.setDeletedProdComps(deletedProdComps);
+		
+		sessionMap.put("CustomerDetail", reqObj);
+		
+		return SUCCESS;
+	}
 
 	@Override
 	public void setSession(Map<String, Object> sessionMap) {
@@ -476,6 +587,30 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 
 	public void setEulaText(String eulaText) {
 		this.eulaText = allowCharacters(Encode.forHtml(eulaText.trim()));
+	}
+
+	public boolean isProdCompDeleted() {
+		return prodCompDeleted;
+	}
+
+	public void setProdCompDeleted(boolean prodCompDeleted) {
+		this.prodCompDeleted = prodCompDeleted;
+	}
+
+	public boolean isProdCompAdded() {
+		return prodCompAdded;
+	}
+
+	public void setProdCompAdded(boolean prodCompAdded) {
+		this.prodCompAdded = prodCompAdded;
+	}
+
+	public String getProdComp() {
+		return prodComp;
+	}
+
+	public void setProdComp(String prodComp) {
+		this.prodComp = prodComp;
 	}
 
 }

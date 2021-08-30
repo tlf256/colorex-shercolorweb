@@ -5,13 +5,12 @@ import java.util.List;
 
 import org.owasp.encoder.Encode;
 
-import com.sherwin.shercolor.common.domain.Eula;
-
 public class Customer {
 	private String customerId;
 	private String accttype;
 	private String ntlacctnbr;
 	private String intntlacctnbr;
+	private String costCenter;
 	private String cce;
 	private String bac;
 	private String eff;
@@ -25,6 +24,12 @@ public class Customer {
 	private String acceptCode;
 	private boolean activateEula;
 	private byte[] eulapdf;
+	private String custType;
+	private boolean useLocatorId;
+	private boolean useRoomByRoom;
+	private String prodComps;
+	private String primaryProdComp;
+	private String[] prodCompArr;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -65,6 +70,12 @@ public class Customer {
 		} else {
 			this.intntlacctnbr = intntlacctnbr;
 		}
+	}
+	public String getCostCenter() {
+		return costCenter;
+	}
+	public void setCostCenter(String costCenter) {
+		this.costCenter = costCenter;
 	}
 	public String getCce() {
 		return cce;
@@ -190,6 +201,42 @@ public class Customer {
 	}
 	public void setEulapdf(byte[] eulapdf) {
 		this.eulapdf = eulapdf;
+	}
+	public String getCustType() {
+		return custType;
+	}
+	public void setCustType(String custType) {
+		this.custType = custType;
+	}
+	public boolean isUseLocatorId() {
+		return useLocatorId;
+	}
+	public void setUseLocatorId(boolean useLocatorId) {
+		this.useLocatorId = useLocatorId;
+	}
+	public boolean isUseRoomByRoom() {
+		return useRoomByRoom;
+	}
+	public void setUseRoomByRoom(boolean useRoomByRoom) {
+		this.useRoomByRoom = useRoomByRoom;
+	}
+	public String getProdComps() {
+		return prodComps;
+	}
+	public void setProdComps(String prodComps) {
+		this.prodComps = prodComps;
+	}
+	public String getPrimaryProdComp() {
+		return primaryProdComp;
+	}
+	public void setPrimaryProdComp(String primaryProdComp) {
+		this.primaryProdComp = primaryProdComp;
+	}
+	public String[] getProdCompArr() {
+		return prodCompArr;
+	}
+	public void setProdCompArr(String[] prodCompArr) {
+		this.prodCompArr = prodCompArr;
 	}
 	
 }

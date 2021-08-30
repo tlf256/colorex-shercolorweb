@@ -36,6 +36,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	private FormulaInfo displayFormula;
 	private int controlNbr;
 	private int qtyDispensed;
+	private String quantity;
+	private int qtyOrdered;
 	private String jsDateString;
 	private int recDirty;
 	private List<DispenseItem> drawdownShotList;
@@ -157,8 +159,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	}
 
-	public String saveOnPrint(){
-		logger.debug("inside action to saveOnPrint");
+	public String saveBeforeAction(){
+		logger.debug("inside action to saveBeforeAction");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 		logger.debug("inside action about to execute");
@@ -194,52 +196,50 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					int shots = item.getShots();
 					double decimalOunces = item.getDecimalOunces();
 					
-					if(code != null && shots != 0 && decimalOunces != 0 && uom != 0){
-						switch (ctr) {
-						case 1:
-							drawdownTran.setClrnt1(code);
-							drawdownTran.setClrntShots1(shots);
-							drawdownTran.setClrntOz1(decimalOunces);
-							drawdownTran.setUom(uom);
-							break;
-						case 2:
-							drawdownTran.setClrnt2(code);
-							drawdownTran.setClrntShots2(shots);
-							drawdownTran.setClrntOz2(decimalOunces);
-							break;
-						case 3:
-							drawdownTran.setClrnt3(code);
-							drawdownTran.setClrntShots3(shots);
-							drawdownTran.setClrntOz3(decimalOunces);
-							break;
-						case 4:
-							drawdownTran.setClrnt4(code);
-							drawdownTran.setClrntShots4(shots);
-							drawdownTran.setClrntOz4(decimalOunces);
-							break;
-						case 5:
-							drawdownTran.setClrnt5(code);
-							drawdownTran.setClrntShots5(shots);
-							drawdownTran.setClrntOz5(decimalOunces);
-							break;
-						case 6:
-							drawdownTran.setClrnt6(code);
-							drawdownTran.setClrntShots6(shots);
-							drawdownTran.setClrntOz6(decimalOunces);
-							break;
-						case 7:
-							drawdownTran.setClrnt7(code);
-							drawdownTran.setClrntShots7(shots);
-							drawdownTran.setClrntOz7(decimalOunces);
-							break;
-						case 8:
-							drawdownTran.setClrnt8(code);
-							drawdownTran.setClrntShots8(shots);
-							drawdownTran.setClrntOz8(decimalOunces);
-							break;
-						}
-						ctr++;
-					}// end null check
+					switch (ctr) {
+					case 1:
+						drawdownTran.setClrnt1(code);
+						drawdownTran.setClrntShots1(shots);
+						drawdownTran.setClrntOz1(decimalOunces);
+						drawdownTran.setUom(uom);
+						break;
+					case 2:
+						drawdownTran.setClrnt2(code);
+						drawdownTran.setClrntShots2(shots);
+						drawdownTran.setClrntOz2(decimalOunces);
+						break;
+					case 3:
+						drawdownTran.setClrnt3(code);
+						drawdownTran.setClrntShots3(shots);
+						drawdownTran.setClrntOz3(decimalOunces);
+						break;
+					case 4:
+						drawdownTran.setClrnt4(code);
+						drawdownTran.setClrntShots4(shots);
+						drawdownTran.setClrntOz4(decimalOunces);
+						break;
+					case 5:
+						drawdownTran.setClrnt5(code);
+						drawdownTran.setClrntShots5(shots);
+						drawdownTran.setClrntOz5(decimalOunces);
+						break;
+					case 6:
+						drawdownTran.setClrnt6(code);
+						drawdownTran.setClrntShots6(shots);
+						drawdownTran.setClrntOz6(decimalOunces);
+						break;
+					case 7:
+						drawdownTran.setClrnt7(code);
+						drawdownTran.setClrntShots7(shots);
+						drawdownTran.setClrntOz7(decimalOunces);
+						break;
+					case 8:
+						drawdownTran.setClrnt8(code);
+						drawdownTran.setClrntShots8(shots);
+						drawdownTran.setClrntOz8(decimalOunces);
+						break;
+					}
+					ctr++;
 				}// end for loop drawdownShotList
 			}// end drawdownShotList null check		
 			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);
@@ -271,6 +271,27 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			retVal = ERROR;
+		}
+		
+		return retVal;
+	}
+	
+	public String updateOrderQuantity() {
+		String retVal = null;
+		try {
+			// Update the Order Quantity with what the user has input into the textfield
+			logger.debug("inside action to updateOrderQuantity");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			reqObj.setQuantityOrdered(Integer.parseInt(quantity));
+			sessionMap.put(reqGuid, reqObj);
+			
+			logger.debug("inside action about to execute. qtyOrdered will be " + qtyOrdered);
+			retVal = this.execute();
+			logger.debug("inside action back from execute.");
+			
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
 		
 		return retVal;
@@ -530,6 +551,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		}
 		
 		custWebTran.setQuantityDispensed(reqObj.getQuantityDispensed());
+		custWebTran.setQuantityOrdered(reqObj.getQuantityOrdered());
 
 		if(origTran!=null){
 			// if correction and orig values are empty, fill them with origTran record fields
@@ -597,6 +619,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public int getQtyDispensed() {
 		return qtyDispensed;
 	}
+	
+	public void setQuantityOrdered(int qtyOrdered) {
+		this.qtyOrdered = qtyOrdered;
+	}
+	
+	public int getQtyOrdered() {
+		return qtyOrdered;
+	}
 
 	public void setJsDateString(String jsDateString) {
 		this.jsDateString = Encode.forHtml(jsDateString);
@@ -646,5 +676,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public void setDispenseBase(boolean dispenseBase) {
 		this.dispenseBase = dispenseBase;
 	}
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = Encode.forHtml(quantity);
+	}
+	
 
 }

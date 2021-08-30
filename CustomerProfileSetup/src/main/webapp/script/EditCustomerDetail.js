@@ -2,6 +2,26 @@
  * 
  */
 $(document).ready(function() {
+	
+	if($('#custProfile').is(':visible')) {
+		var selectList = $('#typelist');
+		var selectedCustType = $('#typelist option:selected').val();
+		
+		buildSelectList($('#customerid').text(), $('#acctType').val(), selectList, selectedCustType);
+		
+		if($('#typelist option:selected').val() == 'CUSTOMER') {
+			$("#rmbyrm").hide();
+			$("#locid").hide();
+		} else {
+			$("#rmbyrm").show();
+			$("#locid").show();
+		}
+	}
+	
+	if($('#prodCompAccess').is(':visible')) {
+		$(".prodcomps").hide();
+	}
+	
 	var existinglogins = $(".kyfld").map(function(index){
 		if($(this).val()!=""){
 			return $(this).val();
@@ -53,18 +73,11 @@ $(document).ready(function() {
 		$("#newloginrow").addClass("d-none");
 	}
 	
-	$(document).on("click", ".dltrow", function(){	
+	$(document).on("click", ".dltloginrow", function(){	
 		var input = $(this).parent('td').parent('tr').find("input");
+		var clonedRowLength = $(".cloned-loginrow").length;
 		//window.alert($(".cloned-loginrow").length);
-		if($(".cloned-loginrow").length==1){ 
-			input.removeAttr("readonly");
-			input.val("");
-			input.eq(0).focus();
-			input.eq(0).select();
-		}else{
-			input.val("");
-			$(this).parent('td').parent('tr').remove();
-		}
+		deleteClonedRow(input, clonedRowLength);
 	});
 	
 	$(document).on("click", ".deleterow", function(){	
@@ -88,6 +101,55 @@ $(document).ready(function() {
 			$(this).addClass("d-none");
 		}
 		a++;
+	});
+	
+	$(document).on("click", ".addpcrow", function(){
+		var i = 0;
+		var prodCompRow = $('#newProdCompRow');
+		var clone = prodCompRow.clone(true);
+		var rowId = prodCompRow + i;
+		
+		clone.attr("id", rowid);
+		$("#prodcomp_detail").append(clone);
+		clone.find("input").val("");
+		$("#"+rowid).find("input").each(function(){
+			$(this).attr("id", $(this).attr("id")+(i+1));
+		});
+		i++;
+	});
+	
+	$(document).on("click", ".dltpcclonerow", function(){	
+		var input = $(this).parent('td').parent('tr').find("input");
+		var clonedRowLength = $(".cloned-pcrow").length;
+		//console.log("cloned prod comp row length is " + clonedRowLength);
+		deleteClonedRow(input, clonedRowLength);
+	});
+	
+	$(document).on("click", ".dltpcrow", function(){
+		var input = $(this).parent('td').parent('tr').find("input");
+		var prodCompVal = input.eq(0).val();
+		var result;
+		console.log("deleting prod comp " + prodCompVal);
+		
+		$.ajax({
+			url:"ajaxDeleteProdComp.action",
+			dataType:"json",
+			data: {prodComp: prodCompVal},
+			async: true,
+			success:function(data){
+				result = data.prodCompDeleted;
+				console.log("Result of prod comp delete is " + result);
+			},
+			error:function(request, status){
+				alert(status + ": could not delete prod comp. Please retry.");
+			}
+		}).done(function(){
+			if(result) {
+				console.log("deleting prod comp record...")
+				input.val("");
+				input.parent('td').parent('tr').remove();
+			}
+		});
 	});
 	
 	$("#edt").on("click", function(){
@@ -243,6 +305,71 @@ $(document).ready(function() {
 			$("#custediterror").text(msg);
 			$(this).addClass("border-danger");
 			$(this).select();
+		}
+	});
+	
+	var prodComps = $.ajax({
+		url:"ajaxProdCompResult.action",
+		dataType:"json",
+		async: true,
+		success:function(data){
+			console.log("Ajax success: received prod comps");
+			var prodComps = data.prodCompList;
+			console.log("prod comps json result: " + prodComps);
+			return prodComps;
+		},
+		error:function(request, status){
+			console.log("Ajax error: " + status);
+			alert(status + ": could not retrieve prod comps.");
+		}
+	});
+	
+	$(document).on("blur", "#prodcomps", function(){
+		try {
+			if(prodComps != null) {
+				var prodCompStr = JSON.stringify(prodComps);
+				var prodCompInput = $("#prodcomps").val();
+				console.log('prod comp input: ' + prodCompInput);
+				var prodCompArr = prodCompInput.split(',');
+				
+				for(var i = 0; i < prodCompArr.length; i++) {
+					var enteredProdComp = prodCompArr[i].trim();
+					var prodComp = enteredProdComp.toUpperCase();
+					if(!prodCompStr.includes(prodComp)) {
+						throw "Invalid prod comp \"" + enteredProdComp + "\", please check spelling and try again.";
+					}
+				}
+			} else {
+				throw "Could not validate prod comp(s), please refresh page and try again";
+			}
+			
+			$('#custediterror').text('');
+			$(this).removeClass("border-danger");
+		} catch(msg) {
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
+			$("#custediterror").text(msg);
+			$(this).addClass("border-danger");
+			$(this).select();
+		}
+	});
+	
+	$(document).on("click", ".primprdcmp", function(){
+		var chkbx = $(this);
+		if(chkbx.is(":checked")) {
+			var chkbxGroup = $("input:checkbox[name='" + chkbx.attr('name') + "']");
+			var txtVal = chkbx.parent('td').parent('tr').find('input:text').val();
+			console.log("prod comp text input value is " + txtVal);
+			chkbxGroup.prop("checked", false);
+			if(txtVal != null && txtVal != "") {
+				chkbx.prop("checked", true);
+				chkbx.attr("value", txtVal);
+			} else {
+				chkbx.prop("checked", false);
+			}
+		} else {
+			chkbx.prop("checked", false);
 		}
 	});
 	
@@ -423,6 +550,11 @@ $(document).ready(function() {
 					}
 				}
 			});
+			
+			if(!$(".primprdcmp:checked").val() && $("#prodcomp_detail").is(":visible")) {
+				throw "Please choose a Primary Prod Comp";
+			}
+			
 			var acceptcode = $.trim($("#acceptcode").val());
 			var eulaws = $("#eulalist").val();
 			var eula = $("#eulafile").val();
@@ -468,3 +600,57 @@ $(document).ready(function() {
 	});
 	
 });
+
+function deleteClonedRow(input, clonedRowLength) {
+	console.log("cloned row length is " + clonedRowLength);
+	if(clonedRowLength < 2){ 
+		input.removeAttr("readonly");
+		input.val("");
+		if(input.is(":checked")) {
+			input.prop("checked", false);
+		}
+		input.eq(0).focus();
+		input.eq(0).select();
+	}else{
+		input.val("");
+		input.parent('td').parent('tr').remove();
+	}
+}
+
+function buildSelectList(custId, accttype, selectList, selectedCustType) {
+	customerId = custId.trim();
+	console.log("setting options for select list, custId is " + customerId);
+	var custTypes = [];
+	console.log("accttype is " + accttype);
+	switch(accttype) {
+	case 'natlWdigits':
+		if(customerId >= '400000000' && customerId <= '400000012') {
+			console.log("internal 9 digit account");
+			custTypes = ["CUSTOMER", "DRAWDOWN"];
+		} else {
+			console.log("national 9 digit account");
+			custTypes = ["CUSTOMER"];
+		}
+		break;
+	case 'intnatlWdigits':
+		console.log("international 7 digit account");
+		custTypes = ["CUSTOMER"];
+		break;
+	case 'intnatlCostCntr':
+		console.log("6 digit cost center");
+		custTypes = ["STORE"];
+		break;
+	case 'natlWOdigits':
+		console.log("national 6 digit account")
+		custTypes = ["CUSTOMER", "DRAWDOWN"];
+		break;
+	case 'intnatlWOdigits':
+		console.log("international 8 digit account");
+		custTypes = ["CUSTOMER"];
+		break;
+	default:
+		console.log("account type is undefined")
+	}
+	
+	buildCustTypesList(custTypes, selectList, selectedCustType);
+}

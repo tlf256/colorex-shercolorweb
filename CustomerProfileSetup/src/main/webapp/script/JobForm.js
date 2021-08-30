@@ -89,3 +89,13 @@ $(document).ready(function(){
 	});
 	
 });
+
+function clearForm() {
+	$('input:text').each(function(){
+		$(this).val('');
+	});
+	
+	$('input:checkbox').each(function(){
+		$(this).prop('checked', false);
+	});
+}
