@@ -251,9 +251,14 @@
 						<td>
 							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />
 						</td>
-						<td>
-							<s:property value="sessionMap['CustomerDetail'].eula.expirationDate" />
-						</td>
+						<s:if test="sessionMap['CustomerDetail'].eula.expDate == null">
+							<td>Not Set</td>
+						</s:if>
+						<s:else>
+							<td>
+								<s:property value="sessionMap['CustomerDetail'].eula.expDate" />
+							</td>
+						</s:else>
 					</tr>
 				</table>
 			</div>

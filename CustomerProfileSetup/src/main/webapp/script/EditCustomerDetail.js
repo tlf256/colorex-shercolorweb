@@ -3,6 +3,9 @@
  */
 $(document).ready(function() {
 	
+	$("#code").hide();
+	$(".eulaTemp").hide();
+	
 	if($('#custProfile').is(':visible')) {
 		var selectList = $('#typelist');
 		var selectedCustType = $('#typelist option:selected').val();
@@ -259,7 +262,7 @@ $(document).ready(function() {
 		}
 	});
 		
-	$("#effDate").on("change", function(){
+	/*$("#effDate").on("change", function(){
 		try{
 			var effdate = $.trim($(this).val());
 			var eula = $("#eulafile").val();
@@ -306,7 +309,7 @@ $(document).ready(function() {
 			$(this).addClass("border-danger");
 			$(this).select();
 		}
-	});
+	});*/
 	
 	var prodComps = $.ajax({
 		url:"ajaxProdCompResult.action",
@@ -586,7 +589,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	$('#effDate').datepicker({
+	/*$('#effDate').datepicker({
 		//dateFormat: "dd-M-y",
 		changeMonth: true,
 		changeYear: true,
@@ -597,9 +600,37 @@ $(document).ready(function() {
 		changeMonth: true,
 		changeYear: true,
 		gotoCurrent: true
-	});
+	});*/
 	
 });
+
+function verifyEffDate(value) {
+	try{
+		var effdate = $.trim(value);
+		var eula = $("#eulafile").val();
+		if(eula && !effdate){
+			throw "Please enter an Effective Date";
+		}
+		if(!eula && effdate){
+			throw "Please choose a EULA pdf";
+		}
+		if(effdate){
+			if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(effdate)){
+				throw "Please enter valid date in mm/dd/yyyy format";
+			}
+		}
+		$("#custediterror").text("");
+		$("#formerror").text("");
+		$(this).removeClass("border-danger");
+	}catch(msg){
+		$("html, body").animate({
+			scrollTop: $(document.body).offset().top
+		}, 1500);
+		$("#custediterror").text(msg);
+		$(this).addClass("border-danger");
+		$(this).select();
+	}
+}
 
 function deleteClonedRow(input, clonedRowLength) {
 	console.log("cloned row length is " + clonedRowLength);

@@ -2,7 +2,6 @@ package com.sherwin.shercolor.customerprofilesetup.web.model;
 
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
@@ -40,11 +39,10 @@ public class RequestObject {
 	private List<String> clrntList;
 	private List<EulaHist> eulaHistList;
 	private List<String> eulaList;
-	private int seqNbr;
 	private EulaHist eulaHistToActivate;
 	private byte[] eulapdf;
-	private Eula eula;
-	private boolean toactivateRecord;
+	private CustEula eula;
+	private String eulaType;
 	private boolean uploadedEula;
 	private boolean updateMode;
 	private boolean roomByRoom;
@@ -53,7 +51,8 @@ public class RequestObject {
 	private List<CustProdComp> prodCompList;
 	private List<CustProdComp> deletedProdComps;
 	private String prodComps;
-	private List<Template> eulaTempList;
+	private List<String> eulaTempList;
+	private String template;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -226,12 +225,6 @@ public class RequestObject {
 	public void setEulaList(List<String> eulaList) {
 		this.eulaList = eulaList;
 	}
-	public int getSeqNbr() {
-		return seqNbr;
-	}
-	public void setSeqNbr(int seqNbr) {
-		this.seqNbr = seqNbr;
-	}
 	public EulaHist getEulaHistToActivate() {
 		return eulaHistToActivate;
 	}
@@ -244,18 +237,17 @@ public class RequestObject {
 	public void setEulapdf(byte[] eulapdf) {
 		this.eulapdf = eulapdf;
 	}
-	public Eula getEula() {
+	public CustEula getEula() {
 		return eula;
 	}
-	public void setEula(Eula eula) {
+	public void setEula(CustEula eula) {
 		this.eula = eula;
 	}
-	
-	public boolean isToactivateRecord() {
-		return toactivateRecord;
+	public String getEulaType() {
+		return eulaType;
 	}
-	public void setToactivateRecord(boolean toactivateRecord) {
-		this.toactivateRecord = toactivateRecord;
+	public void setEulaType(String eulaType) {
+		this.eulaType = eulaType;
 	}
 	public boolean isUploadedEula() {
 		return uploadedEula;
@@ -305,11 +297,17 @@ public class RequestObject {
 	public void setProdComps(String prodComps) {
 		this.prodComps = prodComps;
 	}
-	public List<Template> getEulaTempList() {
+	public List<String> getEulaTempList() {
 		return eulaTempList;
 	}
-	public void setEulaTempList(List<Template> eulaTempList) {
+	public void setEulaTempList(List<String> eulaTempList) {
 		this.eulaTempList = eulaTempList;
+	}
+	public String getTemplate() {
+		return template;
+	}
+	public void setTemplate(String template) {
+		this.template = template;
 	}
 	public void reset() {
 		this.customerId = "";

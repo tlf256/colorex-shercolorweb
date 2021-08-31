@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.Eula;
+import com.sherwin.shercolor.common.domain.EulaTemplate;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.model.CustomerSummary;
@@ -28,7 +29,10 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	private boolean updateMode;
 	private boolean edited;
 	private boolean newCustomer;
-	
+	List<String> eulaList;
+	List<String> custTypeList;
+	List<String> eulaTempList;
+
 	@Autowired
 	CustomerService customerService;
 	
@@ -38,6 +42,7 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	public String execute() {
 		try {
 			RequestObject reqObj = new RequestObject();
+			
 			custSummList = new ArrayList<CustomerSummary>();
 			
 			List<Object[]> custList = customerService.getCustSummaryList();
@@ -70,13 +75,35 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	}
 	
 	public String display() {
+		return SUCCESS;
+	}
+	
+	public String displayEdit() {
+		RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+		
+		buildSelectLists(reqObj.getCustomerId(), reqObj.isNewCustomer());
+		
+		return SUCCESS;
+	}
+	
+	private void buildSelectLists(String customerId, boolean isNewCustomer) {
+		//reqObj.setEulaList(buildEulaList(reqObj.getCustomerId(), reqObj.isNewCustomer()));
+		//reqObj.setCustTypeList(buildCustTypeList());
+		//reqObj.setEulaTempList(buildEulaTempList());
+		
+		setEulaList(buildEulaList(customerId, isNewCustomer));
+		setCustTypeList(buildCustTypeList());
+		setEulaTempList(buildEulaTempList());
+	}
+	
+	public String createNew() {
 		try {
+			RequestObject reqObj = new RequestObject();
 			
-			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			reqObj.setNewCustomer(true);
 			
-			reqObj.setEulaList(buildEulaList(reqObj.getCustomerId()));
-			reqObj.setCustTypeList(buildCustTypeList());
-			
+			buildSelectLists(null, true);
+						
 			return SUCCESS;
 			
 		} catch (RuntimeException e) {
@@ -85,7 +112,7 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		}
 	}
 	
-	private List<String> buildEulaList(String customerId){
+	private List<String> buildEulaList(String customerId, boolean isNewCustomer){
 		List<String> eulaList = new ArrayList<String>();
 		Eula sherColorWebEula = new Eula();
 		
@@ -94,15 +121,16 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		// read active eulas 
 		sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", customerId);
 		
+		// only add EULA types to list if customer ID is null
 		if(sherColorWebEula != null) {
 			if(sherColorWebEula.getCustomerId() == null) {
 				eulaList.add("SherColor Web EULA");
-			} else {
-				eulaList.add("Custom EULA");
+				eulaList.add("Custom EULA Template");
+				if(!isNewCustomer) {
+					eulaList.add("Custom EULA");
+				}
 			}
 		}
-		
-		eulaList.add("EULA Template");
 		
 		return eulaList;
 	}
@@ -110,7 +138,15 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	private List<String> buildEulaTempList(){
 		List<String> eulaTempList = new ArrayList<String>();
 		
+		List<EulaTemplate> tempList = eulaService.getTemplatesForWebsite("CUSTOMERSHERCOLORWEB");
 		
+		for(EulaTemplate temp : tempList) {
+			StringBuilder template = new StringBuilder();
+			template.append(temp.getTemplateId());
+			template.append(" ");
+			template.append(temp.getSeqNbr());
+			eulaTempList.add(template.toString());
+		}
 		
 		return eulaTempList;
 	}
@@ -127,6 +163,10 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	
 	public String update() { 
 		try { 
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
+			
+			buildSelectLists(reqObj.getCustomerId(), reqObj.isNewCustomer());
+			
 			setEdited(true);
 			
 			return SUCCESS;
@@ -194,6 +234,30 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 
 	public void setNewCustomer(boolean newCustomer) {
 		this.newCustomer = newCustomer;
+	}
+	
+	public List<String> getEulaList() {
+		return eulaList;
+	}
+
+	public void setEulaList(List<String> eulaList) {
+		this.eulaList = eulaList;
+	}
+
+	public List<String> getCustTypeList() {
+		return custTypeList;
+	}
+
+	public void setCustTypeList(List<String> custTypeList) {
+		this.custTypeList = custTypeList;
+	}
+
+	public List<String> getEulaTempList() {
+		return eulaTempList;
+	}
+
+	public void setEulaTempList(List<String> eulaTempList) {
+		this.eulaTempList = eulaTempList;
 	}
 
 	@Override

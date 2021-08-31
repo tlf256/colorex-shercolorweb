@@ -20,6 +20,19 @@ $(document).ready(function(){
 		}
 		
 	}, ".acctcmmnt");
+	
+	$('#effDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	/*$('#expDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});*/
 
 });
 
@@ -59,13 +72,19 @@ function toggleTextArea(value){
 
 function toggleSelectList(value) {
 	console.log("EULA type is " + value);
-	if(value != 'None') {
-		if(value == 'EULA Template') {
-			$('#templatelist').show();
-		}
-		$('#code').show();
-	} else {
-		$('#templatelist').hide();
+	switch(value) {
+	case 'None':
+	case 'Custom EULA':
+		$('.eulaTemp').hide();
 		$('#code').hide();
+		break;
+	case 'SherColor Web EULA':
+		$('.eulaTemp').hide();
+		$('#code').show();
+		break;
+	case 'Custom EULA Template':
+		$('.eulaTemp').show();
+		$('#code').show();
+		break;
 	}
 }

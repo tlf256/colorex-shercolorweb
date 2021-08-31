@@ -226,6 +226,29 @@ function validateAcctNbr() {
 	}
 }
 
+function verifyDate(value) {
+	try{
+		var tempdate = $.trim(value);
+		if(!tempdate){
+			throw "Please enter an Effective Date";
+		}
+		if(tempdate){
+			if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(tempdate)){
+				throw "Please enter valid date in mm/dd/yyyy format";
+			}
+		}
+		$("#eulaerror").text("");
+		$(this).removeClass("border-danger");
+	}catch(msg){
+		$("html, body").animate({
+			scrollTop: $(document.body).offset().top
+		}, 1500);
+		$("#eulaerror").text(msg);
+		$(this).addClass("border-danger");
+		$(this).select();
+	}
+}
+
 function checkAccountNbr(selector) {
 	console.log("checking if the account number already exists...");
 	var value = selector.val().trim();
