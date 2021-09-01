@@ -41,7 +41,7 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	
 	public String execute() {
 		try {
-			RequestObject reqObj = new RequestObject();
+			//RequestObject reqObj = new RequestObject();
 			
 			custSummList = new ArrayList<CustomerSummary>();
 			
@@ -59,7 +59,7 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 				custSummList.add(summary);
 			}
 			
-			sessionMap.put("CustomerDetail", reqObj);
+			//sessionMap.put("CustomerDetail", reqObj);
 			
 			setUpdateMode(false);
 						
@@ -87,10 +87,6 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	}
 	
 	private void buildSelectLists(String customerId, boolean isNewCustomer) {
-		//reqObj.setEulaList(buildEulaList(reqObj.getCustomerId(), reqObj.isNewCustomer()));
-		//reqObj.setCustTypeList(buildCustTypeList());
-		//reqObj.setEulaTempList(buildEulaTempList());
-		
 		setEulaList(buildEulaList(customerId, isNewCustomer));
 		setCustTypeList(buildCustTypeList());
 		setEulaTempList(buildEulaTempList());
@@ -103,6 +99,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			reqObj.setNewCustomer(true);
 			
 			buildSelectLists(null, true);
+			
+			sessionMap.put("CustomerDetail", reqObj);
 						
 			return SUCCESS;
 			

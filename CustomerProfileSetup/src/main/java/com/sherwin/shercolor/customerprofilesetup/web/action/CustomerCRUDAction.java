@@ -1,8 +1,5 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -213,13 +210,16 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 	}
 	
 	private CustEula mapCustEula(Eula eula, String eulaType) {
-		SimpleDateFormat sdf = new SimpleDateFormat("d-M-yy");
+		SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy");
 		
 		CustEula custEula = new CustEula();
 		custEula.setWebsite(eula.getWebSite());
 		custEula.setSeqNbr(eula.getSeqNbr());
 		custEula.setEffectiveDate(sdf.format(eula.getEffectiveDate()));
-		custEula.setExpDate(sdf.format(eula.getExpirationDate()));
+		Date cswExpDate = eula.getExpirationDate();
+		if(cswExpDate != null) {
+			custEula.setExpDate(sdf.format(cswExpDate));
+		}
 		
 		return custEula;
 	}
@@ -260,8 +260,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customerId);
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customerId);
 			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(customerId);
-			//Eula existingEula = eulaService.readActive(customerId, "CUSTOMERSHERCOLORWEB");
-			//CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerId());
 			List<CustWebProdComps> existingProdComps = productService.getCustWebProdComps(customerId);
 			
 			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
@@ -365,7 +363,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			// check if custom EULA needs to be created
 			if(eulaType.equals("Custom EULA") || eulaType.equals("Custom EULA Template")) {
 				// custom EULA record needs to be created
-				// these records cannot be updated from here?
 				String template = reqObj.getTemplate();
 				
 				boolean eulaCreated = eulaService.createEula(mapEula(reqObj.getEula(), customerId, template));
@@ -526,27 +523,10 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		}
 	}
 	
-	private static byte[] readBytesFromArray(byte[] byteArr, String customerId) throws IOException {
-		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(byteArr));
-         
-        byte[] arrBytes = new byte[byteArr.length];
-        
-        byte b = 0;
-        int i = 0;
-        while((b = inputStream.readByte()) != -1) {
-        	arrBytes[i] = b;
-        	i++;
-        }
-        
-        inputStream.close();
-        
-        return arrBytes;
-    }
-	
 	private Eula mapEula(CustEula custEula, String customerId, String template) {
 		String website = custEula.getWebsite();
 		byte[] eulaPdf = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("d-M-yy");
+		SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy");
 		String effDateString = custEula.getEffectiveDate();
 		String expDateString = custEula.getExpDate();
 		Date effDate = null;
@@ -559,6 +539,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		
 		try {
 			if(effDateString != null && !effDateString.isEmpty()) {
+				
 				effDate = sdf.parse(effDateString);
 			} else {
 				logger.error("EULA effective date for customer ID " + customerId + " is null");
@@ -597,7 +578,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			eulaPdf = eulaTemp.getEulaPdf();
 			
 		} else {
-			// custom PDF EULA
+			// custom EULA
 			String eulaText1 = custEula.getEulaText1();
 			
 			if(eulaText1 != null) {
@@ -609,13 +590,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			eulaPdf = custEula.getEulapdf();
 		}
 		
-		try {
-			eula.setEulaPdf(readBytesFromArray(eulaPdf, customerId));
-		} catch (IOException e) {
-			eula.setEulaPdf(null);
-			logger.error("Error reading byte array: EULA pdf for " + customerId + " is null");
-			logger.error(e.getMessage(), e);
-		}
+		eula.setEulaPdf(eulaPdf);
 		
 		return eula;
 	}

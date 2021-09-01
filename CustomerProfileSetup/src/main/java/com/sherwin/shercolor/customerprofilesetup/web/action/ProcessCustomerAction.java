@@ -53,7 +53,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	public String execute() {
 		try {	
 			logger.trace("begin ProcessCustomerAction.execute");
-			RequestObject reqObj = new RequestObject();
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
 			String custId = customerId(customer);
 			

@@ -241,12 +241,16 @@
 				<table id="eula_detail" class="table table-striped table-bordered">
 					<tr>
 						<th>EULA</th>
+						<th>EULA Type</th>
 						<th>Effective Date</th>
 						<th>Expiration Date</th>
 					</tr>
 					<tr>
 						<td>
 							<s:property value="sessionMap['CustomerDetail'].eula.website" />
+						</td>
+						<td>
+							<s:property value="sessionMap['CustomerDetail'].eulaType" />
 						</td>
 						<td>
 							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />

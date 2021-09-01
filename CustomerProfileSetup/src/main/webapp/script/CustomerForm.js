@@ -323,6 +323,25 @@ function showHideInput(value) {
 	buildCustTypesList(custTypes, selectList, selectedCustType);
 }
 
+function toggleSelectList(value) {
+	console.log("EULA type is " + value);
+	switch(value) {
+	case 'None':
+	case 'Custom EULA':
+		$('.eulaTemp').hide();
+		$('#code').hide();
+		break;
+	case 'SherColor Web EULA':
+		$('.eulaTemp').hide();
+		$('#code').show();
+		break;
+	case 'Custom EULA Template':
+		$('.eulaTemp').show();
+		$('#code').show();
+		break;
+	}
+}
+
 function showNtlAcctInput() {
 	$(".ntlacct").show();
 	$("#intntlacct").hide();

@@ -27,13 +27,7 @@ $(document).ready(function(){
 		changeYear: true,
 		gotoCurrent: true
 	});
-	/*$('#expDate').datepicker({
-		//dateFormat: "dd-M-y",
-		changeMonth: true,
-		changeYear: true,
-		gotoCurrent: true
-	});*/
-
+	
 });
 
 function buildCustTypesList(custTypes, selectList, selectedOption) {
@@ -67,24 +61,5 @@ function toggleTextArea(value){
 	} else {
 		$(".prodcomps").hide();
 		$("#prodcomps").val("");
-	}
-}
-
-function toggleSelectList(value) {
-	console.log("EULA type is " + value);
-	switch(value) {
-	case 'None':
-	case 'Custom EULA':
-		$('.eulaTemp').hide();
-		$('#code').hide();
-		break;
-	case 'SherColor Web EULA':
-		$('.eulaTemp').hide();
-		$('#code').show();
-		break;
-	case 'Custom EULA Template':
-		$('.eulaTemp').show();
-		$('#code').show();
-		break;
 	}
 }

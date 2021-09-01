@@ -38,7 +38,7 @@ public class RequestObject {
 	private boolean loginUnchanged;
 	private List<String> clrntList;
 	private List<EulaHist> eulaHistList;
-	private List<String> eulaList;
+	//private List<String> eulaList;
 	private EulaHist eulaHistToActivate;
 	private byte[] eulapdf;
 	private CustEula eula;
@@ -47,11 +47,11 @@ public class RequestObject {
 	private boolean updateMode;
 	private boolean roomByRoom;
 	private CustProfile profile;
-	private List<String> custTypeList;
+	//private List<String> custTypeList;
 	private List<CustProdComp> prodCompList;
 	private List<CustProdComp> deletedProdComps;
 	private String prodComps;
-	private List<String> eulaTempList;
+	//private List<String> eulaTempList;
 	private String template;
 	
 	public String getCustomerId() {
@@ -219,12 +219,6 @@ public class RequestObject {
 		this.eulaHistList = eulaHistList;
 	}
 	
-	public List<String> getEulaList() {
-		return eulaList;
-	}
-	public void setEulaList(List<String> eulaList) {
-		this.eulaList = eulaList;
-	}
 	public EulaHist getEulaHistToActivate() {
 		return eulaHistToActivate;
 	}
@@ -273,12 +267,7 @@ public class RequestObject {
 	public void setProfile(CustProfile profile) {
 		this.profile = profile;
 	}
-	public List<String> getCustTypeList() {
-		return custTypeList;
-	}
-	public void setCustTypeList(List<String> custTypeList) {
-		this.custTypeList = custTypeList;
-	}
+	
 	public List<CustProdComp> getProdCompList() {
 		return prodCompList;
 	}
@@ -297,12 +286,7 @@ public class RequestObject {
 	public void setProdComps(String prodComps) {
 		this.prodComps = prodComps;
 	}
-	public List<String> getEulaTempList() {
-		return eulaTempList;
-	}
-	public void setEulaTempList(List<String> eulaTempList) {
-		this.eulaTempList = eulaTempList;
-	}
+	
 	public String getTemplate() {
 		return template;
 	}
@@ -322,7 +306,6 @@ public class RequestObject {
 		this.loginList = null;
 		this.clrntList = null;
 		this.eulaHistList = null;
-		this.eulaList = null;
 	}
 	
 }

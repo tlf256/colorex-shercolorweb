@@ -217,37 +217,6 @@
 		</div>
 	<br>
 	</s:if>
-	<s:if test="!sessionMap['CustomerDetail'].uploadedEula || sessionMap['CustomerDetail'].eulaType == 'Custom EULA'">
-		<div class="row">
-			<div class="col-lg-2 col-md-2"></div>
-			<div class="col-lg-8 col-md-8">
-				<table id="uploadEula" class="table table-striped table-bordered">
-					<tr>
-						<th colspan="3">Upload EULA</th>
-					</tr>
-					<tr>
-						<td colspan="3" class="align-middle">
-							<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
-						</td>
-					</tr>
-					<tr>
-						<th>Effective Date</th>
-						<th>EULA Text</th>
-					</tr>
-					<tr>
-						<td class="align-middle">
-							<s:textfield id="effDate" name="eula.effectiveDate" onchange="verifyEffDate(this.value)" autocomplete="off"></s:textfield>
-						</td>
-						<td class="align-middle w-50">
-							<s:textarea id="eulatext" name="eula.eulaText1"></s:textarea>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div class="col-lg-2 col-md-2"></div>
-		</div>
-	<br>
-	</s:if>
 	
 	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null && !sessionMap['CustomerDetail'].updateMode">
 		<div class="row">
@@ -322,10 +291,39 @@
 				</div>
 				<div class="col-lg-2 col-md-2"></div>
 			</div>
+			<br>
+			<div class="row">
+				<div class="col-lg-2 col-md-2"></div>
+				<div class="col-lg-8 col-md-8">
+					<table id="uploadEula" class="table table-striped table-bordered">
+						<tr>
+							<th colspan="3">Upload EULA</th>
+						</tr>
+						<tr>
+							<td colspan="3" class="align-middle">
+								<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
+							</td>
+						</tr>
+						<tr>
+							<th>Effective Date</th>
+							<th>EULA Text</th>
+						</tr>
+						<tr>
+							<td class="align-middle">
+								<s:textfield id="effDate" name="eula.effectiveDate" onchange="verifyEffDate(this.value)" autocomplete="off"></s:textfield>
+							</td>
+							<td class="align-middle w-50">
+								<s:textarea id="eulatext" name="eula.eulaText1"></s:textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-lg-2 col-md-2"></div>
+			</div>
+		<br>
 		</s:if>
-	<br>
 	</s:else>
-
+	
 	<s:if test="sessionMap['CustomerDetail'].prodCompList != null && !sessionMap['CustomerDetail'].prodCompList.isEmpty">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
