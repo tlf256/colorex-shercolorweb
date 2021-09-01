@@ -74,30 +74,45 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			
 			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
-			List<String> eulaList = new ArrayList<String>();
-			Eula sherColorWebEula = new Eula();
-			
-			eulaList.add(0, "None");
-			
-			// read active eulas 
-			sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
-			
-			if(sherColorWebEula != null) {
-				if(sherColorWebEula.getCustomerId() == null) {
-					eulaList.add("SherColor Web EULA");
-				} else {
-					eulaList.add("Custom EULA");
-				}
-			}
-			
-			reqObj.setEulaList(eulaList);
+			reqObj.setEulaList(buildEulaList(reqObj.getCustomerId()));
+			reqObj.setCustTypeList(buildCustTypeList());
 			
 			return SUCCESS;
 			
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
+	}
+	
+	private List<String> buildEulaList(String customerId){
+		List<String> eulaList = new ArrayList<String>();
+		Eula sherColorWebEula = new Eula();
+		
+		eulaList.add(0, "None");
+		
+		// read active eulas 
+		sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", customerId);
+		
+		if(sherColorWebEula != null) {
+			if(sherColorWebEula.getCustomerId() == null) {
+				eulaList.add("SherColor Web EULA");
+			} else {
+				eulaList.add("Custom EULA");
+			}
+		}
+		
+		return eulaList;
+	}
+	
+	private List<String> buildCustTypeList(){
+		List<String> typeList = new ArrayList<String>();
+		
+		typeList.add(0, "CUSTOMER");
+		typeList.add(1, "DRAWDOWN");
+		typeList.add(2, "STORE");
+		
+		return typeList;
 	}
 	
 	public String update() { 
@@ -106,12 +121,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 	  
-		} catch (HibernateException he) { 
-			logger.error("HibernateException Caught: "
-					+ he.toString() + " " + he.getMessage()); 
-			return ERROR; 
-		} catch (Exception e){ 
-			logger.error(e.getMessage()); 
+		} catch (RuntimeException e){ 
+			logger.error(e.getMessage(), e); 
 			return ERROR; 
 		} 
 	}
@@ -120,8 +131,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		 try {
 			 sessionMap.clear();
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -130,8 +141,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		try {
 			setEdited(false);
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
@@ -141,8 +152,8 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 			setUpdateMode(false);
 			setEdited(false);
 		     return SUCCESS;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}

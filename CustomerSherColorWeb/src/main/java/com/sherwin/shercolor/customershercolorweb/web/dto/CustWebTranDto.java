@@ -12,6 +12,7 @@ public class CustWebTranDto {
 	private String sizeCode;
 	private String rgbHex;
 	private String quantityDispensed;
+	private String quantityOrdered;
 
 	public String getCustomerId() {
 		return customerId;
@@ -73,5 +74,11 @@ public class CustWebTranDto {
 	public void setQuantityDispensed(String quantityDispensed) {
 		this.quantityDispensed = quantityDispensed;
 	}
-
+	public String getQuantityOrdered() {
+		return quantityOrdered;
+	}
+	public void setQuantityOrdered(String quantityOrdered) {
+		this.quantityOrdered = quantityOrdered;
+	}
+	
 }

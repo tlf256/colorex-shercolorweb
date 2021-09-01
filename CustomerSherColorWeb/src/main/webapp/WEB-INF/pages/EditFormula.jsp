@@ -53,6 +53,20 @@
 			}else{return true;}
 		}
 		
+		function validateSizeSelection() {
+
+			//console.log("STARTING CONVERSION CONTAINER SIZE: " + $("select[id='startingSizeList'] option:selected").val());
+			//console.log("ENDING CONVERSION CONTAINER SIZE: " + $("select[id='endingSizeList'] option:selected").val());
+			
+			if($("select[id='startingSizeList'] option:selected").val() == -1 || 
+			   $("select[id='endingSizeList'] option:selected").val() == -1) {	
+					$('#sizeAddBtn').prop("disabled", true);
+			} else {
+					$('#sizeAddBtn').prop("disabled", false);
+			}
+		}
+		
+		
 		function addWarningPopoverForClearedColorant(selector,colorantItem){
 			var safeTintSysId = encodeURIComponent(colorantItem.tintSysId.toString());
 			var safeName = encodeURIComponent(colorantItem.name.toString());
@@ -139,6 +153,79 @@
 					}
 				});
 			}
+		}
+		
+		function showScaleBySizeModal() {
+			$('#invalidConversionWarning').hide();
+			$('#scaleFormulaBySizeModal').modal('show');
+		}
+		
+		function sizeConfirmClick(){
+			//sList = '${sizeList}';
+			//console.log("SIZE LIST: " + sList)
+			var mydata = {reqGuid:'${thisGuid}',
+					startingContainer:$("select[id='startingSizeList'] option:selected").val(),
+					endingContainer:$("select[id='endingSizeList'] option:selected").val()};
+			var jsonIn = JSON.stringify(mydata);
+			console.log("SIZE ADJUSTMENT ACTION JSON: " + jsonIn);
+			$.ajax({
+				url: "sizeAdjustmentAction.action",
+				contentType : "application/json; charset=utf-8",
+				type: "POST",
+				data: jsonIn,
+				datatype : "json",
+				async: true,
+				success: function (data) {
+					
+					//console.log(data);		
+					if(data.sessionStatus === "expired"){
+	            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	            	}
+	            	else{
+	            		
+						// walk through result formula
+						data.displayFormula.ingredients.forEach(function(item, i){
+							//console.log(item);
+							if(item.increment.every(allZero)){
+								
+								//clear zero increment colorant
+								clearColorant(i);
+								addWarningPopoverForClearedColorant('#form_ingredientList_' + i + '__selectedColorant',item);
+							}else{
+								for (let x = 0; x < item.increment.length; x++) {
+									var safeTintSysId = encodeURIComponent(item.tintSysId.toString());
+									var safeName = encodeURIComponent(item.name.toString());
+									var name = safeName.replace(/%20/g, " ");
+									console.log("tintSysId: " + safeTintSysId + " name: " + name);
+									//console.log("$('#form_ingredientList_'" + i + "'__increments_'" + x + "'_').val(" + item.increment[x] +")");
+									$('#form_ingredientList_' + i + '__selectedColorant option:selected').attr('selected',false);
+									$('#form_ingredientList_' + i + '__selectedColorant option[value="'+ safeTintSysId + '-'+ name + '"]').attr('selected',true);
+									$('#form_ingredientList_' + i + '__increments_' + x + '_').val(item.increment[x]);
+								}
+							}
+						});
+						
+						//Show adjustment info alert
+						var sz = $("select[id='endingSizeList'] option:selected").text();
+						$('#adj-info').text('<s:text name="editFormula.sizeOfFormula"><s:param>'+ sz +'</s:param></s:text>');
+						$('#adj_info_row').show();
+						
+						//clear remaining colorants
+						for (var i = data.displayFormula.ingredients.length; i < 8; i++) {
+							clearColorant(i);
+						}
+						$('#scaleFormulaBySizeModal').modal('hide');
+						$('#invalidConversionWarning').hide();
+						moveDown('#source_row');
+	            	}
+				},
+					error: function(err){
+						//TODO - handle this error more gracefully for client
+						$('#invalidConversionWarning').show();
+						console.error('Action call failed: ' + err);
+					}
+				});
+			
 		}
 		
 		function clearColorant(index){
@@ -544,11 +631,12 @@
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						
 					</div>	
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-3">
+					<div class="col-lg-4 col-md-4 col-sm-2 col-xs-6">
 						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="MfUserNextAction"/>
-						<button type="button" onclick="$('#adjustByPctModal').modal('show');" class="btn btn-secondary ml-3" id="adjByPct"><s:text name="editFormula.adjustByPct"/></button>
+						<button type="button" onclick="$('#scaleFormulaByPctModal').modal('show');" class="btn btn-secondary ml-3" id="scaleByPct"><s:text name="editFormula.scaleByPct"/></button>
+						<button type="button" onclick="showScaleBySizeModal();" class="btn btn-secondary ml-3" id="scaleBySz"><s:text name="editFormula.scaleBySize"/></button>
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-9 col-xs-9">	
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-4">	
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0">	
@@ -581,11 +669,11 @@
 		<s:include value="Footer.jsp"></s:include>
 		<s:hidden name="adjByPercentVisible" value="%{adjByPercentVisible}"/>
 		<!-- Adjust By Percent Modal -->
-	    <div class="modal fade" aria-labelledby="adjustByPctModal" aria-hidden="true"  id="adjustByPctModal" role="dialog">
+	    <div class="modal fade" aria-labelledby="scaleFormulaByPctModal" aria-hidden="true"  id="scaleFormulaByPctModal" role="dialog">
 	    	<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title"><s:text name="editFormula.adjustByPercent"/></h5>
+						<h5 class="modal-title"><s:text name="editFormula.scaleByPct"/></h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
 					</div>
 					<div class="modal-body">
@@ -594,6 +682,37 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" id="percentAddBtn" data-dismiss="modal" onclick="percentConfirmClick();"><s:text name="editFormula.calculate"/></button>
+						<button type="button" class="btn btn-secondary" id="skipConfirmCancel" data-dismiss="modal" aria-label="%{getText('global.cancel')}" ><s:text name="global.cancel"/></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Adjust By Size Modal -->
+	    <div class="modal fade" aria-labelledby="scaleFormulaBySizeModal" aria-hidden="true"  id="scaleFormulaBySizeModal" role="dialog">
+	    	<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title"><s:text name="editFormula.scaleBySize"/></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
+					</div>
+					<div class="modal-body">						
+						<h6><s:text name="editFormula.startingSize"/></h6>
+						<s:select id="startingSizeList" list="sizeList" listKey="miscCode" listValue="miscName"
+						 headerKey="-1" headerValue="%{getText('editFormula.startingSizeSelect')}"/>
+						 
+						 <span class="fa fa-arrow-down fa-2x"></span>
+						 <br><br>
+						 
+						 <h6><s:text name="editFormula.endingSize"/></h6>
+						 <s:select id="endingSizeList" list="sizeList" listKey="miscCode" listValue="miscName" 
+						 headerKey="-1" headerValue="%{getText('editFormula.endingSizeSelect')}" onchange="validateSizeSelection()"/>
+						 <div id="invalidConversionWarning" class="alert alert-danger">
+							<s:text name="editFormula.invalidSizeConversion" />
+						 </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="sizeAddBtn" onclick="sizeConfirmClick();" disabled><s:text name="editFormula.calculate" /></button>
 						<button type="button" class="btn btn-secondary" id="skipConfirmCancel" data-dismiss="modal" aria-label="%{getText('global.cancel')}" ><s:text name="global.cancel"/></button>
 					</div>
 				</div>

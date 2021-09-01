@@ -235,11 +235,21 @@
 			<result name="success" type="json"></result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="searchJobsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="search">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="input">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="listJobsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="displayTintQueue">/WEB-INF/pages/TintQueue.jsp</result>
+			<result name="input">/WEB-INF/pages/DisplayJobs.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
 		<action name="copyExistingJobFieldsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LookupJobAction" method="getJobFields">
@@ -560,6 +570,88 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="changeProductAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="displayProdChange">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="lookupProductOptions" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="lookupProductOptions">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    fieldErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateProductNoAdjustment" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="updateProductNoAdjustment">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    actionErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateProductSizeChange" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="updateProductSizeChange">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    actionErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateProductReformulate" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="updateProductReformulate">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    fieldErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateProductRematch" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="updateProductRematch">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    fieldErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
 		<action name="productUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -785,6 +877,14 @@
 			<result name="success">/WEB-INF/pages/DisplayFormula.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
+		<action name="displayUpdatedFormulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="displayUpdatedFormula">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="errormsg">/WEB-INF/pages/DisplayJobs.jsp</result>
+			<result name="success">/WEB-INF/pages/DisplayFormula.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
 		<action name="formulaUserPrintAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="print">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -906,6 +1006,15 @@
 			</result>
 			<result name="success" type="json"></result>
 		</action>
+		<action name="sizeAdjustmentAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="sizeAdjustment">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+		</action>
 		<action name="correctionConvertIncrementsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="convertFormulaToDispenseItems">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
@@ -956,7 +1065,7 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="saveOnPrintAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveOnPrint">
+		<action name="saveBeforeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveBeforeAction">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 				<param name="isAJAX">true</param>
@@ -964,6 +1073,16 @@
 			<result name="success" type="json"></result>
 		</action>
 		<action name="bumpDispenseCounterAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="bumpDispense">
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+	        <result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateOrderQuantityAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="updateOrderQuantity">
 			<interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
 	        <result name="loginRedirect" type="redirectAction">

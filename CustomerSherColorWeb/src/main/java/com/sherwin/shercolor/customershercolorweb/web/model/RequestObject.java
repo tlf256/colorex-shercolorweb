@@ -10,6 +10,7 @@ import org.owasp.encoder.Encode;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.domain.ColorDifference;
 import com.sherwin.shercolor.common.domain.CdsColorStand;
+import com.sherwin.shercolor.common.domain.CdsRoomList;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -68,6 +69,8 @@ public class RequestObject {
 	private BigDecimal[] curveArray;
 	private String upc;
 	private int quantityDispensed;
+	private int quantityOrdered;
+	private int tintQueueCount;
 	private TinterInfo tinter;
 	private SpectroInfo spectro;
 	private int daysUntilPasswdExpire;
@@ -82,6 +85,7 @@ public class RequestObject {
 	private ColorDifference colorDiff;
 	private String canType;
 	private int dispenseBase = -1;
+	private List<CdsRoomList> allRooms;
 
 	public String getColorComp() {
 		return colorComp;
@@ -468,6 +472,12 @@ public class RequestObject {
 	public void setQuantityDispensed(int quantityDispensed) {
 		this.quantityDispensed = quantityDispensed;
 	}
+	public int getQuantityOrdered() {
+		return quantityOrdered;
+	}
+	public void setQuantityOrdered(int quantityOrdered) {
+		this.quantityOrdered = quantityOrdered;
+	}
 	public void setTinter(TinterInfo tinter) {
 		this.tinter = tinter;
 	}
@@ -548,6 +558,18 @@ public class RequestObject {
 	}
 	public void setDispenseBase(int dispenseBase) {
 		this.dispenseBase = dispenseBase;
+	}
+	public List<CdsRoomList> getAllRooms() {
+		return allRooms;
+	}
+	public void setAllRooms(List<CdsRoomList> allRooms) {
+		this.allRooms = allRooms;
+	}
+	public int getTintQueueCount() {
+		return tintQueueCount;
+	}
+	public void setTintQueueCount(int tintQueueCount) {
+		this.tintQueueCount = tintQueueCount;
 	}
 
 }

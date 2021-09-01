@@ -3,7 +3,13 @@
     pageEncoding="UTF-8"%>
 <!-- Fixed navbar -->
 <nav class="navbar navbar-dark bg-dark navbar-expand-md pt-0 pb-0">
-	   <a href='<s:url action="loginAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><img src="graphics/shercolor-sm.jpg" alt="Sher-Color" style="height: 3.44rem;"/></a>
+	<ul id="menuPanelL" class="nav navbar-nav navbar-left">
+		<li class="nav-item"><a href='<s:url action="loginAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><img src="graphics/shercolor-sm.jpg" alt="Sher-Color" style="height: 3.44rem;"/></a></li>
+		<li class="nav-item pl-3 pt-2"><a class="navbar-text" href='<s:url action="listJobsAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="displayTintQueue" value="true"/></s:url>'>
+	    	<s:text name="global.tintQueueColon"></s:text><span class="badge badge-secondary" id="tintQueueCountText"></span></a>
+		</li>
+	 </ul>
+	   
 	 
 	   <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
       		<span class="navbar-toggler-icon"></span>
@@ -61,6 +67,7 @@ function updateLanguage(){
 }
 
 $(document).ready(function() {
+	$('#tintQueueCountText').text(${sessionScope[thisGuid].tintQueueCount});
     // update dropdown to display the language that the user picked if they have done so
     var userLanguage = "${session['WW_TRANS_I18N_LOCALE']}";
     if (userLanguage != null && userLanguage != ""){

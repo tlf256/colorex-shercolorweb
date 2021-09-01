@@ -16,7 +16,10 @@ import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
@@ -31,120 +34,32 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	private Map<String, Object> sessionMap;
 	private String result;
 	private String AcctNbr;
+	private List<String> prodCompList;
 
 	@Autowired
 	CustomerService customerService;
 	
 	@Autowired
 	EulaService eulaService;
+	
+	@Autowired
+	ProductService productService;
 
 	public String execute() {
 		try {	
+			logger.trace("begin ProcessCustomerAction.execute");
 			RequestObject reqObj = new RequestObject();
+			
+			String custId = customerId(customer);
 			
 			reqObj.setNewCustomer(true);
 			reqObj.setCustUnchanged(false);
-			
-			//check for entered account number
-			switch(customer.getAccttype()) {
-			case "natlWdigits":  //customerid = account number
-				String custId = customer.getNtlacctnbr();
-				if(custId.startsWith("4")) {
-					customer.setAccttype("internal");
-				}
-				reqObj.setCustomerId(custId);
-				break;
-			case "natlWOdigits":  //create customerid
-				//lookup national customer ids
-				List<CustWebParms> custWebParms = customerService.getNatlCustomerIds();
-				
-				if(custWebParms.isEmpty()) {
-					//first national id created with '99'
-					//reqObj.setCustomerId("990001");
-					// list should not be empty
-					addActionError("Database Error - National customer cannot be created. Please contact administrator.");
-				} else {
-					Object[] idList = custWebParms.toArray();
-					
-					int result = Integer.parseInt(idList[0].toString().substring(2)) + 1;
-					//create new id beginning with 99
-					StringBuilder newResult = new StringBuilder();
-					newResult.append("99");
-					newResult.append(result);
-					if(newResult.length() < 6) {
-						while(newResult.length() < 6) {
-							newResult.insert(2, 0);
-						}
-					}
-					reqObj.setCustomerId(newResult.toString());
-				}
-				
-				break;
-			case "intnatlWdigits":  //customerid = account number
-				reqObj.setCustomerId(customer.getIntntlacctnbr());
-				break;
-			case "intnatlWOdigits":  //create customerid
-				//lookup international customer ids
-				List<CustWebParms> custParms = customerService.getIntnatlCustomerIds();
-				
-				if(custParms.isEmpty()) {
-					//first international id created with 'INTL'
-					//reqObj.setCustomerId("INTL0001");
-					// list should not be empty
-					addActionError("Database Error - International customer cannot be created. Please contact administrator.");
-				} else {
-					Object[] custIdList = custParms.toArray();
-					
-					int nextId = Integer.parseInt(custIdList[0].toString().substring(4)) + 1;
-					//create new id beginning with intl
-					StringBuilder newId = new StringBuilder();
-					newId.append("INTL");
-					newId.append(nextId);
-					if(newId.length() < 8) {
-						while(newId.length() < 8) {
-							newId.insert(4, 0);
-						}
-					}
-					reqObj.setCustomerId(newId.toString());
-				}
-				
-				break;
-			default:
-				// result not expected
-				System.out.println("String is junk, return to form");
-				addActionError("Error - Unexpected value. Please retry request.");
-				return INPUT;
-				
-			}
-						
-			List<String> clrntlist = new ArrayList<String>();
-			
-			if(customer.getCce()!=null) {
-				if(customer.getDefaultClrntSys().contains("CCE")) {
-					clrntlist.add(0, "CCE");
-				} else {
-					clrntlist.add("CCE");
-				}
-			}
-			if(customer.getBac()!=null) {
-				if(customer.getDefaultClrntSys().contains("BAC")) {
-					clrntlist.add(0, "BAC");
-				} else {
-					clrntlist.add("BAC");
-				}
-			}
-			if(customer.getEff()!=null) {
-				if(customer.getDefaultClrntSys().contains("844")) {
-					clrntlist.add(0, "844");
-				} else {
-					clrntlist.add("844");
-				}
-			}
-			
+			reqObj.setCustomerId(custId);
 			reqObj.setAccttype(customer.getAccttype());
 			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
 			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
+			List<String> clrntlist = clrntSysIds(customer);
 			reqObj.setClrntList(clrntlist);
 			reqObj.setActive(true);
 			reqObj.setHistory(false);
@@ -164,6 +79,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			}
 			
 			reqObj.setCustList(newcustlist);
+			reqObj.setProfile(mapCustProfile(customer));
 			
 			List<EulaHist> ehlist = new ArrayList<EulaHist>();
 			EulaHist eh = new EulaHist();
@@ -185,10 +101,20 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 				reqObj.setEulaHistList(ehlist);
 			}
 			
-			sessionMap.put("CustomerDetail", reqObj);	
+			reqObj.setProdCompList(mapProdCompList(customer.getProdComps()));
+			
+			sessionMap.put("CustomerDetail", reqObj);
+			
+			logger.trace("end ProcessCustomerAction.execute");
 			
 			if(reqObj.getAccttype().equals("natlWdigits")) {
-				return "nologin";
+				int custIdNum = Integer.parseInt(custId);
+				if(custIdNum >= 400000000 && custIdNum <= 400000012) {
+					//internal account, login records are optional
+					return SUCCESS;
+				} else {
+					return "nologin";
+				}
 			} else {
 				return SUCCESS;
 			}
@@ -202,7 +128,144 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		}
 	}
 	
-	public EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+	private String customerId(Customer customer) {
+		String custId = "";
+		//check for entered account number
+		switch(customer.getAccttype()) {
+		case "natlWdigits":  //customerid = account number
+			custId = customer.getNtlacctnbr();
+			break;
+		case "natlWOdigits":  //create customerid
+			//lookup national customer ids
+			List<CustWebParms> custWebParms = customerService.getNatlCustomerIds();
+			
+			if(custWebParms.isEmpty()) {
+				// list should not be empty
+				addActionError("Database Error - National customer cannot be created. Please contact administrator.");
+			} else {
+				Object[] idList = custWebParms.toArray();
+				
+				int result = Integer.parseInt(idList[0].toString().substring(2)) + 1;
+				//create new id beginning with 99
+				StringBuilder newResult = new StringBuilder();
+				newResult.append("99");
+				newResult.append(result);
+				if(newResult.length() < 6) {
+					while(newResult.length() < 6) {
+						newResult.insert(2, 0);
+					}
+				}
+				custId = newResult.toString();
+			}
+			
+			break;
+		case "intnatlWdigits":  //customerid = account number
+			custId = customer.getIntntlacctnbr();
+			break;
+		case "intnatlWOdigits":  //create customerid
+			//lookup international customer ids
+			List<CustWebParms> custParms = customerService.getIntnatlCustomerIds();
+			
+			if(custParms.isEmpty()) {
+				//first international id created with 'INTL'
+				//reqObj.setCustomerId("INTL0001");
+				// list should not be empty
+				addActionError("Database Error - International customer cannot be created. Please contact administrator.");
+			} else {
+				Object[] custIdList = custParms.toArray();
+				
+				int nextId = Integer.parseInt(custIdList[0].toString().substring(4)) + 1;
+				//create new id beginning with intl
+				StringBuilder newId = new StringBuilder();
+				newId.append("INTL");
+				newId.append(nextId);
+				if(newId.length() < 8) {
+					while(newId.length() < 8) {
+						newId.insert(4, 0);
+					}
+				}
+				custId = newId.toString();
+			}
+			
+			break;
+		case "intnatlCostCntr":
+			custId = customer.getCostCenter();
+			break;
+		default:
+			// result not expected
+			logger.error("String is junk, return to form");
+			addActionError("Error - Unexpected value. Please retry request.");
+			return INPUT;
+		}
+		
+		return custId;
+	}
+	
+	private List<String> clrntSysIds(Customer customer){
+		List<String> clrntlist = new ArrayList<String>();
+		
+		if(customer.getCce()!=null) {
+			if(customer.getDefaultClrntSys().contains("CCE")) {
+				clrntlist.add(0, "CCE");
+			} else {
+				clrntlist.add("CCE");
+			}
+		}
+		if(customer.getBac()!=null) {
+			if(customer.getDefaultClrntSys().contains("BAC")) {
+				clrntlist.add(0, "BAC");
+			} else {
+				clrntlist.add("BAC");
+			}
+		}
+		if(customer.getEff()!=null) {
+			if(customer.getDefaultClrntSys().contains("844")) {
+				clrntlist.add(0, "844");
+			} else {
+				clrntlist.add("844");
+			}
+		}
+		
+		return clrntlist;
+	}
+	
+	private CustProfile mapCustProfile(Customer customer) {
+		CustProfile profile = null;
+		
+		if(!customer.getCustType().equals("CUSTOMER")) {
+			profile = new CustProfile();
+			profile.setCustType(customer.getCustType());
+			profile.setUseRoomByRoom(customer.isUseRoomByRoom());
+			profile.setUseLocatorId(customer.isUseLocatorId());
+		}
+		
+		return profile;
+	}
+	
+	private List<CustProdComp> mapProdCompList(String prodComps){
+		List<CustProdComp> custProdCompList = new ArrayList<CustProdComp>();
+		
+		if(prodComps != null && !prodComps.isEmpty()) {
+			String[] prodCompsArr = prodComps.split(",");
+			for(int i = 0; i < prodCompsArr.length; i++) {
+				CustProdComp cpc = new CustProdComp();
+				String prodComp = prodCompsArr[i].trim().toUpperCase();
+				
+				cpc.setProdComp(prodComp);
+				if(i==0) {
+					cpc.setPrimaryProdComp(true);
+				} else {
+					cpc.setPrimaryProdComp(false);
+				}
+				
+				custProdCompList.add(cpc);
+			}
+		}
+				
+		return custProdCompList;
+	}
+	
+	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();
@@ -219,6 +282,13 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return eh;
 	}
 	
+	public String setActionProdCompList() {
+		
+		setProdCompList(productService.getDistinctProdComps());
+		
+		return SUCCESS;
+	}
+	
 	public String checkAcctNbr() {
 		try {
 			List<Object> acctNbrList = customerService.getAllCustomerIds();
@@ -227,17 +297,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			} else {
 				setResult("false");
 			}
-		} catch (HibernateException he) {
-			logger.error("HibernateException Caught: " + he.toString() + " " + he.getMessage(), he);
-			return ERROR;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 		return SUCCESS;
 	}
 	
-	public String allowCharacters(String escapedString) {
+	private String allowCharacters(String escapedString) {
 		String newString = "";
 		if(escapedString != null) {
 			if(escapedString.contains("&amp;")) {
@@ -290,6 +357,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 
 	public void setAcctNbr(String acctNbr) {
 		AcctNbr = acctNbr;
+	}
+
+	public List<String> getProdCompList() {
+		return prodCompList;
+	}
+
+	public void setProdCompList(List<String> prodCompList) {
+		this.prodCompList = prodCompList;
 	}
 
 }

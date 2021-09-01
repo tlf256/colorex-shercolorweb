@@ -112,8 +112,8 @@ badge {
 			if (baseDispense != null){
 				var baseShots = Math.round(productSampleFill * baseDispense.uom); 
 				baseDispense.shots = baseShots;
-				// only set decimal ounces field for alfa tinters and lab corob 
-				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB") || tinterModel.includes("SIMULATOR"))){
+				// only set decimal ounces field for alfa and corob tinters
+				if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB") || tinterModel.includes("SIMULATOR"))){
 					baseDispense.decimalOunces = productSampleFill;
 				}
 			}
@@ -154,8 +154,8 @@ badge {
 					var colorantName = $(this).find('.colorantName').text();
 					shotList.forEach(function (item, index) {
 						if (colorantName.includes(item.code)){
-							// only set decimal ounces field for alfa tinters and lab corob 
-							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB TATOCOLORLAB") || tinterModel.includes("SIMULATOR"))){
+							// only set decimal ounces field for alfa and corob tinters
+							if (tinterModel != null && (tinterModel.includes("ALFA") || tinterModel.includes("COROB")|| tinterModel.includes("SIMULATOR"))){
 								item.decimalOunces = decimalOunces;
 							}
 							//console.log(colorantName + " unrounded: " + decimalOunces);
@@ -506,7 +506,8 @@ badge {
 					$("#controlNbr").text(data.controlNbr);
 					$("#controlNbrDisplay").show();
 					$("#qtyDispensed").text(data.qtyDispensed);
-					
+					qtyRemaining = $('#qtyRemaining');
+					qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 					// send tinter event (no blocking here)
 					var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 					var tedArray = [ teDetail ];
@@ -744,27 +745,51 @@ badge {
 		</div>
 	</div>
 	<br>
-		
-	<div class="row mt-2" id="dispenseInfoRow">
-		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<s:if test="%{siteHasTinter==true}">
-			<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-				<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> 
-				<span class="dispenseInfo badge badge-secondary" style="font-size: .9rem;" id="qtyDispensed">
-					${sessionScope[thisGuid].quantityDispensed}</span>
-				<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
-			</div>
-		</s:if>
-		<s:else>
-			<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-				<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> 
-				<span class="dispenseInfo d-none badge badge-secondary" style="font-size: .8rem;" id="qtyDispensed">
-					${sessionScope[thisGuid].quantityDispensed}</span>
-				<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
-			</div>	
-		</s:else>
-		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
-	</div>
+	
+	<s:if test="%{siteHasTinter==true}">
+				<div class="row" id="dispenseInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row" id="quantityInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyOrderedColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyOrdered">${sessionScope[thisGuid].quantityOrdered}</span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row" id="remainingInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyRemaining"></span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<s:else>
+				<div class="row" id="dispenseInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+							class="dispenseInfo d-none badge badge-secondary"
+							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:else>
+			<br>
+			
 	<br>
 	
 	<div class="d-flex flex-row justify-content-around mt-3">
@@ -982,6 +1007,19 @@ badge {
 
 	<script>
 	$(document).ready(function() {
+		
+		// Display remaining qty. Don't display negative values if the user dispenses more than what was ordered.
+		var qtyOrdered = parseInt(${sessionScope[thisGuid].quantityOrdered});
+		var qtyDispensed = parseInt(${sessionScope[thisGuid].quantityDispensed});
+		var remaining = (qtyOrdered - qtyDispensed);
+		if (remaining < 0) {
+			remaining = 0;
+		}
+		if(remaining == 0 && qtyOrdered != 0) {
+			$("#formulaSetOrderQty").hide();
+		}
+		$("#qtyRemaining").text(remaining);
+		
 		if ($("#formulaUserPrintAction_siteHasPrinter").val() == "true") {
 			getPrinterConfig();
 		}

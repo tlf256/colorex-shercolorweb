@@ -5,6 +5,8 @@ import java.util.List;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 
@@ -45,6 +47,12 @@ public class RequestObject {
 	private boolean toactivateRecord;
 	private boolean uploadedEula;
 	private boolean updateMode;
+	private boolean roomByRoom;
+	private CustProfile profile;
+	private List<String> custTypeList;
+	private List<CustProdComp> prodCompList;
+	private List<CustProdComp> deletedProdComps;
+	private String prodComps;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -259,6 +267,42 @@ public class RequestObject {
 	}
 	public void setUpdateMode(boolean updateMode) {
 		this.updateMode = updateMode;
+	}
+	public boolean isRoomByRoom() {
+		return roomByRoom;
+	}
+	public void setRoomByRoom(boolean roomByRoom) {
+		this.roomByRoom = roomByRoom;
+	}
+	public CustProfile getProfile() {
+		return profile;
+	}
+	public void setProfile(CustProfile profile) {
+		this.profile = profile;
+	}
+	public List<String> getCustTypeList() {
+		return custTypeList;
+	}
+	public void setCustTypeList(List<String> custTypeList) {
+		this.custTypeList = custTypeList;
+	}
+	public List<CustProdComp> getProdCompList() {
+		return prodCompList;
+	}
+	public void setProdCompList(List<CustProdComp> prodCompList) {
+		this.prodCompList = prodCompList;
+	}
+	public List<CustProdComp> getDeletedProdComps() {
+		return deletedProdComps;
+	}
+	public void setDeletedProdComps(List<CustProdComp> deletedProdComps) {
+		this.deletedProdComps = deletedProdComps;
+	}
+	public String getProdComps() {
+		return prodComps;
+	}
+	public void setProdComps(String prodComps) {
+		this.prodComps = prodComps;
 	}
 	public void reset() {
 		this.customerId = "";
