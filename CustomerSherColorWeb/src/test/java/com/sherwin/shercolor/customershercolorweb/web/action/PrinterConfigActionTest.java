@@ -2,10 +2,15 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import javax.servlet.http.HttpSession;
 
 
+import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.apache.struts2.StrutsSpringTestCase;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -13,25 +18,19 @@ import com.opensymphony.xwork2.ActionProxy;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
+import static org.junit.Assert.assertNotNull;
+
 
 @Transactional
-
-public class PrinterConfigActionTest extends StrutsSpringTestCase{
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
+@WebAppConfiguration
+public class PrinterConfigActionTest extends StrutsSpringJUnit4TestCase<PrinterConfigureAction> {
 
 	PrinterConfigureAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";	
 
-
-	@Override
-	public String[] getContextLocations() {
-		String[] arrStr =  {
-				"classpath:config/spring/shercolorcommon.xml"
-
-		} ;  
-		return arrStr;
-
-	}
 
 	@Test
 	public void testPrinterConfigAction(){
