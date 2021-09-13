@@ -2,16 +2,13 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import javax.servlet.http.HttpSession;
 
 
-import com.sherwin.shercolor.customershercolorweb.annotations.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
-import org.apache.struts2.StrutsSpringTestCase;
 
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import com.opensymphony.xwork2.ActionProxy;

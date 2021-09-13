@@ -1,30 +1,17 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
-import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.util.*;
 
 
-import com.sherwin.shercolor.SherColorCommonApplication;
-import com.sherwin.shercolor.config.ApplicationConfiguration;
-import com.sherwin.shercolor.customershercolorweb.annotations.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
 import org.apache.commons.lang.StringUtils;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;

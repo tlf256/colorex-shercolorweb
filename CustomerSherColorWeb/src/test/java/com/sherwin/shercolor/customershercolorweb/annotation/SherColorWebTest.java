@@ -1,10 +1,7 @@
-package com.sherwin.shercolor.customershercolorweb.annotations;
+package com.sherwin.shercolor.customershercolorweb.annotation;
 
-import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.*;

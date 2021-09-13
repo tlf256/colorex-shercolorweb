@@ -4,18 +4,14 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
-import com.sherwin.shercolor.customershercolorweb.annotations.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.junit.Test;
-import org.junit.internal.runners.TestClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
