@@ -20,7 +20,14 @@ $(document).ready(function(){
 		}
 		
 	}, ".acctcmmnt");
-
+	
+	$('#effDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	
 });
 
 function buildCustTypesList(custTypes, selectList, selectedOption) {
