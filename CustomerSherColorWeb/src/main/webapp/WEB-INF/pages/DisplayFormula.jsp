@@ -1129,8 +1129,8 @@ function ParsePrintMessage() {
 				$("#roomsList").focus();
 				$("#roomsDropdownErrorText").removeClass("d-none");
 				return false;
-			// they picked Other but didn't enter text
-			} else if (roomText == "Other" && (enteredText == null || enteredText.trim() == "")){
+			// they picked Other but didn't enter text or put >30 characters
+			} else if (roomText == "Other" && (enteredText == null || enteredText.trim() == "" || enteredText.length > 30)){
 				$("#otherRoomErrorText").removeClass("d-none");
 				$("#otherRoom").focus();
 				return false;
@@ -1345,10 +1345,10 @@ function ParsePrintMessage() {
 						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
 							<s:text name="displayFormula.pleaseSelectARoom"/>
 						</div>
-						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateCustomRoom()"/>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" maxlength="30" onblur="validateCustomRoom()"/>
 						<s:hidden name="roomChoice" value="" />
 						<div id="otherRoomErrorText" style="color:red" class="d-none">
-							<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
 						</div>
 					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
