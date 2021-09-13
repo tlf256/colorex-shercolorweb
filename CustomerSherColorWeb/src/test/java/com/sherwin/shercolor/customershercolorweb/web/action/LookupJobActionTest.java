@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.apache.struts2.StrutsSpringTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,23 +10,22 @@ import org.junit.Test;
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-public class LookupJobActionTest extends StrutsSpringTestCase {
+import static org.junit.Assert.assertNotNull;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
+@WebAppConfiguration
+public class LookupJobActionTest extends StrutsSpringJUnit4TestCase<LookupJobAction> {
 
 	LookupJobAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
-	
-	@Override
-	public String[] getContextLocations() {
-		String[] arrStr =  {
-				"classpath:config/spring/shercolorcommon.xml"
 
-		} ;  
-		return arrStr;
-	}
-	
-	
 	@Test
 	public void testLookupJobsAction() {
 		System.out.println("Start Lookup Jobs Action Test");
