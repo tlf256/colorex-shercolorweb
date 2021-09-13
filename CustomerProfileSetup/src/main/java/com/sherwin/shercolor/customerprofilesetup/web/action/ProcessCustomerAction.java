@@ -1,7 +1,9 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +22,7 @@ import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
+import com.sherwin.shercolor.customerprofilesetup.web.model.CustEula;
 import com.sherwin.shercolor.customerprofilesetup.web.model.Customer;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
@@ -31,6 +34,8 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessCustomerAction.class);
 	private Customer customer;
+	private CustEula eula;
+	private String eulaType;
 	private Map<String, Object> sessionMap;
 	private String result;
 	private String AcctNbr;
@@ -48,11 +53,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 	public String execute() {
 		try {	
 			logger.trace("begin ProcessCustomerAction.execute");
-			RequestObject reqObj = new RequestObject();
+			RequestObject reqObj = (RequestObject) sessionMap.get("CustomerDetail");
 			
 			String custId = customerId(customer);
 			
-			reqObj.setNewCustomer(true);
+			//reqObj.setNewCustomer(true);
 			reqObj.setCustUnchanged(false);
 			reqObj.setCustomerId(custId);
 			reqObj.setAccttype(customer.getAccttype());
@@ -80,25 +85,69 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			
 			reqObj.setCustList(newcustlist);
 			reqObj.setProfile(mapCustProfile(customer));
-			
-			List<EulaHist> ehlist = new ArrayList<EulaHist>();
-			EulaHist eh = new EulaHist();
-			
-			if(!customer.getWebsite().equals("None")) {
-				if(customer.getWebsite().equals("SherColor Web EULA")) {
-					Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", reqObj.getCustomerId());
-					eh = activateEula(reqObj.getCustomerId(), customer.getAcceptCode(), sherColorWebEula);
-					ehlist.add(0, eh);
-					reqObj.setWebsite(sherColorWebEula.getWebSite());
-					reqObj.setSeqNbr(sherColorWebEula.getSeqNbr());
+			reqObj.setEulaType(eulaType);
+						
+			if(!eulaType.equals("None")) {
+				String customerId = reqObj.getCustomerId();
+				String website = "CUSTOMERSHERCOLORWEB";
+				int seqNbr = 1;
+				String inputDate = eula.getEffectiveDate();
+				String effDate = null;
+				String expDate = null;
+				SimpleDateFormat sdf = new SimpleDateFormat("d-M-yy");
+				
+				// both custom and template EULAs need at least
+				// an effective date set
+				if(inputDate == null && !eulaType.equals("SherColor Web EULA")) {
+					// set effective date to today
+					effDate = sdf.format(new Date());
 				} else {
-					//unexpected value
-					addFieldError("customer.website", "Please select Eula from list");
-					return INPUT;
+					effDate = eula.getEffectiveDate();
 				}
 				
-				reqObj.setEulaHistToActivate(eh);
-				reqObj.setEulaHistList(ehlist);
+				// check if custom EULA was chosen
+				// this type of EULA does not require
+				// an activation record
+				if(!eulaType.equals("Custom EULA")) {
+					// EULA activation record needs created
+					List<EulaHist> ehlist = new ArrayList<EulaHist>();
+					EulaHist eh = new EulaHist();
+					String acceptCode = eula.getAcceptCode();
+					
+					if(eulaType.equals("SherColor Web EULA")) {
+						// standard CSW EULA is being used, get seqnbr
+						// new customer - not possible to have a custom 
+						// EULA associated with the customer ID
+						Eula sherColorWebEula = eulaService.readActive(website, customerId);
+						seqNbr = sherColorWebEula.getSeqNbr();
+						effDate = sdf.format(sherColorWebEula.getEffectiveDate());
+						
+						Date cswExpDate = sherColorWebEula.getExpirationDate();
+						
+						if(cswExpDate != null) {
+							expDate = sdf.format(cswExpDate);
+						}
+					} else if(eulaType.equals("Custom EULA Template")) {
+						// EULA template is being used
+						// new customer - sequence number will stay 1
+						// save template input to session
+						reqObj.setTemplate(eula.getTemplate());
+					}
+					
+					// create eula activation record
+					eh = activateEula(customerId, acceptCode, seqNbr);
+					ehlist.add(0, eh);
+					
+					reqObj.setEulaHistToActivate(eh);
+					reqObj.setEulaHistList(ehlist);
+				}
+				
+				eula.setWebsite(website);
+				eula.setSeqNbr(seqNbr);
+				eula.setEffectiveDate(effDate);
+				eula.setExpDate(expDate);
+				
+				reqObj.setEula(eula);
 			}
 			
 			reqObj.setProdCompList(mapProdCompList(customer.getProdComps()));
@@ -265,7 +314,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return custProdCompList;
 	}
 	
-	private EulaHist activateEula(String customerId, String acceptCode, Eula eula) {
+	private EulaHist activateEula(String customerId, String acceptCode, int seqNbr) {
 		
 		EulaHist eh = new EulaHist();
 		Calendar c = Calendar.getInstance();
@@ -273,8 +322,8 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		eh.setActionType("TOACTIVATE");
 		eh.setActionUser("UNSET");
 		eh.setCustomerId(customerId);
-		eh.setWebSite(eula.getWebSite());
-		eh.setSeqNbr(eula.getSeqNbr());
+		eh.setWebSite("CUSTOMERSHERCOLORWEB");
+		eh.setSeqNbr(seqNbr);
 		eh.setActionTimeStamp(c.getTime());
 		eh.setAcceptanceCode(acceptCode);
 		eh.setActiveAcceptanceCode(true);
@@ -335,12 +384,28 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		this.customer = customer;
 	}
 
+	public CustEula getEula() {
+		return eula;
+	}
+
+	public void setEula(CustEula eula) {
+		this.eula = eula;
+	}
+
 	public Map<String, Object> getSessionMap() {
 		return sessionMap;
 	}
 
 	public void setSessionMap(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;
+	}
+
+	public String getEulaType() {
+		return eulaType;
+	}
+
+	public void setEulaType(String eulaType) {
+		this.eulaType = eulaType;
 	}
 
 	public String getResult() {

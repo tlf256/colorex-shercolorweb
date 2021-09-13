@@ -226,6 +226,29 @@ function validateAcctNbr() {
 	}
 }
 
+function verifyDate(value) {
+	try{
+		var tempdate = $.trim(value);
+		if(!tempdate){
+			throw "Please enter an Effective Date";
+		}
+		if(tempdate){
+			if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(tempdate)){
+				throw "Please enter valid date in mm/dd/yyyy format";
+			}
+		}
+		$("#eulaerror").text("");
+		$(this).removeClass("border-danger");
+	}catch(msg){
+		$("html, body").animate({
+			scrollTop: $(document.body).offset().top
+		}, 1500);
+		$("#eulaerror").text(msg);
+		$(this).addClass("border-danger");
+		$(this).select();
+	}
+}
+
 function checkAccountNbr(selector) {
 	console.log("checking if the account number already exists...");
 	var value = selector.val().trim();
@@ -300,6 +323,25 @@ function showHideInput(value) {
 	buildCustTypesList(custTypes, selectList, selectedCustType);
 }
 
+function toggleSelectList(value) {
+	console.log("EULA type is " + value);
+	switch(value) {
+	case 'None':
+	case 'Custom EULA':
+		$('.eulaTemp').hide();
+		$('#code').hide();
+		break;
+	case 'SherColor Web EULA':
+		$('.eulaTemp').hide();
+		$('#code').show();
+		break;
+	case 'Custom EULA Template':
+		$('.eulaTemp').show();
+		$('#code').show();
+		break;
+	}
+}
+
 function showNtlAcctInput() {
 	$(".ntlacct").show();
 	$("#intntlacct").hide();
@@ -356,6 +398,7 @@ function hideInput() {
 	$(".rmbyrm").hide();
 	$(".locid").hide();
 	$(".eula").hide();
+	$(".eula-hidden").hide();
 	$(".prodaccess").hide();
 	$(".prodcomps").hide();
 	$("#restrictno").attr("checked", true);

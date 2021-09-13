@@ -181,7 +181,7 @@
 					<tr>
 						<td class="align-middle"><strong>Customer Type</strong></td>
 						<td id="custtype">
-							<s:select list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="cust.custType" onchange="toggleProfileInput(this.value)"
+							<s:select list="custTypeList" id="typelist" name="cust.custType" onchange="toggleProfileInput(this.value)"
 								value="sessionMap['CustomerDetail'].profile.custType"></s:select>
 						</td>
 					</tr>
@@ -217,44 +217,8 @@
 		</div>
 	<br>
 	</s:if>
-	<s:if test="!sessionMap['CustomerDetail'].uploadedEula && sessionMap['CustomerDetail'].updateMode && 
-		sessionMap['CustomerDetail'].eulaHistList == null">
-		<div class="row">
-			<div class="col-lg-2 col-md-2"></div>
-			<div class="col-lg-8 col-md-8">
-				<table id="uploadEula" class="table table-striped table-bordered">
-					<tr>
-						<th colspan="3">Upload EULA</th>
-					</tr>
-					<tr>
-						<td colspan="3" class="align-middle">
-							<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
-						</td>
-					</tr>
-					<tr>
-						<th>Effective Date</th>
-						<th>Expiration Date</th>
-						<th>EULA Text</th>
-					</tr>
-					<tr>
-						<td class="align-middle">
-							<s:textfield id="effDate" name="effDate"></s:textfield>
-						</td>
-						<td class="align-middle">
-							<s:textfield id="expDate" name="expDate"></s:textfield>
-						</td>
-						<td class="align-middle w-50">
-							<s:textarea id="eulatext" name="eulaText"></s:textarea>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div class="col-lg-2 col-md-2"></div>
-		</div>
-	<br>
-	</s:if>
 	
-	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null">
+	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null && !sessionMap['CustomerDetail'].updateMode">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
@@ -265,7 +229,7 @@
 					<th>User</th>
 					<th>Date</th>
 					<th>Acceptance Code</th>
-					<th>Activate</th>
+					<!--<th>Activate</th>-->
 				</tr>
 				<tr>
 					<td>
@@ -282,18 +246,18 @@
 					</td>
 					<td>
 						<div class="form-inline">
-							<s:textfield id="acceptcode" name="cust.acceptCode" cssStyle="width:100px"
+							<s:textfield id="acceptcode" name="eula.acceptCode" cssStyle="width:100px"
 							value="%{sessionMap['CustomerDetail'].eulaHistToActivate.acceptanceCode}" readonly="true"></s:textfield>
 							<button type="button" id="edt2" class="btn btn-primary pull-right ml-4">
 								<i class="far fa-edit"></i>
 							</button>
 						</div>
 					</td>
-					<td>
+					<!--<td>
 						<div class="form-check">
-							<input class="ml-2 mt-2" type="checkbox" id="activateEula" name="cust.activateEula" value="true" checked="checked" />
+							<input class="ml-2 mt-2" type="checkbox" id="activateEula" name="eula.activateEula" value="true" checked="checked" />
 						</div>
-					</td>
+					</td>-->
 				</tr>
 			</table>
 		</div>
@@ -302,7 +266,7 @@
 	<br>
 	</s:if>
 	<s:else>
-		<s:if test="sessionMap['CustomerDetail'].eulaHistList == null">
+		<s:if test="sessionMap['CustomerDetail'].eulaType == 'None'">
 			<div class="row">
 				<div class="col-lg-2 col-md-2"></div>
 				<div class="col-lg-8 col-md-8">
@@ -312,20 +276,54 @@
 						</tr>
 						<tr>
 							<td>
-								<s:select label="Activate Eula" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="cust.website" headerValue="None"></s:select>
+								<s:select label="Activate Eula" list="eulaList" id="eulalist" name="eulaType" headerValue="None"
+									onchange="toggleSelectList(this.value)"></s:select>
+								<div class="eulaTemp">
+									<s:select label="Choose EULA Template" list="eulaTempList" id="eulatemplist" 
+										name="eula.template" headerValue="None"></s:select>
+								</div>
 							</td>
-							<td>
-								<s:textfield label="Acceptance Code" name="cust.acceptCode" id="acceptcode" />
+							<td id="code">
+								<s:textfield label="Acceptance Code" name="eula.acceptCode" id="acceptcode" />
 							</td>
 						</tr>
 					</table>
 				</div>
 				<div class="col-lg-2 col-md-2"></div>
 			</div>
+			<br>
+			<div class="row">
+				<div class="col-lg-2 col-md-2"></div>
+				<div class="col-lg-8 col-md-8">
+					<table id="uploadEula" class="table table-striped table-bordered">
+						<tr>
+							<th colspan="3">Upload EULA</th>
+						</tr>
+						<tr>
+							<td colspan="3" class="align-middle">
+								<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
+							</td>
+						</tr>
+						<tr>
+							<th>Effective Date</th>
+							<th>EULA Text</th>
+						</tr>
+						<tr>
+							<td class="align-middle">
+								<s:textfield id="effDate" name="eula.effectiveDate" onchange="verifyEffDate(this.value)" autocomplete="off"></s:textfield>
+							</td>
+							<td class="align-middle w-50">
+								<s:textarea id="eulatext" name="eula.eulaText1"></s:textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-lg-2 col-md-2"></div>
+			</div>
+		<br>
 		</s:if>
-	<br>
 	</s:else>
-
+	
 	<s:if test="sessionMap['CustomerDetail'].prodCompList != null && !sessionMap['CustomerDetail'].prodCompList.isEmpty">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>
