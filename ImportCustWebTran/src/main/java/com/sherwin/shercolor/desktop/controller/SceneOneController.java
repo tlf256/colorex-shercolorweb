@@ -378,7 +378,9 @@ public class SceneOneController implements Initializable {
 			Task task = new Task<Void>() {
 			    @Override public Void call() {
 					
+			    	System.out.println("about to calc total line count");
 			    	int totalLineCnt = cdsTranService.CountLinesInAllFiles(inputFileDir.getText());
+			    	System.out.println("total line count is " + totalLineCnt);
 					
 			    	cdsTranService.setTotalLines(totalLineCnt);
 					cdsTranService.setLinesComplete(0);

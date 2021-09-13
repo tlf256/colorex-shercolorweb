@@ -1301,7 +1301,18 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
-	
+	<s:if test="%{displayDeltaEColumn==true}">
+		<div class="row">
+			<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+				<strong><s:text name="compareColorsResult.deltaEcolon"/></strong>
+			</div>
+			<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
+				<span style="color: red; font-weight: bold">${sessionScope[thisGuid].displayFormula.averageDeltaE}</span>
+			</div>
+			<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+		</div>
+	</s:if>
 	<s:if 
 		test="%{
 		#session[reqGuid].displayFormula.deltaEWarning == null ||
@@ -1412,6 +1423,7 @@ function ParsePrintMessage() {
 					<s:hidden name="jsDateString" value="" />
 					<s:hidden name="siteHasTinter" value="%{siteHasTinter}" />
 					<s:hidden name="siteHasPrinter" value="%{siteHasPrinter}" />
+					<s:hidden name="displayDeltaEColumn" value="%{displayDeltaEColumn}" />
 					<s:hidden name="sessionHasTinter" value="%{sessionHasTinter}" />
 					<s:hidden name="accountIsDrawdownCenter" value="%{accountIsDrawdownCenter}" />	
 			 		<s:hidden name="accountUsesRoomByRoom" value="%{accountUsesRoomByRoom}" /> 
@@ -1430,6 +1442,9 @@ function ParsePrintMessage() {
 				
 	
 				<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+					<s:if test="hasActionErrors()">
+						<s:actionerror />
+					</s:if>
 					<s:if test="hasActionMessages()">
 						<s:actionmessage />
 					</s:if>
