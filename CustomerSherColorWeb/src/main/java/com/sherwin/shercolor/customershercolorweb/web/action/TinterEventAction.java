@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CustWebTinterEvents;
+import com.sherwin.shercolor.common.entity.CustWebTinterEventsDetail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -13,8 +15,6 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.domain.CustWebTinterEvents;
-import com.sherwin.shercolor.common.domain.CustWebTinterEventsDetail;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;

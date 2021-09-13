@@ -3,6 +3,9 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CustWebDealer;
+import com.sherwin.shercolor.common.entity.CustWebDealerCust;
+import com.sherwin.shercolor.common.entity.CustWebDealerCustOrd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -10,9 +13,6 @@ import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.domain.CustWebDealer;
-import com.sherwin.shercolor.common.domain.CustWebDealerCust;
-import com.sherwin.shercolor.common.domain.CustWebDealerCustOrd;
 import com.sherwin.shercolor.common.service.CustomerOrderService;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerCustDto;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerCustDtoBuilder;
@@ -41,8 +41,8 @@ public class ListDealerCustomerOrdersAction extends ActionSupport implements Ses
 
 	public String display() {
 		List<CustWebDealerCustOrd> listCustWebDealerCustOrd;
-		CustWebDealer				custWebDealer;
-		CustWebDealerCust			custWebDealerCust;
+		CustWebDealer custWebDealer;
+		CustWebDealerCust custWebDealerCust;
 		logger.debug("Request GuId is -> " + reqGuid + " lookup Cust Id is -> " + lookupCustomerId
 				+ " lookup DlrCustid is -> " + lookupDlrCustId);
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);

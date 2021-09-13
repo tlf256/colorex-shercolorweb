@@ -3,13 +3,13 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.EulaHist;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 
-import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.common.service.EulaService;
 

@@ -2,7 +2,6 @@ package com.sherwin.shercolor.customershercolorweb.web.model;
 
 import java.util.Comparator;
 
-import com.sherwin.shercolor.common.domain.CdsClrntIncr;
 
 public class TinterCanister {
 

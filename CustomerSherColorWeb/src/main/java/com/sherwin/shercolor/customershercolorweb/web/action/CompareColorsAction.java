@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CdsColorMast;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.exception.SherColorException;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorService;
@@ -186,7 +186,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private List<autoComplete> mapToOptions(List<CdsColorMast> colorList, String coType) {
-		List<autoComplete> outList = new ArrayList<autoComplete>();
+		List<autoComplete> outList = new ArrayList<>();
 		String theLabel;
 		String theValue;
 		

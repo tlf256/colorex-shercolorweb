@@ -6,6 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CdsClrnt;
+import com.sherwin.shercolor.common.entity.CdsMiscCodes;
+import com.sherwin.shercolor.common.entity.CustWebParms;
+import com.sherwin.shercolor.common.entity.CustWebTran;
+import com.sherwin.shercolor.common.model.FormulaInfo;
+import com.sherwin.shercolor.common.model.FormulaIngredient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,12 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-import com.sherwin.shercolor.common.domain.CdsClrnt;
-import com.sherwin.shercolor.common.domain.CdsMiscCodes;
-import com.sherwin.shercolor.common.domain.CustWebParms;
-import com.sherwin.shercolor.common.domain.CustWebTran;
-import com.sherwin.shercolor.common.domain.FormulaInfo;
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
+
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
@@ -509,7 +510,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			if(retVal.equalsIgnoreCase(SUCCESS)){
 				String rgbHex = null;
 				BigDecimal[] curveArray = new BigDecimal[40];
-				CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
+				CustWebParms custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID());
 				custWebParms.setClrntSysId(reqObj.getClrntSys());
 				// all looks good. go project curve and update reqObj rgbhex
 				Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);

@@ -2,7 +2,8 @@ package com.sherwin.shercolor.customershercolorweb.util;
 
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.CustWebTranCorr;
+
+import com.sherwin.shercolor.common.entity.CustWebTranCorr;
 import com.sherwin.shercolor.customershercolorweb.web.model.CorrectionInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 

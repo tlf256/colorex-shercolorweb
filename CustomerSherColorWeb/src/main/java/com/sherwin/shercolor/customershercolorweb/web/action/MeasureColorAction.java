@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CustWebParms;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
-import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;

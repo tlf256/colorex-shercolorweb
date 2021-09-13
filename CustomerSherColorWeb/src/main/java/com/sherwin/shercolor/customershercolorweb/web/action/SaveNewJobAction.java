@@ -7,6 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CustWebDrawdownTran;
+import com.sherwin.shercolor.common.entity.CustWebTran;
+import com.sherwin.shercolor.common.entity.CustWebTranCorr;
+import com.sherwin.shercolor.common.model.FormulaInfo;
+import com.sherwin.shercolor.common.model.FormulaIngredient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -14,11 +19,6 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
-import com.sherwin.shercolor.common.domain.CustWebTran;
-import com.sherwin.shercolor.common.domain.CustWebTranCorr;
-import com.sherwin.shercolor.common.domain.FormulaInfo;
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;

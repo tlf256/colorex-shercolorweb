@@ -1,11 +1,12 @@
 package com.sherwin.shercolor.customershercolorweb.web.dto;
 
+import com.sherwin.shercolor.common.entity.CustWebDealerCust;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.CustWebDealerCust;
 
 public class CustWebDealerCustDtoBuilder {
 	

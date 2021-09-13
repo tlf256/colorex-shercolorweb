@@ -1,9 +1,11 @@
 package com.sherwin.shercolor.customershercolorweb.web.model;
 
+import com.sherwin.shercolor.common.model.FormulaIngredient;
+
 import java.util.Date;
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
+
 
 public class CorrectionStep {
 	private int cycle;

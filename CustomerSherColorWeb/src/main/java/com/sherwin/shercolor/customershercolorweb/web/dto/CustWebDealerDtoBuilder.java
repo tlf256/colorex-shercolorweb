@@ -1,9 +1,11 @@
 package com.sherwin.shercolor.customershercolorweb.web.dto;
 
+import com.sherwin.shercolor.common.entity.CustWebDealer;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.CustWebDealer;
+
 
 public class CustWebDealerDtoBuilder {
 	

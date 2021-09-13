@@ -11,6 +11,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CdsColorMast;
+import com.sherwin.shercolor.common.entity.CustWebCustomerProfile;
+import com.sherwin.shercolor.common.entity.CustWebDrawdownLabelProfile;
+import com.sherwin.shercolor.common.model.FormulaConversion;
+import com.sherwin.shercolor.common.model.FormulaIngredient;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -32,11 +37,6 @@ import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
 import org.springframework.stereotype.Service;
 
-import com.sherwin.shercolor.common.domain.CdsColorMast;
-import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
-import com.sherwin.shercolor.common.domain.CustWebDrawdownLabelProfile;
-import com.sherwin.shercolor.common.domain.FormulaConversion;
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;

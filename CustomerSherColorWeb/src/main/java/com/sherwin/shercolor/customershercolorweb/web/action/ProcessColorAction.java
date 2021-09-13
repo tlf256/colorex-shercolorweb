@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+
+import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.common.entity.CdsColorMast;
+import com.sherwin.shercolor.common.entity.CustWebParms;
+import com.sherwin.shercolor.common.entity.CustWebSpectroRemote;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +24,6 @@ import org.owasp.encoder.Encode;
 
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-import com.sherwin.shercolor.common.domain.CdsColorMast;
-import com.sherwin.shercolor.common.domain.CustWebParms;
-import com.sherwin.shercolor.common.domain.CustWebSpectroRemote;
 import com.sherwin.shercolor.common.exception.SherColorException;
 import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorMastService;

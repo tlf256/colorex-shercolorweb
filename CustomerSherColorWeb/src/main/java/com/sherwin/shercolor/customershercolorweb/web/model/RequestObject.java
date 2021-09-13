@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.common.entity.CdsRoomList;
+import com.sherwin.shercolor.common.model.FormulaInfo;
+import com.sherwin.shercolor.common.model.FormulationResponse;
 import org.owasp.encoder.Encode;
 
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.domain.ColorDifference;
-import com.sherwin.shercolor.common.domain.CdsColorStand;
-import com.sherwin.shercolor.common.domain.CdsRoomList;
-import com.sherwin.shercolor.common.domain.FormulaInfo;
-import com.sherwin.shercolor.common.domain.FormulationResponse;
+
 import com.sherwin.shercolor.util.domain.SwMessage;
 
 public class RequestObject {
