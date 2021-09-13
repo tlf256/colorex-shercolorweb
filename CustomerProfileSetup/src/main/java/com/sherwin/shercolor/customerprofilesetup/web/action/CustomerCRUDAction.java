@@ -1,5 +1,7 @@
 package com.sherwin.shercolor.customerprofilesetup.web.action;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +23,7 @@ import com.sherwin.shercolor.common.domain.CustWebProdComps;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
+import com.sherwin.shercolor.common.domain.EulaTemplate;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.common.service.ProductService;
@@ -30,6 +33,7 @@ import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
+import com.sherwin.shercolor.customerprofilesetup.web.model.CustEula;
 import com.sherwin.shercolor.customerprofilesetup.web.model.RequestObject;
 
 public class CustomerCRUDAction extends ActionSupport implements SessionAware {
@@ -147,28 +151,52 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				reqObj.setProfile(profile);
 			}
 			
-			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", lookupCustomerId);
-			
-			if(scwEulaList != null) {
-				List<EulaHist> ehlist = new ArrayList<EulaHist>();
-				for(EulaHist eh : scwEulaList) {
-					if(eh.getActionType().equals("TOACTIVATE")) {
-						ehlist.add(0, eh);
-						reqObj.setToactivateRecord(true);
-					} else {
-						ehlist.add(eh);
-					}
-				}
-				reqObj.setWebsite("CUSTOMERSHERCOLORWEB");
-				reqObj.setEulaHistList(ehlist);
-			} 
 			
 			Eula sherColorWebEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", lookupCustomerId);
+			List<EulaHist> scwEulaList = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", lookupCustomerId);
+			String eulaType = null;
 			
-			if(sherColorWebEula.getCustomerId() != null) {
-				reqObj.setEula(sherColorWebEula);
-				reqObj.setUploadedEula(true);
+			if(sherColorWebEula.getCustomerId() != null || scwEulaList != null) {
+				// a EULA is associated with the customer ID
+				// either from a custom EULA or EULA history
+				// set EULA type for conditional requirements
+				if(sherColorWebEula.getCustomerId() == null) {
+					// default SherColor Web EULA
+					eulaType = "SherColor Web EULA";
+					
+				} else {
+					// customer ID is associated with a EULA record
+					// it is either a template or custom PDF
+					if(scwEulaList != null) {
+						// customer has EULA history, using template
+						eulaType = "Custom EULA Template";
+					} else {
+						eulaType = "Custom EULA";
+					}
+				}
+				
+				if(sherColorWebEula.getEulaPdf() != null) {
+					reqObj.setUploadedEula(true);
+				}
+				
+				if(scwEulaList != null) {
+					for(EulaHist eh : scwEulaList) {
+						if(eh.getActionType().equals("TOACTIVATE")) {
+							reqObj.setEulaHistToActivate(eh);
+						}
+					}
+					reqObj.setEulaHistList(scwEulaList);
+				}
+				
+				reqObj.setEula(mapCustEula(sherColorWebEula, eulaType));
+				
+			} else {
+				// no EULA associated with customer ID and no EULA history
+				// set type to none
+				eulaType = "None";
 			}
+			
+			reqObj.setEulaType(eulaType);
 			
 			sessionMap.put("CustomerDetail", reqObj);
 						
@@ -179,6 +207,21 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			return ERROR;
 		}
 		
+	}
+	
+	private CustEula mapCustEula(Eula eula, String eulaType) {
+		SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy");
+		
+		CustEula custEula = new CustEula();
+		custEula.setWebsite(eula.getWebSite());
+		custEula.setSeqNbr(eula.getSeqNbr());
+		custEula.setEffectiveDate(sdf.format(eula.getEffectiveDate()));
+		Date cswExpDate = eula.getExpirationDate();
+		if(cswExpDate != null) {
+			custEula.setExpDate(sdf.format(cswExpDate));
+		}
+		
+		return custEula;
 	}
 	
 	private String getAcctType(String custId) {
@@ -217,7 +260,6 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customerId);
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customerId);
 			List<CustWebJobFields> existingJobs = customerService.getCustJobFields(customerId);
-			//CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerId());
 			List<CustWebProdComps> existingProdComps = productService.getCustWebProdComps(customerId);
 			
 			List<CustWebParms> customerList = new ArrayList<CustWebParms>();
@@ -227,7 +269,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			
 			// boolean for result of CRUD operations
 			boolean result = false;
-			// 
+			
 			boolean saveOrUpdateCwp = false;
 			boolean saveOrUpdateCwjf = false;
 			boolean saveOrUpdateCwlt = false;
@@ -303,16 +345,36 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				//System.out.println("acceptance code = " + ac);
 				
 				EulaHist eh = reqObj.getEulaHistToActivate();
-				//eh.setAcceptanceCode(ac);
 				
-				eulaService.createEulaHist(eh);
-				logger.info("Created EulaHist TOACTIVATE record");
+				boolean eulaHistCreated = eulaService.createEulaHist(eh);
+				
+				if(eulaHistCreated) {
+					logger.info("Created EulaHist TOACTIVATE record for " + customerId);
+				} else {
+					logger.error("Error creating EULAHIST record for " + customerId);
+					addActionError("Error creating EULAHIST record for " + customerId + ", please contact database administrator");
+					return INPUT;
+				}
+				
 			}
 			
-			// create eula pdf
-			if(reqObj.getEula() != null) {
-				eulaService.createEula(reqObj.getEula());
-				logger.info("Created Eula record");
+			String eulaType = reqObj.getEulaType();
+			
+			// check if custom EULA needs to be created
+			if(eulaType.equals("Custom EULA") || eulaType.equals("Custom EULA Template")) {
+				// custom EULA record needs to be created
+				String template = reqObj.getTemplate();
+				
+				boolean eulaCreated = eulaService.createEula(mapEula(reqObj.getEula(), customerId, template));
+				
+				if(eulaCreated) {
+					logger.info("Created Eula record for " + customerId);
+				} else {
+					logger.error("Error creating EULA record for " + customerId);
+					addActionError("Error creating EULA record for " + customerId + ", please contact database administrator");
+					return INPUT;
+				}
+				
 			}
 			
 			List<CustProdComp> prodCompList = reqObj.getProdCompList();
@@ -461,6 +523,78 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 		}
 	}
 	
+	private Eula mapEula(CustEula custEula, String customerId, String template) {
+		String website = custEula.getWebsite();
+		byte[] eulaPdf = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy");
+		String effDateString = custEula.getEffectiveDate();
+		String expDateString = custEula.getExpDate();
+		Date effDate = null;
+		Date expDate = null;
+		
+		Eula eula = new Eula();
+		eula.setCustomerId(customerId);
+		eula.setWebSite(website);
+		eula.setSeqNbr(custEula.getSeqNbr());
+		
+		try {
+			if(effDateString != null && !effDateString.isEmpty()) {
+				
+				effDate = sdf.parse(effDateString);
+			} else {
+				logger.error("EULA effective date for customer ID " + customerId + " is null");
+			}
+			
+			if(expDateString != null && !expDateString.isEmpty()) {
+				expDate = sdf.parse(expDateString);
+			}
+		} catch (ParseException e1) {
+			logger.error(e1.getMessage(), e1);
+		}
+		
+		eula.setEffectiveDate(effDate);
+		eula.setExpirationDate(expDate);
+		
+		// custom EULA is either just PDF or template
+		if(template != null) {
+			String[] eulaTempArr = template.split(" ");
+			String tempId = eulaTempArr[0].trim();
+			int seqnbr = Integer.parseInt(eulaTempArr[1].trim());
+			
+			// get EULA text from template
+			EulaTemplate eulaTemp = eulaService.getEulaTemplate(tempId, website, seqnbr);
+			
+			eula.setEulaText1(eulaTemp.getEulaText1());
+			eula.setEulaText2(eulaTemp.getEulaText2());
+			eula.setEulaText3(eulaTemp.getEulaText3());
+			eula.setEulaText4(eulaTemp.getEulaText4());
+			eula.setEulaText5(eulaTemp.getEulaText5());
+			eula.setEulaText6(eulaTemp.getEulaText6());
+			eula.setEulaText7(eulaTemp.getEulaText7());
+			eula.setEulaText8(eulaTemp.getEulaText8());
+			eula.setEulaText9(eulaTemp.getEulaText9());
+			eula.setEulaText10(eulaTemp.getEulaText10());
+			
+			eulaPdf = eulaTemp.getEulaPdf();
+			
+		} else {
+			// custom EULA
+			String eulaText1 = custEula.getEulaText1();
+			
+			if(eulaText1 != null) {
+				eula.setEulaText1(eulaText1);
+			} else {
+				eula.setEulaText1("see attached PDF");
+			}
+			
+			eulaPdf = custEula.getEulapdf();
+		}
+		
+		eula.setEulaPdf(eulaPdf);
+		
+		return eula;
+	}
+	
 	private CustWebCustomerProfile mapCustomerProfile(CustProfile profile, String customerId) {
 		CustWebCustomerProfile cwcp = new CustWebCustomerProfile();
 		cwcp.setCustomerId(customerId);
@@ -509,14 +643,19 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			List<CustWebParms> existingRecords = customerService.getAllCustWebParms(customerId);
 			List<CustWebLoginTransform> existingLogins = customerService.getCustLoginTrans(customerId);
 			List<CustWebJobFields> existingJobfields = customerService.getCustJobFields(customerId);
+			Eula existingEula = eulaService.readActive("CUSTOMERSHERCOLORWEB", customerId);
+			List<EulaHist> existingEulaHist = eulaService.eulaHistListForCustomerIdWebSite("CUSTOMERSHERCOLORWEB", customerId);
 			CustWebCustomerProfile existingProfile = customerService.getCustWebCustomerProfile(customerId);
 			List<CustWebProdComps> existingProdComps = productService.getCustWebProdComps(customerId);
 			
 			// check if job history exists
 			if(!reqObj.isHistory()) {
 				// check if a EULA has been signed
-				if(reqObj.getEulaHistToActivate() == null && (reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode() || reqObj.getEulaHistList() == null)) {
+				// check either the activation record or the
+				// active acceptance code of the TOACTIVATE record in history 
+				if(reqObj.getEulaHistToActivate().isActiveAcceptanceCode()) {
 					
+					// EULA has not been signed
 					boolean result = true;
 					
 					// no job history and EULA has not been signed
@@ -527,26 +666,22 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					}
 					
 					// EULA records deleted through EulaService, not CustomerService
-					// check for toactivate record
-					if(reqObj.getEulaHistToActivate() != null || (reqObj.getEulaHistList() != null && reqObj.getEulaHistList().get(0).isActiveAcceptanceCode())) {
-						EulaHist eulaHistToActivate = reqObj.getEulaHistToActivate();
-						EulaHist eulaHistListToActivate = reqObj.getEulaHistList().get(0);
-						
-						if(eulaHistToActivate == null) {
-							result = eulaService.deleteEulaHist(eulaHistListToActivate);
-						} else {
-							result = eulaService.deleteEulaHist(eulaHistToActivate);
-						}
-						
-						if(!result) {
-							addActionError("Error - Unable to delete EulaHist TOACTIVATE record");
+					// delete any existing eulaHist records
+					if(existingEulaHist != null) {
+						for(EulaHist eh : existingEulaHist) {
+							result = eulaService.deleteEulaHist(eh);
+							
+							if(!result) {
+								addActionError("Error - Unable to delete EulaHist record " + eh.getActionType());
+							}
 						}
 					}
-					// check for eula pdf record
-					if(reqObj.getEula() != null) {
-						result = eulaService.deleteEula(reqObj.getEula());
+					
+					// check for custom EULA record
+					if(existingEula.getCustomerId() != null) {
+						result = eulaService.deleteEula(existingEula);
 						if(!result) {
-							addActionError("Error - Unable to delete Eula record");
+							addActionError("Error - Unable to delete " + existingEula.getWebSite() + " Eula record for " + existingEula.getCustomerId());
 						}
 					}
 					
@@ -555,6 +690,9 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 					sessionMap.put("msg", crudmsg);
 					
 				} else {
+					// EULA has been signed, set customer to inactive
+					// and disable activation record?
+					// or just display unsuccessful message?
 					crudmsg = "Delete Unsuccessful";
 					sessionMap.put("msg", crudmsg);
 				}

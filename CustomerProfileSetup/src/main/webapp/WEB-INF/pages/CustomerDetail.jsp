@@ -241,6 +241,7 @@
 				<table id="eula_detail" class="table table-striped table-bordered">
 					<tr>
 						<th>EULA</th>
+						<th>EULA Type</th>
 						<th>Effective Date</th>
 						<th>Expiration Date</th>
 					</tr>
@@ -249,11 +250,19 @@
 							<s:property value="sessionMap['CustomerDetail'].eula.website" />
 						</td>
 						<td>
-							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />
+							<s:property value="sessionMap['CustomerDetail'].eulaType" />
 						</td>
 						<td>
-							<s:property value="sessionMap['CustomerDetail'].eula.expirationDate" />
+							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />
 						</td>
+						<s:if test="sessionMap['CustomerDetail'].eula.expDate == null">
+							<td>Not Set</td>
+						</s:if>
+						<s:else>
+							<td>
+								<s:property value="sessionMap['CustomerDetail'].eula.expDate" />
+							</td>
+						</s:else>
 					</tr>
 				</table>
 			</div>

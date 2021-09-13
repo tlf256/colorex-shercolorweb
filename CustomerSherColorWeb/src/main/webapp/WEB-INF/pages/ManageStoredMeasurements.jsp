@@ -16,7 +16,6 @@
 		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<link rel=StyleSheet href="css/joblist_datatable.css" type="text/css">
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
 		<script type="text/javascript" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" data-auto-replace-svg="nest"></script>

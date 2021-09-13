@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.CharUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -810,7 +810,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		//Modify input values, replace / and " with -
 		if(!StringUtils.isEmpty(colorIDLabelText) && !StringUtils.isEmpty(colorNameLabelText)){
 			colorIDLabelText = colorIDLabelText.replaceAll("\"|\\\\|\\~", "-");
-			colorNameLabelText = StringEscapeUtils.unescapeHtml(colorNameLabelText.replaceAll("\"|\\\\|\\~", "-"));
+			colorNameLabelText = StringEscapeUtils.unescapeHtml4(colorNameLabelText.replaceAll("\"|\\\\|\\~", "-"));
 		}
 		
 		// check customer profile
@@ -942,7 +942,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				//only process non-null values	
 				if (job.getScreenLabel() != null &&  job.getEnteredValue() != null){
 					//Modify input values, replace / and " with -
-					job.setEnteredValue(StringEscapeUtils.unescapeHtml(job.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
+					job.setEnteredValue(StringEscapeUtils.unescapeHtml4(job.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
 					// Only process defined job data.
 					if(job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ) {
 						// Truncate Screen Label to fit the line space.
