@@ -3,6 +3,10 @@
  */
 $(document).ready(function() {
 	
+	$("#code").hide();
+	$(".eulaTemp").hide();
+	$('#uploadEula').hide();
+	
 	if($('#custProfile').is(':visible')) {
 		var selectList = $('#typelist');
 		var selectedCustType = $('#typelist option:selected').val();
@@ -244,55 +248,6 @@ $(document).ready(function() {
 			if(eula){
 				if(ext != 'pdf'){
 					throw "Invalid file extension";
-				}
-			}
-			$("#custediterror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-			$("#custediterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).select();
-		}
-	});
-		
-	$("#effDate").on("change", function(){
-		try{
-			var effdate = $.trim($(this).val());
-			var eula = $("#eulafile").val();
-			if(eula && !effdate){
-				throw "Please enter an Effective Date";
-			}
-			if(!eula && effdate){
-				throw "Please choose a EULA pdf";
-			}
-			if(effdate){
-				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(effdate)){
-					throw "Please enter valid date in mm/dd/yyyy format";
-				}
-			}
-			$("#custediterror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-			$("#custediterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).select();
-		}
-	});
-		
-	$("#expDate").on("change", function(){
-		try{
-			var expdate = $.trim($(this).val());
-			if(expdate){
-				if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(expdate)){
-					throw "Please enter valid date in mm/dd/yyyy format";
 				}
 			}
 			$("#custediterror").text("");
@@ -559,16 +514,17 @@ $(document).ready(function() {
 			var eulaws = $("#eulalist").val();
 			var eula = $("#eulafile").val();
 			var eulatext = $("#eulatext").val();
+			
 			if(eula && !eulatext){
 				throw "Please enter EULA text";
 			}
 			if(!eula && eulatext){
 				throw "Please choose a EULA pdf";
 			}
-			if($("#eulalist").is(":visible") && eulaws != 'None' && !acceptcode){
+			if($("#acceptcode").is(":visible") && !acceptcode){
 				throw "Please enter an Acceptance Code";
 			}
-			if(eulaws == 'None' && acceptcode){
+			if((eulaws == 'None' && acceptcode) || (eulaws == 'None' && eula)){
 				throw "Please choose a EULA";
 			}
 			if($("#expDate") != null && $("#expDate").val() != ""){
@@ -586,20 +542,35 @@ $(document).ready(function() {
 		}
 	});
 	
-	$('#effDate').datepicker({
-		//dateFormat: "dd-M-y",
-		changeMonth: true,
-		changeYear: true,
-		gotoCurrent: true
-	});
-	$('#expDate').datepicker({
-		//dateFormat: "dd-M-y",
-		changeMonth: true,
-		changeYear: true,
-		gotoCurrent: true
-	});
-	
 });
+
+function verifyEffDate(value) {
+	try{
+		var effdate = $.trim(value);
+		var eula = $("#eulafile").val();
+		if(eula && !effdate){
+			throw "Please enter an Effective Date";
+		}
+		if(!eula && effdate){
+			throw "Please choose a EULA pdf";
+		}
+		if(effdate){
+			if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(effdate)){
+				throw "Please enter valid date in mm/dd/yyyy format";
+			}
+		}
+		$("#custediterror").text("");
+		$("#formerror").text("");
+		$(this).removeClass("border-danger");
+	}catch(msg){
+		$("html, body").animate({
+			scrollTop: $(document.body).offset().top
+		}, 1500);
+		$("#custediterror").text(msg);
+		$(this).addClass("border-danger");
+		$(this).select();
+	}
+}
 
 function deleteClonedRow(input, clonedRowLength) {
 	console.log("cloned row length is " + clonedRowLength);
@@ -653,4 +624,39 @@ function buildSelectList(custId, accttype, selectList, selectedCustType) {
 	}
 	
 	buildCustTypesList(custTypes, selectList, selectedCustType);
+}
+
+function toggleSelectList(value) {
+	console.log("EULA type is " + value);
+	switch(value) {
+	case 'None':
+		$('.eulaTemp').hide();
+		$('#code').hide();
+		$('#uploadEula').hide();
+		removeInputValues($('#uploadEula'));
+		break;
+	case 'Custom EULA':
+		$('.eulaTemp').hide();
+		$('#code').hide();
+		$('#uploadEula').show();
+		break;
+	case 'SherColor Web EULA':
+		$('.eulaTemp').hide();
+		$('#code').show();
+		$('#uploadEula').hide();
+		removeInputValues($('#uploadEula'));
+		break;
+	case 'Custom EULA Template':
+		$('.eulaTemp').show();
+		$('#code').show();
+		$('#uploadEula').hide();
+		removeInputValues($('#uploadEula'));
+		break;
+	}
+}
+
+function removeInputValues(parentSelector) {
+	parentSelector.find(":input").each(function(){
+		$(this).val("");
+	});
 }

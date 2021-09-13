@@ -205,7 +205,7 @@
 	<div class="row custtype" id="">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<s:select label="Customer Type" list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="customer.custType" 
+			<s:select label="Customer Type" list="custTypeList" id="typelist" name="customer.custType" 
 				onchange="toggleProfileInput(this.value)"></s:select>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
@@ -257,8 +257,27 @@
 	<div class="row eula" id="eula">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-			<s:select label="Activate EULA" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="customer.website" headerValue="None"></s:select>
-			<s:textfield label="Acceptance Code" name="customer.acceptCode" id="acceptcode" />
+			<s:select label="Activate EULA" list="eulaList" id="eulalist" name="eulaType" 
+				headerValue="None" onchange="toggleSelectList(this.value)"></s:select>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row eula-hidden eulaTemp" id="templatelist">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<s:select label="Choose EULA Template" list="eulaTempList" id="eulatemplist" 
+				name="eula.template" headerValue="None"></s:select>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<s:textfield id="effDate" name="eula.effectiveDate" label="Effective Date" onchange="verifyDate(this.value)" autocomplete="off"></s:textfield>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+	</div>
+	<div class="row eula-hidden" id="code">
+		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
+		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+			<s:textfield label="Acceptance Code" name="eula.acceptCode" id="acceptcode" />
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>

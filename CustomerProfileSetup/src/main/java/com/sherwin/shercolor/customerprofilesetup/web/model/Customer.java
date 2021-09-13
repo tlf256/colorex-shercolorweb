@@ -20,10 +20,6 @@ public class Customer {
 	private boolean active;
 	private boolean history;
 	private List<String> clrntList;
-	private String website;
-	private String acceptCode;
-	private boolean activateEula;
-	private byte[] eulapdf;
 	private String custType;
 	private boolean useLocatorId;
 	private boolean useRoomByRoom;
@@ -167,40 +163,6 @@ public class Customer {
 		} else {
 			this.clrntList = clrntList;
 		}
-	}
-	public String getWebsite() {
-		return website;
-	}
-	public void setWebsite(String website) {
-		if(website != null) {
-			this.website = Encode.forHtml(website.trim());
-		} else {
-			this.website = website;
-		}
-	}
-	
-	public String getAcceptCode() {
-		return acceptCode;
-	}
-	public void setAcceptCode(String acceptCode) {
-		if(acceptCode != null) {
-			this.acceptCode = Encode.forHtml(acceptCode.trim());
-		} else {
-			this.acceptCode = acceptCode;
-		}
-		
-	}
-	public boolean isActivateEula() {
-		return activateEula;
-	}
-	public void setActivateEula(boolean activateEula) {
-		this.activateEula = activateEula;
-	}
-	public byte[] getEulapdf() {
-		return eulapdf;
-	}
-	public void setEulapdf(byte[] eulapdf) {
-		this.eulapdf = eulapdf;
 	}
 	public String getCustType() {
 		return custType;
