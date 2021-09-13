@@ -10,7 +10,9 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CdsClrntSys;
 import com.sherwin.shercolor.common.domain.Eula;
+import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.model.CustomerSummary;
@@ -34,6 +36,9 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	
 	@Autowired 
 	private EulaService eulaService;
+	
+	@Autowired
+	ColorantService colorantService;
 	
 	public String execute() {
 		try {
@@ -113,6 +118,18 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		typeList.add(2, "STORE");
 		
 		return typeList;
+	}
+	
+	private List<String> buildClrntSysIdList(){
+		List<String> clrntSysIdList = new ArrayList<String>();
+		
+		List<CdsClrntSys> recordList = colorantService.getAllColorantSystems();
+		
+		for(CdsClrntSys ccs : recordList) {
+			clrntSysIdList.add(ccs.getClrntSysId());
+		}
+		
+		return clrntSysIdList;
 	}
 	
 	public String update() { 
