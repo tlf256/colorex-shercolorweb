@@ -56,7 +56,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	public String execute() {
 		try {
 			List<CustParms> editCustList = new ArrayList<CustParms>();
-			List<String> editclrntlist = new ArrayList<String>();
+			//List<String> editclrntlist = new ArrayList<String>();
 			List<LoginTrans> editLoginList = new ArrayList<LoginTrans>();
 			List<JobFields> editJobList = new ArrayList<JobFields>();
 			
@@ -66,7 +66,7 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			
 			setEdited(true);
 			
-			for(int i = 0; i < cust.getClrntList().size(); i++) {
+			/*for(int i = 0; i < cust.getClrntList().size(); i++) {
 				if(cust.getDefaultClrntSys().contains(cust.getClrntList().get(i))) {
 					editclrntlist.add(0, cust.getClrntList().get(i));
 				} else {
@@ -93,9 +93,9 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				} else {
 					editclrntlist.add("844");
 				}
-			}
+			}*/
 			
-			reqObj.setClrntList(editclrntlist);
+			reqObj.setClrntList(clrntSysIds(cust.getDefaultClrntSys(), cust.getClrntList()));
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
 			reqObj.setActive(cust.isActive());
@@ -441,6 +441,20 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
+	}
+	
+	private List<String> clrntSysIds(String defaultClrntSys, List<String> clrntSysIds){
+		List<String> clrntlist = new ArrayList<String>();
+		
+		for(String id : clrntSysIds) {
+			if(id.equals(defaultClrntSys)) {
+				clrntlist.add(0, id);
+			} else {
+				clrntlist.add(id);
+			}
+		}
+		
+		return clrntlist;
 	}
 	
 	private CustProfile mapCustProfile(Customer customer) {

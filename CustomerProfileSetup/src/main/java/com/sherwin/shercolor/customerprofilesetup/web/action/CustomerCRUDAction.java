@@ -653,7 +653,7 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 				// check if a EULA has been signed
 				// check either the activation record or the
 				// active acceptance code of the TOACTIVATE record in history 
-				if(reqObj.getEulaHistToActivate().isActiveAcceptanceCode()) {
+				if(reqObj.getEulaHistToActivate() == null || reqObj.getEulaHistToActivate().isActiveAcceptanceCode()) {
 					
 					// EULA has not been signed
 					boolean result = true;

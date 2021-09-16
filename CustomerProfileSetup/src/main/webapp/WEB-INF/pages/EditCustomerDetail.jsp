@@ -91,62 +91,54 @@
 				<td><strong>Colorant System</strong></td>
 				<td>
 					<div class="form-check-inline">
-						<div class="form-check">
-							<s:iterator var="list" value="sessionMap['CustomerDetail'].clrntList" status="i">
-								<label for="<s:property value='#list' />" class="form-check-label font-weight-normal">
-									<s:property value="#list" />
+						<s:iterator var="clrntid" value="clrntSysIds" status="i">
+							<s:if test="#clrntid in sessionMap['CustomerDetail'].clrntList">
+								<div class="ml-1">
+									<label for="<s:property value='clrntid' />" class="form-check-label font-weight-normal">
+										<s:property value="clrntid" />
+									</label>
+									<input type="checkbox" id="<s:property value='clrntid' />" name="cust.clrntList" class="clrntid form-check-input" 
+										checked="checked" value="<s:property value='clrntid' />"></input>
+								</div>
+							</s:if>
+							<s:else>
+								<div class="ml-1">
+									<label for="<s:property value='clrntid' />" class="form-check-label font-weight-normal">
+									<s:property value="clrntid" />
 								</label>
-								<input type="checkbox" id="<s:property value='#list' />" name="cust.clrntList" class="clrntid form-check-input" 
-									checked="checked" value="<s:property value='#list' />"></input>
-							</s:iterator>
-						<s:if test="'CCE' not in sessionMap['CustomerDetail'].clrntList">
-							<label id="ccelabel" for="CCE" class="form-check-label font-weight-normal">CCE</label>
-							<input type="checkbox" id="CCE" name="cust.cce" class="clrntid form-check-input ml-0" value="CCE" />
-						</s:if>
-						<s:if test="'BAC' not in sessionMap['CustomerDetail'].clrntList">
-							<label id="baclabel" for="BAC" class="form-check-label font-weight-normal">BAC</label>
-							<input type="checkbox" id="BAC" name="cust.bac" class="clrntid form-check-input ml-0" value="BAC" />
-						</s:if>
-						<s:if test="'844' not in sessionMap['CustomerDetail'].clrntList">
-							<label id="efflabel" for="844" class="form-check-label font-weight-normal">844</label>
-							<input type="checkbox" id="844" name="cust.eff" class="clrntid form-check-input ml-0" value="844" />
-						</s:if>
-						</div>
+								<input type="checkbox" id="<s:property value='clrntid' />" name="cust.clrntList" class="clrntid form-check-input" 
+									value="<s:property value='clrntid' />"></input>
+								</div>
+							</s:else>
+						</s:iterator>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td><strong>Default Colorant System</strong></td>
 				<td>
-					
 					<div class="form-check-inline">
-						<div class="form-check" id="dfltclrnt">
-							<label for="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" class="form-check-label font-weight-normal">
-								<s:property value="sessionMap['CustomerDetail'].clrntList[0]" />
-							</label>
-							<input type="radio" id="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
-								checked="checked" value="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />"></input>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='CCE'}">
-								<label id="" for="CCEdefault" class="form-check-label font-weight-normal">
-									CCE
-								</label>
-								<input type="radio" id="CCEdefault" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="CCE" />
+						<s:iterator var="clrntdef" value="clrntSysIds">
+							<s:if test="#clrntdef == sessionMap['CustomerDetail'].clrntList[0]">
+								<div class="ml-1">
+									<label for="<s:property value='clrntdef' />default" class="form-check-label font-weight-normal">
+										<s:property value="clrntdef" />
+									</label>
+									<input type="radio" id="<s:property value='clrntdef' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
+										checked="checked" value="<s:property value='clrntdef' />"></input>
+								</div>
 							</s:if>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='BAC'}">
-								<label id="" for="BACdefault" class="form-check-label font-weight-normal">
-									BAC
-								</label>
-								<input type="radio" id="BACdefault" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="BAC" />
-							</s:if>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='844'}">
-								<label id="" for="844default" class="form-check-label font-weight-normal">
-									844
-								</label>
-								<input type="radio" id="844default" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="844" />
-							</s:if>
-						</div>
+							<s:else>
+								<div class="ml-1">
+									<label for="<s:property value='clrntdef' />default" class="form-check-label font-weight-normal">
+										<s:property value="clrntdef" />
+									</label>
+									<input type="radio" id="<s:property value='clrntdef' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
+										value="<s:property value='clrntdef' />"></input>
+								</div>
+							</s:else>
+						</s:iterator>
 					</div>
-					
 				</td>
 			</tr>
 			<tr>

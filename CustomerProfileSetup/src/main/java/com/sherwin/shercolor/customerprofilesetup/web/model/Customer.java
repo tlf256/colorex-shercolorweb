@@ -11,9 +11,10 @@ public class Customer {
 	private String ntlacctnbr;
 	private String intntlacctnbr;
 	private String costCenter;
-	private String cce;
-	private String bac;
-	private String eff;
+	//private String cce;
+	//private String bac;
+	//private String eff;
+	private List<String> clrntSysIds;
 	private String defaultClrntSys;
 	private String swuiTitle;
 	private String cdsAdlFld;
@@ -73,7 +74,7 @@ public class Customer {
 	public void setCostCenter(String costCenter) {
 		this.costCenter = costCenter;
 	}
-	public String getCce() {
+	/*public String getCce() {
 		return cce;
 	}
 	public void setCce(String cce) {
@@ -102,6 +103,13 @@ public class Customer {
 		} else {
 			this.eff = eff;
 		}
+	}*/
+	
+	public List<String> getClrntSysIds() {
+		return clrntSysIds;
+	}
+	public void setClrntSysIds(List<String> clrntSysIds) {
+		this.clrntSysIds = clrntSysIds;
 	}
 	public String getDefaultClrntSys() {
 		return defaultClrntSys;

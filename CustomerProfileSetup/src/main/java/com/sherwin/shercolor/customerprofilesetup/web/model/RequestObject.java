@@ -13,7 +13,7 @@ public class RequestObject {
 	
 	private String customerId;
 	private String accttype;
-	private String defaultClrntSys;
+	//private String defaultClrntSys;
 	private boolean active;
 	private boolean history;
 	private String swuiTitle;
@@ -66,12 +66,12 @@ public class RequestObject {
 	public void setAccttype(String accttype) {
 		this.accttype = accttype;
 	}
-	public String getDefaultClrntSys() {
+	/*public String getDefaultClrntSys() {
 		return defaultClrntSys;
 	}
 	public void setDefaultClrntSys(String defaultClrntSys) {
 		this.defaultClrntSys = defaultClrntSys;
-	}
+	}*/
 	public boolean isActive() {
 		return active;
 	}
@@ -296,7 +296,7 @@ public class RequestObject {
 	public void reset() {
 		this.customerId = "";
 		this.accttype = "";
-		this.defaultClrntSys = "";
+		//this.defaultClrntSys = "";
 		this.active = false;
 		this.history = false;
 		this.swuiTitle = "";
