@@ -13,7 +13,6 @@ public class RequestObject {
 	
 	private String customerId;
 	private String accttype;
-	//private String defaultClrntSys;
 	private boolean active;
 	private boolean history;
 	private String swuiTitle;
@@ -38,7 +37,6 @@ public class RequestObject {
 	private boolean loginUnchanged;
 	private List<String> clrntList;
 	private List<EulaHist> eulaHistList;
-	//private List<String> eulaList;
 	private EulaHist eulaHistToActivate;
 	private byte[] eulapdf;
 	private CustEula eula;
@@ -47,11 +45,9 @@ public class RequestObject {
 	private boolean updateMode;
 	private boolean roomByRoom;
 	private CustProfile profile;
-	//private List<String> custTypeList;
 	private List<CustProdComp> prodCompList;
 	private List<CustProdComp> deletedProdComps;
 	private String prodComps;
-	//private List<String> eulaTempList;
 	private String template;
 	
 	public String getCustomerId() {
@@ -66,12 +62,6 @@ public class RequestObject {
 	public void setAccttype(String accttype) {
 		this.accttype = accttype;
 	}
-	/*public String getDefaultClrntSys() {
-		return defaultClrntSys;
-	}
-	public void setDefaultClrntSys(String defaultClrntSys) {
-		this.defaultClrntSys = defaultClrntSys;
-	}*/
 	public boolean isActive() {
 		return active;
 	}

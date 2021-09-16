@@ -441,39 +441,6 @@ $(document).ready(function() {
 			$(this).select();
 		}
 	});
-		
-	/*$(document).on("change", ".clrntid, .clrntdefault", function(){
-		try{
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system before selecting the default";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system before selecting the default";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system before selecting the default";
-			}
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system";
-			}
-			$("#custediterror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-			$("#custediterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).prop("checked", false);
-		}
-	});*/
 	
 	var d = new Date();
 	var dd = String(d.getDate()).padStart(2, '0');

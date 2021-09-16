@@ -57,13 +57,11 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			
 			String custId = customerId(customer);
 			
-			//reqObj.setNewCustomer(true);
 			reqObj.setCustUnchanged(false);
 			reqObj.setCustomerId(custId);
 			reqObj.setAccttype(customer.getAccttype());
 			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			//reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
 			List<String> clrntlist = clrntSysIds(customer.getDefaultClrntSys(), customer.getClrntSysIds());
 			reqObj.setClrntList(clrntlist);
 			reqObj.setActive(true);

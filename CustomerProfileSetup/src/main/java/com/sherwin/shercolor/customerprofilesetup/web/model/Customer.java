@@ -11,9 +11,6 @@ public class Customer {
 	private String ntlacctnbr;
 	private String intntlacctnbr;
 	private String costCenter;
-	//private String cce;
-	//private String bac;
-	//private String eff;
 	private List<String> clrntSysIds;
 	private String defaultClrntSys;
 	private String swuiTitle;
@@ -74,37 +71,6 @@ public class Customer {
 	public void setCostCenter(String costCenter) {
 		this.costCenter = costCenter;
 	}
-	/*public String getCce() {
-		return cce;
-	}
-	public void setCce(String cce) {
-		if(cce != null) {
-			this.cce = Encode.forHtml(cce);
-		} else {
-			this.cce = cce;
-		}
-	}
-	public String getBac() {
-		return bac;
-	}
-	public void setBac(String bac) {
-		if(bac != null) {
-			this.bac = Encode.forHtml(bac);
-		} else {
-			this.bac = bac;
-		}
-	}
-	public String getEff() {
-		return eff;
-	}
-	public void setEff(String eff) {
-		if(eff != null) {
-			this.eff = Encode.forHtml(eff);
-		} else {
-			this.eff = eff;
-		}
-	}*/
-	
 	public List<String> getClrntSysIds() {
 		return clrntSysIds;
 	}

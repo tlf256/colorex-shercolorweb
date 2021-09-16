@@ -56,7 +56,6 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 	public String execute() {
 		try {
 			List<CustParms> editCustList = new ArrayList<CustParms>();
-			//List<String> editclrntlist = new ArrayList<String>();
 			List<LoginTrans> editLoginList = new ArrayList<LoginTrans>();
 			List<JobFields> editJobList = new ArrayList<JobFields>();
 			
@@ -65,35 +64,6 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			String customerId = reqObj.getCustomerId();
 			
 			setEdited(true);
-			
-			/*for(int i = 0; i < cust.getClrntList().size(); i++) {
-				if(cust.getDefaultClrntSys().contains(cust.getClrntList().get(i))) {
-					editclrntlist.add(0, cust.getClrntList().get(i));
-				} else {
-					editclrntlist.add(cust.getClrntList().get(i));
-				}
-			}
-			if(cust.getCce()!=null) {
-				if(cust.getDefaultClrntSys().contains("cce")) {
-					editclrntlist.add(0, "CCE");
-				} else {
-					editclrntlist.add("CCE");
-				}
-			}
-			if(cust.getBac()!=null) {
-				if(cust.getDefaultClrntSys().contains("bac")) {
-					editclrntlist.add(0, "BAC");
-				} else {
-					editclrntlist.add("BAC");
-				}
-			}
-			if(cust.getEff()!=null) {
-				if(cust.getDefaultClrntSys().contains("eff")) {
-					editclrntlist.add(0, "844");
-				} else {
-					editclrntlist.add("844");
-				}
-			}*/
 			
 			reqObj.setClrntList(clrntSysIds(cust.getDefaultClrntSys(), cust.getClrntList()));
 			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
