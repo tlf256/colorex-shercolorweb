@@ -3,6 +3,8 @@ package com.sherwin.shercolor.customerprofilesetup.web.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -10,8 +12,10 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CdsClrntSys;
 import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaTemplate;
+import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customerprofilesetup.web.model.CustomerSummary;
@@ -32,12 +36,16 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 	List<String> eulaList;
 	List<String> custTypeList;
 	List<String> eulaTempList;
+	List<String> clrntSysIds;
 
 	@Autowired
 	CustomerService customerService;
 	
 	@Autowired 
 	private EulaService eulaService;
+	
+	@Autowired
+	ColorantService colorantService;
 	
 	public String execute() {
 		try {
@@ -90,6 +98,7 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		setEulaList(buildEulaList(customerId, isNewCustomer));
 		setCustTypeList(buildCustTypeList());
 		setEulaTempList(buildEulaTempList());
+		setClrntSysIds(buildClrntSysIdList());
 	}
 	
 	public String createNew() {
@@ -157,6 +166,18 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 		typeList.add(2, "STORE");
 		
 		return typeList;
+	}
+	
+	private List<String> buildClrntSysIdList(){
+		List<String> clrntSysIdList = new ArrayList<String>();
+		
+		List<CdsClrntSys> recordList = colorantService.getAllColorantSystems();
+		
+		for(CdsClrntSys ccs : recordList) {
+			clrntSysIdList.add(ccs.getClrntSysId());
+		}
+		
+		return clrntSysIdList.stream().sorted().collect(Collectors.toList());
 	}
 	
 	public String update() { 
@@ -256,6 +277,14 @@ public class CustomerAction extends ActionSupport implements SessionAware {
 
 	public void setEulaTempList(List<String> eulaTempList) {
 		this.eulaTempList = eulaTempList;
+	}
+
+	public List<String> getClrntSysIds() {
+		return clrntSysIds;
+	}
+
+	public void setClrntSysIds(List<String> clrntSysIds) {
+		this.clrntSysIds = clrntSysIds;
 	}
 
 	@Override

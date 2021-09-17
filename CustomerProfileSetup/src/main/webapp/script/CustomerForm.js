@@ -50,38 +50,7 @@ $(document).ready(function() {
 		}
 	}, "#cdsadlfld");
 	
-	$(document).on("change", ".clrntid, .clrntdefault", function(){
-		try{
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system before selecting the default";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system before selecting the default";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system before selecting the default";
-			}
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system";
-			}
-			$("#clrntsyserror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-			$("#loginnext-btn").prop("disabled", false);
-			valid = true;
-		}catch(msg){
-			$("#clrntsyserror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).prop("checked", false);
-			valid = false;
-		}
-	});
+	
 		
 	$(document).on("blur", "#acceptcode", function(){
 		try{
@@ -155,6 +124,12 @@ $(document).ready(function() {
 
 function validate() {
 	try {
+		if(!$(".clrntid:checked").length) {
+			throw "Please choose colorant system(s)";
+		}
+		if(!$(".clrntdefault:checked").length) {
+			throw "Please choose default colorant system";
+		}
 		if(!valid) {
 			throw "Please fix form error(s)";
 		}
