@@ -57,14 +57,12 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			
 			String custId = customerId(customer);
 			
-			//reqObj.setNewCustomer(true);
 			reqObj.setCustUnchanged(false);
 			reqObj.setCustomerId(custId);
 			reqObj.setAccttype(customer.getAccttype());
 			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
 			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
-			reqObj.setDefaultClrntSys(customer.getDefaultClrntSys());
-			List<String> clrntlist = clrntSysIds(customer);
+			List<String> clrntlist = clrntSysIds(customer.getDefaultClrntSys(), customer.getClrntSysIds());
 			reqObj.setClrntList(clrntlist);
 			reqObj.setActive(true);
 			reqObj.setHistory(false);
@@ -250,28 +248,14 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 		return custId;
 	}
 	
-	private List<String> clrntSysIds(Customer customer){
+	private List<String> clrntSysIds(String defaultClrntSys, List<String> clrntSysIds){
 		List<String> clrntlist = new ArrayList<String>();
 		
-		if(customer.getCce()!=null) {
-			if(customer.getDefaultClrntSys().contains("CCE")) {
-				clrntlist.add(0, "CCE");
+		for(String id : clrntSysIds) {
+			if(id.equals(defaultClrntSys)) {
+				clrntlist.add(0, id);
 			} else {
-				clrntlist.add("CCE");
-			}
-		}
-		if(customer.getBac()!=null) {
-			if(customer.getDefaultClrntSys().contains("BAC")) {
-				clrntlist.add(0, "BAC");
-			} else {
-				clrntlist.add("BAC");
-			}
-		}
-		if(customer.getEff()!=null) {
-			if(customer.getDefaultClrntSys().contains("844")) {
-				clrntlist.add(0, "844");
-			} else {
-				clrntlist.add("844");
+				clrntlist.add(id);
 			}
 		}
 		

@@ -341,7 +341,7 @@ $(document).ready(function() {
 		"blur":function(e){
 			var keyfldval = $.trim($(this).val());
 			var keyfld = $(this);
-			var result;
+			/*var result;
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
@@ -354,7 +354,7 @@ $(document).ready(function() {
 				error:function(request, status){
 					alert(status + ": could not validate login ID. Please retry.");
 				}
-			});
+			});*/
 			try{
 				if(keyfldval.length > 20){
 					throw "Login ID cannot be greater than 20 characters";
@@ -362,9 +362,9 @@ $(document).ready(function() {
 				if($.inArray(keyfldval,logins)!=-1){
 					throw "Please enter unique values for Login ID";
 				}
-				if(result=="true" && $.inArray(keyfldval,existinglogins)==-1){
+				/*if(result=="true" && $.inArray(keyfldval,existinglogins)==-1){
 					throw "Login ID already exists";
-				}
+				}*/
 				$("#custediterror").text("");
 				$("#formerror").text("");
 				keyfld.removeClass("border-danger");
@@ -441,39 +441,6 @@ $(document).ready(function() {
 			$(this).select();
 		}
 	});
-		
-	$(document).on("change", ".clrntid, .clrntdefault", function(){
-		try{
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system before selecting the default";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system before selecting the default";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system before selecting the default";
-			}
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system";
-			}
-			$("#custediterror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-		}catch(msg){
-			$("html, body").animate({
-				scrollTop: $(document.body).offset().top
-			}, 1500);
-			$("#custediterror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).prop("checked", false);
-		}
-	});
 	
 	var d = new Date();
 	var dd = String(d.getDate()).padStart(2, '0');
@@ -486,6 +453,12 @@ $(document).ready(function() {
 		try{
 			if($("#custediterror").text()!=""){
 				throw "Please fix form error(s):";
+			}
+			if(!$(".clrntid:checked").length) {
+				throw "Please choose colorant system(s)";
+			}
+			if(!$(".clrntdefault:checked").length) {
+				throw "Please choose default colorant system";
 			}
 			$(".scrnlbl").each(function(i){
 				if(!$(this).val() && $(".flddflt").eq(i).val()!=""){

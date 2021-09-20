@@ -69,7 +69,11 @@ $(document).ready(function(){
 		"blur":function(){
 			var keyfldval = $.trim($(this).val());
 			var keyfld = $(this);
-			var result;
+			// 9/14/2021 TLF - removed ajax keyfield validation since it is checking login ID
+			// against all recorded IDs instead of by customer ID, but even 
+			// this isn't necessary since the above array checks the 
+			// uniqueness of the login IDs entered for that customer ID
+			/*var result;
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
@@ -81,7 +85,7 @@ $(document).ready(function(){
 				error:function(request, status){
 					alert(status + ": could not validate login ID. Please retry.");
 				}
-			});
+			});*/
 			try{
 				if(keyfldval.length > 20){
 					throw "Login ID cannot be greater than 20 characters";
@@ -89,9 +93,9 @@ $(document).ready(function(){
 				if($.inArray(keyfldval,logins)!=-1){
 					throw "Please enter unique values for Login ID";
 				}
-				if(result=="true"){
+				/*if(result=="true"){
 					throw "Login ID unavailable";
-				}
+				}*/
 				$("#jobnext-btn").show();
 				$("#loginformerror").text("");
 				$("#formerror").text("");

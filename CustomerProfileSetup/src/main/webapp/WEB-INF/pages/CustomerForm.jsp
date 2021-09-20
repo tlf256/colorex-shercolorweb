@@ -176,20 +176,25 @@
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 		<strong>Colorant System *</strong><br>
 		<div class="form-check">
-			<input type="checkbox" id="CCE" name="customer.cce" class="form-check-input clrntid" value="CCE"></input>
-			<label class="form-check-label font-weight-normal" for="CCE">CCE</label><br>
-			<input type="checkbox" id="BAC" name="customer.bac" class="form-check-input clrntid" value="BAC"></input>
-			<label class="form-check-label font-weight-normal" for="BAC">BAC</label><br>
-			<input type="checkbox" id="844" name="customer.eff" class="form-check-input clrntid" value="844"></input>
-			<label class="form-check-label font-weight-normal" for="884">844</label><br>
+			<s:iterator var="clrntsys" value="clrntSysIds" status="i">
+				<s:checkbox id="%{clrntsys}" class="form-check-input clrntid" name="customer.clrntSysIds" label="%{clrntsys}" fieldValue="%{clrntsys}" />
+			</s:iterator>
 		</div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
 			<strong>Default *</strong><br>
-			<div class="custom-radio ml-1">
+			<!--<div class="custom-radio ml-1">
 				<input type="radio" id="CCEdefault" name="customer.defaultClrntSys" class="mt-1 mb-1 clrntdefault" value="CCE" /><br>
 				<input type="radio" id="BACdefault" name="customer.defaultClrntSys" class="mt-2 mb-1 clrntdefault" value="BAC" /><br>
 				<input type="radio" id="844default" name="customer.defaultClrntSys" class="mt-2 mb-1 clrntdefault" value="844" /><br>
+			</div>-->
+			<div class="custom-radio ml-1 mt-1">
+				<s:iterator var="clrntsys" value="clrntSysIds" status="i">
+					<div style="margin-bottom: 19px;">
+						<input type="radio" id="<s:property value='clrntsys'/>default" name="customer.defaultClrntSys" 
+							class="clrntdefault" value="<s:property value='clrntsys'/>" /><br>
+					</div>
+				</s:iterator>
 			</div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>

@@ -80,7 +80,7 @@
 										<s:text name="compareColorsResult.lighterThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialLdescr == 'darker'">
-										<strong><s:text name="compareColorsResult.darkerThanStandard"></s:text></strong>
+										<s:text name="compareColorsResult.darkerThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialLdescr == 'nodiff'">
 										<s:text name="compareColorsResult.noDifference"></s:text>
@@ -95,10 +95,10 @@
 								<td><s:text name="compareColorsResult.redGreen" /></td>
 								<td>
 									<s:if test="colorDiff.trialAdescr == 'more red'">
-										<span style="color:red"><s:text name="compareColorsResult.moreRedThanStandard"></s:text></span>
+										<s:text name="compareColorsResult.moreRedThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialAdescr == 'more green'">
-										<span style="color:green"><s:text name="compareColorsResult.moreGreenThanStandard"></s:text></span>
+										<s:text name="compareColorsResult.moreGreenThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialAdescr == 'nodiff'">
 										<s:text name="compareColorsResult.noDifference"></s:text>
@@ -113,10 +113,10 @@
 								<td><s:text name="compareColorsResult.yellowBlue" /></td>
 								<td>
 									<s:if test="colorDiff.trialBdescr == 'more yellow'">
-										<span style="color:yellow"><s:text name="compareColorsResult.moreYellowThanStandard"></s:text></span>
+										<s:text name="compareColorsResult.moreYellowThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialBdescr == 'more blue'">
-										<span style="color:blue"><s:text name="compareColorsResult.moreBlueThanStandard"></s:text></span>
+										<s:text name="compareColorsResult.moreBlueThanStandard"></s:text>
 									</s:if>
 									<s:if test="colorDiff.trialBdescr == 'nodiff'">
 										<s:text name="compareColorsResult.noDifference"></s:text>
