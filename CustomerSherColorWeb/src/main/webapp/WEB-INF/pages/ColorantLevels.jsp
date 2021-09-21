@@ -67,11 +67,13 @@
 								</div>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-2 col-3 text-center">
+								<s:if test="%{tinter.model != null}"> 
 								<s:url var="setFullURL" action="clrntLevelsUpdateAction" escapeAmp="false">
 									<s:param name="reqGuid" value="%{thisGuid}"/>
 									<s:param name="updateType">setAllFull</s:param>
 								</s:url>
 								<a href="<s:property value="setFullURL"/>" class="btn btn-primary" id="setallfull" style="margin-top: 10px; margin-left: 30px;"><s:text name="colorantLevels.setAllFull"/></a>
+								</s:if>
 								<s:url var="cancelURL" action="userCancelAction"><s:param name="reqGuid" value="%{thisGuid}"/></s:url>
 								<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel" style="margin-top: 10px;margin-left: 30px;"><s:text name="global.done"/></a>
 							</div>
@@ -209,7 +211,25 @@
 						</div>
 					</div>
 				</div>			    
-
+				
+				<!--  Tinter Not Found Error Modal Window -->
+				<div class="modal fade" aria-labelledby="tinterNotFoundModal" aria-hidden="true"  id="tinterNotFoundModal" role="dialog">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><s:text name="global.tinterError"/></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<p id="tinterNotFound" font-size="4"><s:text name="global.tinterNotFoundAdd"/></p>
+							</div>
+							<div class="modal-footer">
+								<a href='<s:property value="cancelURL"/>' class="btn btn-secondary" id="cancel" style="margin-top: 10px;margin-left: 30px;"><s:text name="global.done"/></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				
 			    <!-- Tinter Socket Error Modal Window -->
 			    <div class="modal fade" aria-labelledby="tinterSocketErrorModal" aria-hidden="true"  id="tinterSocketErrorModal" role="dialog">
 			    	<div class="modal-dialog" role="document">
@@ -247,7 +267,20 @@
 							</div>
 						</div>
 					</div>
-				</div>			    
+				</div>
+				
+				<script>
+				$(document).ready(function(){
+					<s:if test="%{tinter.model == null}">
+						$("#tinterNotFoundModal").modal('show');
+					</s:if>
+					
+					$('#tinterNotFoundModal').on('hidden.bs.modal', function () {
+						window.location.replace('<s:url action="loginAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>')
+					});
+				})
+				
+				</script>
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 	</body>

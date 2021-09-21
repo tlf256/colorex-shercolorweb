@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -46,12 +45,8 @@ public class ProcessEulaAction extends ActionSupport implements SessionAware {
 			
 			return SUCCESS;
 	  
-		} catch (HibernateException he) { 
-			logger.error("HibernateException Caught: "
-					+ he.toString() + " " + he.getMessage()); 
-			return ERROR; 
 		} catch (Exception e){ 
-			logger.error(e.getMessage()); 
+			logger.error(e.getMessage(), e); 
 			return ERROR; 
 		} 
 	}

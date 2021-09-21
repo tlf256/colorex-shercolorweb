@@ -36,6 +36,7 @@ import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.common.service.TinterService;
+import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
@@ -52,6 +53,9 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	@Autowired
 	private TinterService tinterService;
+	
+	@Autowired
+	private TranHistoryService tranHistoryService;
 
 	static Logger logger = LogManager.getLogger(LoginAction.class);
 	private RequestObject reqObj;
@@ -72,6 +76,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean reReadLocalHostTinter;
 	private String sherLinkURL;
 	private String loMessage;
+	private int tintQueueCount;
 	
 	private int daysUntilPwdExp;
 
@@ -189,6 +194,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setSherLinkURL(sherLinkURL);
 							reqObj.setUserId(userId);
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
+							reqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(), false).size());
 							
 							logger.debug("DEBUG new reqGuid created "+ reqGuid);
 							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
@@ -258,7 +264,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 origReqObj.setSherLinkURL(sherLinkURL);
 				 origReqObj.setUserId(userId);
 				 origReqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
-				 
+				 origReqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(acct,false).size());
+
 				 newSession = false;
 				 tinter=origReqObj.getTinter();
 				 if(origReqObj.getTinter()!=null && origReqObj.getTinter().getModel()!=null && !origReqObj.getTinter().getModel().isEmpty()){
@@ -761,6 +768,10 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
+	}
+
+	public int getTintQueueCount() {
+		return tintQueueCount;
 	}
 
 }

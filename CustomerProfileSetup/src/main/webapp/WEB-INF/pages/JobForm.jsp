@@ -220,6 +220,7 @@
 	<div class="row" id="jobinfo_btn">
 		<div class="col-lg-3 col-md-3 col-sm-1 col-xs-1"></div>
 		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+			<button type="button" id="clrFldsBtn" class="btn btn-secondary" onclick="clearForm()">Clear All Fields</button>
 			<s:submit cssClass="btn btn-primary pull-right ml-2" id="next-btn" value="Next" />
 			<s:submit cssClass="btn btn-secondary pull-right" id="cancel-btn" value="Cancel" action="resetAction" />
 		</div>

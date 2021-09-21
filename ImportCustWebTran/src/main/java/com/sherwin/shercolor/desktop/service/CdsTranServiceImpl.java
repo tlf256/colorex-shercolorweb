@@ -62,6 +62,8 @@ public class CdsTranServiceImpl implements CdsTranService {
 		
 		
 		String fullFileAndPath = inputDir + "/" + "cds-tran-mast.d";
+		System.out.println("full path and file is  " + fullFileAndPath);
+
 		try {
 			File inFile = new File(fullFileAndPath);
 			FileInputStream fis = new FileInputStream(inFile);
@@ -124,13 +126,14 @@ public class CdsTranServiceImpl implements CdsTranService {
 				newRec.setActiveStatus(splitted[pos].replaceAll("\"", "")); pos++;
 				newRec.setProdRev(splitted[pos].replaceAll("\"", "")); pos++;
 				newRec.setClrntSysSuffix(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setTintableSalesNbr(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setLocId(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setMqExtractedState(Integer.parseInt(splitted[pos])); pos++;
-				// leave MqSentDate null newRec.setMqSentDate();
-				pos++;
-				newRec.setRoomUse(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setCustomFormulaScope(splitted[pos].replaceAll("\"", "")); pos++;
+				// Older systems may not have the following fields
+//				newRec.setTintableSalesNbr(splitted[pos].replaceAll("\"", "")); pos++;
+//				newRec.setLocId(splitted[pos].replaceAll("\"", "")); pos++;
+//				newRec.setMqExtractedState(Integer.parseInt(splitted[pos])); pos++;
+//				// leave MqSentDate null newRec.setMqSentDate();
+//				pos++;
+//				newRec.setRoomUse(splitted[pos].replaceAll("\"", "")); pos++;
+//				newRec.setCustomFormulaScope(splitted[pos].replaceAll("\"", "")); pos++;
 				
 				linecnt++;
 				if(linecnt%1000==0) {
@@ -153,6 +156,8 @@ public class CdsTranServiceImpl implements CdsTranService {
 			System.out.println("File does not exist in " + fullFileAndPath + "\n" + e.toString());
 		} catch (IOException e) {
 			System.out.println("Unable to read file in " + fullFileAndPath + "\n" + e.toString());
+		} catch (Exception e) {
+			System.out.println("Exception " + e.toString());
 		}
 
 		
@@ -166,6 +171,8 @@ public class CdsTranServiceImpl implements CdsTranService {
 		
 		
 		String fullFileAndPath = inputDir + "/" + "cds-tran-det.d";
+		System.out.println("full path and file is  " + fullFileAndPath);
+
 		try {
 			File inFile = new File(fullFileAndPath);
 			FileInputStream fis = new FileInputStream(inFile);
@@ -234,13 +241,14 @@ public class CdsTranServiceImpl implements CdsTranService {
 				newRec.setStoreNbr(Integer.parseInt(splitted[pos])); pos++;
 				newRec.setColorEngVer(splitted[pos].replaceAll("\"", "")); pos++;
 				newRec.setPercentSource(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setMqExtractedState(Integer.parseInt(splitted[pos])); pos++;
-				// leave MqSentDate null newRec.setMqSentDate();
-				pos++;
-				newRec.setTinterSerialNbr(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setSpectroSerialNbr(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setSpectroModel(splitted[pos].replaceAll("\"", "")); pos++;
-				//newRec.setMqSentGuid(splitted[pos].replaceAll("\"", "")); pos++;
+				// Older version may not have these fields
+//				newRec.setMqExtractedState(Integer.parseInt(splitted[pos])); pos++;
+//				// leave MqSentDate null newRec.setMqSentDate();
+//				pos++;
+//				newRec.setTinterSerialNbr(splitted[pos].replaceAll("\"", "")); pos++;
+//				newRec.setSpectroSerialNbr(splitted[pos].replaceAll("\"", "")); pos++;
+//				newRec.setSpectroModel(splitted[pos].replaceAll("\"", "")); pos++;
+//				//newRec.setMqSentGuid(splitted[pos].replaceAll("\"", "")); pos++;
 				
 				linecnt++;
 				if(linecnt%1000==0) {
@@ -264,6 +272,8 @@ public class CdsTranServiceImpl implements CdsTranService {
 			System.out.println("File does not exist in " + fullFileAndPath + "\n" + e.toString());
 		} catch (IOException e) {
 			System.out.println("Unable to read file in " + fullFileAndPath + "\n" + e.toString());
+		} catch (Exception e) {
+			System.out.println("Exception " + e.toString());
 		}
 		
 		return recordList;
@@ -274,6 +284,8 @@ public class CdsTranServiceImpl implements CdsTranService {
 		
 		
 		String fullFileAndPath = inputDir + "/" + "cds-tran-clrnt.d";
+		System.out.println("full path and file is  " + fullFileAndPath);
+		
 		try {
 			File inFile = new File(fullFileAndPath);
 			FileInputStream fis = new FileInputStream(inFile);
@@ -299,9 +311,10 @@ public class CdsTranServiceImpl implements CdsTranService {
 				newRec.setClrntQual(splitted[pos].replaceAll("\"", "")); pos++;
 				newRec.setNeedExtracted(ConvertYesNoToBoolean(splitted[pos].replaceAll("\"", ""))); pos++;
 				newRec.setCdsAdlFld(splitted[pos].replaceAll("\"", "")); pos++;
-				newRec.setMqExtractedState(Integer.parseInt(splitted[pos])); pos++;
-				// leave MqSentDate null newRec.setMqSentDate();
-				pos++;
+				// Older version may not have these fields
+//				newRec.setMqExtractedState(Integer.parseInt(splitted[pos])); pos++;
+//				// leave MqSentDate null newRec.setMqSentDate();
+//				pos++;
 				
 				linecnt++;
 				if(linecnt%1000==0){
@@ -325,6 +338,8 @@ public class CdsTranServiceImpl implements CdsTranService {
 			System.out.println("File does not exist in " + fullFileAndPath + "\n" + e.toString());
 		} catch (IOException e) {
 			System.out.println("Unable to read file in " + fullFileAndPath + "\n" + e.toString());
+		} catch (Exception e) {
+			System.out.println("Exception " + e.toString());
 		}
 		
 		return recordList;
