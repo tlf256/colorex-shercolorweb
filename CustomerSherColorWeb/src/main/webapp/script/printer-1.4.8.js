@@ -6,7 +6,11 @@ function printOnDispenseGetJson(myguid,printJsonIN) {
 		var myPdf = new pdf(myguid,printJsonIN);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
-		numLabels = printerConfig.numLabels;
+		numLabels = parseInt(printerConfig.numLabels);
+		if(isNaN(numLabels)) {
+			console.log("numLabels is NaN, setting to 1")
+			numLabels = 1;
+		}
 		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 }
