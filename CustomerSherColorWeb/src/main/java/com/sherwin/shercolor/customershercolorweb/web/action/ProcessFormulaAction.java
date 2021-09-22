@@ -233,7 +233,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			}
 			
 			// Add DeltaE Warning to Display Msgs if there is a warning to display
-			if (displayFormula.getAverageDeltaE() > 1) {
+			if (displayFormula.getAverageDeltaE() != null && displayFormula.getAverageDeltaE() > 1) {
 				displayDeltaEColumn = true;
 				displayFormula.setAverageDeltaE(Double.parseDouble(String.format("%,.2f", displayFormula.getAverageDeltaE())));
 				addActionError(getText("compareColorsResult.deltaEgreaterThanOneWarning"));
