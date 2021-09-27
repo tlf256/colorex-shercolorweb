@@ -6,7 +6,7 @@ function printOnDispenseGetJson(myguid,printJsonIN) {
 		var myPdf = new pdf(myguid,printJsonIN);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
-		numLabels = encodeURIComponent(printerConfig.numLabels);
+		numLabels = printerConfig.numLabels;
 		console.log("numLabels is " + numLabels);
 		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
@@ -30,7 +30,7 @@ function getPdfFromServer(myGuid, jsonIN){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
             	else{
-            		pdfobj = pdfResp;
+            		pdfobj = JSON.parse(pdfResp);
             	}
 			},
 			error: function(error){
