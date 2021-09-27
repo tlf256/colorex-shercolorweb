@@ -30,7 +30,7 @@ function getPdfFromServer(myGuid, jsonIN){
             		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
             	}
             	else{
-            		pdfobj = JSON.parse(pdfResp);
+            		pdfobj = pdfResp;
             	}
 			},
 			error: function(error){
