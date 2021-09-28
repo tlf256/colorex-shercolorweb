@@ -7,7 +7,6 @@ function printOnDispenseGetJson(myguid,printJsonIN) {
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
 		numLabels = printerConfig.numLabels;
-		console.log("numLabels is " + numLabels);
 		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 }
