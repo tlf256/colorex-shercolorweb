@@ -2469,6 +2469,15 @@ function ParsePrintMessage() {
 					}
 				}
 			}
+			// update button display regardless of user account type 
+			var qtyDispensed = parseInt($.trim($("#qtyDispensed").text()));
+			if (isNaN(qtyDispensed)){
+				qtyDispensed = 0;
+			}
+			// don't let user change the product if the job has been dispensed 
+			if (qtyDispensed > 0) {
+				$("#changeProductBtn").hide();
+			}
 		}
 
 		function makeDispensePrimary() {
