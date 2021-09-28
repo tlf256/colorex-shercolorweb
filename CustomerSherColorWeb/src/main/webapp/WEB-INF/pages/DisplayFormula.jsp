@@ -240,7 +240,7 @@ function printButtonClickGetJson() {
 		if(numLabelsVal && numLabelsVal !=0){
 			numLabels = numLabelsVal;
 		}
-		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+		printLabel(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 
 }
@@ -254,7 +254,7 @@ function printFromManualDispense(dispenseQuantity) {
 		printJsonIN = JSON.stringify(str);
 		var myPdf = new pdf(myguid,printJsonIN);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
-		print(myPdf, dispenseQuantity, myPrintLabelType, myPrintOrientation);
+		printLabel(myPdf, dispenseQuantity, myPrintLabelType, myPrintOrientation);
 	}
 
 }
