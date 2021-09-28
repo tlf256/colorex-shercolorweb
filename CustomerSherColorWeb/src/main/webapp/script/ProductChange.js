@@ -581,14 +581,6 @@
     			break;
     		}
 		});
-		
-		// don't let user change the product if the job is already dispensed 
-		var qtyDispensed = parseInt($.trim($("#qtyDispensed").text()));
-		if (isNaN(qtyDispensed))
-			qtyDispensed = 0;
-		if (qtyDispensed > 0) {
-			$("#changeProductBtn").hide();
-		}
 	});
 	
 	
