@@ -7,7 +7,7 @@ function printOnDispenseGetJson(myguid,printJsonIN) {
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
 		var numLabels = null;
 		numLabels = printerConfig.numLabels;
-		encodeURI(print(myPdf, numLabels, myPrintLabelType, myPrintOrientation));
+		printLabel(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 }
 
@@ -121,7 +121,7 @@ function createUUID() {
     return uuid;
 }
 
-function print(myPdf,myNumLabels,myLabelType,myPrintOrientation) {
+function printLabel(myPdf,myNumLabels,myLabelType,myPrintOrientation) {
 
 	
 	var printermessage = new PrinterMessage("Print",myPdf.data,null,myNumLabels,myLabelType,myPrintOrientation);
