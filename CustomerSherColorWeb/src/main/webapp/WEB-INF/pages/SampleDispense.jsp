@@ -229,7 +229,7 @@ badge {
 			if(numLabelsVal && numLabelsVal !=0){
 				numLabels = numLabelsVal;
 			}
-			print(myPdf, numLabels, printLabelType, printOrientation);
+			printLabel(myPdf, numLabels, printLabelType, printOrientation);
 		}
 
 	}
