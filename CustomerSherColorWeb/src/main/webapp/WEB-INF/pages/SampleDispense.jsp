@@ -508,6 +508,9 @@ badge {
 					$("#qtyDispensed").text(data.qtyDispensed);
 					qtyRemaining = $('#qtyRemaining');
 					qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+					if (parseInt(qtyRemaining.text())<0) {
+						qtyRemaining.text(0);
+					}
 					// send tinter event (no blocking here)
 					var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 					var tedArray = [ teDetail ];
