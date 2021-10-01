@@ -824,7 +824,7 @@ function ParsePrintMessage() {
 		// account uses room by room, and user already has a room choice stored in session
 		if (roomByRoomFlag == "true" && userRoomChoice != null && userRoomChoice != ""){
 			// room choice was a customized one; otherwise they match because the dropdown has already been updated
-			if (optionSelected != userRoomChoice){
+			if (optionSelected != userRoomChoice || userRoomChoice == "Other"){
 				$("select[id='roomsList']").val('Other');
 				$("#otherRoom").removeClass('d-none');
 				$("#otherRoom").val(userRoomChoice);
