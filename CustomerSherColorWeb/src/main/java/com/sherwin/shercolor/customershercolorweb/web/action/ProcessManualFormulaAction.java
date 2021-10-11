@@ -543,6 +543,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			if(retVal.equalsIgnoreCase(INPUT)){
 				fillColorantList(reqObj);
+				sizeList = utilityService.listSizeCodesForSizeConversion();
 			}
 			
 			
