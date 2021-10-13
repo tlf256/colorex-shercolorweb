@@ -231,13 +231,13 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				retVal = SUCCESS;
 
 			}
-			
+			/*
 			// Add DeltaE Warning to Display Msgs if there is a warning to display
 			if (displayFormula.getAverageDeltaE() != null && displayFormula.getAverageDeltaE() > 1) {
 				displayDeltaEColumn = true;
 				displayFormula.setAverageDeltaE(Double.parseDouble(String.format("%,.2f", displayFormula.getAverageDeltaE())));
 				addActionError(getText("compareColorsResult.deltaEgreaterThanOneWarning"));
-			}
+			}*/
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			retVal = ERROR;
