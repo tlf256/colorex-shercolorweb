@@ -48,7 +48,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private List<JobField> jobFields;
 	private int recDirty;
 	private boolean userWarningOverride = false;
-	private boolean adjByPercentVisible;
+	private boolean scaleByPercentVisible;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
 	private String adjustFormulaMsg;
@@ -162,8 +162,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			CustWebTran webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), 1);
 			
 			if (webTran == null && reqObj.getDisplayFormula() == null) {
-				logger.debug("Formula not saved or display formula null, no Adjust By Percent");
-				adjByPercentVisible = true;
+				logger.debug("Formula not saved or display formula null, no Scale By Percent");
+				scaleByPercentVisible = true;
 			}
 	 
 			// setup colorant list for drop down
@@ -646,8 +646,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 		this.selectedColorantFocus = Encode.forHtml(selectedColorantFocus);
 	}
 
-	public boolean isAdjByPercentVisible() {
-		return adjByPercentVisible;
+	public boolean isScaleByPercentVisible() {
+		return scaleByPercentVisible;
 	}
 
 	public void setPercentOfFormula(int percentOfFormula) {
