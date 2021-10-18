@@ -258,8 +258,8 @@
 			});
 			
 			//Hide Adjust By % button if formula is empty
-			if($('#adjByPercentVisible').val() === 'true'){
-				$('#adjByPct').hide();
+			if($('#scaleByPercentVisible').val() === 'false'){
+				$('#scaleByPct').hide();
 			}
 			
 			//validate colorId and colorName fields
@@ -667,7 +667,7 @@
   
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
-		<s:hidden name="adjByPercentVisible" value="%{adjByPercentVisible}"/>
+		<s:hidden name="scaleByPercentVisible" value="%{scaleByPercentVisible}"/>
 		<!-- Adjust By Percent Modal -->
 	    <div class="modal fade" aria-labelledby="scaleFormulaByPctModal" aria-hidden="true"  id="scaleFormulaByPctModal" role="dialog">
 	    	<div class="modal-dialog" role="document">
