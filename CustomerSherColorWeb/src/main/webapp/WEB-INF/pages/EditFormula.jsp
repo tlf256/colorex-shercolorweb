@@ -258,7 +258,7 @@
 			});
 			
 			//Hide Adjust By % button if formula is empty
-			if($('#scaleByPercentVisible').val() === 'true'){
+			if($('#scaleByPercentVisible').val() === 'false'){
 				$('#scaleByPct').hide();
 			}
 			
