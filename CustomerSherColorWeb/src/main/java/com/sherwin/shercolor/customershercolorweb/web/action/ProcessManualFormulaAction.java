@@ -162,7 +162,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			CustWebTran webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), 1);
 			
 			if (webTran == null && reqObj.getDisplayFormula() == null) {
-				logger.debug("Formula not saved and display formula null, no Scale By Percent");
+				logger.debug("Formula not saved and display formula null, Scale By Percent button not available.");
 				scaleByPercentVisible = false;
 			}
 	 
