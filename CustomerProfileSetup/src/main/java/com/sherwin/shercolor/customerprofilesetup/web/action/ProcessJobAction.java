@@ -53,7 +53,7 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 				}
 				while(i<job.getScreenLabel().size()) {
 					String screenLabel = job.getScreenLabel().get(i).trim();
-					if(!screenLabel.equals("")) {
+					if(!screenLabel.isEmpty()) {
 						//create new custwebjobfields record list
 						JobFields newjob = new JobFields();
 						newjob.setSeqNbr(seqnbr);
