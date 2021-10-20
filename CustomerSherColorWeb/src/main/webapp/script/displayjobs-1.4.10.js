@@ -278,11 +278,13 @@ $(document).ready(function() {
     });
     
     $('#searchmodal').on('hidden.bs.modal', function(){
-    	$('.container-fluid').show();
     	if($('.popover').is(':visible')) {
     		//console.log("popover is visible");
     		removeWarningPopover();
     	}
+    	// If user accidentally closes the modal, it will act as if the user hit the Search button instead
+    	// This takes whatever was entered in the form at the time and runs a search based on those entries
+    	validate();
     });
     
 });
