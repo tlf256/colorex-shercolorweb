@@ -284,7 +284,6 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		try { 
 			setCopyJobFields(true);
 			return this.search();
-			//return SUCCESS;
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
 			return ERROR;
