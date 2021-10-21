@@ -39,7 +39,7 @@
 	 	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.9.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.10.js"></script>
 	</head>
 	<body>
 	<!-- including Header -->

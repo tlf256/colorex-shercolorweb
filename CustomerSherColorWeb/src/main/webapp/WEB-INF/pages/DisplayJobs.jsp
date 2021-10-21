@@ -36,7 +36,7 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.9.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.10.js"></script>
 	</head>
 	<body>
 		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">
@@ -133,6 +133,7 @@
 			      	<s:hidden name="thc.customerId" value="%{sessionMap[reqGuid].customerId}"/>
 			      	<s:hidden id="linenbr" name="thc.lineNbr" value=""/>
 			      	<s:hidden id="controlnbr" name="thc.controlNbr" value=""/>
+			      	<s:hidden id="copyjf" name="copyJobFields" value="%{copyJobFields}"/>
 			      	<button id="searchbtn" type="button" class="btn btn-primary" onclick="validate()"><s:text name="displayJobs.search"/></button>
 			      	<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				    <%-- <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button> --%>
@@ -285,8 +286,16 @@
 		<br>
 		<script>
 		// update action if user is here to copy existing job fields
-		if ("${copyJobFields}" == "true"){
+		var copyJobFields = $('#copyjf').val();
+		if (copyJobFields){
+			console.log("copyJobFields is " + copyJobFields);
 			$("#mainForm").prop("action", "displayJobFieldsAction");
+		}
+ 
+		var search = ${search};
+		if(search){
+			console.log("search is " + search);
+			showSearchModal();
 		}
 		<!--
 		  function HF_openSherwin() {
