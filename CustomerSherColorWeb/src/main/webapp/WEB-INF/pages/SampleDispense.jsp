@@ -14,7 +14,7 @@
 <link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
 <link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
@@ -22,7 +22,7 @@
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 
 <style>
@@ -229,7 +229,7 @@ badge {
 			if(numLabelsVal && numLabelsVal !=0){
 				numLabels = numLabelsVal;
 			}
-			print(myPdf, numLabels, printLabelType, printOrientation);
+			printLabel(myPdf, numLabels, printLabelType, printOrientation);
 		}
 
 	}
@@ -506,7 +506,11 @@ badge {
 					$("#controlNbr").text(data.controlNbr);
 					$("#controlNbrDisplay").show();
 					$("#qtyDispensed").text(data.qtyDispensed);
-					
+					qtyRemaining = $('#qtyRemaining');
+					qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+					if (parseInt(qtyRemaining.text())<0) {
+						qtyRemaining.text(0);
+					}
 					// send tinter event (no blocking here)
 					var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 					var tedArray = [ teDetail ];
@@ -744,27 +748,51 @@ badge {
 		</div>
 	</div>
 	<br>
-		
-	<div class="row mt-2" id="dispenseInfoRow">
-		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<s:if test="%{siteHasTinter==true}">
-			<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-				<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> 
-				<span class="dispenseInfo badge badge-secondary" style="font-size: .9rem;" id="qtyDispensed">
-					${sessionScope[thisGuid].quantityDispensed}</span>
-				<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
-			</div>
-		</s:if>
-		<s:else>
-			<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-				<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> 
-				<span class="dispenseInfo d-none badge badge-secondary" style="font-size: .8rem;" id="qtyDispensed">
-					${sessionScope[thisGuid].quantityDispensed}</span>
-				<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
-			</div>	
-		</s:else>
-		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
-	</div>
+	
+	<s:if test="%{siteHasTinter==true}">
+				<div class="row" id="dispenseInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row" id="quantityInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyOrderedColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyOrdered">${sessionScope[thisGuid].quantityOrdered}</span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row" id="remainingInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
+							class="dispenseInfo badge badge-secondary"
+							style="font-size: .9rem;" id="qtyRemaining"></span>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:if>
+			<s:else>
+				<div class="row" id="dispenseInfoRow">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+							class="dispenseInfo d-none badge badge-secondary"
+							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
+					</div>
+					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+			</s:else>
+			<br>
+			
 	<br>
 	
 	<div class="d-flex flex-row justify-content-around mt-3">
@@ -982,6 +1010,19 @@ badge {
 
 	<script>
 	$(document).ready(function() {
+		
+		// Display remaining qty. Don't display negative values if the user dispenses more than what was ordered.
+		var qtyOrdered = parseInt(${sessionScope[thisGuid].quantityOrdered});
+		var qtyDispensed = parseInt(${sessionScope[thisGuid].quantityDispensed});
+		var remaining = (qtyOrdered - qtyDispensed);
+		if (remaining < 0) {
+			remaining = 0;
+		}
+		if(remaining == 0 && qtyOrdered != 0) {
+			$("#formulaSetOrderQty").hide();
+		}
+		$("#qtyRemaining").text(remaining);
+		
 		if ($("#formulaUserPrintAction_siteHasPrinter").val() == "true") {
 			getPrinterConfig();
 		}

@@ -28,7 +28,7 @@
 			</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="openCustomerForm" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="display">
+		<action name="openCustomerForm" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="createNew">
 			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
 			<result name="success">/WEB-INF/pages/CustomerForm.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
@@ -38,7 +38,7 @@
 			<result name="success">/WEB-INF/pages/CustomerDetail.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
 		</action>
-		<action name="editDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="display">
+		<action name="editDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="displayEdit">
 			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
 			<result name="success">/WEB-INF/pages/EditCustomerDetail.jsp</result>
 			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
@@ -120,6 +120,24 @@
              <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
         </action>
         <action name="ajaxAcctNbrResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="checkAcctNbr">
+             <result name="success" type="json">
+             	<param name="result">${result}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxProdCompResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="setActionProdCompList">
+             <result name="success" type="json">
+             	<param name="prodCompList">${prodCompList}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxDeleteProdComp" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="deleteProdComp">
+             <result name="success" type="json">
+             	<param name="prodComp">${prodComp}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxAcctTypeResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="buildCustTypeList">
              <result name="success" type="json">
              	<param name="result">${result}</param>
              </result>

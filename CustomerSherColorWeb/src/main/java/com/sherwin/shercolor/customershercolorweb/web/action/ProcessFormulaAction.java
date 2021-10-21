@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -63,10 +64,12 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private List<DispenseItem> dispenseFormula;
 	private List<DispenseItem> drawdownShotList;
 	private int qtyDispensed;
+	private int qtyOrdered;
 	private TinterInfo tinter;
 	private int recDirty;
 	private boolean siteHasTinter;
 	private boolean siteHasPrinter;
+	private boolean displayDeltaEColumn = false;
 	private boolean accountIsDrawdownCenter = false;
 	private boolean accountUsesRoomByRoom = false;
 	private boolean tinterDoesBaseDispense = false;
@@ -115,6 +118,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			displayFormula = reqObj.getDisplayFormula();
 			qtyDispensed = reqObj.getQuantityDispensed();
+			qtyOrdered = reqObj.getQuantityOrdered();
 			tinter = reqObj.getTinter();
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			
@@ -227,7 +231,13 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				retVal = SUCCESS;
 
 			}
-
+			/*
+			// Add DeltaE Warning to Display Msgs if there is a warning to display
+			if (displayFormula.getAverageDeltaE() != null && displayFormula.getAverageDeltaE() > 1) {
+				displayDeltaEColumn = true;
+				displayFormula.setAverageDeltaE(Double.parseDouble(String.format("%,.2f", displayFormula.getAverageDeltaE())));
+				addActionError(getText("compareColorsResult.deltaEgreaterThanOneWarning"));
+			}*/
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			retVal = ERROR;
@@ -368,6 +378,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			setDisplayFormula(reqObj.getDisplayFormula());
 			setQtyDispensed(reqObj.getQuantityDispensed());
+			setQtyOrdered(reqObj.getQuantityOrdered());
 			setTinter(reqObj.getTinter());
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			
@@ -549,7 +560,28 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
+	
+	public String displayUpdatedFormula() {
+		try {
+			recDirty = 1;
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			
+			SwMessage saveReminder = new SwMessage();
+			saveReminder.setSeverity(Level.INFO);
+			saveReminder.setMessage(getText("processManualFormulaAction.changesNotYetSaved"));
+			if(reqObj.getDisplayMsgs()==null) reqObj.setDisplayMsgs(new ArrayList<SwMessage>());
+			reqObj.getDisplayMsgs().add(saveReminder);
+			
+			String retVal = this.display();
+			return retVal;
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
 
+	
 	public DataInputStream getInputStream() {
 		return inputStream;
 	}
@@ -599,6 +631,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setQtyDispensed(int qtyDispensed) {
 		this.qtyDispensed = qtyDispensed;
+	}
+	
+	public int getQtyOrdered() {
+		return qtyOrdered;
+	}
+
+	public void setQtyOrdered(int qtyOrdered) {
+		this.qtyOrdered = qtyOrdered;
 	}
 
 	public TinterInfo getTinter() {
@@ -665,6 +705,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
+	}
+
+	public boolean isDisplayDeltaEColumn() {
+		return displayDeltaEColumn;
+	}
+
+	public void setDisplayDeltaEColumn(boolean displayDeltaEColumn) {
+		this.displayDeltaEColumn = displayDeltaEColumn;
 	}
 
 	public DrawdownLabelService getDrawdownLabelService() {

@@ -20,24 +20,127 @@
 		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.7.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.9.js"></script>
 	</head>
 	<body>
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h5 class="modal-title"><s:text name="displayJobs.jobHistorySearch"/></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <s:form id="jobSearchForm" action="listJobsAction">
+			      <div class="modal-body">
+			        <div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5 text-danger" id="searchError"></div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<br>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="displayJobs.controlNumber"/><s:text name="displayJobs.forwardSlashScanCanLabel"/><s:text name="global.colonDelimiter"/></strong>
+			      			<s:textfield class="srchinpt" id="cntrlnbr" placeholder="%{getText('displayJobs.allControlNumbers')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			        <div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="displayJobs.fromDate"/><s:text name="global.colonDelimiter"/></strong>
+			      			<s:textfield class="srchinpt" id="fdate" name="thc.fromDate" placeholder="%{getText('displayJobs.allDates')}" autocomplete="off"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="displayJobs.toDate"/><s:text name="global.colonDelimiter"/></strong>
+			      			<s:textfield class="srchinpt" id="tdate" name="thc.toDate" placeholder="%{getText('displayJobs.allDates')}" autocomplete="off"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.colorIdColon"/></strong>
+			      			<s:textfield class="srchinpt" id="clrid" name="thc.colorId" placeholder="%{getText('displayJobs.allColorIds')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.colorNameColon"/></strong>
+			      			<s:textfield class="srchinpt" id="clrnm" name="thc.colorName" placeholder="%{getText('displayJobs.allColorNames')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.salesNumberColon"/></strong>
+			      			<s:textfield class="srchinpt" id="slsnbr" name="thc.salesNbr" placeholder="%{getText('displayJobs.allSalesNumbers')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.productNumberColon"/></strong>
+			      			<s:textfield class="srchinpt" id="prdnbr" name="thc.prodNbr" placeholder="%{getText('displayJobs.allProductNumbers')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<s:if test="%{sessionMap[reqGuid].allRooms != null && !sessionMap[reqGuid].allRooms.isEmpty}">
+			      		<div class="row" id="roomuse">
+				      		<div class="col-sm-1"></div>
+				      		<div class="col-sm-5">
+				      			<strong><s:text name="displayJobs.roomUse"/> <s:text name="global.colonDelimiter"/></strong>
+				      			<s:select list="%{sessionMap[reqGuid].allRooms}" id="roomlist" onchange="toggleOther(this.value)" name="thc.roomUse" listKey="roomUse" 
+				      			listValue="roomUse" headerKey="" headerValue="--" value="%{roomByRoom}"></s:select>
+				      		</div>
+				      		<div class="col-sm-5">
+				      			<s:textfield class="d-none srchinpt" id="other" name="" style="margin-top:30px" placeholder="%{getText('displayJobs.allRooms')}"></s:textfield>
+				      		</div>
+				      		<div class="col-sm-1"></div>
+				      	</div>
+			      	</s:if>
+		      		<s:iterator value="#session[reqGuid].jobFieldList" status="stat">
+				      	<div class="row">
+				      		<div class="col-sm-1"></div>
+				      		<div class="col-sm-5">
+				      			<strong><s:property value="screenLabel" /><s:text name="global.colonDelimiter"/></strong>
+				      			<s:textfield id="jbfld%{#stat.count}" class="jobfield srchinpt" name="thc.jobField%{#stat.count}" placeholder="%{getText('displayJobs.allValues')}"></s:textfield>
+				      		</div>
+				      		<div class="col-sm-5"></div>
+				      		<div class="col-sm-1"></div>
+				      	</div>
+			      	</s:iterator>
+			      </div>
+			      <div class="modal-footer">
+			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
+			      	<s:hidden name="thc.customerId" value="%{sessionMap[reqGuid].customerId}"/>
+			      	<s:hidden id="linenbr" name="thc.lineNbr" value=""/>
+			      	<s:hidden id="controlnbr" name="thc.controlNbr" value=""/>
+			      	<button id="searchbtn" type="button" class="btn btn-primary" onclick="validate()"><s:text name="displayJobs.search"/></button>
+			      	<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
+				    <%-- <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button> --%>
+			      </div>
+		      </s:form>
+		    </div>
+		  </div>
+		</div>
 		<div class="modal fade" tabindex="-1" role="dialog" id="deletemodal">
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
@@ -85,6 +188,9 @@
 					<s:if test="hasActionMessages()">
 					      <s:actionmessage cssClass="alert-danger"/>
 					</s:if>
+					<%-- <s:if test="match != true">
+						<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
+					</s:if> --%>
 					<table id="job_table" class="table table-striped table-bordered">
 						<thead>
 							<tr>
@@ -161,6 +267,9 @@
 					</div>
 
 					<div class="col-sm-10">
+						<%-- <s:if test="match != true">
+							<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
+						</s:if> --%>
 						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">
