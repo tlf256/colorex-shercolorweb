@@ -60,8 +60,8 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 			reqObj.setCustUnchanged(false);
 			reqObj.setCustomerId(custId);
 			reqObj.setAccttype(customer.getAccttype());
-			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld()));
+			reqObj.setSwuiTitle(allowCharacters(customer.getSwuiTitle().trim()));
+			reqObj.setCdsAdlFld(allowCharacters(customer.getCdsAdlFld().trim()));
 			List<String> clrntlist = clrntSysIds(customer.getDefaultClrntSys(), customer.getClrntSysIds());
 			reqObj.setClrntList(clrntlist);
 			reqObj.setActive(true);
@@ -110,7 +110,7 @@ public class ProcessCustomerAction extends ActionSupport implements SessionAware
 					// EULA activation record needs created
 					List<EulaHist> ehlist = new ArrayList<EulaHist>();
 					EulaHist eh = new EulaHist();
-					String acceptCode = eula.getAcceptCode();
+					String acceptCode = eula.getAcceptCode().trim();
 					
 					if(eulaType.equals("SherColor Web EULA")) {
 						// standard CSW EULA is being used, get seqnbr

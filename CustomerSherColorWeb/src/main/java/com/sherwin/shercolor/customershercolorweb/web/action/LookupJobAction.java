@@ -54,6 +54,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private boolean copyJobFields = false;
 	private boolean displayTintQueue = false;
 	private TranHistoryCriteria thc;
+	private boolean search;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -83,6 +84,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	
 	public String search() {
 		try {
+			setSearch(true);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			// check if this account uses room by room
@@ -281,7 +283,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	public String getJobFields() {
 		try { 
 			setCopyJobFields(true);
-			return this.display();
+			return this.search();
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
 			return ERROR;
@@ -686,6 +688,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setDisplayTintQueue(boolean displayTintQueue) {
 		this.displayTintQueue = displayTintQueue;
+	}
+
+	public boolean isSearch() {
+		return search;
+	}
+
+	public void setSearch(boolean search) {
+		this.search = search;
 	}
 
 }

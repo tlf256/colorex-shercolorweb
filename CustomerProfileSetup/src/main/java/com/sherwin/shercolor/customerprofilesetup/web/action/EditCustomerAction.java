@@ -66,8 +66,8 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			setEdited(true);
 			
 			reqObj.setClrntList(clrntSysIds(cust.getDefaultClrntSys(), cust.getClrntList()));
-			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle()));
-			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld()));
+			reqObj.setSwuiTitle(allowCharacters(cust.getSwuiTitle().trim()));
+			reqObj.setCdsAdlFld(allowCharacters(cust.getCdsAdlFld().trim()));
 			reqObj.setActive(cust.isActive());
 			
 			for(int i = 0; i < reqObj.getClrntList().size(); i++) {
@@ -272,12 +272,13 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 			
 			if(login!=null) {
 				for(int i = 0; i < login.getKeyField().size(); i++) {
-					if(!login.getKeyField().get(i).equals("")) {
+					String keyfield = login.getKeyField().get(i).trim();
+					if(!keyfield.isEmpty()) {
 						//set values for custweblogintrans record
 						LoginTrans newlogin = new LoginTrans();
-						newlogin.setKeyField(allowCharacters(login.getKeyField().get(i)));
-						newlogin.setMasterAcctName(allowCharacters(login.getMasterAcctName().get(i)));
-						newlogin.setAcctComment(allowCharacters(login.getAcctComment().get(i)));
+						newlogin.setKeyField(allowCharacters(keyfield));
+						newlogin.setMasterAcctName(allowCharacters(login.getMasterAcctName().get(i).trim()));
+						newlogin.setAcctComment(allowCharacters(login.getAcctComment().get(i).trim()));
 						editLoginList.add(newlogin);
 					}
 				}
@@ -347,12 +348,13 @@ public class EditCustomerAction extends ActionSupport implements SessionAware {
 				}
 				
 				for(int i = 0; i < job.getScreenLabel().size(); i++) {
-					if(!job.getScreenLabel().get(i).equals("")) {
+					String screenLabel = job.getScreenLabel().get(i).trim();
+					if(!screenLabel.isEmpty()) {
 						//set values for custwebjobfields record
 						JobFields newjob = new JobFields();
 						newjob.setSeqNbr(seqnbr);
-						newjob.setScreenLabel(allowCharacters(job.getScreenLabel().get(i)));
-						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i)));
+						newjob.setScreenLabel(allowCharacters(screenLabel));
+						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i).trim()));
 						if(reqlist[i].contains("true")) {
 							newjob.setEntryRequired(true);
 						} else {
