@@ -145,11 +145,6 @@ $(document).ready(function() {
     	$('#title').text(i18n['compareColors.chooseFirstSample']);
     	$('#searchmodal').modal('hide');
     	newSearchBtn.disable();
-    } else {
-    	console.log("pathname is " + window.location.pathname);
-    	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action'){
-    		showSearchModal();
-    	}
     }
     
     if (displayTintQueue) {
