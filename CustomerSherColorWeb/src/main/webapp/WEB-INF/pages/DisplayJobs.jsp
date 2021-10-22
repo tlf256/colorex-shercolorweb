@@ -39,8 +39,8 @@
 		<script type="text/javascript" src="script/displayjobs-1.4.10.js"></script>
 	</head>
 	<body>
-		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">
-		  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static" >
+		  <div class="modal-dialog modal-lg" role="document" style="max-height: 90vh; overflow-y: initial !important">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
 		        <h5 class="modal-title"><s:text name="displayJobs.jobHistorySearch"/></h5>
@@ -49,7 +49,7 @@
 		        </button>
 		      </div>
 		      <s:form id="jobSearchForm" action="listJobsAction">
-			      <div class="modal-body">
+			      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5 text-danger" id="searchError"></div>
