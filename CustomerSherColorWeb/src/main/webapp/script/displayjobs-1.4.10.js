@@ -277,9 +277,9 @@ $(document).ready(function() {
     		//console.log("popover is visible");
     		removeWarningPopover();
     	}
-    	// If user accidentally closes the modal, it will act as if the user hit the Search button instead
-    	// This takes whatever was entered in the form at the time and runs a search based on those entries
-    	validate();
+    	// Forces a cancellation of the search if you exit out of the search filter modal
+    	// User must use the Search button to continue further
+    	$('#cancelNewSearch').click();
     });
     
 });
