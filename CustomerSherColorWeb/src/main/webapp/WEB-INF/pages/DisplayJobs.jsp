@@ -271,7 +271,7 @@
 						<%-- <s:if test="match != true">
 							<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
 						</s:if> --%>
-						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
+						<s:submit id="cancelNewSearch" cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">
 					</div>
