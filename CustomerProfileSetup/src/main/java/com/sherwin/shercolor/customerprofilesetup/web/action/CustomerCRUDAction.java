@@ -242,7 +242,11 @@ public class CustomerCRUDAction extends ActionSupport implements SessionAware {
 			acctType = "intnatlWOdigits";
 			break;
 		case 9:
-			acctType = "natlWdigits";
+			if(custId.startsWith("4")) {
+				acctType = "natlWOdigits";
+			} else {
+				acctType = "natlWdigits";
+			}
 			break;
 		default:
 			//unexpected custId length
