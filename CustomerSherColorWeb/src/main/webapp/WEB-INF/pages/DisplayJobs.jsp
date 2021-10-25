@@ -287,7 +287,7 @@
 		<script>
 		// update action if user is here to copy existing job fields
 		var copyJobFields = $('#copyjf').val();
-		if (copyJobFields){
+		if (copyJobFields == "true"){
 			console.log("copyJobFields is " + copyJobFields);
 			$("#mainForm").prop("action", "displayJobFieldsAction");
 		}
