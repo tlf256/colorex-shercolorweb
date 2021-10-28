@@ -36,11 +36,11 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.9.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.10.js"></script>
 	</head>
 	<body>
-		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">
-		  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static" >
+		  <div class="modal-dialog modal-lg" role="document" style="max-height: 90vh; overflow-y: initial !important">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
 		        <h5 class="modal-title"><s:text name="displayJobs.jobHistorySearch"/></h5>
@@ -49,7 +49,7 @@
 		        </button>
 		      </div>
 		      <s:form id="jobSearchForm" action="listJobsAction">
-			      <div class="modal-body">
+			      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5 text-danger" id="searchError"></div>
@@ -133,6 +133,7 @@
 			      	<s:hidden name="thc.customerId" value="%{sessionMap[reqGuid].customerId}"/>
 			      	<s:hidden id="linenbr" name="thc.lineNbr" value=""/>
 			      	<s:hidden id="controlnbr" name="thc.controlNbr" value=""/>
+			      	<s:hidden id="copyjf" name="copyJobFields" value="%{copyJobFields}"/>
 			      	<button id="searchbtn" type="button" class="btn btn-primary" onclick="validate()"><s:text name="displayJobs.search"/></button>
 			      	<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				    <%-- <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button> --%>
@@ -270,7 +271,7 @@
 						<%-- <s:if test="match != true">
 							<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
 						</s:if> --%>
-						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
+						<s:submit id="cancelNewSearch" cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">
 					</div>
@@ -285,8 +286,16 @@
 		<br>
 		<script>
 		// update action if user is here to copy existing job fields
-		if ("${copyJobFields}" == "true"){
+		var copyJobFields = $('#copyjf').val();
+		if (copyJobFields == "true"){
+			console.log("copyJobFields is " + copyJobFields);
 			$("#mainForm").prop("action", "displayJobFieldsAction");
+		}
+ 
+		var search = ${search};
+		if(search){
+			console.log("search is " + search);
+			showSearchModal();
 		}
 		<!--
 		  function HF_openSherwin() {

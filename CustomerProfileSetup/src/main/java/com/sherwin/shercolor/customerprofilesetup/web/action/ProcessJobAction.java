@@ -52,12 +52,13 @@ public class ProcessJobAction extends ActionSupport implements SessionAware {
 					}
 				}
 				while(i<job.getScreenLabel().size()) {
-					if(!job.getScreenLabel().get(i).equals("")) {
+					String screenLabel = job.getScreenLabel().get(i).trim();
+					if(!screenLabel.isEmpty()) {
 						//create new custwebjobfields record list
 						JobFields newjob = new JobFields();
 						newjob.setSeqNbr(seqnbr);
-						newjob.setScreenLabel(allowCharacters(job.getScreenLabel().get(i)));
-						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i)));
+						newjob.setScreenLabel(allowCharacters(screenLabel));
+						newjob.setFieldDefault(allowCharacters(job.getFieldDefault().get(i).trim()));
 						if(reqlist[i].contains("true")) {
 							newjob.setEntryRequired(true);
 						} else {
