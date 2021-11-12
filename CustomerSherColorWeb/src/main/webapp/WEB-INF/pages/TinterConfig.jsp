@@ -350,37 +350,35 @@
 			}
 		});
 	}
-	function GetModelsForColorant(colorantId_obj) {
+	function GetModelsForColorant(colorantId) {
 		var modellist = null;
-		var colorantId = colorantId_obj.val();
 		
-		$
-				.ajax({
-					url : "GetTinterModelsAction",
-					context : document.body,
-					data : {
+		$.ajax({
+				url : "GetTinterModelsAction",
+				context : document.body,
+				data : {
 
-						customerId : "DEFAULT",
-						clrntSysId : colorantId,
-						reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
-					},
-					async : false,
-					type : "POST",
-					dataType : "json",
-					success : function(objs) {
-						if(objs.sessionStatus === "expired"){
-                    		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-                    	}
-                    	else{
-                    		modellist = objs.defaultModelList;
-                    	}
-					},
-					error : function() {
-						modellist = [ '<s:text name="tinterConfig.couldNotFindTinterModels"/>'
-								+ " " + colorantId ];
-						alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + colorantId + '</s:param></s:text>');
-					}
-				});
+					customerId : "DEFAULT",
+					clrntSysId : colorantId,
+					reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
+				},
+				async : false,
+				type : "POST",
+				dataType : "json",
+				success : function(objs) {
+					if(objs.sessionStatus === "expired"){
+                   		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                   	}
+                   	else{
+                   		modellist = objs.defaultModelList;
+                   	}
+				},
+				error : function() {
+					modellist = [ '<s:text name="tinterConfig.couldNotFindTinterModels"/>'
+							+ " " + colorantId ];
+					alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + colorantId + '</s:param></s:text>');
+				}
+			});
 
 		var box = $('#modelSelect');
 		box.empty();
@@ -415,7 +413,7 @@
 		$('#add_new_tinter').show(); // add new tinter
 		$('#ecals').hide();
 		$('#selectClrntSysId').val("CCE");
-		GetModelsForColorant($('#selectClrntSysId'));
+		GetModelsForColorant($('#selectClrntSysId').val());
 		
 		
 		/*  var dt_arr = buildEcal();
@@ -913,7 +911,7 @@
 				<label class="sw-label" for="selectClrntSysId"><s:text name="tinterConfig.colorant"/></label>
 				<s:select id="selectClrntSysId" name="newtinter.clrntSysId"
 					headerKey="-1" headerValue="%{getText('global.selectColorant')}"
-					list="defaultColorantList" onchange='GetModelsForColorant(this)' />
+					list="defaultColorantList" onchange='GetModelsForColorant(this.value)' />
 
 
 			</div>
