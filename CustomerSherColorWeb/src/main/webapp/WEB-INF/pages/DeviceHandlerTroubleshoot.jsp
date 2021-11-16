@@ -16,7 +16,7 @@
 		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
 		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
 		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
-		<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+		<link rel="stylesheet" href="css/font-awesome.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
