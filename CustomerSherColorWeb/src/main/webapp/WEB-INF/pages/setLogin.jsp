@@ -9,9 +9,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><s:text name="global.login"/></title>
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.min.css" type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
