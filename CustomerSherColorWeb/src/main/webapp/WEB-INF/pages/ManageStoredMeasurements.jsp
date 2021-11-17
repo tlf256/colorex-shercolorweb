@@ -29,7 +29,7 @@
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
- 		<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
+ 		<script type="text/javascript" src="js/datetime-moment.js"></script>
 		<script type="text/javascript" src="script/displaystoredmeasurements.js"></script>
 		<style>
 	        .sw-bg-main {

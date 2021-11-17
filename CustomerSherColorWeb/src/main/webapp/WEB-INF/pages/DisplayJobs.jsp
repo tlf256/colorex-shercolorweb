@@ -11,11 +11,11 @@
 		
 		<title><s:text name="displayJobs.lookupExistingJobs"/></title>
 			<!-- JQuery -->
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
+		<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" type="text/css">
 		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
 		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.bootstrap4.min.css"/>
+		<link rel="stylesheet" href="css/buttons.bootstrap4.min.css" type="text/css">
 		<link rel="stylesheet" href="css/joblist_datatable.css" type="text/css">
 		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
 		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
@@ -24,16 +24,16 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" src="js/dataTables.bootstrap4.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+		<script type="text/javascript" src="js/buttons.bootstrap4.min.js"></script> 
+		<script type="text/javascript" src="js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+		<script type="text/javascript" src="js/buttons.html5.min.js"></script>
+		<script type="text/javascript" src="js/buttons.print.min.js"></script>
+		<script type="text/javascript" src="js/jszip.min.js"></script>
+		<script type="text/javascript" src="js/pdfmake.min.js"></script>
+		<script type="text/javascript" src="js/vfs_fonts.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" src="script/displayjobs-1.4.10.js"></script>
