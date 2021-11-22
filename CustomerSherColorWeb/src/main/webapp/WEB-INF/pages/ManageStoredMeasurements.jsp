@@ -18,7 +18,6 @@
 		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<link rel="stylesheet" href="css/joblist_datatable.css" type="text/css">
 		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<script type="text/javascript" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" data-auto-replace-svg="nest"></script>
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
  		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
@@ -29,7 +28,7 @@
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
- 		<script type="text/javascript" src="js/datetime-moment.js"></script>
+ 		<script type="text/javascript" charset="utf-8" src="js/datetime-moment.js"></script>
 		<script type="text/javascript" src="script/displaystoredmeasurements.js"></script>
 		<style>
 	        .sw-bg-main {
@@ -619,7 +618,7 @@
 									<td><s:property value="#measurement.serialNbr" /></td>
 									<td>
 										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="%{getText('manageStoredMeasurements.deleteRemoteMeasurements')}">
-											<i class="far fa-trash-alt"></i>
+											<i class="fa fa-trash-o" aria-hidden="true"></i>
 										</button>
 									</td>
 									<td style="display:none"><s:property value="#measurement.measuredCurve" /></td>
