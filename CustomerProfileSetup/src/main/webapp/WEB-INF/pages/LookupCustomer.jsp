@@ -9,7 +9,7 @@
 	
 	<title>Customer Lookup</title>
 		<!-- JQuery -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
+	<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" type="text/css">
 	<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 	<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 	<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">

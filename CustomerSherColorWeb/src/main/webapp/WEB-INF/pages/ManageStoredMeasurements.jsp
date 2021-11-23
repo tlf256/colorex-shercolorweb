@@ -11,17 +11,16 @@
 							menu item on the Store/Customer PCs. -->		
 		<title><s:text name="global.manageRemoteMeasurements"/></title>
 			<!-- JQuery -->
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-		<link rel=StyleSheet href="css/joblist_datatable.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<script type="text/javascript" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" data-auto-replace-svg="nest"></script>
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
+		<link rel="stylesheet" href="css/joblist_datatable.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
  		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
@@ -29,7 +28,7 @@
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
- 		<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
+ 		<script type="text/javascript" charset="utf-8" src="js/datetime-moment.js"></script>
 		<script type="text/javascript" src="script/displaystoredmeasurements.js"></script>
 		<style>
 	        .sw-bg-main {
@@ -619,7 +618,7 @@
 									<td><s:property value="#measurement.serialNbr" /></td>
 									<td>
 										<button type="button" id="deleterow" class="btn btn-danger dltrow" title="%{getText('manageStoredMeasurements.deleteRemoteMeasurements')}">
-											<i class="far fa-trash-alt"></i>
+											<i class="fa fa-trash-o" aria-hidden="true"></i>
 										</button>
 									</td>
 									<td style="display:none"><s:property value="#measurement.measuredCurve" /></td>
