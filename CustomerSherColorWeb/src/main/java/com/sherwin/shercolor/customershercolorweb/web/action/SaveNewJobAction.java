@@ -263,7 +263,12 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			qtyDispensed++;
 			logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
 			reqObj.setQuantityDispensed(qtyDispensed);
-			sessionMap.put(reqGuid, reqObj);
+			try {
+				sessionMap.put(reqGuid, reqObj);
+
+			} catch (Exception e) {
+				return "loginRedirect";
+			}
 
 			logger.debug("inside action about to execute");
 			retVal = this.execute();
