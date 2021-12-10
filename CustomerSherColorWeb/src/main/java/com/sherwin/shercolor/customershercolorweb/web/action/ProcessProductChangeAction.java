@@ -616,12 +616,13 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 		} else {
 			tsf = cdsProd.map(CdsProd::getTsf).orElse(0.0);
 		}
-		// check for a TSF override
+		/*
+		// check for a TSF override -- commented out for now since the table is only on Dev and still being built
 		String clrntSys = reqObj.getClrntSys();
 		CdsTsfOver tsfOver = productService.readCdsTsfOver(prodNbr, clrntSys);
 		if (tsfOver != null) {
 			tsf = tsfOver.getTsf();
-		}
+		}*/
 		return tsf;
 	}
 	
