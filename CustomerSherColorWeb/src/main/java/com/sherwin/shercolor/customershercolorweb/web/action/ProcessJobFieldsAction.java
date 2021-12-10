@@ -187,7 +187,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					logger.debug("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
-					thisField.setEnteredValue(thisField.getEnteredValue());
+					thisField.setEnteredValue(thisField.getEnteredValue().replace("\t", ""));
 					
 					i++;
 					validateMe.add(thisField.getEnteredValue());
