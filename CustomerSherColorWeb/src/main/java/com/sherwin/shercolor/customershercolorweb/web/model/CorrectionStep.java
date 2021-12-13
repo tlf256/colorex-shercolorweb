@@ -1,6 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.model;
 
-import com.sherwin.shercolor.common.model.FormulaIngredient;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
 
 import java.util.Date;
 import java.util.List;

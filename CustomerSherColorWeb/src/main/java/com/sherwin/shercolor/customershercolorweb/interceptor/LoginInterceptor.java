@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.dispatcher.Parameter;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -21,7 +21,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 	@SuppressWarnings("serial")
 	public class LoginInterceptor extends AbstractInterceptor {
 		
-		static Logger logger = LogManager.getLogger(LoginInterceptor.class);
+		static Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 		
 	    @Override
 	    public String intercept(final ActionInvocation invocation) throws Exception {

@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CdsClrnt;
-import com.sherwin.shercolor.common.entity.CdsMiscCodes;
-import com.sherwin.shercolor.common.entity.CustWebParms;
-import com.sherwin.shercolor.common.entity.CustWebTran;
-import com.sherwin.shercolor.common.model.FormulaInfo;
-import com.sherwin.shercolor.common.model.FormulaIngredient;
+import com.sherwin.shercolor.common.domain.CdsClrnt;
+import com.sherwin.shercolor.common.domain.CdsMiscCodes;
+import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.domain.FormulaInfo;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ProcessManualFormulaAction.class.getName());
+	static Logger logger = LoggerFactory.getLogger(ProcessManualFormulaAction.class.getName());
 	
 	private String reqGuid;
 	private FormulaInfo displayFormula;

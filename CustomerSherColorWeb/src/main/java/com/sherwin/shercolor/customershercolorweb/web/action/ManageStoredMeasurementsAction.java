@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
@@ -41,7 +41,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ManageStoredMeasurementsAction.class);
+	static Logger logger = LoggerFactory.getLogger(ManageStoredMeasurementsAction.class);
 	private String reqGuid;
 
 	private CustWebSpectroRemote custWebSpectroRemote;

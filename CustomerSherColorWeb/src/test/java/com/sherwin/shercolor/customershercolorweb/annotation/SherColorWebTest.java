@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.annotation;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 @Transactional
-@ActiveProfiles("oracle")
+@SpringBootTest
+@ActiveProfiles("test")
 public @interface SherColorWebTest {
 }

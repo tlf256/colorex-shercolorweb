@@ -7,11 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CustWebColorantsTxt;
-import com.sherwin.shercolor.common.entity.CustWebTranCorr;
-import com.sherwin.shercolor.common.model.FormulaIngredient;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
+import com.sherwin.shercolor.common.domain.CustWebTranCorr;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sherwin.shercolor.common.service.TinterService;
@@ -24,9 +25,11 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 @Service
 public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
-	static Logger logger = LogManager.getLogger(CorrectionInfoBuilder.class.getName());
+	static Logger logger = LoggerFactory.getLogger(CorrectionInfoBuilder.class.getName());
 
+	@Autowired
 	TranHistoryService tranHistoryService;
+	@Autowired
 	TinterService tinterService;
 	
 	public CorrectionInfoBuilderImpl(TranHistoryService tranHistoryService, TinterService tinterService){

@@ -1,0 +1,31 @@
+server:
+  display-name: SherColorWeb
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+spring:
+  application:
+    name: SherColorWeb
+  config:
+    import: /web_apps/server/shercolor/deploy/shercolorcommontesting.properties
+  datasource:
+    password: ${jdbc.password.${dbEnv}}
+    username: ${jdbc.username.${dbEnv}}
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    show-sql: true
+  main:
+    allow-bean-definition-overriding: true
+  output:
+    ansi:
+      enabled: ALWAYS
+  profiles:
+      #either oracle or postgres
+      include: oracle

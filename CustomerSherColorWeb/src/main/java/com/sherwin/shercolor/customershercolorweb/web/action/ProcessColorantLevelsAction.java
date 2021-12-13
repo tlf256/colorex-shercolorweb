@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CustWebColorantsTxt;
+import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 @SuppressWarnings("serial")
 public class ProcessColorantLevelsAction extends ActionSupport implements SessionAware, LoginRequired{
 
-	static Logger logger = LogManager.getLogger(ProcessColorantLevelsAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessColorantLevelsAction.class);
 	private String reqGuid;
 	private Map<String, Object> sessionMap;
 	private TinterInfo tinter;

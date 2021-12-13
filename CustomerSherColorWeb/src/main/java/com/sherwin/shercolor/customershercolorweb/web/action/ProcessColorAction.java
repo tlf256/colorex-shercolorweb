@@ -9,18 +9,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-import com.sherwin.shercolor.common.entity.CdsColorMast;
-import com.sherwin.shercolor.common.entity.CustWebParms;
-import com.sherwin.shercolor.common.entity.CustWebSpectroRemote;
+import com.sherwin.shercolor.common.domain.CdsColorMast;
+import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebSpectroRemote;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
 
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
 
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -33,19 +33,24 @@ import com.sherwin.shercolor.common.validation.ColorValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
-
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class ProcessColorAction extends ActionSupport implements SessionAware, LoginRequired {
+	@Autowired
 	private ColorMastService colorMastService;
+	@Autowired
 	private ColorBaseService colorBaseService;
+	@Autowired
 	private ColorService colorService;
+	@Autowired
 	private CustomerService customerService;
+	@Autowired
 	private ColorValidator colorValidator;
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ProcessColorAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessColorAction.class);
 	
 	private CdsColorMast thisColor;
 	private String reqGuid;

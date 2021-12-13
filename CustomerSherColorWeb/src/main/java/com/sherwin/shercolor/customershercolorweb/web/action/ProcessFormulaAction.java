@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	private DataInputStream inputStream;
 	private byte[] data;
-	static Logger logger = LogManager.getLogger(ProcessFormulaAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessFormulaAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private FormulaInfo displayFormula;
@@ -84,10 +84,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	List<CustWebCanTypes> canTypesList = null;
 	private String clrntAmtList;
 
+	@Autowired
 	private TinterService tinterService;
+	@Autowired
 	private TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
+	@Autowired
 	private DrawdownLabelService drawdownLabelService;
+	@Autowired
 	private ColorMastService colorMastService;
 
 	private List<CdsRoomList> roomByRoomList;
@@ -193,9 +197,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						addItem.setClrntCode(ingr.getTintSysId());
 						logger.debug(addItem.getClrntCode());
 						addItem.setShots(ingr.getShots());
-						logger.debug(addItem.getShots());
+						logger.debug(String.valueOf(addItem.getShots()));
 						addItem.setUom(ingr.getShotSize());
-						logger.debug(addItem.getUom());
+						logger.debug(String.valueOf(addItem.getUom()));
 						//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());

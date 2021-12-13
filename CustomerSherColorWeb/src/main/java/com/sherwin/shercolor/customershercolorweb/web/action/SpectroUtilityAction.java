@@ -2,8 +2,8 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
@@ -16,7 +16,7 @@ public class SpectroUtilityAction extends ActionSupport  implements SessionAware
 
 	private static final long serialVersionUID = 1L;
 
-	static Logger logger = LogManager.getLogger(SpectroUtilityAction.class.getName());
+	static Logger logger = LoggerFactory.getLogger(SpectroUtilityAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String spectroModel;

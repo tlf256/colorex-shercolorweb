@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -13,7 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 @SuppressWarnings("serial")
 public class SelectJobAction extends ActionSupport  implements SessionAware, LoginRequired  {
 
-	static Logger logger = LogManager.getLogger(SelectJobAction.class);
+	static Logger logger = LoggerFactory.getLogger(SelectJobAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	

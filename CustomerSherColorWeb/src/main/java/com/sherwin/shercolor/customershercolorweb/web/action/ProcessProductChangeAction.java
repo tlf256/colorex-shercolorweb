@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsMiscCodes;
@@ -40,7 +40,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 	
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessProductAction.class);
 	private String partialProductNameOrId; 
 	private String message;
 	private String salesNbr;

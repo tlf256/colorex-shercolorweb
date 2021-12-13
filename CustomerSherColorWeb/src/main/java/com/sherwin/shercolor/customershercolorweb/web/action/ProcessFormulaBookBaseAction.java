@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
@@ -20,10 +20,13 @@ import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProcessFormulaBookBaseAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
+	@Autowired
 	private FormulationService formulationService;
+	@Autowired
 	private CustomerService customerService;
 	
 	private Map<String, String> colorBases;
@@ -37,7 +40,7 @@ public class ProcessFormulaBookBaseAction extends ActionSupport implements Sessi
 	
 	private String reqGuid;
 	
-	static Logger logger = LogManager.getLogger(ProcessFormulaBookBaseAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessFormulaBookBaseAction.class);
 	private static final long serialVersionUID = 1L;
 	
 	private String[] dispSourceDescr = new String[2];

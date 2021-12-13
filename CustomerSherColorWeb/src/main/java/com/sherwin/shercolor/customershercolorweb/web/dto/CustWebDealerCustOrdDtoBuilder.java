@@ -1,6 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.dto;
 
-import com.sherwin.shercolor.common.entity.CustWebDealerCustOrd;
+import com.sherwin.shercolor.common.domain.CustWebDealerCustOrd;
 
 import java.util.ArrayList;
 import java.util.List;

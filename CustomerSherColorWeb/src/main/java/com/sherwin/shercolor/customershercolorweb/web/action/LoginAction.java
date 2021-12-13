@@ -22,8 +22,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.owasp.encoder.Encode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,16 +48,17 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	 */
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
-	private CustomerService customerService;
-	private EulaService eulaService;
 
 	@Autowired
+	private CustomerService customerService;
+	@Autowired
+	private EulaService eulaService;
+	@Autowired
 	private TinterService tinterService;
-	
 	@Autowired
 	private TranHistoryService tranHistoryService;
 
-	static Logger logger = LogManager.getLogger(LoginAction.class);
+	static Logger logger = LoggerFactory.getLogger(LoginAction.class);
 	private RequestObject reqObj;
 	private String reqGuid;
 	private String guid1;

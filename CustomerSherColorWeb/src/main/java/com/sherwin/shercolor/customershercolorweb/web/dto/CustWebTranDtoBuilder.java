@@ -1,6 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.dto;
 
-import com.sherwin.shercolor.common.entity.CustWebTran;
+import com.sherwin.shercolor.common.domain.CustWebTran;
 
 import java.util.ArrayList;
 import java.util.List;

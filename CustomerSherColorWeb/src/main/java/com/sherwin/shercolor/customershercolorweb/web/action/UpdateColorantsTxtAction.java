@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +29,7 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 	@Autowired
 	ColorantService colorantService;
 
-	static Logger logger = LogManager.getLogger(UpdateColorantsTxtAction.class.getName());
+	static Logger logger = LoggerFactory.getLogger(UpdateColorantsTxtAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String colorantSystem; 

@@ -2,25 +2,49 @@
 <Configuration status="INFO">
 	<Properties>
 		<Property name="log-path">/swpkg/shared/web_apps/server/shercolor/log</Property>
+		<Property name="log-pattern">%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</Property>
 	</Properties>
 	<Appenders>
 		<RollingFile name="RollingFile" fileName="${log-path}/CustomerSherColorWeb.log"
 			filePattern="${log-path}/CustomerSherColorWeb-%d{yyyy-MM-dd}-%i.log" >
 			<PatternLayout>
-				<pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</pattern>
+				<pattern>${log-pattern}</pattern>
 			</PatternLayout>
 			<Policies>
 				<SizeBasedTriggeringPolicy size="5 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="10"/>
 		</RollingFile>
+		<Console name="Console">
+			<PatternLayout>
+				<pattern>${log-pattern}</pattern>
+			</PatternLayout>
+		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="root" level="info" additivity="false">
-			<appender-ref ref="RollingFile" level="info"/>
+		<Logger name="org.springframework" level="info" additivity="false">
+			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Logger name="oracle.ucp" level="trace" additivity="false">
+			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Logger name="org.hibernate.sql" level="error" additivity="false">
+			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Logger name="org.hibernate" level="error" additivity="false">
+			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Logger name="com.sherwin.shercolor" level="trace" additivity="false">
+			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
 		</Logger>
 		<Root level="info" additivity="false">
 			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
 		</Root>
 	</Loggers>
 </Configuration>

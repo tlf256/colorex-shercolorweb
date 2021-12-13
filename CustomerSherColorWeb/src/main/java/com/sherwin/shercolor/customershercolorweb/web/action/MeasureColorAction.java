@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebParms;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,17 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class MeasureColorAction extends ActionSupport implements SessionAware, LoginRequired {
 
+	@Autowired
 	private ColorService colorService;
+	@Autowired
 	private CustomerService customerService;
+	@Autowired
 	private ColorBaseService colorBaseService;
 
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(MeasureColorAction.class);
+	static Logger logger = LoggerFactory.getLogger(MeasureColorAction.class);
 	
 	private String reqGuid;
 	private boolean measureColor;

@@ -6,10 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CustWebTinterEvents;
-import com.sherwin.shercolor.common.entity.CustWebTinterEventsDetail;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.sherwin.shercolor.common.domain.CustWebTinterEvents;
+import com.sherwin.shercolor.common.domain.CustWebTinterEventsDetail;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 	@Autowired
 	TinterService tinterService;
 
-	static Logger logger = LogManager.getLogger(TinterEventAction.class.getName());
+	static Logger logger = LoggerFactory.getLogger(TinterEventAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String eventDate;

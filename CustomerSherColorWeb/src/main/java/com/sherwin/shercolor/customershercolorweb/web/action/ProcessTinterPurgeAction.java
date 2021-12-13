@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +22,7 @@ public class ProcessTinterPurgeAction extends ActionSupport implements SessionAw
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ProcessTinterPurgeAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessTinterPurgeAction.class);
 	private String reqGuid;
 	private boolean autoNozzleCover;
 	private String currentUser;

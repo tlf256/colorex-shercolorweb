@@ -3,11 +3,11 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CustWebDealer;
-import com.sherwin.shercolor.common.entity.CustWebDealerCust;
-import com.sherwin.shercolor.common.entity.CustWebDealerCustOrd;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.sherwin.shercolor.common.domain.CustWebDealer;
+import com.sherwin.shercolor.common.domain.CustWebDealerCust;
+import com.sherwin.shercolor.common.domain.CustWebDealerCustOrd;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
@@ -25,7 +25,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 @SuppressWarnings("serial")
 public class ListDealerCustomerOrdersAction extends ActionSupport implements SessionAware, LoginRequired {
 
-	static Logger logger = LogManager.getLogger(LookupJobAction.class);
+	static Logger logger = LoggerFactory.getLogger(LookupJobAction.class);
 	
 	private Map<String, Object> sessionMap;
 	

@@ -4,8 +4,8 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	 */
 	
 	private static final long serialVersionUID = 1L;
-	private final static Logger logger = LogManager.getLogger(EcalAction.class);
+	private final static Logger logger = LoggerFactory.getLogger(EcalAction.class);
 
 	@Autowired
 	EcalService service;

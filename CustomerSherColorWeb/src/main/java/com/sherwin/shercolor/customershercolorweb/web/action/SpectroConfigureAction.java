@@ -3,9 +3,9 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.entity.CustWebDevices;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.sherwin.shercolor.common.domain.CustWebDevices;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
@@ -15,13 +15,15 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SpectroConfigureAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	private Map<String, Object> sessionMap;
+	@Autowired
 	private CustomerService customerService;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(SpectroConfigureAction.class);
+	static Logger logger = LoggerFactory.getLogger(SpectroConfigureAction.class);
 
 	private String reqGuid;
 	private String message;

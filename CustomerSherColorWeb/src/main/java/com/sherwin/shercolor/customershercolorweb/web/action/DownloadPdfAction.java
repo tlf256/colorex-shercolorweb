@@ -6,8 +6,8 @@ import org.apache.struts2.interceptor.SessionAware;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -15,7 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 @SuppressWarnings("serial")
 public class DownloadPdfAction extends ActionSupport  implements SessionAware, LoginRequired  {
 
-	static Logger logger = LogManager.getLogger(DownloadPdfAction.class);
+	static Logger logger = LoggerFactory.getLogger(DownloadPdfAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String pdfFile;

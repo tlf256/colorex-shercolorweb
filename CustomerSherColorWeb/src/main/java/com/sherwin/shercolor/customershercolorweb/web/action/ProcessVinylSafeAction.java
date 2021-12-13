@@ -2,8 +2,8 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +20,7 @@ public class ProcessVinylSafeAction  extends ActionSupport implements SessionAwa
 	ProductService productService;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ProcessVinylSafeAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessVinylSafeAction.class);
 	
 	private String reqGuid;
 	private boolean makeVinylSafeFormula;
