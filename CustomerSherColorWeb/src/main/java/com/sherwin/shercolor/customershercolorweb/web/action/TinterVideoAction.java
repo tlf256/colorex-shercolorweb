@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionSupport;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TinterVideoAction extends ActionSupport  implements SessionAware, LoginRequired{
 	private static final long serialVersionUID = 1L;
 	

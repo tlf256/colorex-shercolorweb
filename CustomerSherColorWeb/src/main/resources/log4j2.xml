@@ -42,7 +42,11 @@
 			<AppenderRef ref="RollingFile"/>
 			<AppenderRef ref="Console"/>
 		</Logger>
-		<Root level="info" additivity="false">
+		<Logger name="com.sherwin.ecom" level="debug" additivity="false">
+			<AppenderRef ref="RollingFile"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Root level="debug" additivity="false">
 			<AppenderRef ref="RollingFile"/>
 			<AppenderRef ref="Console"/>
 		</Root>

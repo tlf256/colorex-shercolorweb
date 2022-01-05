@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
+import org.springframework.stereotype.Component;
 
 
 @SuppressWarnings("serial")
+@Component
 public class DownloadPdfAction extends ActionSupport  implements SessionAware, LoginRequired  {
 
 	static Logger logger = LoggerFactory.getLogger(DownloadPdfAction.class);

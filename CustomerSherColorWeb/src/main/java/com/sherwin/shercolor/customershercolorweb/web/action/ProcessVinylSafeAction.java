@@ -11,7 +11,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsProdCharzd;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessVinylSafeAction  extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private Map<String, Object> sessionMap;

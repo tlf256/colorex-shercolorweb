@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    format-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.Oracle12cDialect
+    properties:
+      hibernate:
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    show-sql: true
+    use-sql-comments: true
+  main:
+    web-application-type: none
+  shercolorlogin-datasource:
+    jndi-name: java:jboss/datasources/jboss.jdbc.pool.securityPool
+    url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=extd-scan.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=STECOMD)))
+    username: ecomm7
+    password: nsdora11
+    ucp:
+      connection-pool-name: LOGIN_POOL

@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.util.domain.LocaleContainer;
+import org.springframework.stereotype.Component;
 
 
+@Component
 public class UpdateLocaleAction extends ActionSupport implements SessionAware, ServletResponseAware, ServletRequestAware {
 	
     private static final long serialVersionUID = 1L;

@@ -34,8 +34,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class ProcessColorAction extends ActionSupport implements SessionAware, LoginRequired {
 	@Autowired
 	private ColorMastService colorMastService;

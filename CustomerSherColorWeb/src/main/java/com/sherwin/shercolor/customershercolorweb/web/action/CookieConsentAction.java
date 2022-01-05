@@ -15,7 +15,9 @@ import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CookieConsentAction extends ActionSupport implements SessionAware, LoginRequired, ServletRequestAware, ServletResponseAware {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LoggerFactory.getLogger(CookieConsentAction.class);

@@ -13,7 +13,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	/**
 	 * 

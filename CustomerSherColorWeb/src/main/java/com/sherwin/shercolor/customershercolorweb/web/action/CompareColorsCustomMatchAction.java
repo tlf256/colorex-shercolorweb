@@ -14,7 +14,9 @@ import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CompareColorsCustomMatchAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LoggerFactory.getLogger(CompareColorsCustomMatchAction.class);

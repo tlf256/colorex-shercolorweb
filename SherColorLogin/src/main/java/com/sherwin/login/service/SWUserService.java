@@ -17,7 +17,7 @@ public interface SWUserService {
 	 * @param loginID - Login ID
 	 * @return boolean true if successfully updated, false if not.
 	 */
-	public boolean disableActiveUser(String loginID);
+	public int disableActiveUser(String loginID);
 	
 	/***
 	 * Read a SWUser record for the Login ID provided

@@ -12,7 +12,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DeclineEulaAction extends ActionSupport implements SessionAware, LoginRequired {
 	/**
 	 * 

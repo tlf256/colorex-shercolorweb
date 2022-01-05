@@ -11,7 +11,9 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpectroUtilityAction extends ActionSupport  implements SessionAware, LoginRequired {
 
 	private static final long serialVersionUID = 1L;

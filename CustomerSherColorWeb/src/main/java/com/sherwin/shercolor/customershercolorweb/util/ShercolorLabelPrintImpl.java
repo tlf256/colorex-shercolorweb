@@ -66,6 +66,7 @@ import be.quodlibet.boxable.VerticalAlignment;
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	static Logger logger = LoggerFactory.getLogger(ShercolorLabelPrintImpl.class);
 
+
 	DrawdownLabelService drawdownLabelService;
 	
 	CustomerService customerService;

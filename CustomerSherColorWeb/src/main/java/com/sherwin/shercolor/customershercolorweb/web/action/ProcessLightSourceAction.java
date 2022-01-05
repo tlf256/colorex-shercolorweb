@@ -9,7 +9,9 @@ import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessLightSourceAction  extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private Map<String, Object> sessionMap;

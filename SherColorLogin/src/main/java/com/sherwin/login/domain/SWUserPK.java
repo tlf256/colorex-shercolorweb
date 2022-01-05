@@ -9,6 +9,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @SuppressWarnings("serial")
 public class SWUserPK implements Serializable{
 	private String	loginID;
+	private Integer acctNbr;
+
+	public Integer getAcctNbr() {
+		return acctNbr;
+	}
+
+	public void setAcctNbr(Integer acctNbr) {
+		this.acctNbr = acctNbr;
+	}
 
 	public String getLoginID() {
 		return loginID;

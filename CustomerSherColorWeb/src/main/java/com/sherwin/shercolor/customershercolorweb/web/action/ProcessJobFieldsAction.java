@@ -19,7 +19,9 @@ import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessJobFieldsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
 	

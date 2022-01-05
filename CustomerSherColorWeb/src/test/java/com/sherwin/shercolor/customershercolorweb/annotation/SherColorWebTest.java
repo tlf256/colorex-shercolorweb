@@ -24,6 +24,5 @@ import java.lang.annotation.*;
 @Documented
 @Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 public @interface SherColorWebTest {
 }

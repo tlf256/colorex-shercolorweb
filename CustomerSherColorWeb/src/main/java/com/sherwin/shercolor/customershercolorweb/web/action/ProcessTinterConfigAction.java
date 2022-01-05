@@ -18,7 +18,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import org.owasp.encoder.Encode;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessTinterConfigAction extends ActionSupport implements SessionAware, LoginRequired  {
 	private Map<String, Object> sessionMap;
 	private List<CustWebEcal> myEcalList; // for future

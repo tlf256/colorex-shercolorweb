@@ -23,7 +23,9 @@ import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LoggerFactory.getLogger(CompareColorsAction.class);

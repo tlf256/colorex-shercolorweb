@@ -16,6 +16,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
 public class LogoutAction extends ActionSupport  implements SessionAware, LoginRequired  {
 	/**

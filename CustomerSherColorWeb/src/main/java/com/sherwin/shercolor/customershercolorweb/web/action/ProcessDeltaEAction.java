@@ -11,8 +11,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class ProcessDeltaEAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
 

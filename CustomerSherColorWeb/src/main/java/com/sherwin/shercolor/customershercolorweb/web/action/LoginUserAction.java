@@ -26,9 +26,12 @@ import com.sherwin.login.domain.SWUser;
 import com.sherwin.login.domain.SWUserComments;
 import com.sherwin.login.service.SWUserCommentService;
 import com.sherwin.login.service.SWUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
 // BKP 2/16/2018 - new action used for SherColor login page display and evaluation.
+@Component
 public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 	public static final String ROLE_SHERCOLOR = "SherColorRole";
 	private static final long serialVersionUID = 1L;
@@ -46,8 +49,10 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 	private String gemsEmpId;
 	private Date changePasswordDate;
 	private RequestObject reqObj;
-	
+
+	@Autowired
 	private SWUserService swUserService;
+	@Autowired
 	private SWUserCommentService swUserCommentService;
 
 	
@@ -183,7 +188,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			
 			} catch (Exception e) {
 				logger.error("sher-link authentication error for user -> " + userId);
-				logger.error("sher-link authentication error is -> " + e.getMessage());
+				logger.error("sher-link authentication error is -> ", e);
 				
 				// Check Number of Login Attempts
 				loginAttemptCnt = checkNumberOfLoginAttempts(loginAttemptCnt, userId, request, e);
@@ -258,7 +263,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 
 	
 	private void disableActiveUser(String theUserId) {
-		if(!swUserService.disableActiveUser(theUserId)) {
+		if(swUserService.disableActiveUser(theUserId) == 0) {
 			//log an error that something happened (odds are, the DAO also logged it too)
 			//then continue on. 
 			logger.error("Attempt to disable active user " + theUserId + " failed");

@@ -41,7 +41,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.customershercolorweb.web.action.LoginRequired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoginAction extends ActionSupport  implements SessionAware, LoginRequired {
 	/**
 	 * 

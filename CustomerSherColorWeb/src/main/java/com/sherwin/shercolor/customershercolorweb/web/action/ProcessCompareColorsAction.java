@@ -12,7 +12,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorDifference;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessCompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LoggerFactory.getLogger(ProcessCompareColorsAction.class);

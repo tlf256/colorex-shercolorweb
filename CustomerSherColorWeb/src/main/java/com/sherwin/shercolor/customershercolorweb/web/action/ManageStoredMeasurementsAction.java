@@ -27,7 +27,9 @@ import com.sherwin.shercolor.common.domain.CustWebSpectroRemote;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ManageStoredMeasurementsAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	// 06/24/2019 BXW: This Action class supports the functionality for the corresponding jsp page

@@ -21,8 +21,10 @@ import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerCustOrdDt
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerDto;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerDtoBuilder;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
+@Component
 public class ListDealerCustomerOrdersAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	static Logger logger = LoggerFactory.getLogger(LookupJobAction.class);

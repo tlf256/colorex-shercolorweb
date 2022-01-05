@@ -13,8 +13,10 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.common.service.EulaService;
+import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
+@Component
 public class AcceptEulaAction extends ActionSupport implements SessionAware {
 	
 	static Logger logger = LoggerFactory.getLogger(AcceptEulaAction.class);

@@ -16,8 +16,9 @@ import com.sherwin.shercolor.common.service.CustomerService;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class SpectroGetInfoAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	@Autowired

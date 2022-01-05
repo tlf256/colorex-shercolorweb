@@ -19,9 +19,11 @@ import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
 
 @SuppressWarnings("serial")
+@Component
 public class ProcessClrntSysAction extends ActionSupport implements SessionAware, LoginRequired  {
 
 	static Logger logger = LoggerFactory.getLogger(ProcessClrntSysAction.class);

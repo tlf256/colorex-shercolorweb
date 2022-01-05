@@ -1,5 +1,6 @@
 package com.sherwin.login.service;
 
+import com.sherwin.login.dao.SwUserCommentsRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ public class SWUserCommentServiceImpl implements SWUserCommentService {
 	static Logger logger = LogManager.getLogger(SWUserCommentServiceImpl.class);
 	
 	@Autowired
-	SWUserCommentDao swUserCommentDao;
+	SwUserCommentsRepository swUserCommentsRepository;
 	
 	public boolean createOrUpdateEntry(SWUserComments thisComment) {
 		boolean theResult = false;
 		try {
-			swUserCommentDao.createOrUpdateEntry(thisComment);
+			swUserCommentsRepository.save(thisComment);
 			theResult = true;
 		} catch (Exception se) {
 			logger.error(se.getMessage());

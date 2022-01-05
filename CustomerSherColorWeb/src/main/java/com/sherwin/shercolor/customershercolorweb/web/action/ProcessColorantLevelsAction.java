@@ -17,8 +17,10 @@ import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
+import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
+@Component
 public class ProcessColorantLevelsAction extends ActionSupport implements SessionAware, LoginRequired{
 
 	static Logger logger = LoggerFactory.getLogger(ProcessColorantLevelsAction.class);

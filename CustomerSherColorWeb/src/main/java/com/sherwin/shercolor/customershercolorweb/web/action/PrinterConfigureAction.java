@@ -17,7 +17,9 @@ import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.util.domain.SwMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PrinterConfigureAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	private Map<String, Object> sessionMap;

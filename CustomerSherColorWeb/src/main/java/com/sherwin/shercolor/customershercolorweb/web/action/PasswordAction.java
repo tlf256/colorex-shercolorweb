@@ -14,7 +14,10 @@ import com.sherwin.ecom.security.assertion.SsoHelper;
 import com.sherwin.login.service.SWUserService;
 import com.sherwin.login.util.SWLoginValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordAction extends ActionSupport  implements SessionAware, LoginRequired {
 	private String guid1;
 	private String whereFrom;
@@ -22,7 +25,9 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 	private String userPassConfirm;
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
+	@Autowired
 	private SWUserService swUserService;
+	@Autowired
 	private SWLoginValidator swLoginValidator;
 
 	

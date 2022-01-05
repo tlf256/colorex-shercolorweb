@@ -17,7 +17,9 @@ import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessTinterPurgeAction extends ActionSupport implements SessionAware, LoginRequired  {
 	private Map<String, Object> sessionMap;
 	
