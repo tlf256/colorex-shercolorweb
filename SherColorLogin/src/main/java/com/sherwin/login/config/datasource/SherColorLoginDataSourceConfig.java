@@ -34,21 +34,21 @@ public class SherColorLoginDataSourceConfig {
 
     //Uncomment to setup traditional JDBC connection as opposed to wildfly JNDI connection
     //Also, comment out the existing shercolorLoginDataSource() method
-    /*@Bean
-    public PoolDataSource shercolorLoginDataSource() throws SQLException {
-        PoolDataSource poolDataSource = PoolDataSourceFactory.getPoolDataSource();
-        poolDataSource.setURL(env.getProperty("spring.shercolorlogin-datasource.url"));
-        poolDataSource.setUser(env.getProperty("spring.shercolorlogin-datasource.username"));
-        poolDataSource.setPassword(env.getProperty("spring.shercolorlogin-datasource.password"));
-        poolDataSource.setConnectionFactoryClassName(OracleDataSource.class.getName());
-        poolDataSource.setConnectionPoolName(env.getProperty("spring.shercolorlogin-datasource.ucp.connection-pool-name"));
-        poolDataSource.setInactiveConnectionTimeout(120);
-        poolDataSource.setMaxPoolSize(20);
-        poolDataSource.setMinPoolSize(5);
-        poolDataSource.setMaxStatements(10);
-        poolDataSource.setValidateConnectionOnBorrow(true);
-        return poolDataSource;
-    }*/
+//    @Bean
+//    public PoolDataSource shercolorLoginDataSource() throws SQLException {
+//        PoolDataSource poolDataSource = PoolDataSourceFactory.getPoolDataSource();
+//        poolDataSource.setURL(env.getProperty("spring.shercolorlogin-datasource.url"));
+//        poolDataSource.setUser(env.getProperty("spring.shercolorlogin-datasource.username"));
+//        poolDataSource.setPassword(env.getProperty("spring.shercolorlogin-datasource.password"));
+//        poolDataSource.setConnectionFactoryClassName(OracleDataSource.class.getName());
+//        poolDataSource.setConnectionPoolName(env.getProperty("spring.shercolorlogin-datasource.ucp.connection-pool-name"));
+//        poolDataSource.setInactiveConnectionTimeout(120);
+//        poolDataSource.setMaxPoolSize(20);
+//        poolDataSource.setMinPoolSize(5);
+//        poolDataSource.setMaxStatements(10);
+//        poolDataSource.setValidateConnectionOnBorrow(true);
+//        return poolDataSource;
+//    }
 
     @Bean
     public DataSource shercolorLoginDataSource() throws SQLException, NamingException {

@@ -26,11 +26,11 @@ public class SWUserCommentDaoImplTest {
     //TODO need to add more tests!
 
 	@Autowired
-	SWUserCommentDao target;
+	private SwUserCommentsRepository swUserCommentsRepository;
 
 	@Test
 	public void testCreate() {
-		assertNotNull(target);
+		assertNotNull(swUserCommentsRepository);
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class SWUserCommentDaoImplTest {
 			thisComment.setCreatedBy("system");
 			thisComment.setLoginID("bxp874");
 			thisComment.setCreatedDate(new Date());
-		SWUserComments thatComment = target.createOrUpdateEntry(thisComment);
+		SWUserComments thatComment = swUserCommentsRepository.save(thisComment);
 		System.out.println("Update successful.  ID is " + thatComment.getId());
 		assertTrue(true);
 		} catch (Exception ex) {
@@ -65,7 +65,7 @@ public class SWUserCommentDaoImplTest {
 			thisComment.setCreatedBy("system");
 			thisComment.setLoginID("bxp874");
 			thisComment.setCreatedDate(new Date());
-		SWUserComments thatComment = target.createOrUpdateEntry(thisComment);
+		SWUserComments thatComment = swUserCommentsRepository.save(thisComment);
 		System.out.println("Update successful.  ID is " + thatComment.getId());
 		assertTrue(true);
 		} catch (Exception ex) {

@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sherwin.SherColorWeb</groupId>
-    <artifactId>CustomerSherColorWeb</artifactId>
+    <groupId>com.sherwin.shercolor</groupId>
+    <artifactId>SherColorWeb</artifactId>
     <packaging>war</packaging>
     <version>1.5</version>
-    <name>CustomerSherColorWeb Maven Webapp</name>
+    <name>SherColorWeb Maven Webapp</name>
     <url>http://maven.apache.org</url>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -218,62 +218,52 @@
         <plugins>
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>2.0.2.Final</version>
+                <artifactId>wildfly-jar-maven-plugin</artifactId>
+                <version>7.0.0.Final</version>
+                <configuration>
+                    <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
+                    <layers>
+                        <layer>legacy-management</layer>
+                        <layer>legacy-remoting</layer>
+                        <layer>legacy-security</layer>
+                        <layer>undertow-legacy-https</layer>
+                        <layer>core-tools</layer>
+                        <layer>datasources</layer>
+                        <layer>bean-validation</layer>
+                        <layer>logging</layer>
+                        <layer>security-manager</layer>
+                        <layer>ee</layer>
+                        <layer>io</layer>
+                        <layer>pojo</layer>
+                    </layers>
+                    <excluded-layers>
+                        <excluded-layer>cdi</excluded-layer>
+                    </excluded-layers>
+                    <extra-server-content-dirs>
+                        <extra-content>wildfly/includes</extra-content>
+                    </extra-server-content-dirs>
+                    <cli-sessions>
+                        <cli-session>
+                            <script-files>
+                                <script>wildfly/scripts/setup.cli</script>
+                            </script-files>
+                            <!-- No expressions to resolve from any CLI props file -->
+                            <resolve-expressions>false</resolve-expressions>
+                        </cli-session>
+                    </cli-sessions>
+                    <!--Used to enable debug mode-->
+                    <jvmArguments>
+                        <arg>-agentlib:jdwp=transport=dt_socket,address=8080,server=y,suspend=n</arg>
+                    </jvmArguments>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>install</phase>
                         <goals>
-                            <goal>deploy</goal>
+                            <goal>package</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.wildfly.plugins</groupId>-->
-<!--                <artifactId>wildfly-jar-maven-plugin</artifactId>-->
-<!--                <version>7.0.0.Final</version>-->
-<!--                <configuration>-->
-<!--                    <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>-->
-<!--                    <layers>-->
-<!--                        <layer>legacy-management</layer>-->
-<!--                        <layer>legacy-remoting</layer>-->
-<!--                        <layer>legacy-security</layer>-->
-<!--                        <layer>undertow-legacy-https</layer>-->
-<!--                        <layer>core-tools</layer>-->
-<!--                        <layer>datasources</layer>-->
-<!--                        <layer>bean-validation</layer>-->
-<!--                        <layer>logging</layer>-->
-<!--                        <layer>security-manager</layer>-->
-<!--                        <layer>ee</layer>-->
-<!--                        <layer>io</layer>-->
-<!--                        <layer>pojo</layer>-->
-<!--                    </layers>-->
-<!--                    <excluded-layers>-->
-<!--                        <excluded-layer>management</excluded-layer>-->
-<!--                        <excluded-layer>cdi</excluded-layer>-->
-<!--                    </excluded-layers>-->
-<!--                    <extra-server-content-dirs>-->
-<!--                        <extra-content>wildfly/includes</extra-content>-->
-<!--                    </extra-server-content-dirs>-->
-<!--                    <cli-sessions>-->
-<!--                        <cli-session>-->
-<!--                            <script-files>-->
-<!--                                <script>wildfly/scripts/setup.cli</script>-->
-<!--                            </script-files>-->
-<!--                            &lt;!&ndash; No expressions to resolve from any CLI props file &ndash;&gt;-->
-<!--                            <resolve-expressions>false</resolve-expressions>-->
-<!--                        </cli-session>-->
-<!--                    </cli-sessions>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>package</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -284,6 +274,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>CustomerSherColorWeb</finalName>
+        <finalName>SherColorWeb</finalName>
     </build>
 </project>

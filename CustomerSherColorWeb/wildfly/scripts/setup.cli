@@ -28,6 +28,7 @@
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=hsts-header:add()
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=internet-restrictor-handler:add()
 
+/subsystem=undertow/servlet-container=default/setting=jsp:add()
 /subsystem=undertow/servlet-container=default/setting=session-cookie:add(name="JSESSIONID",http-only=true,secure=true)
 
 /subsystem=undertow/configuration=filter/response-header=server-header:add(header-name=Server,header-value=Wildfly)
