@@ -251,10 +251,6 @@
                             <resolve-expressions>false</resolve-expressions>
                         </cli-session>
                     </cli-sessions>
-                    <!--Used to enable debug mode-->
-                    <jvmArguments>
-                        <arg>-agentlib:jdwp=transport=dt_socket,address=8080,server=y,suspend=n</arg>
-                    </jvmArguments>
                 </configuration>
                 <executions>
                     <execution>
