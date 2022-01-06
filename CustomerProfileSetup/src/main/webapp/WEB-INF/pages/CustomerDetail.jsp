@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- JQuery -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
+<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 <link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
@@ -241,6 +241,7 @@
 				<table id="eula_detail" class="table table-striped table-bordered">
 					<tr>
 						<th>EULA</th>
+						<th>EULA Type</th>
 						<th>Effective Date</th>
 						<th>Expiration Date</th>
 					</tr>
@@ -249,11 +250,19 @@
 							<s:property value="sessionMap['CustomerDetail'].eula.website" />
 						</td>
 						<td>
-							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />
+							<s:property value="sessionMap['CustomerDetail'].eulaType" />
 						</td>
 						<td>
-							<s:property value="sessionMap['CustomerDetail'].eula.expirationDate" />
+							<s:property value="sessionMap['CustomerDetail'].eula.effectiveDate" />
 						</td>
+						<s:if test="sessionMap['CustomerDetail'].eula.expDate == null">
+							<td>Not Set</td>
+						</s:if>
+						<s:else>
+							<td>
+								<s:property value="sessionMap['CustomerDetail'].eula.expDate" />
+							</td>
+						</s:else>
 					</tr>
 				</table>
 			</div>

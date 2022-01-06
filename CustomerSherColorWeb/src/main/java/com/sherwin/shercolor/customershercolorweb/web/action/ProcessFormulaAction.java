@@ -3,11 +3,18 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,16 +50,14 @@ import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
 
 @SuppressWarnings("serial")
-@Component
 public class ProcessFormulaAction extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private DataInputStream inputStream;
 	private byte[] data;
-	static Logger logger = LoggerFactory.getLogger(ProcessFormulaAction.class);
+	static Logger logger = LogManager.getLogger(ProcessFormulaAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private FormulaInfo displayFormula;
@@ -79,14 +84,10 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	List<CustWebCanTypes> canTypesList = null;
 	private String clrntAmtList;
 
-	@Autowired
 	private TinterService tinterService;
-	@Autowired
 	private TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
-	@Autowired
 	private DrawdownLabelService drawdownLabelService;
-	@Autowired
 	private ColorMastService colorMastService;
 
 	private List<CdsRoomList> roomByRoomList;
@@ -192,9 +193,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						addItem.setClrntCode(ingr.getTintSysId());
 						logger.debug(addItem.getClrntCode());
 						addItem.setShots(ingr.getShots());
-						logger.debug(String.valueOf(addItem.getShots()));
+						logger.debug(addItem.getShots());
 						addItem.setUom(ingr.getShotSize());
-						logger.debug(String.valueOf(addItem.getUom()));
+						logger.debug(addItem.getUom());
 						//Validating completeness of colorantMap data returned from DB. If not, send error msg back to DisplayJobs.jsp
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
@@ -230,13 +231,13 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				retVal = SUCCESS;
 
 			}
-			
+			/*
 			// Add DeltaE Warning to Display Msgs if there is a warning to display
-			if (displayFormula.getAverageDeltaE() > 1) {
+			if (displayFormula.getAverageDeltaE() != null && displayFormula.getAverageDeltaE() > 1) {
 				displayDeltaEColumn = true;
 				displayFormula.setAverageDeltaE(Double.parseDouble(String.format("%,.2f", displayFormula.getAverageDeltaE())));
 				addActionError(getText("compareColorsResult.deltaEgreaterThanOneWarning"));
-			}
+			}*/
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			retVal = ERROR;

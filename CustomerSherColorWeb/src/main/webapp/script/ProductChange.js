@@ -188,7 +188,7 @@
 		            // then let them click through action messages
 				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
 						data.actionMessages.forEach(function(item) {
-				    		console.log(item);
+				    		//console.log(item);
 				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
 			                div.text(item);
 			                $("#actionMessageDisplay").append(div);
@@ -271,7 +271,7 @@
 		            // then let them click through action messages
 				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
 				    	data.actionMessages.forEach(function(item) {
-				    		console.log(item);
+				    		//console.log(item);
 				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
 			                div.text(item);
 			                $("#actionMessageDisplay").append(div);
@@ -354,7 +354,7 @@
 		            // let them click through action messages
 				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
 				    	data.actionMessages.forEach(function(item) {
-				    		console.log(item);
+				    		//console.log(item);
 				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
 			                div.text(item);
 			                $("#actionMessageDisplay").append(div);
@@ -527,11 +527,11 @@
 			$('.changeProdError').addClass('d-none');
 			$('#sizeChangeTable').addClass('d-none');
 			$("#userIllumMenu").addClass("d-none");
-			
 			$("#vinylSafePrompt").addClass("d-none");
 			$("#vinylSafeYes").addClass("d-none");
     		$("#vinylSafeNo").addClass("d-none");
     		$("#lookupProductNext").removeClass("d-none");
+    		makeVinylSafe = null;
 		});
 		
 		$("#changeProductMenu").find(".form-check-input").keypress(function(event){
@@ -581,14 +581,6 @@
     			break;
     		}
 		});
-		
-		// don't let user change the product if the job is already dispensed 
-		var qtyDispensed = parseInt($.trim($("#qtyDispensed").text()));
-		if (isNaN(qtyDispensed))
-			qtyDispensed = 0;
-		if (qtyDispensed > 0) {
-			$("#changeProductBtn").hide();
-		}
 	});
 	
 	

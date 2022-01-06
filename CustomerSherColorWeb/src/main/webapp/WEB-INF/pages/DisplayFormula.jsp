@@ -12,21 +12,18 @@
 
 <title><s:text name="global.formula"/></title>
 <!-- JQuery -->
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<link
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
@@ -240,7 +237,7 @@ function printButtonClickGetJson() {
 		if(numLabelsVal && numLabelsVal !=0){
 			numLabels = numLabelsVal;
 		}
-		print(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+		printLabel(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
 	}
 
 }
@@ -254,7 +251,7 @@ function printFromManualDispense(dispenseQuantity) {
 		printJsonIN = JSON.stringify(str);
 		var myPdf = new pdf(myguid,printJsonIN);
 		$("#printerInProgressMessage").text('<s:text name="displayFormula.printerInProgress"/>');
-		print(myPdf, dispenseQuantity, myPrintLabelType, myPrintOrientation);
+		printLabel(myPdf, dispenseQuantity, myPrintLabelType, myPrintOrientation);
 	}
 
 }
@@ -824,7 +821,7 @@ function ParsePrintMessage() {
 		// account uses room by room, and user already has a room choice stored in session
 		if (roomByRoomFlag == "true" && userRoomChoice != null && userRoomChoice != ""){
 			// room choice was a customized one; otherwise they match because the dropdown has already been updated
-			if (optionSelected != userRoomChoice){
+			if (optionSelected != userRoomChoice || userRoomChoice == "Other"){
 				$("select[id='roomsList']").val('Other');
 				$("#otherRoom").removeClass('d-none');
 				$("#otherRoom").val(userRoomChoice);
@@ -1129,8 +1126,8 @@ function ParsePrintMessage() {
 				$("#roomsList").focus();
 				$("#roomsDropdownErrorText").removeClass("d-none");
 				return false;
-			// they picked Other but didn't enter text
-			} else if (roomText == "Other" && (enteredText == null || enteredText.trim() == "")){
+			// they picked Other but didn't enter text or put >30 characters
+			} else if (roomText == "Other" && (enteredText == null || enteredText.trim() == "" || enteredText.length > 30)){
 				$("#otherRoomErrorText").removeClass("d-none");
 				$("#otherRoom").focus();
 				return false;
@@ -1301,6 +1298,7 @@ function ParsePrintMessage() {
 		</div>
 		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 	</div>
+	<!-- 
 	<s:if test="%{displayDeltaEColumn==true}">
 		<div class="row">
 			<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1312,7 +1310,7 @@ function ParsePrintMessage() {
 			</div>
 			<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 		</div>
-	</s:if>
+	</s:if> -->
 	<s:if 
 		test="%{
 		#session[reqGuid].displayFormula.deltaEWarning == null ||
@@ -1345,10 +1343,10 @@ function ParsePrintMessage() {
 						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
 							<s:text name="displayFormula.pleaseSelectARoom"/>
 						</div>
-						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" onblur="validateCustomRoom()"/>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" maxlength="30" onblur="validateCustomRoom()"/>
 						<s:hidden name="roomChoice" value="" />
 						<div id="otherRoomErrorText" style="color:red" class="d-none">
-							<s:text name="displayFormula.thisFieldCannotBeBlank"/>
+							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
 						</div>
 					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
@@ -2468,6 +2466,15 @@ function ParsePrintMessage() {
 						} 
 					}
 				}
+			}
+			// update button display regardless of user account type 
+			var qtyDispensed = parseInt($.trim($("#qtyDispensed").text()));
+			if (isNaN(qtyDispensed)){
+				qtyDispensed = 0;
+			}
+			// don't let user change the product if the job has been dispensed 
+			if (qtyDispensed > 0) {
+				$("#changeProductBtn").hide();
 			}
 		}
 

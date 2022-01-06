@@ -6,22 +6,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.domain.CdsClrnt;
-import com.sherwin.shercolor.common.domain.CdsMiscCodes;
-import com.sherwin.shercolor.common.domain.CustWebParms;
-import com.sherwin.shercolor.common.domain.CustWebTran;
-import com.sherwin.shercolor.common.domain.FormulaInfo;
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import org.apache.logging.log4j.Level;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
-
+import com.sherwin.shercolor.common.domain.CdsClrnt;
+import com.sherwin.shercolor.common.domain.CdsMiscCodes;
+import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.domain.FormulaInfo;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
@@ -32,14 +31,12 @@ import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.ManualIngredient;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ProcessManualFormulaAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ProcessManualFormulaAction.class.getName());
+	static Logger logger = LogManager.getLogger(ProcessManualFormulaAction.class.getName());
 	
 	private String reqGuid;
 	private FormulaInfo displayFormula;
@@ -51,7 +48,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private List<JobField> jobFields;
 	private int recDirty;
 	private boolean userWarningOverride = false;
-	private boolean adjByPercentVisible;
+	private boolean scaleByPercentVisible = true;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
 	private String adjustFormulaMsg;
@@ -165,8 +162,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			CustWebTran webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), 1);
 			
 			if (webTran == null && reqObj.getDisplayFormula() == null) {
-				logger.debug("Formula not saved or display formula null, no Adjust By Percent");
-				adjByPercentVisible = true;
+				logger.debug("Formula not saved and display formula null, Scale By Percent button not available.");
+				scaleByPercentVisible = false;
 			}
 	 
 			// setup colorant list for drop down
@@ -512,7 +509,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			if(retVal.equalsIgnoreCase(SUCCESS)){
 				String rgbHex = null;
 				BigDecimal[] curveArray = new BigDecimal[40];
-				CustWebParms custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID());
+				CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
 				custWebParms.setClrntSysId(reqObj.getClrntSys());
 				// all looks good. go project curve and update reqObj rgbhex
 				Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);
@@ -546,6 +543,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			if(retVal.equalsIgnoreCase(INPUT)){
 				fillColorantList(reqObj);
+				sizeList = utilityService.listSizeCodesForSizeConversion();
 			}
 			
 			
@@ -648,8 +646,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 		this.selectedColorantFocus = Encode.forHtml(selectedColorantFocus);
 	}
 
-	public boolean isAdjByPercentVisible() {
-		return adjByPercentVisible;
+	public boolean isScaleByPercentVisible() {
+		return scaleByPercentVisible;
 	}
 
 	public void setPercentOfFormula(int percentOfFormula) {

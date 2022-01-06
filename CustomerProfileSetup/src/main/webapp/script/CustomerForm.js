@@ -50,38 +50,7 @@ $(document).ready(function() {
 		}
 	}, "#cdsadlfld");
 	
-	$(document).on("change", ".clrntid, .clrntdefault", function(){
-		try{
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system before selecting the default";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system before selecting the default";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system before selecting the default";
-			}
-			if($("#CCEdefault").is(":checked") && !$("#CCE").is(":checked")){
-				throw "Please choose CCE colorant system";
-			}
-			if($("#BACdefault").is(":checked") && !$("#BAC").is(":checked")){
-				throw "Please choose BAC colorant system";
-			}
-			if($("#844default").is(":checked") && !$("#844").is(":checked")){
-				throw "Please choose 844 colorant system";
-			}
-			$("#clrntsyserror").text("");
-			$("#formerror").text("");
-			$(this).removeClass("border-danger");
-			$("#loginnext-btn").prop("disabled", false);
-			valid = true;
-		}catch(msg){
-			$("#clrntsyserror").text(msg);
-			$(this).addClass("border-danger");
-			$(this).prop("checked", false);
-			valid = false;
-		}
-	});
+	
 		
 	$(document).on("blur", "#acceptcode", function(){
 		try{
@@ -155,6 +124,12 @@ $(document).ready(function() {
 
 function validate() {
 	try {
+		if(!$(".clrntid:checked").length) {
+			throw "Please choose colorant system(s)";
+		}
+		if(!$(".clrntdefault:checked").length) {
+			throw "Please choose default colorant system";
+		}
 		if(!valid) {
 			throw "Please fix form error(s)";
 		}
@@ -223,6 +198,29 @@ function validateAcctNbr() {
 		$(selector).select();
 		$(selectorError).text(msg);
 		valid = false;
+	}
+}
+
+function verifyDate(value) {
+	try{
+		var tempdate = $.trim(value);
+		if(!tempdate){
+			throw "Please enter an Effective Date";
+		}
+		if(tempdate){
+			if(!/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2][0-9]|3[0-1])\/(2\d\d\d)$/.test(tempdate)){
+				throw "Please enter valid date in mm/dd/yyyy format";
+			}
+		}
+		$("#eulaerror").text("");
+		$(this).removeClass("border-danger");
+	}catch(msg){
+		$("html, body").animate({
+			scrollTop: $(document.body).offset().top
+		}, 1500);
+		$("#eulaerror").text(msg);
+		$(this).addClass("border-danger");
+		$(this).select();
 	}
 }
 
@@ -300,6 +298,25 @@ function showHideInput(value) {
 	buildCustTypesList(custTypes, selectList, selectedCustType);
 }
 
+function toggleSelectList(value) {
+	console.log("EULA type is " + value);
+	switch(value) {
+	case 'None':
+	case 'Custom EULA':
+		$('.eulaTemp').hide();
+		$('#code').hide();
+		break;
+	case 'SherColor Web EULA':
+		$('.eulaTemp').hide();
+		$('#code').show();
+		break;
+	case 'Custom EULA Template':
+		$('.eulaTemp').show();
+		$('#code').show();
+		break;
+	}
+}
+
 function showNtlAcctInput() {
 	$(".ntlacct").show();
 	$("#intntlacct").hide();
@@ -356,6 +373,7 @@ function hideInput() {
 	$(".rmbyrm").hide();
 	$(".locid").hide();
 	$(".eula").hide();
+	$(".eula-hidden").hide();
 	$(".prodaccess").hide();
 	$(".prodcomps").hide();
 	$("#restrictno").attr("checked", true);

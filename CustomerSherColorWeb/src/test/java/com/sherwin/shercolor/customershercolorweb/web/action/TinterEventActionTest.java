@@ -3,21 +3,14 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
-
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
-
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionProxy;
-
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 

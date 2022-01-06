@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,15 +37,13 @@ import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobHistoryInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
 
 @SuppressWarnings("serial")
-@Component
 public class LookupJobAction extends ActionSupport implements SessionAware, LoginRequired {
 	
 
-	static Logger logger = LoggerFactory.getLogger(LookupJobAction.class);
+	static Logger logger = LogManager.getLogger(LookupJobAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private List<JobField> jobFieldList;
@@ -56,6 +54,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	private boolean copyJobFields = false;
 	private boolean displayTintQueue = false;
 	private TranHistoryCriteria thc;
+	private boolean search;
 
 	@Autowired
 	ColorMastService colorMastService;
@@ -85,6 +84,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	
 	public String search() {
 		try {
+			setSearch(true);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			// check if this account uses room by room
@@ -283,7 +283,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	public String getJobFields() {
 		try { 
 			setCopyJobFields(true);
-			return this.display();
+			return this.search();
 		} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
 			return ERROR;
@@ -393,7 +393,6 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		}
 		
 		formula.setIngredients(recipe);
-		logger.info("in  lookupjobaction, averagedeltae from webtran is: " + webTran.getAverageDeltaE());
 		formula.setAverageDeltaE(webTran.getAverageDeltaE());
 		formula.setClrntSysId(webTran.getClrntSysId());
 		if(webTran.getClrntSysId()!=null){
@@ -689,6 +688,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setDisplayTintQueue(boolean displayTintQueue) {
 		this.displayTintQueue = displayTintQueue;
+	}
+
+	public boolean isSearch() {
+		return search;
+	}
+
+	public void setSearch(boolean search) {
+		this.search = search;
 	}
 
 }

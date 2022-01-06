@@ -10,13 +10,13 @@
 		
 		<title><s:text name="global.confirmColorAndBase"/></title>
 			<!-- JQuery -->
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.4.4.js"></script>

@@ -20,7 +20,65 @@ $(document).ready(function(){
 		}
 		
 	}, ".acctcmmnt");
-
+	
+	$('#effDate').datepicker({
+		//dateFormat: "dd-M-y",
+		changeMonth: true,
+		changeYear: true,
+		gotoCurrent: true
+	});
+	
+	$(document).on("change", ".clrntdefault, .clrntid", function(){
+		try{
+			var clrntSysIds = $('.clrntid:checked');
+			var clrntSysDefault = $(".clrntdefault:checked").val();
+			
+			if(!clrntSysIds.length) {
+				throw "Please choose colorant system(s)";
+			}
+			
+			console.log("clrnt sys length is " + clrntSysIds.length);
+			console.log("selected default is " + clrntSysDefault);
+			
+			var count = 0;
+			
+			clrntSysIds.each(function(){
+				var clrntid = $(this).parent().text().trim();
+				console.log("clrnt id is " + clrntid);
+				if(clrntSysDefault != null && clrntid != clrntSysDefault) {
+					count++;
+				}
+			});
+			
+			console.log("clrntsys id count is " + count);
+			
+			if(count == clrntSysIds.length) {
+				// a default has not been chosen for
+				// one of the selectd colorant systems
+				count = 0; // reset counter
+				throw "Please choose a default from selected colorant system(s)";
+			}
+			
+			if($("#clrntsyserror").is(":visible")) {
+				$("#clrntsyserror").text("");
+			}
+			$("#formerror").text("");
+			$(this).removeClass("border-danger");
+			valid = true;
+		}catch(msg){
+			if($("#clrntsyserror").is(":visible")) {
+				$("#clrntsyserror").text(msg);
+			} else {
+				$("#formerror").text(msg);
+				$("html, body").animate({
+					scrollTop: $(document.body).offset().top
+				}, 1500);
+			}
+			$(this).addClass("border-danger");
+			valid = false;
+		}
+	});
+	
 });
 
 function buildCustTypesList(custTypes, selectList, selectedOption) {

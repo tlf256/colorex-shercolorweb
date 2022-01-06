@@ -1,11 +1,8 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import javax.servlet.http.HttpSession;
-
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
-import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.junit.runner.RunWith;
@@ -20,8 +17,7 @@ public class LookupJobActionTest extends StrutsSpringJUnit4TestCase<LookupJobAct
 	LookupJobAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
-	
-	
+
 	@Test
 	public void testLookupJobsAction() {
 		System.out.println("Start Lookup Jobs Action Test");

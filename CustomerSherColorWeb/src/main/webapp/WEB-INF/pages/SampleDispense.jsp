@@ -9,20 +9,20 @@
 
 <title><s:text name="sampleDispense.sampleDispense"/></title>
 	
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/printer-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 
 <style>
@@ -229,7 +229,7 @@ badge {
 			if(numLabelsVal && numLabelsVal !=0){
 				numLabels = numLabelsVal;
 			}
-			print(myPdf, numLabels, printLabelType, printOrientation);
+			printLabel(myPdf, numLabels, printLabelType, printOrientation);
 		}
 
 	}
@@ -508,6 +508,9 @@ badge {
 					$("#qtyDispensed").text(data.qtyDispensed);
 					qtyRemaining = $('#qtyRemaining');
 					qtyRemaining.text(parseInt(qtyRemaining.text()-1));
+					if (parseInt(qtyRemaining.text())<0) {
+						qtyRemaining.text(0);
+					}
 					// send tinter event (no blocking here)
 					var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 					var tedArray = [ teDetail ];

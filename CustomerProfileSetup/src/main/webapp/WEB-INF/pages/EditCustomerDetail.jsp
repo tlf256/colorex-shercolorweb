@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- JQuery -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
+<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
 <link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
 <link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
@@ -91,62 +91,54 @@
 				<td><strong>Colorant System</strong></td>
 				<td>
 					<div class="form-check-inline">
-						<div class="form-check">
-							<s:iterator var="list" value="sessionMap['CustomerDetail'].clrntList" status="i">
-								<label for="<s:property value='#list' />" class="form-check-label font-weight-normal">
-									<s:property value="#list" />
+						<s:iterator var="clrntid" value="clrntSysIds" status="i">
+							<s:if test="#clrntid in sessionMap['CustomerDetail'].clrntList">
+								<div class="ml-1">
+									<label for="<s:property value='clrntid' />" class="form-check-label font-weight-normal">
+										<s:property value="clrntid" />
+									</label>
+									<input type="checkbox" id="<s:property value='clrntid' />" name="cust.clrntList" class="clrntid form-check-input" 
+										checked="checked" value="<s:property value='clrntid' />"></input>
+								</div>
+							</s:if>
+							<s:else>
+								<div class="ml-1">
+									<label for="<s:property value='clrntid' />" class="form-check-label font-weight-normal">
+									<s:property value="clrntid" />
 								</label>
-								<input type="checkbox" id="<s:property value='#list' />" name="cust.clrntList" class="clrntid form-check-input" 
-									checked="checked" value="<s:property value='#list' />"></input>
-							</s:iterator>
-						<s:if test="'CCE' not in sessionMap['CustomerDetail'].clrntList">
-							<label id="ccelabel" for="CCE" class="form-check-label font-weight-normal">CCE</label>
-							<input type="checkbox" id="CCE" name="cust.cce" class="clrntid form-check-input ml-0" value="CCE" />
-						</s:if>
-						<s:if test="'BAC' not in sessionMap['CustomerDetail'].clrntList">
-							<label id="baclabel" for="BAC" class="form-check-label font-weight-normal">BAC</label>
-							<input type="checkbox" id="BAC" name="cust.bac" class="clrntid form-check-input ml-0" value="BAC" />
-						</s:if>
-						<s:if test="'844' not in sessionMap['CustomerDetail'].clrntList">
-							<label id="efflabel" for="844" class="form-check-label font-weight-normal">844</label>
-							<input type="checkbox" id="844" name="cust.eff" class="clrntid form-check-input ml-0" value="844" />
-						</s:if>
-						</div>
+								<input type="checkbox" id="<s:property value='clrntid' />" name="cust.clrntList" class="clrntid form-check-input" 
+									value="<s:property value='clrntid' />"></input>
+								</div>
+							</s:else>
+						</s:iterator>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td><strong>Default Colorant System</strong></td>
 				<td>
-					
 					<div class="form-check-inline">
-						<div class="form-check" id="dfltclrnt">
-							<label for="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" class="form-check-label font-weight-normal">
-								<s:property value="sessionMap['CustomerDetail'].clrntList[0]" />
-							</label>
-							<input type="radio" id="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
-								checked="checked" value="<s:property value='sessionMap["CustomerDetail"].clrntList[0]' />"></input>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='CCE'}">
-								<label id="" for="CCEdefault" class="form-check-label font-weight-normal">
-									CCE
-								</label>
-								<input type="radio" id="CCEdefault" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="CCE" />
+						<s:iterator var="clrntdef" value="clrntSysIds">
+							<s:if test="#clrntdef == sessionMap['CustomerDetail'].clrntList[0]">
+								<div class="ml-1">
+									<label for="<s:property value='clrntdef' />default" class="form-check-label font-weight-normal">
+										<s:property value="clrntdef" />
+									</label>
+									<input type="radio" id="<s:property value='clrntdef' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
+										checked="checked" value="<s:property value='clrntdef' />"></input>
+								</div>
 							</s:if>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='BAC'}">
-								<label id="" for="BACdefault" class="form-check-label font-weight-normal">
-									BAC
-								</label>
-								<input type="radio" id="BACdefault" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="BAC" />
-							</s:if>
-							<s:if test="%{sessionMap['CustomerDetail'].clrntList[0]!='844'}">
-								<label id="" for="844default" class="form-check-label font-weight-normal">
-									844
-								</label>
-								<input type="radio" id="844default" name="cust.defaultClrntSys" class="clrntdefault form-check-input ml-0" value="844" />
-							</s:if>
-						</div>
+							<s:else>
+								<div class="ml-1">
+									<label for="<s:property value='clrntdef' />default" class="form-check-label font-weight-normal">
+										<s:property value="clrntdef" />
+									</label>
+									<input type="radio" id="<s:property value='clrntdef' />default" name="cust.defaultClrntSys" class="clrntdefault form-check-input" 
+										value="<s:property value='clrntdef' />"></input>
+								</div>
+							</s:else>
+						</s:iterator>
 					</div>
-					
 				</td>
 			</tr>
 			<tr>
@@ -181,7 +173,7 @@
 					<tr>
 						<td class="align-middle"><strong>Customer Type</strong></td>
 						<td id="custtype">
-							<s:select list="sessionMap['CustomerDetail'].custTypeList" id="typelist" name="cust.custType" onchange="toggleProfileInput(this.value)"
+							<s:select list="custTypeList" id="typelist" name="cust.custType" onchange="toggleProfileInput(this.value)"
 								value="sessionMap['CustomerDetail'].profile.custType"></s:select>
 						</td>
 					</tr>
@@ -217,44 +209,8 @@
 		</div>
 	<br>
 	</s:if>
-	<s:if test="!sessionMap['CustomerDetail'].uploadedEula && sessionMap['CustomerDetail'].updateMode && 
-		sessionMap['CustomerDetail'].eulaHistList == null">
-		<div class="row">
-			<div class="col-lg-2 col-md-2"></div>
-			<div class="col-lg-8 col-md-8">
-				<table id="uploadEula" class="table table-striped table-bordered">
-					<tr>
-						<th colspan="3">Upload EULA</th>
-					</tr>
-					<tr>
-						<td colspan="3" class="align-middle">
-							<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
-						</td>
-					</tr>
-					<tr>
-						<th>Effective Date</th>
-						<th>Expiration Date</th>
-						<th>EULA Text</th>
-					</tr>
-					<tr>
-						<td class="align-middle">
-							<s:textfield id="effDate" name="effDate"></s:textfield>
-						</td>
-						<td class="align-middle">
-							<s:textfield id="expDate" name="expDate"></s:textfield>
-						</td>
-						<td class="align-middle w-50">
-							<s:textarea id="eulatext" name="eulaText"></s:textarea>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div class="col-lg-2 col-md-2"></div>
-		</div>
-	<br>
-	</s:if>
 	
-	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null">
+	<s:if test="sessionMap['CustomerDetail'].eulaHistToActivate != null && !sessionMap['CustomerDetail'].updateMode">
 		<div class="row">
 		<div class="col-lg-2 col-md-2"></div>
 		<div class="col-lg-8 col-md-8">
@@ -265,7 +221,7 @@
 					<th>User</th>
 					<th>Date</th>
 					<th>Acceptance Code</th>
-					<th>Activate</th>
+					<!--<th>Activate</th>-->
 				</tr>
 				<tr>
 					<td>
@@ -282,18 +238,18 @@
 					</td>
 					<td>
 						<div class="form-inline">
-							<s:textfield id="acceptcode" name="cust.acceptCode" cssStyle="width:100px"
+							<s:textfield id="acceptcode" name="eula.acceptCode" cssStyle="width:100px"
 							value="%{sessionMap['CustomerDetail'].eulaHistToActivate.acceptanceCode}" readonly="true"></s:textfield>
 							<button type="button" id="edt2" class="btn btn-primary pull-right ml-4">
 								<i class="far fa-edit"></i>
 							</button>
 						</div>
 					</td>
-					<td>
+					<!--<td>
 						<div class="form-check">
-							<input class="ml-2 mt-2" type="checkbox" id="activateEula" name="cust.activateEula" value="true" checked="checked" />
+							<input class="ml-2 mt-2" type="checkbox" id="activateEula" name="eula.activateEula" value="true" checked="checked" />
 						</div>
-					</td>
+					</td>-->
 				</tr>
 			</table>
 		</div>
@@ -302,7 +258,7 @@
 	<br>
 	</s:if>
 	<s:else>
-		<s:if test="sessionMap['CustomerDetail'].eulaHistList == null">
+		<s:if test="sessionMap['CustomerDetail'].eulaType == 'None'">
 			<div class="row">
 				<div class="col-lg-2 col-md-2"></div>
 				<div class="col-lg-8 col-md-8">
@@ -312,20 +268,54 @@
 						</tr>
 						<tr>
 							<td>
-								<s:select label="Activate Eula" list="sessionMap['CustomerDetail'].eulaList" id="eulalist" name="cust.website" headerValue="None"></s:select>
+								<s:select label="Activate Eula" list="eulaList" id="eulalist" name="eulaType" headerValue="None"
+									onchange="toggleSelectList(this.value)"></s:select>
+								<div class="eulaTemp">
+									<s:select label="Choose EULA Template" list="eulaTempList" id="eulatemplist" 
+										name="eula.template" headerValue="None"></s:select>
+								</div>
 							</td>
-							<td>
-								<s:textfield label="Acceptance Code" name="cust.acceptCode" id="acceptcode" />
+							<td id="code">
+								<s:textfield label="Acceptance Code" name="eula.acceptCode" id="acceptcode" />
 							</td>
 						</tr>
 					</table>
 				</div>
 				<div class="col-lg-2 col-md-2"></div>
 			</div>
+			<br>
+			<div class="row">
+				<div class="col-lg-2 col-md-2"></div>
+				<div class="col-lg-8 col-md-8">
+					<table id="uploadEula" class="table table-striped table-bordered">
+						<tr>
+							<th colspan="3">Upload EULA</th>
+						</tr>
+						<tr>
+							<td colspan="3" class="align-middle">
+								<s:file class="bg-light border-secondary form-control-file" id="eulafile" name="eulafile" accept="pdf" />
+							</td>
+						</tr>
+						<tr>
+							<th>Effective Date</th>
+							<th>EULA Text</th>
+						</tr>
+						<tr>
+							<td class="align-middle">
+								<s:textfield id="effDate" name="eula.effectiveDate" onchange="verifyEffDate(this.value)" autocomplete="off"></s:textfield>
+							</td>
+							<td class="align-middle w-50">
+								<s:textarea id="eulatext" name="eula.eulaText1"></s:textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-lg-2 col-md-2"></div>
+			</div>
+		<br>
 		</s:if>
-	<br>
 	</s:else>
-
+	
 	<s:if test="sessionMap['CustomerDetail'].prodCompList != null && !sessionMap['CustomerDetail'].prodCompList.isEmpty">
 		<div class="row">
 			<div class="col-lg-2 col-md-2"></div>

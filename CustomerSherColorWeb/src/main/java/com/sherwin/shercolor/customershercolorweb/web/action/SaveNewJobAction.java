@@ -7,32 +7,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
-import com.sherwin.shercolor.common.domain.CustWebTran;
-import com.sherwin.shercolor.common.domain.CustWebTranCorr;
-import com.sherwin.shercolor.common.domain.FormulaInfo;
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebDrawdownTran;
+import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.domain.CustWebTranCorr;
+import com.sherwin.shercolor.common.domain.FormulaInfo;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SaveNewJobAction  extends ActionSupport  implements SessionAware, LoginRequired {
 
 	private static final long serialVersionUID = 1L;
 
-	static Logger logger = LoggerFactory.getLogger(SaveNewJobAction.class.getName());
+	static Logger logger = LogManager.getLogger(SaveNewJobAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private FormulaInfo displayFormula;
@@ -265,7 +263,12 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			qtyDispensed++;
 			logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
 			reqObj.setQuantityDispensed(qtyDispensed);
-			sessionMap.put(reqGuid, reqObj);
+			try {
+				sessionMap.put(reqGuid, reqObj);
+
+			} catch (Exception e) {
+				return "loginRedirect";
+			}
 
 			logger.debug("inside action about to execute");
 			retVal = this.execute();

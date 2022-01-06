@@ -2,27 +2,28 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Locale;
 import java.util.Map;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.util.domain.LocaleContainer;
-import org.springframework.stereotype.Component;
 
 
-@Component
 public class UpdateLocaleAction extends ActionSupport implements SessionAware, ServletResponseAware, ServletRequestAware {
 	
     private static final long serialVersionUID = 1L;
-    static Logger logger = LoggerFactory.getLogger(UpdateLocaleAction.class);
+    static Logger logger = LogManager.getLogger(UpdateLocaleAction.class);
     private Map<String, Object> sessionMap;
     private HttpServletResponse response;
     private HttpServletRequest request;

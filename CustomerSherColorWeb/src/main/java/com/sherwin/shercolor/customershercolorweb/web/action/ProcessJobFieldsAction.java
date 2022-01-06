@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,14 +19,12 @@ import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ProcessJobFieldsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ProcessJobFieldsAction.class);
+	static Logger logger = LogManager.getLogger(ProcessJobFieldsAction.class);
 	private String reqGuid;
 	private List<JobField> jobFieldList;
 	private FormulaInfo displayFormula;
@@ -189,7 +187,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					logger.debug("thisField=" + thisField.getEnteredValue());
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
-					thisField.setEnteredValue(thisField.getEnteredValue());
+					thisField.setEnteredValue(thisField.getEnteredValue().replace("\t", ""));
 					
 					i++;
 					validateMe.add(thisField.getEnteredValue());

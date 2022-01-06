@@ -11,19 +11,13 @@ public class Customer {
 	private String ntlacctnbr;
 	private String intntlacctnbr;
 	private String costCenter;
-	private String cce;
-	private String bac;
-	private String eff;
+	private List<String> clrntSysIds;
 	private String defaultClrntSys;
 	private String swuiTitle;
 	private String cdsAdlFld;
 	private boolean active;
 	private boolean history;
 	private List<String> clrntList;
-	private String website;
-	private String acceptCode;
-	private boolean activateEula;
-	private byte[] eulapdf;
 	private String custType;
 	private boolean useLocatorId;
 	private boolean useRoomByRoom;
@@ -77,35 +71,11 @@ public class Customer {
 	public void setCostCenter(String costCenter) {
 		this.costCenter = costCenter;
 	}
-	public String getCce() {
-		return cce;
+	public List<String> getClrntSysIds() {
+		return clrntSysIds;
 	}
-	public void setCce(String cce) {
-		if(cce != null) {
-			this.cce = Encode.forHtml(cce);
-		} else {
-			this.cce = cce;
-		}
-	}
-	public String getBac() {
-		return bac;
-	}
-	public void setBac(String bac) {
-		if(bac != null) {
-			this.bac = Encode.forHtml(bac);
-		} else {
-			this.bac = bac;
-		}
-	}
-	public String getEff() {
-		return eff;
-	}
-	public void setEff(String eff) {
-		if(eff != null) {
-			this.eff = Encode.forHtml(eff);
-		} else {
-			this.eff = eff;
-		}
+	public void setClrntSysIds(List<String> clrntSysIds) {
+		this.clrntSysIds = clrntSysIds;
 	}
 	public String getDefaultClrntSys() {
 		return defaultClrntSys;
@@ -167,40 +137,6 @@ public class Customer {
 		} else {
 			this.clrntList = clrntList;
 		}
-	}
-	public String getWebsite() {
-		return website;
-	}
-	public void setWebsite(String website) {
-		if(website != null) {
-			this.website = Encode.forHtml(website.trim());
-		} else {
-			this.website = website;
-		}
-	}
-	
-	public String getAcceptCode() {
-		return acceptCode;
-	}
-	public void setAcceptCode(String acceptCode) {
-		if(acceptCode != null) {
-			this.acceptCode = Encode.forHtml(acceptCode.trim());
-		} else {
-			this.acceptCode = acceptCode;
-		}
-		
-	}
-	public boolean isActivateEula() {
-		return activateEula;
-	}
-	public void setActivateEula(boolean activateEula) {
-		this.activateEula = activateEula;
-	}
-	public byte[] getEulapdf() {
-		return eulapdf;
-	}
-	public void setEulapdf(byte[] eulapdf) {
-		this.eulapdf = eulapdf;
 	}
 	public String getCustType() {
 		return custType;
