@@ -20,6 +20,7 @@ public class RequestObject {
 	private String colorComp;
 	private String colorID;
 	private String colorName;
+	private String colorNotes;
 	private String salesNbr;
 	private String prodNbr;
 	private String quality;
@@ -420,6 +421,7 @@ public class RequestObject {
 		this.roomByRoom = "";
 		this.canType = "";
 		this.dispenseBase = -1;
+		this.colorNotes = "";
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -570,6 +572,12 @@ public class RequestObject {
 	}
 	public void setTintQueueCount(int tintQueueCount) {
 		this.tintQueueCount = tintQueueCount;
+	}
+	public String getColorNotes() {
+		return colorNotes;
+	}
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 
 }

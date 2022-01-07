@@ -193,6 +193,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				job.setClrntSysId(clrntSysId);
 				job.setColorId(webTran.getColorId());
 				job.setColorName(webTran.getColorName());
+				job.setColorNotes(webTran.getColorNotes());
 				job.setControlNbr(webTran.getControlNbr());
 				job.setProdNbr(webTran.getProdNbr());
 				job.setQuantityDispensed(webTran.getQuantityDispensed());
@@ -350,6 +351,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setColorID(webTran.getColorId());
 		if (webTran.getColorName()==null) {webTran.setColorName("");}
 		reqObj.setColorName(webTran.getColorName());
+		if (webTran.getColorNotes()==null) {webTran.setColorNotes("");}
+		reqObj.setColorNotes(webTran.getColorNotes());
 		reqObj.setPrimerId(webTran.getPrimerId());
 		reqObj.setRgbHex(webTran.getRgbHex());
 		reqObj.setSalesNbr(webTran.getSalesNbr());

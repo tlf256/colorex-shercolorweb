@@ -17,6 +17,7 @@ public class JobHistoryInfo{
 	private int controlNbr;
 	private String colorId;
 	private String colorName;
+	private String colorNotes;
 	private String rgbHex;
 	private String prodNbr;
 	private int quantityDispensed;
@@ -119,5 +120,11 @@ public class JobHistoryInfo{
 	}
 	public void setJobCreationDate(Date jobCreationDate) {
 		this.jobCreationDate = jobCreationDate;
+	}
+	public String getColorNotes() {
+		return colorNotes;
+	}
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 }

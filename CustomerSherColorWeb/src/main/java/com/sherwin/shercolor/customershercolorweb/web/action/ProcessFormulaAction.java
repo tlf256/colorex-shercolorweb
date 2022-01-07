@@ -97,6 +97,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private double dispenseFloor;
 	private DispenseItem baseDispense = null;
 	private double sampleSize;
+	private String colorNotes;
 	
 	@Autowired
 	private CustomerService customerService;
@@ -120,6 +121,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			qtyDispensed = reqObj.getQuantityDispensed();
 			qtyOrdered = reqObj.getQuantityOrdered();
 			tinter = reqObj.getTinter();
+			colorNotes = reqObj.getColorNotes();
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
 			
 			// check if this account is a drawdown center or profiled to use room by room option
@@ -561,6 +563,19 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	}
 	
 	
+	public String saveColorNotes() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			// save user's color notes entry into session
+			reqObj.setColorNotes(colorNotes);
+			return SUCCESS;
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	
 	public String displayUpdatedFormula() {
 		try {
 			recDirty = 1;
@@ -884,6 +899,16 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setSampleSize(double sampleSize) {
 		this.sampleSize = sampleSize;
+	}
+
+
+	public String getColorNotes() {
+		return colorNotes;
+	}
+
+
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 	
 }

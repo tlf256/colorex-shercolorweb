@@ -603,9 +603,18 @@ badge {
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 			<strong><s:text name="global.colorNameColon"/></strong>
 		</div>
-		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-1">
-			<s:property value="#session[reqGuid].colorName" /><br>
-			<div class="chip sw-bg-main mt-1"></div>
+		
+		<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+			<strong><s:text name="global.notesColon"/></strong>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 mt-1"> 
+			<s:property value="#session[reqGuid].colorNotes" />
+			
+			<div class="chip sw-bg-main"></div>
 			<s:if test="%{#session[reqGuid].closestSwColorId != null && #session[reqGuid].closestSwColorId != ''}">
 				<em>
 					<s:text name="global.closestSWColorIs">
@@ -614,8 +623,8 @@ badge {
 					</s:text>
 				</em>
 			</s:if>
-		</div>
-		<div class="col-lg-5 col-md-5 col-sm-4 col-xs-2"></div>
+		</div> 
+		<div class="col-lg-6 col-md-6 col-sm-4 col-xs-2"></div>
 	</div>
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
