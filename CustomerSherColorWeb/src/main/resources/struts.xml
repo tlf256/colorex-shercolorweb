@@ -961,6 +961,14 @@
 			</result>
 			<result name="success" type="json"></result>
 		</action>
+		<action name="saveColorNotes" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveColorNotes">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
+		</action>
 		<action name="saveDrawdownAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="execute">
 	        <result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
