@@ -20,27 +20,34 @@ $(document).ready(function(){
 	//console.log("required = " + req);
 	
 	$("#loginInfo").on("click", "#btnAdd", function(){
-		if($(".cloned-row").length < 10){
-			$(".cloned-row:last").clone(true).appendTo(".cloned-row:last");
-			$(".cloned-row:last").find("input:first").select();
-			$(".cloned-row:last").find("input").removeClass("border-danger");
-			$(".cloned-row:last").find("input").val("");
-			//$(".cloned-row:last").find("input:last").val("");
-			$("#charcount").text("");
-			$(".cloned-row").each(function(i){
-				$(this).attr("id", "clonedrow"+i);
-				$(this).find("input:eq(0)").attr("id", "keyfld"+i);
-				$(this).find("input:eq(1)").attr("id", "mstracctname"+i);
-				$(this).find("input:eq(2)").attr("id", "acctcomm"+i);
-				$(this).find("span").attr("id", "charcount"+i);
-			});
+		var rowLength = $(".cloned-row").length;
+		//console.log("row length is " + rowLength);
+		//if(rowLength < 20){
+			var cloneRow = $(".cloned-row:first");
+			//console.log("clone index is " + cloneRow.index());
+			
+			var thisRow = cloneRow.clone(true);
+			var rowIndex = rowLength;
+			//console.log("this row index is " + rowIndex);
+			thisRow.find("input").removeClass("border-danger").val("");
+			thisRow.find("input[id*='keyfld']").attr("id", "keyfld"+rowIndex).select();
+			thisRow.find("input[id*='mstracctname']").attr("id", "mstracctname"+rowIndex);
+			thisRow.find("input[id*='acctcomm']").attr("id", "acctcomm"+rowIndex);
+			thisRow.find("span").attr("id", "charcount"+rowIndex);
+			if(rowLength == 19) {
+				// remove add button from this row
+				thisRow.find("input[id*='btnAdd']").addClass("d-none");
+			}
+			
+			thisRow.appendTo(".row-container");
+			
 			$("#jobnext-btn").hide();
 			$("html, body").animate({
 				scrollTop: $("#logininfo_btn").offset().top
-			}, 2000);
-		} else {
-			$(this).addClass("d-none");
-		}
+			}, 1000);
+		//} else {
+			//$(this).addClass("d-none");
+		//}
 	});
 	
 	$("#loginInfo").on("click", "#btnDel", function(){
