@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -154,9 +155,8 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				}
 				// after all have been presented to user, clear the messages from the request object
 				// if deltae warning, do not clear display message because they will not go directly to final formula display
-				if(displayFormula.getDeltaEWarning()==null || displayFormula.getDeltaEWarning().isEmpty()) {
+				if(StringUtils.isEmpty(displayFormula.getDeltaEWarning()))
 					reqObj.getDisplayMsgs().clear();
-				}
 			}
 
 			// Check if correction in process
