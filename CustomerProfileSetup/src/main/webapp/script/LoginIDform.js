@@ -22,7 +22,7 @@ $(document).ready(function(){
 	$("#loginInfo").on("click", "#btnAdd", function(){
 		var rowLength = $(".cloned-row").length;
 		//console.log("row length is " + rowLength);
-		//if(rowLength < 20){
+		if(rowLength < 20){
 			var cloneRow = $(".cloned-row:first");
 			//console.log("clone index is " + cloneRow.index());
 			
@@ -45,9 +45,9 @@ $(document).ready(function(){
 			$("html, body").animate({
 				scrollTop: $("#logininfo_btn").offset().top
 			}, 1000);
-		//} else {
-			//$(this).addClass("d-none");
-		//}
+		} else {
+			$(this).addClass("d-none");
+		}
 	});
 	
 	$("#loginInfo").on("click", "#btnDel", function(){
