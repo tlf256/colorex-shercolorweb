@@ -1315,7 +1315,7 @@ function ParsePrintMessage() {
 		test="%{
 		#session[reqGuid].displayFormula.deltaEWarning == null ||
 		#session[reqGuid].displayFormula.deltaEWarning == '' ||
-		#session[reqGuid].productChoosenFromDifferentBase == true
+		#session[reqGuid].productChosenFromDifferentBase == true
 		}">
 		<s:form action="formulaUserPrintAction" validate="true"
 			theme="bootstrap">
@@ -1940,7 +1940,7 @@ function ParsePrintMessage() {
 		
 		<!-- Change Product Modal -->
 	    <div class="modal fade" aria-labelledby="changeProductModal" aria-hidden="true"  id="changeProductModal" role="dialog">
-	    	<div class="modal-dialog" role="document">
+	    	<div class="modal-dialog" role="document" id="changeProdDialogModal">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title"><s:text name="displayFormula.changeProduct"/></h5>
@@ -1958,6 +1958,9 @@ function ParsePrintMessage() {
 						</div>
 						<div id="prodChangeStatusMsg" class="mt-4 mx-1" style="font-weight: bold">
 						</div>
+						<div id="unavailableForVinylWarning" class="mt-4 mx-1 d-none" style="font-weight: bold">
+							<s:text name="displayFormula.unavailableForVinyl"/>
+						</div>
 						<div class="d-none mt-4" id="changeProductMenu">
 							<div class="form-check mt-1 nondefaultOptions d-none" id="optionAdjustSize">
 								<input class="form-check-input" type="radio" name="radioProdChoice" value="adjustSize" id="radioAdjustSize">
@@ -1965,16 +1968,28 @@ function ParsePrintMessage() {
 								 <s:text name="displayFormula.adjustFormulaToSize"/>
 								</label>
 							</div>
-<!--							<div class="form-check mt-1 nondefaultOptions d-none" id="optionRematch">
+							<div class="form-check mt-1 nondefaultOptions d-none" id="optionRematch">
 								<input class="form-check-input" type="radio" name="radioProdChoice" value="rematch" id="radioRematch">
 								<label class="form-check-label" for="radioRematch">
 								 <s:text name="displayFormula.rematchUsingColorEye"/>
 								</label>
-							</div> -->
+							</div>
  							<div class="form-check mt-1 nondefaultOptions d-none" id="optionReformulate">
 								<input class="form-check-input" type="radio" name="radioProdChoice" value="reformulate" id="radioReformulate">
 								<label class="form-check-label" for="radioReformulate">
 								 <s:text name="displayFormula.reformulateUsingSherColor"/>
+								</label>
+							</div>
+							<div class="form-check mt-1 nondefaultOptions d-none" id="optionTintStrength">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="tintStrength" id="radioTintStrength">
+								<label class="form-check-label" for="radioTintStrength">
+								 <s:text name="displayFormula.adjustTintStrength"/>
+								</label>
+							</div>
+							<div class="form-check mt-1 nondefaultOptions d-none" id="optionTintStrengthSize">
+								<input class="form-check-input" type="radio" name="radioProdChoice" value="tintStrengthSize" id="radioTintStrengthSize">
+								<label class="form-check-label" for="radioTintStrengthSize">
+								 <s:text name="displayFormula.adjustTintStrengthAndSize"/>
 								</label>
 							</div>
 							<div class="form-check mt-1">
@@ -1990,7 +2005,7 @@ function ParsePrintMessage() {
 								</label>
 							</div>
 						</div>	
-<!-- 						<div class="d-none mt-3" id="userIllumMenu">
+ 						<div class="d-none mt-3" id="userIllumMenu">
 							<h5 class="mt-4 mb-3"><s:text name="displayFormula.chooseLightSource"/></h5>
 							<div class="form-check mt-1" id="optionIncandescent">
 								<input class="form-check-input" type="radio" name="radioIllumChoice" value="A" id="radioIncandescent">
@@ -2010,12 +2025,13 @@ function ParsePrintMessage() {
 								 <s:text name="displayFormula.f2-fluorescent"/>
 								</label>
 							</div>
-						</div>	 -->
-						<div id="sizeChangeTable" class="d-none">
+						</div>
+												
+						<div id="prodChangeTable" class="d-none">
 							<table class="table table-bordered">
 								<thead>
 									<tr>
-										<th colspan="4" class="bg-light" style="text-align: center"><s:text name="displayFormula.changeInProductSize"/></th>
+										<th colspan="4" class="bg-light" id="prodChangeTableHeader" style="text-align: center"></th>
 									</tr>
 									<tr>
 										<th scope="col"></th>
@@ -2036,21 +2052,19 @@ function ParsePrintMessage() {
 									</tr>
 									<tr id="row">
 										<th scope="row"><s:text name="displayFormula.tintStrength"/></th>
-										<td>100</td>
-										<td>100</td>
+										<td id="oldTintStrength"></td>
+										<td id="newTintStrength"></td>
 									</tr>
-									
 								</tbody>
 							</table>
 							<br>
 							<p><strong><s:text name="displayFormula.clickNextToConvert"/></strong></p>
 						</div>
-						
-						<!-- 
-						<div id="prodFamily" class="row">
-							<table id="prodFamilyTable" class="table table-striped table-bordered mx-3 mt-4">
+						 
+						<div id="prodFamilyRow" class="d-none">
+							<table id="prodFamilyTable" class="table table-bordered table-hover mt-4">
 								<caption style="caption-side:top;"><strong><s:text name="getProdFamily.betterPerformanceFoundinDifferentBase"/></strong></caption>
-								<thead>
+								<thead class="thead-light">
 									<tr>
 										<th></th>
 										<th><s:text name="global.product"/></th>
@@ -2059,11 +2073,11 @@ function ParsePrintMessage() {
 										<th><s:text name="getProdFamily.deltaE"/></th>
 										<th><s:text name="getProdFamily.contrastRatio"/></th>
 										<th><s:text name="global.comment"/></th>
-										<th><s:text name="global.formula"/></th>
+										<th><s:text name="displayJobs.formulaHdr"/></th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr class="border-bottom-1 border-dark" id="betterPerformanceRow">
+									<tr class="border-bottom-1 border-dark table-success" id="betterPerformanceRow">
 										<td><input type="radio" class="prodFamRadio" name="prodFamily" id="betterPerfRadio"/></td>
 										<td class="prodDetail"></td>
 										<td class="quality"></td>
@@ -2072,17 +2086,11 @@ function ParsePrintMessage() {
 										<td class="contrastRatio"></td>
 										<td class="comment"></td>
 										<td class="formula">
-											<div class="row">
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[0]"/></strong></div>
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[1]"/></strong></div>
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[2]"/></strong></div>
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[3]"/></strong></div>
-											</div>
+											<table class="table-plain">
+												<tbody id="bestPerformanceFormula"></tbody>
+											</table>
 										</td>		
-												
-											
 									</tr>
-										
 									<tr class="border-bottom-1 border-dark" id="productEnteredRow">
 										<td><input type="radio" class="prodFamRadio" name="prodFamily" id="prodEnteredRadio"/></td>
 										<td class="prodDetail"></td>
@@ -2092,18 +2100,15 @@ function ParsePrintMessage() {
 										<td class="contrastRatio"></td>
 										<td class="comment"></td>
 										<td class="formula">
-											<div class="row">
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[0]"/></strong></div>
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[1]"/></strong></div>
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[2]"/></strong></div>
-												<div class="col-sm-1" align="center"><strong><s:property value="incrementHdr[3]"/></strong></div>
-											</div>
+											<table id="prodEnteredTable" class="table-plain">
+												<tbody id="prodEnteredFormula"></tbody>
+											</table>
 										</td>	
-										
 									</tr>
 								</tbody>
 							</table>
-						</div> -->
+							<p><strong><s:text name="getProdFamily.deltaEGreaterThanOneWarning"/><br><br><s:text name="global.pleaseSelectAProduct"/></strong></p>
+						</div>
 						
 						
 					</div>

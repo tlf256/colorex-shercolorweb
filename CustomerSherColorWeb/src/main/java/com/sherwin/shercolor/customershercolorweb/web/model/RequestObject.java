@@ -77,7 +77,7 @@ public class RequestObject {
 	private boolean printerConfigured;  //printer configured through SWDeviceHandler
 	private String closestSwColorName;
 	private String closestSwColorId;
-	private boolean productChoosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
+	private boolean productChosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
 	private String roomByRoom;
 	private boolean packageColor;
 	private boolean pkgClrTintable;
@@ -416,7 +416,7 @@ public class RequestObject {
 		this.daysUntilPasswdExpire = 90;
 		this.closestSwColorName = "";
 		this.closestSwColorId = "";
-		this.productChoosenFromDifferentBase = false;
+		this.productChosenFromDifferentBase = false;
 		this.roomByRoom = "";
 		this.canType = "";
 		this.dispenseBase = -1;
@@ -511,11 +511,11 @@ public class RequestObject {
 	public void setClosestSwColorId(String closestSwColorId) {
 		this.closestSwColorId = closestSwColorId;		
 	}
-	public boolean isProductChoosenFromDifferentBase() {
-		return productChoosenFromDifferentBase;
+	public boolean isProductChosenFromDifferentBase() {
+		return productChosenFromDifferentBase;
 	}
-	public void setProductChoosenFromDifferentBase(boolean productChoosenFromDifferentBase) {
-		this.productChoosenFromDifferentBase = productChoosenFromDifferentBase;
+	public void setProductChosenFromDifferentBase(boolean productChosenFromDifferentBase) {
+		this.productChosenFromDifferentBase = productChosenFromDifferentBase;
 	}
 	public String getRoomByRoom() {
 		return roomByRoom;		
