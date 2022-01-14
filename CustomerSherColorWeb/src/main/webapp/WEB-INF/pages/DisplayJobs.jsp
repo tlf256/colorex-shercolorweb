@@ -200,6 +200,7 @@
 								</s:iterator>
 								<th><s:text name="displayJobs.colorNbr"/></th>
 								<th><s:text name="global.colorName"/></th>
+								<th><s:text name="global.notes"/></th>
 								<th><s:text name="displayJobs.chip"/></th>
 								<th><s:text name="global.product"/></th>
 								<th><s:text name="displayJobs.szCode"/></th>
@@ -221,6 +222,7 @@
 									</s:iterator>
 									<td><s:property value="#job.colorId" /></td>
 									<td><s:property value="#job.colorName" /></td>
+									<td><s:property value="#job.colorNotes" /></td>
 									<td bgcolor="<s:property value="#job.rgbhex"/>"> </td>
 									<td><s:property value="#job.prodNbr" /></td>
 									<td><s:property value="#job.sizeCode"/></td>

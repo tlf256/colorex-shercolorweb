@@ -31,9 +31,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.ManualIngredient;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ProcessManualFormulaAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
 	
@@ -47,6 +45,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private List<String> availClrntNameId;
 	private String colorId;
 	private String colorName;
+	private String colorNotes;
 	private List<JobField> jobFields;
 	private int recDirty;
 	private boolean userWarningOverride = false;
@@ -99,6 +98,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			}
 			colorId = reqObj.getColorID();
 			colorName = reqObj.getColorName();
+			colorNotes = reqObj.getColorNotes();
 			 
 			displayFormula = new FormulaInfo();
 			if(reqObj.isVinylExclude()){
@@ -283,6 +283,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			reqObj.setColorID(colorId);
 			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
+			if (colorNotes==null) {colorNotes="";}
+			reqObj.setColorNotes(colorNotes);
 			// Fill in more display formula attributes
 			reqObj.getDisplayFormula().setSalesNbr(reqObj.getSalesNbr());
 			reqObj.getDisplayFormula().setColorComp(reqObj.getColorComp());
@@ -686,6 +688,14 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 	public void setEndingContainer(String endingContainer) {
 		this.endingContainer = endingContainer;
+	}
+
+	public String getColorNotes() {
+		return colorNotes;
+	}
+
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 	
 	

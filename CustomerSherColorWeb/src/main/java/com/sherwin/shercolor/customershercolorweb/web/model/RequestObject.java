@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.sherwin.shercolor.common.domain.CdsRoomList;
-import com.sherwin.shercolor.common.domain.FormulaInfo;
-import com.sherwin.shercolor.common.domain.FormulationResponse;
 import org.owasp.encoder.Encode;
 
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.domain.ColorDifference;
-
+import com.sherwin.shercolor.common.domain.CdsColorStand;
+import com.sherwin.shercolor.common.domain.CdsRoomList;
+import com.sherwin.shercolor.common.domain.FormulaInfo;
+import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
 public class RequestObject {
@@ -20,6 +20,7 @@ public class RequestObject {
 	private String colorComp;
 	private String colorID;
 	private String colorName;
+	private String colorNotes;
 	private String salesNbr;
 	private String prodNbr;
 	private String quality;
@@ -77,7 +78,7 @@ public class RequestObject {
 	private boolean printerConfigured;  //printer configured through SWDeviceHandler
 	private String closestSwColorName;
 	private String closestSwColorId;
-	private boolean productChoosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
+	private boolean productChosenFromDifferentBase; //Set to true if a user hit Next on the GetProdFamily.jsp
 	private String roomByRoom;
 	private boolean packageColor;
 	private boolean pkgClrTintable;
@@ -416,10 +417,11 @@ public class RequestObject {
 		this.daysUntilPasswdExpire = 90;
 		this.closestSwColorName = "";
 		this.closestSwColorId = "";
-		this.productChoosenFromDifferentBase = false;
+		this.productChosenFromDifferentBase = false;
 		this.roomByRoom = "";
 		this.canType = "";
 		this.dispenseBase = -1;
+		this.colorNotes = "";
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -511,11 +513,11 @@ public class RequestObject {
 	public void setClosestSwColorId(String closestSwColorId) {
 		this.closestSwColorId = closestSwColorId;		
 	}
-	public boolean isProductChoosenFromDifferentBase() {
-		return productChoosenFromDifferentBase;
+	public boolean isProductChosenFromDifferentBase() {
+		return productChosenFromDifferentBase;
 	}
-	public void setProductChoosenFromDifferentBase(boolean productChoosenFromDifferentBase) {
-		this.productChoosenFromDifferentBase = productChoosenFromDifferentBase;
+	public void setProductChosenFromDifferentBase(boolean productChosenFromDifferentBase) {
+		this.productChosenFromDifferentBase = productChosenFromDifferentBase;
 	}
 	public String getRoomByRoom() {
 		return roomByRoom;		
@@ -570,6 +572,12 @@ public class RequestObject {
 	}
 	public void setTintQueueCount(int tintQueueCount) {
 		this.tintQueueCount = tintQueueCount;
+	}
+	public String getColorNotes() {
+		return colorNotes;
+	}
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 
 }

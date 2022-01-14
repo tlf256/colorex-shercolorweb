@@ -25,9 +25,7 @@ import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SaveNewJobAction  extends ActionSupport  implements SessionAware, LoginRequired {
 
 	private static final long serialVersionUID = 1L;
@@ -73,7 +71,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			
 			CustWebTran origCustWebTran = null;
 			if(reqObj.getControlNbr()>0) origCustWebTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-
+			
 			// map RequestObject to CustWebTran record format
 			//logger.info("about to map reqObj to custWebTran ");
 			custWebTran = mapRequestObjectToCustWebTranObject(reqObj,origCustWebTran);
@@ -404,6 +402,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		custWebTran.setColorComp(reqObj.getColorComp());
 		custWebTran.setColorId(reqObj.getColorID());
 		custWebTran.setColorName(reqObj.getColorName());
+		custWebTran.setColorNotes(reqObj.getColorNotes());
 		custWebTran.setPrimerId(reqObj.getPrimerId());
 		custWebTran.setRgbHex(reqObj.getRgbHex());
 		custWebTran.setSalesNbr(reqObj.getSalesNbr());
@@ -692,5 +691,4 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		this.quantity = Encode.forHtml(quantity);
 	}
 	
-
 }
