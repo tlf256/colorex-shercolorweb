@@ -10,7 +10,7 @@ spring:
     name: SherColorWeb
   config:
     #TODO MERGE change this to the proper path
-    import: /web_apps/server/shercolor/deploy/shercolorcommontesting.properties
+    import: /web_apps/server/shercolor/deploy/shercolorcommonnew.properties
   datasource:
     password: ${jdbc.password.${dbEnv}}
     username: ${jdbc.username.${dbEnv}}

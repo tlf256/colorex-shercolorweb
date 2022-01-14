@@ -17,7 +17,7 @@
          use these if specific versions are needed https://docs.spring.io/spring-boot/docs/2.6.x/reference/htmlsingle/#dependency-versions.properties-->
     <properties>
         <log4j2.version>2.16.0</log4j2.version>
-        <struts2.version>2.5.28.1</struts2.version>
+        <struts2.version>2.5.28.3</struts2.version>
         <java.version>8</java.version>
         <oracle-database.version>19.7.0.0</oracle-database.version>
         <wildfly.version>24.0.1.Final</wildfly.version>
@@ -247,8 +247,8 @@
                             <script-files>
                                 <script>wildfly/scripts/setup.cli</script>
                             </script-files>
-                            <!-- No expressions to resolve from any CLI props file -->
-                            <resolve-expressions>false</resolve-expressions>
+                            <properties-file>wildfly/scripts/properties/server-dev.properties</properties-file>
+                            <resolve-expressions>true</resolve-expressions>
                         </cli-session>
                     </cli-sessions>
                 </configuration>
@@ -259,15 +259,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
             </plugin>
         </plugins>
         <finalName>SherColorWeb</finalName>
