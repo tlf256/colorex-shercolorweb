@@ -31,7 +31,6 @@
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=internet-restrictor-handler:add()
 
 /subsystem=undertow/servlet-container=default/setting=jsp:add()
-/subsystem=undertow/servlet-container=default/setting=session-cookie:add(name="JSESSIONID",http-only=true,secure=true)
 
 /subsystem=undertow/configuration=filter/response-header=server-header:add(header-name=Server,header-value=Wildfly)
 /subsystem=undertow/configuration=filter/response-header=x-powered-by-header:add(header-name="X-Powered-By",header-value="Undertow/1")
@@ -40,6 +39,9 @@
 /subsystem=undertow/configuration=filter/response-header=content-security-policy:add(header-name="Content-Security-Policy",header-value="https://www.owasp.org/index.php/Content_Security_Policy")
 /subsystem=undertow/configuration=filter/response-header=x-Content-type-options:add(header-name="X-Content-Type-Options",header-value="nosniff")
 /subsystem=undertow/configuration=filter/response-header=hsts-header:add(header-name="Strict-Transport-Security",header-value="max-age=31536000; includeSubdomains")
+
+/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=${http.port})
+/socket-binding-group=standard-sockets/socket-binding=https:write-attribute(name=port,value=${https.port})
 
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=stwebd01:add(host=${web.domain.one},port=${web.domain.port})
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=stwebd02:add(host=${web.domain.two},port=${web.domain.port})

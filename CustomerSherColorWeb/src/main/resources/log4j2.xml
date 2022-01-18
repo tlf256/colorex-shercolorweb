@@ -24,35 +24,31 @@
 	<Loggers>
 		<Logger name="org.springframework" level="info" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
-		</Logger>
-		<Logger name="oracle.ucp" level="trace" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Logger>
 		<Logger name="org.hibernate.sql" level="error" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Logger>
 		<Logger name="org.hibernate" level="error" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Logger>
 		<Logger name="com.sherwin.shercolor" level="trace" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Logger>
 		<Logger name="com.sherwin.ecom" level="debug" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Logger>
 		<Logger name="com.sherwin.login" level="debug" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Logger>
 		<Root level="info" additivity="false">
 			<AppenderRef ref="RollingFile"/>
-			<AppenderRef ref="Console"/>
+<!--			<AppenderRef ref="Console"/>-->
 		</Root>
 	</Loggers>
 </Configuration>

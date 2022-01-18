@@ -245,7 +245,7 @@
                     <cli-sessions>
                         <cli-session>
                             <script-files>
-                                <script>wildfly/scripts/nonprod-setup.cli</script>
+                                <script>wildfly/scripts/setup.cli</script>
                             </script-files>
                             <properties-file>wildfly/scripts/properties/server-dev.properties</properties-file>
                             <resolve-expressions>true</resolve-expressions>
