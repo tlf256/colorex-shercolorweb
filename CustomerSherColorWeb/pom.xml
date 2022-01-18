@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sherwin.shercolor</groupId>
-    <artifactId>SherColorWeb</artifactId>
+    <artifactId>CustomerSherColorWeb</artifactId>
     <packaging>war</packaging>
     <version>1.5</version>
     <name>SherColorWeb Maven Webapp</name>
@@ -16,7 +16,7 @@
     <!-- Spring Boot starter provides a number of properties OOTB to set common dependency versions holistically,
          use these if specific versions are needed https://docs.spring.io/spring-boot/docs/2.6.x/reference/htmlsingle/#dependency-versions.properties-->
     <properties>
-        <log4j2.version>2.16.0</log4j2.version>
+        <log4j2.version>2.17.1</log4j2.version>
         <struts2.version>2.5.28.3</struts2.version>
         <java.version>8</java.version>
         <oracle-database.version>19.7.0.0</oracle-database.version>
@@ -245,12 +245,13 @@
                     <cli-sessions>
                         <cli-session>
                             <script-files>
-                                <script>wildfly/scripts/setup.cli</script>
+                                <script>wildfly/scripts/nonprod-setup.cli</script>
                             </script-files>
                             <properties-file>wildfly/scripts/properties/server-dev.properties</properties-file>
                             <resolve-expressions>true</resolve-expressions>
                         </cli-session>
                     </cli-sessions>
+                    <context-root>false</context-root>
                 </configuration>
                 <executions>
                     <execution>
@@ -261,6 +262,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>SherColorWeb</finalName>
+        <finalName>CustomerSherColorWeb</finalName>
     </build>
 </project>

@@ -1,13 +1,14 @@
 server:
-  display-name: SherColorWeb
+  display-name: CustomerSherColorWeb
   servlet:
+    context-path: /CustomerSherColorWeb
     session:
       cookie:
         secure: true
         http-only: true
 spring:
   application:
-    name: SherColorWeb
+    name: CustomerSherColorWeb
   config:
     #TODO MERGE change this to the proper path
     import: /web_apps/server/shercolor/deploy/shercolorcommonnew.properties

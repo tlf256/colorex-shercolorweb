@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb;
 
+
 import org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,6 +8,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication(scanBasePackages = {"com.sherwin.shercolor","com.sherwin.login"})
 public class SherColorWebApplication extends SpringBootServletInitializer {
