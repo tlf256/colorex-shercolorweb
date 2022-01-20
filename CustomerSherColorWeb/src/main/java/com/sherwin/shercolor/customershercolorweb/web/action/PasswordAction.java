@@ -159,22 +159,5 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 	public void setUserPassConfirm(String userPassConfirm) {
 		this.userPassConfirm = Encode.forHtml(userPassConfirm);
 	}
-	
-	public SWUserService getSwUserService() {
-		return swUserService;
-	}
-
-	public void setSwUserService(SWUserService swUserService) {
-		this.swUserService = swUserService;
-	}
-	
-	
-	public SWLoginValidator getSwLoginValidator() {
-		return swLoginValidator;
-	}
-
-	public void setSwLoginValidator(SWLoginValidator swLoginValidator) {
-		this.swLoginValidator = swLoginValidator;
-	}
 
 }

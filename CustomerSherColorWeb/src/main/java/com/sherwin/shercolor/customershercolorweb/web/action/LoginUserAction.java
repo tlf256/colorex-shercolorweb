@@ -400,25 +400,4 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 	public void setGuid1(String guid1) {
 		this.guid1 = guid1;
 	}
-
-	public SWUserCommentService getSwUserCommentService() {
-		return swUserCommentService;
-	}
-
-	public void setSwUserCommentService(SWUserCommentService swUserCommentService) {
-		this.swUserCommentService = swUserCommentService;
-	}
-
-	public SWUserService getSwUserService() {
-		return swUserService;
-	}
-
-	public void setSwUserService(SWUserService swUserService) {
-		this.swUserService = swUserService;
-	}
-
-
-	
-
-
 }

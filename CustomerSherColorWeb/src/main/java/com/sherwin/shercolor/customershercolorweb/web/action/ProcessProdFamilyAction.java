@@ -22,11 +22,17 @@ import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessProdFamilyAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
+	@Autowired
 	private FormulationService formulationService;
+	@Autowired
 	private CustomerService customerService;
+	@Autowired
 	private ProductService productService;
 	
 	private Map<Integer, List<String>> colorProdFamilies;

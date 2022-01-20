@@ -50,9 +50,11 @@ import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
 
 @SuppressWarnings("serial")
+@Component
 public class ProcessFormulaAction extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private DataInputStream inputStream;
@@ -84,10 +86,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	List<CustWebCanTypes> canTypesList = null;
 	private String clrntAmtList;
 
+	@Autowired
 	private TinterService tinterService;
+	@Autowired
 	private TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
+	@Autowired
 	private DrawdownLabelService drawdownLabelService;
+	@Autowired
 	private ColorMastService colorMastService;
 
 	private List<CdsRoomList> roomByRoomList;

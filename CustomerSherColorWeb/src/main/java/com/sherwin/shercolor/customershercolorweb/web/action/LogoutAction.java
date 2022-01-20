@@ -16,11 +16,10 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
 public class LogoutAction extends ActionSupport  implements SessionAware, LoginRequired  {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
 

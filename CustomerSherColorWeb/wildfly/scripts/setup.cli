@@ -11,7 +11,7 @@
 /subsystem=logging:write-attribute(name="add-logging-api-dependencies",value=false)
 
 /subsystem=security/security-domain=ecommerce-security-domain:add(cache-type=default)
-/subsystem=security/security-domain=ecommerce-security-domain/authentication=classic:add(login-modules=[{code="com.sherwin.ecom.security.auth.spi.EcommLoginModule",flag="required",module-options={password-stacking="useFirstPass",dsJndiName=${jndi.name},hashAlgorithm="MD5",hashEncoding="base64",hashUserPassword="true",unauthenticatedIdentity="guest",debug="false"}}])
+/subsystem=security/security-domain=ecommerce-security-domain/authentication=classic:add(login-modules=[{code="com.sherwin.ecom.security.auth.spi.EcommLoginModule",flag="required",module-options={password-stacking="useFirstPass",securityDsJndiName=${jndi.name},hashAlgorithm="MD5",hashEncoding="base64",hashUserPassword="true",unauthenticatedIdentity="guest"}}])
 
 /subsystem=undertow/configuration=filter/custom-filter=internet-restrictor-handler:add(class-name="com.sherwin.shercolor.swinternetrestrictorhandler.InternetRestrictorHandler",module="com.sherwin.shercolor.swinternetrestrictorhandler:main")
 
