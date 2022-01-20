@@ -1,6 +1,6 @@
 package com.sherwin.login.service;
 
-import com.sherwin.login.dao.SwUserRepository;
+import com.sherwin.login.repository.SwUserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;

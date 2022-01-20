@@ -1,4 +1,4 @@
-package com.sherwin.login.dao;
+package com.sherwin.login.repository;
 
 import com.sherwin.login.domain.SWUserComments;
 import com.sherwin.login.domain.SWUserCommentsPK;
