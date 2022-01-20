@@ -1,3 +1,7 @@
+/system-property=jboss.socket.binding.port-offset:add(value=10)
+/system-property=jboss.bind.address.management:add(value=0.0.0.0)
+/system-property=jboss.bind.address:add(value=0.0.0.0)
+
 /subsystem=datasources/jdbc-driver=oracle:add(driver-module-name="oracle.jdbc")
 /subsystem=datasources/data-source=data-source:add(jndi-name=${jndi.name},driver-name=oracle,connection-url=${jdbc.string},min-pool-size=5,max-pool-size=5,pool-prefill=true,pool-use-strict-min=true,flush-strategy=FailingConnectionOnly,user-name=${username},password=${password},valid-connection-checker-class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker",validate-on-match=false,background-validation=false,use-fast-fail=false,exception-sorter-class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter",blocking-timeout-wait-millis=30000,idle-timeout-minutes=0,query-timeout=30,track-statements=true,prepared-statements-cache-size=50,share-prepared-statements=true,jta=true,enabled=true,use-java-context=true,spy=false,use-ccm=true)
 /core-service=management/security-realm=CertificateRealm:add()
@@ -39,9 +43,3 @@
 /subsystem=undertow/configuration=filter/response-header=content-security-policy:add(header-name="Content-Security-Policy",header-value="https://www.owasp.org/index.php/Content_Security_Policy")
 /subsystem=undertow/configuration=filter/response-header=x-Content-type-options:add(header-name="X-Content-Type-Options",header-value="nosniff")
 /subsystem=undertow/configuration=filter/response-header=hsts-header:add(header-name="Strict-Transport-Security",header-value="max-age=31536000; includeSubdomains")
-
-/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=${http.port})
-/socket-binding-group=standard-sockets/socket-binding=https:write-attribute(name=port,value=${https.port})
-
-/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=stwebd01:add(host=${web.domain.one},port=${web.domain.port})
-/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=stwebd02:add(host=${web.domain.two},port=${web.domain.port})
