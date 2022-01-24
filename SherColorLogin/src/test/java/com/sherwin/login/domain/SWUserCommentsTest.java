@@ -8,6 +8,7 @@ import java.beans.IntrospectionException;
 import org.junit.Test;
 
 import com.sherwin.login.util.JavaBeanTester;
+import org.springframework.test.context.ActiveProfiles;
 
 public class SWUserCommentsTest {
 

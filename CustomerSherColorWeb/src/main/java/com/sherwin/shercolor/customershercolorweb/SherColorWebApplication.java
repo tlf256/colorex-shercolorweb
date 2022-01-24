@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication(scanBasePackages = {"com.sherwin.shercolor","com.sherwin.login"})
-@EnableJpaRepositories(basePackages = {"com.sherwin.shercolor","com.sherwin.login"},entityManagerFactoryRef = "commonEntityManager")
 public class SherColorWebApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
