@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import com.sherwin.shercolor.common.domain.CustWebEcal;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SherColorWebTest
+@SherColorWebTransactionalTest
 public class ECalActionTest extends StrutsSpringJUnit4TestCase<EcalAction> {
 
 	EcalAction target = new EcalAction();

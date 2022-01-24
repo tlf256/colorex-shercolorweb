@@ -1,13 +1,12 @@
 package com.sherwin.login.domain;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import com.sherwin.login.util.JavaBeanTester;
+import org.junit.Test;
 
 import java.beans.IntrospectionException;
 
-import org.junit.Test;
-
-import com.sherwin.login.util.JavaBeanTester;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class SWUserTest {
 

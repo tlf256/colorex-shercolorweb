@@ -2,7 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import javax.servlet.http.HttpSession;
 
 
-import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SherColorWebTest
+@SherColorWebTransactionalTest
 public class PrinterConfigActionTest extends StrutsSpringJUnit4TestCase<PrinterConfigureAction> {
 
 	PrinterConfigureAction target;

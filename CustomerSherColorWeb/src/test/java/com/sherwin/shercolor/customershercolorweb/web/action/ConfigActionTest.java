@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 
 import javax.servlet.http.HttpSession;
 
-import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SherColorWebTest
+@SherColorWebTransactionalTest
 public class ConfigActionTest extends StrutsSpringJUnit4TestCase<ProcessTinterConfigAction> {
 
 	ProcessTinterConfigAction target;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.*;
 
 
-import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SherColorWebTest
+@SherColorWebTransactionalTest
 public class PrintLabelTest  {
 
 	@Autowired

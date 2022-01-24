@@ -1,23 +1,19 @@
 package com.sherwin.login.service;
 
+import com.sherwin.login.annotation.SherColorLoginTransactionalTest;
+import com.sherwin.login.domain.SWUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.sherwin.login.domain.SWUser;
-
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
-@Transactional
+@SherColorLoginTransactionalTest
 public class SWUserServiceImplTest {
 
 	@Autowired

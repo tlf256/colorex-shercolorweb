@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
-import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTest;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SherColorWebTest
+@SherColorWebTransactionalTest
 public class TinterEventActionTest extends StrutsSpringJUnit4TestCase<TinterEventAction> {
 
 	TinterEventAction target;
