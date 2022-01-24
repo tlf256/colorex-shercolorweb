@@ -349,3 +349,4 @@ modules.xml
 .idea/sonarlint
 
 CustomerSherColorWeb/*.pdf
+*.pdf
