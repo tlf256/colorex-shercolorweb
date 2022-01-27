@@ -45,10 +45,11 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private List<String> availClrntNameId;
 	private String colorId;
 	private String colorName;
+	private String colorNotes;
 	private List<JobField> jobFields;
 	private int recDirty;
 	private boolean userWarningOverride = false;
-	private boolean adjByPercentVisible;
+	private boolean scaleByPercentVisible = true;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
 	private String adjustFormulaMsg;
@@ -97,6 +98,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			}
 			colorId = reqObj.getColorID();
 			colorName = reqObj.getColorName();
+			colorNotes = reqObj.getColorNotes();
 			 
 			displayFormula = new FormulaInfo();
 			if(reqObj.isVinylExclude()){
@@ -162,8 +164,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			CustWebTran webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), 1);
 			
 			if (webTran == null && reqObj.getDisplayFormula() == null) {
-				logger.debug("Formula not saved or display formula null, no Adjust By Percent");
-				adjByPercentVisible = true;
+				logger.debug("Formula not saved and display formula null, Scale By Percent button not available.");
+				scaleByPercentVisible = false;
 			}
 	 
 			// setup colorant list for drop down
@@ -281,6 +283,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			reqObj.setColorID(colorId);
 			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
+			if (colorNotes==null) {colorNotes="";}
+			reqObj.setColorNotes(colorNotes);
 			// Fill in more display formula attributes
 			reqObj.getDisplayFormula().setSalesNbr(reqObj.getSalesNbr());
 			reqObj.getDisplayFormula().setColorComp(reqObj.getColorComp());
@@ -543,6 +547,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			if(retVal.equalsIgnoreCase(INPUT)){
 				fillColorantList(reqObj);
+				sizeList = utilityService.listSizeCodesForSizeConversion();
 			}
 			
 			
@@ -645,8 +650,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 		this.selectedColorantFocus = Encode.forHtml(selectedColorantFocus);
 	}
 
-	public boolean isAdjByPercentVisible() {
-		return adjByPercentVisible;
+	public boolean isScaleByPercentVisible() {
+		return scaleByPercentVisible;
 	}
 
 	public void setPercentOfFormula(int percentOfFormula) {
@@ -683,6 +688,14 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 	public void setEndingContainer(String endingContainer) {
 		this.endingContainer = endingContainer;
+	}
+
+	public String getColorNotes() {
+		return colorNotes;
+	}
+
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 	
 	

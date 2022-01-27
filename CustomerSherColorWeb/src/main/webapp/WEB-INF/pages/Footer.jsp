@@ -24,10 +24,6 @@ i18n['dispense.fillEmptyCanister'] = '<s:text name="dispense.fillEmptyCanister"/
 i18n['dispense.goHomeToPurge'] = '<s:text name="dispense.goHomeToPurge"/>';
 i18n['dispense.noValuesEntered'] = '<s:text name="dispense.noValuesEntered"/>';
 i18n['dispense.qtyError'] = '<s:text name="dispense.qtyError"/>';
-i18n['processProductAction.clickNext'] = '<s:text name="processProductAction.clickNext"/>'
-i18n['productChange.checkingOptions'] = '<s:text name="productChange.checkingOptions"/>';
-i18n['productChange.reformulatingStatus'] = '<s:text name="productChange.reformulatingStatus"/>';
-i18n['productChange.somethingWentWrong'] = '<s:text name="productChange.somethingWentWrong"/>';
 i18n['displayFormula.tinterPurgeIsRequiredLastDoneOn'] = '<s:text name="displayFormula.tinterPurgeIsRequiredLastDoneOn"/>';
 i18n['displayJobs.controlNbrMustBeInteger'] = '<s:text name="displayJobs.controlNbrMustBeInteger"/>';
 i18n['displayJobs.dateMustBeCorrectFormat'] = '<s:text name="displayJobs.dateMustBeCorrectFormat"/>';
@@ -63,6 +59,21 @@ i18n['global.tinterProgress'] = '<s:text name="global.tinterProgress"/>';
 i18n['global.yourSessionExpiresInFiveMin'] = '<s:text name="global.yourSessionExpiresInFiveMin"/>';
 i18n['printer.couldNotFindDefaultPdf'] = '<s:text name="printer.couldNotFindDefaultPdf"/>';
 i18n['printer.couldNotGeneratePdf'] = '<s:text name="printer.couldNotGeneratePdf"/>';
+i18n['processProductAction.clickNext'] = '<s:text name="processProductAction.clickNext"/>'
+i18n['processProductChangeAction.couldNotBeUpdated'] = '<s:text name="processProductChangeAction.couldNotBeUpdated"/>'
+i18n['processProductChangeAction.couldNotUpdateSize'] = '<s:text name="processProductChangeAction.couldNotUpdateSize"/>'
+i18n['processProductChangeAction.couldNotUpdateTintStrength'] = '<s:text name="processProductChangeAction.couldNotUpdateTintStrength"/>'
+i18n['processProductChangeAction.couldNotUpdateTintStrengthSize'] = '<s:text name="processProductChangeAction.couldNotUpdateTintStrengthSize"/>'
+i18n['productChange.changeInProductSize'] = '<s:text name="productChange.changeInProductSize"/>';
+i18n['productChange.changeInTintStrength'] = '<s:text name="productChange.changeInTintStrength"/>';
+i18n['productChange.changeInTsAndSize'] = '<s:text name="productChange.changeInTsAndSize"/>';
+i18n['productChange.checkingOptions'] = '<s:text name="productChange.checkingOptions"/>';
+i18n['productChange.reformulatingStatus'] = '<s:text name="productChange.reformulatingStatus"/>';
+i18n['productChange.rematchingStatus'] = '<s:text name="productChange.rematchingStatus"/>';
+i18n['productChange.sizeStatus'] = '<s:text name="productChange.sizeStatus"/>';
+i18n['productChange.somethingWentWrong'] = '<s:text name="productChange.somethingWentWrong"/>';
+i18n['productChange.tintStrengthSizeStatus'] = '<s:text name="productChange.tintStrengthSizeStatus"/>';
+i18n['productChange.tintStrengthStatus'] = '<s:text name="productChange.tintStrengthStatus"/>';
 i18n['tinter.clrntIsLowWarning'] = '<s:text name="tinter.clrntIsLowWarning"/>';
 i18n['tinter.couldNotFindCalibFiles'] = '<s:text name="tinter.couldNotFindCalibFiles" />';
 i18n['tinter.couldNotFindCalibForColorant'] = '<s:text name="tinter.couldNotFindCalibForColorant"/>';

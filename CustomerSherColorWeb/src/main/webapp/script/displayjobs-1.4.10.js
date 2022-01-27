@@ -145,11 +145,6 @@ $(document).ready(function() {
     	$('#title').text(i18n['compareColors.chooseFirstSample']);
     	$('#searchmodal').modal('hide');
     	newSearchBtn.disable();
-    } else {
-    	console.log("pathname is " + window.location.pathname);
-    	if(window.location.pathname == '/CustomerSherColorWeb/startNewJob.action'){
-    		showSearchModal();
-    	}
     }
     
     if (displayTintQueue) {
@@ -278,11 +273,13 @@ $(document).ready(function() {
     });
     
     $('#searchmodal').on('hidden.bs.modal', function(){
-    	$('.container-fluid').show();
     	if($('.popover').is(':visible')) {
     		//console.log("popover is visible");
     		removeWarningPopover();
     	}
+    	// Forces a cancellation of the search if you exit out of the search filter modal
+    	// User must use the Search button to continue further
+    	$('#cancelNewSearch').click();
     });
     
 });

@@ -11,36 +11,35 @@
 		
 		<title><s:text name="displayJobs.lookupExistingJobs"/></title>
 			<!-- JQuery -->
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.bootstrap4.min.css"/>
-		<link rel=StyleSheet href="css/joblist_datatable.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/buttons.bootstrap4.min.css" type="text/css">
+		<link rel="stylesheet" href="css/joblist_datatable.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap4.min.js"></script> 
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/dataTables.buttons.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/buttons.bootstrap4.min.js"></script> 
+		<script type="text/javascript" charset="utf-8" src="js/buttons.colVis.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/buttons.html5.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/buttons.print.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/jszip.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/pdfmake.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/vfs_fonts.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.4.9.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.4.10.js"></script>
 	</head>
 	<body>
-		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static">
-		  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static" >
+		  <div class="modal-dialog modal-lg" role="document" style="max-height: 90vh; overflow-y: initial !important">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
 		        <h5 class="modal-title"><s:text name="displayJobs.jobHistorySearch"/></h5>
@@ -49,7 +48,7 @@
 		        </button>
 		      </div>
 		      <s:form id="jobSearchForm" action="listJobsAction">
-			      <div class="modal-body">
+			      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5 text-danger" id="searchError"></div>
@@ -133,6 +132,7 @@
 			      	<s:hidden name="thc.customerId" value="%{sessionMap[reqGuid].customerId}"/>
 			      	<s:hidden id="linenbr" name="thc.lineNbr" value=""/>
 			      	<s:hidden id="controlnbr" name="thc.controlNbr" value=""/>
+			      	<s:hidden id="copyjf" name="copyJobFields" value="%{copyJobFields}"/>
 			      	<button id="searchbtn" type="button" class="btn btn-primary" onclick="validate()"><s:text name="displayJobs.search"/></button>
 			      	<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				    <%-- <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button> --%>
@@ -200,6 +200,7 @@
 								</s:iterator>
 								<th><s:text name="displayJobs.colorNbr"/></th>
 								<th><s:text name="global.colorName"/></th>
+								<th><s:text name="global.notes"/></th>
 								<th><s:text name="displayJobs.chip"/></th>
 								<th><s:text name="global.product"/></th>
 								<th><s:text name="displayJobs.szCode"/></th>
@@ -221,6 +222,7 @@
 									</s:iterator>
 									<td><s:property value="#job.colorId" /></td>
 									<td><s:property value="#job.colorName" /></td>
+									<td><s:property value="#job.colorNotes" /></td>
 									<td bgcolor="<s:property value="#job.rgbhex"/>"> </td>
 									<td><s:property value="#job.prodNbr" /></td>
 									<td><s:property value="#job.sizeCode"/></td>
@@ -270,7 +272,7 @@
 						<%-- <s:if test="match != true">
 							<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
 						</s:if> --%>
-						<s:submit cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
+						<s:submit id="cancelNewSearch" cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">
 					</div>
@@ -285,8 +287,16 @@
 		<br>
 		<script>
 		// update action if user is here to copy existing job fields
-		if ("${copyJobFields}" == "true"){
+		var copyJobFields = $('#copyjf').val();
+		if (copyJobFields == "true"){
+			console.log("copyJobFields is " + copyJobFields);
 			$("#mainForm").prop("action", "displayJobFieldsAction");
+		}
+ 
+		var search = ${search};
+		if(search){
+			console.log("search is " + search);
+			showSearchModal();
 		}
 		<!--
 		  function HF_openSherwin() {

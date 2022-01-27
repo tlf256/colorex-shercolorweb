@@ -9,6 +9,7 @@
 	<constant name="struts.custom.i18n.resources" value="global" />
 	<constant name="struts.objectFactory" value="spring" />
 	<constant name="struts.mapper.action.prefix.enabled" value="true" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
 	<package name="default" namespace="/" extends="struts-default,json-default">
 		<!-- define interceptor to use when not logged in.  We will add this interceptor ref to each action we want to require a login. -->
 		<interceptors>
@@ -632,6 +633,7 @@
 				<param name="ignoreHierarchy">false</param>
 				<param name="includeProperties">
 				    actionMessages.*,
+				    actionErrors.*,
 				    fieldErrors.*
 				</param>
 			</result>
@@ -647,7 +649,38 @@
 				<param name="ignoreHierarchy">false</param>
 				<param name="includeProperties">
 				    actionMessages.*,
+				    actionErrors.*,
 				    fieldErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateProductTintStrength" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="updateProductTintStrength">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    actionErrors.*
+				</param>
+			</result>
+			<result name="error" type="json"></result>
+		</action>
+		<action name="updateProductTintStrengthSize" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="updateProductTintStrengthSize">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="input" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">
+				    actionMessages.*,
+				    actionErrors.*
 				</param>
 			</result>
 			<result name="error" type="json"></result>
@@ -927,6 +960,14 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"></result>
+		</action>
+		<action name="saveColorNotes" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveColorNotes">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"></result>
+			<result name="error" type="json"></result>
 		</action>
 		<action name="saveDrawdownAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="execute">
 	        <result name="loginRedirect" type="redirectAction">

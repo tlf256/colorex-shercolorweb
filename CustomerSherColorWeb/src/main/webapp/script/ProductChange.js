@@ -2,16 +2,17 @@
 
 	/* -------------- Change Product --------- */
     
+
 	var newSalesNbr = "";
 	var promptForVinylSafe = false;
 	var makeVinylSafe = null;
 	var userIllum = null;
+	var prodFam = null;
 	
 	
 	
 	function lookupNewProduct() { 
     	var checked = $('input[name=radioProdChoice]:checked').val();
-    	//console.log("checked: " + checked);
     	$("#lookupProductNext").blur();
     	$('#partialProductNameOrId').blur();
     	
@@ -19,6 +20,7 @@
     	if (checked === undefined){
 	    	// hide any action messages that the user clicked through
 	    	$('.changeProdError').addClass('d-none');
+	    	$("#actionMessageDisplay").empty();
 	    	
 	    	// get sales number
 	    	var partialProductNameOrId = $("#partialProductNameOrId").val();
@@ -26,14 +28,22 @@
 	    		// user picked same product so don't go any further
 				$("#changeProductModal").modal('hide');
 	    	} else {
-		    	// look up product number, size code, projected curve
+	    		// check if user is clicking through vinyl warning
+	    		var checkVSOverride = true;
+	    		if ($("#unavailableForVinylWarning").is(":visible")){
+	    			checkVSOverride = false;
+	    			$("#unavailableForVinylWarning").addClass("d-none");
+	    		}
 	    		$("#prodChangeStatusMsg").text(i18n['productChange.checkingOptions']);
+	    		
+	    		// look up product number, size code, projected curve, vinyl safe status
 		    	$.ajax({
 					url : "lookupProductOptions.action",
 					type : "POST",
 					data : {
 						reqGuid : myGuid,
-						partialProductNameOrId : partialProductNameOrId
+						partialProductNameOrId : partialProductNameOrId,
+						checkVSOverride : checkVSOverride
 					},
 					datatype : "json",
 					async : true,
@@ -41,80 +51,94 @@
 						if (data.sessionStatus === "expired") {
 							window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 						} else {
-							//console.log(data);
 							$("#prodChangeStatusMsg").text("");
 							// in case they are re-doing product lookup, reset the options available and add them back in down below
 							$(".nondefaultOptions").addClass("d-none");
 							$(".form-check-input").prop("checked", false);
 							
-							
-							/* check validation */
-							
-							if (data.message === "Unknown Error"){
-						    	$("#changeProdCancel").click();
-						    	alert(i18n['productChange.somethingWentWrong']);
-						    
-					    	// make them redo search to resolve any errors first
-							} else if (data.fieldErrors && Object.keys(data.fieldErrors).length !== 0) {
-								$.each(data.fieldErrors, function(fieldName, errorMsg) {
-						            var div = $('<div class="alert alert-danger changeProdError"></div>');
-					                div.text(errorMsg);
-					                $("#" + fieldName).parent().append(div);
-						        });
-							
-							// then let them click through action messages
-						    } else if (data.actionMessages && data.actionMessages.length !== 0) {
-								var div = $('<div class="alert alert-warning changeProdError"></div>');
-				                div.text(data.actionMessages[0]);
-				                $("#actionMessageDisplay").append(div);
-						    	
-				            // validation passed, build and show menu
-						    } else {
-						    	newSalesNbr = data.salesNbr;
-						    	// manual adjustment is the default option
-						    	$("#radioManualAdjustment").prop("checked", true);
-						    	
-								// check for projected curve 
-								if (data.ableToReformulate){
-									$(".form-check-input").prop("checked", false);
-									$("#radioReformulate").prop("checked", true);
-									$("#optionReformulate").removeClass("d-none");
-									//console.log("need to prompt for vinyl safe: " + data.requireVinylPrompt);
-									if (data.requireVinylPrompt == true){
-										promptForVinylSafe = true;
+							// no action errors, field errors, or action messages
+							if (validateMsgs(data) === true){
+						        // show menu if they need to override a vinyl safe warning
+							    if(data.checkVSOverride){
+						    		$("#unavailableForVinylWarning").removeClass("d-none");
+						    		$("#lookupProductNext").focus();
+					            
+						    	// validation passed, build and show menu
+							    } else {
+							    	newSalesNbr = data.salesNbr;
+							    	// manual adjustment is the default option
+							    	$("#radioManualAdjustment").prop("checked", true);
+							    	
+							    	// If either TSF is 0 or they are both the same, we can't adjust tint strength
+									if (data.oldTintStrength != 0 && data.newTintStrength != 0 && data.oldTintStrength != data.newTintStrength){
+										
+										// check for Adjust By Tint Strength And Size option
+										if (data.oldSizeCode != data.newSizeCode){
+											$(".form-check-input").prop("checked", false);
+											$("#radioTintStrengthSize").prop("checked", true);
+											$("#optionTintStrengthSize").removeClass("d-none");
+											$("#prodChangeTableHeader").text(i18n['productChange.changeInTsAndSize']);
+										// otherwise we are only adjusting by tint strength
+										} else {
+											$(".form-check-input").prop("checked", false);
+											$("#radioTintStrength").prop("checked", true);
+											$("#optionTintStrength").removeClass("d-none");
+											$("#prodChangeTableHeader").text(i18n['productChange.changeInTintStrength']);
+										}
+										// fill in table values
+										$("#oldProdNbr").text(data.oldProdNbr);
+										$("#newProdNbr").text(data.newProdNbr);
+										$("#oldSizeCode").text(data.oldSizeCode);
+										$("#newSizeCode").text(data.newSizeCode);
+										$("#oldTintStrength").text(data.oldTintStrength);
+										$("#newTintStrength").text(data.newTintStrength);
 									}
-								}
-								/*
-								// check for color eye reading
-								if (data.ableToRematch){
-									$(".form-check-input").prop("checked", false);
-									$("#radioRematch").prop("checked", true);
-									$("#optionRematch").removeClass("d-none");
-									//console.log("need to prompt for vinyl safe: " + data.requireVinylPrompt);
-									if (data.requireVinylPrompt == true){
-										promptForVinylSafe = true;
+							    	
+									// check for projected curve 
+									if (data.ableToReformulate){
+										$(".form-check-input").prop("checked", false);
+										$("#radioReformulate").prop("checked", true);
+										$("#optionReformulate").removeClass("d-none");
+										if (data.requireVinylPrompt == true){
+											promptForVinylSafe = true;
+										}
 									}
-								}
-								*/
-								// check if it's a size change
-								if (data.oldProdNbr == data.newProdNbr && data.oldSizeCode != data.newSizeCode){
-									// add size code change to radio button menu and set as default
-									$(".form-check-input").prop("checked", false);
-									$("#radioAdjustSize").prop("checked", true);
-									$("#optionAdjustSize").removeClass("d-none");
+									// check for color eye reading
+									if (data.ableToRematch){
+										$(".form-check-input").prop("checked", false);
+										$("#radioRematch").prop("checked", true);
+										$("#optionRematch").removeClass("d-none");
+										if (data.requireVinylPrompt == true){
+											promptForVinylSafe = true;
+										}
+									}
+									// check if it's a size change
+									if (data.oldProdNbr == data.newProdNbr && data.oldSizeCode != data.newSizeCode){
+										// add size code change to radio button menu and set as default
+										$(".form-check-input").prop("checked", false);
+										$("#radioAdjustSize").prop("checked", true);
+										$("#optionAdjustSize").removeClass("d-none");
+										
+										// fill in table values for size change
+										$("#prodChangeTableHeader").text(i18n["productChange.changeInProductSize"]);
+										$("#oldProdNbr").text(data.oldProdNbr);
+										$("#newProdNbr").text(data.newProdNbr);
+										$("#oldSizeCode").text(data.oldSizeCode);
+										$("#newSizeCode").text(data.newSizeCode);
+										$("#oldTintStrength").text(data.oldTintStrength);
+										$("#newTintStrength").text(data.newTintStrength);
+										// if there was no db entry, blank it out
+										if (data.oldTintStrength == 0){ $("#oldTintStrength").text("--"); }
+										if (data.newTintStrength == 0){ $("#newTintStrength").text("--"); }
+									}
 									
-									// fill in table values for size change
-									$("#oldProdNbr").text(data.oldProdNbr);
-									$("#newProdNbr").text(data.newProdNbr);
-									$("#oldSizeCode").text(data.oldSizeCode);
-									$("#newSizeCode").text(data.newSizeCode);
-								}
-								
-								// if table is visible they did multiple async prod lookups and already moved on to other menus
-								if (!$("#sizeChangeTable").is(":visible")){
-									// display radio button menu 			
-									$("#changeProductMenu").removeClass("d-none");
-									$("#lookupProductNext").focus();
+									// only show menu if secondary menus aren't visible (if so, they did multiple async prod lookups 
+									// and already moved on to other menus, so ignore the ajax response
+									if (!$("#prodChangeTable").is(":visible") && !$("#vinylSafePrompt").is(":visible") && !$("#prodFamilyRow").is(":visible")){
+										// display radio button menu 			
+										$("#changeProductMenu").removeClass("d-none");
+										$("#lookupProductNext").focus();
+									}
 								}
 							}
 						}
@@ -141,17 +165,69 @@
 	    		adjustFormulaToSize();
 	    		break;
 	    	case "reformulate":
+	    		// reformulate with the color curve
 	    		updateProductReformulate();
 	    		break;
-/*    		case "rematch":
+    		case "rematch":
+    			// rematch with the color eye reading
     			updateProductRematch();
-    			break;*/
+    			break;
+    		case "tintStrength":
+    			// scale formula to new tint strength
+    			adjustTintStrength();
+    			break;
+    		case "tintStrengthSize":
+    			// scale formula to new tint strength and size 
+    			adjustTintStrengthSize();
+    			break;
     		}
     	}
     }
+	
+	
+	// display errors and warnings to override
+	function validateMsgs(data){
+		var validationPassed = false;
+		
+		if (data.message === "Unknown Error"){
+	    	$("#changeProdCancel").click();
+	    	alert(i18n['productChange.somethingWentWrong']);
+	    
+		// make them redo search to resolve any errors first	
+	    } else if (data.actionErrors && data.actionErrors.length !== 0) {
+			var div = $('<div class="alert alert-danger changeProdError"></div>');
+            div.text(data.actionErrors[0]);
+            $("#actionMessageDisplay").append(div);
+		
+        } else if (data.fieldErrors && Object.keys(data.fieldErrors).length !== 0) {
+			$.each(data.fieldErrors, function(fieldName, fieldError) {
+	            $.each(fieldError, function(index, errorMsg){
+	            	var div = $('<div class="alert alert-danger changeProdError"></div>');
+	                div.text(errorMsg);
+	                $("#" + fieldName).parent().append(div);
+	            });
+	        });
+		
+        // let them click through action messages
+	    } else if (data.actionMessages && data.actionMessages.length !== 0) {
+	    	data.actionMessages.forEach(function(item) {
+	    		var div = $('<div class="alert alert-warning changeProdError"></div>');
+                div.text(item);
+                $("#actionMessageDisplay").append(div);
+	    	});
+	    	var p = $('<br><p class="changeProdError" style="font-weight:bold"></p>');
+	    	p.text(i18n['processProductAction.clickNext']);
+	    	$("#actionMessageDisplay").append(p);
+	   
+	    } else {
+	    	validationPassed = true;
+	    }
+		
+	    return validationPassed;
+	}
     
     
-    // check the radio button and conditionally do this
+	// go to edit formula page if they want to manually adjust
     function manuallyAdjust(){
 		$("#formulaUserPrintAction_formulaUserEditAction").click();
     }
@@ -159,6 +235,7 @@
     
     function updateProductNoAdjustment(reload, callback){
     	$('.changeProdError').addClass('d-none');
+    	$("#actionMessageDisplay").empty();
     	$.ajax({
 			url : "updateProductNoAdjustment.action",
 			type : "POST",
@@ -172,32 +249,10 @@
 				if (data.sessionStatus === "expired") {
 					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 				} else {
-					//console.log(data);
 					$("#changeProductMenu").addClass("d-none");
 					
-					if (data.message === "Unknown Error"){
-				    	$("#changeProdCancel").click();
-				    	alert(i18n['productChange.somethingWentWrong']);
-				    
-				    // make them redo search to resolve any errors first	
-				    } else if (data.actionErrors && data.actionErrors.length !== 0) {
-						var div = $('<div class="alert alert-danger changeProdError"></div>');
-		                div.text(data.actionErrors[0]);
-		                $("#actionMessageDisplay").append(div);
-					
-		            // then let them click through action messages
-				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
-						data.actionMessages.forEach(function(item) {
-				    		console.log(item);
-				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
-			                div.text(item);
-			                $("#actionMessageDisplay").append(div);
-				    	});
-				    	var p = $('<br><p class="changeProdError" style="font-weight:bold"></p>');
-				    	p.text(i18n['processProductAction.clickNext']);
-				    	$("#actionMessageDisplay").append(p);
-					
-				    } else {
+					// no action errors, field errors, or action messages
+					if (validateMsgs(data) === true){
 						if (reload){
 							// reload the page to show updated product, without having the save prompt
 							setFormSubmitting();
@@ -221,8 +276,8 @@
     	$("#changeProductMenu").addClass("d-none");
     	
     	// visible table and no errors means user is giving final confirmation, so do the ajax call and update
-    	if ($("#sizeChangeTable").is(":visible")){
-    		$('#sizeChangeTable').addClass('d-none');
+    	if ($("#prodChangeTable").is(":visible")){
+    		$('#prodChangeTable').addClass('d-none');
     		if (numErrors == 0){
     			sizeChangeAjax();
     		}
@@ -230,11 +285,12 @@
     	} else {
     		// user just got here, show the table, make them click one more time to confirm
     		if (numErrors == 0){
-	    		$('#sizeChangeTable').removeClass('d-none');
+	    		$('#prodChangeTable').removeClass('d-none');
 	    	// user is overriding warnings, so hide warnings and do ajax call again
 	    	} else {
 	    		// hide action messages that the user clicked through
 	        	$('.changeProdError').addClass('d-none');
+	        	$("#actionMessageDisplay").empty();
 	        	sizeChangeAjax();
     		}
     	}
@@ -242,7 +298,8 @@
     
     
     function sizeChangeAjax(){
-    	$.ajax({
+    	$("#prodChangeStatusMsg").text(i18n['productChange.sizeStatus']);
+		$.ajax({
 			url : "updateProductSizeChange.action",
 			type : "POST",
 			data : {
@@ -255,34 +312,12 @@
 				if (data.sessionStatus === "expired") {
 					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 				} else {
-					//console.log(data);
 					$("#changeProductMenu").addClass("d-none");
+					$("#prodChangeStatusMsg").text("");
 
-					if (data.message === "Unknown Error"){
-				    	$("#changeProdCancel").click();
-				    	alert(i18n['productChange.somethingWentWrong']);
-				    
-				    // make them redo search to resolve any errors first	
-				    } else if (data.actionErrors && data.actionErrors.length !== 0) {
-						var div = $('<div class="alert alert-danger changeProdError"></div>');
-		                div.text(data.actionErrors[0]);
-		                $("#actionMessageDisplay").append(div);
-		                
-		            // then let them click through action messages
-				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
-				    	data.actionMessages.forEach(function(item) {
-				    		console.log(item);
-				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
-			                div.text(item);
-			                $("#actionMessageDisplay").append(div);
-				    	});
-				    	var p = $('<br><p class="changeProdError" style="font-weight:bold"></p>');
-				    	p.text(i18n['processProductAction.clickNext']);
-				    	$("#actionMessageDisplay").append(p);
-				   	
-				    // no errors or warnings, reload to update session info on page
-					} else {
-						// set up the changes not yet saved message and reload page with the updates
+					// no errors or warnings
+					if (validateMsgs(data) === true){
+				    	// set up the changes not yet saved message and reload page with the updated session info
 				    	setFormSubmitting();
 						window.location= "displayUpdatedFormulaAction.action?reqGuid="+myGuid;
 					}
@@ -297,6 +332,7 @@
     
     function updateProductReformulate(){
     	$('.changeProdError').addClass('d-none');
+    	$("#actionMessageDisplay").empty();
     	
     	// we need to prompt for vinyl safe
     	if (promptForVinylSafe == true && makeVinylSafe == null){
@@ -337,33 +373,10 @@
 				if (data.sessionStatus === "expired") {
 					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 				} else {
-					//console.log(data);
 					$("#prodChangeStatusMsg").text("");
-					if (data.message === "Unknown Error"){
-				    	$("#changeProdCancel").click();
-				    	alert(i18n['productChange.somethingWentWrong']);
-				    
-					// make them redo search to resolve any errors first	
-				    } else if (data.fieldErrors && Object.keys(data.fieldErrors).length !== 0) {
-						$.each(data.fieldErrors, function(fieldName, errorMsg) {
-				            var div = $('<div class="alert alert-danger changeProdError"></div>');
-			                div.text(errorMsg);
-			                $("#" + fieldName).parent().append(div);
-				        });
-					
-		            // let them click through action messages
-				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
-				    	data.actionMessages.forEach(function(item) {
-				    		console.log(item);
-				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
-			                div.text(item);
-			                $("#actionMessageDisplay").append(div);
-				    	});
-				    	var p = $('<br><p class="changeProdError" style="font-weight:bold"></p>');
-				    	p.text(i18n['processProductAction.clickNext']);
-				    	$("#actionMessageDisplay").append(p);
-				    	
-				    } else {
+										
+					// no errors or warnings
+					if (validateMsgs(data) === true){
 				    	// reset the flags once any action messages are dealt with and we've gotten the updated formula
 				    	promptForVinylSafe = false;
 				    	makeVinylSafe = null;
@@ -380,9 +393,10 @@
     }
     
         
-/*    	
+    	
     function updateProductRematch(){
     	$('.changeProdError').addClass('d-none');
+    	$("#actionMessageDisplay").empty();
     	
     	// we need to prompt for vinyl safe
     	if (promptForVinylSafe == true && makeVinylSafe == null){
@@ -398,30 +412,44 @@
 	        	$("#vinylSafeYes").addClass("d-none");
 	    		$("#vinylSafeNo").addClass("d-none");
 	    		$("#vinylSafePrompt").addClass("d-none"); 
-	    		$("#lookupProductNext").addClass("d-none");
-	    		//** set makeVinylSafe back to null after return from ajax and pick product
+	    		$("#lookupProductNext").removeClass("d-none");
+	    		$("#lookupProductNext").focus();
         	}
     		
         	// check if they need the illuminants option prompt
         	if ($("#userIllumMenu").is(":visible")){
         		userIllum = $('input[name=radioIllumChoice]:checked').val();
-       			//console.log("user picked " + userIllum);
        			if (userIllum != null){
-        			rematchAjax();
+        			rematchAjax(null);
+       			}
+        	} else if ($("#prodFamilyRow").is(":visible")){
+       			// check which product radio button is clicked
+        		prodFam = $('input[name=prodFamily]:checked').val();
+       			if (prodFam != null){
+        			rematchAjax(prodFam);
        			}
         	} else {	
-        		// set up prompt for illum choice 
-        		$("#changeProductMenu").addClass("d-none");
-        		$("#userIllumMenu").removeClass("d-none");
-        		$("#radioDaylight").prop("checked", true);
+        		if (userIllum == null){
+	        		// set up prompt for illum choice 
+	        		$("#changeProductMenu").addClass("d-none");
+	        		$("#userIllumMenu").removeClass("d-none");
+	        		$("#radioDaylight").prop("checked", true);
+        		} else {
+        			// user is clicking through action messages
+        			rematchAjax(prodFam);
+        		}
         	}
         }    		
     }
     
     
     
-    function rematchAjax(){
-    	$.ajax({
+    function rematchAjax(prodFam){
+    	$("#userIllumMenu").addClass("d-none");
+		$("#prodChangeStatusMsg").text(i18n['productChange.rematchingStatus']);
+		$("#prodFamilyRow").addClass("d-none");
+		$("#changeProdDialogModal").removeClass("modal-xl");
+		$.ajax({
 			url : "updateProductRematch.action",
 			type : "POST",
 			data : {
@@ -429,7 +457,8 @@
 				salesNbr : newSalesNbr, 
 				requireVinylPrompt : promptForVinylSafe,
 				makeVinylSafe : makeVinylSafe,
-				userIllum : userIllum
+				userIllum : userIllum,
+				selectedProdFam : prodFam
 			},
 			datatype : "json",
 			async : true,
@@ -437,57 +466,82 @@
 				if (data.sessionStatus === "expired") {
 					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 				} else {
-					//console.log(data);
-					$("#userIllumMenu").addClass("d-none");
+					$("#prodChangeStatusMsg").text("");
 					
-					if (data.message === "Unknown Error"){
-				    	$("#changeProdCancel").click();
-				    	alert(i18n['productChange.somethingWentWrong']);
-				    
-					// make them redo search to resolve any errors first	
-				    } else if (data.fieldErrors && Object.keys(data.fieldErrors).length !== 0) {
-						$.each(data.fieldErrors, function(fieldName, errorMsg) {
-				            var div = $('<div class="alert alert-danger changeProdError"></div>');
-			                div.text(errorMsg);
-			                $("#" + fieldName).parent().append(div);
-				        });
-					
-		            // let them click through action messages
-				    } else if (data.actionMessages && data.actionMessages.length !== 0) {
-				    	data.actionMessages.forEach(function(item) {
-				    		console.log(item);
-				    		var div = $('<div class="alert alert-warning changeProdError"></div>');
-			                div.text(item);
-			                $("#actionMessageDisplay").append(div);
-				    	});
-				    	var p = $('<br><p class="changeProdError" style="font-weight:bold"></p>');
-				    	p.text(i18n['processProductAction.clickNext']);
-				    	$("#actionMessageDisplay").append(p);
-				    	
-				    //** add conditional to check if we need to show table	
-				    	
-				    } else {
-				    	// reset the flags once any action messages are dealt with and we've gotten the updated formula
-				    	promptForVinylSafe = false;
-				    	makeVinylSafe = null;
-				    	// set up the changes not yet saved message and reload page with the updates
-				    	//setFormSubmitting();
-						//window.location= "displayUpdatedFormulaAction.action?reqGuid="+myGuid);
-						
-						$("#betterPerfRadio").prop("checked", true);
-						$("#betterPerformanceRow").find(".prodDetail").text(data.colorProdFamilies.bestPerformance.prodNbr);
-						$("#betterPerformanceRow").find(".quality").text(data.colorProdFamilies.bestPerformance.quality);
-						$("#betterPerformanceRow").find(".base").text(data.colorProdFamilies.bestPerformance.base);
-						$("#betterPerformanceRow").find(".deltaE").text(data.colorProdFamilies.bestPerformance.deltaE);
-						$("#betterPerformanceRow").find(".contrastRatio").text(data.colorProdFamilies.bestPerformance.contrastRatio);
-						$("#betterPerformanceRow").find(".comment").text(data.colorProdFamilies.bestPerformance.comment);
-						
-						$("#productEnteredRow").find(".prodDetail").text(data.colorProdFamilies.prodEntered.prodNbr);
-						$("#productEnteredRow").find(".quality").text(data.colorProdFamilies.prodEntered.quality);
-						$("#productEnteredRow").find(".base").text(data.colorProdFamilies.prodEntered.base);
-						$("#productEnteredRow").find(".deltaE").text(data.colorProdFamilies.prodEntered.deltaE);
-						$("#productEnteredRow").find(".contrastRatio").text(data.colorProdFamilies.prodEntered.contrastRatio);
-						$("#productEnteredRow").find(".comment").text(data.colorProdFamilies.prodEntered.comment);
+					// no errors or warnings
+					if (validateMsgs(data) === true){
+						// we need to show the better performance in different base table	
+						if (data.formulas != null && Object.keys(data.formulas).length > 0){
+					    	$("#bestPerformanceFormula").empty();
+					    	$("#prodEnteredFormula").empty();
+					    	
+					    	$("#betterPerfRadio").prop("checked", true);
+							$("#betterPerformanceRow").find(".prodDetail").text(data.colorProdFamilies.bestPerformance.prodNbr);
+							$("#betterPerformanceRow").find(".quality").text(data.colorProdFamilies.bestPerformance.quality);
+							$("#betterPerformanceRow").find(".base").text(data.colorProdFamilies.bestPerformance.base);
+							$("#betterPerformanceRow").find(".deltaE").text(data.colorProdFamilies.bestPerformance.deltaE);
+							$("#betterPerformanceRow").find(".contrastRatio").text(data.colorProdFamilies.bestPerformance.contrastRatio);
+							$("#betterPerformanceRow").find(".comment").text(data.colorProdFamilies.bestPerformance.comment);
+							
+							$("#productEnteredRow").find(".prodDetail").text(data.colorProdFamilies.prodEntered.prodNbr);
+							$("#productEnteredRow").find(".quality").text(data.colorProdFamilies.prodEntered.quality);
+							$("#productEnteredRow").find(".base").text(data.colorProdFamilies.prodEntered.base);
+							$("#productEnteredRow").find(".deltaE").text(data.colorProdFamilies.prodEntered.deltaE);
+							$("#productEnteredRow").find(".contrastRatio").text(data.colorProdFamilies.prodEntered.contrastRatio);
+							$("#productEnteredRow").find(".comment").text(data.colorProdFamilies.prodEntered.comment);
+							
+							$("#prodFamilyTable").find(".deltaE").each(function(){
+								var deltaEVal = parseFloat($(this).text());
+								if (!isNaN(deltaEVal) && deltaEVal > 1){
+									$(this).css("color","red");
+									$(this).css("font-weight","bold");
+								}
+							});
+							
+							$("#betterPerfRadio").val(data.colorProdFamilies.bestPerformance.salesNbr);
+							$("#prodEnteredRadio").val(data.colorProdFamilies.prodEntered.salesNbr);
+							
+							data.formulas.bestPerformance.ingredients.forEach(function(item) {
+					    		var tr = $('<tr></tr>');
+					    		var td = $('<td></td>');
+				                td.text(item.tintSysId);
+				                tr.append(td);
+				                
+					    		item.increment.forEach(function(inc){
+					    			td = $('<td></td>');
+					    			td.text(inc);
+					    			tr.append(td);
+					    		});
+					    		$("#bestPerformanceFormula").append(tr);
+					    	});
+							
+							data.formulas.prodEntered.ingredients.forEach(function(item) {
+					    		var tr = $('<tr></tr>');
+					    		var td = $('<td></td>');
+				                td.text(item.tintSysId);
+				                tr.append(td);
+				                
+					    		item.increment.forEach(function(inc){
+					    			td = $('<td></td>');
+					    			td.text(inc);
+					    			tr.append(td);
+					    		});
+					    		$("#prodEnteredFormula").append(tr);
+					    	});
+							$("#changeProdDialogModal").addClass("modal-xl");
+							$("#prodFamilyRow").removeClass("d-none");
+							$("#lookupProductNext").focus();
+					    	
+					    } else {
+					    	// reset the flags once any action messages are dealt with and we've gotten the updated formula
+					    	promptForVinylSafe = false;
+					    	makeVinylSafe = null;
+					    	prodFam = null;
+					    	userIllum = null;
+					    	// set up the changes not yet saved message and reload page with the updates
+					    	setFormSubmitting();
+							window.location="displayUpdatedFormulaAction.action?reqGuid="+myGuid;
+						}
 					}
 				}
 			},
@@ -496,8 +550,142 @@
 			}
 		});
     }
-*/    
+    
+    
+    
+    function adjustTintStrength(){
+    	var numErrors = $(".changeProdError").filter(":visible").length;
+    	$("#changeProductMenu").addClass("d-none");
+    	
+    	// visible table and no errors means user is giving final confirmation, so do the ajax call and update
+    	if ($("#prodChangeTable").is(":visible")){
+    		$('#prodChangeTable').addClass('d-none');
+    		if (numErrors == 0){
+    			tintStrengthAjax();
+    		}
+    	// table is not visible
+    	} else {
+    		// user just got here, show the table, make them click one more time to confirm
+    		if (numErrors == 0){
+	    		$('#prodChangeTable').removeClass('d-none');
+	    		
+	    	// user is overriding warnings, so hide warnings and do ajax call again
+	    	} else {
+	    		// hide action messages that the user clicked through
+	        	$('.changeProdError').addClass('d-none');
+	        	$("#actionMessageDisplay").empty();
+	        	tintStrengthAjax();
+    		}
+    	}
+    }
+    
 
+    function tintStrengthAjax(){
+    	var oldTintStrength = $("#oldTintStrength").text();
+		var newTintStrength = $("#newTintStrength").text();
+		$("#prodChangeStatusMsg").text(i18n['productChange.tintStrengthStatus']);
+		
+		$.ajax({
+			url : "updateProductTintStrength.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				salesNbr : newSalesNbr,
+				oldTintStrength : oldTintStrength,
+				newTintStrength : newTintStrength
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					$("#prodChangeStatusMsg").text("");
+					
+					// no errors or warnings
+					if (validateMsgs(data) === true){
+				    	// set up the changes not yet saved message and reload page with the updated session info
+				    	setFormSubmitting();
+						window.location= "displayUpdatedFormulaAction.action?reqGuid="+myGuid;
+					}
+				}
+			},
+			error : function(err) {
+				alert(i18n['global.failureColon'] + err);
+			}
+		});
+    }
+    
+    
+    
+    function adjustTintStrengthSize(){
+    	var numErrors = $(".changeProdError").filter(":visible").length;
+    	$("#changeProductMenu").addClass("d-none");
+    	
+    	// visible table and no errors means user is giving final confirmation, so do the ajax call and update
+    	if ($("#prodChangeTable").is(":visible")){
+    		$('#prodChangeTable').addClass('d-none');
+    		if (numErrors == 0){
+    			tintStrengthSizeAjax();
+    		}
+    	// table is not visible
+    	} else {
+    		// user just got here, show the table, make them click one more time to confirm
+    		if (numErrors == 0){
+	    		$('#prodChangeTable').removeClass('d-none');
+	    		
+	    	// user is overriding warnings, so hide warnings and do ajax call again
+	    	} else {
+	    		// hide action messages that the user clicked through
+	        	$('.changeProdError').addClass('d-none');
+	        	$("#actionMessageDisplay").empty();
+	        	tintStrengthSizeAjax();
+    		}
+    	}
+    }
+    
+    
+    function tintStrengthSizeAjax(){
+    	var oldTintStrength = $("#oldTintStrength").text();
+		var newTintStrength = $("#newTintStrength").text();
+		var oldSizeCode = $("#oldSizeCode").text();
+		var newSizeCode = $("#newSizeCode").text();
+		$("#prodChangeStatusMsg").text(i18n['productChange.tintStrengthSizeStatus']);
+	
+		$.ajax({
+			url : "updateProductTintStrengthSize.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				salesNbr : newSalesNbr,
+				oldTintStrength : oldTintStrength,
+				newTintStrength : newTintStrength,
+				oldSizeCode : oldSizeCode,
+				newSizeCode : newSizeCode
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					$("#prodChangeStatusMsg").text("");
+					
+					// no errors or warnings
+					if (validateMsgs(data) === true){
+				    	// set up the changes not yet saved message and reload page with the update session info
+				    	setFormSubmitting();
+						window.location= "displayUpdatedFormulaAction.action?reqGuid="+myGuid;
+					}
+				}
+			},
+			error : function(err) {
+				alert(i18n['global.failureColon'] + err);
+			}
+		});
+    }
+    
+    
  
 	$(document).ready(function() {
 		// pop up product change modal for custom manual, custom match, and saved measure; 
@@ -509,7 +697,6 @@
 		$('#changeProductModal').on('shown.bs.modal', function () {
 			$('#partialProductNameOrId').focus();
 		});
-		
 		
 		$("#partialProductNameOrId").keypress(function(event){
 			// submit search if enter key pressed
@@ -525,13 +712,17 @@
 			$(".form-check-input").prop("checked", false);
 			$('#changeProductMenu').addClass('d-none'); 
 			$('.changeProdError').addClass('d-none');
-			$('#sizeChangeTable').addClass('d-none');
+			$('#prodChangeTable').addClass('d-none');
+			$("#prodFamilyRow").addClass("d-none");
 			$("#userIllumMenu").addClass("d-none");
-			
 			$("#vinylSafePrompt").addClass("d-none");
 			$("#vinylSafeYes").addClass("d-none");
     		$("#vinylSafeNo").addClass("d-none");
     		$("#lookupProductNext").removeClass("d-none");
+    		$("#changeProdDialogModal").removeClass("modal-xl");
+    		makeVinylSafe = null;
+    		prodFam = null;
+    		userIllum = null;
 		});
 		
 		$("#changeProductMenu").find(".form-check-input").keypress(function(event){
@@ -542,18 +733,39 @@
 			}
 		});
 		
+		$("#userIllumMenu").find(".form-check-input").keypress(function(event){
+			// let user hit enter key to submit radio button option
+			if(event.keyCode === 13){
+				lookupNewProduct();
+				event.preventDefault();
+			}
+		});
+		
+		$("#prodFamilyTable").find(".prodFamRadio").keypress(function(event){
+			// let user hit enter key to submit prod family option
+			if(event.keyCode === 13){
+				lookupNewProduct();
+				event.preventDefault();
+			}
+		});
+		
 		// reset change product modal if they cancel out
 		$('#changeProdCancel').on('click', function() {
 			$('#changeProductMenu').addClass('d-none'); 
 			$('.changeProdError').addClass('d-none');
-			$('#sizeChangeTable').addClass('d-none');
+			$('#prodChangeTable').addClass('d-none');
 			$(".nondefaultOptions").addClass("d-none");
 			$(".form-check-input").prop("checked", false);
 			$("#vinylSafePrompt").addClass("d-none");
 			$("#vinylSafeYes").addClass("d-none");
     		$("#vinylSafeNo").addClass("d-none");
     		$("#lookupProductNext").removeClass("d-none");
-    		//$("#userIllumMenu").addClass("d-none");
+    		$("#userIllumMenu").addClass("d-none");
+    		$("#prodFamilyRow").addClass("d-none");
+    		$("#changeProdDialogModal").removeClass("modal-xl");
+    		makeVinylSafe = null;
+    		prodFam = null;
+    		userIllum = null;
 		});
 		
 		$("#vinylSafeYes").on('click', function() {
@@ -582,13 +794,22 @@
     		}
 		});
 		
+		$("#changeProductModal").draggable({
+		    handle: ".modal-header"
+		}); 
+		/*
 		// don't let user change the product if the job is already dispensed 
 		var qtyDispensed = parseInt($.trim($("#qtyDispensed").text()));
 		if (isNaN(qtyDispensed))
 			qtyDispensed = 0;
 		if (qtyDispensed > 0) {
 			$("#changeProductBtn").hide();
-		}
+		}*/
+		
+		$('#prodFamilyTable tr').click(function() {
+		    $(this).find('input[type=radio]').prop('checked', true);
+		});
+		
 	});
 	
 	

@@ -10,13 +10,13 @@
 		
 		<title><s:text name="editFormula.editFormula"/></title>
 			<!-- JQuery -->
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
@@ -258,8 +258,8 @@
 			});
 			
 			//Hide Adjust By % button if formula is empty
-			if($('#adjByPercentVisible').val() === 'true'){
-				$('#adjByPct').hide();
+			if($('#scaleByPercentVisible').val() === 'false'){
+				$('#scaleByPct').hide();
 			}
 			
 			//validate colorId and colorName fields
@@ -447,7 +447,7 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 mb-1">
 						<strong><s:text name="global.colorCompanyColon"/></strong>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
@@ -474,11 +474,23 @@
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
 						<strong><s:text name="global.colorNameColon"/></strong>
 					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 mb-1">
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
 						<s:textfield name="colorName" size="20" maxlength="30" />
-						<div class="chip sw-bg-main"></div>
 					</div>
 					<div class="col-lg-6 col-md-5 col-sm-4 col-xs-3 errormsg">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="global.notesColon"/></strong>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-8 mb-1">
+						<s:textfield name="colorNotes" size="20" maxlength="35" />
+						<div class="chip sw-bg-main"></div>
+					</div>
+					<div class="col-lg-6 col-md-4 col-sm-4 col-xs-0 errormsg">
 					</div>
 				</div>
 				<div class="row">
@@ -667,7 +679,7 @@
   
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
-		<s:hidden name="adjByPercentVisible" value="%{adjByPercentVisible}"/>
+		<s:hidden name="scaleByPercentVisible" value="%{scaleByPercentVisible}"/>
 		<!-- Adjust By Percent Modal -->
 	    <div class="modal fade" aria-labelledby="scaleFormulaByPctModal" aria-hidden="true"  id="scaleFormulaByPctModal" role="dialog">
 	    	<div class="modal-dialog" role="document">
