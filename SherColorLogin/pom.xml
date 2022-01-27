@@ -14,8 +14,46 @@
         <log4j2.version>2.17.1</log4j2.version>
         <java.version>8</java.version>
         <junit.version>4.13.2</junit.version>
-        <oracle-database.version>19.7.0.0</oracle-database.version>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ucp</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.ha</groupId>
+                <artifactId>ons</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.ha</groupId>
+                <artifactId>simplefan</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.security</groupId>
+                <artifactId>oraclepki</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.security</groupId>
+                <artifactId>osdt_core</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.security</groupId>
+                <artifactId>osdt_cert</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -79,10 +117,7 @@
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ucp</artifactId>
+            <version>12.2.0.1</version>
         </dependency>
     </dependencies>
     <build>
