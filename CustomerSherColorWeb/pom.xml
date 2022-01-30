@@ -83,12 +83,12 @@
         <dependency>
             <groupId>com.sherwin.SherColorWeb</groupId>
             <artifactId>SherColorCommon</artifactId>
-            <version>2.0</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.sherwin.login</groupId>
             <artifactId>SherColorLogin</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.hibernate.validator</groupId>
