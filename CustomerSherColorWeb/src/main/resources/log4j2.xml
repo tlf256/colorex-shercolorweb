@@ -34,6 +34,12 @@
 		<Logger name="com.sherwin.shercolor" level="trace" additivity="false">
 			<appender-ref ref="RollingFile" level="trace"/>
 		</Logger>
+		<Logger name="com.opensymphony.xwork2" level="warn" additivity="false">
+			<appender-ref ref="RollingFile" level="warn"/>
+		</Logger>
+		<Logger name="org.apache.struts2" level="warn" additivity="false">
+			<appender-ref ref="RollingFile" level="warn"/>
+		</Logger>
 		<Root level="info" additivity="false">
 			<AppenderRef ref="RollingFile"/>
 		</Root>
