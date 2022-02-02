@@ -1,6 +1,6 @@
 
 var sessionTinterInfo=null;
-
+let initializationDone="INITIALIZATION DONE";
 
 
 function Ecal(mycolorant,mymodel,myserial,myuploaddate,myuploadtime,myfilename){

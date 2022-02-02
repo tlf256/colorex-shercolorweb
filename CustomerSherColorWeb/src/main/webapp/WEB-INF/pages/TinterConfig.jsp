@@ -27,7 +27,7 @@
 
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 
 
@@ -658,8 +658,9 @@
 			case 'Detect':
 			case 'Init':
 			case 'InitStatus':
+				let ucErrorMessage = return_message.errorMessage.toUpperCase().trim()
 				//status = 1, means, still trying serial ports so still in progress.
-				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) &&
+				if (( ucErrorMessage.trim() != initializationDone) &&
 						 (return_message.errorNumber >= 0 ||
 						 return_message.status == 1)) {
 					 	//save		
@@ -690,8 +691,8 @@
 						}
 					//console.log(return_message.errorMessage);
 				}
-				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
-					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
+				else if(return_message.errorMessage.toUpperCase().trim() == initializationDone){
+					console.log("init done: " + (return_message.errorMessage.toUpperCase().trim() == initializationDone));
 					
 					
 					waitForShowAndHide("#detectInProgressModal");
@@ -735,7 +736,7 @@
 						}
 					}
 				}
-				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
+				if ((return_message.errorMessage.toUpperCase().trim() == initializationDone) || return_message.errorNumber < 0) {
 					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
@@ -777,14 +778,14 @@
 			case 'Detect':
 			case 'Init':
 				//status = 1, means, still trying serial ports so still in progress.
-				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) && (return_message.errorNumber >= 0 ||
+				if ((return_message.errorMessage.toUpperCase().trim() != initializationDone) && (return_message.errorNumber >= 0 ||
 						 return_message.status == 1)) {
 					 	//save		
 					$("#progress-message").text(return_message.errorMessage);
 					//console.log(return_message.errorMessage);
 				}
-				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
-					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
+				else if((return_message.errorMessage.toUpperCase().trim() == initializationDone)){
+					console.log("init done: " + (return_message.errorMessage.toUpperCase().trim() == initializationDone));
 					
 					
 					waitForShowAndHide("#detectInProgressModal");
@@ -827,7 +828,7 @@
 						}
 					}
 				}
-				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
+				if ((return_message.errorMessage.toUpperCase().trim() == initializationDone) || return_message.errorNumber < 0) {
 					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
