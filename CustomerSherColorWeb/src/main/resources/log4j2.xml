@@ -5,8 +5,8 @@
 		<Property name="log-pattern">%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</Property>
 	</Properties>
 	<Appenders>
-		<RollingFile name="RollingFile" fileName="${log-path}/CustomerSherColorWeb.log"
-			filePattern="${log-path}/CustomerSherColorWeb-%d{yyyy-MM-dd}-%i.log" >
+		<RollingFile name="RollingFile" fileName="${log-path}/SherColorWeb.log"
+			filePattern="${log-path}/SherColorWeb-%d{yyyy-MM-dd}-%i.log" >
 			<PatternLayout>
 				<pattern>${log-pattern}</pattern>
 			</PatternLayout>
@@ -22,30 +22,14 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.springframework" level="info" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-<!--			<AppenderRef ref="Console"/>-->
-		</Logger>
-		<Logger name="org.hibernate.sql" level="error" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-<!--			<AppenderRef ref="Console"/>-->
-		</Logger>
-		<Logger name="org.hibernate" level="error" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-<!--			<AppenderRef ref="Console"/>-->
-		</Logger>
-		<Logger name="com.sherwin.shercolor" level="trace" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-<!--			<AppenderRef ref="Console"/>-->
-		</Logger>
-		<Logger name="com.sherwin.ecom" level="debug" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-<!--			<AppenderRef ref="Console"/>-->
-		</Logger>
-		<Logger name="com.sherwin.login" level="debug" additivity="false">
-			<AppenderRef ref="RollingFile"/>
-<!--			<AppenderRef ref="Console"/>-->
-		</Logger>
+		<Logger name="org.springframework" level="info" additivity="false"/>
+		<Logger name="org.hibernate.sql" level="error" additivity="false"/>
+		<Logger name="org.hibernate" level="error" additivity="false"/>
+		<Logger name="com.sherwin.shercolor" level="trace" additivity="false"/>
+		<Logger name="com.sherwin.ecom" level="error" additivity="false"/>
+		<Logger name="com.sherwin.login" level="info" additivity="false"/>
+		<Logger name="com.opensymphony.xwork2" level="warn" additivity="false"/>
+		<Logger name="org.apache.struts2" level="warn" additivity="false"/>
 		<Root level="info" additivity="false">
 			<AppenderRef ref="RollingFile"/>
 <!--			<AppenderRef ref="Console"/>-->

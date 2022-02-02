@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sherwin.shercolor</groupId>
-    <artifactId>CustomerSherColorWeb</artifactId>
+    <artifactId>SherColorWeb</artifactId>
     <packaging>war</packaging>
     <version>1.5</version>
     <name>SherColorWeb Maven Webapp</name>
@@ -13,11 +13,11 @@
 		<version>2.5.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-    <!-- Spring Boot starter provides a number of properties OOTB to set common dependency versions holistically,
+    <!-- Spring Boot starter provides a number of properties OOTB to set common dependency versions according to the Spring version/requirements,
          use these if specific versions are needed https://docs.spring.io/spring-boot/docs/2.6.x/reference/htmlsingle/#dependency-versions.properties-->
     <properties>
         <log4j2.version>2.17.1</log4j2.version>
-        <struts2.version>2.5.28.3</struts2.version>
+        <struts2.version>2.5.29</struts2.version>
         <java.version>8</java.version>
         <wildfly.version>24.0.1.Final</wildfly.version>
     </properties>
@@ -303,6 +303,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>CustomerSherColorWeb</finalName>
+        <finalName>SherColorWeb</finalName>
     </build>
 </project>

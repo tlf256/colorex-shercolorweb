@@ -1,14 +1,11 @@
 server:
-  display-name: CustomerSherColorWeb
+  display-name: SherColorWeb
   servlet:
-    context-path: /CustomerSherColorWeb
     session:
       cookie:
         secure: true
         http-only: true
 spring:
-  application:
-    name: CustomerSherColorWeb
   config:
     import: /web_apps/server/shercolor/deploy/shercolorcommonnew.properties
   datasource:

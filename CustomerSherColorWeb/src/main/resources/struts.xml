@@ -4,12 +4,12 @@
         "http://struts.apache.org/dtds/struts-2.5.dtd">
 <struts>
 	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
-	<constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="false" />
 	<constant name="struts.i18n.reload" value="true" />
 	<constant name="struts.custom.i18n.resources" value="global" />
 	<constant name="struts.objectFactory" value="spring" />
 	<constant name="struts.mapper.action.prefix.enabled" value="true" />
-	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.i18n.encoding" value="UTF-8"/>
 	<package name="default" namespace="/" extends="struts-default,json-default">
 		<!-- define interceptor to use when not logged in.  We will add this interceptor ref to each action we want to require a login. -->
 		<interceptors>

@@ -27,7 +27,6 @@
 /subsystem=undertow/server=default-server/https-listener=https:write-attribute(name="enabled-protocols",value="TLSv1.1,TLSv1.2")
 
 /subsystem=undertow/server=default-server/host=default-host:write-attribute(name="alias",value={"localhost",${shercolor.domain}})
-/subsystem=undertow/server=default-server/host=default-host/setting=access-log:add(pattern="%h %l %u %t &quot;%r&quot; %s %b &quot;%{i,Referer}&quot; &quot;%{i,User-Agent}&quot; &quot;%{i,X-Forwarded-For}&quot; Cookie: &quot;%{i,COOKIE}&quot; Set-Cookie: &quot;%{o,SET-COOKIE}&quot; SessionID: %S Thread: &quot;%I&quot; TimeTaken: %T")
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=x-frame-options:add()
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=x-xss-protection:add()
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=x-Content-type-options:add()
@@ -35,6 +34,7 @@
 /subsystem=undertow/server=default-server/host=default-host/filter-ref=internet-restrictor-handler:add()
 
 /subsystem=undertow/servlet-container=default/setting=jsp:add()
+/subsystem=undertow/servlet-container=default/setting=websockets:add()
 
 /subsystem=undertow/configuration=filter/response-header=server-header:add(header-name=Server,header-value=Wildfly)
 /subsystem=undertow/configuration=filter/response-header=x-powered-by-header:add(header-name="X-Powered-By",header-value="Undertow/1")
