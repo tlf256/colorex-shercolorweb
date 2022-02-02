@@ -348,4 +348,4 @@ modules.xml
 # Sonarlint plugin
 .idea/sonarlint
 
-CustomerSherColorWeb/*.pdf
+*.pdf
