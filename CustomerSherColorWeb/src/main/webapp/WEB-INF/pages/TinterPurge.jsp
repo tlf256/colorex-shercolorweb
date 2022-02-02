@@ -272,7 +272,7 @@
 			return_message.errorMessage = i18n[errorKey];
 		}
 		 
-		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+		if(return_message.errorNumber == 0 || return_message.errorNumber == -10500){
 			// show purge
 			//var displayDate = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
 			//var displayTime = curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
