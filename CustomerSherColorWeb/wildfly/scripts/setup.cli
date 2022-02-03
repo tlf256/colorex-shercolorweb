@@ -40,6 +40,5 @@
 /subsystem=undertow/configuration=filter/response-header=x-powered-by-header:add(header-name="X-Powered-By",header-value="Undertow/1")
 /subsystem=undertow/configuration=filter/response-header=x-frame-options:add(header-name="X-Frame-Options",header-value="SAMEORIGIN")
 /subsystem=undertow/configuration=filter/response-header=x-xss-protection:add(header-name="X-XSS-Protection",header-value="1; mode=block")
-/subsystem=undertow/configuration=filter/response-header=content-security-policy:add(header-name="Content-Security-Policy",header-value="https://www.owasp.org/index.php/Content_Security_Policy")
 /subsystem=undertow/configuration=filter/response-header=x-Content-type-options:add(header-name="X-Content-Type-Options",header-value="nosniff")
 /subsystem=undertow/configuration=filter/response-header=hsts-header:add(header-name="Strict-Transport-Security",header-value="max-age=31536000; includeSubdomains")
