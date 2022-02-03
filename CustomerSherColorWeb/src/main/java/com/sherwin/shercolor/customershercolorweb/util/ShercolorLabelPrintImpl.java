@@ -34,6 +34,7 @@ import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sherwin.shercolor.common.service.ColorMastService;
@@ -65,13 +66,13 @@ import be.quodlibet.boxable.VerticalAlignment;
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	static Logger logger = LoggerFactory.getLogger(ShercolorLabelPrintImpl.class);
 
-
+	@Autowired
 	DrawdownLabelService drawdownLabelService;
-	
+	@Autowired
 	CustomerService customerService;
-	
+	@Autowired
 	ColorMastService colorMastService;
-	
+	@Autowired
 	FormulationService formulationService;
 
 	public ShercolorLabelPrintImpl(DrawdownLabelService drawdownLabelService, CustomerService customerService, ColorMastService colorMastService, FormulationService formulationService) {
