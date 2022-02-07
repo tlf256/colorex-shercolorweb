@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.model;
 
+import java.util.Date;
 import java.util.List;
 
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
@@ -16,14 +17,18 @@ public class JobHistoryInfo{
 	private int controlNbr;
 	private String colorId;
 	private String colorName;
+	private String colorNotes;
 	private String rgbHex;
 	private String prodNbr;
 	private int quantityDispensed;
+	private int quantityOrdered;
 	private int numberOfColorants;
 	private List<JobField> jobFieldList;
 	private List<FormulaIngredient> recipe;
 	private String formulaDisplay;
 	private String sizeCode;
+	private String canType;
+	private Date jobCreationDate;
 	
 	public String getClrntSysId() {
 		return clrntSysId;
@@ -67,7 +72,12 @@ public class JobHistoryInfo{
 	public void setQuantityDispensed(int quantityDispensed) {
 		this.quantityDispensed = quantityDispensed;
 	}
-	
+	public int getQuantityOrdered() {
+		return quantityOrdered;
+	}
+	public void setQuantityOrdered(int quantityOrdered) {
+		this.quantityOrdered = quantityOrdered;
+	}
 	public int getNumberOfColorants() {
 		return numberOfColorants;
 	}
@@ -99,7 +109,22 @@ public class JobHistoryInfo{
 	public void setFormulaDisplay(String formulaDisplay) {
 		this.formulaDisplay = formulaDisplay;
 	}
-	
-	
-	
+	public String getCanType() {
+		return canType;
+	}
+	public void setCanType(String canType) {
+		this.canType = canType;
+	}
+	public Date getJobCreationDate() {
+		return jobCreationDate;
+	}
+	public void setJobCreationDate(Date jobCreationDate) {
+		this.jobCreationDate = jobCreationDate;
+	}
+	public String getColorNotes() {
+		return colorNotes;
+	}
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
+	}
 }

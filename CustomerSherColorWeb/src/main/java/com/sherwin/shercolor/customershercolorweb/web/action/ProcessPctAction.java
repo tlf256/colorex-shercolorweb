@@ -74,7 +74,7 @@ public class ProcessPctAction extends ActionSupport implements SessionAware, Log
 			sessionMap.put(reqGuid, reqObj);
 			
 			return returnStatus;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}

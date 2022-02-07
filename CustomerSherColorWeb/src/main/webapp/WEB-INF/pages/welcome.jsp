@@ -10,18 +10,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title><s:text name="welcome.newOrExistingJob"/></title>
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
 	
 	<style>
@@ -139,31 +139,34 @@
 					alertErrors.push("Tinter Purge is Required");
 				}
 				
-				if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append('<li><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="global.ok"/></li>');
-				else {
-					hasWarnings=true;
-					$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
-				}
-				
-				// Check Levels
-				console.log("about to check levels");
-				// Check for STOP! because there is not enough colorant in the tinter
-				var stopList = checkColorantEmpty(sessionTinterInfo.canisterList);
-				if(stopList[0]!=null){
-					stopList.forEach(function(item){
-						//add to alert message being built
-						alertErrors.push('<s:text name="welcome.colorantColon"/>' + item);
-					});
-				}
-				var warnList = checkColorantLow(sessionTinterInfo.canisterList);
-				if(warnList!=null && warnList[0]!=null){
-					hasWarnings=true;
-					warnList.forEach(function(item){
-						if(item.lastIndexOf("Error",0)===0)	$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
-						else $("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
-					});
-				} else {
-					$("#tinterStatusList").append('<li><strong><s:text name="welcome.colorantLevelsColon"/></strong> <s:text name="global.ok"/></li>');
+				// leave off Ecal and Colorant Levels indicators for Santint tinters
+				if (sessionTinterInfo.model != null && !sessionTinterInfo.model.includes("SANTINT")){
+					if(sessionTinterInfo.ecalOnFile===true)	$("#tinterStatusList").append('<li><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="global.ok"/></li>');
+					else {
+						hasWarnings=true;
+						$("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.ecalStatusColon"/></strong> <s:text name="welcome.warningNoEcalOnFile"/></li>');
+					}
+					
+					// Check Levels
+					console.log("about to check levels");
+					// Check for STOP! because there is not enough colorant in the tinter
+					var stopList = checkColorantEmpty(sessionTinterInfo.canisterList);
+					if(stopList[0]!=null){
+						stopList.forEach(function(item){
+							//add to alert message being built
+							alertErrors.push('<s:text name="welcome.colorantColon"/>' + item);
+						});
+					}
+					var warnList = checkColorantLow(sessionTinterInfo.canisterList);
+					if(warnList!=null && warnList[0]!=null){
+						hasWarnings=true;
+						warnList.forEach(function(item){
+							if(item.lastIndexOf("Error",0)===0)	$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
+							else $("#tinterStatusList").append('<li class="bg-warning"><strong><s:text name="welcome.colorantColon"/> </strong>'+item+"</li>");
+						});
+					} else {
+						$("#tinterStatusList").append('<li><strong><s:text name="welcome.colorantLevelsColon"/></strong> <s:text name="global.ok"/></li>');
+					}
 				}
 					
 				//Show alerts in main alert section in middle of screen
@@ -299,14 +302,15 @@
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			console.log(return_message);
 			//status = 1, means, still trying serial ports so still in progress.
-			if (return_message.errorMessage.indexOf("Initialization Done") == -1 && (return_message.errorNumber >= 0 ||
+			if (return_message.errorMessage.toUpperCase().trim() !== initializationDone
+					 && (return_message.errorNumber >= 0 ||
 					 return_message.status == 1)) {
 				//save				
 				//no need to keep showing $("#initTinterInProgressModal").modal('show');
 				$("#progress-message").text(return_message.errorMessage);
 				console.log(return_message);
 			}
-			else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
+			else if(return_message.errorMessage.toUpperCase().trim() === initializationDone){
 				sendingTinterCommand = "false";
 				// clear init error in session
 				initErrorList = [];
@@ -412,10 +416,15 @@
 		function DetectSantintResp(return_message){
 			console.log("Processing Santint Detect Response");
 			var initErrorList;
-			// log event
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
-			sendTinterEvent(myGuid, curDate, return_message, null); 
+			var errorKey = return_message.errorMessage;
+			// update error to english for logging
+			return_message.errorMessage = log_english[errorKey];
+			// log event
+			sendTinterEvent(myGuid, curDate, return_message, null);
+			// update error with internationalized message
+			return_message.errorMessage = i18n[errorKey];
 			waitForShowAndHide('#initTinterInProgressModal');
 			initErrorList = [];
 			
@@ -423,26 +432,23 @@
 			if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 				// clear init errors in session			
 				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
-				// get session for tinter status
-	    		getSessionTinterInfo($("#startNewJob_reqGuid").val(), sessionTinterInfoCallback);
 			} else {
 				// Show a modal with error message to make sure the user is forced to read it. 
 				$("#tinterErrorList").empty();
 				
-				if(return_message.errorList != null && return_message.errorList[0] != null){
-					return_message.errorList.forEach(function(item){
-						$("#tinterErrorList").append("<li>" + item.message + "</li>");
-						initErrorList.push(item.message);
-					});
-				} else {
-					initErrorList.push(return_message.errorMessage);
-					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
-				}
+				initErrorList.push(return_message.errorMessage);
+				$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
 				$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
 				$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 				$("#tinterErrorListModal").modal('show');
+				
 				saveInitErrorsToSession($("#startNewJob_reqGuid").val(), initErrorList);
 			}
+			// get session for tinter status
+    		getSessionTinterInfo($("#startNewJob_reqGuid").val(), sessionTinterInfoCallback);
+    		// remove Ecal Manager and ColorantLevels from menu if they weren't already removed on page load because localhostConfig was still null
+			$("#tinterEcal").hide();
+    		$("#colorantLevels").hide();
     	}
 		
 		function showUpdatedLayout(data){
@@ -515,8 +521,7 @@
 			// log event
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
-			if ((return_message.errorMessage.indexOf("Initialization done") == -1 &&
-					 return_message.errorMessage.indexOf("Initialization Done") == -1 )&& 
+			if ((return_message.errorMessage.toUpperCase().trim() !== initializationDone )&& 
 					 (return_message.errorNumber >= 0 ||
 					 return_message.status == 1)) {
 				
@@ -546,8 +551,7 @@
 				console.log(return_message);
 			}
 			
-			else if(return_message.errorMessage.indexOf("Initialization Done") >= 0 ||
-					return_message.errorMessage.indexOf("Initialization done") >= 0){
+			else if(return_message.errorMessage.toUpperCase().trim() === initializationDone){
 				sendingTinterCommand = "false";
 				// clear init error in session
 				initErrorList = [];
@@ -1156,11 +1160,13 @@
 										<li id="spectroVerifyDefaultSettings"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroVerifyDefaultSettingsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-check-square-o'></span>  <s:text name="global.verifyDefaultSpectroSettings"/></a></li>
 										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="global.colorEyeInformation"/></a></li>
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
+										<li id="compareColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCompareColorsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-adjust pr-1'></span> <s:text name="welcome.compareTwoColors"/></a></li>
 				        			</ul>
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.tinterMenu"/></a>
-	        						<ul class="dropdown-menu" id="tintermenu">
+	        						<ul class="dropdown-menu" id="tintermenu"> 
+	        							<li id="tintQueue"><a class="dropdown-item" tabindex="-1" href='<s:url action="listJobsAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="displayTintQueue" value="true"/></s:url>'><span class='fa fa-list-ol pr-2'></span> <s:text name="welcome.tintQueue"/></a></li>
 								    	<li id="tinterPurge"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterPurgeAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-tint pr-2'></span> <s:text name="global.purge"/></a></li>
 								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> <s:text name="welcome.updateCanisterLayout"/></a></li>
 				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> <s:text name="global.colorantLevels"/></a></li>
@@ -1205,7 +1211,10 @@
 	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="tinterNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#tinterPopover" data-original-title="Tinter Status" data-animation="true"><span><i class="fa fa-certificate" style="color: limegreen;"></i></span>  <s:text name="welcome.tinterStatus"/></a></li>
 	        			<li class="nav-item p-2 pl-3 pr-3" id="colorEyeBar"><span class="bar"><strong style="color: dimgrey;">|</strong></span></li>
 	        			<li class="nav-item"><a href="javascript:void(0)" class="navbar-text" id="coloreyeNotify" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-popover-content="#coloreyePopover" data-original-title="Color-Eye Status" data-animation="true"><span><i class="fa fa-exclamation-circle" style="color: red;"></i></span>  <s:text name="welcome.colorEyeStatus"/></a></li>
-	        			
+	        			<li class="nav-item p-2 pl-3 pr-3" id="tintQueueBar"><span class="bar"><strong style="color: dimgrey;">|</strong></span></li>
+	        			<li class="nav-item"><a class="navbar-text" href='<s:url action="listJobsAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="displayTintQueue" value="true"/></s:url>'>
+	        				<s:text name="global.tintQueueColon"></s:text><span class="badge badge-secondary" id="tintQueueCountText"></span></a>
+						</li>
 	        			
 	        			<!-- Content for Popovers -->
 						<div class="d-none" id="tinterPopover">
@@ -1308,7 +1317,7 @@
 							<s:hidden name="siteHasSpectro" value="%{siteHasSpectro}"/>
 							<s:hidden name="daysUntilPwdExp" value="%{daysUntilPwdExp}"/>
 							<s:submit cssClass="btn btn-primary btn-lg pull-left" id="startNewJobFocus" autofocus="autofocus" value="%{getText('welcome.startNewJob')}" action="startNewJob"/>
-							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="%{getText('welcome.lookupExistingJob')}" action="listJobsAction"/>
+							<s:submit cssClass="btn btn-secondary btn-lg pull-right" value="%{getText('welcome.lookupExistingJob')}" action="searchJobsAction"/>
 				    	</div>  
 			    	
 			    	<!-- Updated Canister Layout Modal Window -->
@@ -1487,7 +1496,7 @@
 // 				e.stopPropagation();
 // 				e.preventDefault();
 // 			});
-
+			$('#tintQueueCountText').text(${sessionScope[thisGuid].tintQueueCount});
 			$.ajax({
 		  		url: "spectroObtainAllStoredMeasurements.action",
 		  		type: "POST",
@@ -1584,6 +1593,12 @@
  			var daysUntilPwdExpire = $('#startNewJob_daysUntilPwdExp').val();   
 			if (daysUntilPwdExpire <= 7 && $("#startNewJob_newSession").val()=="true") {
 				$('#passwordExpirationModal').modal('show');
+			}
+			
+			if (localhostConfig != null && localhostConfig.model != null && localhostConfig.model.includes("SANTINT")){
+				// remove Ecal Manager and Colorant Levels links from menu
+				$("#tinterEcal").hide();
+				$("#colorantLevels").hide();
 			}
 			
 		});

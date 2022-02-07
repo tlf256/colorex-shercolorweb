@@ -12,13 +12,13 @@
 		
 		<title><s:text name="getVinylSafeOption.vinylSafeFormula"/></title>
 			<!-- JQuery -->
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
@@ -129,38 +129,51 @@
 			<br>
 			<br>
 	
-			<s:form action="GetVinylSafeAction" validate="true" theme="bootstrap">
+			<s:form action="GetVinylSafeAction" validate="true" theme="bootstrap">						
 				<div class="row">
-  						<div class="col-sm-2">
-						</div>
-	            		<div class="col-sm-4">
-							<s:text name="getVinylSafeOption.canBeUsedForVinylSafe"/>
-						</div>
+ 					<div class="col-sm-2">
+					</div>
+            		<div class="col-sm-8">
+						<s:text name="getVinylSafeOption.canBeUsedForVinylSafe"/>
+					</div>
 				</div>
+				<br>
+				
 				<div class="row">
-  						<div class="col-sm-2">
-						</div>
-	            		<div class="col-sm-4">
-   								<s:hidden name="reqGuid" value="%{reqGuid}"/>
-   								<s:checkbox id="makeVinylSafeFormulaCk" name="makeVinylSafeFormula" label="%{getText('getVinylSafeOption.createVinylSafe')}" cssClass="mt-3"/>
-						</div>
+ 					<div class="col-sm-2">
+					</div>
+            		<div class="col-sm-8">
+            			<strong><s:text name="getVinylSafeOption.createVinylSafe"/></strong>
+					</div>
 				</div>
 				
-					
 				<div class="row">
-						<div class="col-sm-2">
-						</div>	
-						<div class="col-sm-2">
-							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="vsUserNextAction"/>
-						</div>
-						<div class="col-sm-2">	
-							<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="vsUserBackAction"/>
-   						</div>
-						<div class="col-sm-2">
-						</div>
-						<div class="col-sm-2">
-			    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
-			    		</div>
+ 					<div class="col-sm-2">
+					</div>
+            		<div class="col-sm-4 d-none">
+						<s:hidden name="reqGuid" value="%{reqGuid}"/>
+						<s:checkbox id="makeVinylSafeFormulaCk" name="makeVinylSafeFormula" label=""/>
+					</div>
+				</div>
+				<br>				
+					
+				<div class="row mt-3">
+					<div class="col-sm-2">
+					</div>	
+					<div class="col-sm-1">
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.yes')}" onclick="chooseYes();" action="vsUserNextAction"/>
+					</div>	
+					<div class="col-sm-1">
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.no')}" onclick="chooseNo();" action="vsUserNextAction"/>
+					</div>
+					<div class="col-sm-1">	
+						<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="vsUserBackAction"/>
+  					</div>
+					<div class="col-sm-2">
+					</div>
+					<div class="col-sm-2">
+		    			<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction"/>
+		    		</div>
 		    	</div>
 			</s:form>
 		</div>
@@ -173,6 +186,14 @@
 		 $(window).on('load', function () {
 			 $( "#makeVinylSafeFormulaCk" ).focus();
 		 });
+		 
+		 function chooseYes(){
+			 $("#makeVinylSafeFormulaCk").prop("checked", true);
+		 }
+		 
+		 function chooseNo(){
+			 $("#makeVinylSafeFormulaCk").prop("checked", false);
+		 }
 		
 
 		<!--

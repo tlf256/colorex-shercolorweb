@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsClrnt;
+import com.sherwin.shercolor.common.domain.CdsMiscCodes;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
@@ -25,6 +26,7 @@ import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
+import com.sherwin.shercolor.common.service.UtilityService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.ManualIngredient;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -43,13 +45,19 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private List<String> availClrntNameId;
 	private String colorId;
 	private String colorName;
+	private String colorNotes;
 	private List<JobField> jobFields;
 	private int recDirty;
 	private boolean userWarningOverride = false;
-	private boolean adjByPercentVisible;
+	private boolean scaleByPercentVisible = true;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
-	private String percentFormulaMsg;
+	private String adjustFormulaMsg;
+	
+	private String startingContainer;
+	private String endingContainer;
+	
+	private List<CdsMiscCodes> sizeList;
 	
 
 	private boolean debugOn = false;
@@ -69,6 +77,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	@Autowired
 	ColorService colorService;
 	
+	@Autowired
+	UtilityService utilityService;
+	
 	public String display() {
 		
 		try {
@@ -87,6 +98,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			}
 			colorId = reqObj.getColorID();
 			colorName = reqObj.getColorName();
+			colorNotes = reqObj.getColorNotes();
 			 
 			displayFormula = new FormulaInfo();
 			if(reqObj.isVinylExclude()){
@@ -100,6 +112,10 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			 
 			// setup header
 			List<String> incrHdr = colorantService.getColorantIncrementHeader(reqObj.getClrntSys());
+			
+			// setup scale by size List
+			sizeList = utilityService.listSizeCodesForSizeConversion();
+			
 			 
 			displayFormula.setIncrementHdr(incrHdr);
 			 
@@ -148,8 +164,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			CustWebTran webTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), 1);
 			
 			if (webTran == null && reqObj.getDisplayFormula() == null) {
-				logger.debug("Formula not saved or display formula null, no Adjust By Percent");
-				adjByPercentVisible = true;
+				logger.debug("Formula not saved and display formula null, Scale By Percent button not available.");
+				scaleByPercentVisible = false;
 			}
 	 
 			// setup colorant list for drop down
@@ -160,7 +176,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			sessionMap.put(reqGuid, reqObj);
 
 			 
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage(), e);
 			return ERROR;
 		}
@@ -200,16 +216,59 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			}
 			
 			reqObj.setDisplayFormula(displayFormula);
-			percentFormulaMsg =  getText("editFormula.pctOfFormula", new String[]{String.valueOf(percentOfFormula)});
+			adjustFormulaMsg =  getText("editFormula.pctOfFormula", new String[]{String.valueOf(percentOfFormula)});
 			sessionMap.put(reqGuid, reqObj);
 
 			retVal = SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.toString() + " " + e.getMessage(), e);
 			System.err.println("Exception thrown!, Percent Addition Calculation Failed");
 			retVal = ERROR;
 		}
 
+		return retVal;
+	}
+	
+	public String sizeAdjustment() {
+		String retVal;
+		
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			// get displayFormula and apply percent of formula, return ingredientList
+			
+			CdsMiscCodes conversionRatio = utilityService.getCdsMiscCodes("SZCNV",
+											startingContainer+endingContainer);
+			
+			if (conversionRatio != null) {
+				displayFormula = reqObj.getDisplayFormula();
+				
+				logger.debug("in sizeAdjustment, origFormula ingredient count returned is " + displayFormula.getIngredients().size());
+				for(FormulaIngredient item : displayFormula.getIngredients()){
+					logger.debug("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
+				}
+				
+				logger.debug("in sizeAdjustment, about to call scaleByPercent");
+				displayFormula = formulationService.scaleFormulaBySize(displayFormula, Double.parseDouble(conversionRatio.getMiscName()));
+				
+				logger.debug("in sizeAdjustment, new Formula ingredient count returned is " + displayFormula.getIngredients().size());
+				for(FormulaIngredient item : displayFormula.getIngredients()){
+					logger.debug("item " + item.getTintSysId() + " " + item.getName() + " " + Arrays.toString(item.getIncrement()));
+				}
+				
+				reqObj.setDisplayFormula(displayFormula);
+				adjustFormulaMsg =  getText("editFormula.pctOfFormula", new String[]{String.valueOf(percentOfFormula)});
+				sessionMap.put(reqGuid, reqObj);
+				
+				retVal = SUCCESS;
+			} else {
+				retVal = ERROR;
+			}			
+		} catch (RuntimeException e) {
+			logger.error(e.toString() + " " + e.getMessage(), e);
+			System.err.println("Exception thrown!, Percent Addition Calculation Failed");
+			retVal = ERROR;
+		}
+		
 		return retVal;
 	}
 	
@@ -224,6 +283,8 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			reqObj.setColorID(colorId);
 			if (colorName==null) {colorName="";}
 			reqObj.setColorName(colorName);
+			if (colorNotes==null) {colorNotes="";}
+			reqObj.setColorNotes(colorNotes);
 			// Fill in more display formula attributes
 			reqObj.getDisplayFormula().setSalesNbr(reqObj.getSalesNbr());
 			reqObj.getDisplayFormula().setColorComp(reqObj.getColorComp());
@@ -486,12 +547,12 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			
 			if(retVal.equalsIgnoreCase(INPUT)){
 				fillColorantList(reqObj);
+				sizeList = utilityService.listSizeCodesForSizeConversion();
 			}
 			
 			
-		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			logger.error(e);
+		} catch (RuntimeException e) {
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;
@@ -589,20 +650,52 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 		this.selectedColorantFocus = Encode.forHtml(selectedColorantFocus);
 	}
 
-	public boolean isAdjByPercentVisible() {
-		return adjByPercentVisible;
+	public boolean isScaleByPercentVisible() {
+		return scaleByPercentVisible;
 	}
 
 	public void setPercentOfFormula(int percentOfFormula) {
 		this.percentOfFormula = percentOfFormula;
 	}
 
-	public String getPercentFormulaMsg() {
-		return percentFormulaMsg;
+	public String getAdjustFormulaMsg() {
+		return adjustFormulaMsg;
 	}
 
-	public void setPercentFormulaMsg(String percentFormulaMsg) {
-		this.percentFormulaMsg = percentFormulaMsg;
+	public void setAdjustFormulaMsg(String adjustFormulaMsg) {
+		this.adjustFormulaMsg = adjustFormulaMsg;
+	}
+
+	public List<CdsMiscCodes> getSizeList() {
+		return sizeList;
+	}
+
+	public void setSizeList(List<CdsMiscCodes> sizeList) {
+		this.sizeList = sizeList;
+	}
+
+	public String getStartingContainer() {
+		return startingContainer;
+	}
+
+	public String getEndingContainer() {
+		return endingContainer;
+	}
+
+	public void setStartingContainer(String startingContainer) {
+		this.startingContainer = startingContainer;
+	}
+
+	public void setEndingContainer(String endingContainer) {
+		this.endingContainer = endingContainer;
+	}
+
+	public String getColorNotes() {
+		return colorNotes;
+	}
+
+	public void setColorNotes(String colorNotes) {
+		this.colorNotes = colorNotes;
 	}
 	
 	

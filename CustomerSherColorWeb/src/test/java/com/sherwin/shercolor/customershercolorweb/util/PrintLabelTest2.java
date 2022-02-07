@@ -3,6 +3,7 @@ package com.sherwin.shercolor.customershercolorweb.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -25,12 +26,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
 @Transactional
+@WebAppConfiguration
 public class PrintLabelTest2  {
 	
 	private RequestObject reqObj = new RequestObject();
@@ -173,7 +176,7 @@ public class PrintLabelTest2  {
 		reqObj.setClrntSys(request[5]);
 		reqObj.setVinylExclude(Boolean.parseBoolean(request[7]));
 		
-		cdsProd = productService.readCdsProd(request[4]);
+		cdsProd = productService.readCdsProd(request[4]).get();
 		reqObj.setProdNbr(cdsProd.getPrepComment().substring(0, 9));
 		reqObj.setQuality(cdsProd.getQuality());
 		reqObj.setComposite(cdsProd.getComposite());

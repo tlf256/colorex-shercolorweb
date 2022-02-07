@@ -2,9 +2,10 @@ package com.sherwin.shercolor.customerprofilesetup.web.model;
 
 import java.util.List;
 
-import com.sherwin.shercolor.common.domain.Eula;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.CustParms;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProdComp;
+import com.sherwin.shercolor.customerprofilesetup.web.dto.CustProfile;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.JobFields;
 import com.sherwin.shercolor.customerprofilesetup.web.dto.LoginTrans;
 
@@ -12,7 +13,6 @@ public class RequestObject {
 	
 	private String customerId;
 	private String accttype;
-	private String defaultClrntSys;
 	private boolean active;
 	private boolean history;
 	private String swuiTitle;
@@ -37,14 +37,18 @@ public class RequestObject {
 	private boolean loginUnchanged;
 	private List<String> clrntList;
 	private List<EulaHist> eulaHistList;
-	private List<String> eulaList;
-	private int seqNbr;
 	private EulaHist eulaHistToActivate;
 	private byte[] eulapdf;
-	private Eula eula;
-	private boolean toactivateRecord;
+	private CustEula eula;
+	private String eulaType;
 	private boolean uploadedEula;
 	private boolean updateMode;
+	private boolean roomByRoom;
+	private CustProfile profile;
+	private List<CustProdComp> prodCompList;
+	private List<CustProdComp> deletedProdComps;
+	private String prodComps;
+	private String template;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -57,12 +61,6 @@ public class RequestObject {
 	}
 	public void setAccttype(String accttype) {
 		this.accttype = accttype;
-	}
-	public String getDefaultClrntSys() {
-		return defaultClrntSys;
-	}
-	public void setDefaultClrntSys(String defaultClrntSys) {
-		this.defaultClrntSys = defaultClrntSys;
 	}
 	public boolean isActive() {
 		return active;
@@ -211,18 +209,6 @@ public class RequestObject {
 		this.eulaHistList = eulaHistList;
 	}
 	
-	public List<String> getEulaList() {
-		return eulaList;
-	}
-	public void setEulaList(List<String> eulaList) {
-		this.eulaList = eulaList;
-	}
-	public int getSeqNbr() {
-		return seqNbr;
-	}
-	public void setSeqNbr(int seqNbr) {
-		this.seqNbr = seqNbr;
-	}
 	public EulaHist getEulaHistToActivate() {
 		return eulaHistToActivate;
 	}
@@ -235,18 +221,17 @@ public class RequestObject {
 	public void setEulapdf(byte[] eulapdf) {
 		this.eulapdf = eulapdf;
 	}
-	public Eula getEula() {
+	public CustEula getEula() {
 		return eula;
 	}
-	public void setEula(Eula eula) {
+	public void setEula(CustEula eula) {
 		this.eula = eula;
 	}
-	
-	public boolean isToactivateRecord() {
-		return toactivateRecord;
+	public String getEulaType() {
+		return eulaType;
 	}
-	public void setToactivateRecord(boolean toactivateRecord) {
-		this.toactivateRecord = toactivateRecord;
+	public void setEulaType(String eulaType) {
+		this.eulaType = eulaType;
 	}
 	public boolean isUploadedEula() {
 		return uploadedEula;
@@ -260,10 +245,48 @@ public class RequestObject {
 	public void setUpdateMode(boolean updateMode) {
 		this.updateMode = updateMode;
 	}
+	public boolean isRoomByRoom() {
+		return roomByRoom;
+	}
+	public void setRoomByRoom(boolean roomByRoom) {
+		this.roomByRoom = roomByRoom;
+	}
+	public CustProfile getProfile() {
+		return profile;
+	}
+	public void setProfile(CustProfile profile) {
+		this.profile = profile;
+	}
+	
+	public List<CustProdComp> getProdCompList() {
+		return prodCompList;
+	}
+	public void setProdCompList(List<CustProdComp> prodCompList) {
+		this.prodCompList = prodCompList;
+	}
+	public List<CustProdComp> getDeletedProdComps() {
+		return deletedProdComps;
+	}
+	public void setDeletedProdComps(List<CustProdComp> deletedProdComps) {
+		this.deletedProdComps = deletedProdComps;
+	}
+	public String getProdComps() {
+		return prodComps;
+	}
+	public void setProdComps(String prodComps) {
+		this.prodComps = prodComps;
+	}
+	
+	public String getTemplate() {
+		return template;
+	}
+	public void setTemplate(String template) {
+		this.template = template;
+	}
 	public void reset() {
 		this.customerId = "";
 		this.accttype = "";
-		this.defaultClrntSys = "";
+		//this.defaultClrntSys = "";
 		this.active = false;
 		this.history = false;
 		this.swuiTitle = "";
@@ -273,7 +296,6 @@ public class RequestObject {
 		this.loginList = null;
 		this.clrntList = null;
 		this.eulaHistList = null;
-		this.eulaList = null;
 	}
 	
 }

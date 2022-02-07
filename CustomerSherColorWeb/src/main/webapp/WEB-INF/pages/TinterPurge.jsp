@@ -12,18 +12,18 @@
 		
 		<title><s:text name="tinterPurge.tinterPurge"/></title>
 			<!-- JQuery -->
-		<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-		<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-		<link rel=StyleSheet href="js/smoothness/jquery-ui.css" type="text/css">
-		<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"> 
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.7.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -265,9 +265,14 @@
 		$("#tinterErrorListModal").modal('show');
 	}
     function purgeComplete(myGuid, curDate,return_message, tedArray, fmx){
-    	 $("#abort-message").hide();
-         
-		if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+    	$("#abort-message").hide();
+    	var errorKey = return_message.errorMessage;
+    	var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
+			return_message.errorMessage = i18n[errorKey];
+		}
+		 
+		if(return_message.errorNumber == 0 || return_message.errorNumber == -10500){
 			// show purge
 			//var displayDate = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
 			//var displayTime = curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
@@ -321,9 +326,14 @@
 				showTinterErrorModal(null,null,return_message);
 			}
 		}
-		 return_message.command = "PurgeAll";
-	    sendTinterEvent(myGuid, curDate, return_message, tedArray);
+		return_message.command = "PurgeAll";
+		// update error message to english for logging
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
+			return_message.errorMessage = log_english[errorKey];
+		}
+		sendTinterEvent(myGuid, curDate, return_message, tedArray);
     }
+    
     function abort(){
     	console.log('before abort');
     	
@@ -398,6 +408,7 @@
 			}
 			if(isTintJSON){
 				var return_message=JSON.parse(ws_tinter.wsmsg);
+				
 				switch (return_message.command) {
 					case 'PurgeAll':
 					case 'PurgeProgress':
@@ -419,8 +430,7 @@
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
 							}
 						else{  
-							 
-							purgeComplete(myGuid, curDate,return_message, tedArray);
+							purgeComplete(myGuid, curDate, return_message, tedArray);
 						}
 						break;
 					
@@ -530,6 +540,13 @@
 		});
 		//capture F4 key to abort
 		jQuery(document).on("keydown",fkey);
+		
+		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
+			// hide Clean Nozzle button for Santint tinters
+			$("#tinterCleanNozzle").hide();
+		}
+		
 	});
     
 </script>

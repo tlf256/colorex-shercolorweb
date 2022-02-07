@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,8 +40,8 @@ import javafx.fxml.FXMLLoader;
  *
  */
 @SpringBootApplication
-@Import(AppConfig.class)
 @ImportResource("config/spring/shercolorcommon.xml")
+@Import(AppConfig.class)
 public class ImportCustWebTran extends Application
 {
 	private ConfigurableApplicationContext springContext;
