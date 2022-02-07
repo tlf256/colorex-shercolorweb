@@ -36,4 +36,11 @@ public interface SWUserService {
 	 * @return boolean true if successfully updated, false if not.
 	 */
 	public boolean updatePasswordChangeDate(String loginID);
+
+	/***
+	 * Returns an SWUser given the login info.
+	 * @param loginInfo Can be email or SW Id
+	 * @return SWUser for the given login ID.
+	 */
+	public SWUser readUserByEmailOrLogin(String loginInfo);
 }
