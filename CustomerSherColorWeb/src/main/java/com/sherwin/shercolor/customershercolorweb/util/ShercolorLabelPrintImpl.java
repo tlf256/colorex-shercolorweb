@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.CharUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -296,8 +296,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// ================================================================================================================================================
 			// 12/07/2020 | Color Id, Color Name and Formula Type
 			errorLocation = "Color I.D. & Name";
-			setColorIdAndNameRow();
-			createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, reqObj.getColorID() + " " + reqObj.getColorName() );
+			String rowData = setColorIdAndNameRow();
+			createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, rowData);
 			// ------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Formula Type";
 			createOneColumnRow(table, 8, 8, 100, haCenter, vaMiddle, reqObj.getDisplayFormula().getSourceDescr());
@@ -311,7 +311,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// ================================================================================================================================================
 			// 12/07/2020 | Product Information
 			errorLocation = "Size and Base";
-			// Abbreviating base type name to 16 characters to keep font size on label line.
+				// Abbreviating base type name to 16 characters to keep font size on label line.
 			if (reqObj.getBase().length() > 15)
 				reqObj.setBase(reqObj.getBase().substring(0, 16));
 
@@ -400,8 +400,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			errorLocation = "Customer";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Customer:",cell2Width,haLeft,vaMiddle,customer);
-			errorLocation = "Store CNN";
-			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CNN:",cell2Width,haLeft,vaMiddle,storeCCN);
+			errorLocation = "Store CCN";
+			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Store CCN:",cell2Width,haLeft,vaMiddle,storeCCN);
 			errorLocation = "Date Prepared and Control Nbr";
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
@@ -505,14 +505,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// ================================================================================================================================================
 			// 12/07/2020 | Color Id, Color Name and Formula Type
 			errorLocation = "Color I.D. & Name";
-			setColorIdAndNameRow();
+			String rowData = setColorIdAndNameRow();
 			
 			CustWebCustomerProfile custProfile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
 			CdsColorMast colorMast = colorMastService.read(reqObj.getColorComp(), reqObj.getColorID());
-			if (custProfile.isUseLocatorId() && colorMast!= null && colorMast.getLocId() != null) {
-				createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, colorMast.getLocId() + " " + reqObj.getColorID() + " " + reqObj.getColorName() );
-			} else {
-				createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, reqObj.getColorID() + " " + reqObj.getColorName() );
+			createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, rowData);
+			
+			if (custProfile.isUseLocatorId() && colorMast != null && colorMast.getLocId() != null) {
+				errorLocation = "Locator ID";
+				createOneColumnRow(table, 8, 8, 100, haCenter, vaMiddle, colorMast.getLocId());
 			}
 			
 			// ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -532,7 +533,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// Abbreviating base type name to 16 characters to keep font size on label line.
 			if (reqObj.getBase().length() > 15)
 				reqObj.setBase(reqObj.getBase().substring(0, 16));
-
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getSizeText(), 50, haRight, vaMiddle, reqObj.getBase());
 			//-------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Sales and Product Number";
@@ -545,10 +545,12 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			//------------------------------djm-------------------------
 			//KXK PSCWEB-703
+			errorLocation = "Job Field List";
 			List<JobField> listJobField = new ArrayList<JobField>(reqObj.getJobFieldList());
 			JobField roomByRoom = new JobField();
 			roomByRoom.setScreenLabel("Room/Use");
 			roomByRoom.setEnteredValue(reqObj.getRoomByRoom());
+
 			//add roomByRoom beneath Schedule (2nd to last) if possible
 			if(listJobField.size() > 0) {
 				listJobField.add(listJobField.size()-1, roomByRoom); 
@@ -638,8 +640,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// ================================================================================================================================================
 			// 12/07/2020 | Color Id, Color Name and Formula Type
 			errorLocation = "Color I.D. & Name";
-			setColorIdAndNameRow();
-			createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, reqObj.getColorID() + " " + reqObj.getColorName() );
+			String rowData = setColorIdAndNameRow();
+			createOneColumnRow(table, 10, 12, 100, haCenter, vaMiddle, rowData);
 			// ------------------------------------------------------------------------------------------------------------------------------------------------
 			errorLocation = "Formula Type";
 			createOneColumnRow(table, 8, 8, 100, haCenter, vaMiddle, reqObj.getDisplayFormula().getSourceDescr());
@@ -724,7 +726,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	
 	// ==========================================================================================================================================
 	// Label Row Creation Methods
-	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are neccessary
+	// 11/24/2020 - Create Row methods to allow greater flexibility when making different labels. Parameters are necessary
 	//				to help assist in providing more instruction and less static values 
 	// ==========================================================================================================================================
 
@@ -781,45 +783,59 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		createTwoColumnRow(table, 6, 8, setQualityParm, haLeft, vaMiddle, reqObj.getQuality(), setCompositeParm, haRight, vaMiddle, reqObj.getComposite());
 	}
 	
-	public void setColorIdAndNameRow() {
+	public String setColorIdAndNameRow() {
 		int totalCharsLength = 0;
+		String rowData = "";
+		String colorCompPrt = "";
+		String colorIDLabelText = "";
+		String colorNameLabelText = "";
+		
 		// Color i.d. and name.
 		// 01/20/2017 - Begin Color I.D. and Color Name field build.
 		if (reqObj.getColorID()==null) {reqObj.setColorID("");}
+			else{colorIDLabelText = reqObj.getColorID();}
 		if (reqObj.getColorName()==null) {reqObj.setColorName("");}
-		totalCharsLength = reqObj.getColorID().length() + reqObj.getColorName().length();
+			else {colorNameLabelText = reqObj.getColorName();}
+		
+		if (reqObj.getColorType().equals("COMPETITIVE")) {
+			colorCompPrt = colorMastService.getColorCompPrintId(reqObj.getColorComp());
+			// First initial rowData
+			rowData = "COMP(" + colorCompPrt + ") "
+						+ colorIDLabelText + " " + colorNameLabelText;
+			totalCharsLength = rowData.length();
+		} else {
+			totalCharsLength = colorIDLabelText.length() + colorNameLabelText.length();
+		}
 
 		//Modify input values, replace / and " with -
-		if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
-			reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
-			reqObj.setColorName(StringEscapeUtils.unescapeHtml(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-")));
+		if(!StringUtils.isEmpty(colorIDLabelText) && !StringUtils.isEmpty(colorNameLabelText)){
+			colorIDLabelText = colorIDLabelText.replaceAll("\"|\\\\|\\~", "-");
+			colorNameLabelText = StringEscapeUtils.unescapeHtml4(colorNameLabelText.replaceAll("\"|\\\\|\\~", "-"));
 		}
-
-		// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
-		// for the Color name.
-		if (totalCharsLength >= 22){
-			int colorNameLength = 22 - reqObj.getColorID().length();
-			if (reqObj.getColorName().length() > colorNameLength){
-				reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
-			}
+		
+		// check customer profile
+		CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+		if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN")){
+		// don't truncate for drawdown customers
+		} else {
+			// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
+			// for the Color name.
+			if (totalCharsLength >= 22){
+				int colorNameLength = 22 - colorNameLabelText.length();
+				if (colorNameLabelText.length() > colorNameLength){
+					colorNameLabelText = reqObj.getColorName().substring(0, colorNameLength);
+				}
+			} 
 		}
-		// 01/20/2017 - Begin Color I.D. and Color Name field build.
-		totalCharsLength = reqObj.getColorID().length() + reqObj.getColorName().length();
-
-		//Modify input values, replace / and " with -
-		if(!StringUtils.isEmpty(reqObj.getColorID()) && !StringUtils.isEmpty(reqObj.getColorName())){
-			reqObj.setColorID(reqObj.getColorID().replaceAll("\"|\\\\|\\~", "-"));
-			reqObj.setColorName(StringEscapeUtils.unescapeHtml(reqObj.getColorName().replaceAll("\"|\\\\|\\~", "-")));
+		if (reqObj.getColorType().equals("COMPETITIVE")) {
+			// Second rowData with properly trimmed characters to help with length issues
+			rowData = "COMP(" + colorCompPrt + ") "
+					+ colorIDLabelText + " " + colorNameLabelText;
+			return rowData;
+		} else {
+			return colorIDLabelText + " " + colorNameLabelText;
 		}
-
-		// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
-		// for the Color name.
-		if (totalCharsLength >= 22){
-			int colorNameLength = 22 - reqObj.getColorID().length();
-			if (reqObj.getColorName().length() > colorNameLength){
-				reqObj.setColorName(reqObj.getColorName().substring(0, colorNameLength));
-			}
-		}
+		
 	}
 	
 	public void setStandardFormulaTable(List<FormulaIngredient> listFormulaIngredients, BaseTable table, Row<PDPage> row, int rowHeight) {
@@ -916,33 +932,53 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	}
 	
 	public void setJobFieldRows(BaseTable table, List<JobField> listJobField) {
-		//Modify input values, replace / and " with -
-		if(!listJobField.isEmpty()){
-			for (JobField jobField : listJobField) {
-				jobField.setEnteredValue(StringEscapeUtils.unescapeHtml(jobField.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
-			}
-		}
-
+		//Only process non-null jobs
 		if(listJobField != null && listJobField.size() > 0){
 			// Process each instance of the listJobField objects.
-			//TODO - Will these always be in order?  Will there always be 4?
 			for(JobField job : listJobField){
-				// Only process defined job data.	
-				if (job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ){
-					// 01/20/2017 - Begin Job
-					// Truncate Screen Label to fit the line space.
-					if (job.getScreenLabel().length() > 13){
-						job.setScreenLabel(job.getScreenLabel().substring(0, 13));
+				// use local strings so we don't modify the reqObj contents for other labels
+				String screenLabel = job.getScreenLabel();
+				String enteredValue = job.getEnteredValue();
+				//only process non-null values	
+				if (job.getScreenLabel() != null &&  job.getEnteredValue() != null){
+					//Modify input values, replace / and " with -
+					job.setEnteredValue(StringEscapeUtils.unescapeHtml4(job.getEnteredValue().replaceAll("\"|\\\\|\\~", "-")));
+					// Only process defined job data.
+					if(job.getScreenLabel().length() > 0 && job.getEnteredValue().length() > 0 ) {
+						// Truncate Screen Label to fit the line space.
+						if (job.getScreenLabel().length() > 13){
+							screenLabel = job.getScreenLabel().substring(0, 13);
+						}
+						// left justify job fields for drawdown customers
+						CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+						if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN")){
+							if (job.getEnteredValue().length() > 21){
+								enteredValue = job.getEnteredValue().substring(0, 21);
+							}
+							createTwoColumnRow(table, 7, 8, 43, haLeft, vaMiddle, screenLabel + ": ", 57, haLeft, vaMiddle, enteredValue);
+						} else {
+							// Truncate Entered Value to fit the line space.
+							if (job.getEnteredValue().length() > 16){
+								enteredValue = job.getEnteredValue().substring(0, 16);
+							}
+							createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, screenLabel + ": ", 50, haLeft, vaMiddle, enteredValue);
+						}
 					}
-					// Truncate Entered Value to fit the line space.
-					if (job.getEnteredValue().length() > 16){
-						job.setEnteredValue(job.getEnteredValue().substring(0, 16));
-					}
-					// 01/20/2017 - End Job 
-					createTwoColumnRow(table, 7, 8, 50, haRight, vaMiddle, job.getScreenLabel() + ": ", 50, haLeft, vaMiddle, job.getEnteredValue());
 				}
 			}
 		}	
+	}
+	
+	boolean hasArabicCharacters(String string) {
+		boolean ret = false;
+		for (char ch : string.toCharArray()) {
+			int temp = (int)ch;
+			if(ch >= 0x600 && ch <= 0x6FF){
+				ret = true;
+				break;
+			}
+		}
+		return ret;
 	}
 	
 	boolean hasUnicode(String string) {
@@ -994,7 +1030,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//if no unicode chars, just use helvetica
 			if(text!=null && text.length()>0) {
 				if(hasUnicode(text)){
-					fontBold = getUnicode();
+					fontBold = getUnicode(text);
 					if(fontBold == null) {
 						fontBold = helvetica;
 						cell.setText(replaceUnicode(text));
@@ -1232,14 +1268,22 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	public void setFontBold(PDFont fontBold) {
 		this.fontBold = fontBold;
 	}
-	public PDFont getUnicode() {
+	public PDFont getUnicode(String text) {
 		PDFont unicodeFont=null;
 		if(unicode == null) { //only get font once and read it into memory
 			//solaris
 			
-			File f = new File("/usr/share/fonts/TrueType/arphic-uming/uming.ttf");
+			File f = null;
+			
+			if(hasArabicCharacters(text)) {
+				f = new File("/usr/share/fonts/TrueType/arabeyes/ae_Arab.ttf");
+			} 
+
+			if(f == null || !f.exists()){
+				f = new File("/usr/share/fonts/TrueType/arphic-uming/uming.ttf");
+			}
 			if(!f.exists()) {
-				 f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
+				f = new File("/usr/share/fonts/TrueType/dejavu/DejaVuSansMono-Bold.ttf");
 			}
 			if(!f.exists()) {
 				f = new File("c:\\Windows\\Fonts\\l_10646.ttf"); // Lucida Sans Unicode

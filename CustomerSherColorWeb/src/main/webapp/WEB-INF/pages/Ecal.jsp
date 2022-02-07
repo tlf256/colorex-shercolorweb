@@ -12,19 +12,19 @@
 
 <title><s:text name="global.calibrationManager"/></title>
 <!-- JQuery -->
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css"	type="text/css">
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
 <link rel="StylesSheet" href="css/jquery.dataTables.min-1.10.16.css" type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
 
 
 
@@ -93,13 +93,14 @@
 		var curDate = new Date();
 	
 		//status = 1, means, still trying serial ports so still in progress.
-		if (return_message.errorMessage.indexOf("Initialization Done") == -1 && (return_message.errorNumber >= 0 ||
+		if (return_message.errorMessage.toUpperCase().trim() !== initializationDone
+				 && (return_message.errorNumber >= 0 ||
 				 return_message.status == 1)) {
 			 	//save				
 			$("#progress-message").text(return_message.errorMessage);
 			console.log(return_message);
 		}
-		else if(return_message.errorMessage.indexOf("Initialization Done") >=0){
+		else if(return_message.errorMessage.toUpperCase().trim() == initializationDone){
 			
 			sendTinterEvent(reqGuid, curDate, return_message, null); 
 		

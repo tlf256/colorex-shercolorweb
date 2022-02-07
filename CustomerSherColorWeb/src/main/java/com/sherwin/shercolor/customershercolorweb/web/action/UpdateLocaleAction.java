@@ -3,12 +3,12 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
@@ -59,7 +59,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 	    	
 	    	return SUCCESS;
     	
-    	} catch (Exception e) {
+    	} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}
@@ -87,7 +87,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 	    	
 	    	return SUCCESS;
     	
-    	} catch (Exception e) {
+    	} catch (RuntimeException e) {
 			logger.error("Exception Caught: " + e.getMessage(), e);
 			return ERROR;
 		}

@@ -12,19 +12,21 @@
 
 <title><s:text name="global.enterJobInfo" /></title>
 <!-- JQuery -->
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css"
-	type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css"><link
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet">
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="script/customershercolorweb-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+<style>
+.btn {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+</style>
 </head>
 
 <body>
@@ -78,7 +80,7 @@
 				</div>
 			</s:iterator>
 
-			<div class="row">
+			<div class="row mt-2">
 
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-1"></div>
 				<s:if test="updateMode==1">
@@ -93,6 +95,10 @@
 					<div class="col-lg-4 col-md-6 col-sm-10 col-xs-10">
 						<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}"
 							action="processJobFieldsAction" />
+						<s:if test = "%{accountIsDrawdownCenter==true}">
+							<s:submit cssClass="btn btn-secondary" value="%{getText('getJobFields.copyFromExistingJob')}"
+								action="copyExistingJobFieldsAction" />
+						</s:if>
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}"
 							action="userCancelAction" />
 					</div>
@@ -107,9 +113,15 @@
 	<br>
 	<br>
 	<script>
-		 $(document).ready(function () {
-			 var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
-			 txtBox.focus();
+		$(document).ready(function () {
+			// if fields have been copied in, highlight Next
+			if ("${lookupControlNbr}" > 0){
+				$(".btn-primary").first().focus();
+			// otherwise highlight first field
+			} else {
+				var txtBox=document.getElementById("processJobFieldsAction_jobFieldList_0__enteredValue" );
+				txtBox.focus();
+			}
 			 
 			//validate jobFields enteredValue
 			//prevent special characters < or > from being entered

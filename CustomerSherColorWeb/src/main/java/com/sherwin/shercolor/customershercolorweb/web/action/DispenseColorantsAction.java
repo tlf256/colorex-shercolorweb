@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 //import org.apache.commons.lang.NumberUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -51,42 +51,28 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 				setUOM(Integer.parseInt(colorantService.getColorantSystem(tinter.getClrntSysId()).getClrntShotSz()));
 				
 				//Header setup
-				
-				try {
-					setIncrHdr(colorantService.getColorantIncrementHeader(reqObj.getClrntSys()));
-
-				} catch (Exception e) {
-					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-					logger.error(e);
-				}
+				setIncrHdr(colorantService.getColorantIncrementHeader(reqObj.getClrntSys()));
 				
 				//Creating sorted canisterList for display
-				try {
-					if (!tinter.getCanisterList().isEmpty()) {
-						
-						setSortedCanList(new ArrayList<TinterCanister>(tinter.getCanisterList()));
-						
-					    Collections.sort(sortedCanList, new Comparator<TinterCanister>() {
-					        @Override
-					        public int compare(TinterCanister c1, TinterCanister c2) {
-					        	if(StringUtils.isNotBlank(c1.getClrntName()) && StringUtils.isNotBlank(c2.getClrntName())){
-					        		return c1.getClrntName().compareTo(c2.getClrntName());
-					        	}
-					        	else return 0;
-					        }
-					    });
-					}
-				} catch (Exception e) {
-					logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-					logger.error(e);
-
+				if (!tinter.getCanisterList().isEmpty()) {
+					
+					setSortedCanList(new ArrayList<TinterCanister>(tinter.getCanisterList()));
+					
+				    Collections.sort(sortedCanList, new Comparator<TinterCanister>() {
+				        @Override
+				        public int compare(TinterCanister c1, TinterCanister c2) {
+				        	if(StringUtils.isNotBlank(c1.getClrntName()) && StringUtils.isNotBlank(c2.getClrntName())){
+				        		return c1.getClrntName().compareTo(c2.getClrntName());
+				        	}
+				        	else return 0;
+				        }
+				    });
 				}
 			}
 			else logger.error("reqGuid is empty");
 		}
-		catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause());
-			logger.error(e);
+		catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage() + e.getCause(), e);
 			return ERROR;
 		}
 		
@@ -117,9 +103,8 @@ public class DispenseColorantsAction extends ActionSupport implements SessionAwa
 				return ERROR;
 			}
 		}
-		catch (Exception e) {
-			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage());
-			logger.error(e);
+		catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
 			return ERROR;
 		}
 	}

@@ -7,11 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +22,7 @@ import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
+import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
@@ -37,12 +36,18 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	private FormulaInfo displayFormula;
 	private int controlNbr;
 	private int qtyDispensed;
+	private String quantity;
+	private int qtyOrdered;
 	private String jsDateString;
 	private int recDirty;
-	private List<Map<String,Object>> drawdownShotList = null;
+	private List<DispenseItem> drawdownShotList;
+	private DispenseItem baseDispense;
 	private String canType;
+	private boolean dispenseBase;
 	
 	private int cycle; //correction cycle
+	
+	
 	
 	@Autowired
 	TranHistoryService tranHistoryService;
@@ -57,6 +62,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		CustWebTran custWebTran = new CustWebTran();
 		
 		try {
+			// wait a second in case user is saving rooms field
+			Thread.sleep(1000);
 			//logger.info("About to get object from map");
 			//logger.info("reqGuid is " + reqGuid);
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -64,7 +71,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			
 			CustWebTran origCustWebTran = null;
 			if(reqObj.getControlNbr()>0) origCustWebTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-
+			
 			// map RequestObject to CustWebTran record format
 			//logger.info("about to map reqObj to custWebTran ");
 			custWebTran = mapRequestObjectToCustWebTranObject(reqObj,origCustWebTran);
@@ -136,18 +143,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 				    retVal = ERROR;
 				}
 			}
-			// drawdown center did a dispense, so save a drawdown transaction too
+			// drawdown center is saving a job
 			if (drawdownShotList != null) {
-				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr() + qtyDispensed - 1);
+				// save it with same primary key as the custwebtran to make the records 1:1
+				saveDrawdownTran(custWebTran.getCustomerId(), custWebTran.getControlNbr(), custWebTran.getLineNbr());
 			}
 
-		} catch (HibernateException he) {
-			logger.error(he.getMessage() + ": ", he);
-			he.printStackTrace();
-			retVal = ERROR;
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 
@@ -156,8 +159,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	}
 
-	public String saveOnPrint(){
-		logger.debug("inside action to saveOnPrint");
+	public String saveBeforeAction(){
+		logger.debug("inside action to saveBeforeAction");
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 		logger.debug("inside action about to execute");
@@ -170,81 +173,85 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public String saveDrawdownTran(String customerId, int controlNbr, int lineNbr) {
 		String retVal = null;
 		try {
+
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			CustWebDrawdownTran drawdownTran = new CustWebDrawdownTran();
 			drawdownTran.setCustomerId(customerId);
 			drawdownTran.setControlNbr(controlNbr);
 			drawdownTran.setLineNbr(lineNbr);
-			drawdownTran.setCanType(canType);
+			drawdownTran.setCanType(reqObj.getCanType());
+			drawdownTran.setDispenseBase(reqObj.getDispenseBase());
+			
+			// add base dispense into shotList if user chose that 
+			if (reqObj.getDispenseBase() == 1 && baseDispense != null) {
+				drawdownShotList.add(baseDispense);
+			}
 			
 			if(drawdownShotList != null && drawdownShotList.size() > 0){
 				int ctr = 1;
-				for(Map<String,Object> item : drawdownShotList) {
-					String code = null; 
-					Long uom = null; 
-					Long shots = null;
-					double partialOz = 0;
-					if(item.get("code")!=null) code = item.get("code").toString();
-					if(item.get("uom")!=null) uom = (Long) item.get("uom");
-					if(item.get("shots")!=null) shots = (Long) item.get("shots");
-					if(item.get("partialOz")!=null) partialOz = Double.parseDouble(item.get("partialOz").toString());
+				
+				for(DispenseItem item : drawdownShotList) {
+					String code = item.getClrntCode();
+					int uom = item.getUom();
+					int shots = item.getShots();
+					double decimalOunces = item.getDecimalOunces();
 					
-					if(code != null && shots != null && partialOz != 0 && uom != null){
-						switch (ctr) {
-						case 1:
-							drawdownTran.setClrnt1(code);
-							drawdownTran.setClrntShots1(shots.intValue());
-							drawdownTran.setClrntOz1(partialOz);
-							drawdownTran.setUom(uom.intValue());
-							break;
-						case 2:
-							drawdownTran.setClrnt2(code);
-							drawdownTran.setClrntShots2(shots.intValue());
-							drawdownTran.setClrntOz2(partialOz);
-							break;
-						case 3:
-							drawdownTran.setClrnt3(code);
-							drawdownTran.setClrntShots3(shots.intValue());
-							drawdownTran.setClrntOz3(partialOz);
-							break;
-						case 4:
-							drawdownTran.setClrnt4(code);
-							drawdownTran.setClrntShots4(shots.intValue());
-							drawdownTran.setClrntOz4(partialOz);
-							break;
-						case 5:
-							drawdownTran.setClrnt5(code);
-							drawdownTran.setClrntShots5(shots.intValue());
-							drawdownTran.setClrntOz5(partialOz);
-							break;
-						case 6:
-							drawdownTran.setClrnt6(code);
-							drawdownTran.setClrntShots6(shots.intValue());
-							drawdownTran.setClrntOz6(partialOz);
-							break;
-						case 7:
-							drawdownTran.setClrnt7(code);
-							drawdownTran.setClrntShots7(shots.intValue());
-							drawdownTran.setClrntOz7(partialOz);
-							break;
-						case 8:
-							drawdownTran.setClrnt8(code);
-							drawdownTran.setClrntShots8(shots.intValue());
-							drawdownTran.setClrntOz8(partialOz);
-							break;
-						}
-						ctr++;
-					}// end null check
+					switch (ctr) {
+					case 1:
+						drawdownTran.setClrnt1(code);
+						drawdownTran.setClrntShots1(shots);
+						drawdownTran.setClrntOz1(decimalOunces);
+						drawdownTran.setUom(uom);
+						break;
+					case 2:
+						drawdownTran.setClrnt2(code);
+						drawdownTran.setClrntShots2(shots);
+						drawdownTran.setClrntOz2(decimalOunces);
+						break;
+					case 3:
+						drawdownTran.setClrnt3(code);
+						drawdownTran.setClrntShots3(shots);
+						drawdownTran.setClrntOz3(decimalOunces);
+						break;
+					case 4:
+						drawdownTran.setClrnt4(code);
+						drawdownTran.setClrntShots4(shots);
+						drawdownTran.setClrntOz4(decimalOunces);
+						break;
+					case 5:
+						drawdownTran.setClrnt5(code);
+						drawdownTran.setClrntShots5(shots);
+						drawdownTran.setClrntOz5(decimalOunces);
+						break;
+					case 6:
+						drawdownTran.setClrnt6(code);
+						drawdownTran.setClrntShots6(shots);
+						drawdownTran.setClrntOz6(decimalOunces);
+						break;
+					case 7:
+						drawdownTran.setClrnt7(code);
+						drawdownTran.setClrntShots7(shots);
+						drawdownTran.setClrntOz7(decimalOunces);
+						break;
+					case 8:
+						drawdownTran.setClrnt8(code);
+						drawdownTran.setClrntShots8(shots);
+						drawdownTran.setClrntOz8(decimalOunces);
+						break;
+					}
+					ctr++;
 				}// end for loop drawdownShotList
 			}// end drawdownShotList null check		
 			tranHistoryService.saveOrUpdateDrawdownTran(drawdownTran);
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			retVal = ERROR;
 		}
 		return retVal;
 	}
+	
 	
 	public String bumpDispense(){
 		String retVal = null;
@@ -256,15 +263,40 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			qtyDispensed++;
 			logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
 			reqObj.setQuantityDispensed(qtyDispensed);
-			sessionMap.put(reqGuid, reqObj);
+			try {
+				sessionMap.put(reqGuid, reqObj);
+
+			} catch (Exception e) {
+				return "loginRedirect";
+			}
 
 			logger.debug("inside action about to execute");
 			retVal = this.execute();
 			logger.debug("inside action back from execute");
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
+		}
+		
+		return retVal;
+	}
+	
+	public String updateOrderQuantity() {
+		String retVal = null;
+		try {
+			// Update the Order Quantity with what the user has input into the textfield
+			logger.debug("inside action to updateOrderQuantity");
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			reqObj.setQuantityOrdered(Integer.parseInt(quantity));
+			sessionMap.put(reqGuid, reqObj);
+			
+			logger.debug("inside action about to execute. qtyOrdered will be " + qtyOrdered);
+			retVal = this.execute();
+			logger.debug("inside action back from execute.");
+			
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
 		
 		return retVal;
@@ -352,9 +384,8 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			} else {
 				retVal = ERROR;
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage() + ": ", e);
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			retVal = ERROR;
 		}
 		return retVal;
@@ -371,6 +402,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		custWebTran.setColorComp(reqObj.getColorComp());
 		custWebTran.setColorId(reqObj.getColorID());
 		custWebTran.setColorName(reqObj.getColorName());
+		custWebTran.setColorNotes(reqObj.getColorNotes());
 		custWebTran.setPrimerId(reqObj.getPrimerId());
 		custWebTran.setRgbHex(reqObj.getRgbHex());
 		custWebTran.setSalesNbr(reqObj.getSalesNbr());
@@ -525,6 +557,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		}
 		
 		custWebTran.setQuantityDispensed(reqObj.getQuantityDispensed());
+		custWebTran.setQuantityOrdered(reqObj.getQuantityOrdered());
 
 		if(origTran!=null){
 			// if correction and orig values are empty, fill them with origTran record fields
@@ -592,6 +625,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 	public int getQtyDispensed() {
 		return qtyDispensed;
 	}
+	
+	public void setQuantityOrdered(int qtyOrdered) {
+		this.qtyOrdered = qtyOrdered;
+	}
+	
+	public int getQtyOrdered() {
+		return qtyOrdered;
+	}
 
 	public void setJsDateString(String jsDateString) {
 		this.jsDateString = Encode.forHtml(jsDateString);
@@ -609,13 +650,14 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		this.recDirty = recDirty;
 	}
 	
-	public List<Map<String,Object>> getDrawdownShotList() {
+	public List<DispenseItem> getDrawdownShotList() {
 		return drawdownShotList;
 	}
 
-	public void setDrawdownShotList(List<Map<String,Object>> drawdownShotList) {
+	public void setDrawdownShotList(List<DispenseItem> drawdownShotList) {
 		this.drawdownShotList = drawdownShotList;
 	}
+	
 
 	public String getCanType() {
 		return canType;
@@ -625,4 +667,28 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		this.canType = canType;
 	}
 
+	public DispenseItem getBaseDispense() {
+		return baseDispense;
+	}
+
+	public void setBaseDispense(DispenseItem baseDispense) {
+		this.baseDispense = baseDispense;
+	}
+
+	public boolean isDispenseBase() {
+		return dispenseBase;
+	}
+
+	public void setDispenseBase(boolean dispenseBase) {
+		this.dispenseBase = dispenseBase;
+	}
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = Encode.forHtml(quantity);
+	}
+	
 }

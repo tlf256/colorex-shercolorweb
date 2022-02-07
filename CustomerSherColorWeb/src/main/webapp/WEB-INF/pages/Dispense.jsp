@@ -8,22 +8,22 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><s:text name="global.dispenseColorants"/></title>
 <!-- JQuery -->
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css"type="text/css">
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 <s:set var="thisGuid" value="reqGuid" />
 <s:set var="thisUOM" value="UOM" />
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" charset="utf-8"src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8"src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
 <script type="text/javascript">
 var processingDispense = false;
 	<s:iterator value="tinter.canisterList" status="i">
@@ -31,6 +31,10 @@ var processingDispense = false;
 		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="thisUOM"/>));	
 		_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
+	
+	function writeDispense(return_message){
+		dispenseComplete(return_message);
+	}
 
 	//Document ON-Load
 	$(function() {
@@ -79,10 +83,7 @@ var processingDispense = false;
 		});
 
 		jQuery(document).on("keydown", fkey);
-		
-		function writeDispense(return_message){
-			dispenseComplete(return_message);
-	}
+
 	});
 </script>
 <style type="text/css">

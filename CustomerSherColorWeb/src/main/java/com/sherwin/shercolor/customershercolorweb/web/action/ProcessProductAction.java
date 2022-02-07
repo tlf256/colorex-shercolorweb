@@ -1,20 +1,30 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CustWebPackageColor;
+import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.exception.SherColorException;
+import com.sherwin.shercolor.common.service.ColorBaseService;
+import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.ProductColorService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -25,23 +35,30 @@ import com.sherwin.shercolor.util.domain.SwMessage;
 
 public class ProcessProductAction extends ActionSupport implements SessionAware, LoginRequired  {
 
-	private ProductService productService;
-	private ProductColorService productColorService;
-	
 	private Map<String, Object> sessionMap;
-	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
 	private String partialProductNameOrId; 
 	private List<autoComplete> options;
 	private String message;
-	
 	private String colorComp;
 	private String colorID;
 	private String colorName;
 	private String salesNbr;
 	private String reqGuid;
 	private String OVERRIDEWARNMSG;
+	
+	@Autowired
+	private ProductService productService;
+	@Autowired
+	private ProductColorService productColorService;
+	@Autowired
+	private ColorBaseService colorBaseService;
+	@Autowired
+	private CustomerService customerService;
+	@Autowired
+	private ColorMastService colorMastService;
+
 	
 	public String execute() {
 		
@@ -156,48 +173,30 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		 	if(posProd!=null && posProd.getUpc()!=null) reqObj.setUpc(posProd.getUpc());
 		 	else reqObj.setUpc("");
 		 	
-		 	CdsProd goodProd = productService.readCdsProd(salesNbr);
-		 	
-			//String[] prepCmt = new String[2];
-		 	String[] prepCmt = {"",""};
+		 	Optional<CdsProd> goodProd = productService.readCdsProd(salesNbr);
 			
 		 	//Check for CdsProd, if not, build prepCmt for PosProd
-			if (goodProd!=null) {
-				prepCmt = goodProd.getPrepComment().split("-");
-			}
-			else{
-				prepCmt[0] = posProd.getProdNbr();
-				prepCmt[1] = posProd.getSzCd();
-			}
+		 	String[] prepCmt = goodProd.map(CdsProd::getPrepComment)
+                    .map(x -> x.split("-"))
+                    .orElse(new String[]{posProd.getProdNbr(),posProd.getSzCd()});
 			 
 			//set the successful information into the request object.
-			
 			reqObj.setSalesNbr(salesNbr);
 			reqObj.setProdNbr(prepCmt[0]);
-			if (goodProd!=null) {
-				reqObj.setFinish(goodProd.getFinish());
-				reqObj.setKlass(goodProd.getKlass());
-				reqObj.setIntExt(goodProd.getIntExt());
-				reqObj.setBase(goodProd.getBase());
-				if(goodProd.getComposite()==null) {goodProd.setComposite("");}
-				reqObj.setComposite(goodProd.getComposite());
-				if(goodProd.getQuality()==null) {goodProd.setQuality("");}
-				reqObj.setQuality(goodProd.getQuality());
-				if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
-					if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
-						reqObj.setIntBases(goodProd.getBase());
-					} else {
-						reqObj.setExtBases(goodProd.getBase());
-					}
+			reqObj.setFinish(goodProd.map(CdsProd::getFinish).orElse(""));
+			reqObj.setKlass(goodProd.map(CdsProd::getKlass).orElse(""));
+			reqObj.setIntExt(goodProd.map(CdsProd::getIntExt).orElse(""));
+			reqObj.setBase(goodProd.map(CdsProd::getBase).orElse(""));
+			reqObj.setComposite(goodProd.map(CdsProd::getComposite).orElse(""));
+			reqObj.setQuality(goodProd.map(CdsProd::getQuality).orElse(""));
+			if(reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
+				if(reqObj.getIntExt().equalsIgnoreCase("INTERIOR")){
+					reqObj.setIntBases(reqObj.getBase());
+				} else {
+					reqObj.setExtBases(reqObj.getBase());
 				}
-			} else {
-				reqObj.setFinish("");
-				reqObj.setKlass("");
-				reqObj.setIntExt("");
-				reqObj.setBase("");
-				reqObj.setComposite("");
-				reqObj.setQuality("");
 			}
+			
 			reqObj.setSizeCode(prepCmt[1]);
 			reqObj.setSizeText(productService.getSizeText(reqObj.getSizeCode()));
 			reqObj.setValidationWarning(false);
@@ -205,11 +204,12 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		     
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
+	
 	
 	public String listProducts() {
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -229,10 +229,10 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			// list all products in autocomplete search because the custom manual option does not have primary base types
 			if (colorType.equals("CUSTOM")) {
 				/* 09/06/2017 - New Active Products Search. */
-				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase())));
+				setOptions(mapToOptions(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase(),reqObj.getCustomerID())));
 			} else {
 				/* 04/14/2020 - Filter by Compatible Base Products Search */
-				setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList)));
+				setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList, reqObj.getCustomerID())));
 			}
 		}
 		catch (SherColorException e){
@@ -248,13 +248,15 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		String theValue;
 		String[] prepComment;
 		
+		// sort by product number and then by size code
+		Collections.sort(prodList, Comparator.comparing(CdsProd::getPrepComment));
 		for (CdsProd item : prodList) {
 			prepComment = item.getPrepComment().split("-");
 			prepComment[1] = getSizeText(prepComment[1]);
 			theLabel = prepComment[0] + " " + item.getSalesNbr() + " " + item.getQuality() + " " + item.getComposite() + " " + item.getFinish() +  " " + prepComment[1] + " " + item.getIntExt() + " " + item.getBase();
 			theValue = item.getSalesNbr();
 		    outList.add(new autoComplete(theLabel,theValue));
-		} 
+		}
 		return outList;
 	}
 	
@@ -278,11 +280,52 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			reqObj.setClosestSwColorName("");
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
 	}
+	
+	
+	public String displayProdChange() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			colorComp = reqObj.getColorComp();
+			colorID = reqObj.getColorID();
+			List<String> baseList;
+			CdsColorMast colorMast = colorMastService.read(colorComp, colorID);
+			String prodComp = "SW";
+			
+			// re-populate bases lists in case we came from lookup jobs page and both are empty
+			if (colorMast != null && (reqObj.getIntBases() == null || reqObj.getIntBases().equals("")) && 
+									 (reqObj.getExtBases() == null || reqObj.getExtBases().equals(""))) {
+				
+				baseList = colorBaseService.InteriorColorBaseAssignments(colorMast.getColorComp(), colorMast.getColorId(), prodComp);
+				reqObj.setIntBases(StringUtils.join(baseList, ','));
+				
+				baseList = colorBaseService.ExteriorColorBaseAssignments(colorMast.getColorComp(), colorMast.getColorId(), prodComp);
+				reqObj.setExtBases(StringUtils.join(baseList, ','));
+				
+				// confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated, call autobase
+				if (reqObj.getIntBases() == null && reqObj.getExtBases() == null) {
+					// call autobase
+					String custID = (String) reqObj.getCustomerID();
+					CustWebParms cwp = customerService.getDefaultCustWebParms(custID);
+					String custProdComp = cwp.getProdComp();
+					baseList = colorBaseService.GetAutoBase(colorMast.getColorComp(), colorMast.getColorId(), custProdComp);
+					reqObj.setIntBases(StringUtils.join(baseList, ','));
+					reqObj.setExtBases(StringUtils.join(baseList, ','));
+				}
+			}
+			
+			sessionMap.put(reqGuid, reqObj);
+		    return SUCCESS;
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
 	
 
 	public List<autoComplete> getOptions() {
@@ -307,22 +350,6 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 	public void setPartialProductNameOrId(String partialProductNameOrId) {
 		this.partialProductNameOrId = partialProductNameOrId;
-	}
-	
-	public ProductService getProductService() {
-		return productService;
-	}
-
-	public void setProductService(ProductService productService) {
-		this.productService = productService;
-	}
-
-	public ProductColorService getProductColorService() {
-		return productColorService;
-	}
-
-	public void setProductColorService(ProductColorService productColorService) {
-		this.productColorService = productColorService;
 	}
 	
 	public void setSession(Map<String, Object> sessionMap) {
@@ -371,6 +398,6 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 	private String getSizeText(String sizeCode) {
 		return productService.getSizeText(sizeCode);
-	}
+	}	
 
 }

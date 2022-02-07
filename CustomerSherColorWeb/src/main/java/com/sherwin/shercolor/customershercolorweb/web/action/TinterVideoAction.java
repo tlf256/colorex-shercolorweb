@@ -14,7 +14,7 @@ import com.opensymphony.xwork2.ActionSupport;
 public class TinterVideoAction extends ActionSupport  implements SessionAware, LoginRequired{
 	private static final long serialVersionUID = 1L;
 	
-	static Logger logger = LogManager.getLogger(TinterEventAction.class.getName());
+	static Logger logger = LogManager.getLogger(TinterVideoAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	
@@ -37,8 +37,7 @@ public class TinterVideoAction extends ActionSupport  implements SessionAware, L
 			
 		     return SUCCESS;
 		} catch (Exception e) {
-			logger.error(e.toString() + " " + e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString() + " " + e.getMessage(), e);
 			retVal = ERROR;
 		}
 		

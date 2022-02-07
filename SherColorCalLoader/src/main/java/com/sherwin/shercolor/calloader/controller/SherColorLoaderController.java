@@ -41,7 +41,17 @@ public class SherColorLoaderController {
 			}
 	        ecal.setCustomerid("TEST");
 	        ecal.setColorantid(arr[0]);
-	        ecal.setTintermodel(arr[1]);
+	        String tinterModel = arr[1];
+	        if (tinterModel.startsWith("COROB")) {
+	        	tinterModel="COROB " + tinterModel.substring(5);
+	        }
+	        if(tinterModel.startsWith("FM")) {
+	        	tinterModel="FM " + tinterModel.substring(2);
+	        }
+	        if(tinterModel.startsWith("IFC")) {
+	        	tinterModel="IFC " + tinterModel.substring(3);
+	        }
+	        ecal.setTintermodel(tinterModel);
 	        ecal.setTinterserial(arr[2]);
 	        ecal.setFilename(filename);
 	        ecal.setUploaddate(arr[3]);

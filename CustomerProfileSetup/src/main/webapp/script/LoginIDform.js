@@ -3,29 +3,48 @@
  */
 $(document).ready(function(){
 	
-	var jsvalue = String($.trim($("#customerid").text()));
+	//$("#jobnext-btn").addClass("d-none");
+	$("#loginInfo").find("input:eq(0)").focus();
 	
-	$("#jobnext-btn").addClass("d-none");
+	var jsvalue = String($.trim($("#customerid").text()));
+	var req = true;
+	if(jsvalue.length == 9){
+		if(jsvalue.startsWith("4")){
+			req = false;
+		}
+	} else {
+		if(!jsvalue.startsWith("99") && !jsvalue.startsWith("INTL")){
+			req = false;
+		}
+	}
+	//console.log("required = " + req);
 	
 	$("#loginInfo").on("click", "#btnAdd", function(){
-		if($(".cloned-row").length < 10){
-			$(".cloned-row:last").clone(true).appendTo(".cloned-row:last");
-			$(".cloned-row:last").find("input:first").select();
-			$(".cloned-row:last").find("input").removeClass("border-danger");
-			$(".cloned-row:last").find("input").val("");
-			//$(".cloned-row:last").find("input:last").val("");
-			$("#charcount").text("");
-			$(".cloned-row").each(function(i){
-				$(this).attr("id", "clonedrow"+i);
-				$(this).find("input:eq(0)").attr("id", "keyfld"+i);
-				$(this).find("input:eq(1)").attr("id", "mstracctname"+i);
-				$(this).find("input:eq(2)").attr("id", "acctcomm"+i);
-				$(this).find("span").attr("id", "charcount"+i);
-			});
+		var rowLength = $(".cloned-row").length;
+		//console.log("row length is " + rowLength);
+		if(rowLength < 20){
+			var cloneRow = $(".cloned-row:first");
+			//console.log("clone index is " + cloneRow.index());
+			
+			var thisRow = cloneRow.clone(true);
+			var rowIndex = rowLength;
+			//console.log("this row index is " + rowIndex);
+			thisRow.find("input").removeClass("border-danger").val("");
+			thisRow.find("input[id*='keyfld']").attr("id", "keyfld"+rowIndex).select();
+			thisRow.find("input[id*='mstracctname']").attr("id", "mstracctname"+rowIndex);
+			thisRow.find("input[id*='acctcomm']").attr("id", "acctcomm"+rowIndex);
+			thisRow.find("span").attr("id", "charcount"+rowIndex);
+			if(rowLength == 19) {
+				// remove add button from this row
+				thisRow.find("input[id*='btnAdd']").addClass("d-none");
+			}
+			
+			thisRow.appendTo(".row-container");
+			
 			$("#jobnext-btn").hide();
 			$("html, body").animate({
 				scrollTop: $("#logininfo_btn").offset().top
-			}, 2000);
+			}, 1000);
 		} else {
 			$(this).addClass("d-none");
 		}
@@ -54,14 +73,14 @@ $(document).ready(function(){
 			}).toArray();
 			logins.slice(-1);
 		},
-		"focusout":function(){
-			$("#jobnext-btn").removeClass("d-none");
-		},
 		"blur":function(){
-			$("#jobnext-btn").removeClass("d-none");
 			var keyfldval = $.trim($(this).val());
 			var keyfld = $(this);
-			var result;
+			// 9/14/2021 TLF - removed ajax keyfield validation since it is checking login ID
+			// against all recorded IDs instead of by customer ID, but even 
+			// this isn't necessary since the above array checks the 
+			// uniqueness of the login IDs entered for that customer ID
+			/*var result;
 			$.ajax({
 				url:"ajaxKeyfieldResult.action",
 				data:{keyfield: keyfldval},
@@ -73,7 +92,7 @@ $(document).ready(function(){
 				error:function(request, status){
 					alert(status + ": could not validate login ID. Please retry.");
 				}
-			});
+			});*/
 			try{
 				if(keyfldval.length > 20){
 					throw "Login ID cannot be greater than 20 characters";
@@ -81,15 +100,15 @@ $(document).ready(function(){
 				if($.inArray(keyfldval,logins)!=-1){
 					throw "Please enter unique values for Login ID";
 				}
-				if(result=="true"){
+				/*if(result=="true"){
 					throw "Login ID unavailable";
-				}
+				}*/
 				$("#jobnext-btn").show();
 				$("#loginformerror").text("");
 				$("#formerror").text("");
 				keyfld.removeClass("border-danger");
 			}catch(msg){
-				keyfld.focus();
+				keyfld.select();
 				keyfld.addClass("border-danger");
 				$("#loginformerror").text(msg);
 				$("html, body").animate({
@@ -111,7 +130,7 @@ $(document).ready(function(){
 			$("#loginformerror").text("");
 			$("#formerror").text("");
 		}catch(msg){
-			$(this).focus();
+			$(this).select();
 			$(this).addClass("border-danger");
 			$("#loginformerror").text(msg);
 			$("html, body").animate({
@@ -126,7 +145,7 @@ $(document).ready(function(){
 				throw "Please fix form error(s):";
 			}
 			$(".keyfield").each(function(i){
-				if(!jsvalue.startsWith("99")){
+				if(req){
 					if(!$(this).val() && $(this).is(":visible")){
 						$(this).addClass("border-danger");
 						throw "Please enter a value for Login ID";
