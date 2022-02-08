@@ -32,6 +32,25 @@ public class SWUserServiceImpl implements SWUserService {
 		return returnRec;
 	}
 	
+	public SWUser readUserByEmailOrLogin(String loginInfo) {
+
+		SWUser user = null;
+		
+		try {
+			//Entered Info is an email if it contains an @
+			if (loginInfo.contains("@")) {
+				user = swUserDao.readByEmail(loginInfo);
+			} else {
+				user = swUserDao.getLoginUser(loginInfo);
+			}
+		} catch (RuntimeException e){
+			logger.error(e.getMessage(), e);
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return user;
+	}
+	
 	public boolean disableActiveUser(String loginID) {
 		boolean returnRec = false;
 		try {
