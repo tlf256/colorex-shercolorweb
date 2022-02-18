@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.sherwin.shercolor.common.domain.CdsColorMast;
+import org.owasp.encoder.Encode;
+import org.owasp.encoder.Encoder;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -157,8 +159,9 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	public String listColors() {
 		
 		try {
-			
+
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
+
 			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
 
 			if (selectedCoType.equals("SW")) {
@@ -224,7 +227,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	private void parseColorData(String colorData) {
 		
 		try {
-			colorData = URLDecoder.decode(colorData,"UTF-8");
+			colorData = URLDecoder.decode(colorData, "UTF-8");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -367,7 +370,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 
 	public void setPartialColorNameOrId(String partialColorNameOrId) {
-		this.partialColorNameOrId = partialColorNameOrId;
+		this.partialColorNameOrId = Encode.forHtmlContent(partialColorNameOrId);
 	}
 	
 	public String getColorComp() {

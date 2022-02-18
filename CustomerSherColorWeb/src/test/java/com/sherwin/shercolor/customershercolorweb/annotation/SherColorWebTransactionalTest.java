@@ -15,6 +15,8 @@ import java.lang.annotation.*;
 @Documented
 @Transactional
 @SpringBootTest
-@ActiveProfiles({"commons-test","login-test"})
+// The login-test profile is needed to tell Spring to use a JDBC connection for SherColorLogin
+// instead of the JBoss JNDI connection
+@ActiveProfiles("login-test")
 public @interface SherColorWebTransactionalTest {
 }

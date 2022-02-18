@@ -499,7 +499,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setPartialColorNameOrId(String partialColorNameOrId) {
-		this.partialColorNameOrId = partialColorNameOrId.trim();
+		this.partialColorNameOrId = Encode.forHtmlContent(partialColorNameOrId);
 	}
 	
 	public String getMessage() {

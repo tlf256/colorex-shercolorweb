@@ -29,8 +29,8 @@ import java.util.Objects;
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.sherwin.login",
-        entityManagerFactoryRef = "shercolorLoginEntityManager",
-        transactionManagerRef = "shercolorLoginTransactionManager")
+        entityManagerFactoryRef = "shercolorLoginJndiEntityManager",
+        transactionManagerRef = "shercolorLoginJndiTransactionManager")
 @Profile("!login-test & login")
 public class SherColorLoginJndiDataSource {
 
@@ -43,7 +43,7 @@ public class SherColorLoginJndiDataSource {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean shercolorLoginEntityManager() throws SQLException, NamingException {
+    public LocalContainerEntityManagerFactoryBean shercolorLoginJndiEntityManager() throws SQLException, NamingException {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(shercolorLoginDataSource());
@@ -62,12 +62,12 @@ public class SherColorLoginJndiDataSource {
     }
 
     @Bean
-    public PlatformTransactionManager shercolorLoginTransactionManager() throws SQLException, NamingException {
+    public PlatformTransactionManager shercolorLoginJndiTransactionManager() throws SQLException, NamingException {
 
         JpaTransactionManager transactionManager
                 = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(
-                shercolorLoginEntityManager().getObject());
+                shercolorLoginJndiEntityManager().getObject());
         return transactionManager;
     }
 }
