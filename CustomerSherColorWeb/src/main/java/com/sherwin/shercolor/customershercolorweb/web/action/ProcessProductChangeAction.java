@@ -793,7 +793,13 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			reqObj.setValidationWarningSalesNbr(salesNbr);
 		}
 		if (retVal.equalsIgnoreCase("SUCCESS")) {
-			List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(reqObj.getDisplayFormula(), swmsgList);
+			List<SwMessage> canLabelMsgs;
+			if (oeFormulation) {
+				// for reformulation or rematch, send in msg list from server response
+				canLabelMsgs = formulationService.canLabelFormulationWarnings(reqObj.getDisplayFormula(), swmsgList);
+			} else {
+				canLabelMsgs = formulationService.canLabelFormulationWarnings(reqObj.getDisplayFormula());
+			}
 			reqObj.setCanLabelMsgs(canLabelMsgs);
 			// post the validation message list to the request object for use in printing.
 			reqObj.setDisplayMsgs(validationMsgs);
