@@ -293,6 +293,11 @@
                         </cli-session>
                     </cli-sessions>
                     <context-root>false</context-root>
+                    <!-- Only enable the argument below for remote debugging purposes. These should always be commented
+                     out when committing to source control. -->
+                    <!--<jvmArguments>
+                        <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
+                    </jvmArguments>-->
                 </configuration>
                 <executions>
                     <execution>
