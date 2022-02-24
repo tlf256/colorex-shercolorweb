@@ -161,8 +161,6 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	public String saveBeforeAction(){
 		logger.debug("inside action to saveBeforeAction");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-
 		logger.debug("inside action about to execute");
 		String retVal = this.execute();
 		logger.debug("inside action back from execute");
