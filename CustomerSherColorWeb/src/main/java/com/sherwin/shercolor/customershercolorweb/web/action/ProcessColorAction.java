@@ -492,7 +492,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setPartialColorNameOrId(String partialColorNameOrId) {
-		this.partialColorNameOrId = partialColorNameOrId.trim();
+		this.partialColorNameOrId = Encode.forHtmlContent(partialColorNameOrId.trim());
 	}
 	
 	public String getMessage() {
@@ -616,7 +616,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	public void setColorData(String colorData) {
-		this.colorData = colorData;
+		this.colorData = Encode.forHtmlContent(colorData);
 	}
 
 	public ColorService getColorService() {
