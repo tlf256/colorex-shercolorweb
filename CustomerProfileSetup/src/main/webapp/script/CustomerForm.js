@@ -137,9 +137,11 @@ $(document).on({
 			if(!valid) {
 				throw "Please fix form error(s)";
 			}
+			valid = true;
 			$("#formerror").text('');
 			$('#customerInfo').submit();
 		} catch(msg) {
+			valid = false;
 			$("#formerror").text(msg);
 			$("html, body").animate({
 				scrollTop: $(document.body).offset().top
