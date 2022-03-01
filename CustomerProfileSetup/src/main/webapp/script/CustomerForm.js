@@ -123,26 +123,32 @@ $(document).ready(function() {
 	
 });
 
-function validate() {
-	try {
-		if(!$(".clrntid:checked").length) {
-			throw "Please choose colorant system(s)";
+$(document).on({
+	'click':function(event){
+		try {
+			event.preventDefault();
+			//console.log("validate: form is valid? " + valid);
+			if(!$(".clrntid:checked").length) {
+				throw "Please choose colorant system(s)";
+			}
+			if(!$(".clrntdefault:checked").length) {
+				throw "Please choose default colorant system";
+			}
+			if(!valid) {
+				throw "Please fix form error(s)";
+			}
+			valid = true;
+			$("#formerror").text('');
+			$('#customerInfo').submit();
+		} catch(msg) {
+			valid = false;
+			$("#formerror").text(msg);
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
 		}
-		if(!$(".clrntdefault:checked").length) {
-			throw "Please choose default colorant system";
-		}
-		if(!valid) {
-			throw "Please fix form error(s)";
-		}
-		$("#formerror").text('');
-		$('#customerInfo').submit();
-	} catch(msg) {
-		$("#formerror").text(msg);
-		$("html, body").animate({
-			scrollTop: $(document.body).offset().top
-		}, 1500);
 	}
-}
+}, '#loginnext-btn');
 
 function checkIfWarningNeeded(acctnbr) {
 	console.log("checking if warning should be shown...");
