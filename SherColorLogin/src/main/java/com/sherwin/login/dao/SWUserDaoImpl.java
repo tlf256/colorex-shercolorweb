@@ -143,6 +143,40 @@ public class SWUserDaoImpl implements SWUserDao {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public SWUser getLoginUser(String inLoginId) {
+		List<SWUser> recordList = new ArrayList<SWUser>();
+		
+		Session session = getSessionFactory().getCurrentSession();
+		
+		try {
+			//we want to compare the inbound login ID, LOWER CASE VERSION, to the 
+			//Lower case version of the login ID in the table.  This results in having
+			//a case insensitive login id.
+			if (inLoginId != null) {
+				Query lgnQuery = session.createQuery("from SWUser where lower(loginID) = :loginID ");
+				lgnQuery.setParameter("loginID", inLoginId.toLowerCase());
+				recordList = lgnQuery.list();
+				if (recordList.size()==1) {
+					return recordList.get(0);
+				} else {
+					if (recordList.size() > 1) {
+						//log this as an event - we should not have this situation, and if
+						//we do, we don't want to return the incorrect user/settings.
+						logger.error("Multiple SWUser entries for lower(" + inLoginId + ")");
+					}
+					//if recordList is empty, then the user wasn't found/not on file.  Return null.
+				}
+			} else {
+				logger.error("inbound login id came in as null");
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} 
+		return null;
+	}
+	
 	public boolean updatePasswordChangeDate(String loginID)  {
 		boolean result = false;
 
@@ -202,6 +236,32 @@ public class SWUserDaoImpl implements SWUserDao {
 	
 	}
 	
+	@SuppressWarnings("unchecked")
+	public SWUser readByEmail(String email) {
+		SWUser record = null;
+		Session session = getSessionFactory().getCurrentSession();
+		
+		String hql = "from SWUser ccm where UPPER(ccm.eMail) like UPPER(:email)";
+	
+		try {
+			Query query = session.createQuery(hql.toString())
+					.setParameter("email",email)
+					;
+			
+			List<SWUser> list = query.list();
+			if (list != null && list.size() > 0) {
+				record = (SWUser) list.get(0);
+			}
+			
+		} catch (HibernateException e){
+			String msg = "Error reading %s record : %s  ";
+			logger.error(String.format(msg, hql.toString(), e.getMessage()), e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	
+		return record;
+	}
 	
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -210,5 +270,7 @@ public class SWUserDaoImpl implements SWUserDao {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+
+
 
 }

@@ -11,6 +11,20 @@ public interface SWUserDao {
 	 */
 	public SWUser read(String loginID);
 	
+	/***
+	 * Read a SWUser record for the email provided.
+	 * @param email - the email
+	 * @return Single SWUser record or null if not found
+	 */
+	public SWUser readByEmail(String email);
+	
+	/***
+	 * Read a SWUser record for the Login ID provided
+	 * and return the SWUser object. 
+	 * @param loginID - Login ID
+	 * @return the SWUser row data
+	 */
+	public SWUser getLoginUser(String inLoginId);
 	
 	/***
 	 * disable a SWUser record for the Login ID provided.

@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -220,12 +221,6 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private void parseColorData(String colorData) {
-		
-		try {
-			colorData = URLDecoder.decode(colorData,"UTF-8");
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
 
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing
@@ -365,7 +360,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 
 	public void setPartialColorNameOrId(String partialColorNameOrId) {
-		this.partialColorNameOrId = partialColorNameOrId;
+		this.partialColorNameOrId = Encode.forHtmlContent(partialColorNameOrId);
 	}
 	
 	public String getColorComp() {
@@ -389,7 +384,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	public void setColorData(String colorData) {
-		this.colorData = colorData;
+		this.colorData = Encode.forHtml(colorData);
 	}
 	
 	public List<String> getColorCompanies() {

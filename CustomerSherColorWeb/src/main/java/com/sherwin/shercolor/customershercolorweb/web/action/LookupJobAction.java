@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -181,6 +182,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			
 			logger.info("# of Webtran objects in tranHistory: " + tranHistory.size());
 			
+
 			for (CustWebTran webTran : tranHistory) {
 				// see if there's an associated drawdown transaction
 				CustWebDrawdownTran drawdownTran = tranHistoryService.readDrawdownTran(webTran.getCustomerId(), webTran.getControlNbr(), webTran.getLineNbr());
@@ -193,6 +195,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				job.setClrntSysId(clrntSysId);
 				job.setColorId(webTran.getColorId());
 				job.setColorName(webTran.getColorName());
+				job.setColorNotes(webTran.getColorNotes());
 				job.setControlNbr(webTran.getControlNbr());
 				job.setProdNbr(webTran.getProdNbr());
 				job.setQuantityDispensed(webTran.getQuantityDispensed());
@@ -350,6 +353,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		reqObj.setColorID(webTran.getColorId());
 		if (webTran.getColorName()==null) {webTran.setColorName("");}
 		reqObj.setColorName(webTran.getColorName());
+		if (webTran.getColorNotes()==null) {webTran.setColorNotes("");}
+		reqObj.setColorNotes(webTran.getColorNotes());
 		reqObj.setPrimerId(webTran.getPrimerId());
 		reqObj.setRgbHex(webTran.getRgbHex());
 		reqObj.setSalesNbr(webTran.getSalesNbr());
@@ -437,12 +442,16 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		formula.setSourceDescr(webTran.getFormMethod());
 		
 		Double[] measCurve = new Double[40];
+		BigDecimal[] curveArray = new BigDecimal[40];
 		Arrays.fill(measCurve, 0D);
 		if(webTran.getMeasCurve()!=null && webTran.getMeasCurve().length==40){
 			for(int i=0;i<40;i++){
-				measCurve[i] = webTran.getMeasCurve()[i];			}
+				measCurve[i] = webTran.getMeasCurve()[i];
+				curveArray[i] = new BigDecimal(webTran.getMeasCurve()[i]);
+			}
 		}
 		formula.setMeasuredCurve(measCurve);
+		reqObj.setCurveArray(curveArray);
 		Double[] projCurve = new Double[40];
 		Arrays.fill(projCurve, 0D);
 		if(webTran.getProjCurve()!=null && webTran.getProjCurve().length==40){

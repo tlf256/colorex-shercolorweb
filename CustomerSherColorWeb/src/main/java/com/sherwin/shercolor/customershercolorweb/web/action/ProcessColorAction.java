@@ -282,7 +282,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			reqObj.setProductChoosenFromDifferentBase(false);
+			reqObj.setProductChosenFromDifferentBase(false);
 
 			//Okay, there is data there.  Interpret it.
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOM")) {
@@ -492,7 +492,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 
 	public void setPartialColorNameOrId(String partialColorNameOrId) {
-		this.partialColorNameOrId = partialColorNameOrId.trim();
+		this.partialColorNameOrId = Encode.forHtmlContent(partialColorNameOrId.trim());
 	}
 	
 	public String getMessage() {
@@ -616,7 +616,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	public void setColorData(String colorData) {
-		this.colorData = colorData;
+		this.colorData = Encode.forHtmlContent(colorData);
 	}
 
 	public ColorService getColorService() {

@@ -29,13 +29,16 @@ $(document).ready(function() {
 				$(this).select();
 				valid = false;
 			}
-		},
-		"focusin": function(){
+		}
+	}, "#cdsadlfld");
+	
+	$(document).on({
+		"blur": function(){
 			var selector = $("#swuititle");
 			var title = selector.val().trim();
 			try{
 				if(selector.is(':visible') && (title.length > 20 || title.length == 0)){
-					throw "Please enter a Customer Name not greater than 20 characters";
+					throw "Customer Name cannot be greater than 20 characters";
 				} 
 				$("#swuititlerror").text("");
 				$("#formerror").text("");
@@ -48,10 +51,8 @@ $(document).ready(function() {
 				valid = false;
 			}
 		}
-	}, "#cdsadlfld");
+	}, "#swuititle");
 	
-	
-		
 	$(document).on("blur", "#acceptcode", function(){
 		try{
 			var eula = $("#eulalist").val();
@@ -122,26 +123,32 @@ $(document).ready(function() {
 	
 });
 
-function validate() {
-	try {
-		if(!$(".clrntid:checked").length) {
-			throw "Please choose colorant system(s)";
+$(document).on({
+	'click':function(event){
+		try {
+			event.preventDefault();
+			//console.log("validate: form is valid? " + valid);
+			if(!$(".clrntid:checked").length) {
+				throw "Please choose colorant system(s)";
+			}
+			if(!$(".clrntdefault:checked").length) {
+				throw "Please choose default colorant system";
+			}
+			if(!valid) {
+				throw "Please fix form error(s)";
+			}
+			valid = true;
+			$("#formerror").text('');
+			$('#customerInfo').submit();
+		} catch(msg) {
+			valid = false;
+			$("#formerror").text(msg);
+			$("html, body").animate({
+				scrollTop: $(document.body).offset().top
+			}, 1500);
 		}
-		if(!$(".clrntdefault:checked").length) {
-			throw "Please choose default colorant system";
-		}
-		if(!valid) {
-			throw "Please fix form error(s)";
-		}
-		$("#formerror").text('');
-		$('#customerInfo').submit();
-	} catch(msg) {
-		$("#formerror").text(msg);
-		$("html, body").animate({
-			scrollTop: $(document.body).offset().top
-		}, 1500);
 	}
-}
+}, '#loginnext-btn');
 
 function checkIfWarningNeeded(acctnbr) {
 	console.log("checking if warning should be shown...");

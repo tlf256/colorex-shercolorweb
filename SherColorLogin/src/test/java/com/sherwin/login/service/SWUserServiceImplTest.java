@@ -1,34 +1,70 @@
-//package com.sherwin.login.service;
-//
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertNotNull;
-//import static org.junit.Assert.assertTrue;
-//
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.test.context.ContextConfiguration;
-//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import com.sherwin.login.domain.SWUser;
-//
-//
-//
-//
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"classpath:config/spring/shercolorlogin.xml"})
-//@Transactional
-//public class SWUserServiceImplTest {
-//
-//	@Autowired
-//	SWUserService target;
-//	
+package com.sherwin.login.service;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sherwin.login.domain.SWUser;
+
+
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorlogin.xml"})
+@Transactional
+public class SWUserServiceImplTest {
+
+	@Autowired
+	SWUserService target;
+	
+	@Test
+	public void testCreate() {
+		assertNotNull(target);
+	}
+	
+	
+	@Test
+	public void testPositiveReadEmailById() {
+		String loginId ="Kelly.S.Devoogd@sherwin.com";
+		
+		
+		SWUser result = target.readUserByEmailOrLogin(loginId);
+		if (result!=null) {
+			System.out.println("10. Read by email or loginId -> " + result.getLoginID() + " " + result.geteMail() + " Test is SUCCESSFUL!");
+		}
+		assertNotNull(result);
+	}
+	
 //	@Test
-//	public void testCreate() {
-//		assertNotNull(target);
+//	public void testPositiveReadEmail() {
+//		String loginId ="a@b.com";
+//		
+//		
+//		SWUser result = target.readUserByEmailOrLogin(loginId);
+//		if (result!=null) {
+//			System.out.println("11. Read by email or loginId -> " + result.getLoginID() + " " + result.geteMail() + " Test is SUCCESSFUL!");
+//		}
+//		assertNotNull(result);
 //	}
 //	
+//	@Test
+//	public void testNegativeReadEmail() {
+//		String loginId ="negativeemailtest@b.com";
+//		
+//		
+//		SWUser result = target.readUserByEmailOrLogin(loginId);
+//		if (result!=null) {
+//			System.out.println("12. Read by email or loginId -> " + result.getLoginID() + " " + result.geteMail() + " Test is SUCCESSFUL!");
+//		}
+//		assertTrue(result == null);
+//	}
 //	
 //	@Test
 //	public void testPositiveReadPk() {
@@ -119,6 +155,6 @@
 //			System.out.println("Exception from negative disable test - " + e.getMessage() + " - Test FAILED!");
 //		}
 //	}
-//
-//}
+
+}
 

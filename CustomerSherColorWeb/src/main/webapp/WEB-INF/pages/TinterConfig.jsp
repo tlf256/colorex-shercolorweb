@@ -11,28 +11,24 @@
 
 <title><s:text name="tinterConfig.tinterConfig"/></title>
 <!-- JQuery -->
-<link rel=StyleSheet href="css/bootstrap.min.css" type="text/css">
-<link rel=StyleSheet href="css/bootstrapxtra.css" type="text/css">
-<link rel=StyleSheet href="js/smoothness/jquery-ui.css"
-	type="text/css">
-
-<link rel=StyleSheet href="css/CustomerSherColorWeb.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
+<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
 <!-- Custom styles for this template -->
 
-<link
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.7.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery-ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 
 
 
@@ -350,37 +346,35 @@
 			}
 		});
 	}
-	function GetModelsForColorant(colorantId_obj) {
+	function GetModelsForColorant(colorantId) {
 		var modellist = null;
-		var colorantId = colorantId_obj.val();
 		
-		$
-				.ajax({
-					url : "GetTinterModelsAction",
-					context : document.body,
-					data : {
+		$.ajax({
+				url : "GetTinterModelsAction",
+				context : document.body,
+				data : {
 
-						customerId : "DEFAULT",
-						clrntSysId : colorantId,
-						reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
-					},
-					async : false,
-					type : "POST",
-					dataType : "json",
-					success : function(objs) {
-						if(objs.sessionStatus === "expired"){
-                    		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-                    	}
-                    	else{
-                    		modellist = objs.defaultModelList;
-                    	}
-					},
-					error : function() {
-						modellist = [ '<s:text name="tinterConfig.couldNotFindTinterModels"/>'
-								+ " " + colorantId ];
-						alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + colorantId + '</s:param></s:text>');
-					}
-				});
+					customerId : "DEFAULT",
+					clrntSysId : colorantId,
+					reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
+				},
+				async : false,
+				type : "POST",
+				dataType : "json",
+				success : function(objs) {
+					if(objs.sessionStatus === "expired"){
+                   		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                   	}
+                   	else{
+                   		modellist = objs.defaultModelList;
+                   	}
+				},
+				error : function() {
+					modellist = [ '<s:text name="tinterConfig.couldNotFindTinterModels"/>'
+							+ " " + colorantId ];
+					alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + colorantId + '</s:param></s:text>');
+				}
+			});
 
 		var box = $('#modelSelect');
 		box.empty();
@@ -415,7 +409,7 @@
 		$('#add_new_tinter').show(); // add new tinter
 		$('#ecals').hide();
 		$('#selectClrntSysId').val("CCE");
-		GetModelsForColorant($('#selectClrntSysId'));
+		GetModelsForColorant($('#selectClrntSysId').val());
 		
 		
 		/*  var dt_arr = buildEcal();
@@ -664,8 +658,9 @@
 			case 'Detect':
 			case 'Init':
 			case 'InitStatus':
+				let ucErrorMessage = return_message.errorMessage.toUpperCase().trim()
 				//status = 1, means, still trying serial ports so still in progress.
-				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) &&
+				if (( ucErrorMessage.trim() != initializationDone) &&
 						 (return_message.errorNumber >= 0 ||
 						 return_message.status == 1)) {
 					 	//save		
@@ -696,8 +691,8 @@
 						}
 					//console.log(return_message.errorMessage);
 				}
-				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
-					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
+				else if(return_message.errorMessage.toUpperCase().trim() == initializationDone){
+					console.log("init done: " + (return_message.errorMessage.toUpperCase().trim() == initializationDone));
 					
 					
 					waitForShowAndHide("#detectInProgressModal");
@@ -741,7 +736,7 @@
 						}
 					}
 				}
-				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
+				if ((return_message.errorMessage.toUpperCase().trim() == initializationDone) || return_message.errorNumber < 0) {
 					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
@@ -783,14 +778,14 @@
 			case 'Detect':
 			case 'Init':
 				//status = 1, means, still trying serial ports so still in progress.
-				if ((return_message.errorMessage.indexOf("Initialization Done") == -1) && (return_message.errorNumber >= 0 ||
+				if ((return_message.errorMessage.toUpperCase().trim() != initializationDone) && (return_message.errorNumber >= 0 ||
 						 return_message.status == 1)) {
 					 	//save		
 					$("#progress-message").text(return_message.errorMessage);
 					//console.log(return_message.errorMessage);
 				}
-				else if(return_message.errorMessage.indexOf("Initialization Done") >= 0){
-					console.log("init done: " + return_message.errorMessage.indexOf("Initialization Done"));
+				else if((return_message.errorMessage.toUpperCase().trim() == initializationDone)){
+					console.log("init done: " + (return_message.errorMessage.toUpperCase().trim() == initializationDone));
 					
 					
 					waitForShowAndHide("#detectInProgressModal");
@@ -833,7 +828,7 @@
 						}
 					}
 				}
-				if (return_message.errorMessage.indexOf("Initialization Done") >= 0 || return_message.errorNumber < 0) {
+				if ((return_message.errorMessage.toUpperCase().trim() == initializationDone) || return_message.errorNumber < 0) {
 					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
@@ -913,7 +908,7 @@
 				<label class="sw-label" for="selectClrntSysId"><s:text name="tinterConfig.colorant"/></label>
 				<s:select id="selectClrntSysId" name="newtinter.clrntSysId"
 					headerKey="-1" headerValue="%{getText('global.selectColorant')}"
-					list="defaultColorantList" onchange='GetModelsForColorant(this)' />
+					list="defaultColorantList" onchange='GetModelsForColorant(this.value)' />
 
 
 			</div>

@@ -71,7 +71,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			
 			CustWebTran origCustWebTran = null;
 			if(reqObj.getControlNbr()>0) origCustWebTran = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-
+			
 			// map RequestObject to CustWebTran record format
 			//logger.info("about to map reqObj to custWebTran ");
 			custWebTran = mapRequestObjectToCustWebTranObject(reqObj,origCustWebTran);
@@ -161,8 +161,6 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 
 	public String saveBeforeAction(){
 		logger.debug("inside action to saveBeforeAction");
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-
 		logger.debug("inside action about to execute");
 		String retVal = this.execute();
 		logger.debug("inside action back from execute");
@@ -263,7 +261,12 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			qtyDispensed++;
 			logger.debug("inside action to bumpDispense, qtyDispensed will be " + qtyDispensed);
 			reqObj.setQuantityDispensed(qtyDispensed);
-			sessionMap.put(reqGuid, reqObj);
+			try {
+				sessionMap.put(reqGuid, reqObj);
+
+			} catch (Exception e) {
+				return "loginRedirect";
+			}
 
 			logger.debug("inside action about to execute");
 			retVal = this.execute();
@@ -397,6 +400,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		custWebTran.setColorComp(reqObj.getColorComp());
 		custWebTran.setColorId(reqObj.getColorID());
 		custWebTran.setColorName(reqObj.getColorName());
+		custWebTran.setColorNotes(reqObj.getColorNotes());
 		custWebTran.setPrimerId(reqObj.getPrimerId());
 		custWebTran.setRgbHex(reqObj.getRgbHex());
 		custWebTran.setSalesNbr(reqObj.getSalesNbr());
@@ -685,5 +689,4 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		this.quantity = Encode.forHtml(quantity);
 	}
 	
-
 }
