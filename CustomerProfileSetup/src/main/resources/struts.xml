@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.mapper.action.prefix.enabled" value="true" />
+	<package name="default" namespace="/" extends="struts-default,json-default">
+		<interceptors>
+			<interceptor-stack name="jsonFromJspStack">
+		        <interceptor-ref name="defaultStack"/>
+		        <interceptor-ref name="json" />
+		    </interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="jsonFromJspStack" />
+		<default-action-ref name="displayCustomers"/>
+		<!-- actions -->
+		<action name="displayCustomers" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="execute">
+			<result name="success">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="lookupCustomer" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="read">
+			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="openCustomerForm" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="createNew">
+			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="success">/WEB-INF/pages/CustomerForm.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="display">
+			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="success">/WEB-INF/pages/CustomerDetail.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="editDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="displayEdit">
+			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="success">/WEB-INF/pages/EditCustomerDetail.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="cancelUpdate" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="cancelUpdate">
+			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="updateDetail" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="update">
+			<result name="errormsg">/WEB-INF/pages/DisplayCustomers.jsp</result>
+			<result name="success">/WEB-INF/pages/EditCustomerDetail.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="displayEdit" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="execute">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+				<param name="edited">${edited}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/EditCustomerDetail.jsp</result>
+		</action>
+		<action name="displayUpdate" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="execute">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+				<param name="edited">${edited}</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/EditCustomerDetail.jsp</result>
+		</action>
+		<action name="getCustomerInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="execute">
+			<result name="success">/WEB-INF/pages/LoginIDform.jsp</result>
+			<result name="nologin">/WEB-INF/pages/JobForm.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/CustomerForm.jsp</result>
+		</action>
+		<action name="getLoginInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessLoginAction" method="execute">
+			<result name="success">/WEB-INF/pages/JobForm.jsp</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="getJobInfo" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessJobAction" method="execute">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="createOrUpdateCustomer" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="createOrUpdate">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/CustomerDetail.jsp</result>
+		</action>
+		<action name="deleteCustomer" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="delete">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+			<result name="input">/WEB-INF/pages/CustomerDetail.jsp</result>
+		</action>
+		<action name="resetAction" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="reset">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="cancelAction" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="cancel">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="ajaxKeyfieldResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessLoginAction" method="checkKeyfield">
+             <result name="success" type="json">
+             	<param name="result">${result}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxAcctNbrResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="checkAcctNbr">
+             <result name="success" type="json">
+             	<param name="result">${result}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxProdCompResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessCustomerAction" method="setActionProdCompList">
+             <result name="success" type="json">
+             	<param name="prodCompList">${prodCompList}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxDeleteProdComp" class="com.sherwin.shercolor.customerprofilesetup.web.action.EditCustomerAction" method="deleteProdComp">
+             <result name="success" type="json">
+             	<param name="prodComp">${prodComp}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="ajaxAcctTypeResult" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerAction" method="buildCustTypeList">
+             <result name="success" type="json">
+             	<param name="result">${result}</param>
+             </result>
+             <result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+        </action>
+        <action name="setCustomerInactive" class="com.sherwin.shercolor.customerprofilesetup.web.action.CustomerCRUDAction" method="setInactive">
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayCustomers</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+		<action name="downloadEula" class="com.sherwin.shercolor.customerprofilesetup.web.action.ProcessEulaAction" method="execute">
+			<result name="success" type="stream">
+				<param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="eula.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+			<result name="noeula" type="redirectAction">
+				<param name="actionName">displayDetail</param>
+			</result>
+			<result name="error">/WEB-INF/pages/UnknownError.jsp</result>
+		</action>
+	</package>
+</struts>
