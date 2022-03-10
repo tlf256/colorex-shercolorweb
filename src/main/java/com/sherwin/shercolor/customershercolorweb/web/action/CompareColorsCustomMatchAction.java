@@ -2,7 +2,6 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;

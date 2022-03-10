@@ -3,12 +3,10 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebEcal;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
@@ -27,7 +25,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	private List<String> defaultColorantList;
 	private List<String> defaultModelList = new ArrayList<String>();
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ProcessTinterConfigAction.class);
+	static Logger logger = LogManager.getLogger(ProcessTinterConfigAction.class);
 	//for ajax calls
 	private String reqGuid;
 	private String customerId;

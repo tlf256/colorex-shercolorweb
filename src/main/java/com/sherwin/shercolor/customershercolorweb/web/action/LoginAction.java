@@ -1,36 +1,18 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-//import javax.net.ssl.HostnameVerifier;
-//import javax.net.ssl.HttpsURLConnection;
-//import javax.net.ssl.SSLContext;
-//import javax.net.ssl.SSLSession;
-//import javax.net.ssl.TrustManager;
-//import javax.net.ssl.X509TrustManager;
-//import javax.xml.soap.*;
-
 import java.io.FileInputStream;
 import java.io.IOException;
-//import java.security.SecureRandom;
-//
-//import java.security.cert.CertificateException;
-//import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.owasp.encoder.Encode;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.Node;
-
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.service.CustomerService;
@@ -59,7 +41,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	@Autowired
 	private TranHistoryService tranHistoryService;
 
-	static Logger logger = LoggerFactory.getLogger(LoginAction.class);
+	static Logger logger = LogManager.getLogger(LoginAction.class);
 	private RequestObject reqObj;
 	private String reqGuid;
 	private String guid1;

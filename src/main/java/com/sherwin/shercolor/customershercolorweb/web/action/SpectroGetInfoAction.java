@@ -1,19 +1,13 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
-
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-
 import com.opensymphony.xwork2.ActionSupport;
-
-
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +21,7 @@ public class SpectroGetInfoAction extends ActionSupport implements SessionAware,
 	private CustomerService customerService;
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(SpectroGetInfoAction.class);
+	static Logger logger = LogManager.getLogger(SpectroGetInfoAction.class);
 	private String reqGuid;
 	private String message;
 	

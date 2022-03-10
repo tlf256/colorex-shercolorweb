@@ -1,40 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
                         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-         version="3.0">
-    <security-constraint>
+                        version="3.0">
+    <display-name>CustomerSherColorWeb</display-name>
+     
+    <!-- Begin Struts 2 config -->
+    <filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
+    </filter>
+ 
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- End Struts 2 config -->
+ 
+	<listener>
+	    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener> 
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	
+	<context-param>
+	    <param-name>contextConfigLocation</param-name>
+	    <param-value>
+	    	classpath*:config/spring/shercolorcommon.xml
+	    	classpath*:config/spring/shercolorlogin.xml
+    	</param-value>
+	</context-param>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+		<!-- Added for remediation of Qualys issues 150120, 150121 -->
+	<session-config>
+		<cookie-config>
+	  		<http-only>true</http-only>
+			<secure>true</secure> 
+	 	</cookie-config>
+	 	<!-- NOTE - session-timeout should match the timeout in CustomerSherColorWeb.js -->
+		<session-timeout>30</session-timeout>
+	</session-config>
+<security-constraint>
 
-        <web-resource-collection>
-            <web-resource-name>Secure Pages</web-resource-name>
-            <url-pattern>/secure/*</url-pattern>
-            <http-method>GET</http-method>
-            <http-method>POST</http-method>
-        </web-resource-collection>
+  <web-resource-collection>
+    <web-resource-name>Secure Pages</web-resource-name>
+    <url-pattern>/secure/*</url-pattern>
+    <http-method>GET</http-method>
+    <http-method>POST</http-method>
+   </web-resource-collection>
 
-        <auth-constraint>
-            <description>All authenticated logins have role EveryoneRole</description>
-            <role-name>EveryoneRole</role-name>
-        </auth-constraint>
+   <auth-constraint>
+    <description>All authenticated logins have role EveryoneRole</description>
+    <role-name>EveryoneRole</role-name>
+   </auth-constraint>
 
-        <!-- For enabling SSL, specify CONFIDENTIAL or INTEGRAL. -->
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
+   <!-- For enabling SSL, specify CONFIDENTIAL or INTEGRAL. -->
+   <user-data-constraint>
+    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+   </user-data-constraint>
+  </security-constraint>
 
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <form-login-config>
-            <form-login-page>/index.jsp</form-login-page>
-            <form-error-page>/index.jsp</form-error-page>
-        </form-login-config>
-    </login-config>
+  <login-config>
+   <auth-method>FORM</auth-method>
+   <form-login-config>
+    <form-login-page>/index.jsp</form-login-page>
+    <form-error-page>/index.jsp</form-error-page>
+   </form-login-config>
+  </login-config>
 
-    <!-- Declare all the roles used in <auth-constraint> above -->
-    <security-role>
-        <description>EveryoneRole</description>
-        <role-name>EveryoneRole</role-name>
-    </security-role>
+  <!-- Declare all the roles used in <auth-constraint> above -->
+  <security-role>
+   <description>EveryoneRole</description>
+   <role-name>EveryoneRole</role-name>
+  </security-role>
+  
+  
 </web-app>

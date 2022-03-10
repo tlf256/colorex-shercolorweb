@@ -10,12 +10,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
-
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
+import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -64,9 +63,9 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 
 	//private static String SQL_USER_GROUP_JOB_CHECK_STMT;
 	public static final String TXT_ZERO = "0";
-	
-	static Logger logger = LoggerFactory.getLogger(LoginUserAction.class);
-	
+
+	static Logger logger = LogManager.getLogger(LoginUserAction.class);
+
 	public String display() {
 		
 		try {
@@ -187,8 +186,8 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			
 			} catch (Exception e) {
 				logger.error("sher-link authentication error for user -> " + userId);
-				logger.error("sher-link authentication error is -> ", e);
-				
+				logger.error("sher-link authentication error is -> " + e.getMessage());
+
 				// Check Number of Login Attempts
 				loginAttemptCnt = checkNumberOfLoginAttempts(loginAttemptCnt, userId, request, e);
 				

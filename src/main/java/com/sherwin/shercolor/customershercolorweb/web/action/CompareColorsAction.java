@@ -7,15 +7,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import org.owasp.encoder.Encode;
 import org.owasp.encoder.Encoder;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.exception.SherColorException;
@@ -30,6 +29,7 @@ import org.springframework.stereotype.Component;
 public class CompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LoggerFactory.getLogger(CompareColorsAction.class);
+
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private boolean match;
@@ -159,7 +159,6 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	public String listColors() {
 		
 		try {
-
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
 
 			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
@@ -191,6 +190,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private List<autoComplete> mapToOptions(List<CdsColorMast> colorList, String coType) {
+
 		List<autoComplete> outList = new ArrayList<>();
 		String theLabel;
 		String theValue;
@@ -225,12 +225,6 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private void parseColorData(String colorData) {
-		
-		try {
-			colorData = URLDecoder.decode(colorData, "UTF-8");
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
 
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing
@@ -394,7 +388,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	public void setColorData(String colorData) {
-		this.colorData = colorData;
+		this.colorData = Encode.forHtml(colorData);
 	}
 	
 	public List<String> getColorCompanies() {

@@ -3,28 +3,21 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LoginAgainAction extends ActionSupport  implements SessionAware  {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
-
-	static Logger logger = LoggerFactory.getLogger(LoginAgainAction.class);
-
+	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
 	private String reqGuid;
 	private String sherLinkURL;
 	private String loMessage;

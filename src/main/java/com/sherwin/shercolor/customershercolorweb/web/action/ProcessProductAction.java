@@ -6,15 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
@@ -38,8 +36,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ProcessProductAction.class);
-	private String partialProductNameOrId; 
+	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
+	private String partialProductNameOrId;
 	private List<autoComplete> options;
 	private String message;
 	private String colorComp;

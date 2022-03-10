@@ -2,8 +2,8 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.apache.struts2.interceptor.SessionAware;
@@ -31,8 +31,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ListDealerCustomerOrdDtlAction extends ActionSupport implements SessionAware, LoginRequired {
 
-	static Logger logger = LoggerFactory.getLogger(LookupJobAction.class);
-	
+	static Logger logger = LogManager.getLogger(LookupJobAction.class);
+
 	private Map<String, Object> sessionMap;
 	
 	@Autowired
@@ -86,14 +86,6 @@ public class ListDealerCustomerOrdDtlAction extends ActionSupport implements Ses
 	
 	public String execute(){
 		return SUCCESS;
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static void setLogger(Logger logger) {
-		ListDealerCustomersAction.logger = logger;
 	}
 
 	public CustomerOrderService getCustomerOrderService() {

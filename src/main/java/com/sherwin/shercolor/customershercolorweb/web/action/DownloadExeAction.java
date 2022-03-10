@@ -6,9 +6,8 @@ import org.apache.struts2.interceptor.SessionAware;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.opensymphony.xwork2.ActionSupport;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DownloadExeAction extends ActionSupport  implements SessionAware, LoginRequired  {
 
-	static Logger logger = LoggerFactory.getLogger(DownloadExeAction.class);
+	static Logger logger = LogManager.getLogger(DownloadExeAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	

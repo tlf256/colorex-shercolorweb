@@ -7,19 +7,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.ProductFillInfo;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.apache.struts2.interceptor.SessionAware;
-import org.owasp.encoder.Encode;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TinterService;
@@ -39,8 +37,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ProcessCorrectFormulaAction.class.getName());
-	
+	static Logger logger = LogManager.getLogger(ProcessCorrectFormulaAction.class.getName());
+
 	private String reqGuid;
 	private FormulaInfo displayFormula;
 	

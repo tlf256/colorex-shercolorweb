@@ -1,14 +1,10 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import org.owasp.encoder.Encode;
-
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.ecom.security.assertion.SsoHelper;
 import com.sherwin.login.service.SWUserService;
@@ -30,9 +26,8 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 	@Autowired
 	private SWLoginValidator swLoginValidator;
 
-	
-	static Logger logger = LoggerFactory.getLogger(PasswordAction.class);
-	
+	static Logger logger = LogManager.getLogger(PasswordAction.class);
+
 	public String display() {
 		String returnStatus = "";
 

@@ -131,7 +131,12 @@
 		var configuration = null;
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
 		if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
-			var cmd = "PurgeProgress";
+			var cmd = "";
+			if(navigator.platform.startsWith("Windows")){
+				cmd = "PurgeProgress";
+			} else{
+				cmd = "PurgeStatus";
+			}
 		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
 		}
 		else{

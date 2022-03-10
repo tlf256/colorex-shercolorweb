@@ -7,14 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.CorrectionInfo;
@@ -25,11 +24,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 @Service
 public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
-	static Logger logger = LoggerFactory.getLogger(CorrectionInfoBuilder.class.getName());
+	static Logger logger = LogManager.getLogger(CorrectionInfoBuilder.class.getName());
 
-	@Autowired
 	TranHistoryService tranHistoryService;
-	@Autowired
 	TinterService tinterService;
 	
 	public CorrectionInfoBuilderImpl(TranHistoryService tranHistoryService, TinterService tinterService){
@@ -45,7 +42,7 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 		correction.setCorrectionStepList(new ArrayList<CorrectionStep>());
 		
 		TinterInfo tinter = reqObj.getTinter();
-		HashMap<String, CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
+		HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 		
 		if(tranCorrList.size()==0){
 			correction.setNextUnitNbr(1);

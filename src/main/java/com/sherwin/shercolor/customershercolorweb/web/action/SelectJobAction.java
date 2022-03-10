@@ -1,12 +1,9 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
-
 import org.apache.struts2.interceptor.SessionAware;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.opensymphony.xwork2.ActionSupport;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SelectJobAction extends ActionSupport  implements SessionAware, LoginRequired  {
 
-	static Logger logger = LoggerFactory.getLogger(SelectJobAction.class);
+	static Logger logger = LogManager.getLogger(SelectJobAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	

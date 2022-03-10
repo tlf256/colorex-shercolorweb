@@ -1,21 +1,17 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-
 import com.opensymphony.xwork2.ActionSupport;
-
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceHandlerUtilityAction extends ActionSupport  implements SessionAware, LoginRequired {
 
 	private static final long serialVersionUID = 1L;
-
-	static Logger logger = LoggerFactory.getLogger(DeviceHandlerUtilityAction.class.getName());
+	static Logger logger = LogManager.getLogger(DeviceHandlerUtilityAction.class.getName());
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String spectroModel;

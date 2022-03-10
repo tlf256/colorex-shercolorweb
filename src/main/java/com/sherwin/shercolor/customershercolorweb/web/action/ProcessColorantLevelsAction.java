@@ -3,16 +3,14 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
@@ -23,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessColorantLevelsAction extends ActionSupport implements SessionAware, LoginRequired{
 
-	static Logger logger = LoggerFactory.getLogger(ProcessColorantLevelsAction.class);
+	static Logger logger = LogManager.getLogger(ProcessColorantLevelsAction.class);
 	private String reqGuid;
 	private Map<String, Object> sessionMap;
 	private TinterInfo tinter;

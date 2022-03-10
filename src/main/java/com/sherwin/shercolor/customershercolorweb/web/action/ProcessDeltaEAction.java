@@ -1,23 +1,18 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-
 import com.opensymphony.xwork2.ActionSupport;
-
 import com.sherwin.shercolor.common.domain.FormulaInfo;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProcessDeltaEAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
-
-	static Logger logger = LoggerFactory.getLogger(ProcessDeltaEAction.class);
+	static Logger logger = LogManager.getLogger(ProcessDeltaEAction.class);
 	private String reqGuid;
 	private FormulaInfo displayFormula;
 	

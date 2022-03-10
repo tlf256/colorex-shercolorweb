@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeleteJobAction extends ActionSupport implements SessionAware, LoginRequired {
 	
-	static Logger logger = LoggerFactory.getLogger(DeleteJobAction.class);
+	static Logger logger = LogManager.getLogger(DeleteJobAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private int controlNbr;

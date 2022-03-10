@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebTinterEvents;
@@ -24,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RemoveTinterAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(RemoveTinterAction.class);
+	static Logger logger = LogManager.getLogger(RemoveTinterAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	

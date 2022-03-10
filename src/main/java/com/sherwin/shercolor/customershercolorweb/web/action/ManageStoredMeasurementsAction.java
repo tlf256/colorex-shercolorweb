@@ -6,16 +6,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-
-
 import com.opensymphony.xwork2.ActionSupport;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,7 +36,7 @@ public class ManageStoredMeasurementsAction extends ActionSupport implements Ses
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ManageStoredMeasurementsAction.class);
+	static Logger logger = LogManager.getLogger(ManageStoredMeasurementsAction.class);
 	private String reqGuid;
 
 	private CustWebSpectroRemote custWebSpectroRemote;

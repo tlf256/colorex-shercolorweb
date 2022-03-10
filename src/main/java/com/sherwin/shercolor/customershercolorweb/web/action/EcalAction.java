@@ -3,13 +3,11 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.sherwin.shercolor.common.domain.CustWebEcal;
@@ -19,12 +17,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 @Component
 public class EcalAction extends ActionSupport implements SessionAware, LoginRequired{
-	/**
-	 * 
-	 */
-	
+
 	private static final long serialVersionUID = 1L;
-	private final static Logger logger = LoggerFactory.getLogger(EcalAction.class);
+	private final static Logger logger = LogManager.getLogger(EcalAction.class);
 
 	@Autowired
 	EcalService service;

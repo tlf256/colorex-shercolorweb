@@ -254,8 +254,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 						FormulaInfo newDisplayFormula = formulationService.scaleFormulaBySize(reqObj.getDisplayFormula(), sizeRatio);						
 						newDisplayFormula.setSalesNbr(salesNbr);
 						
-						List<SwMessage> swmsgList = new ArrayList<SwMessage>();
-						retVal = processFormulaValidation(newDisplayFormula, swmsgList);
+						retVal = processFormulaValidation(newDisplayFormula, null, false);
 						
 						if (retVal.equalsIgnoreCase("SUCCESS")) {
 							reqObj.setDisplayFormula(newDisplayFormula);
@@ -391,7 +390,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 					// get SwMessages from the FormulationResponse
 					swmsgList = reformulation.getMessages();
 					FormulaInfo displayFormula = reformulation.getFormulas().get(0);
-					retVal = processFormulaValidation(displayFormula, swmsgList);
+					retVal = processFormulaValidation(displayFormula, swmsgList, true);
 					if (retVal.equalsIgnoreCase("SUCCESS")) {
 						reqObj.setDisplayFormula(reformulation.getFormulas().get(0));
 						setProductInfoIntoSession();
@@ -496,7 +495,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 					if (item.getSalesNbr().equals(selectedProdFam)) {
 						prodFamWasSelected = true;
 						swmsgList = prevFormResponse.getMessages();
-						retVal = processFormulaValidation(item, swmsgList);
+						retVal = processFormulaValidation(item, swmsgList, true);
 						
 						if (retVal.equalsIgnoreCase("SUCCESS")) {
 							setSalesNbr(selectedProdFam);
@@ -570,7 +569,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 					// get SwMessages from the FormulationResponse
 					swmsgList = rematch.getMessages();
 					FormulaInfo displayFormula = rematch.getFormulas().get(0);
-					retVal = processFormulaValidation(displayFormula, swmsgList);
+					retVal = processFormulaValidation(displayFormula, swmsgList, true);
 					
 					if (retVal.equalsIgnoreCase("SUCCESS")) {
 						reqObj.setDisplayFormula(rematch.getFormulas().get(0));
@@ -635,8 +634,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 					FormulaInfo newDisplayFormula = formulationService.scaleFormulaBySize(reqObj.getDisplayFormula(), tsRatio);						
 					newDisplayFormula.setSalesNbr(salesNbr);
 					
-					List<SwMessage> swmsgList = new ArrayList<SwMessage>();
-					retVal = processFormulaValidation(newDisplayFormula, swmsgList);
+					retVal = processFormulaValidation(newDisplayFormula, null, false);
 					
 					if (retVal.equalsIgnoreCase("SUCCESS")) {
 						reqObj.setDisplayFormula(newDisplayFormula);
@@ -686,8 +684,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 					FormulaInfo newDisplayFormula = formulationService.scaleFormulaBySize(reqObj.getDisplayFormula(), finalRatio);						
 					newDisplayFormula.setSalesNbr(salesNbr);
 					
-					List<SwMessage> swmsgList = new ArrayList<SwMessage>();
-					retVal = processFormulaValidation(newDisplayFormula, swmsgList);
+					retVal = processFormulaValidation(newDisplayFormula, null, false);
 					
 					if (retVal.equalsIgnoreCase("SUCCESS")) {
 						reqObj.setDisplayFormula(newDisplayFormula);
@@ -745,15 +742,20 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 	}
 	
 	
-	private String processFormulaValidation(FormulaInfo displayFormula, List<SwMessage> swmsgList) {
+	private String processFormulaValidation(FormulaInfo displayFormula, List<SwMessage> swmsgList, boolean oeFormulation) {
 		String retVal = SUCCESS;
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		CustWebParms custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
 		List<SwMessage> validationMsgs = new ArrayList<SwMessage>();
 		String defaultClrntSys = custWebParms.getClrntSysId();
 		
-		// send in oe response messages and check for validation warnings		
-		validationMsgs = formulationService.validateChangeProdFormula(displayFormula, swmsgList);
+		if (oeFormulation) {
+			// for reformulation and rematch, send in oe response messages and check for validation warnings	
+			validationMsgs = formulationService.validateFormulation(displayFormula, swmsgList);
+		} else {
+			// otherwise do manual formulation checks
+			validationMsgs = formulationService.manualFormulationWarnings(displayFormula);
+		}
 		
 		// if the colorant system used does not match the customer's default colorant system, add a warning.
 		if (!defaultClrntSys.equals(reqObj.getClrntSys())) {
@@ -788,7 +790,13 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			reqObj.setValidationWarningSalesNbr(salesNbr);
 		}
 		if (retVal.equalsIgnoreCase("SUCCESS")) {
-			List<SwMessage> canLabelMsgs = formulationService.canLabelFormulationWarnings(reqObj.getDisplayFormula(), swmsgList);
+			List<SwMessage> canLabelMsgs;
+			if (oeFormulation) {
+				// for reformulation or rematch, send in msg list from server response
+				canLabelMsgs = formulationService.canLabelFormulationWarnings(reqObj.getDisplayFormula(), swmsgList);
+			} else {
+				canLabelMsgs = formulationService.canLabelFormulationWarnings(reqObj.getDisplayFormula());
+			}
 			reqObj.setCanLabelMsgs(canLabelMsgs);
 			// post the validation message list to the request object for use in printing.
 			reqObj.setDisplayMsgs(validationMsgs);

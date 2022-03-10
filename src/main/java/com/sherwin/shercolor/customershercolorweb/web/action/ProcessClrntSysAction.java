@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-
-//import org.slf4j.LoggerFactory;
-//import org.slf4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsClrntSys;
@@ -26,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessClrntSysAction extends ActionSupport implements SessionAware, LoginRequired  {
 
-	static Logger logger = LoggerFactory.getLogger(ProcessClrntSysAction.class);
+	static Logger logger = LogManager.getLogger(ProcessClrntSysAction.class);
 	private Map<String, Object> sessionMap;
 	private String partialProductNameOrId;
 	private List<String> selectClrntSysIds;

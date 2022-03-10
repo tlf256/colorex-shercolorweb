@@ -4,13 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.sherwin.shercolor.common.domain.CustWebDevices;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-
 import com.opensymphony.xwork2.ActionSupport;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.common.service.CustomerService;
@@ -25,7 +23,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 	@Autowired
 	private CustomerService customerService;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(SpectroConfigureAction.class);
+	static Logger logger = LogManager.getLogger(SpectroConfigureAction.class);
 
 	private String reqGuid;
 	private String message;
