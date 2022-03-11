@@ -7,20 +7,10 @@ server:
         http-only: true
 spring:
   config:
-    import: vault://
-  cloud:
-    vault:
-      authentication: APPROLE
-      uri: https://vault.sherwin.com
-      application-name: shercolorweb
-      kv:
-        backend: shercolor/kv2
-      approle:
-        role-id: 4b851bc5-133f-c30f-b8f7-d560a3a46fa9
-        secret-id: 105e90e5-cfd3-bf1a-36e8-a10260029ac8
+    import: /web_apps/server/shercolor/deploy/shercolorcommonnew.properties
   datasource:
-    password: ${db.password}
-    username: ${db.username}
+    password: ${jdbc.password.${dbEnv}}
+    username: ${jdbc.username.${dbEnv}}
   jpa:
     hibernate:
       naming:
@@ -36,6 +26,5 @@ spring:
     ansi:
       enabled: ALWAYS
   profiles:
-      # For dev purposes only
-      # include db type (oracle or postgres), login and database environment (dev, qa or prod)
-      include: oracle,login,dev
+      #either oracle or postgres
+      include: oracle,login

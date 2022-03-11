@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
 @Component
-@SuppressWarnings("serial")
 public class ListDealerCustomersAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	static Logger logger = LogManager.getLogger(LookupJobAction.class);

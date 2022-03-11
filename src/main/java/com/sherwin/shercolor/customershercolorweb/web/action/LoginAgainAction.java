@@ -10,6 +10,7 @@ import org.owasp.encoder.Encode;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,10 +20,13 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	private Map<String, Object> sessionMap;
 	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
 	private String reqGuid;
+	@Value("${sherlink.login.url}")
 	private String sherLinkURL;
 	private String loMessage;
 	private String isAJAX = "false";
 	private String sessionStatus;
+
+
 	
 	public String loginagain() {
 		try {
@@ -37,14 +41,9 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	}
 	
 	public String invalidLogin() {
-		String dbEnv;
-		Properties prop = new Properties();
+
 		RequestObject reqObj = null;
 		try {
-			// Get the customershercolorweb.properties file data first.
-			prop.load(new FileInputStream("/web_apps/server/shercolor/deploy/customershercolorweb.properties"));
-			dbEnv = prop.getProperty("dbEnv");
-			sherLinkURL = prop.getProperty("sherLinkLoginUrl." + dbEnv);
 			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			//logger.error("in loginagain, getting testsession");
 			Map<String, Object> testsession = ActionContext.getContext().getSession();
