@@ -621,4 +621,4 @@ obj/
 
 # Colorex
 *.pdf
-!wildfly
+!wildfly/
