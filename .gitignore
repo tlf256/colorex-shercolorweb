@@ -622,3 +622,4 @@ obj/
 # Colorex
 *.pdf
 !ojdbc8.jar
+!SWInternetRestrictorHandler-0.0.1-SNAPSHOT.jar
