@@ -156,7 +156,6 @@ fabric.properties
 
 # Package Files #
 *.jar
-!ojdbc8.jar
 *.war
 *.nar
 *.ear
@@ -622,3 +621,4 @@ obj/
 
 # Colorex
 *.pdf
+!ojdbc8.jar
