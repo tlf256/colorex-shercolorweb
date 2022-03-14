@@ -45,7 +45,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	@Value("${sherlink.login.url}")
 	private String sherLinkUrl;
 
-	@Value("${sherlink.login.url}")
+	@Value("${sherlink.token.sw.url}")
 	private String sherLinkTokenSwUrl;
 
 	static Logger logger = LogManager.getLogger(LoginAction.class);
