@@ -18,7 +18,7 @@
     <properties>
         <log4j2.version>2.17.1</log4j2.version>
         <struts2.version>2.5.29</struts2.version>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
         <wildfly.version>24.0.1.Final</wildfly.version>
         <spring.cloud-version>2021.0.1</spring.cloud-version>
     </properties>
