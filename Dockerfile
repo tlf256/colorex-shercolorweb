@@ -1,5 +1,6 @@
-FROM openjdk:8
+FROM openjdk:11
+LABEL maintainer="SherColor Team"
 EXPOSE 8090
 ADD target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
-COPY shercolorcommonnew.properties /web_apps/server/shercolor/deploy/shercolorcommonnew.properties
 ENTRYPOINT ["java","-jar","SherColorWeb-bootable.jar"]
+ 
