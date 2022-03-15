@@ -2602,17 +2602,18 @@ function ParsePrintMessage() {
 		
 		function promptToSave(){
 	        var myDirty = parseInt($.trim($("#formulaUserPrintAction_recDirty").val()));
+	        var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
 	        if (isNaN(myDirty)){
 	            myDirty = 0;
 	        }
 	       
-	        if (myDirty == 0) {
-	            console.log("dirty is false");
+	        if (myDirty == 0 && myCtlNbr != 0) {
+	            console.log("dirty is false or job has been saved yet");
 	            return true;
 	        }
 	        else
 	       {
-	            console.log("dirty is true");
+	            console.log("dirty is true or job has not been saved yet");
 	            $("#promptToSaveModal").modal('show');
 	            return false;
 	        }
