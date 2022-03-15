@@ -386,31 +386,6 @@ function ParsePrintMessage() {
 		}	
 	}
 	
-	function updateOrderQuantity(quantity) {
-		var i = 0
-		var myValue = $("#reqGuid").val();
-		var curDate = new Date();
-		$
-		.getJSON(
-				"updateOrderQuantityAction.action?reqGuid=" + myValue
-						+ "&jsDateString=" + curDate.toString()
-						+ "&quantity=" + quantity.toString(),
-				function(data) {
-					if (data.sessionStatus === "expired") {
-						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-					} else {
-						var qtyDispensed = parseInt($("#qtyDispensed").text());
-						var qtyOrdered = $("#orderQuantityInput").val();
-						$("#qtyOrdered").text(qtyOrdered);
-						$("#qtyRemaining").text(parseInt(qtyOrdered)-qtyDispensed);
-						if (qtyOrdered == qtyDispensed) {
-							$("#formulaSetOrderQty").hide();
-						}
-					}
-				});
-		$('#setOrderQuantityModal').modal('hide');
-	}
-	
 	function writeDispense(myReturnMessage) {
 		var myValue = $("#reqGuid").val();
 		var curDate = new Date();
@@ -434,7 +409,7 @@ function ParsePrintMessage() {
 								qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 								if (parseInt(qtyRemaining.text())<=0) {
 									qtyRemaining.text(0);
-									$("#formulaSetOrderQty").hide();
+									$("#qtyOrderedTextField").prop('disabled', true);
 								}
 								
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
@@ -514,42 +489,6 @@ function ParsePrintMessage() {
 							}
 						});
 		
-		$(document).on("shown.bs.modal", "#setOrderQuantityModal", function(event) {
-			$("#orderQuantityInput").val("");
-			$("#orderQuantityInputError").text("");
-			$("#orderQuantityInput").focus();
-		});
-		
-		$(document).on("keypress", "#orderQuantityInput", function(event) {
-			if (event.keyCode == 13) {
-				event.preventDefault();
-				$("#setOrderQuantityButton").click();
-			}
-		});
-		
-		$("#setOrderQuantityButton")
-		.on(
-				"click",
-				function(event) {
-					event.preventDefault();
-					event.stopPropagation();
-					// verify quantity input
-					var qtyOrdered = parseInt($("#orderQuantityInput").val());
-					var qtyDispensed = parseInt($("#qtyDispensed").text());
-					if (qtyOrdered > 0 && qtyOrdered < 1000 && qtyOrdered >= qtyDispensed) {
-						updateOrderQuantity(qtyOrdered);
-						waitForShowAndHide("#setDispenseQuantityModal");
-					} else {
-						if (qtyOrdered < qtyDispensed) {
-							$("#orderQuantityInputError").text('<s:text name="displayFormula.invalidInputDispQty"/>');
-						} else {
-							$("#orderQuantityInputError").text('<s:text name="displayFormula.invalidInput"/>');
-						}
-						
-						$("#orderQuantityInput").select();
-					}
-				});
-		
 		$(document).on("keypress", "#dispenseQuantityInput", function(event) {
 			if (event.keyCode == 13) {
 				event.preventDefault();
@@ -576,6 +515,12 @@ function ParsePrintMessage() {
 								dispenseQuantity = quantity;
 								numberOfDispenses = 1;
 								waitForShowAndHide("#setDispenseQuantityModal");
+								//Set Order Quantity to Dispense Quantity if the user has leave the Qty Ordered field blank (or 0)
+								var dispQtyOrdered = $('#qtyOrderedTextField');
+								if (dispQtyOrdered.val() == "" || dispQtyOrdered.val() == 0) {
+									dispQtyOrdered.val(dispenseQuantity);
+									saveQtyOrdered(dispenseQuantity);
+								}
 								if (isHandDispense == true) {
 									//TODO: manual qty disp counter and print num labels
 									printFromManualDispense(dispenseQuantity);
@@ -600,7 +545,7 @@ function ParsePrintMessage() {
 														qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 														if (parseInt(qtyRemaining.text())<=0) {
 															qtyRemaining.text(0);
-															$("#formulaSetOrderQty").hide();
+															$("#qtyOrderedTextField").prop('disabled', true);
 														}
 
 														updateButtonDisplay();
@@ -1087,9 +1032,61 @@ function ParsePrintMessage() {
 		});
 	}
 	
-	
+	function saveQtyOrdered(qtyOrdered){
+		var myGuid = "${reqGuid}";
+		$.ajax({
+			url : "saveQuantityOrdered.action",
+			type : "POST",
+			data : {
+				reqGuid : myGuid,
+				qtyOrdered : qtyOrdered
+			},
+			datatype : "json",
+			async : true,
+			success : function(data) {
+				if (data.sessionStatus === "expired") {
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				} else {
+					//console.log("successfully saved room");
+					var qtyRemaining = qtyOrdered - parseInt($('#qtyDispensed').text());
+					$("#qtyRemaining").text(qtyRemaining);
+					if (qtyRemaining == 0) {
+						$("#qtyOrderedTextField").prop('disabled', true);
+					}
+					$("#formulaUserPrintAction_recDirty").val(1);
+				}
+			},
+			error : function(err) {
+				alert('<s:text name="global.failureColon"/>' + err);
+			}
+		});
+	}
 	
 	/* -------- Validation functions ----------- */
+	
+	function validateQtyOrdered(){
+		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
+		var qtyOrderedErrText = $("#qtyOrderedErrorText");
+			//$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>');
+		// clear out old error messages
+		$("#qtyOrderedErrorText").addClass("d-none");
+		
+		 if (qtyOrdered > 0 && qtyOrdered < 1000){
+			if (qtyDisp > qtyOrdered) {
+				qtyOrderedErrText.text('<s:text name="displayFormula.invalidInputDispQty"></s:text>');
+				qtyOrderedErrText.removeClass("d-none");
+				return false;
+			} else {
+				saveQtyOrdered(qtyOrdered);
+				return true;
+			}
+		} else {
+			qtyOrderedErrText.text('<s:text name="displayFormula.invalidInput"></s:text>');
+			qtyOrderedErrText.removeClass("d-none");
+			return false;
+		}
+	}
 	
 	function validateRoomChoice(){
 		// clear out old error messages
@@ -1173,13 +1170,15 @@ function ParsePrintMessage() {
 		// check if rooms dropdown is set first, if applicable
 		var retVal = verifyRoomSelected();
 		//console.log("verifyRoomSelected: " + retVal);
-		
+		var retVal2 = validateQtyOrdered();
 		// set the flag which lets user navigate away from 
 		// the page without being prompted to save changes
-		if (retVal == true){
+		if (retVal == true && retVal2 == true){
 			setFormSubmitting();
+			return truew;
 		}
-		return retVal;			
+		$('#promptToSaveModal').modal('hide');
+		return false;			
 	}
 	
 	
@@ -1404,7 +1403,7 @@ function ParsePrintMessage() {
 						<div id="canTypesErrorText" style="color:red" class="d-none">
 							<s:text name="sampleDispense.noCanTypesProfiledForTinter"/>
 						</div>
-						<div></div>
+						<div>
 							<p id="savedCanTypeError" style="color:red" class="d-none"></p>
 						</div>
 					</div>
@@ -1437,6 +1436,18 @@ function ParsePrintMessage() {
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
 			</s:if>
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+							<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
+						</div>
+						<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+							<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
+							<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
+						</div>
+						<br>
+				<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+			</div>
 			<br>
 			
 			
@@ -1560,15 +1571,6 @@ function ParsePrintMessage() {
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
-				<div class="row" id="quantityInfoRow">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyOrderedColon"/></strong> <span
-							class="dispenseInfo badge badge-secondary"
-							style="font-size: .9rem;" id="qtyOrdered">${sessionScope[thisGuid].quantityOrdered}</span>
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
 				<div class="row" id="remainingInfoRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
@@ -1606,8 +1608,6 @@ function ParsePrintMessage() {
 						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						</s:if>
-						<button type="button" class="btn btn-secondary" id="formulaSetOrderQty"
-							onclick="showSetOrderQuantityModal()"><s:text name="displayFormula.setOrderQty"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
@@ -1640,8 +1640,6 @@ function ParsePrintMessage() {
 							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
-						<button type="button" class="btn btn-secondary" id="formulaSetOrderQty"
-							onclick="showSetOrderQuantityModal()"><s:text name="displayFormula.setOrderQty"/></button>
 						<button type="button" class="btn btn-secondary" id="formulaPrint"
 							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
@@ -1693,36 +1691,6 @@ function ParsePrintMessage() {
 
 			</div>
 			
-			<!-- Set Order Quantity Modal Window -->
-			<div class="modal" aria-labelledby="setOrderQuantityModal"
-				aria-hidden="true" id="setOrderQuantityModal" role="dialog">
-				<div class="modal-dialog modal-md">
-					<div class="modal-content">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title"><s:text name="displayFormula.enterNumberofContainersToOrder"/></h5>
-								<button type="button" class="close" data-dismiss="modal"
-									aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<div class="modal-body">
-								<input type="text" class="form-control"
-									id="orderQuantityInput" autofocus="autofocus"> <strong
-									id="orderQuantityInputError" class="inputError"></strong>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-primary"
-									data-dismiss="modal" id="setOrderQuantityButton"><s:text name="global.next"/></button>
-								<button type="button" class="btn btn-secondary"
-								id="orderQuantityClose" data-dismiss="modal" aria-label="Cancel"><s:text name="global.cancel"/></button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-
 			<!-- Dispense Verify Modal Window -->
 			<div class="modal" aria-labelledby="verifyModal" aria-hidden="true"
 				id="verifyModal" role="dialog">
@@ -1964,7 +1932,7 @@ function ParsePrintMessage() {
 						<p id="skipConfirmText" font-size="4"><s:text name="displayFormula.saveFormula"/></p>
 					</div>
 					<div class="modal-footer">
-						<s:submit cssClass="btn btn-primary" value="%{getText('global.yes')}" onclick="setFormSubmitting();" action="formulaUserSaveAction" autofocus="autofocus" />
+						<s:submit cssClass="btn btn-primary" value="%{getText('global.yes')}" onclick="return validationWithoutModal();" action="formulaUserSaveAndContinueAction" autofocus="autofocus" />
 						<s:submit cssClass="btn btn-secondary" id="noSaveFormulaBtn" value="%{getText('global.no')}" onclick="setFormSubmitting();" action="userCancelAction"/>
 						<s:submit cssClass="btn btn-secondary" id="btnCancel" data-dismiss="modal" value="%{getText('global.cancel')}"/>
 					</div>
@@ -2253,9 +2221,21 @@ function ParsePrintMessage() {
 			if (remaining < 0) {
 				remaining = 0;
 			}
+			
 			if(remaining == 0 && qtyOrdered != 0) {
 				$("#formulaSetOrderQty").hide();
 			}
+			
+			if(qtyOrdered != 0) {
+				$("#qtyOrderedTextField").val(qtyOrdered);
+				//console.log("QTY ORDER TEXTFIELD VALUE = " + $("#qtyOrderedTextField").val());
+				if (remaining == 0 ) {
+					$("#qtyOrderedTextField").prop('disabled', true);
+				}
+			} else {
+				$("#qtyOrderedTextField").val("");
+			}
+			
 			$("#qtyRemaining").text(remaining);
 			
 			//init comms to device handler for tinter

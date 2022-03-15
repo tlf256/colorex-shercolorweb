@@ -575,6 +575,17 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
+	public String saveQuantityOrdered() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			// save user's order quantity entry into session
+			reqObj.setQuantityOrdered(qtyOrdered);
+			return SUCCESS;
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
 	
 	public String displayUpdatedFormula() {
 		try {

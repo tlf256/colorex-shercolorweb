@@ -158,6 +158,13 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		return retVal;
 
 	}
+	
+	public String saveAndContinue() {
+		logger.debug("Inside action saveAndContinue");
+		String retVal = execute();
+		logger.debug("Inside action back from saveAndContinue");
+		return retVal;
+	}
 
 	public String saveBeforeAction(){
 		logger.debug("inside action to saveBeforeAction");

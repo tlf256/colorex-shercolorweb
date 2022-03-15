@@ -878,6 +878,13 @@
 			</result>
 			<result name="success" type="json"/>
 		</action>
+		<action name="saveQuantityOrdered" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveQuantityOrdered">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
 		<action name="saveCanType" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveCanType">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1027,6 +1034,20 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="recDirty">${recDirty}</param>
+			</result>
+		</action>
+		<action name="formulaUserSaveAndContinueAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveAndContinue">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error" type="redirectAction">
 				<param name="actionName">displayFormulaAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="recDirty">${recDirty}</param>
