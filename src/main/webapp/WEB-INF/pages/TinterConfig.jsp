@@ -43,6 +43,12 @@
 	var initStarted = 0;
 	var detectAttempt = 0;
 	
+	const tinter = {
+			clrntSysId:null,
+			model:null,
+			serialNbr:null
+	};
+	
 	function buildEcal() {
 		var dt_array1 = [];
 		<s:iterator value="myEcalList">
@@ -147,62 +153,63 @@
 	}
 
 	function config() {
-		var colorant = $('#selectClrntSysId').val();
-		var model = $('#modelSelect').val();
-		var serial = $('#tSerialNbr').val();
-		console.log(model);
-		if (colorant != -1 && model != -1 && serial != null && serial != "") {
-			$
-					.ajax({
-						url : "GetCanisterList",
-						context : document.body,
-						data : {
-
-							clrntSysId : colorant,
-							tinterModel : model,
-							tinterSerialNbr : serial,
-							reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
-						},
-						async : false,
-						type : "POST",
-						dataType : "json",
-						success : function(objs) {
-							console.log("getCanisterList resp");
-							console.log(objs);
-							if(objs.sessionStatus === "expired"){
-                        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-                        	}
-                        	else{
-                        		if (objs != null && objs.newtinter != null
-    									&& objs.newtinter.serialNbr != null) {
-    								config_tinter(objs.newtinter.clrntSysId,
-    										objs.newtinter.model,
-    										objs.newtinter.serialNbr,
-    										objs.newtinter.canisterList);
-    							} else {
-
-    								alert('<s:text name="tinterConfig.invalidResponseFromServer"/>');
-    								window.location.href = "tinterConfigAction?reqGuid=${reqGuid}";
-
-    							}
-                        	}
-						},
-						error : function() {
-							var clrntSysId = $("[name='newtinter.clrntSysId']").val();
-							alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + clrntSysId + '</s:param></s:text>');
-						}
-					});
-		} else {
+		console.log("config tinter");
+		console.log(tinter.clrntSysId);
+		console.log(tinter.model);
+		console.log(tinter.serialNbr);
+		if (tinter.clrntSysId == -1 || tinter.model == -1 || tinter.serialNbr == null || tinter.serialNbr == ""){
 			alert('<s:text name="tinterConfig.emptyConfigSetting"/>');
 			window.location.href = "tinterConfigAction?reqGuid=${reqGuid}";
+			return;
 		}
+		
+		//disable configure button while configuration in progress
+		$('#btn_tinterConfig').prop('disabled', true);
+		
+		$.ajax({
+			url : "GetCanisterList",
+			context : document.body,
+			data : {
+	
+				clrntSysId : tinter.clrntSysId,
+				tinterModel : tinter.model,
+				tinterSerialNbr : tinter.serialNbr,
+				reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
+			},
+			async : false,
+			type : "POST",
+			dataType : "json",
+			success : function(objs) {
+				console.log("getCanisterList resp");
+				console.log(objs);
+				if(objs.sessionStatus === "expired"){
+					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				}
+				else{
+					if (objs != null && objs.newtinter != null && objs.newtinter.serialNbr != null) {
+						config_tinter(objs.newtinter.clrntSysId,
+								objs.newtinter.model,
+								objs.newtinter.serialNbr,
+								objs.newtinter.canisterList);
+					} else {
+						
+						alert('<s:text name="tinterConfig.invalidResponseFromServer"/>');
+						window.location.href = "tinterConfigAction?reqGuid=${reqGuid}";
+	
+					}
+				}
+			},
+			error : function() {
+				var clrntSysId = $("[name='newtinter.clrntSysId']").val();
+				alert('<s:text name="tinterConfig.couldNotFindCanisterLayout"><s:param>' + clrntSysId + '</s:param></s:text>');
+			}
+		});
 	}
 
-	function ValidateSN() {
+	function ValidateSN(SN) {
 		var rc = 0;
-		var SN = $('#tSerialNbr').val();
 
-		if (SN.length < 5 || SN.length > 15) {
+		if (SN != null && (SN.length < 5 || SN.length > 15)) {
 			$('#SNValidationError').text(
 					'<s:text name="tinterConfig.invalidSerialNbrLength"/>');
 			rc = -1;
@@ -260,7 +267,11 @@
 	function onSubmit(event){
 		event.preventDefault();
 		$('#tSerialNbr').val($('#tSerialNbr').val().toUpperCase());
-		if (ValidateSN() == 0) {
+		var serial = $('#tSerialNbr').val();
+		if (ValidateSN(serial) == 0) {
+			tinter.clrntSysId = $('#selectClrntSysId').val();
+			tinter.model = $('#modelSelect').val();
+			tinter.serialNbr = serial;
 			config();
 		}
 	}
@@ -314,18 +325,7 @@
 				myGuid=reqGuid;
 			}
 		}
-		var colorant = $('#selectClrntSysId').val();
-		var model = $('#modelSelect').val();
-		var serial = $('#tSerialNbr').val();
-		/*tinter.setClrntSysId("CCE");
-		tinter.setModel("COROB UNITTEST");
-		tinter.setSerialNbr("TESTSERIAL");
-		*/
-		var tinter = {
-				clrntSysId:colorant,
-				model:model,
-				serialNbr:serial
-					  };
+	
 		//var mydata = {reqGuid:myGuid, tinterMessage:myMessage, tintEventDetail:teDetail};
 		var mydata = {reqGuid:myGuid, eventDate:myDate.toString(), newTinter:tinter,tintEventDetail:teDetail, tinterMessage:myMessage};
 		var jsonIn = JSON.stringify(mydata);
@@ -343,6 +343,10 @@
 	        	else{
 	        		//Handle success after checking expiration
 	        	}
+			},
+			error: function () {
+				alert('<s:text name="tinterConfig.invalidResponseFromServer"/>');
+				window.location.href = "tinterConfigAction?reqGuid=${reqGuid}";
 			}
 		});
 	}
@@ -455,14 +459,30 @@
     	ws_tinter.send(json);
 	}		
 	function RecdMessage() {
-		var model = $('#modelSelect').val();
-			if(model.indexOf("COROB") >= 0 || model.indexOf("Corob") >= 0|| model.indexOf("SIMULATOR") >= 0){
+		//verify that the tinter fields have value
+		if(tinter.clrntSysId == null) {
+			console.log("clrntSysId not set before receiving this message, getting current value selected");
+			tinter.clrntSysId = $('#selectClrntSysId').val();
+			console.log(tinter.clrntSysId);
+		}
+		if(tinter.model == null) {
+			console.log("model not set before receiving this message, getting current value selected");
+			tinter.model = $('#modelSelect').val();
+			console.log(tinter.model);
+		}
+		if(tinter.serialNbr == null) {
+			console.log("serialNbr not set before receiving this message, getting current value");
+			tinter.serialNbr = $('#tSerialNbr').val();
+			console.log(tinter.serialNbr);
+		}
+		
+		if(tinter.model.indexOf("COROB") >= 0 || tinter.model.indexOf("Corob") >= 0|| tinter.model.indexOf("SIMULATOR") >= 0){
 			RecdMessageCorob();
 		}
-		else if(model.indexOf("FM X") >= 0){
+		else if(tinter.model.indexOf("FM X") >= 0){
 			RecdMessageFMX();
 		}
-		else if(model.indexOf("SANTINT") >= 0){
+		else if(tinter.model.indexOf("SANTINT") >= 0){
 			RecdMessageSantint();
 		}
 		else{
