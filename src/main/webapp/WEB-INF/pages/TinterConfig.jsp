@@ -186,7 +186,8 @@
 					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 				}
 				else{
-					if (objs != null && objs.newtinter != null && objs.newtinter.serialNbr != null) {
+					if (objs != null && objs.newtinter != null && objs.newtinter.model != null && 
+							objs.newtinter.serialNbr != null && objs.newtinter.canisterList) {
 						config_tinter(objs.newtinter.clrntSysId,
 								objs.newtinter.model,
 								objs.newtinter.serialNbr,
