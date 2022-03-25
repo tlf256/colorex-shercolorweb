@@ -69,7 +69,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	private Map<String, String> cotypes = new LinkedHashMap<String, String>();
 	private ArrayList<String> colorCompanies = new ArrayList<String>();
-	
+	private ArrayList<String> natColorCompanies = new ArrayList<String>();
+
 	private String message;
 	
 	private String defaultCoTypeValue = "SW";
@@ -79,7 +80,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String CUSTOM;
 	private String CUSTOMMATCH;
 	private String SAVEDMEASURE;
-	
+	private String NAT;
+
 	private List<CustWebSpectroRemote> savedMeasurements;
 	private List<String> curvesList;
 	private String measuredCurve;
@@ -92,14 +94,22 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		CUSTOM = getText("processColorAction.customManual");
 		CUSTOMMATCH = getText("processColorAction.customMatch");
 		SAVEDMEASURE = getText("processColorAction.savedCi62Measurement");
-		
+		NAT = getText("processColorAction.natColor");
+
 		cotypes.put("SW",SW);
 		cotypes.put("COMPET",COMPETITIVE);
 		cotypes.put("CUSTOM",CUSTOM);
 		cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
 		cotypes.put("SAVEDMEASURE", SAVEDMEASURE);
-		
+		cotypes.put("NAT", NAT);
+
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		
+		//Only display National Accounts if the Customer Type is STORE or DRAWDOWN and not a self tinting customer
+		if (!reqObj.getCustomerType().equals("STORE") && !reqObj.getCustomerType().equals("DRAWDOWN")) {
+			cotypes.remove("NAT");
+		}
+		
 		if (reqObj.getSpectro().getSerialNbr()==null) {
 			 //No  device, so remove the Custom Match option from cotypes.
 			 cotypes.remove("CUSTOMMATCH");
@@ -143,7 +153,16 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					} else {
 						options = mapToOptions(colorMastService.autocompleteCompetitiveColorByCompany(partialColorNameOrId.toUpperCase(), selectedCompany), "COMPET");
 					}
-				} else {
+					
+				} 
+				else if (selectedCoType.equals("NAT")) {
+					if (selectedCompany.equals(getText("processColorAction.all"))){
+						options = mapToOptions(colorMastService.autocompleteNatColor(partialColorNameOrId.toUpperCase()), "NAT");
+					} else {
+						options = mapToOptions(colorMastService.autocompleteNatColorByCompany((partialColorNameOrId.toUpperCase()), selectedCompany), "NAT");
+					}
+				} 
+				else {
 					options = new ArrayList<autoComplete>();
 					options.add(new autoComplete(getText("processColorAction.manual"),"MANUAL"));
 				}
@@ -154,7 +173,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			message = e.getMessage();
 			logger.error(message, e);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			message = e.getMessage();
 			logger.error(e.getMessage(), e);
 		}
@@ -173,7 +191,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			int index = 0;
 			for (CdsColorMast item : colorList) {
 				
-				if (coType=="SW") {
+				if (coType.equals("SW")) {
 					//only display locID if present.
 					if (item.getLocId()==null) {
 						theLabel = item.getColorId() + " " + item.getColorName();
@@ -203,6 +221,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	private void parseColorData(String colorData) {
+		
 		String colorEntry = new String("");
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");
@@ -219,7 +238,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			setColorID(partialColorNameOrId);
 			if (selectedCoTypes.equalsIgnoreCase("SW")) {
 				setColorComp("SHERWIN-WILLIAMS");
-			} else {
+			} 
+			else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+				setColorComp("NATIONAL ACCOUNTS");
+			} 
+			else {
 				setColorComp("COMPETITIVE");
 			}
 		}
@@ -250,7 +273,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					setColorID(partialColorNameOrId);
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						setColorComp("SHERWIN-WILLIAMS");
-					} else {
+					} 
+					else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+						setColorComp("NATIONAL ACCOUNTS");
+					} 
+					else {
 						setColorComp("COMPETITIVE");
 					}
 				}
@@ -261,7 +288,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				setColorID(colorData);
 				if (selectedCoTypes.equalsIgnoreCase("SW")) {
 					setColorComp("SHERWIN-WILLIAMS");
-				} else {
+				} 
+				else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+					setColorComp("NATIONAL ACCOUNTS");
+				} 
+				else {
 					setColorComp("COMPETITIVE");
 				}
 			}	
@@ -330,7 +361,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				
 				if (selectedCoTypes.equalsIgnoreCase("SW")) {
 					colorType = "SHERWIN-WILLIAMS";
-				} else {
+				} 
+				else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+					colorType = "NATIONAL ACCOUNTS";
+				}
+				else {
 					colorType = "COMPETITIVE";
 				}
 				
@@ -351,11 +386,16 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					//PSCWEB-159 - set the default radio button based on SW vs Competitive
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						defaultCoTypeValue = "SW";
-					} else {
+					} 
+					else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+						defaultCoTypeValue = "NAT";
+					}
+					else {
 						defaultCoTypeValue = "COMPET";
 					}
 					// repopulate company dropdown and color type list
 					buildCompaniesList();
+					buildNatCompaniesList();
 					buildCotypesMap();
 					return INPUT;
 				} else {
@@ -461,7 +501,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			buildCotypesMap();
 			buildCompaniesList();
-			 
+			buildNatCompaniesList();
+
 		    return SUCCESS;
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
@@ -480,6 +521,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		}
 	}
 	
+	private void buildNatCompaniesList() {
+		natColorCompanies.add(getText("processColorAction.all")); 
+		 
+		String [] colorCompaniesArray = colorMastService.listColorCompanies(true);
+		for (String company : colorCompaniesArray) {
+			natColorCompanies.add(company);
+		}
+	}
 	
 	public List<autoComplete> getOptions() {
 		return options;
@@ -659,6 +708,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 	public void setCurvesList(List<String> curvesList) {
 		this.curvesList = curvesList;
+	}
+	
+	public ArrayList<String> getNatColorCompanies() {
+		return natColorCompanies;
+	}
+
+	public void setNatColorCompanies(ArrayList<String> natColorCompanies) {
+		this.natColorCompanies = natColorCompanies;
 	}
 	
 	public String getMeasuredCurve() {

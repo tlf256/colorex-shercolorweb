@@ -61,6 +61,11 @@
 					} else {
 						$('#colorCompanies').addClass('d-none');
 					}
+					if (selectedValue === "NAT"){
+						$('#natColorCompanies').removeClass('d-none');
+					} else {
+						$('#natColorCompanies').addClass('d-none');
+					}
 					if (selectedValue === "SAVEDMEASURE"){
 						// show table and hide the bottom elements except for cancel button
 						$('#measuresRow').removeClass('d-none');
@@ -266,6 +271,15 @@
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-6">
 						<s:select label="%{getText('getColor.companyName')}" id="companiesList" list="colorCompanies"  />
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-4">
+					</div>
+				</div>
+				<div class="row mt-sm-2 d-none" id="natColorCompanies">
+					<div class="col-lg-2 col-md-2 col-sm-2">
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-6">
+						<s:select label="%{getText('getColor.companyName')}" id="natCompaniesList" list="natColorCompanies"  />
 					</div>
 					<div class="col-lg-6 col-md-6 col-sm-4">
 					</div>

@@ -130,7 +130,11 @@ public class GenerateFormulaAction extends ActionSupport implements SessionAware
 					if(reqObj.getColorType().equalsIgnoreCase("COMPETITIVE")) {
 						theFormula = formulationService.prodFamilyFormulate(oeRequest, custWebParms);
 						
-					} else {
+					} 
+					else if (reqObj.getColorType().equalsIgnoreCase("NATIONAL ACCOUNTS")) {
+						theFormula = formulationService.formulate(oeRequest, custWebParms);
+					}
+					else {
 						if (reqObj.getColorType().equalsIgnoreCase("CUSTOMMATCH") || reqObj.getColorType().equalsIgnoreCase("SAVEDMEASURE")) {
 							//set the curve from the requestObject
 							double[] dblCurve = new double[40];
