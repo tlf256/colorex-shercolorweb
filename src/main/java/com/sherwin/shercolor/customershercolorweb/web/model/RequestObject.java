@@ -423,7 +423,7 @@ public class RequestObject {
 		this.canType = "";
 		this.dispenseBase = -1;
 		this.colorNotes = "";
-		this.colorType = "";
+		this.customerType = "";
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;

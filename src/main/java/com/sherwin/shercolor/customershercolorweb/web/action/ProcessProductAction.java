@@ -236,11 +236,6 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 				if (forceProd != null) {
 					List<CdsProd> list = productService.getForcedProducts(forceProd);
 					if (list != null && list.size() > 0) {
-//						if (colorType.equals("CUSTOM")) {
-//							list.addAll(productService.productAutocompleteBothActive(partialProductNameOrId.toUpperCase(),reqObj.getCustomerID()));
-//						} else {
-//							list.addAll(productService.productAutocompleteCompatibleBase(partialProductNameOrId.toUpperCase(), intBasesList, extBasesList, reqObj.getCustomerID()));
-//						}
 						setOptions(mapToOptions(list));
 						return SUCCESS;
 					}
