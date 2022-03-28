@@ -66,6 +66,20 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 		 try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			reqObj.setLightSource(selectedLightSources);
+			switch (selectedLightSources) {
+			case "D65":
+				reqObj.setLightSourceName(getText("processLightSourceAction.daylight"));
+				break;
+			case "A":
+				reqObj.setLightSourceName(getText("processLightSourceAction.incandescent"));
+				break;
+			case "F2":
+				reqObj.setLightSourceName(getText("processLightSourceAction.fluorescent"));
+				break;
+			default:
+				reqObj.setLightSourceName("");
+				break;
+			}
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 		} catch (RuntimeException e) {

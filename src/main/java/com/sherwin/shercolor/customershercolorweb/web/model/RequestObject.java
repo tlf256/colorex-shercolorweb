@@ -40,6 +40,7 @@ public class RequestObject {
 	private String rgbHex;
 	private boolean vinylExclude;
 	private String lightSource;
+	private String lightSourceName;
 	private String colorType;
 	private String primerId;
 	private boolean colorVinylOnly;
@@ -578,6 +579,12 @@ public class RequestObject {
 	}
 	public void setColorNotes(String colorNotes) {
 		this.colorNotes = colorNotes;
+	}
+	public String getLightSourceName() {
+		return lightSourceName;
+	}
+	public void setLightSourceName(String lightSourceName) {
+		this.lightSourceName = lightSourceName;
 	}
 
 }
