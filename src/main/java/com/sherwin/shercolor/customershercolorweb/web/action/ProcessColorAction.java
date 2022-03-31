@@ -144,10 +144,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
 			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
 
-			if (selectedCoType.equals("SW")) {
+			if (StringUtils.equals(selectedCoType, "SW")) {
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
 			} else {
-				if (selectedCoType.equals("COMPET")) {
+				if (StringUtils.equals(selectedCoType, "COMPET")) {
 					if (selectedCompany.equals(getText("processColorAction.all"))){
 						options = mapToOptions(colorMastService.autocompleteCompetitiveColor(partialColorNameOrId.toUpperCase()), "COMPET");
 					} else {
@@ -155,7 +155,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					}
 					
 				} 
-				else if (selectedCoType.equals("NAT")) {
+				else if (StringUtils.equals(selectedCoType, "NAT")) {
 					if (selectedCompany.equals(getText("processColorAction.all"))){
 						options = mapToOptions(colorMastService.autocompleteNatColor(partialColorNameOrId.toUpperCase()), "NAT");
 					} else {
@@ -191,7 +191,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			int index = 0;
 			for (CdsColorMast item : colorList) {
 				
-				if (coType.equals("SW")) {
+				if (StringUtils.equals(coType, "SW")) {
 					//only display locID if present.
 					if (item.getLocId()==null) {
 						theLabel = item.getColorId() + " " + item.getColorName();
