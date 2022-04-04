@@ -48,10 +48,11 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			 buildLightSourcesMap();
 			 //check and see if we even need to display this screen.  Only needs to be displayed for competitive and custom
 			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			 if (reqObj.getColorType().equals("SHERWIN-WILLIAMS") || reqObj.getColorType().equalsIgnoreCase("CUSTOM")) {
-					reqObj.setLightSource("D65");
+			 if (reqObj.getColorType().equals("SHERWIN-WILLIAMS") || reqObj.getColorType().equals("NATIONAL ACCOUNTS") || 
+				 reqObj.getColorType().equalsIgnoreCase("CUSTOM")) {					
+				 	reqObj.setLightSource("D65");
 					sessionMap.put(reqGuid, reqObj);
-					 return SUCCESS;
+					return SUCCESS;
 			 }
 			 
 			 return INPUT;

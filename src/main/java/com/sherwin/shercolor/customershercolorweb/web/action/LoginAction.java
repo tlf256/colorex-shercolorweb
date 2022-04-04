@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
@@ -56,7 +57,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	
 	@Autowired
 	private TranHistoryService tranHistoryService;
-
+	
 	static Logger logger = LogManager.getLogger(LoginAction.class);
 	private RequestObject reqObj;
 	private String reqGuid;
@@ -77,7 +78,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private String sherLinkURL;
 	private String loMessage;
 	private int tintQueueCount;
-	
+	private String customerType;
 	private int daysUntilPwdExp;
 
 	
@@ -93,6 +94,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 		String testModeFirst = "";
 		String testModeLast = "";
 		String testModeAcct = "";
+		customerType = "";
 		newSession = true;
 		siteHasTinter = false;
 	
@@ -200,6 +202,21 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
 							spectro = new SpectroInfo();
 							
+							//Set the CustomerType in order to enable or disable functionality later in the code based on the type of store
+							//For example, self tinting customers do not need National Account functionality enabled
+							CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
+							if (profile != null) {
+								String custType = profile.getCustomerType();
+								
+								if (custType != null && (custType.trim().toUpperCase().equals("DRAWDOWN") || custType.trim().toUpperCase().equals("STORE"))){
+									customerType = custType.trim().toUpperCase();
+									if (customerType == null) {
+										customerType = "";
+									}
+								}
+							}
+							reqObj.setCustomerType(customerType);
+
 							if (spectroList.size()==1) {
 								reqObj.setSpectroModel(spectroList.get(0).getDeviceModel());
 								reqObj.setSpectroSerialNbr(spectroList.get(0).getSerialNbr());
@@ -255,6 +272,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 daysUntilPwdExp = origReqObj.getDaysUntilPasswdExpire();
 				 sherLinkURL = origReqObj.getSherLinkURL();
 				 custName = origReqObj.getCustomerName();
+				 customerType = origReqObj.getCustomerType();
 				 origReqObj.reset();
 				 origReqObj.setCustomerID(acct);
 				 origReqObj.setCustomerName(custName);
@@ -265,7 +283,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 origReqObj.setUserId(userId);
 				 origReqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 				 origReqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(acct,false).size());
-
+				 origReqObj.setCustomerType(customerType);
 				 newSession = false;
 				 tinter=origReqObj.getTinter();
 				 if(origReqObj.getTinter()!=null && origReqObj.getTinter().getModel()!=null && !origReqObj.getTinter().getModel().isEmpty()){

@@ -225,6 +225,29 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			extBasesList = extBases.split(",");
 		}
 		
+		/* 03/16/2022 RMF Add Suggested Products for Colors with Forced Products */
+		try {
+			colorComp = reqObj.getColorComp();
+			colorID = reqObj.getColorID();
+			CdsColorMast colorMast = colorMastService.read(colorComp, colorID);
+	
+			if (colorMast != null) {
+				String forceProd = colorMast.getForceProd();
+				if (forceProd != null) {
+					List<CdsProd> list = productService.getForcedProducts(forceProd);
+					if (list != null && list.size() > 0) {
+						setOptions(mapToOptions(list));
+						return SUCCESS;
+					}
+				}	
+			}
+			
+		}
+		catch (SherColorException e){
+			logger.error(e.getMessage(), e);
+			setMessage(e.getMessage());
+		}
+		
 		try {
 			// list all products in autocomplete search because the custom manual option does not have primary base types
 			if (colorType.equals("CUSTOM")) {
