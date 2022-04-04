@@ -88,7 +88,8 @@ public class RequestObject {
 	private String canType;
 	private int dispenseBase = -1;
 	private List<CdsRoomList> allRooms;
-
+	private String customerType;
+	
 	public String getColorComp() {
 		return colorComp;
 	}
@@ -423,6 +424,7 @@ public class RequestObject {
 		this.canType = "";
 		this.dispenseBase = -1;
 		this.colorNotes = "";
+		this.customerType = "";
 	}
 	public String getSherLinkURL() {
 		return sherLinkURL;
@@ -585,6 +587,12 @@ public class RequestObject {
 	}
 	public void setLightSourceName(String lightSourceName) {
 		this.lightSourceName = lightSourceName;
+
+	public String getCustomerType() {
+		return customerType;
+	}
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
 	}
 
 }

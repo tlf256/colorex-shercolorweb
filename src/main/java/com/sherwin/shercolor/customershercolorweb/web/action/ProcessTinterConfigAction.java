@@ -72,10 +72,12 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		else {System.out.print("reqObj null");}
 		System.out.print("customerId:" + this.getCustomerId());
 
-
 		newtinter.setClrntSysId(this.getClrntSysId());
+		logger.debug("colorantSystemID:" + newtinter.getClrntSysId());
 		newtinter.setModel(getTinterModel());
+		logger.debug("model:" + newtinter.getModel());
 		newtinter.setSerialNbr(this.getTinterSerialNbr());
+		logger.debug("serialNbr:" + newtinter.getSerialNbr());
 
 		if(newtinter!=null && newtinter.getModel()!=null && !newtinter.getModel().isEmpty() &&
 				newtinter.getCanisterList()==null){ // make sure we have all the params we need to do this query
