@@ -8,12 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
-import org.owasp.encoder.Encode;
-import org.owasp.encoder.Encoder;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.apache.struts2.interceptor.SessionAware;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
@@ -28,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(CompareColorsAction.class);
+	static Logger logger = LogManager.getLogger(CompareColorsAction.class);
 
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
@@ -225,7 +224,14 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private void parseColorData(String colorData) {
-
+		String colorEntry = new String("");
+		try {
+			colorData = URLDecoder.decode(colorData,"UTF-8");
+			colorEntry = StringEscapeUtils.unescapeHtml4(partialColorNameOrId);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing
 		} 
@@ -254,7 +260,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 					// The below replace statement fixes a bug when there
 					// is only one object in the autocomplete list
 					theValue = theValue.replace("}", "");
-					if (partialColorNameOrId.equals(theValue)) {
+					if (colorEntry.equals(theValue)) {
 						foundMatch = true;
 						setColorId(data[0].replaceAll("colorNumber:", ""));
 						setColorComp(data[1].replaceAll("companyName:", ""));
