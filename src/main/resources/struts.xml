@@ -529,6 +529,16 @@
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 		</action>
+		<action name="changeLightSourceAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetIlluminantsOption.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">formulateAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+		</action>
 		<action name="lookupProductOptions" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="lookupProductOptions">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

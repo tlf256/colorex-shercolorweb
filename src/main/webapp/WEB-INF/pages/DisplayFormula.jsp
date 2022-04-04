@@ -1455,7 +1455,12 @@ function ParsePrintMessage() {
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 				<div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
 				<div class="col-lg-4 col-md-6 col-sm-7 col-xs-10">
+				<s:if test="%{#session[reqGuid].colorType.equals('COMPETITIVE') || #session[reqGuid].colorType.equals('CUSTOMMATCH') || #session[reqGuid].colorType.equals('SAVEDMEASURE')}">
+					${sessionScope[thisGuid].displayFormula.sourceDescr}  ${sessionScope[thisGuid].lightSourceName}<br>
+				</s:if>
+				<s:else>
 					${sessionScope[thisGuid].displayFormula.sourceDescr}<br>
+				</s:else>
 				</div>
 				<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
 			</div>
@@ -1480,6 +1485,8 @@ function ParsePrintMessage() {
 					<s:hidden value="%{tinter.model}" id="tinterModel"></s:hidden>
 					<s:hidden value="%{#session[reqGuid].packageColor}" id="isPackageColor" />
 					<s:hidden value="%{#session[reqGuid].pkgClrTintable}" id="isTintable" />
+					<s:hidden value="%{#session[reqGuid].lightSource}" id="lightSource" />
+					<s:hidden value="%{#session[reqGuid].lightSourceName}" id="lightSourceName" />
 				</div>
 				
 				
@@ -1622,6 +1629,10 @@ function ParsePrintMessage() {
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:submit cssClass="btn btn-secondary" id="changeProductBtn" action="changeProductAction" 
 							onclick="return true;" value="%{getText('displayFormula.changeProduct')}"/>
+						<s:if test="%{#session[reqGuid].colorType.equals('COMPETITIVE') || #session[reqGuid].colorType.equals('CUSTOMMATCH') || #session[reqGuid].colorType.equals('SAVEDMEASURE')}">	
+							<s:submit cssClass="btn btn-secondary" id="changeLightSourceBtn" action="changeLightSourceAction" 
+								onclick="return true;" value="%{getText('displayFormula.changeLightSource')}"/>
+						</s:if>
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
@@ -1658,6 +1669,10 @@ function ParsePrintMessage() {
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:submit cssClass="btn btn-secondary" id="changeProductBtn" action="changeProductAction" 
 							onclick="return true;" value="%{getText('displayFormula.changeProduct')}"/>
+						<s:if test="%{#session[reqGuid].colorType.equals('COMPETITIVE') || #session[reqGuid].colorType.equals('CUSTOMMATCH') || #session[reqGuid].colorType.equals('SAVEDMEASURE')}">	
+							<s:submit cssClass="btn btn-secondary" id="changeLightSourceBtn" action="changeLightSourceAction" 
+								onclick="return true;" value="%{getText('displayFormula.changeLightSource')}"/>
+						</s:if>
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>

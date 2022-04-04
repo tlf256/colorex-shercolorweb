@@ -88,8 +88,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			 
 			jobFields = reqObj.getJobFieldList();
 			 
-			if(!reqObj.getColorComp().equalsIgnoreCase("CUSTOM")){
+			if(!reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
 				// change to custom and replace color id with word Manual
+				reqObj.setColorType("CUSTOM");
 				reqObj.setColorComp("CUSTOM");
 				reqObj.setColorID("MANUAL");
 				// empty out SW color match if it was set
