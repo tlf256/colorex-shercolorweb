@@ -30,6 +30,7 @@ import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
+import org.owasp.encoder.Encode;
 import org.springframework.stereotype.Service;
 
 import com.sherwin.shercolor.common.domain.CdsColorMast;
@@ -83,7 +84,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	
 	//Creating exception string
 	String errorLocation = "";
-
+	String colorNameLog = "null";
+	String productNbrLog = "null";
+	String exceptionDetail = "";
+		
 	// Create a new empty document
 	PDDocument document = new PDDocument();
 	String filename;
@@ -146,7 +150,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		String partMessage = null;
 
 		try {
-
+			if (reqObj != null) {
+				if (reqObj.getColorName() != null) {
+					colorNameLog = "[ " + reqObj.getColorName() + " ]";
+				}
+				if (reqObj.getProdNbr() != null) {
+					productNbrLog = "[ " + reqObj.getProdNbr() + " ]";
+				}
+			}
 			if (printLabelType.equals("drawdownLabel")) {
 				DrawDrawdownLabelPdf();
 				
@@ -212,17 +223,17 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", ie);
+			logger.error(ie.getMessage() + generateExceptionDetail("CreateLabelPdf",colorNameLog,productNbrLog,errorLocation), ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", re);
+			logger.error(re.getMessage() + generateExceptionDetail("CreateLabelPdf",colorNameLog,productNbrLog,errorLocation), re);
 		}
 		finally {
 			try {
 				errorLocation = "Closing Document";
 				document.close();
 			} catch (IOException e) {
-				logger.error(e.getMessage() + ": [CreateLabelPdf, " + errorLocation + "]", e);
+				logger.error(e.getMessage() + generateExceptionDetail("CreateLabelPdf",colorNameLog,productNbrLog,errorLocation), e);
 			}
 		}
 	}
@@ -248,7 +259,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			errorLocation = "Opening Content Stream";
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", e1);
+			logger.error(e1.getMessage() + generateExceptionDetail("DrawStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), e1);
 		}
 
 		try{
@@ -342,17 +353,17 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", ex);
+				logger.error(ex.getMessage() + generateExceptionDetail("DrawStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), ex);
 			}
 
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", ie);
+			logger.error(ie.getMessage() + generateExceptionDetail("DrawStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": [DrawStoreLabelPdf, " + errorLocation + "]", re);
+			logger.error(re.getMessage() + generateExceptionDetail("DrawStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), re);
 		}
 	}
 	
@@ -368,7 +379,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			errorLocation = "Opening Content Stream";
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", e1);
+			logger.error(e1.getMessage() + generateExceptionDetail("DrawDrawdownLabelPdf",colorNameLog,productNbrLog,errorLocation), e1);
 		}
 
 		try{
@@ -429,17 +440,23 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", ex);
+				logger.error(ex.getMessage() + generateExceptionDetail("DrawDrawdownLabelPdf",colorNameLog,productNbrLog,errorLocation), ex);
 			}
 			
-			content.close();
+			try {
+				errorLocation = "Closing Content Stream";
+				content.close();
+			} catch (Exception e) {
+				logger.error(e.getMessage() + generateExceptionDetail("DrawDrawdownLabelPdf",colorNameLog,productNbrLog,errorLocation), e);
+			}
+			
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", ie);
+			logger.error(ie.getMessage() + generateExceptionDetail("DrawDrawdownLabelPdf",colorNameLog,productNbrLog,errorLocation), ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": [DrawDrawdownLabelPdf, " + errorLocation + "]", re);
+			logger.error(re.getMessage() + generateExceptionDetail("DrawDrawdownLabelPdf",colorNameLog,productNbrLog,errorLocation), re);
 		}
 	}
 	
@@ -456,7 +473,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			content = new PDPageContentStream(document, page);
 		} catch (IOException e1) {
-			logger.error(e1.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", e1);
+			logger.error(e1.getMessage() + generateExceptionDetail("DrawDrawdownStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), e1);
 		}
 
 		try{
@@ -564,17 +581,17 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", ex);
+				logger.error(ex.getMessage() + generateExceptionDetail("DrawDrawdownStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), ex);
 			}
 
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", ie);
+			logger.error(ie.getMessage() + generateExceptionDetail("DrawDrawdownStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": [DrawDrawdownStoreLabelPdf, " + errorLocation + "]", re);
+			logger.error(re.getMessage() + generateExceptionDetail("DrawDrawdownStoreLabelPdf",colorNameLog,productNbrLog,errorLocation), re);
 		}
 	}
 	
@@ -710,17 +727,17 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				table.draw();
 			}
 			catch(java.lang.IllegalArgumentException ex) {
-				logger.error(ex.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", ex);
+				logger.error(ex.getMessage() + generateExceptionDetail("DrawDrawdownCanLabelPdf",colorNameLog,productNbrLog,errorLocation), ex);
 			}
 
 			content.close();
 			document.addPage( page );
 		}
 		catch(IOException ie) {
-			logger.error(ie.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", ie);
+			logger.error(ie.getMessage() + generateExceptionDetail("DrawDrawdownCanLabelPdf",colorNameLog,productNbrLog,errorLocation), ie);
 		}
 		catch(RuntimeException re){
-			logger.error(re.getMessage() + ": [DrawDrawdownCanLabelPdf, " + errorLocation + "]", re);
+			logger.error(re.getMessage() + generateExceptionDetail("DrawDrawdownCanLabelPdf",colorNameLog,productNbrLog,errorLocation), re);
 		}
 	}
 	
@@ -784,27 +801,22 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	}
 	
 	public String setColorIdAndNameRow() {
-		int totalCharsLength = 0;
+		int charsAllowedRemaining = 30;
 		String rowData = "";
-		String colorCompPrt = "";
 		String colorIDLabelText = "";
 		String colorNameLabelText = "";
 		
 		// Color i.d. and name.
 		// 01/20/2017 - Begin Color I.D. and Color Name field build.
 		if (reqObj.getColorID()==null) {reqObj.setColorID("");}
-			else{colorIDLabelText = reqObj.getColorID();}
+			else{colorIDLabelText = reqObj.getColorID() + " ";}
 		if (reqObj.getColorName()==null) {reqObj.setColorName("");}
 			else {colorNameLabelText = reqObj.getColorName();}
 		
 		if (reqObj.getColorType().equals("COMPETITIVE")) {
-			colorCompPrt = colorMastService.getColorCompPrintId(reqObj.getColorComp());
-			// First initial rowData
-			rowData = "COMP(" + colorCompPrt + ") "
-						+ colorIDLabelText + " " + colorNameLabelText;
-			totalCharsLength = rowData.length();
-		} else {
-			totalCharsLength = colorIDLabelText.length() + colorNameLabelText.length();
+			// Combine ColorID with the ColorCompPrint ID to make a complete Color ID for Competitive Colors
+			colorIDLabelText = "COMP(" + colorMastService.getColorCompPrintId(reqObj.getColorComp()) + ") "
+								+ colorIDLabelText;
 		}
 
 		//Modify input values, replace / and " with -
@@ -813,29 +825,20 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			colorNameLabelText = StringEscapeUtils.unescapeHtml4(colorNameLabelText.replaceAll("\"|\\\\|\\~", "-"));
 		}
 		
+		//Subtract the number of characters from the full ColorID to find out how many characters are left for the colorName
+		charsAllowedRemaining = charsAllowedRemaining - colorIDLabelText.length();
+		
 		// check customer profile
 		CustWebCustomerProfile profile = customerService.getCustWebCustomerProfile(reqObj.getCustomerID());
-		if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN")){
-		// don't truncate for drawdown customers
+		if (profile != null && profile.getCustomerType() != null && profile.getCustomerType().trim().toUpperCase().equals("DRAWDOWN") ||
+				charsAllowedRemaining - colorNameLabelText.length() >= 0){
+		// don't truncate for drawdown customers or if the character limit has not been reached
+			return colorIDLabelText + colorNameLabelText;
 		} else {
-			// Truncate the Color Name to fit the space in line.  Color I.D. is maximum of 10.  Use the remaining space
-			// for the Color name.
-			if (totalCharsLength >= 22){
-				int colorNameLength = 22 - colorNameLabelText.length();
-				if (colorNameLabelText.length() > colorNameLength){
-					colorNameLabelText = reqObj.getColorName().substring(0, colorNameLength);
-				}
-			} 
+			//Trim the Color Name if it exceeds the 30 character allowable limit on the label 
+			// (The amount trimmed depends on the colorID and colorName lengths)
+			return colorIDLabelText + colorNameLabelText.substring(0,charsAllowedRemaining);
 		}
-		if (reqObj.getColorType().equals("COMPETITIVE")) {
-			// Second rowData with properly trimmed characters to help with length issues
-			rowData = "COMP(" + colorCompPrt + ") "
-					+ colorIDLabelText + " " + colorNameLabelText;
-			return rowData;
-		} else {
-			return colorIDLabelText + " " + colorNameLabelText;
-		}
-		
 	}
 	
 	public void setStandardFormulaTable(List<FormulaIngredient> listFormulaIngredients, BaseTable table, Row<PDPage> row, int rowHeight) {
@@ -1014,7 +1017,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			}
 			retString = sb.toString();
 		} catch(Exception e) {
-			logger.error(e.getMessage() + ": [replaceUnicode, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("replaceUnicode",colorNameLog,productNbrLog,errorLocation), e);
 		}
 	
 		return retString;
@@ -1056,7 +1059,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cell.setTopPadding(0);
 			cell.setBottomPadding(0);
 		} catch(Exception e) {
-			logger.error(e.getMessage() + ": [cellSettings, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("cellSettings",colorNameLog,productNbrLog,errorLocation), e);
 		}
 
 
@@ -1076,7 +1079,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			table = new BaseTable(yPosition, yStartNewPage,
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 		} catch (IOException e) {
-			logger.error(e.getMessage() + ": [createTopTable, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("createTopTable",colorNameLog,productNbrLog,errorLocation), e);
 			e.printStackTrace();
 		}
 		return table;
@@ -1097,7 +1100,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 
 		} catch (IOException e) {
-			logger.error(e.getMessage() + ": [createTableFormula, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("createTableFormula",colorNameLog,productNbrLog,errorLocation), e);
 			e.printStackTrace();
 		}
 		return table;
@@ -1166,7 +1169,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					bottomMargin, tableWidth, margin, document, page, drawLines, drawContent);
 
 		} catch (IOException e) {
-			logger.error(e.getMessage() + ": [createTableProd, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("createTableProd",colorNameLog,productNbrLog,errorLocation), e);
 			e.printStackTrace();
 		}
 		return table;
@@ -1181,7 +1184,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			content.drawImage(pdImage, 20, 12, 100, 15);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": [createBarcode, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("createBarcode",colorNameLog,productNbrLog,errorLocation), e);
 			e.printStackTrace();
 		}
 	}
@@ -1202,7 +1205,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			canvas1.finish();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.error(e.getMessage() + ": [geBufferedImageForCode128Bean, " + errorLocation + "]", e);
+			logger.error(e.getMessage() + generateExceptionDetail("geBufferedImageForCode128Bean",colorNameLog,productNbrLog,errorLocation), e);
 			e.printStackTrace();
 		}
 		return canvas1.getBufferedImage();
@@ -1296,7 +1299,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					unicodeFont = PDType0Font.load(document,f);
 					setUnicode(unicodeFont);
 				} catch (IOException e) {
-					logger.error(e.getMessage() + ": [setFontBold, " + errorLocation + "]", e);
+					logger.error(e.getMessage() + generateExceptionDetail("setFontBold",colorNameLog,productNbrLog,errorLocation), e);
 				}
 			}
 		}
@@ -1305,6 +1308,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	}
 	public void setUnicode(PDFont unicode) {
 		this.unicode = unicode;
+	}
+	
+	private String generateExceptionDetail(String location, String colorName, String productNbr, String error) {
+		return Encode.forJava(": [" + location + ",  Color: " + colorName + ", Product: " + productNbr + ", Method Location: [ " + error + "] ]");
 	}
 	
 }
