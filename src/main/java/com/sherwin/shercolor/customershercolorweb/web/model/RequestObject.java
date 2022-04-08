@@ -587,7 +587,7 @@ public class RequestObject {
 	}
 	public void setLightSourceName(String lightSourceName) {
 		this.lightSourceName = lightSourceName;
-
+	}
 	public String getCustomerType() {
 		return customerType;
 	}
