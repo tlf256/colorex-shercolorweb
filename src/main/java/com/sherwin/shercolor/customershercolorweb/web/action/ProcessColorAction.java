@@ -207,6 +207,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
 					theValue = item.getColorComp() + " " + item.getColorId();
 				}
+				
+				if (item.getOldColorName() != null) {
+					theLabel = theLabel + " (formerly known as "+ item.getOldColorName() + ")";  
+				}
+
 				autoComplete autoComplete = new autoComplete(theLabel,theValue);
 				autoComplete.setColorNumber(item.getColorId());
 				autoComplete.setCompanyName(item.getColorComp());
@@ -311,12 +316,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		String closestSwColorName = null;
 		String closestSwColorId = null;
 		CdsColorMast closestSwColor = null;
-				
+		
+
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			reqObj.setProductChosenFromDifferentBase(false);
-
+			
 			//Okay, there is data there.  Interpret it.
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOM")) {
 				//WHAT DO WE DO HERE?
@@ -405,6 +411,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					this.setColorName(thisColor.getColorName());
 					primerId = thisColor.getPrimerId();
 					vinylColor = thisColor.getIsVinylSiding();
+					
+					if (thisColor.getOldColorName() != null) {
+						addActionMessage("Color Name '"+thisColor.getOldColorName()+"' has been changed to '"+thisColor.getColorName()+"'");
+					}
 				}
 				
 				baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
