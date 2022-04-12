@@ -29,7 +29,15 @@ $(document).ready(function() {
 				}
 			});
 		}
-		
 	});
-	
 });
+
+
+function autocompleteForceProd(){
+	$( "#partialProductNameOrId" ).autocomplete( "option", "minLength", 0 );
+	$( "#partialProductNameOrId" ).focus(function() {
+		$(this).autocomplete("search", "");
+	});
+}
+
+
