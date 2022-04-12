@@ -38,6 +38,7 @@ function autocompleteForceProd(){
 	$( "#partialProductNameOrId" ).focus(function() {
 		$(this).autocomplete("search", "");
 	});
+	$( "#partialProductNameOrId" ).focus();
 }
 
 
