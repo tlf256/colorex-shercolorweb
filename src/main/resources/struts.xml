@@ -322,6 +322,12 @@
 			</result>
 			<result name="success">/WEB-INF/pages/GetColor.jsp</result>
 		</action>
+		<action name="displayProductAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+		</action>
 		<action name="spectroCalibrateRedirectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="calibrate">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -433,7 +439,10 @@
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="measuredCurve">${measuredCurve}</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
 		</action>
 		<action name="colorUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="backItUp">
@@ -453,7 +462,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 			<result name="result" type="redirectAction">
 				<param name="actionName">spectroCompareColorsResultAction</param>
 				<param name="reqGuid">${reqGuid}</param>
@@ -495,7 +507,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="intExtUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessPctIntExtAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -512,7 +527,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="productUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="backItUp">
 			<result name="loginRedirect" type="redirectAction">
@@ -527,7 +545,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="changeLightSourceAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
@@ -654,7 +675,10 @@
 				<param name="actionName">displayClrntAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
-			<result name="input">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="clrntUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -703,7 +727,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="formulateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.GenerateFormulaAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -809,7 +836,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="displayLightSourceAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
@@ -834,7 +864,10 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayProductAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="MfUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessManualFormulaAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">

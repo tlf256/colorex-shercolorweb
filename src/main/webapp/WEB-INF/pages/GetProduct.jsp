@@ -50,6 +50,11 @@
 	    		var colorCompany;
 	    		var colorID;
 	    		
+	    		var forceProd = "${forceProd}";
+	    		if (forceProd != null && forceProd != ""){
+	    			autocompleteForceProd();
+	    		}
+	    		
 	    		// internationalize CUSTOM, MANUAL, and MATCH; otherwise leave color company and ID untranslated
 		    	switch("${sessionScope[thisGuid].colorComp}"){
 		    		case "CUSTOM":

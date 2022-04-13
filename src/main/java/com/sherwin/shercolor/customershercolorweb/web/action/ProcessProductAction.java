@@ -47,6 +47,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String salesNbr;
 	private String reqGuid;
 	private String OVERRIDEWARNMSG;
+	private String forceProd;
 	
 	@Autowired
 	private ProductService productService;
@@ -59,6 +60,25 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	@Autowired
 	private ColorMastService colorMastService;
 
+	
+	public String display() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			colorComp = reqObj.getColorComp();
+			colorID = reqObj.getColorID();
+			CdsColorMast colorMast = colorMastService.read(colorComp, colorID);
+	
+			if (colorMast != null) {
+				setForceProd(colorMast.getForceProd());
+			}
+			return SUCCESS;
+			
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
 	
 	public String execute() {
 		
@@ -234,15 +254,15 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			if (colorMast != null) {
 				String forceProd = colorMast.getForceProd();
 				if (forceProd != null) {
-					List<CdsProd> list = productService.getForcedProducts(forceProd);
+					/* 4/11/2022 KGH -- autocomplete lookup for matching records, otherwise returns entire force prod list */
+					List<CdsProd> list = productService.autocompleteForceProd(partialProductNameOrId.toUpperCase(), forceProd);
 					if (list != null && list.size() > 0) {
 						setOptions(mapToOptions(list));
 						return SUCCESS;
 					}
 				}	
 			}
-			
-		}
+		} 
 		catch (SherColorException e){
 			logger.error(e.getMessage(), e);
 			setMessage(e.getMessage());
@@ -421,6 +441,16 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 	private String getSizeText(String sizeCode) {
 		return productService.getSizeText(sizeCode);
+	}
+
+
+	public String getForceProd() {
+		return forceProd;
+	}
+
+
+	public void setForceProd(String forceProd) {
+		this.forceProd = forceProd;
 	}	
 
 }
