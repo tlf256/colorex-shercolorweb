@@ -185,7 +185,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		List<autoComplete> outList = new ArrayList<autoComplete>();
 		String theLabel;
 		String theValue;
-		
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+
 		//BKP 2018-03-09 check foe null/empty colorList
 		if (colorList != null) {
 			int index = 0;
@@ -208,8 +209,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					theValue = item.getColorComp() + " " + item.getColorId();
 				}
 				
-				if (item.getOldColorName() != null) {
-					theLabel = theLabel + " (formerly known as "+ item.getOldColorName() + ")";  
+				if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+					if (item.getOldColorName() != null) {
+						theLabel = theLabel + " (formerly known as "+ item.getOldColorName() + ")";  
+					}
 				}
 
 				autoComplete autoComplete = new autoComplete(theLabel,theValue);
@@ -412,8 +415,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					primerId = thisColor.getPrimerId();
 					vinylColor = thisColor.getIsVinylSiding();
 					
-					if (thisColor.getOldColorName() != null) {
-						addActionMessage("Color Name '"+thisColor.getOldColorName()+"' has been changed to '"+thisColor.getColorName()+"'");
+					if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+						if (thisColor.getOldColorName() != null ) {
+							addActionMessage("Color Name '"+thisColor.getOldColorName()+"' has been changed to '"+thisColor.getColorName()+"'");
+						}
 					}
 				}
 				
