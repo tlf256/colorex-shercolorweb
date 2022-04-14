@@ -211,7 +211,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				
 				if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
 					if (item.getOldColorName() != null) {
-						theLabel = theLabel + " (formerly known as "+ item.getOldColorName() + ")";  
+						theLabel = theLabel + getText("processColorAction.oldName",new String[] {item.getOldColorName()});  
 					}
 				}
 
@@ -417,7 +417,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					
 					if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
 						if (thisColor.getOldColorName() != null ) {
-							addActionMessage("Color Name '"+thisColor.getOldColorName()+"' has been changed to '"+thisColor.getColorName()+"'");
+							addActionMessage(getText("processColorAction.oldNameAlert",new String[]{thisColor.getOldColorName(),thisColor.getColorName()}));
 						}
 					}
 				}
