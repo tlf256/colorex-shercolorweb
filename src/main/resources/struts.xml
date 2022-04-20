@@ -148,7 +148,9 @@
 			</result>
 		</action>
 		<action name="logoutAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LogoutAction" method="display">
-			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">logout2Action</param>
 				<param name="reqGuid">${reqGuid}</param>
