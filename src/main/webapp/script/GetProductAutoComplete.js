@@ -30,15 +30,36 @@ $(document).ready(function() {
 			});
 		}
 	});
+	
+	autocompleteForceProd();
 });
 
 
+// check if the color has a restricted product list
 function autocompleteForceProd(){
-	$( "#partialProductNameOrId" ).autocomplete( "option", "minLength", 0 );
-	$( "#partialProductNameOrId" ).focus(function() {
-		$(this).autocomplete("search", "");
+	$.ajax({	
+		url : "checkForceProd.action",
+		dataType : "json",
+		data : {
+			"reqGuid" : $('#reqGuid').val()  
+			},
+		success : function(data){
+			if(data.sessionStatus === "expired") {
+        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        	}
+        	else {
+        		// color has restricted products, display these in dropdown
+        		if (data != null && data.forceProd != null && data.forceProd != "") {
+	        		$( "#partialProductNameOrId" ).autocomplete( "option", "minLength", 0 );
+	        		$( "#partialProductNameOrId" ).focus(function() {
+	        			$(this).autocomplete("search", "");
+	        		});
+	        		$( "#partialProductNameOrId" ).focus();
+        		}	
+        	}
+		}
 	});
-	$( "#partialProductNameOrId" ).focus();
+	
 }
 
 
