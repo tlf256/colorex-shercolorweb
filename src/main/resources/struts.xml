@@ -1072,7 +1072,6 @@
 			</result>
 		</action>
 		<action name="saveBeforeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveBeforeAction">
-			<interceptor-ref name="json" />
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 				<param name="isAJAX">true</param>

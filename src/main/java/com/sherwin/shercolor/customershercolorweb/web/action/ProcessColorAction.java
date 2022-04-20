@@ -185,7 +185,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		List<autoComplete> outList = new ArrayList<autoComplete>();
 		String theLabel;
 		String theValue;
-		
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+
 		//BKP 2018-03-09 check foe null/empty colorList
 		if (colorList != null) {
 			int index = 0;
@@ -207,6 +208,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
 					theValue = item.getColorComp() + " " + item.getColorId();
 				}
+				
+				if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+					if (item.getOldColorName() != null) {
+						theLabel = theLabel + getText("processColorAction.oldName",new String[] {item.getOldColorName()});  
+					}
+				}
+
 				autoComplete autoComplete = new autoComplete(theLabel,theValue);
 				autoComplete.setColorNumber(item.getColorId());
 				autoComplete.setCompanyName(item.getColorComp());
@@ -311,12 +319,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		String closestSwColorName = null;
 		String closestSwColorId = null;
 		CdsColorMast closestSwColor = null;
-				
+		
+
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			reqObj.setProductChosenFromDifferentBase(false);
-
+			
 			//Okay, there is data there.  Interpret it.
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOM")) {
 				//WHAT DO WE DO HERE?
@@ -405,6 +414,12 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					this.setColorName(thisColor.getColorName());
 					primerId = thisColor.getPrimerId();
 					vinylColor = thisColor.getIsVinylSiding();
+					
+					if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+						if (thisColor.getOldColorName() != null ) {
+							addActionMessage(getText("processColorAction.oldNameAlert",new String[]{thisColor.getOldColorName(),thisColor.getColorName()}));
+						}
+					}
 				}
 				
 				baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
