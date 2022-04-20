@@ -21,9 +21,10 @@
 	</head>
 	
 	<body>
-		<!-- including Header -->
-		<s:include value="Header.jsp"></s:include>
-		
+		<nav class="navbar navbar-dark bg-dark navbar-expand-md pt-0 pb-0">
+		   <img src="${pageContext.request.contextPath}/graphics/shercolor-sm.jpg" alt="Sher-Color" style="height: 3.44rem;"/>
+		   <s:set var="thisGuid" value="reqGuid" />
+		</nav>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-3">
