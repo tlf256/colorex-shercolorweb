@@ -61,7 +61,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private ColorMastService colorMastService;
 
 	
-	public String display() {
+	public String checkForceProd() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			colorComp = reqObj.getColorComp();
