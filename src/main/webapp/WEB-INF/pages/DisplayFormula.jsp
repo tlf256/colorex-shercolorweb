@@ -243,7 +243,7 @@ function printButtonClickGetJson() {
 }
 
 function printFromManualDispense(dispenseQuantity) {
-	if (printerConfig && printerConfig.model) {
+	if (printerConfig && printerConfig.model && printerConfig.printOnDispense) {
 		myPrintLabelType = "storeLabel";
 		myPrintOrientation = "PORTRAIT";
 		var myguid = $("#reqGuid").val();
@@ -550,6 +550,7 @@ function ParsePrintMessage() {
 
 														updateButtonDisplay();
 														console.log("UPDATED BUTTON DISPLAY")
+														$("#formulaUserPrintAction_recDirty").val(0);
 													}
 												});
 										i++;
