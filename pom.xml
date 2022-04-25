@@ -4,31 +4,14 @@
     <groupId>com.sherwin.SherColorWeb</groupId>
     <artifactId>CustomerSherColorWeb</artifactId>
     <packaging>war</packaging>
-    <version>1.5.0</version>
+    <version>1.5.1-SNAPSHOT</version>
     <name>CustomerSherColorWeb Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <properties>
             <struts2.version>2.5.29</struts2.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
-    <repositories>
-        <repository>
-            <id>maven.oracle.com</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>https://maven.oracle.com</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven.oracle.com</id>
-            <url>https://maven.oracle.com</url>
-        </pluginRepository>
-    </pluginRepositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -87,7 +70,7 @@
         <dependency>
             <groupId>com.sherwin.login</groupId>
             <artifactId>SherColorLogin</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -242,17 +225,9 @@
             </exclusions>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -266,6 +241,65 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>CustomerSherColorWeb</finalName>
     </build>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/sherwin-williams-co/colorex-shercolorweb.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <profiles>
+        <profile>
+            <id>quality</id>
+            <properties>
+                <sonar.projectKey>${project.artifactId}</sonar.projectKey>
+                <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+<!--                <sonar.coverage.exclusions>-->
+<!--                    src/main/java/com/sherwin/login/domain/*PK.java-->
+<!--                </sonar.coverage.exclusions>-->
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.7</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <!-- attached to Maven test phase -->
+                            <execution>
+                                <id>jacoco-report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.9.1.2184</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>publish</id>
+            <distributionManagement>
+                <repository>
+                    <id>artifactory</id>
+                    <url>https://artifactory.sherwin.com/artifactory/sherwin-release-local/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>artifactory</id>
+                    <url>https://artifactory.sherwin.com/artifactory/sherwin-snapshot-local/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

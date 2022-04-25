@@ -1,0 +1,31 @@
+name: Publish/Tag Release
+on:
+  workflow_dispatch:
+    inputs:
+      java_version:
+        description: 'Java Version (https://github.com/actions/setup-java#supported-version-syntax)'
+        type: string
+        default: '8'
+        required: false
+      release_version:
+        description: "Release Version"
+        required: true
+        default: "X.Y.Z"
+      development_version:
+        description: "New Development Version"
+        required: true
+        default: "X.Y.Z-SNAPSHOT"
+        
+jobs:
+  release:
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/release-publish-workflow.yml@master
+    with:
+      java_version: ${{ github.event.inputs.java_version }}
+      release_version: ${{ github.event.inputs.release_version }}
+      development_version: ${{ github.event.inputs.development_version }}
+    secrets:
+      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+      SW_GH_APP_APPLICATION_ID: ${{ secrets.SW_GH_APP_APPLICATION_ID }}
+      SW_GH_APP_PRIVATE_KEY: ${{ secrets.SW_GH_APP_PRIVATE_KEY }}
+      SW_GH_APP_CLIENT_ID: ${{ secrets.SHERCOLOR_VERACODE_API_ID }}
