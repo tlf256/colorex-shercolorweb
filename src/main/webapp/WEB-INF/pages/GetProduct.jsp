@@ -189,6 +189,7 @@
 					<div class="col-lg-8 col-md-8 col-sm-10 col-xs-12">
 						<s:if test="hasActionMessages()">
 						      <s:actionmessage/>
+						      <s:hidden id="actionMsgFlag" value="true" />
 						</s:if>
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
@@ -200,6 +201,9 @@
 					<div class="col-lg-8 col-md-8 col-sm-10 col-xs-12">
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 						<s:textfield name="partialProductNameOrId" id="partialProductNameOrId" label="%{getText('global.product')}" placeholder="%{getText('getProduct.scanUPC')}" size="30" maxlength="20" cssStyle="font-size: 16px;" autofocus="autofocus" />
+						<s:if test="fieldErrors.containsKey('partialProductNameOrId')">
+							<s:hidden id="fieldErrorFlag" value="true" />
+						</s:if>
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
@@ -208,7 +212,7 @@
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
-							<s:submit cssClass="btn btn-primary pull-left" value="%{getText('global.next')}" action="productUserNextAction"/>
+							<s:submit cssClass="btn btn-primary pull-left" value="%{getText('global.next')}" action="productUserNextAction" id="nextBtn"/>
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
 							<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="productUserBackAction"/>
