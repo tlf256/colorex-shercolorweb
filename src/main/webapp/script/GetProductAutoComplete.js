@@ -54,12 +54,25 @@ function autocompleteForceProd(){
 	        		$( "#partialProductNameOrId" ).focus(function() {
 	        			$(this).autocomplete("search", "");
 	        		});
-	        		$( "#partialProductNameOrId" ).focus();
-        		}	
+	        		
+	        		// don't show list right away if they need to deal with input errors (list displays if they click the search box)
+	        		if ($('#actionMsgFlag').val() == 'true' || $('#fieldErrorFlag').val() == 'true'){
+	        			// highlight next button for them to override a warning
+	        			if ($('#actionMsgFlag').val() == 'true'){
+	        				$('#nextBtn').focus();
+	        			}
+	        			// unfocus search field so they can read a field error
+	        			if ($('#fieldErrorFlag').val() == 'true'){
+	        				$("#partialProductNameOrId").blur();
+	        			}
+	        		// otherwise if no errors, display list on page load
+	        		} else {
+	        			$("#partialProductNameOrId").focus();
+	        		}
+	        	}	
         	}
 		}
 	});
-	
 }
 
 
