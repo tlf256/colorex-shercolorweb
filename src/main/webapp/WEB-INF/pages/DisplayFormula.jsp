@@ -1176,7 +1176,7 @@ function ParsePrintMessage() {
 		// the page without being prompted to save changes
 		if (retVal == true && retVal2 == true){
 			setFormSubmitting();
-			return truew;
+			return true;
 		}
 		$('#promptToSaveModal').modal('hide');
 		return false;			
