@@ -134,7 +134,7 @@ $(document).ready(function() {
         "pagingType": "full"
     });
     
-    console.log('match is ' + match);
+    //console.log('match is ' + match);
     
     var newSearchBtn = jobTable.buttons(['#newSearch']);
     
