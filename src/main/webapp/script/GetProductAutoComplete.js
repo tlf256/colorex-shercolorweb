@@ -54,6 +54,7 @@ function autocompleteForceProd(){
 	        		$( "#partialProductNameOrId" ).focus(function() {
 	        			$(this).autocomplete("search", "");
 	        		});
+	        		$("#restrictedListAlert").removeClass("d-none");
 	        		
 	        		// don't show list right away if they need to deal with input errors (list displays if they click the search box)
 	        		if ($('#actionMsgFlag').val() == 'true' || $('#fieldErrorFlag').val() == 'true'){

@@ -191,6 +191,12 @@
 						      <s:actionmessage/>
 						      <s:hidden id="actionMsgFlag" value="true" />
 						</s:if>
+						<div class="alert alert-info d-none" role="alert" id="restrictedListAlert">
+							<s:text name="getProduct.restrictedProdList">
+								<s:param><s:property value="#session[reqGuid].colorId" /></s:param>
+								<s:param><s:property value="#session[reqGuid].colorName" /></s:param>
+							</s:text>
+						</div>
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					</div>
