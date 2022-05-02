@@ -28,7 +28,7 @@
 /*
  *  Create dropdown for Printers based on Printer Drivers installed on Windows
  */
-function CreatePrinters(){
+function CreatePrinters(printerList){
 	var s = $("#selectPrinterModel");
 	 for(var i in printerList) {
 		$('<option />', {value: printerList[i], text: printerList[i]}).appendTo(s);
@@ -37,7 +37,7 @@ function CreatePrinters(){
 /*
  *  Save Configuration to SWDeviceHandler and CustWebDevices
  */
-function ConfigClick(printerList){
+function ConfigClick(){
 	var model = $("#selectPrinterModel").val();
 	var printOnDispense = $("#autoPrintCheck").prop('checked');
 	var serial = "Default";
@@ -45,7 +45,6 @@ function ConfigClick(printerList){
 	config = new PrinterConfig(model,serial,printOnDispense,numLabels);
 	setPrinterConfig(config);
 	$("#frmSubmit").submit();
-	
 }
 /*
  *fill form based on what was read from SWDeviceHandler
