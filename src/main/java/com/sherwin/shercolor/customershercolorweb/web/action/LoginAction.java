@@ -127,10 +127,10 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 						
 			//logger.info("sherLinkLoginUrl = " + sherLinkURL + " and dbEnv=" + dbEnv);
 			logger.debug("got other properties");
-			logger.debug(Encode.forJava("sherLinkTokenWSURL is " + sherLinkTokenWSURL));
-			logger.debug(Encode.forJava("sherLinkURL is " + sherLinkURL));
+			logger.debug("sherLinkTokenWSURL is " + sherLinkTokenWSURL);
+			logger.debug("sherLinkURL is " + sherLinkURL);
 
-			logger.info(Encode.forJava("DEBUG reqGuid="+reqGuid));
+			logger.info("DEBUG reqGuid="+reqGuid);
 			 if (reqGuid==null || reqGuid.isEmpty()) {
 				 // we've never set anything.  Check the account and if it's not empty, try using it for a login.
 				 //System.setProperty("jsse.enableSNIExtension", "false");
@@ -141,12 +141,12 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				 if (!testMode.equals("inTesting") && (guid1==null | guid1.isEmpty())) {
 //					 //invalid login due to guid talking to a session object is empty or not set.
 					 //we should never get here, but just in case...
-					 logger.error(Encode.forJava("Invalid Login - Token authentication failure - guid1 = " + guid1 + "  testMode is " + testMode));
+					 logger.error("Invalid Login - Token authentication failure - guid1 = " + guid1 + "  testMode is " + testMode);
 					 returnStatus = "NONE";
 					 
 				 } else {
-					logger.info(Encode.forJava("DEBUG reqGuid not empty " + reqGuid));
-					logger.debug(Encode.forJava("Guid1 = " + guid1));
+					logger.info("DEBUG reqGuid not empty " + reqGuid);
+					logger.debug("Guid1 = " + guid1);
 					RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
 					if (loginReqObj==null) {
 						 logger.info("DEBUG loginReqObj is null - probably a session timeout");
@@ -178,7 +178,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 						 }
 					 }
 					 else{
-							logger.info(Encode.forJava("DEBUG acct not empty "+ Encode.forHtml(acct)));
+							logger.info("DEBUG acct not empty "+ Encode.forHtml(acct));
 					 }
 	
 					 //Read the Customer table and get the ID.
@@ -198,7 +198,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 							reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 							reqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(), false).size());
 							
-							logger.debug(Encode.forJava("DEBUG new reqGuid created "+ reqGuid));
+							logger.debug("DEBUG new reqGuid created "+ reqGuid);
 							List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));
 							spectro = new SpectroInfo();
 							
@@ -250,7 +250,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 						 	returnStatus = "SUCCESS";
 					 } else {
 						 //invalid login.  Log the data passed to us from the external server
-						 logger.error(Encode.forJava("Invalid Login - id=" + id + " first=" + Encode.forHtml(first) + " last=" + Encode.forHtml(last) + " acct=" + Encode.forHtml(acct) + " token=" + token));
+						 logger.error("Invalid Login - id=" + id + " first=" + Encode.forHtml(first) + " last=" + Encode.forHtml(last) + " acct=" + Encode.forHtml(acct) + " token=" + token);
 						 logger.error("Probably missing CustWebParms entry for the login...");
 						 returnStatus = "NONE";
 					 }
@@ -258,7 +258,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 			 } else {
 				 // reset the existing request object.
-				 logger.info(Encode.forJava("DEBUG ready to reset request object using reqGuid"+ reqGuid));
+				 logger.info("DEBUG ready to reset request object using reqGuid"+ reqGuid);
 				 RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
 				 if (origReqObj==null) {
 					 logger.info("DEBUG origReqObj is null - probably a session timeout");
@@ -315,7 +315,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 						 logger.info("finalReqObj is not null");
 						 String eulaCustId = finalReqObj.getCustomerID();
 						 if (eulaCustId!=null) {
-							 logger.info(Encode.forJava("eulaCustId is " + eulaCustId ));
+							 logger.info("eulaCustId is " + eulaCustId );
 							 String eulaAcceptanceCode = eulaService.getAcceptanceCode("CUSTOMERSHERCOLORWEB", eulaCustId);
 							 if(eulaAcceptanceCode!=null) {
 								 logger.info("eulaAcceptanceCode is not null");
@@ -388,7 +388,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			//Check if it is a sales rep.  If so, we will use the territory number (if valid).
 			if (theRO.isSalesRep()) {
 				theCustWebParmsKey = theRO.getTerritory();
-				logger.error(Encode.forJava("It is a sales rep, territory is " + theRO.getTerritory()));
+				logger.error("It is a sales rep, territory is " + theRO.getTerritory());
 				//check to assure this is not null, blank or some other generic.
 				if (theCustWebParmsKey==null) {
 					//It's null, what do we return instead?
@@ -461,7 +461,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				reqObj.setPrinterConfigured(true);
 				setSiteHasPrinter(true);
 				
-				logger.debug(Encode.forJava("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType()));
+				logger.debug("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
 			}
 			else {
 				setSiteHasPrinter(false);

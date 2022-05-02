@@ -240,7 +240,7 @@ public class TinterUtilityAction extends ActionSupport  implements SessionAware,
 			}
 			
 			tinter = reqObj.getTinter();
-			logger.debug(Encode.forJava("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr()));
+			logger.debug("in tinterutilityaction getSession, tinter is " + tinter.getModel() + " " + tinter.getClrntSysId() + " " + tinter.getSerialNbr());
 			
 			if (tinter.getModel() != null && tinter.getSerialNbr() != null) {
 				refreshTinterInfo(reqObj.getCustomerID(), tinter);

@@ -20,16 +20,15 @@
 <script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript">
 
-var printerList = "";
 /*
  *  Create dropdown for Printers based on Printer Drivers installed on Windows
  */
-function CreatePrinters(){
+function CreatePrinters(printerList){
 	var s = $("#selectPrinterModel");
 	 for(var i in printerList) {
 		$('<option />', {value: printerList[i], text: printerList[i]}).appendTo(s);
@@ -40,40 +39,14 @@ function CreatePrinters(){
  */
 function ConfigClick(){
 	var model = $("#selectPrinterModel").val();
+	var printOnDispense = $("#autoPrintCheck").prop('checked');
+	var serial = "Default";
+	var numLabels = $("#numLabels").val();
+	config = new PrinterConfig(model,serial,printOnDispense,numLabels);
+	setPrinterConfig(config);
+	$("#frmSubmit").submit();
 	
-	/*
-	 * Step through the printerList to make sure that the user only made a selection
-	 * from the list of available printers currently installed on the device
-	 */
-	var modelFound = false;
-	for(var i in printerList) {
-		if (printerList[i] == model) {
-			modelFound = true;
-			break;
-		}
-	}
-	
-	if (modelFound) {
-		console.log("User properly selected a model from the list");
-		var printOnDispense = $("#autoPrintCheck").prop('checked');
-		var serial = "Default";
-		var numLabels = $("#numLabels").val();
-		config = new PrinterConfig(model,serial,printOnDispense,numLabels);
-		setPrinterConfig(config);
-		$("#frmSubmit").submit();
-	} else {
-		console.log("SO YOU CHOOSE DEATH!");
-	}
-	console.log("END CONFIG CLICK");
 }
-
-
-function verifyModel(item, index) {
-	if (item == model){
-		modelFound = true;
-	}
-}
-
 /*
  *fill form based on what was read from SWDeviceHandler
  */
@@ -95,7 +68,6 @@ function ParsePrinterMessage() {
 		if (ws_printer != null && ws_printer.wsmsg != null && ws_printer.wsmsg != ""){
 			 
 			var return_message = JSON.parse(ws_printer.wsmsg);
-			printerList = return_message.printerList;
 
 			switch (return_message.command) {
 			case 'GetPrinters':
@@ -107,7 +79,7 @@ function ParsePrinterMessage() {
 					console.log(return_message);
 				}
 				else{
-					CreatePrinters();
+					CreatePrinters(return_message.printerList);
 					}
 				break;
 			case 'GetConfig':
@@ -119,7 +91,7 @@ function ParsePrinterMessage() {
 					console.log(return_message);
 				}
 				else{
-					CreatePrinters();
+					CreatePrinters(return_message.printerList);
 					FillForm(return_message.printerConfig);
 					}
 				break;

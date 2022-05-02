@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -191,7 +190,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				long startJob = System.currentTimeMillis();
 				String clrntSysId = webTran.getClrntSysId();
 				
-				logger.debug(Encode.forJava("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr()));
+				logger.debug("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr());
 				JobHistoryInfo job = new JobHistoryInfo();
 				job.setClrntSysId(clrntSysId);
 				job.setColorId(webTran.getColorId());

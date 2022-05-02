@@ -49,7 +49,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 	
 	public String update() {
 		try {
-			logger.debug(Encode.forJava("updateType is " + getUpdateType() + " at beginning of method."));
+			logger.debug("updateType is " + getUpdateType() + " at beginning of method.");
 			//Setting up colorList object
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			tinter = reqObj.getTinter();
@@ -90,7 +90,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 					case "setfl":
 						logger.debug("In setOneFull");
 						logger.debug("canister amount = " + canister.getCurrentClrntAmount());
-						logger.debug(Encode.forJava("selectedRowPosition is " + selectedRowPosition));
+						logger.debug("selectedRowPosition is " + selectedRowPosition);
 						//Testing to see when on the correct row according to key and canister values are acceptable for subtraction
 						
 						if(canister.getCurrentClrntAmount() <= canister.getMaxCanisterFill() && canister.getCurrentClrntAmount() >= 0){
@@ -122,7 +122,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 					case "addqt":
 						logger.debug("In addQuart");
 						logger.debug("canister amount = " + canister.getCurrentClrntAmount());
-						logger.debug(Encode.forJava("selectedRowPosition is " + selectedRowPosition));
+						logger.debug("selectedRowPosition is " + selectedRowPosition);
 						//Testing to see when on the correct row according to key and canister values are acceptable for addition
 						
 						if(Integer.parseInt(selectedRowPosition) == canister.getPosition() && canister.getCurrentClrntAmount() <= canister.getMaxCanisterFill() && canister.getCurrentClrntAmount() >= 0){
@@ -151,7 +151,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 					case "subqt":
 						logger.debug("In subQuart");
 						logger.debug("canister = " + canister.getClrntCode() + " amount = " + canister.getCurrentClrntAmount());
-						logger.debug(Encode.forJava("selectedRowPosition is " + selectedRowPosition));
+						logger.debug("selectedRowPosition is " + selectedRowPosition);
 						//Testing to see when on the correct row according to key and canister values are acceptable for subtraction
 						
 						if(Integer.parseInt(selectedRowPosition) == canister.getPosition() && canister.getCurrentClrntAmount() <= canister.getMaxCanisterFill() && canister.getCurrentClrntAmount() >= 0){
@@ -181,7 +181,7 @@ public class ProcessColorantLevelsAction extends ActionSupport implements Sessio
 						break;
 
 					default:
-						logger.error(Encode.forJava("Invalid updateType given, updateType = " + getUpdateType()));
+						logger.error("Invalid updateType given, updateType = " + getUpdateType());
 						return ERROR;
 					}
 				}

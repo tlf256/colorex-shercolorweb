@@ -180,7 +180,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			if(tinter!=null && tinter.getModel()!=null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
 				sessionHasTinter = true;
 				// Setup Tinter Colorant Dispense Info for Formula being displayed
-				logger.debug(Encode.forJava("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
+				logger.debug("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
 				logger.debug("back from tinterService");
@@ -193,7 +193,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						logger.debug("pulling map info for " + ingr.getTintSysId());
 						DispenseItem addItem = new DispenseItem();
 						addItem.setClrntCode(ingr.getTintSysId());
-						logger.debug(Encode.forJava(addItem.getClrntCode()));
+						logger.debug(addItem.getClrntCode());
 						addItem.setShots(ingr.getShots());
 						logger.debug(addItem.getShots());
 						addItem.setUom(ingr.getShotSize());
@@ -202,7 +202,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
 							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()}));
-							logger.error(Encode.forJava("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId()));
+							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
 							return "errormsg";
 						}
 						else {
@@ -224,7 +224,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 					retVal = SUCCESS;
 
 				} else {
-					logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
+					logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 					retVal = ERROR;
 				}
 				
@@ -407,7 +407,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			// set up tinter colorant dispense info for small sample
 			if(tinter != null && tinter.getModel() != null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
 				setSessionHasTinter(true);
-				logger.debug(Encode.forJava("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
+				logger.debug("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
 				if(colorantMap != null && !colorantMap.isEmpty()){
@@ -423,7 +423,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						// Validating completeness of colorantMap data returned from DB. If not, send error msg back to SampleDispense.jsp
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()} ));
-							logger.error(Encode.forJava("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId()));
+							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
 							retVal = INPUT; 
 						} else {
 							addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
@@ -439,7 +439,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 					retVal = SUCCESS;
 
 				} else {
-					logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
+					logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
 					retVal = ERROR;
 				}
 			} else {

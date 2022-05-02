@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath}/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath}/script/customershercolorweb-1.5.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath}/script/customershercolorweb-1.4.6.js"></script>
 </head>
 
 <body>

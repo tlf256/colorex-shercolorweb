@@ -19,7 +19,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/CompareColorsResults.js"></script>
 		<style>
 		

@@ -276,7 +276,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	public String execute() {
 		String retVal = SUCCESS;
 		try{
-			logger.debug(Encode.forJava("Start of execute, reqGuid is " + reqGuid));
+			logger.debug("Start of execute, reqGuid is " + reqGuid);
 			recDirty=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			logger.debug("successfully read reqObj");
@@ -375,7 +375,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 							}
 							i++;
 						}
-						logger.debug(Encode.forJava("adding clrnt/incrs to new formula" + addMe.getClrntSysId() + " " + addMe.getTintSysId() + " " + Arrays.toString(incrs)));
+						logger.debug("adding clrnt/incrs to new formula" + addMe.getClrntSysId() + " " + addMe.getTintSysId() + " " + Arrays.toString(incrs));
 						addMe.setIncrement(incrs);
 						newIngredients.add(addMe);
 
@@ -473,7 +473,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				
 				List<String> currentWarningMessages = new ArrayList<String>();  //list of all warnings on this pass
 				for(SwMessage item:allMsgs) {
-					logger.debug(Encode.forJava("in execute, adding action message " + item.getSeverity() + " " + item.getMessage()));
+					logger.debug("in execute, adding action message " + item.getSeverity() + " " + item.getMessage());
 					if(item.getSeverity().isInRange(Level.FATAL,Level.ERROR)){
 						//addFieldError("reqGuid", item.getMessage());
 						addActionError(item.getMessage());

@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -27,8 +26,8 @@ public class AcceptEulaAction extends ActionSupport implements SessionAware {
 	
 	public String execute() {
 		logger.info("in AcceptEulaActuionExecute");
-		logger.info(Encode.forJava("reqGuid is " + reqGuid));
-		logger.info(Encode.forJava("eulaSeqNbr is " + eulaSeqNbr));
+		logger.info("reqGuid is " + reqGuid);
+		logger.info("eulaSeqNbr is " + eulaSeqNbr);
 		//The user has accepted the eula.  We need to post a record that the user has accepted the
 		//displayed eula.
 		try {

@@ -773,7 +773,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 		for(SwMessage item:validationMsgs) {
 			if(item.getSeverity().isInRange(Level.FATAL, Level.ERROR)){
 				addActionError(item.getMessage());
-				logger.debug(Encode.forJava("logging action error: " + item.getMessage()));
+				logger.debug("logging action error: " + item.getMessage());
 				errorCount++;
 				retVal = INPUT;
 			} else if(item.getSeverity().isInRange(Level.WARN, Level.WARN)){

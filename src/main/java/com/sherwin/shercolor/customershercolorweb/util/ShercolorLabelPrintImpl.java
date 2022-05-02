@@ -152,10 +152,10 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			if (reqObj != null) {
 				if (reqObj.getColorName() != null) {
-					colorNameLog = Encode.forJava("[ " + reqObj.getColorName() + " ]");
+					colorNameLog = "[ " + reqObj.getColorName() + " ]";
 				}
 				if (reqObj.getProdNbr() != null) {
-					productNbrLog = Encode.forJava("[ " + reqObj.getProdNbr() + " ]");
+					productNbrLog = "[ " + reqObj.getProdNbr() + " ]";
 				}
 			}
 			if (printLabelType.equals("drawdownLabel")) {
@@ -1324,7 +1324,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					unicodeFont = PDType0Font.load(document,f);
 					setUnicode(unicodeFont);
 				} catch (IOException e) {
-					logger.error(Encode.forJava(e.getMessage() + exceptionDetail),"setFontBold",colorNameLog,productNbrLog,errorLocation, e);
+					logger.error(e.getMessage() + exceptionDetail,"setFontBold",colorNameLog,productNbrLog,errorLocation, e);
 				}
 			}
 		}
