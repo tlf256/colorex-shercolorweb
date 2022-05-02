@@ -142,7 +142,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
-			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
+			logger.debug(Encode.forJava("decoded partialColorNameOrId - " + partialColorNameOrId));
 
 			if (StringUtils.equals(selectedCoType, "SW")) {
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
@@ -171,7 +171,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		catch (SherColorException e){
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
-			logger.error(message, e);
+			logger.error(Encode.forJava(message), e);
 		} catch (UnsupportedEncodingException e) {
 			message = e.getMessage();
 			logger.error(e.getMessage(), e);

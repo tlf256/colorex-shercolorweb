@@ -317,7 +317,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			}
 		} 
 		catch (SherColorException e){
-			logger.error(e.getMessage(), e);
+			logger.error(Encode.forJava(e.getMessage()), e);
 			setMessage(e.getMessage());
 		}
 		
@@ -332,7 +332,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			}
 		}
 		catch (SherColorException e){
-			logger.error(e.getMessage(), e);
+			logger.error(Encode.forJava(e.getMessage()), e);
 			setMessage(e.getMessage());
 		}
 		return SUCCESS;
