@@ -40,38 +40,12 @@ function CreatePrinters(){
  */
 function ConfigClick(){
 	var model = $("#selectPrinterModel").val();
-	
-	/*
-	 * Step through the printerList to make sure that the user only made a selection
-	 * from the list of available printers currently installed on the device
-	 */
-	var modelFound = false;
-	for(var i in printerList) {
-		if (printerList[i] == model) {
-			modelFound = true;
-			break;
-		}
-	}
-	
-	if (modelFound) {
-		console.log("User properly selected a model from the list");
-		var printOnDispense = $("#autoPrintCheck").prop('checked');
-		var serial = "Default";
-		var numLabels = $("#numLabels").val();
-		config = new PrinterConfig(model,serial,printOnDispense,numLabels);
-		setPrinterConfig(config);
-		$("#frmSubmit").submit();
-	} else {
-		console.log("SO YOU CHOOSE DEATH!");
-	}
-	console.log("END CONFIG CLICK");
-}
-
-
-function verifyModel(item, index) {
-	if (item == model){
-		modelFound = true;
-	}
+	var printOnDispense = $("#autoPrintCheck").prop('checked');
+	var serial = "Default";
+	var numLabels = $("#numLabels").val();
+	config = new PrinterConfig(model,serial,printOnDispense,numLabels);
+	setPrinterConfig(config);
+	$("#frmSubmit").submit();
 }
 
 /*
