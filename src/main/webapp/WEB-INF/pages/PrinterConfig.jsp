@@ -25,7 +25,6 @@
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript">
 
-var printerList = "";
 /*
  *  Create dropdown for Printers based on Printer Drivers installed on Windows
  */
@@ -38,7 +37,7 @@ function CreatePrinters(){
 /*
  *  Save Configuration to SWDeviceHandler and CustWebDevices
  */
-function ConfigClick(){
+function ConfigClick(printerList){
 	var model = $("#selectPrinterModel").val();
 	var printOnDispense = $("#autoPrintCheck").prop('checked');
 	var serial = "Default";
@@ -46,8 +45,8 @@ function ConfigClick(){
 	config = new PrinterConfig(model,serial,printOnDispense,numLabels);
 	setPrinterConfig(config);
 	$("#frmSubmit").submit();
+	
 }
-
 /*
  *fill form based on what was read from SWDeviceHandler
  */
@@ -69,7 +68,6 @@ function ParsePrinterMessage() {
 		if (ws_printer != null && ws_printer.wsmsg != null && ws_printer.wsmsg != ""){
 			 
 			var return_message = JSON.parse(ws_printer.wsmsg);
-			printerList = return_message.printerList;
 
 			switch (return_message.command) {
 			case 'GetPrinters':
@@ -81,7 +79,7 @@ function ParsePrinterMessage() {
 					console.log(return_message);
 				}
 				else{
-					CreatePrinters();
+					CreatePrinters(return_message.printerList);
 					}
 				break;
 			case 'GetConfig':
@@ -93,7 +91,7 @@ function ParsePrinterMessage() {
 					console.log(return_message);
 				}
 				else{
-					CreatePrinters();
+					CreatePrinters(return_message.printerList);
 					FillForm(return_message.printerConfig);
 					}
 				break;
