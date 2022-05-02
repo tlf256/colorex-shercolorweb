@@ -113,7 +113,7 @@ function displayCookieBanner(){
 		});
 	} else {
 		console.log("cookieBanner is not null");
-		console.log("sessionStorage cookieBanner = " + cookieBanner);
+		//console.log("sessionStorage cookieBanner = " + cookieBanner);
 		if(cookieBanner === "true"){
 			console.log("displaying cookie banner");
 			createCookieBanner();

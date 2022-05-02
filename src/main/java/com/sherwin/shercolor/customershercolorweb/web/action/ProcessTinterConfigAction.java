@@ -53,15 +53,15 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 	public String AjaxGetCanisterList(){
 
-		logger.debug("inside getCanisterList and reqGuid is " + reqGuid);
+		logger.debug(Encode.forJava("inside getCanisterList and reqGuid is " + reqGuid));
 		
 		if(newtinter !=null){
 
-			logger.debug("newtinter:" + newtinter.getModel());
-			logger.debug("newtinter:" + Encode.forHtml(newtinter.getSerialNbr()));
-			logger.debug("newtinter:" + newtinter.getClrntSysId());
-			logger.debug("thisserial:" + this.tinterSerialNbr);
-			logger.debug("newtinterserial:" + Encode.forHtml(newtinter.getSerialNbr()));
+			logger.debug(Encode.forJava("newtinter:" + newtinter.getModel()));
+			logger.debug(Encode.forJava("newtinter:" + Encode.forHtml(newtinter.getSerialNbr())));
+			logger.debug(Encode.forJava("newtinter:" + newtinter.getClrntSysId()));
+			logger.debug(Encode.forJava("thisserial:" + this.tinterSerialNbr));
+			logger.debug(Encode.forJava("newtinterserial:" + Encode.forHtml(newtinter.getSerialNbr())));
 		}
 		else{
 			newtinter = new TinterInfo();
@@ -73,11 +73,11 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		System.out.print("customerId:" + this.getCustomerId());
 
 		newtinter.setClrntSysId(this.getClrntSysId());
-		logger.debug("colorantSystemID:" + newtinter.getClrntSysId());
+		logger.debug(Encode.forJava("colorantSystemID:" + newtinter.getClrntSysId()));
 		newtinter.setModel(getTinterModel());
-		logger.debug("model:" + newtinter.getModel());
+		logger.debug(Encode.forJava("model:" + newtinter.getModel()));
 		newtinter.setSerialNbr(this.getTinterSerialNbr());
-		logger.debug("serialNbr:" + newtinter.getSerialNbr());
+		logger.debug(Encode.forJava("serialNbr:" + newtinter.getSerialNbr()));
 
 		if(newtinter!=null && newtinter.getModel()!=null && !newtinter.getModel().isEmpty() &&
 				newtinter.getCanisterList()==null){ // make sure we have all the params we need to do this query
@@ -105,12 +105,12 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 				}
 				
 				newtinter.setCanisterList(buildMe);
-				logger.debug("New Canister list added for: " + newtinter.getClrntSysId() + "_" + newtinter.getModel()+"_"+Encode.forHtml(newtinter.getSerialNbr()));
+				logger.debug(Encode.forJava("New Canister list added for: " + newtinter.getClrntSysId() + "_" + newtinter.getModel()+"_"+Encode.forHtml(newtinter.getSerialNbr())));
 
 
 			}
 			else{
-				logger.debug("Not saving colorantsTxt.  Customer ID is:" + getCustomerId());
+				logger.debug(Encode.forJava("Not saving colorantsTxt.  Customer ID is:" + getCustomerId()));
 			}
 		}
 
@@ -171,8 +171,8 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 				//if(this.getCustomerId()!=null && this.getCustomerId()!= "DEFAULT" && this.getNewtinter().getSerialNbr() != null
 				if(this.getCustomerId()!=null && !this.getCustomerId().equals("DEFAULT") && this.getNewtinter().getSerialNbr() != null
 						&& this.getNewtinter().getSerialNbr().length()>1){
-					logger.info("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
-					logger.debug("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr()));
+					logger.info(Encode.forJava("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr())));
+					logger.debug(Encode.forJava("Saving colorantsTxt.  Serial num is:" + Encode.forHtml(this.getNewtinter().getSerialNbr())));
 						// create records if they don't already exist, and colorant code may be different than expected because of layout update
 						if(tinterService.conditionalSaveColorantsTxtByPosition(colorantsTxtList) < 0){
 							//save if new customer id otherwise do nothing.  If error return error
@@ -198,7 +198,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 		String retVal = null;
 
 		try {
-			logger.debug("inside ProcessTinterConfigAction and reqGuid is " + reqGuid);
+			logger.debug(Encode.forJava("inside ProcessTinterConfigAction and reqGuid is " + reqGuid));
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			logger.debug("inside ProcessTinterConfigAction, got reqObj, now getting tinter");
 			TinterInfo tinter = reqObj.getTinter();
@@ -219,7 +219,7 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 				myEcalList = ecalService.getEcalsByCustomer(customerID);
 			}
 			//get List of Template Cals
-			logger.debug("CustomerID=" +reqObj.getCustomerID());
+			logger.debug(Encode.forJava("CustomerID=" +reqObj.getCustomerID()));
 
 
 			retVal = SUCCESS;
