@@ -7,6 +7,7 @@ on:
       - master
       - 'release/**'
     types: [closed]
+    
 jobs:
   snapshot-publish:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/snapshot-publish-workflow.yml@master
