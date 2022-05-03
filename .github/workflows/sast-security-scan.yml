@@ -5,6 +5,7 @@ on:
     types: [submitted]
   pull_request:
     types: [labeled]
+    
 jobs:
   sast-security-scan:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/sast-security-scan-workflow.yml@master
