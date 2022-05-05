@@ -249,6 +249,12 @@
     </scm>
 
     <profiles>
+	<profile>
+            <id>sast-build</id>
+            <build>
+                <finalName>${project.artifactId}</finalName>
+            </build>
+        </profile>    
         <profile>
             <id>quality</id>
             <properties>
