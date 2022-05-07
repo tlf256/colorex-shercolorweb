@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.internal.runners.TestClass;
 import org.junit.runner.RunWith;
@@ -69,6 +70,7 @@ public class TestSherColorLabel {
 		assertEquals(true,check);
 	}
 	@Test
+	@Ignore
 	public void testGetUnicode() {
 
 		PDFont fontBold = testClass.getUnicode("");
