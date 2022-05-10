@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sherwin.shercolor</groupId>
     <artifactId>SherColorWeb</artifactId>
-    <packaging>war</packaging>
     <version>2.0.0</version>
     <name>SherColorWeb Maven Webapp</name>
     <url>http://maven.apache.org</url>
+    <packaging>war</packaging>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -254,7 +254,7 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-jar-maven-plugin</artifactId>
-                <version>7.0.0.Final</version>
+                <version>7.0.2.Final</version>
                 <configuration>
                     <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
                     <layers>
@@ -300,6 +300,50 @@
                     </execution>
                 </executions>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <image>-->
+<!--                        <name>shercolorweb</name>-->
+<!--                    </image>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>build-image</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>package</phase>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>com.google.cloud.tools</groupId>-->
+<!--                <artifactId>jib-maven-plugin</artifactId>-->
+<!--                <version>3.2.1</version>-->
+<!--                <configuration>-->
+<!--                    <to>-->
+<!--                        <image>shercolorweb</image>-->
+<!--                    </to>-->
+<!--                    <from>-->
+<!--                        <image>openjdk:11</image>-->
+<!--                    </from>-->
+<!--                    <container>-->
+<!--                        <ports>-->
+<!--                            <port>8090</port>-->
+<!--                        </ports>-->
+<!--&lt;!&ndash;                        <entrypoint>java,-jar,${project.artifactId}-bootable.jar</entrypoint>&ndash;&gt;-->
+<!--                    </container>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>dockerBuild</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
         <finalName>SherColorWeb</finalName>
     </build>

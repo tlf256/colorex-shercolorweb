@@ -259,7 +259,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 
 	
 	private void disableActiveUser(String theUserId) {
-		if(swUserService.disableActiveUser(theUserId) == 0) {
+		if(swUserService.disableActiveUser(theUserId) <= 0) {
 			//log an error that something happened (odds are, the DAO also logged it too)
 			//then continue on. 
 			logger.error("Attempt to disable active user " + theUserId + " failed");
