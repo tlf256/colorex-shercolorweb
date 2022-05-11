@@ -4,7 +4,7 @@
     <groupId>com.sherwin.shercolor</groupId>
     <artifactId>SherColorWeb</artifactId>
     <version>2.0.0</version>
-    <name>SherColorWeb Maven Webapp</name>
+    <name>SherColorWeb</name>
     <url>http://maven.apache.org</url>
     <packaging>war</packaging>
 	<parent>
@@ -21,6 +21,9 @@
         <java.version>1.8</java.version>
         <wildfly.version>24.0.1.Final</wildfly.version>
         <spring.cloud-version>2021.0.1</spring.cloud-version>
+        <shercolorweb.env>dev</shercolorweb.env>
+        <shercolorweb.wildfly.username>admin</shercolorweb.wildfly.username>
+        <shercolorweb.wildfly.password>12345678</shercolorweb.wildfly.password>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -252,99 +255,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-jar-maven-plugin</artifactId>
-                <version>7.0.2.Final</version>
-                <configuration>
-                    <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
-                    <layers>
-                        <layer>legacy-management</layer>
-                        <layer>legacy-remoting</layer>
-                        <layer>legacy-security</layer>
-                        <layer>undertow-legacy-https</layer>
-                        <layer>core-tools</layer>
-                        <layer>datasources</layer>
-                        <layer>bean-validation</layer>
-                        <layer>logging</layer>
-                        <layer>security-manager</layer>
-                        <layer>ee</layer>
-                        <layer>io</layer>
-                        <layer>pojo</layer>
-                    </layers>
-                    <excluded-layers>
-                        <excluded-layer>cdi</excluded-layer>
-                    </excluded-layers>
-                    <extra-server-content-dirs>
-                        <extra-content>wildfly/includes</extra-content>
-                    </extra-server-content-dirs>
-                    <cli-sessions>
-                        <cli-session>
-                            <script-files>
-                                <script>wildfly/scripts/setup.cli</script>
-                            </script-files>
-                            <properties-file>wildfly/scripts/properties/server-dev.properties</properties-file>
-                        </cli-session>
-                    </cli-sessions>
-                    <context-root>false</context-root>
-                    <!-- Only enable the argument below for remote debugging purposes. These should always be commented
-                     out when committing to source control. -->
-                    <!--<jvmArguments>
-                        <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
-                    </jvmArguments>-->
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>package</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <image>-->
-<!--                        <name>shercolorweb</name>-->
-<!--                    </image>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>build-image</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>package</phase>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>com.google.cloud.tools</groupId>-->
-<!--                <artifactId>jib-maven-plugin</artifactId>-->
-<!--                <version>3.2.1</version>-->
-<!--                <configuration>-->
-<!--                    <to>-->
-<!--                        <image>shercolorweb</image>-->
-<!--                    </to>-->
-<!--                    <from>-->
-<!--                        <image>openjdk:11</image>-->
-<!--                    </from>-->
-<!--                    <container>-->
-<!--                        <ports>-->
-<!--                            <port>8090</port>-->
-<!--                        </ports>-->
-<!--&lt;!&ndash;                        <entrypoint>java,-jar,${project.artifactId}-bootable.jar</entrypoint>&ndash;&gt;-->
-<!--                    </container>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>dockerBuild</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
-        <finalName>SherColorWeb</finalName>
     </build>
 </project>
