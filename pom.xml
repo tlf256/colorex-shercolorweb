@@ -255,6 +255,55 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-jar-maven-plugin</artifactId>
+                <version>7.0.2.Final</version>
+                <configuration>
+                    <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
+                    <layers>
+                        <layer>legacy-management</layer>
+                        <layer>legacy-remoting</layer>
+                        <layer>legacy-security</layer>
+                        <layer>undertow-legacy-https</layer>
+                        <layer>core-tools</layer>
+                        <layer>datasources</layer>
+                        <layer>bean-validation</layer>
+                        <layer>logging</layer>
+                        <layer>security-manager</layer>
+                        <layer>ee</layer>
+                        <layer>io</layer>
+                        <layer>pojo</layer>
+                    </layers>
+                    <excluded-layers>
+                        <excluded-layer>cdi</excluded-layer>
+                    </excluded-layers>
+                    <extra-server-content-dirs>
+                        <extra-content>wildfly/includes</extra-content>
+                    </extra-server-content-dirs>
+                    <cli-sessions>
+                        <cli-session>
+                            <script-files>
+                                <script>wildfly/scripts/setup.cli</script>
+                            </script-files>
+                            <properties-file>wildfly/scripts/properties/server-dev.properties</properties-file>
+                        </cli-session>
+                    </cli-sessions>
+                    <context-root>false</context-root>
+                    <!-- Only enable the argument below for remote debugging purposes. These should always be commented
+                     out when committing to source control. -->
+                    <!--<jvmArguments>
+                        <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
+                    </jvmArguments>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
