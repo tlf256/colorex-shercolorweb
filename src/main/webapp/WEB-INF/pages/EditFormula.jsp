@@ -72,7 +72,7 @@
 			var safeName = encodeURIComponent(colorantItem.name.toString());
 			$(selector).attr("data-toggle", "popover");
 			$(selector).attr("data-placement","left");
-			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"><s:param>'+ safeTintSysId +'-'+ safeName +'</s:param></s:text>');
+			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"><s:param>'+ safeTintSysId +'-'+ safeName.replace(/%20/g, " ") +'</s:param></s:text>');
 			$(selector).popover({trigger : 'manual'});
 			$(selector).popover('toggle');
 			$('.popover').addClass('popover-warning');
