@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:8
 LABEL maintainer="SherColor Team"
 EXPOSE 8090
 ADD target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
