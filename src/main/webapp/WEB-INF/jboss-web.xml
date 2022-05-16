@@ -6,5 +6,5 @@
 
     <security-domain>ecommerce-security-domain</security-domain>
     <disable-audit>true</disable-audit>
-
+    <context-root>/shercolorweb</context-root>
 </jboss-web>
