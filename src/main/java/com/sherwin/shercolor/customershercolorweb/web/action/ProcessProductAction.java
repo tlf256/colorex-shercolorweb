@@ -244,10 +244,22 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 				// we found a match
 				if (colorName.equals(cdsProdBase) || (cdsProdBase.equals("HRB") && colorName.equals("HIGH REFLECTIVE WHITE"))){
 					
+					// look up colorant system in session or default colorant sys for this user
+					String clrntSys = reqObj.getClrntSys();
+					if ((clrntSys == null || clrntSys.isEmpty()) && reqObj.getTinter() != null) {
+						clrntSys = reqObj.getTinter().getClrntSysId();
+					}
+					CustWebParms cwp = customerService.getDefaultCustWebParms(reqObj.getCustomerID());
+					String prodComp = "";
+					if (cwp != null) {
+						if ((clrntSys == null || clrntSys.isEmpty())) {
+							clrntSys = cwp.getClrntSysId();
+						}
+						prodComp = cwp.getProdComp();
+					}
+					
 					// make sure we don't have a formula book entry for this combination
-					List<CdsFbProd> cdsFbProdList = productService.listCdsFbProd("SW", salesNbr);
-					List<CdsFbColor> cdsFbColorList = colorService.listCdsFbColor(colorComp, colorId);
-					if(cdsFbProdList.isEmpty() || cdsFbColorList.isEmpty()) {
+					if (!productColorService.hasFormulaBookEntry(colorComp, colorId, salesNbr, clrntSys, prodComp)) {
 						reqObj.setPackageColor(true);
 						reqObj.setPkgClrTintable(true);
 						
