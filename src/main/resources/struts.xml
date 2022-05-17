@@ -429,22 +429,21 @@
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
 		</action>
-		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
+		<action name="displayClosestColorAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="measure" type="redirectAction">
+			<result name="success">/WEB-INF/pages/ClosestColor.jsp</result>
+		</action>
+		<action name="closestColorMeasureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorAction" method="">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<!-- <param name="measureColor">${measureColor}</param> -->
+				<param name="measure">${measure}</param>
 			</result>
-			<result name="savedMeasure" type="redirectAction">
-				<param name="actionName">MeasureColorNextAction</param>
-				<param name="reqGuid">${reqGuid}</param>
-				<param name="measuredCurve">${measuredCurve}</param>
-			</result>
-			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
-			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
 		</action>
 		<action name="colorUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="backItUp">
 			<result name="loginRedirect" type="redirectAction">
