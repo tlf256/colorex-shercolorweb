@@ -1,20 +1,22 @@
 # Default values for shercolorweb.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+swDockerRepository: &dockerRepo docker.artifactory.sherwin.com
+appRoot: /SherColorWeb
 
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: shercolorweb
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -68,13 +70,35 @@ resources: {}
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+# Values for the postgresql dependency chart
+postgresql:
+  global:
+    imageRegistry: *dockerRepo
+    #TODO add different environment configs or change these creds?
+    postgresql:
+      postgresqlDatabase: "sherd"
+      postgresqlUsername: "shercolor"
+      postgresqlPassword: "sh3rclrd3v"
+      servicePort: "5432"
+  image:
+    registry: *dockerRepo
+    tag: 14.1.0-debian-10-r9
+  service:
+    type: LoadBalancer
+    annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
+    loadBalancerIP: "172.30.0.8"
+    externalTrafficPolicy: Cluster
+  persistence:
+    size: 4Gi
+
+# Conditional attribute only meant to be set via the Helm install command.
+# This attribute should be used to enable all kubernetes resources needed for store usage.
+store:
+  enabled: false

@@ -1,15 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "shercolorweb.fullname" . }}
+  name: {{ .Chart.Name }}
   labels:
     {{- include "shercolorweb.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
     {{- include "shercolorweb.selectorLabels" . | nindent 4 }}

@@ -22,3 +22,11 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "2.0.0"
+
+icon: file://src/main/webapp/graphics/shercolor-sm.jpg
+
+dependencies:
+    - name: postgresql
+      version: 10.13.8
+      repository: https://artifactory.sherwin.com/artifactory/helm-virtual/
+      condition: store.enabled

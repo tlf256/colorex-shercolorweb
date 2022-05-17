@@ -644,6 +644,10 @@ obj/
 .history
 .ionide
 
+### Helm ###
+# Chart dependencies
+**/charts/*.tgz
+
 # Colorex
 *.pdf
 !wildfly/
