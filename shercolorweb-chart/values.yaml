@@ -78,7 +78,7 @@ tolerations: []
 affinity: {}
 
 # Values for the postgresql dependency chart
-postgresql:
+postgres:
   global:
     imageRegistry: *dockerRepo
     #TODO add different environment configs or change these creds?
