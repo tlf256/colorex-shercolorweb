@@ -39,10 +39,14 @@
 ### Kubernetes
 Be sure to configure your local Kubernetes/Docker environment by using Docker Desktop or another Kubernetes distribution as well as Helm 3 installed.
 #### Docker Image
-From the root directory of this project, you can use the following command to install the `shercolorweb` Docker image:
-```sh
-docker build -t shercolorweb .
-```
+1. From the root directory of this project, you can use the following command to install the `shercolorweb` Docker image:
+    ```sh
+    docker build -t shercolorweb .
+    ```
+2. Run the image using the following command:
+    ```sh
+    docker run -p 8090:8090 shercolorweb
+    ```
 #### Helm Chart
 From the root directory of this project, you can use the following command to install the `shercolorweb` Helm chart:
 ```sh
