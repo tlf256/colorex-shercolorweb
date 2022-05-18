@@ -52,6 +52,10 @@ From the root directory of this project, you can use the following command to in
 ```sh
 helm install --set store.enabled=<store.enabled> shercolorweb ./shercolorweb-chart
 ```
+In order to apply updates to the release (running Helm chart), simply update the chart's configuration and then use the following command to execute a rolling update:
+```sh
+helm upgrade --set store.enabled=<store.enabled> shercolorweb ./shercolorweb-chart
+```
 ##### Conditions
 `store.enabled` - Set to true if running in a store, defaults to false otherwise. This will enable all configuration necessary to run SherColorWeb in a store Kubernetes environment.
 
