@@ -2,9 +2,11 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,7 @@ import org.owasp.encoder.Encode;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
+import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebSpectroRemote;
 import com.sherwin.shercolor.common.exception.SherColorException;
@@ -29,6 +32,7 @@ import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.validation.ColorValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
@@ -43,7 +47,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private CustomerService customerService;
 	private ColorValidator colorValidator;
 	private Map<String, Object> sessionMap;
-	
+	private ProductService productService;
+
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessColorAction.class);
 	
@@ -308,8 +313,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	public String execute() {
 		
-		
-		List<String> baseList;
 		colorComp = "";
 		colorID = "";
 		String rgbHex = null;
@@ -422,23 +425,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					}
 				}
 				
-				baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
-				setIntBases(StringUtils.join(baseList, ','));
-				
-				baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
-				setExtBases(StringUtils.join(baseList, ','));
-				
-				//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
-				//call the autobase routine.
-				if (intBases==null && extBases==null) {
-					//call autobase
-					String custID = (String) reqObj.getCustomerID();
-					CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
-					String custProdComp = bobo.getProdComp();
-					baseList = colorBaseService.GetAutoBase(thisColor.getColorComp(), thisColor.getColorId(), custProdComp );
-					setIntBases(StringUtils.join(baseList, ','));
-					setExtBases(StringUtils.join(baseList, ','));
-				}
+				String custID = reqObj.getCustomerID();
+				buildBaseLists(custID);
 				
 				// get closest SW color if user picked a competitive one, or comes back null if no close match found
 				if (selectedCoTypes.equalsIgnoreCase("COMPET")) {
@@ -543,6 +531,62 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		for (String company : colorCompaniesArray) {
 			natColorCompanies.add(company);
 		}
+	}
+	
+	private void buildBaseLists(String custID) {
+		List<String> baseList;
+		Set<String> interiorBases = new HashSet<>();
+		Set<String> exteriorBases = new HashSet<>();
+
+		//If the color has a restricted product list. Pull the bases from the products that are allowed to use it.
+		if(thisColor.getForceProd() != null && !thisColor.getForceProd().trim().equals("")) {
+			List<CdsProd> forcedProducts = productService.getForcedProducts(thisColor.getForceProd());
+			for (int i = 0; i < forcedProducts.size(); i++) {
+				String usage = forcedProducts.get(i).getIntExt().toUpperCase();
+				switch(usage) {
+				case "INTERIOR":
+					interiorBases.add(forcedProducts.get(i).getBase());
+					break;
+				case "EXTERIOR":
+					exteriorBases.add(forcedProducts.get(i).getBase());
+					break;
+				case "INT/EXT":
+					interiorBases.add(forcedProducts.get(i).getBase());
+					exteriorBases.add(forcedProducts.get(i).getBase());
+					break;
+				default:
+					logger.warn("UNDEFINED USAGE: {}", usage);
+					break;
+				}						
+			}
+			setIntBases(StringUtils.join(interiorBases, ','));
+			setExtBases(StringUtils.join(exteriorBases, ','));
+		//If color references another color so use the base assignments from that color.
+		} else if(thisColor.getXrefId() != null && thisColor.getXrefComp() != null) {
+			baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getXrefComp(), thisColor.getXrefId(), prodComp);
+			setIntBases(StringUtils.join(baseList, ','));
+			
+			baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getXrefComp(), thisColor.getXrefId(), prodComp);
+			setExtBases(StringUtils.join(baseList, ','));
+		//No special cases. Try to find the bases for the given company and color.
+		} else {
+			baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+			setIntBases(StringUtils.join(baseList, ','));
+		
+			baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+			setExtBases(StringUtils.join(baseList, ','));
+		}
+		
+		//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
+		//call the autobase routine.
+		if (intBases == null && extBases == null) {
+			//call autobase
+			CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
+			String custProdComp = bobo.getProdComp();
+			baseList = colorBaseService.GetAutoBase(thisColor.getColorComp(), thisColor.getColorId(), custProdComp );
+			setIntBases(StringUtils.join(baseList, ','));
+			setExtBases(StringUtils.join(baseList, ','));
+		}		
 	}
 	
 	public List<autoComplete> getOptions() {
@@ -748,4 +792,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		this.measuredName = measuredName;
 	}
 
+	public ProductService getProductService() {
+		return productService;
+	}
+
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
+	}
 }
