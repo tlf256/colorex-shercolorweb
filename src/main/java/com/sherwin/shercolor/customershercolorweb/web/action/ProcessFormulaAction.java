@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
+import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsMiscCodes;
 import com.sherwin.shercolor.common.domain.CdsProdCharzd;
 import com.sherwin.shercolor.common.domain.CdsRoomList;
@@ -28,6 +30,7 @@ import com.sherwin.shercolor.common.domain.CustWebBase;
 import com.sherwin.shercolor.common.domain.CustWebCanTypes;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
+import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebTinterProfile;
 import com.sherwin.shercolor.common.domain.CustWebTinterProfileCanTypes;
 import com.sherwin.shercolor.common.domain.CustWebTran;
@@ -38,6 +41,7 @@ import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
@@ -111,6 +115,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	@Autowired 
 	private UtilityService utilityService;
 	
+	@Autowired
+	private ColorService colorService;
+	
 	public String display(){
 		String retVal = null;
 
@@ -123,6 +130,11 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			tinter = reqObj.getTinter();
 			colorNotes = reqObj.getColorNotes();
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
+			
+			//Estimate the Rgb Hex by calculating a curve based on the formula if the RGB Hex was not already filled in
+			if (reqObj.getRgbHex() == null || reqObj.getRgbHex().equals("")) {
+				estimateRgbHex();
+			}
 			
 			// check if this account is a drawdown center or profiled to use room by room option
 			lookupCustomerProfile();
@@ -606,7 +618,50 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
-
+	private void estimateRgbHex() {
+			
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		
+		//Do not estimate if there is no formula
+		if (displayFormula == null) {
+			return;
+		}
+		
+		String rgbHex = null;
+		BigDecimal[] curveArray = new BigDecimal[40];
+		CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
+		custWebParms.setClrntSysId(reqObj.getClrntSys());
+		
+		//Estimate a curve based on the displayed formula
+		Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);
+		if(projCurve != null){
+			boolean allZero = true;
+			for (int i = 0; i < 40; i++) {
+				if(projCurve[i] != 0D) allZero = false;
+				curveArray[i] = new BigDecimal(projCurve[i]);
+			}
+		
+			if(!allZero){
+				//Try getting an RGB value for the estimated curve
+				ColorCoordinates colorCoord = null;
+				
+				//Either use the light source stored in the request object, or use a default light source of D65
+				if (reqObj.getLightSource() != null) {
+					colorCoord = colorService.getColorCoordinates(curveArray, reqObj.getLightSource());
+				}
+				else {
+					colorCoord = colorService.getColorCoordinates(curveArray, "D65");
+				}
+				
+				if (colorCoord != null) {
+					rgbHex = colorCoord.getRgbHex();
+					if(rgbHex != null) {
+						reqObj.setRgbHex(rgbHex);
+					}
+				}
+			}
+		}
+	}
 	
 	public DataInputStream getInputStream() {
 		return inputStream;
