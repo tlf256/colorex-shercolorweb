@@ -580,7 +580,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
 		//call the autobase routine.
 		if (intBases == null && extBases == null) {
-			logger.info("JXL. Bases are still empty. Calling autobase..");
 			//call autobase
 			CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
 			String custProdComp = bobo.getProdComp();
