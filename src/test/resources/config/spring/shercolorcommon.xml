@@ -104,9 +104,11 @@
 				<value>com.sherwin.shercolor.common.domain.MqCdsNetTran</value>
 				<value>com.sherwin.shercolor.common.domain.MqCdsNetTranStagingRaw</value>
 				<value>com.sherwin.shercolor.common.domain.ScPosTestValidation</value>
-				<value>com.sherwin.shercolor.common.domain.ProductColorList</value>
 				<value>com.sherwin.shercolor.common.domain.PimProd</value>
-				<value>com.sherwin.shercolor.common.domain.ColorantUsageList</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorantUsageList</value>
+				<value>com.sherwin.shercolor.common.domain.WkbColorantUsageList</value>
+				<value>com.sherwin.shercolor.common.domain.CdsProductColorList</value>
+				<value>com.sherwin.shercolor.common.domain.CdsColorListColors</value>
 				<value>com.sherwin.shercolor.common.domain.UpdCdsUpdates</value>
 				<value>com.sherwin.shercolor.common.domain.ParentInfoV</value>
 				<value>com.sherwin.shercolor.common.domain.NaAccountExecV</value>
@@ -316,15 +318,21 @@
 	<bean id="ScPosTestValidationDao" class="com.sherwin.shercolor.common.dao.ScPosTestValidationDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	<bean id="ProductColorListDao" class="com.sherwin.shercolor.common.dao.ProductColorListDaoImpl">
+	<bean id="CdsProductColorListDao" class="com.sherwin.shercolor.common.dao.CdsProductColorListDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<bean id="PimProdDao" class="com.sherwin.shercolor.common.dao.PimProdDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	<bean id="ColorantUsageListDao" class="com.sherwin.shercolor.common.dao.ColorantUsageListDaoImpl">
+	<bean id="CdsColorantUsageListDao" class="com.sherwin.shercolor.common.dao.CdsColorantUsageListDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="WkbColorantUsageListDao" class="com.sherwin.shercolor.common.dao.WkbColorantUsageListDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>	
+	<bean id="CdsColorListColorsDao" class="com.sherwin.shercolor.common.dao.CdsColorListColorsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 	<bean id="UpdCdsUpdatesDao" class="com.sherwin.shercolor.common.dao.UpdCdsUpdatesDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
