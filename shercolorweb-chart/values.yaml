@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 swDockerRepository: &dockerRepo docker.artifactory.sherwin.com
-appRoot: /SherColorWeb
+appRoot: /shercolorweb
 
 replicaCount: 1
 
@@ -38,7 +38,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8090
 
 ingress:
   enabled: false

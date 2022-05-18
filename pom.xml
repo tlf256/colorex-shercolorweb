@@ -300,7 +300,6 @@
                     <execution>
                         <goals>
                             <goal>package</goal>
-
                         </goals>
                     </execution>
                 </executions>
