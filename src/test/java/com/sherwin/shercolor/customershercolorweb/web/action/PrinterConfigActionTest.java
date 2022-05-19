@@ -23,8 +23,7 @@ import static org.junit.Assert.assertNotNull;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 public class PrinterConfigActionTest extends StrutsSpringJUnit4TestCase<PrinterConfigureAction> {
 
 	PrinterConfigureAction target;

@@ -29,8 +29,7 @@ import be.quodlibet.boxable.Row;
 import be.quodlibet.boxable.VerticalAlignment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 @Transactional
 public class TestSherColorLabel {
 	

@@ -25,8 +25,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration("classpath:config/spring/shercolorcommon-test.xml")
 public class ConfigActionTest extends StrutsSpringJUnit4TestCase<ProcessTinterConfigAction> {
 
 	ProcessTinterConfigAction target;
