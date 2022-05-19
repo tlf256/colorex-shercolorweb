@@ -20,8 +20,8 @@ spring:
         role-id: 4b851bc5-133f-c30f-b8f7-d560a3a46fa9
         secret-id: 105e90e5-cfd3-bf1a-36e8-a10260029ac8
   datasource:
-    password: ${db.password}
-    username: ${db.username}
+    password: ${dbPassword}
+    username: ${dbUsername}
   jpa:
     hibernate:
       naming:
