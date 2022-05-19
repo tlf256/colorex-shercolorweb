@@ -20,7 +20,7 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	private Map<String, Object> sessionMap;
 	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
 	private String reqGuid;
-	@Value("${sherlink.login.url}")
+	@Value("${sherlinkLoginUrl}")
 	private String sherLinkURL;
 	private String loMessage;
 	private String isAJAX = "false";

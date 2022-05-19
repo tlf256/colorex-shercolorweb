@@ -42,10 +42,10 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	@Autowired
 	private TranHistoryService tranHistoryService;
 
-	@Value("${sherlink.login.url}")
+	@Value("${sherlinkLoginUrl}")
 	private String sherLinkUrl;
 
-	@Value("${sherlink.token.sw.url}")
+	@Value("${sherlinkTokenSwUrl}")
 	private String sherLinkTokenSwUrl;
 
 	static Logger logger = LogManager.getLogger(LoginAction.class);
