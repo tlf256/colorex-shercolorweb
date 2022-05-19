@@ -1,0 +1,15 @@
+{{- $environment := .Values.env -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-configmap
+data:
+  # Randomize the password, but make it available as a secret 
+  # for workloads to use
+  # password: {{ randAlphaNum 16 | b64enc }}
+  oe.base.url: {{ .Values.oeBaseUrl }}
+  {{- range .Values.$env }}
+    dbOracleUrl: {{ .dbOracleUrl }}
+    sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
+    sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
+  {{- end }}

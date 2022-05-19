@@ -4,7 +4,7 @@
 swDockerRepository: &dockerRepo docker.artifactory.sherwin.com
 appRoot: /shercolorweb
 
-replicaCount: 1
+replicaCount: 3
 
 image:
   repository: shercolorweb
@@ -99,7 +99,25 @@ postgres:
   persistence:
     size: 4Gi
 
-# Conditional attribute only meant to be set via the Helm install command.
+# Conditional attribute only meant to be set via the Helm install command. 
 # This attribute should be used to enable all kubernetes resources needed for store usage.
-store:
-  enabled: false
+# store.enabled: false
+# env: dev
+
+# Global and environment-specific SherColor configurations 
+oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+
+dev:
+  dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
+  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
+  sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
+
+qa:
+  dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
+  sherlinkLoginUrl: "https://wqweb1.sherwin.com/sher-link/user/login.do"
+  sherlinkTokenSwUrl: "https://wqweb1.sherwin.com/sher-link/StoresEcommerceService"
+
+prod:
+  dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
+  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
+  sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
