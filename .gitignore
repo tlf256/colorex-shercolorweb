@@ -188,6 +188,9 @@ fabric.properties
 
 # Package Files #
 *.jar
+## SherColor wildfly-specific exceptions
+!SWInternetRestrictorHandler*.jar
+!ojdbc*.jar
 *.war
 *.nar
 *.ear
