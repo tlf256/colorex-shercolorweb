@@ -81,6 +81,7 @@ affinity: {}
 postgres:
   global:
     imageRegistry: *dockerRepo
+    storageClass: "longhorn"
     #TODO add different environment configs or change these creds?
     postgresql:
       postgresqlDatabase: "sherd"
