@@ -4,11 +4,19 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
-  # Randomize the password, but make it available as a secret 
-  # for workloads to use
+  # Randomize the password
   # password: {{ randAlphaNum 16 | b64enc }}
-  oe.base.url: {{ .Values.oeBaseUrl }}
-  {{- range .Values.$env }}
+
+  {{- if .Values.store.enabled -}}
+    SPRING_PROFILES_ACTIVE: "$environment,postgres"
+    dbPostgresUrl: "jdbc:postgresql://shercolor-postgres-postgresql-headless.{{ Release.Namespace }}.svc.cluster.local:{{ Values.shercolor-postgres.global.postgresql.servicePort }}/{{ Values.shercolor-postgres.global.postgresql.postgresqlDatabase }}"
+  {{- else -}}
+    SPRING_PROFILES_ACTIVE: "$environment,oracle"
+    dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
+  {{- end -}}
+
+  oeBaseUrl: {{ .Values.oeBaseUrl }}
+  {{- range .Values.$environment }}
     dbOracleUrl: {{ .dbOracleUrl }}
     sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
     sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}

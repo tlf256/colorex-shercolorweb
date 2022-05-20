@@ -30,4 +30,4 @@ dependencies:
       version: 10.13.8
       repository: https://artifactory.sherwin.com/artifactory/helm-virtual/
       condition: store.enabled
-      alias: postgres
+      alias: shercolor-postgres

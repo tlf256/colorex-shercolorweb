@@ -22,6 +22,7 @@
         <java.version>1.8</java.version>
         <wildfly.version>24.0.1.Final</wildfly.version>
         <spring.cloud-version>2021.0.1</spring.cloud-version>
+        <!-- TODO remove this and use the environment profile -->
         <!-- defaulted here to dev, but can be set via a command-line arg ex: -Dshercolorweb.env={dev,qa,prod} -->
         <shercolorweb.env>dev</shercolorweb.env>
     </properties>
@@ -281,7 +282,6 @@
                         <extra-content>wildfly/includes</extra-content>
                     </extra-server-content-dirs>
                     <context-root>false</context-root>
-                    <output-file-name>${project.artifactId}-bootable.jar</output-file-name>
                     <!-- Configuration below enables CLI scripting configuration vs direct standalone.xml -->
                     <cli-sessions>
                         <cli-session>
@@ -306,5 +306,6 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>${project.artifactId}</finalName>
     </build>
 </project>

@@ -78,7 +78,7 @@ tolerations: []
 affinity: {}
 
 # Values for the postgresql dependency chart
-postgres:
+shercolor-postgres:
   global:
     imageRegistry: *dockerRepo
     storageClass: "longhorn"
@@ -91,18 +91,14 @@ postgres:
   image:
     registry: *dockerRepo
     tag: 14.1.0-debian-10-r9
-  service:
-    type: LoadBalancer
-    annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
-    loadBalancerIP: "172.30.0.8"
-    externalTrafficPolicy: Cluster
   persistence:
     size: 4Gi
 
 # Conditional attribute only meant to be set via the Helm install command. 
 # This attribute should be used to enable all kubernetes resources needed for store usage.
-# store.enabled: false
-# env: dev
+store:
+  enabled: false
+env: dev
 
 # Global and environment-specific SherColor configurations 
 oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"

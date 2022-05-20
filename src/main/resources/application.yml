@@ -37,6 +37,9 @@ spring:
     ansi:
       enabled: ALWAYS
   profiles:
-      # For dev purposes only
-      # include db type (oracle or postgres), login and database environment (dev, qa or prod)
-      include: oracle,login,dev
+      # login profile is always unconditionally included in order to use Wildfly security JNDI connection
+      include: login
+      # activate db type (oracle or postgres) and environment (dev, qa or prod)
+      # The login-test profile is needed to tell Spring to use a JDBC connection for SherColorLogin
+      # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables
+      active: oracle,dev,login-test
