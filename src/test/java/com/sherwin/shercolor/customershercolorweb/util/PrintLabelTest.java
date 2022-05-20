@@ -31,8 +31,7 @@ import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 @Transactional
 public class PrintLabelTest  {
 	

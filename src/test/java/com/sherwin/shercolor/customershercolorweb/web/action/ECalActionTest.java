@@ -41,8 +41,7 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 public class ECalActionTest extends StrutsSpringJUnit4TestCase<EcalAction> {
 
 	EcalAction target = new EcalAction();
