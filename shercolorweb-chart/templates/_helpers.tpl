@@ -28,3 +28,25 @@ Selector labels
 app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "shercolorweb.getEnvironmentConfig" -}}
+{{- if eq .Values.env "dev" }}
+{{- with .Values.dev -}}
+dbOracleUrl: {{ .dbOracleUrl }}
+sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
+sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
+{{- end }}
+{{- else if eq .Values.env "qa" }}
+{{- with .Values.qa -}}
+dbOracleUrl: {{ .dbOracleUrl }}
+sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
+sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
+{{- end }}
+{{- else if eq .Values.env "prod" }}
+{{- with .Values.prod -}}
+dbOracleUrl: {{ .dbOracleUrl }}
+sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
+sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
+{{- end }}
+{{- end }}
+{{- end }}

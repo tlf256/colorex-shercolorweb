@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 swDockerRepository: &dockerRepo docker.artifactory.sherwin.com
 appRoot: /shercolorweb
+swHelmVirtualRepo: https://artifactory.sherwin.com/artifactory/helm-virtual/
 
 replicaCount: 3
 
@@ -78,7 +79,7 @@ tolerations: []
 affinity: {}
 
 # Values for the postgresql dependency chart
-shercolor-postgres:
+shercolorPostgres:
   global:
     imageRegistry: *dockerRepo
     storageClass: "longhorn"
@@ -98,6 +99,7 @@ shercolor-postgres:
 # This attribute should be used to enable all kubernetes resources needed for store usage.
 store:
   enabled: false
+
 env: dev
 
 # Global and environment-specific SherColor configurations 
