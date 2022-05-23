@@ -29,6 +29,7 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 	private boolean measureColor;
 	private boolean measure;
 	private boolean compare;
+	private boolean closestColor;
 	
 	public SpectroCalibrateAction(){
 		
@@ -125,6 +126,14 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 
 	public void setCompare(boolean compare) {
 		this.compare = compare;
+	}
+
+	public boolean isClosestColor() {
+		return closestColor;
+	}
+
+	public void setClosestColor(boolean closestColor) {
+		this.closestColor = closestColor;
 	}
 
 }
