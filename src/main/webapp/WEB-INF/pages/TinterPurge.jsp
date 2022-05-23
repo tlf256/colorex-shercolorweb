@@ -40,6 +40,7 @@
 	<script type="text/javascript">
 	 //Global Variables
 	"use strict"; 
+	var purgeAfterClean = false;
 	var ws_tinter = new WSWrapper("tinter");
 	var sendingTinterCommand = "false";
 	var _rgbArr = [];
@@ -467,6 +468,14 @@
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
 						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
+							// If nozzle clean operation was triggered from starting a purge, 
+							// go to the purgeInProgress once the nozzle clean is done
+							// (Nozzle Close has finished successfully)
+							if (purgeAfterClean == true) {
+								purgeAfterClean = false;
+								$("#purgeInProgressModal").modal('show');
+							}
+							
 						} else {
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -526,7 +535,7 @@
 	    });
 	    
 	    $(document).on("click", "#cleanNozzleButton", function(event){
-	        $("#cleanNozzleVid").get(0).pause();
+	    	$("#cleanNozzleVid").get(0).pause();
 			event.preventDefault();
 			event.stopPropagation();
 			waitForShowAndHide("#cleanNozzleModal");
@@ -534,6 +543,28 @@
 			
 			//closeNozzle();  now done on hidden.bs.modal 
 		});
+	    
+	    $(document).on("click", "#tinterPurgeButton", function(event) {
+	    	console.log("Start Tinter Button Click");
+	    	// Check to see if a nozzle clean needs to be preformed before the tinter can be purged
+	    	// purge status
+	    	var lastPurgeDate = "${sessionScope[thisGuid].tinter.lastPurgeDate}";
+	    	var tinterModel = "${sessionScope[thisGuid].tinter.model}"
+			if(lastPurgeDate!=null){
+				// convert session last purge date (which is a string) to a date
+				var dateFromString = new Date(lastPurgeDate);
+				var today = new Date();
+				if (!tinterModel.startsWith("FM X") && (dateFromString.getFullYear()<today.getFullYear() || 
+						dateFromString.getMonth()<today.getMonth() || 
+						dateFromString.getDate()<today.getDate())){
+					purgeAfterClean = true;
+					$("#cleanNozzleModal").modal('show');
+					
+				} else {
+					$("#purgeInProgressModal").modal('show');
+				}
+			}
+	    });
 	    
 		//localhostConfig will be set if they have returned to landing page and have a tinter attached
 		if($("#tinterPurgeAction_hasAutoNozzle").val()=="false"){ 
@@ -585,12 +616,23 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
-						        <s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
-									<p class="lead"><s:text name="tinterPurge.cleanNozzleWithTool2"/></p>
-									<p class="lead"><s:text name="tinterPurge.moistenSponge"/></p>
-									<p class="lead"><s:text name="tinterPurge.clickPurge"/></p>
-									<p></p>
+								<s:if test="#session[reqGuid].tinter.model != null">
+									<s:if test="#session[reqGuid].tinter.model.startsWith('FM X') && (#session[reqGuid].tinter.clrntSysId == 'CCE' || #session[reqGuid].tinter.clrntSysId == 'BAC')">
+										<p class="lead"><s:text name="tinterPurge.tinterPrepXProTintWater"/></p>
+										<p></p>
+									</s:if>
+									<s:if test="#session[reqGuid].tinter.model.startsWith('FM X') && (#session[reqGuid].tinter.clrntSysId == '844' || #session[reqGuid].tinter.clrntSysId == 'GIC')">
+										<p class="lead"><s:text name="tinterPurge.tinterPrepXProTintThinner"/></p>
+										<p></p>
+									</s:if>
+									<s:if test="!#session[reqGuid].tinter.model.startsWith('FM X')"> 
+										<p class="lead"><s:text name="tinterPurge.cleanNozzleWithTool2"/></p>
+										<p class="lead"><s:text name="tinterPurge.moistenSponge"/></p>
+										<p class="lead"><s:text name="tinterPurge.clickPurge"/></p>
+										<p></p>
+									</s:if>
 								</s:if>
+						        
 								<p class="lead" id="lastPurgeText">
 									<s:text name="tinterPurge.lastPurgeDateTimeUser">
 										<s:param><s:property value="lastPurgeDate" escapeHtml="true"/></s:param>
@@ -628,7 +670,7 @@
 						<button type="button" class="btn btn-primary" id="tinterCleanNozzle" data-toggle="modal" data-target="#cleanNozzleModal"><s:text name="tinterPurge.cleanNozzle"/></button>
   						</div>
 					<div class="col-sm-2">	
-						<button type="button" class="btn btn-primary center-block" id="tinterPurge" data-toggle="modal" data-target="#purgeInProgressModal" autofocus="autofocus"><s:text name="global.purge"/></button>
+						<button type="button" class="btn btn-primary center-block" id="tinterPurgeButton" autofocus="autofocus"><s:text name="global.purge"/></button>
   						</div>
 					<div class="col-sm-2">	
 		    			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.done')}" action="userCancelAction"/>
