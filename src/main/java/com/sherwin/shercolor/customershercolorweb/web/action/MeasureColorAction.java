@@ -47,6 +47,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String extBases;
 	private boolean measure;
 	private boolean compare;
+	private boolean closestColor;
 	
 	@Autowired
 	private ColorCoordinatesCalculator colorCoordCalc;
@@ -108,7 +109,10 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			// Try getting an RGB value for the object.
 			ColorCoordinates colorCoord = colorService.getColorCoordinates(curveArray, "D65");
 			
-			if(measure || compare) {
+			//set color coordinates for compare and closest color
+			//compare colors can potentially be redirected here twice
+			//so distinction needs to be made between the first and second measurements
+			if(measure || compare || closestColor) {
 				if(colorCoord == null) {
 					colorCoord = new ColorCoordinates();
 					double[] curveArrDouble = new double[40];
@@ -117,9 +121,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 						curveArrDouble[i] = curveArray[i].doubleValue();
 					}
 					
-					if(colorCoord != null) {
-						colorCoord = colorCoordCalc.getColorCoordinates(curveArrDouble);
-					}
+					colorCoord = colorCoordCalc.getColorCoordinates(curveArrDouble);
 				}
 				
 				Map<String, ColorCoordinates> coordMap = reqObj.getColorCoordMap();
@@ -130,8 +132,10 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				
 				if(compare) {
 					coordMap.put("sample", colorCoord);
-				} else {
+				} else if(measure) {
 					coordMap.put("standard", colorCoord);
+				} else {
+					coordMap.put("colorCoord", colorCoord);
 				}
 				
 				reqObj.setColorCoordMap(coordMap);
@@ -140,8 +144,10 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				
 				if(compare) {
 					return "result";
-				} else {
+				} else if(measure) {
 					return "sample";
+				} else {
+					return "closestColor";
 				}
 			}
 			
@@ -167,10 +173,6 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				setIntBases(StringUtils.join(baseList, ','));
 				setExtBases(StringUtils.join(baseList, ','));
 			}
-			
-			
-
-			
 			
 			reqObj.setIntBases(intBases);
 			reqObj.setExtBases(extBases);
@@ -301,6 +303,14 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 	public void setCompare(boolean compare) {
 		this.compare = compare;
+	}
+
+	public boolean isClosestColor() {
+		return closestColor;
+	}
+
+	public void setClosestColor(boolean closestColor) {
+		this.closestColor = closestColor;
 	}
 
 }

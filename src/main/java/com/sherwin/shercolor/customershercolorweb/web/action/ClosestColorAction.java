@@ -1,23 +1,62 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CdsColorMast;
+import com.sherwin.shercolor.common.service.ColorBaseService;
+import com.sherwin.shercolor.common.service.ColorService;
+import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class ClosestColorAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ClosestColorAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
-	private boolean measure;
+	private boolean swactive;
+	private String intExt;
+	private boolean closestColor;
+	
+	@Autowired
+	private ColorBaseService colorBaseService;
+	
+	@Autowired
+	private ColorService colorService;
+	
+	public String measure() {
+		//redirect to coloreye measurement
+		setClosestColor(true);
+		return SUCCESS;
+	}
 	
 	public String display() {
-		//redirect to coloreye measurement
-		setMeasure(true);
+		
+		return SUCCESS;
+	}
+	
+	public String execute() {
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		//find closest colors
+		CdsColorMast ccm = colorService.findClosestSwColorFromCoord(reqObj.getColorCoordMap().get("colorCoord"));
+		//always pull recommended base since
+		//sw colors will always be displayed in results
+		List<String> colorBaseList = new ArrayList<String>();
+		if(getIntExt().equals("int")) {
+			colorBaseList = colorBaseService.InteriorColorBaseAssignments(null, null, null);
+		} else if(getIntExt().equals("ext")) {
+			
+		} else {
+			//unrecognized value
+			logger.error("ClosestColorAction: unrecognized project type " + getIntExt());
+			return INPUT;
+		}
 		return SUCCESS;
 	}
 	
@@ -40,12 +79,28 @@ public class ClosestColorAction extends ActionSupport implements SessionAware, L
 	public void setReqGuid(String reqGuid) {
 		this.reqGuid = reqGuid;
 	}
-	
-	public boolean isMeasure() {
-		return measure;
+
+	public boolean isSwactive() {
+		return swactive;
 	}
 
-	public void setMeasure(boolean measure) {
-		this.measure = measure;
+	public void setSwactive(boolean swactive) {
+		this.swactive = swactive;
+	}
+
+	public String getIntExt() {
+		return intExt;
+	}
+
+	public void setIntExt(String intExt) {
+		this.intExt = intExt;
+	}
+
+	public boolean isClosestColor() {
+		return closestColor;
+	}
+
+	public void setClosestColor(boolean closestColor) {
+		this.closestColor = closestColor;
 	}
 }
