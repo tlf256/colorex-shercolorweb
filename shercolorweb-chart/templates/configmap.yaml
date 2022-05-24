@@ -10,12 +10,11 @@ data:
   dbPostgresUrl: "jdbc:postgresql://shercolor-postgres-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.shercolorPostgres.global.postgresql.servicePort }}/{{ .Values.shercolorPostgres.global.postgresql.postgresqlDatabase }}"
   {{- else }}
   SPRING_PROFILES_ACTIVE: "{{ $environment }},oracle"
-  dbUsername: {{ .Values.{{ .Values.env }}.dbOracleUserName }}
+  dbUsername: {{ index .Values $environment "dbOracleUsername" | quote }}
   dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
   {{- end }}
-
   oeBaseUrl: {{ .Values.oeBaseUrl | quote }}
-
-  {{ toYaml .Values. }}
-
-  {{- include "shercolorweb.getEnvironmentConfig" . | nindent 2 }}
+  dbOracleUrl: {{ index .Values $environment "dbOracleUrl" | quote }}
+  dbUsername: {{ index .Values $environment "dbOracleUsername" | quote }}
+  sherlinkLoginUrl: {{ index .Values $environment "sherlinkLoginUrl" | quote }}
+  sherlinkTokenSwUrl: {{ index .Values $environment "sherlinkTokenSwUrl" | quote }}
