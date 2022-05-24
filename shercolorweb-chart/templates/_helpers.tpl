@@ -29,24 +29,46 @@ app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+
+{{/*
+Environment-specific configuration
+*/}}
 {{- define "shercolorweb.getEnvironmentConfig" -}}
 {{- if eq .Values.env "dev" }}
 {{- with .Values.dev -}}
 dbOracleUrl: {{ .dbOracleUrl }}
+dbUsername: {{ .dbOracleUsername }}
 sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
 sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
 {{- end }}
 {{- else if eq .Values.env "qa" }}
 {{- with .Values.qa -}}
 dbOracleUrl: {{ .dbOracleUrl }}
+dbUsername: {{ .dbOracleUsername }}
 sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
 sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
 {{- end }}
 {{- else if eq .Values.env "prod" }}
 {{- with .Values.prod -}}
 dbOracleUrl: {{ .dbOracleUrl }}
+dbUsername: {{ .dbOracleUsername }}
 sherlinkLoginUrl: {{ .sherlinkLoginUrl }}
 sherlinkTokenSwUrl: {{ .sherlinkTokenSwUrl }}
 {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Environment-specific secrets
+*/}}
+{{- define "shercolorweb.getEnvironmentSecret" -}}
+{{- if eq .Values.env "dev" }}
+oraclePassword: {{ .Values.dev.dbOraclePassword | b64enc }}
+{{- end }}
+{{- else if eq .Values.env "qa" }}
+oraclePassword: {{ .Values.qa.dbOraclePassword | b64enc }}
+{{- end }}
+{{- else if eq .Values.env "prod" }}
+oraclePassword: {{ .Values.prod.dbOraclePassword | b64enc }}
 {{- end }}
 {{- end }}

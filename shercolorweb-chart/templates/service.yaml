@@ -28,3 +28,33 @@ spec:
       # Optional field
       # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
       nodePort: 31000
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: shercolor-dev-db-03
+# spec:
+#   type: ExternalName
+#   externalName: extd03-vip.sherwin.com
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: shercolor-dev-db-04
+# spec:
+#   type: ExternalName
+#   externalName: extd04-vip.sherwin.com
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: sherlink-dev-db
+# spec:
+#   type: ExternalName
+#   externalName: extd-scan.sherwin.com

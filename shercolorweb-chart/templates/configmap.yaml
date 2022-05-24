@@ -6,11 +6,16 @@ metadata:
 data: 
   {{- if .Values.store.enabled }}
   SPRING_PROFILES_ACTIVE: "{{ $environment }},postgres"
+  dbUsername: {{ .Values.shercolorPostgres.global.postgresql.postgresqlUsername | quote }}
   dbPostgresUrl: "jdbc:postgresql://shercolor-postgres-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.shercolorPostgres.global.postgresql.servicePort }}/{{ .Values.shercolorPostgres.global.postgresql.postgresqlDatabase }}"
   {{- else }}
   SPRING_PROFILES_ACTIVE: "{{ $environment }},oracle"
+  dbUsername: {{ .Values.{{ .Values.env }}.dbOracleUserName }}
   dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
   {{- end }}
-  oeBaseUrl: {{ .Values.oeBaseUrl }}
-  dbUsername: {{ .Values.shercolorPostgres.global.postgresql.postgresqlUsername }}
+
+  oeBaseUrl: {{ .Values.oeBaseUrl | quote }}
+
+  {{ toYaml .Values. }}
+
   {{- include "shercolorweb.getEnvironmentConfig" . | nindent 2 }}
