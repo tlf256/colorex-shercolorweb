@@ -1,0 +1,38 @@
+spring:
+  config:
+    import: vault://
+  cloud:
+    vault:
+      authentication: APPROLE
+      uri: https://vault.sherwin.com
+      application-name: shercolorweb
+      kv:
+        backend: shercolor/kv2
+      #TODO auth method should be switched to app-id when moved to k8s to prevent the storing of credentials here
+      approle:
+        role-id: 4b851bc5-133f-c30f-b8f7-d560a3a46fa9
+        secret-id: 105e90e5-cfd3-bf1a-36e8-a10260029ac8
+  datasource:
+    password: ${dbPassword}
+    username: ${dbUsername}
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    show-sql: true
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  output:
+    ansi:
+      enabled: ALWAYS
+  profiles:
+    # login profile is always unconditionally included in order to use Wildfly security JNDI connection
+    include: login
+    # activate db type (oracle or postgres) and environment (dev, qa or prod)
+    # The login-test profile is needed to tell Spring to use a JDBC connection for SherColorLogin
+    # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables
+    active: oracle,dev,login-test

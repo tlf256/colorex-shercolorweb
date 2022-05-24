@@ -6,19 +6,6 @@ server:
         secure: true
         http-only: true
 spring:
-  config:
-    import: vault://
-  cloud:
-    vault:
-      authentication: APPROLE
-      uri: https://vault.sherwin.com
-      application-name: shercolorweb
-      kv:
-        backend: shercolor/kv2
-      #TODO auth method should be switched to app-id when moved to k8s to prevent the storing of credentials here
-      approle:
-        role-id: 4b851bc5-133f-c30f-b8f7-d560a3a46fa9
-        secret-id: 105e90e5-cfd3-bf1a-36e8-a10260029ac8
   datasource:
     password: ${dbPassword}
     username: ${dbUsername}

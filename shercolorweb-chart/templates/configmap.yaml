@@ -12,4 +12,5 @@ data:
   dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
   {{- end }}
   oeBaseUrl: {{ .Values.oeBaseUrl }}
+  dbUsername: {{ .Values.shercolorPostgres.global.postgresql.postgresqlUsername }}
   {{- include "shercolorweb.getEnvironmentConfig" . | nindent 2 }}

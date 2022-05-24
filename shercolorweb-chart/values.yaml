@@ -88,6 +88,7 @@ shercolorPostgres:
       postgresqlDatabase: "sherd"
       postgresqlUsername: "shercolor"
       postgresqlPassword: "sh3rclrd3v"
+      existingSecret: "pg-secret"
       servicePort: "5432"
   image:
     registry: *dockerRepo

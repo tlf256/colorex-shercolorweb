@@ -54,6 +54,15 @@ spec:
             timeoutSeconds: 5  
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-configmap
+          env:
+            - name: dbPassword
+              valueFrom:
+                secretKeyRef:
+                  name: pg-secret
+                  key: password  
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
