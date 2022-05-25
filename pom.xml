@@ -181,15 +181,6 @@
             <artifactId>encoder-jsp</artifactId>
             <version>1.2.1</version>
         </dependency>
-        <!-- Commented out as this is provided by Spring Boot Web starter -->
-<!--        <dependency>-->
-<!--            <groupId>org.jboss.spec.javax.servlet</groupId>-->
-<!--            <artifactId>jboss-servlet-api_3.0_spec</artifactId>-->
-<!--            <version>1.0.2.Final</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-        <!-- Changed below dependency. Potential deprecation? as it would not install -->
-        <!-- https://mvnrepository.com/artifact/org.jboss.spec.javax.servlet.jsp/jboss-jsp-api_2.2_spec -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
             <artifactId>jboss-jsp-api_2.2_spec</artifactId>

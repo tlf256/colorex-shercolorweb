@@ -6,6 +6,8 @@ server:
         secure: true
         http-only: true
 spring:
+  autoconfigure:
+    exclude: org.springframework.cloud.vault.config.VaultAutoConfiguration
   datasource:
     password: ${dbPassword}
     username: ${dbUsername}
@@ -24,9 +26,12 @@ spring:
     ansi:
       enabled: ALWAYS
   profiles:
-      # login profile is always unconditionally included in order to use Wildfly security JNDI connection
+      # login profile is unconditionally included in order to use Wildfly security JNDI connection
       include: login
       # activate db type (oracle or postgres) and environment (dev, qa or prod)
-      # The login-test profile is needed to tell Spring to use a JDBC connection for SherColorLogin
-      # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables
-      active: oracle,dev,login-test
+
+      # The login-test profile is used to tell Spring to use a JDBC connection for SherColorLogin
+      # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables.
+
+      #
+      active: oracle,login-test,dev

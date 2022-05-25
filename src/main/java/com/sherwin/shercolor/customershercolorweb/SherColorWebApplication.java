@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cloud.vault.config.VaultAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(scanBasePackages = {"com.sherwin.shercolor","com.sherwin.login"},exclude = {VaultAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"com.sherwin.shercolor","com.sherwin.login"})
 public class SherColorWebApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
