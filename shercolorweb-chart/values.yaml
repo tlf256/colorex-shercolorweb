@@ -1,13 +1,12 @@
 # Default values for shercolorweb.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-swDockerRegistry: &dockerRepo docker.artifactory.sherwin.com
 appRoot: /shercolorweb
 
 replicaCount: 1
 
 image:
-  repository: colorex/shercolorweb
+  repository: docker.artifactory.sherwin.com/colorex/shercolorweb
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -80,7 +79,7 @@ affinity: {}
 # Values for the postgresql dependency chart
 shercolorPostgres:
   global:
-    imageRegistry: *dockerRepo
+    imageRegistry: docker.artifactory.sherwin.com
     storageClass: "longhorn"
     #TODO add different environment configs or change these creds?
     postgresql:
@@ -90,7 +89,7 @@ shercolorPostgres:
       existingSecret: "pg-secret"
       servicePort: "5432"
   image:
-    registry: *dockerRepo
+    registry: docker.artifactory.sherwin.com
     tag: 14.1.0-debian-10-r9
   persistence:
     size: 4Gi
