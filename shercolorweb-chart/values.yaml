@@ -10,7 +10,7 @@ image:
   repository: colorex/shercolorweb
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  # tag: "latest"
+  tag: "latest"
 
 imagePullSecrets: []
 
