@@ -36,22 +36,22 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.appRoot }}/heartbeat.jsp
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 60
-            periodSeconds: 60
-            failureThreshold: 2
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: {{ .Values.appRoot }}
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 60
-            periodSeconds: 60
-            failureThreshold: 2
-            timeoutSeconds: 5  
+ #         livenessProbe:
+ #           httpGet:
+ #             path: {{ .Values.appRoot }}/heartbeat.jsp
+ #             port: {{ .Values.service.port }}
+ #           initialDelaySeconds: 60
+ #           periodSeconds: 60
+ #           failureThreshold: 2
+ #           timeoutSeconds: 5
+ #         readinessProbe:
+ #           httpGet:
+ #             path: {{ .Values.appRoot }}
+ #             port: {{ .Values.service.port }}
+ #           initialDelaySeconds: 60
+ #           periodSeconds: 60
+ #           failureThreshold: 2
+ #           timeoutSeconds: 5  
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           envFrom:
@@ -63,7 +63,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Chart.Name }}-secret
                   key: dbPassword
-
+          ports:
+            - containerPort: {{ .Values.service.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
