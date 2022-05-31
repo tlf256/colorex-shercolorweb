@@ -1,17 +1,4 @@
 spring:
-  config:
-    import: vault://
-  cloud:
-    vault:
-      authentication: APPROLE
-      uri: https://vault.sherwin.com
-      application-name: shercolorweb
-      kv:
-        backend: shercolor/kv2
-      #TODO auth method should be switched to app-id when moved to k8s to prevent the storing of credentials here
-      approle:
-        role-id: 4b851bc5-133f-c30f-b8f7-d560a3a46fa9
-        secret-id: 105e90e5-cfd3-bf1a-36e8-a10260029ac8
   datasource:
     password: ${dbPassword}
     username: ${dbUsername}
@@ -31,8 +18,47 @@ spring:
       enabled: ALWAYS
   profiles:
     # login profile is always unconditionally included in order to use Wildfly security JNDI connection
-    include: login
+
     # activate db type (oracle or postgres) and environment (dev, qa or prod)
     # The login-test profile is needed to tell Spring to use a JDBC connection for SherColorLogin
     # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables
-    active: oracle,login-test,dev
+    include: oracle,login,login-test,dev
+
+---
+spring:
+  config:
+    activate-on-profile: dev
+
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
+oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
+dbUsername: "shercolor"
+dbPassword: "sh3rclrd3v"
+sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
+sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
+
+---
+spring:
+  config:
+    activate-on-profile: qa
+
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
+oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
+dbUsername: "SHERCOLOR_USER"
+dbPassword: "sh3rqausr"
+sherlinkLoginUrl: "https://wqweb1.sherwin.com/sher-link/user/login.do"
+sherlinkTokenSwUrl: "https://wqweb1.sherwin.com/sher-link/StoresEcommerceService"
+
+---
+spring:
+  config:
+    activate-on-profile: prod
+
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
+oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
+dbUsername: "SHERCOLOR_USER"
+dbPassword: "sh3ruserp"
+sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
+sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
