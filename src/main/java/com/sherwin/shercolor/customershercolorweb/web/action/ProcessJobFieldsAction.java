@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -116,7 +117,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 					} else {
 						jobField.setEnteredValue(custField.getFieldDefault());
 					}
-					logger.debug("Adding field " + jobField.getScreenLabel() + " value is " + jobField.getEnteredValue());
+					logger.debug(Encode.forJava("Adding field " + jobField.getScreenLabel() + " value is " + jobField.getEnteredValue()));
 					jobFieldList.add(jobField);
 					ctr++;
 				}
@@ -171,7 +172,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 		try {
 			updateMode = 0;
 			logger.debug("About to get object from map");
-			logger.debug("reqGuid is " + reqGuid);
+			logger.debug(Encode.forJava("reqGuid is " + reqGuid));
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 
 			List<String> validateMe = new ArrayList<String>();
@@ -186,7 +187,7 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 				
 				int i = 0;
 				for(JobField thisField : jobFieldList){
-					logger.debug("thisField=" + thisField.getEnteredValue());
+					logger.debug(Encode.forJava("thisField=" + thisField.getEnteredValue()));
 					// fill in screenLabel b/c lost on form submit
 					thisField.setScreenLabel(reqObj.getJobFieldList().get(i).getScreenLabel());
 					thisField.setEnteredValue(thisField.getEnteredValue().replace("\t", ""));

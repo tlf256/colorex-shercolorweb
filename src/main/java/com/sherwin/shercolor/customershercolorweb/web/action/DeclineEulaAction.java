@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -29,8 +30,8 @@ public class DeclineEulaAction extends ActionSupport implements SessionAware, Lo
 	
 	public String execute() {
 		logger.info("in DeclineEulaActuionExecute");
-		logger.info("reqGuid is " + reqGuid);
-		logger.info("eulaSeqNbr is " + eulaSeqNbr);
+		logger.info(Encode.forJava("reqGuid is " + reqGuid));
+		logger.info(Encode.forJava("eulaSeqNbr is " + eulaSeqNbr));
 		//The user has DECLINED the eula.  We need to post a record that the user has declineD the
 		//displayed eula.
 

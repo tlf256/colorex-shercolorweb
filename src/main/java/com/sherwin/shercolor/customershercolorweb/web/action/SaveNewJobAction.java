@@ -117,7 +117,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
-					logger.error("Received updateTranTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
+					logger.error(Encode.forJava("Received updateTranTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage()));
 				    retVal = ERROR;
 				}
 			} else {
@@ -141,7 +141,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 					recDirty = 0;
 				    retVal = SUCCESS;
 				} else {
-					logger.error("Received saveNewTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage());
+					logger.error(Encode.forJava("Received saveNewTranHistory errMsg " + errMsg.getCode() + " " + errMsg.getMessage()));
 				    retVal = ERROR;
 				}
 			}
@@ -159,6 +159,13 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		//logger.info("SaveNewJobAction returning " + retVal);
 		return retVal;
 
+	}
+	
+	public String saveAndContinue() {
+		logger.debug("Inside action saveAndContinue");
+		String retVal = execute();
+		logger.debug("Inside action back from saveAndContinue");
+		return retVal;
 	}
 
 	public String saveBeforeAction(){

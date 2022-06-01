@@ -17,13 +17,14 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
 	</head>
 	
 	<body>
-		<!-- including Header -->
-		<s:include value="Header.jsp"></s:include>
-		
+		<nav class="navbar navbar-dark bg-dark navbar-expand-md pt-0 pb-0">
+		   <img src="${pageContext.request.contextPath}/graphics/shercolor-sm.jpg" alt="Sher-Color" style="height: 3.44rem;"/>
+		   <s:set var="thisGuid" value="reqGuid" />
+		</nav>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-3">

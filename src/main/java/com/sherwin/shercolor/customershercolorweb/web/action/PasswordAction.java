@@ -56,12 +56,12 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 		String returnStatus = "";
 		String userId = "";
 		try {
-			logger.info("change start, guid1 is " + guid1);
+			logger.info(Encode.forJava("change start, guid1 is " + guid1));
 			RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
 			if(loginReqObj != null) {
 				logger.info("got loginReqObj");
 				userId = loginReqObj.getUserId();
-				logger.info("got user ID is " + userId);
+				logger.info(Encode.forJava("got user ID is " + userId));
 				
 				//Do some comparisons and checks - make sure firstly that the password and 
 				//the password confirmation match.

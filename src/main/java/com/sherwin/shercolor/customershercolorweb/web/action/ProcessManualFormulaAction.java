@@ -90,8 +90,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			 
 			jobFields = reqObj.getJobFieldList();
 			 
-			if(!reqObj.getColorComp().equalsIgnoreCase("CUSTOM")){
+			if(!reqObj.getColorType().equalsIgnoreCase("CUSTOM")){
 				// change to custom and replace color id with word Manual
+				reqObj.setColorType("CUSTOM");
 				reqObj.setColorComp("CUSTOM");
 				reqObj.setColorID("MANUAL");
 				// empty out SW color match if it was set
@@ -277,7 +278,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	public String execute() {
 		String retVal = SUCCESS;
 		try{
-			logger.debug("Start of execute, reqGuid is " + reqGuid);
+			logger.debug(Encode.forJava("Start of execute, reqGuid is " + reqGuid));
 			recDirty=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			logger.debug("successfully read reqObj");
@@ -376,7 +377,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 							}
 							i++;
 						}
-						logger.debug("adding clrnt/incrs to new formula" + addMe.getClrntSysId() + " " + addMe.getTintSysId() + " " + Arrays.toString(incrs));
+						logger.debug(Encode.forJava("adding clrnt/incrs to new formula" + addMe.getClrntSysId() + " " + addMe.getTintSysId() + " " + Arrays.toString(incrs)));
 						addMe.setIncrement(incrs);
 						newIngredients.add(addMe);
 
@@ -474,7 +475,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				
 				List<String> currentWarningMessages = new ArrayList<String>();  //list of all warnings on this pass
 				for(SwMessage item:allMsgs) {
-					logger.debug("in execute, adding action message " + item.getSeverity() + " " + item.getMessage());
+					logger.debug(Encode.forJava("in execute, adding action message " + item.getSeverity() + " " + item.getMessage()));
 					if(item.getSeverity().isInRange(Level.FATAL,Level.ERROR)){
 						//addFieldError("reqGuid", item.getMessage());
 						addActionError(item.getMessage());

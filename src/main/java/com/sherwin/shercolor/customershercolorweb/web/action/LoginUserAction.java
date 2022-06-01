@@ -103,7 +103,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				userId = userId.trim();
 			}
 			if (logger.isDebugEnabled()) {
-				logger.debug("userId -> " + userId);
+				logger.debug(Encode.forJava("userId -> " + userId));
 			}
 
 			try {
@@ -132,7 +132,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				if (isloginActive(userId) != true) {
 					isDisabledLogin = true;
 					if (logger.isDebugEnabled())
-						logger.debug("authentication failed, inactive login  -> " + Encode.forHtml(userId));
+						logger.debug(Encode.forJava("authentication failed, inactive login  -> " + Encode.forHtml(userId)));
 					throw new Exception("Login failed. This login has been disabled.");
 				}
 				
@@ -183,7 +183,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				}
 			
 			} catch (Exception e) {
-				logger.error("sher-link authentication error for user -> " + userId);
+				logger.error(Encode.forJava("sher-link authentication error for user -> " + userId));
 				logger.error("sher-link authentication error is -> " + e.getMessage());
 
 				// Check Number of Login Attempts
@@ -262,7 +262,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		if(swUserService.disableActiveUser(theUserId) <= 0) {
 			//log an error that something happened (odds are, the DAO also logged it too)
 			//then continue on. 
-			logger.error("Attempt to disable active user " + theUserId + " failed");
+			logger.error(Encode.forJava("Attempt to disable active user " + theUserId + " failed"));
 		}
 	}
 
@@ -271,7 +271,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		SWUser theUserRec;
 		
 		try {
-			logger.info("in isLoginActive, theUserId is " + theUserId);
+			logger.info(Encode.forJava("in isLoginActive, theUserId is " + theUserId));
 		
 			theUserRec = swUserService.readSWUser(theUserId);
 			
@@ -335,7 +335,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			} 
 		}
 		catch(Exception e) {
-			logger.error("LoginUserAction ERROR: user " + theUserId + " lookup failed", e);
+			logger.error(Encode.forJava("LoginUserAction ERROR: user " + theUserId + " lookup failed"), e);
 			return false;
 		}
 	}
@@ -347,7 +347,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 		try {
 			if(loginAttemptCnt > 5) {
 				disableActiveUser(userName);
-				logger.error("Too many failed login attempts, account " + userName + " has been deactivated.");
+				logger.error(Encode.forJava("Too many failed login attempts, account " + userName + " has been deactivated."));
 
 				SWUserComments comment = new SWUserComments();
 				comment.setLoginID(userName);

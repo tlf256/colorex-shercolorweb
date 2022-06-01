@@ -8,3 +8,4 @@
     <disable-audit>true</disable-audit>
     <context-root>/shercolorweb</context-root>
 </jboss-web>
+

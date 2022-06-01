@@ -14,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
 import com.sherwin.shercolor.common.domain.CustWebDevices;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.EulaService;
@@ -67,13 +68,21 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean reReadLocalHostTinter;
 	private String loMessage;
 	private int tintQueueCount;
-
+	private String customerType;
 	private int daysUntilPwdExp;
 
 
 	public String execute() {
 		String custName = "";
 		String returnStatus = "SUCCESS";
+		Properties prop = new Properties();
+		Properties propTest = new Properties();
+		String dbEnv = "";
+		String testMode = "";
+		String testModeFirst = "";
+		String testModeLast = "";
+		String testModeAcct = "";
+		customerType = "";
 		newSession = true;
 		siteHasTinter = false;
 		siteHasPrinter = false;
@@ -261,7 +270,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				//bad/invalid entry
 				return NONE;
 			}
-
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
@@ -301,7 +309,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 			//Check if it is a sales rep.  If so, we will use the territory number (if valid).
 			if (theRO.isSalesRep()) {
 				theCustWebParmsKey = theRO.getTerritory();
-				logger.error("It is a sales rep, territory is " + theRO.getTerritory());
+				logger.error(Encode.forJava("It is a sales rep, territory is " + theRO.getTerritory()));
 				//check to assure this is not null, blank or some other generic.
 				if (theCustWebParmsKey==null) {
 					//It's null, what do we return instead?
@@ -374,7 +382,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				reqObj.setPrinterConfigured(true);
 				setSiteHasPrinter(true);
 
-				logger.debug("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+				logger.debug(Encode.forJava("Device " + d.getDeviceModel() + " found for " + reqObj.getCustomerID() + " - " + d.getDeviceType()));
 			}
 			else {
 				setSiteHasPrinter(false);
