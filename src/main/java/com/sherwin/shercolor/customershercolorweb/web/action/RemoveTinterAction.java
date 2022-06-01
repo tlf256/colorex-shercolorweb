@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
@@ -49,7 +50,7 @@ public class RemoveTinterAction extends ActionSupport implements SessionAware, L
 				colorantsTxtList.add(custWebcolorantsTxt);
 			}
 			
-			logger.info("Removing " + reqObj.getTinter().getModel() + " tinter");
+			logger.info(Encode.forJava("Removing " + reqObj.getTinter().getModel() + " tinter"));
 			
 			boolean result = tinterService.deleteColorantsTxt(colorantsTxtList);
 			
@@ -62,8 +63,8 @@ public class RemoveTinterAction extends ActionSupport implements SessionAware, L
 				List<SwMessage> logResult = createConfigTinterEvent(reqObj);
 				
 				if(logResult != null && logResult.size() > 0) {
-					logger.error("Error logging Config tinter event. Error code: " + logResult.get(0).getCode() +
-							" error message: " + logResult.get(0).getMessage());
+					logger.error(Encode.forJava("Error logging Config tinter event. Error code: " + logResult.get(0).getCode() +
+							" error message: " + logResult.get(0).getMessage()));
 				}
 			}
 			

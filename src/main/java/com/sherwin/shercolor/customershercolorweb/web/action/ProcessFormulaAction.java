@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
+import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsMiscCodes;
 import com.sherwin.shercolor.common.domain.CdsProdCharzd;
 import com.sherwin.shercolor.common.domain.CdsRoomList;
@@ -28,6 +30,7 @@ import com.sherwin.shercolor.common.domain.CustWebBase;
 import com.sherwin.shercolor.common.domain.CustWebCanTypes;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
+import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebTinterProfile;
 import com.sherwin.shercolor.common.domain.CustWebTinterProfileCanTypes;
 import com.sherwin.shercolor.common.domain.CustWebTran;
@@ -38,6 +41,7 @@ import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.ColorMastService;
+import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
@@ -117,6 +121,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	@Autowired 
 	private UtilityService utilityService;
 	
+	@Autowired
+	private ColorService colorService;
+	
 	public String display(){
 		String retVal = null;
 
@@ -129,6 +136,11 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			tinter = reqObj.getTinter();
 			colorNotes = reqObj.getColorNotes();
 			setSiteHasPrinter(reqObj.isPrinterConfigured());
+			
+			//Estimate the Rgb Hex by calculating a curve based on the formula if the RGB Hex was not already filled in
+			if (reqObj.getRgbHex() == null || reqObj.getRgbHex().equals("")) {
+				estimateRgbHex();
+			}
 			
 			// check if this account is a drawdown center or profiled to use room by room option
 			lookupCustomerProfile();
@@ -186,7 +198,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			if(tinter!=null && tinter.getModel()!=null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
 				sessionHasTinter = true;
 				// Setup Tinter Colorant Dispense Info for Formula being displayed
-				logger.debug("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+				logger.debug(Encode.forJava("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
 				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
 				logger.debug("back from tinterService");
@@ -199,7 +211,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						logger.debug("pulling map info for " + ingr.getTintSysId());
 						DispenseItem addItem = new DispenseItem();
 						addItem.setClrntCode(ingr.getTintSysId());
-						logger.debug(addItem.getClrntCode());
+						logger.debug(Encode.forJava(addItem.getClrntCode()));
 						addItem.setShots(ingr.getShots());
 						logger.debug(addItem.getShots());
 						addItem.setUom(ingr.getShotSize());
@@ -208,7 +220,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							tranHistory = tranHistoryService.getCustomerJobs(reqObj.getCustomerID());
 							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()}));
-							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
+							logger.error(Encode.forJava("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId()));
 							return "errormsg";
 						}
 						else {
@@ -230,7 +242,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 					retVal = SUCCESS;
 
 				} else {
-					logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+					logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
 					retVal = ERROR;
 				}
 				
@@ -413,7 +425,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			// set up tinter colorant dispense info for small sample
 			if(tinter != null && tinter.getModel() != null && !tinter.getModel().isEmpty() && tinter.getClrntSysId().equals(reqObj.getClrntSys())){
 				setSessionHasTinter(true);
-				logger.debug("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+				logger.debug(Encode.forJava("About to get colorant map for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
 				HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
 				if(colorantMap != null && !colorantMap.isEmpty()){
@@ -429,7 +441,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 						// Validating completeness of colorantMap data returned from DB. If not, send error msg back to SampleDispense.jsp
 						if(!colorantMap.containsKey(ingr.getTintSysId())){
 							addActionMessage(getText("processFormulaAction.selectedJobMissingColorant", new String[] {ingr.getTintSysId()} ));
-							logger.error("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId());
+							logger.error(Encode.forJava("Colorant map is incomplete for Colorant: " + ingr.getTintSysId() + " in Colorant System: " + ingr.getClrntSysId()));
 							retVal = INPUT; 
 						} else {
 							addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
@@ -445,7 +457,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 					retVal = SUCCESS;
 
 				} else {
-					logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+					logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
 					retVal = ERROR;
 				}
 			} else {
@@ -581,6 +593,17 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
+	public String saveQuantityOrdered() {
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			// save user's order quantity entry into session
+			reqObj.setQuantityOrdered(qtyOrdered);
+			return SUCCESS;
+		} catch (RuntimeException e) {
+			logger.error("Exception Caught: " + e.toString() +  " " + e.getMessage(), e);
+			return ERROR;
+		}
+	}
 	
 	public String displayUpdatedFormula() {
 		try {
@@ -601,7 +624,50 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
-
+	private void estimateRgbHex() {
+			
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		
+		//Do not estimate if there is no formula
+		if (displayFormula == null) {
+			return;
+		}
+		
+		String rgbHex = null;
+		BigDecimal[] curveArray = new BigDecimal[40];
+		CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
+		custWebParms.setClrntSysId(reqObj.getClrntSys());
+		
+		//Estimate a curve based on the displayed formula
+		Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);
+		if(projCurve != null){
+			boolean allZero = true;
+			for (int i = 0; i < 40; i++) {
+				if(projCurve[i] != 0D) allZero = false;
+				curveArray[i] = new BigDecimal(projCurve[i]);
+			}
+		
+			if(!allZero){
+				//Try getting an RGB value for the estimated curve
+				ColorCoordinates colorCoord = null;
+				
+				//Either use the light source stored in the request object, or use a default light source of D65
+				if (reqObj.getLightSource() != null) {
+					colorCoord = colorService.getColorCoordinates(curveArray, reqObj.getLightSource());
+				}
+				else {
+					colorCoord = colorService.getColorCoordinates(curveArray, "D65");
+				}
+				
+				if (colorCoord != null) {
+					rgbHex = colorCoord.getRgbHex();
+					if(rgbHex != null) {
+						reqObj.setRgbHex(rgbHex);
+					}
+				}
+			}
+		}
+	}
 	
 	public DataInputStream getInputStream() {
 		return inputStream;

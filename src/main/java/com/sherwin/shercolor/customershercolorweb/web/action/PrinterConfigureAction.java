@@ -40,7 +40,7 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 				reqObj.setPrinterConfigured(true);
 				setSiteHasPrinter(true);
 				setPrinterModel(d.getDeviceModel());
-				logger.debug("Device found for " + reqObj.getCustomerID() + " - " + d.getDeviceType());
+				logger.debug(Encode.forJava("Device found for " + reqObj.getCustomerID() + " - " + d.getDeviceType()));
 			}
 			else {
 				setSiteHasPrinter(false);
@@ -78,7 +78,7 @@ public class PrinterConfigureAction extends ActionSupport implements SessionAwar
 
 				if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
 						&& custWebDev.getDeviceModel() != null){
-					logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
+					logger.debug(Encode.forJava("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr()));
 					SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
 					logger.debug("back from saveCustDevice without error");
 					if(returnMessage!=null){

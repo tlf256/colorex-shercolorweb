@@ -160,7 +160,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 		try {
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
 
-			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
+			logger.debug(Encode.forJava("decoded partialColorNameOrId - " + partialColorNameOrId));
 
 			if (selectedCoType.equals("SW")) {
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
@@ -178,7 +178,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			}
 		}
 		catch (SherColorException e){
-			logger.error(e.getMessage(), e);
+			logger.error(Encode.forJava(e.getMessage()), e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

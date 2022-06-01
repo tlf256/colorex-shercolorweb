@@ -90,7 +90,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			if(reqGuid != null) {
 				TinterInfo tinter = reqObj.getTinter();
 				if(tinter != null) {
-					logger.debug("inside execute of TinterEvent. Tinter is... " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+					logger.debug(Encode.forJava("inside execute of TinterEvent. Tinter is... " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
 
 					tintEvent.setCustomerId(reqObj.getCustomerID());
 					tintEvent.setClrntSysId(tinter.getClrntSysId());
@@ -108,7 +108,7 @@ public class TinterEventAction extends ActionSupport  implements SessionAware, L
 			logger.debug("TinterEvent date is null.  Using current date and time");
 			stampDate = new Date();
 		} else {
-			logger.debug("TinterEvent date is " + eventDate.toString());
+			logger.debug(Encode.forJava("TinterEvent date is " + eventDate.toString()));
 			SimpleDateFormat jsdf = new SimpleDateFormat("EE MMM d y H:m:s 'GMT'Z (zz)");
 			try {
 				stampDate = jsdf.parse(eventDate);

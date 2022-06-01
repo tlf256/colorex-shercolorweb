@@ -2,14 +2,13 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Calendar;
 import java.util.Map;
-
 import com.sherwin.shercolor.common.domain.EulaHist;
 import org.slf4j.LoggerFactory;
 import org.apache.struts2.interceptor.SessionAware;
 import org.slf4j.Logger;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.common.service.EulaService;
 import org.springframework.stereotype.Component;
@@ -28,8 +27,8 @@ public class AcceptEulaAction extends ActionSupport implements SessionAware {
 	
 	public String execute() {
 		logger.info("in AcceptEulaActuionExecute");
-		logger.info("reqGuid is " + reqGuid);
-		logger.info("eulaSeqNbr is " + eulaSeqNbr);
+		logger.info(Encode.forJava("reqGuid is " + reqGuid));
+		logger.info(Encode.forJava("eulaSeqNbr is " + eulaSeqNbr));
 		//The user has accepted the eula.  We need to post a record that the user has accepted the
 		//displayed eula.
 		try {

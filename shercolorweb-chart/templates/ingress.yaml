@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -44,4 +45,4 @@ spec:
 #    - shercolorweb.np-rancher.sherwin.com
     - shercolorweb.ingress.lb0020.sherwin.com
     - shercolorweb.ingress.local.sherwin.com
-
+{{- end }}

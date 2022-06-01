@@ -654,3 +654,6 @@ obj/
 # Colorex
 *.pdf
 !wildfly/
+
+#allow SherColorWeb docs
+!docs/*

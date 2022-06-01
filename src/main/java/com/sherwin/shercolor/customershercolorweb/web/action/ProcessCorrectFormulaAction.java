@@ -268,7 +268,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 							retVal = SUCCESS;
 
 						} else {
-							logger.debug("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+							logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
 							errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
 							retVal = ERROR;
 						}
@@ -395,7 +395,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			SwMessage result = tranHistoryService.saveNewTranCorrection(tranCorr);
 
 			if(result==null || result.getCode()==null){
-				logger.debug("inside saveStep and stepStatus is " + stepStatus);
+				logger.debug(Encode.forJava("inside saveStep and stepStatus is " + stepStatus));
 				if(!stepStatus.equalsIgnoreCase("OPEN") && nextUnitNbr==reqObj.getQuantityDispensed()) mergeCorrWithStartingForm = true;
 				retVal = SUCCESS;
 			} else {

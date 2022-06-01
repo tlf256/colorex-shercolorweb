@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -192,7 +193,7 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 				long startJob = System.currentTimeMillis();
 				String clrntSysId = webTran.getClrntSysId();
 				
-				logger.debug("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr());
+				logger.debug(Encode.forJava("processing " + webTran.getCustomerId() + " " + webTran.getControlNbr()));
 				JobHistoryInfo job = new JobHistoryInfo();
 				job.setClrntSysId(clrntSysId);
 				job.setColorId(webTran.getColorId());
@@ -430,6 +431,23 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		illums[1] = webTran.getIllumSecondary();
 		illums[2] = webTran.getIllumTertiary();
 		formula.setIllums(illums);
+		if (webTran.getIllumPrimary() != null) {
+			reqObj.setLightSource(webTran.getIllumPrimary());
+			switch (illums[0]) {
+				case "D65":
+					reqObj.setLightSourceName(getText("processLightSourceAction.daylight"));
+					break;
+				case "A":
+					reqObj.setLightSourceName(getText("processLightSourceAction.incandescent"));
+					break;
+				case "F2":
+					reqObj.setLightSourceName(getText("processLightSourceAction.fluorescent"));
+					break;
+				default:
+					reqObj.setLightSourceName("");
+					break;
+			}
+		}
 		formula.setMetamerismIndex(webTran.getMetamerismIndex());
 		formula.setPercent(webTran.getFormPct());
 		formula.setProdNbr(webTran.getProdNbr());

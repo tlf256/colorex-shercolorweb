@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.ActionSupport;
@@ -72,7 +73,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 	
 	public String SelectEcal(){
 		try {
-			logger.debug("selecting ecal for " + filename);
+			logger.debug(Encode.forJava("selecting ecal for " + filename));
 			CustWebEcal cal = service.selectEcal(filename);	
 			if(cal != null){			
 				setData(cal.getData());
@@ -86,7 +87,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 
 	public String SelectGData(){
 		try {
-			logger.debug("selecting gdata for " + colorantid);
+			logger.debug(Encode.forJava("selecting gdata for " + colorantid));
 			CustWebEcal cal = service.selectGData(colorantid);	
 			if(cal != null){			
 				setData(cal.getData());
@@ -161,7 +162,7 @@ public class EcalAction extends ActionSupport implements SessionAware, LoginRequ
 				this.setEcalList(service.getEcalsByCustomer(customerID));
 			}
 			//get List of Template Cals
-			logger.debug("CustomerID=" +reqObj.getCustomerID());
+			logger.debug(Encode.forJava("CustomerID=" +reqObj.getCustomerID()));
 
 			return SUCCESS;
 		} catch(RuntimeException e) {

@@ -104,8 +104,8 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 		logger.debug("Begin Saving CustWebDevice.");
 		try {
 			if(reqObj !=null) {
-				logger.debug("request object getSpectro getMmodel is " + reqObj.getSpectro().getModel());
-				logger.debug("request object  getSpectroMmodel is " + reqObj.getSpectroModel());
+				logger.debug(Encode.forJava("request object getSpectro getMmodel is " + reqObj.getSpectro().getModel()));
+				logger.debug(Encode.forJava("request object  getSpectroMmodel is " + reqObj.getSpectroModel()));
 				custWebDev.setCustomerId(reqObj.getCustomerID());
 				custWebDev.setSerialNbr(reqObj.getSpectro().getSerialNbr());
 				custWebDev.setDeviceModel(reqObj.getSpectro().getModel());
@@ -114,7 +114,7 @@ public class SpectroConfigureAction extends ActionSupport implements SessionAwar
 
 				if(custWebDev.getCustomerId()!=null && custWebDev.getSerialNbr() != null
 						&& custWebDev.getDeviceModel() != null){
-					logger.debug("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr());
+					logger.debug(Encode.forJava("Saving CUSTWEBDEVICES Model num is: " + custWebDev.getDeviceModel() + " Serial num is:" + custWebDev.getSerialNbr()));
 					SwMessage returnMessage = customerService.saveCustDevice(custWebDev);
 					logger.debug("back from saveCustDevice without error");
 					if(returnMessage!=null){

@@ -26,6 +26,11 @@ $(document).ready(function() {
 			var colorNameOrId = encodeURIComponent(request.term);
 			//console.log("encoded partialColorNameOrId - " + colorNameOrId);
 			var selectedCompany = $("select[id='companiesList'] option:selected").val();
+			
+			if ($('input:radio[name=selectedCoTypes]:checked').val() === "NAT") {
+				selectedCompany = $("select[id='natCompaniesList'] option:selected").val();
+			}
+			
 			$.ajax({	
 				url : "listColors.action",
 				dataType : "json",
