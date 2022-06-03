@@ -31,5 +31,5 @@ ingress:
   tls:
   - secretName: shercolorweb-tls-secrets
     hosts:
-    - shercolorweb.ingress.lb0020.sherwin.com
-    - shercolorweb.ingress.local.sherwin.com
+    - shercolorweb.ingress.lb0020.sites.sherwin.com
+    - shercolorweb.ingress.local.sites.sherwin.com
