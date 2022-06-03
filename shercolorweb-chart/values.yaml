@@ -7,8 +7,9 @@ replicaCount: 3
 
 image:
   repository: docker.artifactory.sherwin.com/colorex/shercolorweb
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
+  # TODO change this to a hard version
   tag: "latest"
 
 imagePullSecrets: []

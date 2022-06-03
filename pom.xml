@@ -9,6 +9,12 @@
 		<version>2.6.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+    <repositories>
+        <repository>
+            <id>artifactory</id>
+            <url>https://artifactory.sherwin.com/artifactory/maven-virtual</url>
+        </repository>
+    </repositories>
 
     <groupId>com.sherwin.shercolor</groupId>
     <artifactId>SherColorWeb</artifactId>
