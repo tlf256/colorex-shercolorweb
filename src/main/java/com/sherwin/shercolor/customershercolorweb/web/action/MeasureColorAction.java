@@ -109,10 +109,9 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			// Try getting an RGB value for the object.
 			ColorCoordinates colorCoord = colorService.getColorCoordinates(curveArray, "D65");
 			
-			//set color coordinates for compare and closest color
 			//compare colors can potentially be redirected here twice
 			//so distinction needs to be made between the first and second measurements
-			if(measure || compare || closestColor) {
+			if(measure || compare) {
 				if(colorCoord == null) {
 					colorCoord = new ColorCoordinates();
 					double[] curveArrDouble = new double[40];
@@ -132,10 +131,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				
 				if(compare) {
 					coordMap.put("sample", colorCoord);
-				} else if(measure) {
-					coordMap.put("standard", colorCoord);
 				} else {
-					coordMap.put("colorCoord", colorCoord);
+					coordMap.put("standard", colorCoord);
 				}
 				
 				reqObj.setColorCoordMap(coordMap);
@@ -144,10 +141,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				
 				if(compare) {
 					return "result";
-				} else if(measure) {
-					return "sample";
 				} else {
-					return "closestColor";
+					return "sample";
 				}
 			}
 			
@@ -159,6 +154,20 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 					reqObj.setClosestSwColorName(closestSwColor.getColorName());
 					reqObj.setClosestSwColorId(closestSwColor.getColorId());
 				}
+			}
+			
+			reqObj.setRgbHex(rgbHex);
+			reqObj.setCurveArray(curveArray);
+			
+			if(closestColor) {
+				Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
+				coordMap.put("colorCoord", colorCoord);
+				
+				reqObj.setColorCoordMap(coordMap);
+				
+				sessionMap.put(reqGuid, reqObj);
+				
+				return "closestColor";
 			}
 			
 			//2018-01-15 BKP - copied from below to here to calculated bases based on curve.
@@ -176,8 +185,6 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			
 			reqObj.setIntBases(intBases);
 			reqObj.setExtBases(extBases);
-			reqObj.setRgbHex(rgbHex);
-			reqObj.setCurveArray(curveArray);
 
 			sessionMap.put(reqGuid, reqObj);
 			

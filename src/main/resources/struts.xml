@@ -446,7 +446,7 @@
 				<param name="closestColor">${closestColor}</param>
 			</result>
 		</action>
-		<action name="closestColorAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorAction" method="execute">
+		<action name="closestColorResultAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
