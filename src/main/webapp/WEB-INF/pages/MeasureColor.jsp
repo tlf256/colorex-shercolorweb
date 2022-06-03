@@ -204,6 +204,7 @@
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
+						<s:hidden name="closestColor" id="closestColor" value="%{closestColor}"/>
 					</div>
 				</div>
 				<br>

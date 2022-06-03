@@ -2,9 +2,8 @@
  * 
  */
 $(document).ready(function(){
-	/*$('#clColorBtn').on('click', function(){
-		showIntExtModal();
-	});*/
+	//showIntExtModal();	
+	
 });
 
 function showIntExtModal(){

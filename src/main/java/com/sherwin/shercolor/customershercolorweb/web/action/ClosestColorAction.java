@@ -1,6 +1,5 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +9,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.domain.CdsColorMast;
-import com.sherwin.shercolor.common.service.ColorBaseService;
+import com.sherwin.shercolor.common.domain.ClosestColor;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
@@ -23,9 +21,8 @@ public class ClosestColorAction extends ActionSupport implements SessionAware, L
 	private boolean swactive;
 	private String intExt;
 	private boolean closestColor;
-	
-	@Autowired
-	private ColorBaseService colorBaseService;
+	List<ClosestColor> closestSwColors;
+	List<ClosestColor> closestCmptColors;
 	
 	@Autowired
 	private ColorService colorService;
@@ -43,20 +40,13 @@ public class ClosestColorAction extends ActionSupport implements SessionAware, L
 	
 	public String execute() {
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		//find closest colors
-		CdsColorMast ccm = colorService.findClosestSwColorFromCoord(reqObj.getColorCoordMap().get("colorCoord"));
-		//always pull recommended base since
-		//sw colors will always be displayed in results
-		List<String> colorBaseList = new ArrayList<String>();
-		if(getIntExt().equals("int")) {
-			colorBaseList = colorBaseService.InteriorColorBaseAssignments(null, null, null);
-		} else if(getIntExt().equals("ext")) {
-			
-		} else {
-			//unrecognized value
-			logger.error("ClosestColorAction: unrecognized project type " + getIntExt());
-			return INPUT;
+		// find closest colors
+		closestSwColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), intExt, true);
+		if(!swactive) {
+			// also retrieve competitive colors
+			closestCmptColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), null, false);
 		}
+		
 		return SUCCESS;
 	}
 	
@@ -102,5 +92,21 @@ public class ClosestColorAction extends ActionSupport implements SessionAware, L
 
 	public void setClosestColor(boolean closestColor) {
 		this.closestColor = closestColor;
+	}
+
+	public List<ClosestColor> getClosestSwColors() {
+		return closestSwColors;
+	}
+
+	public void setClosestSwColors(List<ClosestColor> closestSwColors) {
+		this.closestSwColors = closestSwColors;
+	}
+
+	public List<ClosestColor> getClosestCmptColors() {
+		return closestCmptColors;
+	}
+
+	public void setClosestCmptColors(List<ClosestColor> closestCmptColors) {
+		this.closestCmptColors = closestCmptColors;
 	}
 }
