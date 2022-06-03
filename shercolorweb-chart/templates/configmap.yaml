@@ -6,8 +6,8 @@ metadata:
 data: 
   {{- if .Values.store.enabled }}
   SPRING_PROFILES_ACTIVE: "{{ $environment }},postgres"
-  dbUsername: {{ .Values.shercolorPostgres.global.postgresql.postgresqlUsername | quote }}
-  dbPostgresUrl: "jdbc:postgresql://shercolor-postgres-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.shercolorPostgres.global.postgresql.servicePort }}/{{ .Values.shercolorPostgres.global.postgresql.postgresqlDatabase }}"
+  dbUsername: {{ .Values.postgresql.global.postgresql.postgresqlUsername | quote }}
+  dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.global.postgresql.servicePort }}/{{ .Values.postgresql.global.postgresql.postgresqlDatabase }}"
   {{- else }}
   SPRING_PROFILES_ACTIVE: "{{ $environment }},oracle"
   dbUsername: {{ index .Values $environment "dbOracleUsername" | quote }}
@@ -15,6 +15,5 @@ data:
   {{- end }}
   oeBaseUrl: {{ .Values.oeBaseUrl | quote }}
   dbOracleUrl: {{ index .Values $environment "dbOracleUrl" | quote }}
-  dbUsername: {{ index .Values $environment "dbOracleUsername" | quote }}
   sherlinkLoginUrl: {{ index .Values $environment "sherlinkLoginUrl" | quote }}
   sherlinkTokenSwUrl: {{ index .Values $environment "sherlinkTokenSwUrl" | quote }}

@@ -40,7 +40,7 @@ service:
   port: 8090
 
 ingress:
-  enabled: false
+  enabled: true
 #  className: ""
 #  annotations:
 #    kubernetes.io/ingress.class: nginx
@@ -82,20 +82,25 @@ tolerations: []
 affinity: {}
 
 # Values for the postgresql dependency chart
-shercolorPostgres:
+postgresql:
   global:
     imageRegistry: docker.artifactory.sherwin.com
     storageClass: "longhorn"
-    #TODO add different environment configs or change these creds?
     postgresql:
       postgresqlDatabase: "sherd"
       postgresqlUsername: "shercolor"
-      existingSecret: "pg-secret"
+      existingSecret: "shercolorweb-secret"
       servicePort: "5432"
   image:
     registry: docker.artifactory.sherwin.com
     tag: 14.1.0-debian-10-r9
+  service:
+    type: LoadBalancer
+    annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
+    loadBalancerIP: "172.30.0.8"
+    externalTrafficPolicy: Cluster
   persistence:
+    existingClaim: data-shercolor-postgres-postgresql-0
     size: 4Gi
 
 # Conditional attribute only meant to be set via the Helm install command. 
