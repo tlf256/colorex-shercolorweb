@@ -1,0 +1,23 @@
+
+ingress:
+  namespace: dev-shercolor
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "INGRESSID"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+  hosts:
+  - host: shercolorweb.np-rancher.sherwin.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: shercolorweb
+            port:
+              number: 8090
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - shercolorweb.np-rancher.sherwin.com
