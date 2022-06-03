@@ -1,0 +1,35 @@
+
+service:
+  annotations:
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+    traefik.ingress.kubernetes.io/service.sticky.cookie.name: INGRESSID
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  hosts:
+  - host: shercolorweb.ingress.lb0020.sites.sherwin.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: shercolorweb
+            port:
+              number: 8090
+        path: /
+        pathType: Prefix
+  - host: shercolorweb.ingress.local.sites.sherwin.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: shercolorweb
+            port:
+              number: 8090
+        path: /
+        pathType: Prefix  
+  tls:
+  - secretName: shercolorweb-tls-secrets
+    hosts:
+    - shercolorweb.ingress.lb0020.sherwin.com
+    - shercolorweb.ingress.local.sherwin.com
