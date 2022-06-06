@@ -44,15 +44,11 @@ ingress:
   name: ingress
   namespace: default
   hosts:
-    http:
-      paths:
-      - backend:
-          service:
-            name: shercolorweb
-            port:
-              number: 8090
-        path: /
+  - host: chart-example.local
+    paths:
+      - path: /
         pathType: Prefix
+  tls: []
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

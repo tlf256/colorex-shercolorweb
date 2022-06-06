@@ -9,15 +9,9 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
   hosts:
   - host: shercolorweb.np-rancher.sherwin.com
-    http:
-      paths:
-      - backend:
-          service:
-            name: shercolorweb
-            port:
-              number: 8090
-        path: /
-        pathType: Prefix
+    paths:
+      - path: /
+        pathType: Prefix   
   tls:
   - hosts:
     - shercolorweb.np-rancher.sherwin.com
