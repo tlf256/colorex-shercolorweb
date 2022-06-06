@@ -48,6 +48,10 @@ Be sure to configure your local Kubernetes/Docker environment by using Docker De
     docker run -p 8090:8090 shercolorweb
     ```
 #### Helm Chart
+TODO:
+- applying different yaml files
+- passing in the oracle shercolor db password in install command when running centralized instance
+
 From the root directory of this project, you can use the following command to install the `shercolorweb` Helm chart:
 ```sh
 helm install --set store.enabled=<store.enabled> shercolorweb ./shercolorweb-chart
