@@ -1,0 +1,17 @@
+
+ingress:
+  enabled: false
+
+service: 
+  nodeport:
+    enabled: true
+
+dev:
+  dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
+  dbOracleUsername: "shercolor"
+qa:
+  dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
+  dbOracleUsername: "SHERCOLOR_USER"
+prod:
+  dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
+  dbOracleUsername: "SHERCOLOR_USER"  

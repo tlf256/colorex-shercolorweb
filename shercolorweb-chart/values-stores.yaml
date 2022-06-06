@@ -1,3 +1,6 @@
+#This flag will tell Helm to install postgres
+store:
+  enabled: true  
 
 service:
   annotations:
@@ -33,3 +36,29 @@ ingress:
     hosts:
     - shercolorweb.ingress.lb0020.sites.sherwin.com
     - shercolorweb.ingress.local.sites.sherwin.com
+
+# Values for the postgresql dependency chart
+postgresql:
+  global:
+    imageRegistry: docker.artifactory.sherwin.com
+    storageClass: "longhorn"
+    postgresql:
+      postgresqlDatabase: "sherd"
+      postgresqlUsername: "shercolor"
+      existingSecret: "shercolorweb-secret"
+      servicePort: "5432"
+  image:
+    registry: docker.artifactory.sherwin.com
+    tag: 14.1.0-debian-10-r9
+  service:
+    type: LoadBalancer
+    annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
+    loadBalancerIP: "172.30.0.8"
+    externalTrafficPolicy: Cluster
+  persistence:
+    existingClaim: data-shercolor-postgres-postgresql-0
+    size: 4Gi  
+
+dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.global.postgresql.servicePort }}/{{ .Values.postgresql.global.postgresql.postgresqlDatabase }}"
+springProfilesActive: "{{ $environment }},postgres"  
+dbUsername: "{{ .Values.postgresql.global.postgresql.postgresqlUsername }}"

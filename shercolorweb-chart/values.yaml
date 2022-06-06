@@ -39,6 +39,8 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 8090
+  nodeport:
+    enabled: false
 
 ingress:
   enabled: true
@@ -76,28 +78,6 @@ tolerations: []
 
 affinity: {}
 
-# Values for the postgresql dependency chart
-postgresql:
-  global:
-    imageRegistry: docker.artifactory.sherwin.com
-    storageClass: "longhorn"
-    postgresql:
-      postgresqlDatabase: "sherd"
-      postgresqlUsername: "shercolor"
-      existingSecret: "shercolorweb-secret"
-      servicePort: "5432"
-  image:
-    registry: docker.artifactory.sherwin.com
-    tag: 14.1.0-debian-10-r9
-  service:
-    type: LoadBalancer
-    annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
-    loadBalancerIP: "172.30.0.8"
-    externalTrafficPolicy: Cluster
-  persistence:
-    existingClaim: data-shercolor-postgres-postgresql-0
-    size: 4Gi
-
 # Conditional attribute only meant to be set via the Helm install command. 
 # This attribute should be used to enable all kubernetes resources needed for store usage.
 store:
@@ -109,22 +89,11 @@ env: dev
 oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
 
 dev:
-  dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
-  dbOracleUsername: "shercolor"
-  dbOraclePassword: "sh3rclrd3v"
   sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
   sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
-
 qa:
-  dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
-  dbOracleUsername: "SHERCOLOR_USER"
-  dbOraclePassword: "sh3rqausr"
   sherlinkLoginUrl: "https://wqweb1.sherwin.com/sher-link/user/login.do"
   sherlinkTokenSwUrl: "https://wqweb1.sherwin.com/sher-link/StoresEcommerceService"
-
 prod:
-  dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
-  dbOracleUsername: "SHERCOLOR_USER"
-  dbOraclePassword: "sh3ruserp"
   sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
   sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"

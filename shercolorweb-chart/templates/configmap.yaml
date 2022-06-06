@@ -4,15 +4,9 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data: 
-  {{- if .Values.store.enabled }}
-  SPRING_PROFILES_ACTIVE: "{{ $environment }},postgres"
-  dbUsername: {{ .Values.postgresql.global.postgresql.postgresqlUsername | quote }}
-  dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.global.postgresql.servicePort }}/{{ .Values.postgresql.global.postgresql.postgresqlDatabase }}"
-  {{- else }}
-  SPRING_PROFILES_ACTIVE: "{{ $environment }},oracle"
-  dbUsername: {{ index .Values $environment "dbOracleUsername" | quote }}
-  dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
-  {{- end }}
+  SPRING_PROFILES_ACTIVE: {{ .Values.springProfilesActive }}
+  dbUsername: {{ .Values.dbUsername }}
+  dbPostgresUrl: {{ .Values.dbPostgresUrl }}
   oeBaseUrl: {{ .Values.oeBaseUrl | quote }}
   dbOracleUrl: {{ index .Values $environment "dbOracleUrl" | quote }}
   sherlinkLoginUrl: {{ index .Values $environment "sherlinkLoginUrl" | quote }}

@@ -1,8 +1,10 @@
-FROM maven:3-alpine as builder
-COPY src .
+FROM maven:3-openjdk-8 as builder
 COPY pom.xml .
+RUN mvn -B dependency:go-offline
+
+COPY src .
 COPY wildfly .
-RUN ["mvn","clean","package","-DskipTests"]
+RUN mvn -B clean package -DskipTests
 
 FROM openjdk:8u332-jre-slim
 LABEL maintainer="SherColor Team"
