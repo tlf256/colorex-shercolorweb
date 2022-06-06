@@ -1,0 +1,18 @@
+#Executes on merge of each PR to development, publishes SNAPSHOT to artifactory
+name: Publish to Artifactory
+on:
+  pull_request:
+    branches:
+      - development
+      - master
+      - 'release/**'
+    types: [closed]
+    
+jobs:
+  snapshot-publish:
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/snapshot-publish-workflow.yml@master
+    with:
+      java_version: 8
+    secrets:
+      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}

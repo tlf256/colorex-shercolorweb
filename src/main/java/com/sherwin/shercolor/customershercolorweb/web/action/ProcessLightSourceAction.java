@@ -48,7 +48,8 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 			 buildLightSourcesMap();
 			 //check and see if we even need to display this screen.  Only needs to be displayed for competitive and custom
 			 RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			 if (reqObj.getColorType().equals("SHERWIN-WILLIAMS") || reqObj.getColorType().equalsIgnoreCase("CUSTOM")) {
+			 if (reqObj.getColorType().equals("SHERWIN-WILLIAMS") || reqObj.getColorType().equals("NATIONAL ACCOUNTS") || 
+              reqObj.getColorType().equalsIgnoreCase("CUSTOM")) {
 					reqObj.setLightSource("D65");
 					sessionMap.put(reqGuid, reqObj);
 					 return SUCCESS;
@@ -66,6 +67,20 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 		 try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			reqObj.setLightSource(selectedLightSources);
+			switch (selectedLightSources) {
+			case "D65":
+				reqObj.setLightSourceName(getText("processLightSourceAction.daylight"));
+				break;
+			case "A":
+				reqObj.setLightSourceName(getText("processLightSourceAction.incandescent"));
+				break;
+			case "F2":
+				reqObj.setLightSourceName(getText("processLightSourceAction.fluorescent"));
+				break;
+			default:
+				reqObj.setLightSourceName("");
+				break;
+			}
 			sessionMap.put(reqGuid, reqObj);
 			return SUCCESS;
 		} catch (RuntimeException e) {

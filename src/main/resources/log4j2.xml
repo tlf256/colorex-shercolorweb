@@ -31,8 +31,8 @@
 		<Logger name="org.hibernate" level="error" additivity="false">
 			<appender-ref ref="RollingFile" level="error"/>
 		</Logger>
-		<Logger name="com.sherwin.shercolor" level="trace" additivity="false">
-			<appender-ref ref="RollingFile" level="trace"/>
+		<Logger name="com.sherwin.shercolor" level="info" additivity="false">
+			<appender-ref ref="RollingFile" level="info"/>
 		</Logger>
 		<Logger name="com.opensymphony.xwork2" level="warn" additivity="false">
 			<appender-ref ref="RollingFile" level="warn"/>

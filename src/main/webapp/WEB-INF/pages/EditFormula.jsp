@@ -19,7 +19,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script>
@@ -72,7 +72,7 @@
 			var safeName = encodeURIComponent(colorantItem.name.toString());
 			$(selector).attr("data-toggle", "popover");
 			$(selector).attr("data-placement","left");
-			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"><s:param>'+ safeTintSysId +'-'+ safeName +'</s:param></s:text>');
+			$(selector).attr("data-content", '<s:text name="editFormula.colorantRemoved"><s:param>'+ safeTintSysId +'-'+ safeName.replace(/%20/g, " ") +'</s:param></s:text>');
 			$(selector).popover({trigger : 'manual'});
 			$(selector).popover('toggle');
 			$('.popover').addClass('popover-warning');

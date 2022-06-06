@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -158,7 +159,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 		try {
 			
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
-			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
+			logger.debug(Encode.forJava("decoded partialColorNameOrId - " + partialColorNameOrId));
 
 			if (selectedCoType.equals("SW")) {
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
@@ -176,7 +177,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 			}
 		}
 		catch (SherColorException e){
-			logger.error(e.getMessage(), e);
+			logger.error(Encode.forJava(e.getMessage()), e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -221,7 +222,14 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	}
 	
 	private void parseColorData(String colorData) {
-
+		String colorEntry = new String("");
+		try {
+			colorData = URLDecoder.decode(colorData,"UTF-8");
+			colorEntry = StringEscapeUtils.unescapeHtml4(partialColorNameOrId);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		
 		if (colorData.equals("")) {
 			// The user typed nothing, so do nothing
 		} 
@@ -250,7 +258,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 					// The below replace statement fixes a bug when there
 					// is only one object in the autocomplete list
 					theValue = theValue.replace("}", "");
-					if (partialColorNameOrId.equals(theValue)) {
+					if (colorEntry.equals(theValue)) {
 						foundMatch = true;
 						setColorId(data[0].replaceAll("colorNumber:", ""));
 						setColorComp(data[1].replaceAll("companyName:", ""));

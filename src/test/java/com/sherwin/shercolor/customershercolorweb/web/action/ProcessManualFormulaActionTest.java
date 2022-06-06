@@ -22,8 +22,7 @@ import static org.junit.Assert.*;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 public class ProcessManualFormulaActionTest extends StrutsSpringJUnit4TestCase<ProcessManualFormulaAction> {
 
     @Test

@@ -31,9 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 @Transactional
-@WebAppConfiguration
 public class PrintLabelTest2  {
 	
 	private RequestObject reqObj = new RequestObject();

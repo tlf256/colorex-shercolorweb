@@ -2,12 +2,15 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -21,6 +24,7 @@ import org.owasp.encoder.Encode;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
+import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.CustWebSpectroRemote;
 import com.sherwin.shercolor.common.exception.SherColorException;
@@ -28,6 +32,7 @@ import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.validation.ColorValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
@@ -42,7 +47,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private CustomerService customerService;
 	private ColorValidator colorValidator;
 	private Map<String, Object> sessionMap;
-	
+	private ProductService productService;
+
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessColorAction.class);
 	
@@ -68,7 +74,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	private Map<String, String> cotypes = new LinkedHashMap<String, String>();
 	private ArrayList<String> colorCompanies = new ArrayList<String>();
-	
+	private ArrayList<String> natColorCompanies = new ArrayList<String>();
+
 	private String message;
 	
 	private String defaultCoTypeValue = "SW";
@@ -78,7 +85,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String CUSTOM;
 	private String CUSTOMMATCH;
 	private String SAVEDMEASURE;
-	
+	private String NAT;
+
 	private List<CustWebSpectroRemote> savedMeasurements;
 	private List<String> curvesList;
 	private String measuredCurve;
@@ -91,14 +99,22 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		CUSTOM = getText("processColorAction.customManual");
 		CUSTOMMATCH = getText("processColorAction.customMatch");
 		SAVEDMEASURE = getText("processColorAction.savedCi62Measurement");
-		
+		NAT = getText("processColorAction.natColor");
+
 		cotypes.put("SW",SW);
 		cotypes.put("COMPET",COMPETITIVE);
 		cotypes.put("CUSTOM",CUSTOM);
 		cotypes.put("CUSTOMMATCH", CUSTOMMATCH);
 		cotypes.put("SAVEDMEASURE", SAVEDMEASURE);
-		
+		cotypes.put("NAT", NAT);
+
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		
+		//Only display National Accounts if the Customer Type is STORE or DRAWDOWN and not a self tinting customer
+		if (!reqObj.getCustomerType().equals("STORE") && !reqObj.getCustomerType().equals("DRAWDOWN")) {
+			cotypes.remove("NAT");
+		}
+		
 		if (reqObj.getSpectro().getSerialNbr()==null) {
 			 //No  device, so remove the Custom Match option from cotypes.
 			 cotypes.remove("CUSTOMMATCH");
@@ -131,18 +147,27 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			
 			partialColorNameOrId = URLDecoder.decode(partialColorNameOrId, "UTF-8");
-			logger.debug("decoded partialColorNameOrId - " + partialColorNameOrId);
+			logger.debug(Encode.forJava("decoded partialColorNameOrId - " + partialColorNameOrId));
 
-			if (selectedCoType.equals("SW")) {
+			if (StringUtils.equals(selectedCoType, "SW")) {
 				options = mapToOptions(colorMastService.autocompleteSWColor(partialColorNameOrId.toUpperCase()),"SW");
 			} else {
-				if (selectedCoType.equals("COMPET")) {
+				if (StringUtils.equals(selectedCoType, "COMPET")) {
 					if (selectedCompany.equals(getText("processColorAction.all"))){
 						options = mapToOptions(colorMastService.autocompleteCompetitiveColor(partialColorNameOrId.toUpperCase()), "COMPET");
 					} else {
 						options = mapToOptions(colorMastService.autocompleteCompetitiveColorByCompany(partialColorNameOrId.toUpperCase(), selectedCompany), "COMPET");
 					}
-				} else {
+					
+				} 
+				else if (StringUtils.equals(selectedCoType, "NAT")) {
+					if (selectedCompany.equals(getText("processColorAction.all"))){
+						options = mapToOptions(colorMastService.autocompleteNatColor(partialColorNameOrId.toUpperCase()), "NAT");
+					} else {
+						options = mapToOptions(colorMastService.autocompleteNatColorByCompany((partialColorNameOrId.toUpperCase()), selectedCompany), "NAT");
+					}
+				} 
+				else {
 					options = new ArrayList<autoComplete>();
 					options.add(new autoComplete(getText("processColorAction.manual"),"MANUAL"));
 				}
@@ -151,9 +176,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		catch (SherColorException e){
 			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
-			logger.error(message, e);
+			logger.error(Encode.forJava(message), e);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			message = e.getMessage();
 			logger.error(e.getMessage(), e);
 		}
@@ -166,13 +190,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		List<autoComplete> outList = new ArrayList<autoComplete>();
 		String theLabel;
 		String theValue;
-		
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+
 		//BKP 2018-03-09 check foe null/empty colorList
 		if (colorList != null) {
 			int index = 0;
 			for (CdsColorMast item : colorList) {
 				
-				if (coType=="SW") {
+				if (StringUtils.equals(coType, "SW")) {
 					//only display locID if present.
 					if (item.getLocId()==null) {
 						theLabel = item.getColorId() + " " + item.getColorName();
@@ -188,6 +213,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
 					theValue = item.getColorComp() + " " + item.getColorId();
 				}
+				
+				if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+					if (item.getOldColorName() != null) {
+						theLabel = theLabel + getText("processColorAction.oldName",new String[] {item.getOldColorName()});  
+					}
+				}
+
 				autoComplete autoComplete = new autoComplete(theLabel,theValue);
 				autoComplete.setColorNumber(item.getColorId());
 				autoComplete.setCompanyName(item.getColorComp());
@@ -203,8 +235,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	private void parseColorData(String colorData) {
 		
+		String colorEntry = new String("");
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");
+			colorEntry = StringEscapeUtils.unescapeHtml4(partialColorNameOrId);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -217,7 +251,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			setColorID(partialColorNameOrId);
 			if (selectedCoTypes.equalsIgnoreCase("SW")) {
 				setColorComp("SHERWIN-WILLIAMS");
-			} else {
+			} 
+			else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+				setColorComp("NATIONAL ACCOUNTS");
+			} 
+			else {
 				setColorComp("COMPETITIVE");
 			}
 		}
@@ -237,7 +275,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					// The below replace statement fixes a bug when there
 					// is only one object in the autocomplete list
 					theValue = theValue.replace("}", "");
-					if (partialColorNameOrId.equals(theValue)) {
+					if (colorEntry.equals(theValue)) {
 						foundMatch = true;
 						setColorID(data[0].replaceAll("colorNumber:", ""));
 						setColorComp(data[1].replaceAll("companyName:", ""));
@@ -248,7 +286,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					setColorID(partialColorNameOrId);
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						setColorComp("SHERWIN-WILLIAMS");
-					} else {
+					} 
+					else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+						setColorComp("NATIONAL ACCOUNTS");
+					} 
+					else {
 						setColorComp("COMPETITIVE");
 					}
 				}
@@ -259,7 +301,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				setColorID(colorData);
 				if (selectedCoTypes.equalsIgnoreCase("SW")) {
 					setColorComp("SHERWIN-WILLIAMS");
-				} else {
+				} 
+				else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+					setColorComp("NATIONAL ACCOUNTS");
+				} 
+				else {
 					setColorComp("COMPETITIVE");
 				}
 			}	
@@ -267,8 +313,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	public String execute() {
 		
-		
-		List<String> baseList;
 		colorComp = "";
 		colorID = "";
 		String rgbHex = null;
@@ -278,12 +322,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		String closestSwColorName = null;
 		String closestSwColorId = null;
 		CdsColorMast closestSwColor = null;
-				
+		
+
 		
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			reqObj.setProductChosenFromDifferentBase(false);
-
+			
 			//Okay, there is data there.  Interpret it.
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOM")) {
 				//WHAT DO WE DO HERE?
@@ -328,7 +373,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				
 				if (selectedCoTypes.equalsIgnoreCase("SW")) {
 					colorType = "SHERWIN-WILLIAMS";
-				} else {
+				} 
+				else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+					colorType = "NATIONAL ACCOUNTS";
+				}
+				else {
 					colorType = "COMPETITIVE";
 				}
 				
@@ -349,11 +398,16 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					//PSCWEB-159 - set the default radio button based on SW vs Competitive
 					if (selectedCoTypes.equalsIgnoreCase("SW")) {
 						defaultCoTypeValue = "SW";
-					} else {
+					} 
+					else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
+						defaultCoTypeValue = "NAT";
+					}
+					else {
 						defaultCoTypeValue = "COMPET";
 					}
 					// repopulate company dropdown and color type list
 					buildCompaniesList();
+					buildNatCompaniesList();
 					buildCotypesMap();
 					return INPUT;
 				} else {
@@ -363,25 +417,16 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					this.setColorName(thisColor.getColorName());
 					primerId = thisColor.getPrimerId();
 					vinylColor = thisColor.getIsVinylSiding();
+					
+					if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+						if (thisColor.getOldColorName() != null ) {
+							addActionMessage(getText("processColorAction.oldNameAlert",new String[]{thisColor.getOldColorName(),thisColor.getColorName()}));
+						}
+					}
 				}
 				
-				baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
-				setIntBases(StringUtils.join(baseList, ','));
-				
-				baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
-				setExtBases(StringUtils.join(baseList, ','));
-				
-				//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
-				//call the autobase routine.
-				if (intBases==null && extBases==null) {
-					//call autobase
-					String custID = (String) reqObj.getCustomerID();
-					CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
-					String custProdComp = bobo.getProdComp();
-					baseList = colorBaseService.GetAutoBase(thisColor.getColorComp(), thisColor.getColorId(), custProdComp );
-					setIntBases(StringUtils.join(baseList, ','));
-					setExtBases(StringUtils.join(baseList, ','));
-				}
+				String custID = reqObj.getCustomerID();
+				buildBaseLists(custID);
 				
 				// get closest SW color if user picked a competitive one, or comes back null if no close match found
 				if (selectedCoTypes.equalsIgnoreCase("COMPET")) {
@@ -459,7 +504,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			buildCotypesMap();
 			buildCompaniesList();
-			 
+			buildNatCompaniesList();
+
 		    return SUCCESS;
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
@@ -478,6 +524,70 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		}
 	}
 	
+	private void buildNatCompaniesList() {
+		natColorCompanies.add(getText("processColorAction.all")); 
+		 
+		String [] colorCompaniesArray = colorMastService.listColorCompanies(true);
+		for (String company : colorCompaniesArray) {
+			natColorCompanies.add(company);
+		}
+	}
+	
+	private void buildBaseLists(String custID) {
+		List<String> baseList;
+		Set<String> interiorBases = new HashSet<>();
+		Set<String> exteriorBases = new HashSet<>();
+
+		//If the color has a restricted product list. Pull the bases from the products that are allowed to use it.
+		if(thisColor.getForceProd() != null && !thisColor.getForceProd().trim().equals("")) {
+			List<CdsProd> forcedProducts = productService.getForcedProducts(thisColor.getForceProd());
+			for (int i = 0; i < forcedProducts.size(); i++) {
+				String usage = forcedProducts.get(i).getIntExt().toUpperCase();
+				switch(usage) {
+				case "INTERIOR":
+					interiorBases.add(forcedProducts.get(i).getBase());
+					break;
+				case "EXTERIOR":
+					exteriorBases.add(forcedProducts.get(i).getBase());
+					break;
+				case "INT/EXT":
+					interiorBases.add(forcedProducts.get(i).getBase());
+					exteriorBases.add(forcedProducts.get(i).getBase());
+					break;
+				default:
+					logger.warn("UNDEFINED USAGE: {}", usage);
+					break;
+				}						
+			}
+			setIntBases(StringUtils.join(interiorBases, ','));
+			setExtBases(StringUtils.join(exteriorBases, ','));
+		//If color references another color so use the base assignments from that color.
+		} else if(thisColor.getXrefId() != null && thisColor.getXrefComp() != null) {
+			baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getXrefComp(), thisColor.getXrefId(), prodComp);
+			setIntBases(StringUtils.join(baseList, ','));
+			
+			baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getXrefComp(), thisColor.getXrefId(), prodComp);
+			setExtBases(StringUtils.join(baseList, ','));
+		//No special cases. Try to find the bases for the given company and color.
+		} else {
+			baseList = colorBaseService.InteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+			setIntBases(StringUtils.join(baseList, ','));
+		
+			baseList = colorBaseService.ExteriorColorBaseAssignments(thisColor.getColorComp(), thisColor.getColorId(), prodComp);
+			setExtBases(StringUtils.join(baseList, ','));
+		}
+		
+		//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
+		//call the autobase routine.
+		if (intBases == null && extBases == null) {
+			//call autobase
+			CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
+			String custProdComp = bobo.getProdComp();
+			baseList = colorBaseService.GetAutoBase(thisColor.getColorComp(), thisColor.getColorId(), custProdComp );
+			setIntBases(StringUtils.join(baseList, ','));
+			setExtBases(StringUtils.join(baseList, ','));
+		}		
+	}
 	
 	public List<autoComplete> getOptions() {
 		return options;
@@ -659,6 +769,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		this.curvesList = curvesList;
 	}
 	
+	public ArrayList<String> getNatColorCompanies() {
+		return natColorCompanies;
+	}
+
+	public void setNatColorCompanies(ArrayList<String> natColorCompanies) {
+		this.natColorCompanies = natColorCompanies;
+	}
+	
 	public String getMeasuredCurve() {
 		return measuredCurve;
 	}
@@ -674,4 +792,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		this.measuredName = measuredName;
 	}
 
+	public ProductService getProductService() {
+		return productService;
+	}
+
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
+	}
 }
