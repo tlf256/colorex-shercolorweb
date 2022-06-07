@@ -69,6 +69,25 @@ function waitForShowAndHide(showString){
 	}
 }
 
+function rotateSpinner(processModal){
+	let n = 0;
+	$('#spinner').removeClass('d-none');
+	let interval = setInterval(function(){
+    	n += 1;
+    	if(n >= 60000){
+            $('#spinner').addClass('d-none');
+        	clearInterval(interval);
+        }else{
+        	$('#spinner').css("transform","rotate(" + n + "deg)");
+        }
+	},5);
+	
+	$(processModal).on('hide.bs.modal',function(){
+		$('#spinner').addClass('d-none');
+    	if(interval){clearInterval(interval);}
+	});
+}
+
 //Will return an object containing browser name & version
 function getBrowser(){
 	var ua= navigator.userAgent, tem, 
