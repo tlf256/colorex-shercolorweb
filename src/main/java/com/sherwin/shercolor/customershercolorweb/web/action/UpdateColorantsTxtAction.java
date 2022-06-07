@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,15 +59,21 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 		try{
 			// grab existing records 
 			List<CustWebColorantsTxt> currentRecords = tinterService.getCanisterList(customerId, colorantSystem, tinterModel, tinterSerial);
-			
-			// construct updated colorantsTxt list
+			//make a map of colorant codes to current amounts so we can set new colorantstxt to current amt if greater than 0.0, otherwise set to full.
+			Map<String, Double> currentAmtMap = 
+			    currentRecords.stream().collect(
+				       Collectors.toMap(CustWebColorantsTxt::getClrntCode,
+				                clrnt-> clrnt.getCurrentClrntAmount() > 0.0 ? clrnt.getCurrentClrntAmount():clrnt.getMaxCanisterFill()));				
+    			// construct updated colorantsTxt list
 			for (CustWebColorantsTxt colorantsTxt : colorantsTxtList) {
 				colorantsTxt.setCustomerId(customerId);
 				colorantsTxt.setClrntSysId(colorantSystem);
 				colorantsTxt.setTinterModel(tinterModel);
 				colorantsTxt.setTinterSerialNbr(tinterSerial);
 				colorantsTxt.setFillStopLevel(1.2);
-				colorantsTxt.setCurrentClrntAmount(colorantsTxt.getMaxCanisterFill());
+//set current Amount to in new colorants.txt equal to the amount in the current colorants.txt if there is any.
+				
+				colorantsTxt.setCurrentClrntAmount(currentAmtMap.get(colorantsTxt.getClrntCode()));
 				if (colorantsTxt.getMaxCanisterFill() != null) {
 					if (colorantsTxt.getMaxCanisterFill() <= 192) {
 						colorantsTxt.setFillAlarmLevel(32.0);
