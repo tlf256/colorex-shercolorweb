@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Closest Color</title>
+		<title><s:text name="closestColors.closestColors"/></title>
 		<!-- JQuery -->
 		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
@@ -21,8 +21,8 @@
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/closestColor-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/closestColor-1.5.2.js"></script>
 		<style>
 		  .sw-bg-main {
 	          background-color: ${sessionScope[reqGuid].rgbHex};
@@ -57,7 +57,7 @@
 		<div class="container-fluid">
 			<div class="row mt-4">
 				<div class="col-sm-2"></div>
-				<div class="col-sm-8"><h3>Find Closest Colors</h3></div>
+				<div class="col-sm-8"><h3><s:text name="closestColors.closestColors"/></h3></div>
 				<div class="col-sm-2"></div>
 			</div>
 			<br>
@@ -66,24 +66,37 @@
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong>Color Eye Measurement:</strong>
+					<strong><s:text name="global.colorCompanyColon"/></strong>
 				</div>
-				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					Measured Color
-					<span class="chip sw-bg-main mt-1"></span>
+				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
+					<s:text name="processColorAction.custom"/>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-1 col-xs-0">
+				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					
+					<strong><s:text name="global.colorIdColon"/></strong>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
+					<s:text name="processColorAction.match"/>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<strong><s:text name="global.colorNameColon"/></strong>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<s:text name="closestColors.measuredColor"/>
+					<span class="chip sw-bg-main mt-1"></span>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-1 col-xs-0">
 				</div>
 			</div>
 			<br>
@@ -98,9 +111,8 @@
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
 				<div class="col-lg-7 col-md-7 col-sm-10">
-					<%-- <s:submit class="btn btn-primary" value="%{getText('global.next')}" onclick="" action="" autofocus="autofocus" /> --%>
-					<button type="button" id="" class="btn btn-primary" onclick="showIntExtModal()"><s:text name="global.next"></s:text></button>
-					<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
+					<button type="button" id="" class="btn btn-primary mb-5 mt-2 mx-1" onclick="showIntExtModal()"><s:text name="global.next"></s:text></button>
+					<s:submit class="btn btn-secondary pull-right mb-5 mt-2 mx-1" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				</div>
 				<div class="col-lg-3 col-md-3 col-sm-1">
 				</div>
@@ -110,9 +122,9 @@
 		<div class="modal fade" aria-labelledby="" aria-hidden="true"  id="intExtModal" role="dialog">
 	    	<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
-				  <s:form id="intExtForm" action="" validate="true" focusElement="" theme="bootstrap">
+				  <s:form id="intExtForm" action="closestColorResultAction" validate="true" focusElement="" theme="bootstrap">
 					<div class="modal-header">
-						<h5 class="modal-title">Color Use</h5>
+						<h5 class="modal-title"><s:text name="closestColors.colorUse"/></h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -122,7 +134,7 @@
 							<s:hidden name="reqGuid" value="%{reqGuid}" />
 						</div>
 						<div class="col-lg-10 col-md-10 col-sm-10">
-							<p>Base recommendations for colors are dependent on product type. It is important to determine the project type for this matched color.</p>
+							<p><s:text name="closestColors.colorUseBaseRecommendation"/></p>
             			</div>
 						<div class="col-lg-1 col-md-1 col-sm-1">
 						</div>
@@ -132,23 +144,23 @@
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-10">
 						  <div class="form-group">
-            				<h6>Choose project type:</h6>
+            				<h6><s:text name="closestColors.chooseProjectTypeColon"/></h6>
            					<div class="form-check">
            					  <input class="form-check-input" type="radio" name="intExt" value="I" id="interior" checked>
            					  <label class="form-check-label" for="interior">
-							    Interior
+							    <s:text name="getPercentageIntExt.interior"/>
 							  </label>
 							  <br>
            					  <input class="form-check-input" type="radio" name="intExt" value="E" id="exterior">
 							  <label class="form-check-label" for="exterior">
-							    Exterior
+							    <s:text name="getPercentageIntExt.exterior"/>
 							  </label>
 							</div>
             			</div>
             			<div class="form-check">
 	         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
 	         			  <label class="form-check-label" for="swActiveChk">
-						    Display SW Active Colors Only
+						    <s:text name="closestColors.displaySwActiveOnly"/>
 						  </label>
 						</div>
 						</div>
@@ -157,10 +169,31 @@
 					  </div>
 					</div>
 					<div class="modal-footer">
-						<s:submit class="btn btn-primary" id="btnIntExtModNxt" value="%{getText('global.next')}" action="closestColorResultAction" autofocus="autofocus" />
+						<button type="button" id="btnNxtIntExt" class="btn btn-primary"><s:text name="global.next"></s:text></button>
 						<s:submit class="btn btn-secondary pull-right" id="btnCancel" data-dismiss="modal" value="%{getText('global.cancel')}"/>
 					</div>
 				  </s:form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" aria-labelledby="processReqModal"
+			aria-hidden="true" id="processReqModal" role="dialog"
+			data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<em id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></em>
+						<h5 class="modal-title"><s:text name="closestColors.pleaseWait"/></h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="%{getText('global.close')}">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="process-message" style="white-space:pre-line"><s:text name="closestColors.locatingColors"/></p>
+					</div>
+					<div class="modal-footer">
+					</div>
 				</div>
 			</div>
 		</div>

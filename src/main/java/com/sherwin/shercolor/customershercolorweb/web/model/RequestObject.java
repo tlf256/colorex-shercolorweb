@@ -90,8 +90,6 @@ public class RequestObject {
 	private int dispenseBase = -1;
 	private List<CdsRoomList> allRooms;
 	private String customerType;
-	List<ClosestColor> closestSwColors;
-	List<ClosestColor> closestCmptColors;
 	
 	public String getColorComp() {
 		return colorComp;
@@ -596,21 +594,6 @@ public class RequestObject {
 	}
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
-	}
-	public List<ClosestColor> getClosestSwColors() {
-		return closestSwColors;
-	}
-
-	public void setClosestSwColors(List<ClosestColor> closestSwColors) {
-		this.closestSwColors = closestSwColors;
-	}
-
-	public List<ClosestColor> getClosestCmptColors() {
-		return closestCmptColors;
-	}
-
-	public void setClosestCmptColors(List<ClosestColor> closestCmptColors) {
-		this.closestCmptColors = closestCmptColors;
 	}
 
 }
