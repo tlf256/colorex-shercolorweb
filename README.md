@@ -51,6 +51,7 @@ Be sure to configure your local Kubernetes/Docker environment by using Docker De
 TODO:
 - applying different yaml files
 - passing in the oracle shercolor db password in install command when running centralized instance
+- for stores pass stores yaml and set admin password, for rancher pass rancher yaml and set oracle password
 
 From the root directory of this project, you can use the following command to install the `shercolorweb` Helm chart:
 ```sh

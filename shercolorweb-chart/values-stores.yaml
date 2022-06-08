@@ -31,22 +31,28 @@ postgresql:
     imageRegistry: docker.artifactory.sherwin.com
     storageClass: "longhorn"
     postgresql:
-      postgresqlDatabase: "sherd"
-      postgresqlUsername: "shercolor"
-      existingSecret: "shercolorweb-secret"
-      servicePort: "5432"
+      auth:
+        database: "sherd"
+        username: "shercolor"
+        existingSecret: "shercolorweb-secret"
+        secretKeys:
+          userPasswordKey: postgresqlPassword
+          adminPasswordKey: postgresqlAdminPassword
   image:
     registry: docker.artifactory.sherwin.com
     tag: 14.1.0-debian-10-r9
-  service:
-    type: LoadBalancer
-    annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
-    loadBalancerIP: "172.30.0.8"
-    externalTrafficPolicy: Cluster
-  persistence:
-    existingClaim: data-shercolor-postgres-postgresql-0
-    size: 4Gi  
+  primary:
+    service:
+      type: LoadBalancer
+      annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
+      loadBalancerIP: "172.30.0.8"
+      externalTrafficPolicy: Cluster
+      port: 5432
+    persistence:
+      # existingClaim: data-shercolor-postgres-postgresql-0
+      existingClaim: data-shercolorweb-postgresql-0
+      size: 4Gi
 
-dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.global.postgresql.servicePort }}/{{ .Values.postgresql.global.postgresql.postgresqlDatabase }}"
-springProfilesActive: "{{ $environment }},postgres"  
-dbUsername: "{{ .Values.postgresql.global.postgresql.postgresqlUsername }}"
+dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
+springProfilesActive: "{{ .Values.env }},postgres"  
+dbUsername: "{{ .Values.postgresql.global.postgresql.auth.username }}"
