@@ -1,6 +1,7 @@
 #Executes on merge of each PR to development, publishes SNAPSHOT to artifactory
 name: Publish to Artifactory
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - development
