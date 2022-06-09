@@ -1,3 +1,14 @@
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #  limits:
+  #    cpu: 500m
+  #    memory: 1500Mi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 1200Mi
 
 ingress:
   enabled: false
@@ -6,12 +17,6 @@ service:
   nodeport:
     enabled: true
 
-dev:
-  dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
-  dbOracleUsername: "shercolor"
-qa:
-  dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
-  dbOracleUsername: "SHERCOLOR_USER"
-prod:
-  dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
-  dbOracleUsername: "SHERCOLOR_USER"  
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
+springProfilesActive: "{{ .Values.env }},oracle"
+dbUsername: '{{ index .Values .Values.env "dbOracleUsername" }}'
