@@ -15,7 +15,7 @@ spec:
   selector:
     {{- include "shercolorweb.selectorLabels" . | nindent 4 }}
 
-{{- if .Values.service.nodeport.enabled -}}
+{{- if .Values.service.nodeport.enabled }}
 ---
 apiVersion: v1
 kind: Service

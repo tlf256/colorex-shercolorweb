@@ -34,10 +34,6 @@ postgresql:
       auth:
         database: "sherd"
         username: "shercolor"
-        existingSecret: "shercolorweb-secret"
-        secretKeys:
-          userPasswordKey: postgresqlPassword
-          adminPasswordKey: postgresqlAdminPassword
   image:
     registry: docker.artifactory.sherwin.com
     tag: 14.1.0-debian-10-r9
@@ -49,10 +45,9 @@ postgresql:
       externalTrafficPolicy: Cluster
       port: 5432
     persistence:
-      # existingClaim: data-shercolor-postgres-postgresql-0
-      existingClaim: data-shercolorweb-postgresql-0
+      existingClaim: data-shercolor-postgres-postgresql-0
       size: 4Gi
 
-dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
+dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
 springProfilesActive: "{{ .Values.env }},postgres"  
 dbUsername: "{{ .Values.postgresql.global.postgresql.auth.username }}"

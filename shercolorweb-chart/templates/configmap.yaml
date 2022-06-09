@@ -4,9 +4,9 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data: 
-  SPRING_PROFILES_ACTIVE: {{ tpl .Values.springProfilesActive . }}
-  dbUsername: {{ tpl .Values.dbUsername . }}
-  dbPostgresUrl: {{ tpl .Values.dbPostgresUrl . }}
+  SPRING_PROFILES_ACTIVE: {{ tpl .Values.springProfilesActive . | quote }}
+  dbUsername: {{ tpl .Values.dbUsername . | quote }}
+  dbPostgresUrl: {{ tpl .Values.dbPostgresUrl . | quote }}
   oeBaseUrl: {{ .Values.oeBaseUrl | quote }}
   dbOracleUrl: {{ index .Values $environment "dbOracleUrl" | quote }}
   sherlinkLoginUrl: {{ index .Values $environment "sherlinkLoginUrl" | quote }}

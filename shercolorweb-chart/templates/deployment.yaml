@@ -59,8 +59,13 @@ spec:
             - name: dbPassword
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.store.enabled }}
+                  name: {{ .Chart.Name }}-postgresql
+                  key: password
+                  {{- else }}
                   name: {{ .Chart.Name }}-secret
-                  key: dbPassword
+                  key: password
+                  {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}
       {{- with .Values.nodeSelector }}
