@@ -169,9 +169,7 @@
 			<result name="success">/WEB-INF/pages/LoggedOut.jsp</result>
 		</action>
 		<action name="loginAgainAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAgainAction" method="loginagain">
-			<result name="success" type="redirect">
-				<param name="location">${sherLinkURL}</param>
-			</result>
+			<result name="success">/WEB-INF/pages/setLogin.jsp</result>
 		</action>
 		<action name="displayCookieBanner" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="display">
 			<interceptor-ref name="defaultStack"/>

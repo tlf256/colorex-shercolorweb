@@ -63,7 +63,6 @@ public class RequestObject {
 	private String sizeCode;
 	private List<SwMessage> displayMsgs;
 	private List<SwMessage> canLabelMsgs;
-	private String sherLinkURL;
 	private String tinterSerialNbr;
 	private String tinterModel;
 	private String spectroSerialNbr;
@@ -425,12 +424,6 @@ public class RequestObject {
 		this.dispenseBase = -1;
 		this.colorNotes = "";
 		this.customerType = "";
-	}
-	public String getSherLinkURL() {
-		return sherLinkURL;
-	}
-	public void setSherLinkURL(String sherLinkURL) {
-		this.sherLinkURL = sherLinkURL;
 	}
 	public String getTinterSerialNbr() {
 		return tinterSerialNbr;

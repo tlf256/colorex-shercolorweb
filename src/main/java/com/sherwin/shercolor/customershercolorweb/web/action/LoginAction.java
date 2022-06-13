@@ -43,9 +43,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	@Autowired
 	private TranHistoryService tranHistoryService;
 
-	@Value("${sherlinkLoginUrl}")
-	private String sherLinkUrl;
-
 	@Value("${sherlinkTokenSwUrl}")
 	private String sherLinkTokenSwUrl;
 
@@ -75,13 +72,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	public String execute() {
 		String custName = "";
 		String returnStatus = "SUCCESS";
-		Properties prop = new Properties();
-		Properties propTest = new Properties();
-		String dbEnv = "";
-		String testMode = "";
-		String testModeFirst = "";
-		String testModeLast = "";
-		String testModeAcct = "";
 		customerType = "";
 		newSession = true;
 		siteHasTinter = false;
@@ -96,7 +86,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 			logger.debug("got other properties");
 			logger.debug("sherLinkTokenSWURL is {}", sherLinkTokenSwUrl);
-			logger.debug("sherLinkURL is {}", sherLinkUrl);
 			logger.debug("DEBUG reqGuid={}", reqGuid);
 			if (reqGuid==null || reqGuid.isEmpty()) {
 				// we've never set anything.  Check the account and if it's not empty, try using it for a login.
@@ -132,7 +121,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					reqObj.setFirstName(Encode.forHtml(first));
 					reqObj.setLastName(Encode.forHtml(last));
 					reqObj.setCustomerName(custName);
-					reqObj.setSherLinkURL(sherLinkUrl);
 					reqObj.setUserId(userId);
 					reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 					reqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(), false).size());
@@ -193,7 +181,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				last = origReqObj.getLastName();
 				userId = origReqObj.getUserId();
 				daysUntilPwdExp = origReqObj.getDaysUntilPasswdExpire();
-				sherLinkUrl = origReqObj.getSherLinkURL();
 				custName = origReqObj.getCustomerName();
 				origReqObj.reset();
 				origReqObj.setCustomerID(acct);
@@ -201,7 +188,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				origReqObj.setGuid(reqGuid);
 				origReqObj.setFirstName(first);
 				origReqObj.setLastName(last);
-				origReqObj.setSherLinkURL(sherLinkUrl);
 				origReqObj.setUserId(userId);
 				origReqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 				origReqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(acct,false).size());

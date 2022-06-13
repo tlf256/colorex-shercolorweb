@@ -20,8 +20,6 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	private Map<String, Object> sessionMap;
 	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
 	private String reqGuid;
-	@Value("${sherlinkLoginUrl}")
-	private String sherLinkURL;
 	private String loMessage;
 	private String isAJAX = "false";
 	private String sessionStatus;
@@ -30,8 +28,6 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	
 	public String loginagain() {
 		try {
-
-			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			 return SUCCESS;
 		     
 		} catch (RuntimeException e) {
@@ -44,7 +40,6 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 
 		RequestObject reqObj = null;
 		try {
-			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			//logger.error("in loginagain, getting testsession");
 			Map<String, Object> testsession = ActionContext.getContext().getSession();
 			//logger.error("in loginagain, got testsession, checking if it's null");
@@ -92,18 +87,6 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 
 	public void setReqGuid(String reqGuid) {
 		this.reqGuid = reqGuid;
-	}
-
-
-
-	public String getSherLinkURL() {
-		return sherLinkURL;
-	}
-
-
-
-	public void setSherLinkURL(String sherLinkURL) {
-		this.sherLinkURL = Encode.forHtml(sherLinkURL);
 	}
 	
 	public String getLoMessage() {

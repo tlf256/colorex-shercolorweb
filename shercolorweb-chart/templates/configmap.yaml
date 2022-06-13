@@ -9,5 +9,3 @@ data:
   dbPostgresUrl: {{ tpl .Values.dbPostgresUrl . | quote }}
   oeBaseUrl: {{ .Values.oeBaseUrl | quote }}
   dbOracleUrl: {{ index .Values $environment "dbOracleUrl" | quote }}
-  sherlinkLoginUrl: {{ index .Values $environment "sherlinkLoginUrl" | quote }}
-  sherlinkTokenSwUrl: {{ index .Values $environment "sherlinkTokenSwUrl" | quote }}

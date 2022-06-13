@@ -31,3 +31,40 @@ spring:
       # The login-test profile is used to tell Spring to use a JDBC connection for SherColorLogin
       # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables.
       active: oracle,dev
+
+dbPassword: ${dbOraclePassword}
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
+oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
+dbUsername: "shercolor"
+dbOraclePassword: "sh3rclrd3v"
+sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+
+dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
+dbUsername: "SHERCOLOR_USER"
+dbOraclePassword: "sh3rqausr"
+sherlinkTokenSwUrl: "https://wqweb1.sherwin.com/sher-link/StoresEcommerceService"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
+dbUsername: "SHERCOLOR_USER"
+dbOraclePassword: "sh3ruserp"
+sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"

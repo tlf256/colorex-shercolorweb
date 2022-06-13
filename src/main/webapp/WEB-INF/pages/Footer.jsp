@@ -2,7 +2,6 @@
 <!-- Session Expiration Modal -->
 <%-- <s:url var="currentAction" forceAddSchemeHostAndPort="true" includeParams="all" escapeAmp="false"/> --%>
 <%-- <s:hidden name="currentActionURL" value="%{currentAction}" /> --%>
-<input type="hidden" name="sherLinkURL" value="${sessionScope[thisGuid].sherLinkURL}" id="sherLinkURL">
 
 <script type="text/javascript">
 var i18n = [];

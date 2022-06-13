@@ -24,7 +24,6 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 
 	static Logger logger = LogManager.getLogger(LogoutAction.class);
 	private String reqGuid;
-	private String sherLinkURL;
 	private String loMessage;
 	
 	HttpServletRequest request = ServletActionContext.getRequest();
@@ -47,7 +46,6 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 				// reset the existing request object.
 				// but before resetting, set the action's sherLinkURL property.
 				RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
-				sherLinkURL = origReqObj.getSherLinkURL();
 				origReqObj.reset();
 				sessionMap.put(origReqObj.getGuid(), origReqObj);
 				sessionMap.remove(reqGuid);
@@ -96,15 +94,11 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 
 
 
-	public String getSherLinkURL() {
-		return sherLinkURL;
-	}
 
 
 
-	public void setSherLinkURL(String sherLinkURL) {
-		this.sherLinkURL = Encode.forHtml(sherLinkURL);
-	}
+
+
 	
 	public String getLoMessage() {
 		return loMessage;
