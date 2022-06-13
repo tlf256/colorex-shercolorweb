@@ -43,9 +43,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	@Autowired
 	private TranHistoryService tranHistoryService;
 
-	@Value("${sherlinkTokenSwUrl}")
-	private String sherLinkTokenSwUrl;
-
 	static Logger logger = LogManager.getLogger(LoginAction.class);
 	private RequestObject reqObj;
 	private String reqGuid;
@@ -85,7 +82,6 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 
 			logger.debug("got other properties");
-			logger.debug("sherLinkTokenSWURL is {}", sherLinkTokenSwUrl);
 			logger.debug("DEBUG reqGuid={}", reqGuid);
 			if (reqGuid==null || reqGuid.isEmpty()) {
 				// we've never set anything.  Check the account and if it's not empty, try using it for a login.

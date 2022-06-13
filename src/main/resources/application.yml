@@ -33,7 +33,6 @@ spring:
       active: oracle,dev
 
 dbPassword: ${dbOraclePassword}
-dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"
 oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
 
 ---
@@ -44,8 +43,6 @@ spring:
 
 dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
 dbUsername: "shercolor"
-dbOraclePassword: "sh3rclrd3v"
-sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
 
 ---
 spring:
@@ -55,8 +52,6 @@ spring:
 
 dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
 dbUsername: "SHERCOLOR_USER"
-dbOraclePassword: "sh3rqausr"
-sherlinkTokenSwUrl: "https://wqweb1.sherwin.com/sher-link/StoresEcommerceService"
 
 ---
 spring:
@@ -66,5 +61,3 @@ spring:
 
 dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
 dbUsername: "SHERCOLOR_USER"
-dbOraclePassword: "sh3ruserp"
-sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
