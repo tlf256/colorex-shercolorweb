@@ -55,17 +55,21 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Chart.Name }}-configmap
+          {{- if .Values.store.enabled }}      
           env:
             - name: dbPassword
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.store.enabled }}
                   name: {{ .Chart.Name }}-postgresql
                   key: password
-                  {{- else }}
+          {{- else if .Values.secret.enabled }}
+          env:
+            - name: dbPassword
+              valueFrom:
+                secretKeyRef:
                   name: {{ .Chart.Name }}-secret
                   key: password
-                  {{- end }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}
       {{- with .Values.nodeSelector }}

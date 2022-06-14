@@ -18,4 +18,3 @@ ingress:
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
 springProfilesActive: "{{ .Values.env }},oracle"
-dbUsername: '{{ index .Values .Values.env "dbOracleUsername" }}'

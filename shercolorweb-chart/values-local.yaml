@@ -20,5 +20,5 @@ service:
     enabled: true
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
-springProfilesActive: "{{ .Values.env }},oracle"
+springProfilesActive: "{{ .Values.env }},oracle,local"
 dbUsername: '{{ index .Values .Values.env "dbOracleUsername" }}'

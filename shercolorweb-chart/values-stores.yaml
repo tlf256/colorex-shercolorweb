@@ -48,6 +48,6 @@ postgresql:
       existingClaim: data-shercolor-postgres-postgresql-0
       size: 4Gi
 
-dbPostgresUrl: "jdbc:postgresql://shercolorweb-postgresql.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
-springProfilesActive: "{{ .Values.env }},postgres"  
+dbPostgresUrl: "jdbc:postgresql://{{ .Chart.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
+springProfilesActive: "{{ .Values.env }},postgres"
 dbUsername: "{{ .Values.postgresql.global.postgresql.auth.username }}"

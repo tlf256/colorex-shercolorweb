@@ -7,7 +7,7 @@ replicaCount: 3
 
 image:
   repository: docker.artifactory.sherwin.com/colorex/shercolorweb
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   # TODO change this to a hard version
   tag: "latest"
@@ -41,6 +41,9 @@ service:
   port: 8090
   nodeport:
     enabled: false
+
+secret:
+  enabled: false    
 
 ingress:
   enabled: true
@@ -80,22 +83,3 @@ store:
   enabled: false
 
 env: dev
-
-# Global and environment-specific SherColor configurations 
-oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
-
-dev:
-  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
-  sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
-  dbOracleUrl: "jdbc:oracle:thin:@SHERD_DBHOST.sherwin.com:1521/sherd"
-  dbOracleUsername: "shercolor"
-qa:
-  sherlinkLoginUrl: "https://wqweb1.sherwin.com/sher-link/user/login.do"
-  sherlinkTokenSwUrl: "https://wqweb1.sherwin.com/sher-link/StoresEcommerceService"
-  dbOracleUrl: "jdbc:oracle:thin:@SHERQ_DBHOST.sherwin.com:1521/sherq"
-  dbOracleUsername: "SHERCOLOR_USER"
-prod:
-  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
-  sherlinkTokenSwUrl: "https://cdweb.sherwin.com/sher-link/StoresEcommerceService"
-  dbOracleUrl: "jdbc:oracle:thin:@SHERP_DBHOST.sherwin.com:1521/sherp"
-  dbOracleUsername: "SHERCOLOR_USER"  
