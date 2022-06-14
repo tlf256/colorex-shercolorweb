@@ -8,7 +8,8 @@ $(document).ready(function(){
 		$('#intExtForm').submit();
 		
 		$('#intExtModal').on('hidden.bs.modal', function(){
-			showProcessModal();
+			var displayMessage = i18n['closestColors.loadingColors'];
+			displayWaitModal(displayMessage, '#waitModal');
 		});
 	});
 });
