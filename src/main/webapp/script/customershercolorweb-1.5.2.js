@@ -69,6 +69,43 @@ function waitForShowAndHide(showString){
 	}
 }
 
+function appendWaitModal(displayMessage, modalDiv){
+	var pleaseWait = i18n['global.pleaseWait'];
+	var modalHtml = '<div class="modal fade" aria-labelledby="pleaseWaitModal" aria-hidden="true" id="pleaseWaitModal" role="dialog"'
+			+ 'data-backdrop="static" data-keyboard="false">'
+			+ '<div class="modal-dialog" role="document">'
+				+ '<div class="modal-content">'
+					+ '<div class="modal-header">'
+						+ '<em id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></em>'
+						+ '<h5 class="modal-title">' + pleaseWait + '</h5>'
+						+ '<button type="button" class="close" data-dismiss="modal"'
+							+ 'aria-label="%{getText(\'global.close\')}">'
+							+ '<span aria-hidden="true">&times;</span>'
+						+ '</button>'
+					+ '</div>'
+					+ '<div class="modal-body">'
+						+ '<p class="ml-2" id="processMsg">' + displayMessage
+						+ '</p>'
+					+ '</div>'
+					+ '<div class="modal-footer">'
+					+ '</div>'
+				+ '</div>'
+			+ '</div>'
+		+ '</div>';
+		
+		$(modalDiv).html(modalHtml);
+}
+
+function showWaitModal(){
+	$('#pleaseWaitModal').modal('show');
+	rotateSpinner('#pleaseWaitModal');
+}
+
+function displayWaitModal(displayMessage, modalDiv){
+	appendWaitModal(displayMessage, modalDiv);
+	showWaitModal();
+}
+
 function rotateSpinner(processModal){
 	let n = 0;
 	$('#spinner').removeClass('d-none');

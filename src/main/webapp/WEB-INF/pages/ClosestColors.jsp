@@ -188,8 +188,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal fade" aria-labelledby="processReqModal"
-			aria-hidden="true" id="processReqModal" role="dialog"
+		<div id="waitModal"></div>
+		<%-- <div class="modal fade" aria-labelledby="pleaseWaitModal" aria-hidden="true" id="pleaseWaitModal" role="dialog"
 			data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -208,7 +208,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> --%>
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		

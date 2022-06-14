@@ -8,6 +8,7 @@
 var i18n = [];
 i18n['basicFieldValidator.yourDataInputIsInvalid'] = '<s:text name="basicFieldValidator.yourDataInputIsInvalid"/>';
 i18n['basicFieldValidator.pleaseEnterData'] = '<s:text name="basicFieldValidator.pleaseEnterData"/>';
+i18n['closestColors.loadingColors'] = '<s:text name="closestColors.loadingColors"/>';
 i18n['compareColors.chooseFirstSample'] = '<s:text name="compareColors.chooseFirstSample" />';
 i18n['compareColors.measureFirstSamle'] = '<s:text name="compareColors.measureFirstSamle" />'
 i18n['compareColors.measureSecondSample'] = '<s:text name="compareColors.measureSecondSample" />'
@@ -51,6 +52,7 @@ i18n['global.lowColorantLevels'] = '<s:text name="global.lowColorantLevels"/>';
 i18n['global.notLoggedInReqGuidNotFound'] = '<s:text name="global.notLoggedInReqGuidNotFound"/>';
 i18n['global.ok'] = '<s:text name="global.ok"/>';
 i18n['global.pleaseWaitClrntLevelCheck'] = '<s:text name="global.pleaseWaitClrntLevelCheck"/>';
+i18n['global.pleaseWait'] = '<s:text name="global.pleaseWait"/>';
 i18n['global.positiveNbr'] = '<s:text name="global.positiveNbr"/>';
 i18n['global.purgeRequired'] = '<s:text name="global.purgeRequired"/>';
 i18n['global.tinterDriverBusyReinitAndRetry'] = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
