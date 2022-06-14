@@ -47,7 +47,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String extBases;
 	private boolean measure;
 	private boolean compare;
-	private boolean closestColor;
+	private boolean closestColors;
 	
 	@Autowired
 	private ColorCoordinatesCalculator colorCoordCalc;
@@ -159,7 +159,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			reqObj.setRgbHex(rgbHex);
 			reqObj.setCurveArray(curveArray);
 			
-			if(closestColor) {
+			if(closestColors) {
 				Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
 				coordMap.put("colorCoord", colorCoord);
 				
@@ -167,7 +167,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				
 				sessionMap.put(reqGuid, reqObj);
 				
-				return "closestColor";
+				return "closestColors";
 			}
 			
 			//2018-01-15 BKP - copied from below to here to calculated bases based on curve.
@@ -312,12 +312,12 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		this.compare = compare;
 	}
 
-	public boolean isClosestColor() {
-		return closestColor;
+	public boolean isClosestColors() {
+		return closestColors;
 	}
 
-	public void setClosestColor(boolean closestColor) {
-		this.closestColor = closestColor;
+	public void setClosestColors(boolean closestColors) {
+		this.closestColors = closestColors;
 	}
 
 }

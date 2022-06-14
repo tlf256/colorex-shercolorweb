@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -9,14 +10,16 @@ import org.owasp.encoder.Encode;
 
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.domain.ColorDifference;
-import com.sherwin.shercolor.common.domain.CdsColorStand;
 import com.sherwin.shercolor.common.domain.CdsRoomList;
-import com.sherwin.shercolor.common.domain.ClosestColor;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
-public class RequestObject {
+public class RequestObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2837237136401476621L;
 	private String guid;
 	private String colorComp;
 	private String colorID;

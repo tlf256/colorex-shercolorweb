@@ -192,6 +192,7 @@
 			<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 			<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 			<s:hidden name="measure" id="measureSample" value="%{measure}"/>
+			<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
 		</s:form>
 		<s:form id="measure-color-form" action="MeasureColorNextAction" validate="true"  theme="bootstrap" method="post">
 			<div class="container-fluid">
@@ -204,7 +205,7 @@
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
-						<s:hidden name="closestColor" id="closestColor" value="%{closestColor}"/>
+						<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
 					</div>
 				</div>
 				<br>

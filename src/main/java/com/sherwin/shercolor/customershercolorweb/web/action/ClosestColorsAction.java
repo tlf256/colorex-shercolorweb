@@ -13,23 +13,23 @@ import com.sherwin.shercolor.common.domain.ClosestColor;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
-public class ClosestColorAction extends ActionSupport implements SessionAware, LoginRequired {
+public class ClosestColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ClosestColorAction.class);
-	private Map<String, Object> sessionMap;
+	static Logger logger = LogManager.getLogger(ClosestColorsAction.class);
+	private transient Map<String, Object> sessionMap;
 	private String reqGuid;
 	private boolean swactive;
 	private String intExt;
-	private boolean closestColor;
-	List<ClosestColor> closestSwColors;
-	List<ClosestColor> closestCmptColors;
+	private boolean closestColors;
+	private transient List<ClosestColor> closestSwColors;
+	private transient List<ClosestColor> closestCmptColors;
 	
 	@Autowired
-	private ColorService colorService;
+	private transient ColorService colorService;
 	
 	public String measure() {
 		//redirect to coloreye measurement
-		setClosestColor(true);
+		setClosestColors(true);
 		return SUCCESS;
 	}
 	
@@ -38,15 +38,22 @@ public class ClosestColorAction extends ActionSupport implements SessionAware, L
 		return SUCCESS;
 	}
 	
+	@Override
 	public String execute() {
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		// find closest colors
-		closestSwColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), intExt, true);
-		if(!swactive) {
-			// also retrieve competitive colors
-			closestCmptColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), null, false);
+		logger.info("begin ClosestColorsAction execute");
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			// find closest colors
+			closestSwColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), intExt, true);
+			if(!swactive) {
+				// also retrieve competitive colors
+				closestCmptColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), null, false);
+			}
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
 		}
-		
+		logger.info("success ClosestColorsAction execute");
 		return SUCCESS;
 	}
 	
@@ -86,12 +93,12 @@ public class ClosestColorAction extends ActionSupport implements SessionAware, L
 		this.intExt = intExt;
 	}
 
-	public boolean isClosestColor() {
-		return closestColor;
+	public boolean isClosestColors() {
+		return closestColors;
 	}
 
-	public void setClosestColor(boolean closestColor) {
-		this.closestColor = closestColor;
+	public void setClosestColors(boolean closestColors) {
+		this.closestColors = closestColors;
 	}
 
 	public List<ClosestColor> getClosestSwColors() {

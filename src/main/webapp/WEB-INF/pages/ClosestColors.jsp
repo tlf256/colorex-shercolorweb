@@ -22,7 +22,7 @@
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/closestColor-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/closestColors-1.5.2.js"></script>
 		<style>
 		  .sw-bg-main {
 	          background-color: ${sessionScope[reqGuid].rgbHex};
@@ -57,48 +57,60 @@
 		<div class="container-fluid">
 			<div class="row mt-4">
 				<div class="col-sm-2"></div>
-				<div class="col-sm-8"><h3><s:text name="closestColors.closestColors"/></h3></div>
+				<div class="col-sm-8"><h3><s:text name="closestColors.findClosestColorsFromScan"/></h3></div>
 				<div class="col-sm-2"></div>
 			</div>
 			<br>
 			<br>
 			<div class="row">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
-				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong><s:text name="global.colorCompanyColon"/></strong>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light pb-5 ml-2 mr-2">
+						<div class="row">
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+								<strong><s:text name="global.colorCompanyColon"/></strong>
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8">
+								<s:text name="processColorAction.custom"/>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+								<strong><s:text name="global.colorIdColon"/></strong>
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8">
+								<s:text name="processColorAction.match"/>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+								<strong><s:text name="global.colorNameColon"/></strong>
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
+								<s:text name="closestColors.measuredColor"/>
+								<span class="chip sw-bg-main mt-2"></span>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
-					<s:text name="processColorAction.custom"/>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-				</div>
-				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong><s:text name="global.colorIdColon"/></strong>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-7 col-xs-8">
-					<s:text name="processColorAction.match"/>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
-				</div>
-				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<strong><s:text name="global.colorNameColon"/></strong>
-				</div>
-				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<s:text name="closestColors.measuredColor"/>
-					<span class="chip sw-bg-main mt-1"></span>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-1 col-xs-0">
-				</div>
-			</div>
+			<br>
+			<br>
 			<br>
 			<br>
 			<br>
@@ -110,11 +122,11 @@
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
-				<div class="col-lg-7 col-md-7 col-sm-10">
+				<div class="col-lg-8 col-md-8 col-sm-10">
 					<button type="button" id="" class="btn btn-primary mb-5 mt-2 mx-1" onclick="showIntExtModal()"><s:text name="global.next"></s:text></button>
 					<s:submit class="btn btn-secondary pull-right mb-5 mt-2 mx-1" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-1">
+				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
 			</div>
 			</s:form>
@@ -122,7 +134,7 @@
 		<div class="modal fade" aria-labelledby="" aria-hidden="true"  id="intExtModal" role="dialog">
 	    	<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
-				  <s:form id="intExtForm" action="closestColorResultAction" validate="true" focusElement="" theme="bootstrap">
+				  <s:form id="intExtForm" action="closestColorsResultAction" validate="true" focusElement="" theme="bootstrap">
 					<div class="modal-header">
 						<h5 class="modal-title"><s:text name="closestColors.colorUse"/></h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
@@ -144,7 +156,7 @@
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-10">
 						  <div class="form-group">
-            				<h6><s:text name="closestColors.chooseProjectTypeColon"/></h6>
+            				<h6><strong><s:text name="closestColors.chooseProjectTypeColon"/></strong></h6>
            					<div class="form-check">
            					  <input class="form-check-input" type="radio" name="intExt" value="I" id="interior" checked>
            					  <label class="form-check-label" for="interior">
@@ -170,7 +182,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" id="btnNxtIntExt" class="btn btn-primary"><s:text name="global.next"></s:text></button>
-						<s:submit class="btn btn-secondary pull-right" id="btnCancel" data-dismiss="modal" value="%{getText('global.cancel')}"/>
+						<button class="btn btn-secondary pull-right" id="btnCancel" data-dismiss="modal"><s:text name="global.cancel"></s:text></button>
 					</div>
 				  </s:form>
 				</div>
@@ -190,18 +202,13 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<p id="process-message" style="white-space:pre-line"><s:text name="closestColors.locatingColors"/></p>
+						<p class="ml-2" id="process-message"><s:text name="closestColors.loadingColors"/></p>
 					</div>
 					<div class="modal-footer">
 					</div>
 				</div>
 			</div>
 		</div>
-		<br>
-		<br>
-		<br>
-		<br>
-  
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		
