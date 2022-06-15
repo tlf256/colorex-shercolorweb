@@ -60,8 +60,8 @@ spec:
             - name: dbPassword
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-postgresql
-                  key: password
+                  name: {{ .Chart.Name }}-secret
+                  key: {{ .Values.postgresql.global.postgresql.auth.secretKeys.userPasswordKey }}
           {{- else if .Values.secret.enabled }}
           env:
             - name: dbPassword

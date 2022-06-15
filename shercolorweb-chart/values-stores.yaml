@@ -7,6 +7,9 @@ service:
     traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     traefik.ingress.kubernetes.io/service.sticky.cookie.name: INGRESSID
 
+secret:
+  enabled: true    
+
 ingress:
   annotations:
     kubernetes.io/ingress.class: traefik
@@ -34,6 +37,11 @@ postgresql:
       auth:
         database: "sherd"
         username: "shercolor"
+        existingSecret: "shercolorweb-secret"
+        secretKeys:
+            userPasswordKey: shercolorPass
+  auth:
+    enablePostgresUser: false          
   image:
     registry: docker.artifactory.sherwin.com
     tag: 14.1.0-debian-10-r9
