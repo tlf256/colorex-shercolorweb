@@ -637,6 +637,11 @@ obj/
 /node_modules
 /wwwroot/node_modules
 
+### VisualStudioCode ###
+!.vscode/*.code-snippets
+.vscode/*
+target/
+
 # Local History for Visual Studio Code
 
 # Built Visual Studio Code Extensions
