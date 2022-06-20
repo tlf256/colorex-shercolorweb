@@ -1,9 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -20,13 +18,12 @@ import com.sherwin.shercolor.common.service.DrawdownLabelService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -95,8 +92,7 @@ public class PrintLabelTest2  {
 	
 	@Test
 	public void testLabel5()  {
-		reqObj = GetShercolorFormula(request1, parms1);
-		
+		reqObj = GetShercolorFormula(request1, parms1);		
 		printLabel.CreateLabelPdf("label5.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
 		System.out.println("Label 5 image created from " + reqObj.getProdNbr());
 	}

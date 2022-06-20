@@ -1,21 +1,15 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
@@ -150,6 +144,7 @@ public class PrintLabelTest  {
 			"CCF Hillcrest", "Location Name", "G", "Building Code", "", "", "555", "Room", "Wall", "Surface Type", 
 				"THIS IS A NEW LABEL", "Painter's Comment"};
 	
+	//Store Labels
 	@Test
 	public void test()  {
 		reqObj = BuildReqObject(label1, formula1, message1, job1);
@@ -184,6 +179,80 @@ public class PrintLabelTest  {
 	public void test6()  {
 		reqObj = BuildReqObject(label6, formula6, message6, job6);
 		printLabel.CreateLabelPdf("label26.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+	}
+	
+	//Self Tinting Customer Label.
+	@Test
+	public void test7()  {
+		reqObj = BuildReqObject(label1, formula1, message1, job1);
+		printLabel.CreateLabelPdf("label7.pdf", reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test8()  {
+		reqObj = BuildReqObject(label2, formula2, message2, job2);		
+		printLabel.CreateLabelPdf("label8.pdf", reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test9()  {
+		reqObj = BuildReqObject(label3, formula3, message3, job3);
+		printLabel.CreateLabelPdf("label9.pdf", reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test10()  {
+		reqObj = BuildReqObject(label4, formula4, message4, job4);
+		printLabel.CreateLabelPdf("label10.pdf", reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test11()  {
+		reqObj = BuildReqObject(label5, formula5, message5, job5);
+		printLabel.CreateLabelPdf("label11.pdf", reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test12()  {
+		reqObj = BuildReqObject(label6, formula6, message6, job6);
+		printLabel.CreateLabelPdf("label12.pdf", reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+	}
+	
+	//Drawdown Label
+	@Test
+	public void test13()  {
+		reqObj = BuildReqObject(label1, formula1, message1, job1);
+		printLabel.CreateLabelPdf("label13.pdf", reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test14()  {
+		reqObj = BuildReqObject(label2, formula2, message2, job2);		
+		printLabel.CreateLabelPdf("label14.pdf", reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test15()  {
+		reqObj = BuildReqObject(label3, formula3, message3, job3);
+		printLabel.CreateLabelPdf("label15.pdf", reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test16()  {
+		reqObj = BuildReqObject(label4, formula4, message4, job4);
+		printLabel.CreateLabelPdf("label16.pdf", reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test17()  {
+		reqObj = BuildReqObject(label5, formula5, message5, job5);
+		printLabel.CreateLabelPdf("label17.pdf", reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+	}
+	
+	@Test
+	public void test18()  {
+		reqObj = BuildReqObject(label6, formula6, message6, job6);
+		printLabel.CreateLabelPdf("label18.pdf", reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
 	}
 	
 	private RequestObject BuildReqObject(String label[],  String formula[], String message[], String job[]){

@@ -75,6 +75,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private boolean siteHasPrinter;
 	private boolean displayDeltaEColumn = false;
 	private boolean accountIsDrawdownCenter = false;
+	private boolean accountIsSwStore = false;
 	private boolean accountUsesRoomByRoom = false;
 	private boolean tinterDoesBaseDispense = false;
 	private int dispenseBase;
@@ -375,8 +376,11 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		if (profile != null) {
 			String customerType = profile.getCustomerType();
 			
-			if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+			if (customerType.trim().equalsIgnoreCase("DRAWDOWN")){
 				setAccountIsDrawdownCenter(true);
+			}
+			if (customerType.trim().equalsIgnoreCase("STORE")) {
+				setAccountIsSwStore(true);
 			}
 			setAccountUsesRoomByRoom(profile.isUseRoomByRoom());
 		}
@@ -975,6 +979,16 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setColorNotes(String colorNotes) {
 		this.colorNotes = colorNotes;
+	}
+
+
+	public boolean isAccountIsSwStore() {
+		return accountIsSwStore;
+	}
+
+
+	public void setAccountIsSwStore(boolean accountIsSwStore) {
+		this.accountIsSwStore = accountIsSwStore;
 	}
 	
 }

@@ -121,6 +121,17 @@ function printStoreLabel() {
 	}, 500);
 }
 
+function printSelfTintCustLabel() {
+	
+	myPrintLabelType = "selfTintCustLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
+	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
+}
+
+
 function printDrawdownStoreLabel() {
 	myPrintLabelType = "drawdownStoreLabel";
 	myPrintOrientation = "PORTRAIT";
@@ -1652,8 +1663,14 @@ function ParsePrintMessage() {
 							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
-						<button type="button" class="btn btn-secondary" id="formulaPrint"
-							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+						<s:if test = "%{accountIsSwStore==true}">	
+							<button type="button" class="btn btn-secondary" id="formulaPrint"
+								onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+						</s:if>
+						<s:else>
+							<button type="button" class="btn btn-secondary" id="formulaPrint"
+								onclick="printSelfTintCustLabel();return false;"><s:text name="global.print"/></button>
+						</s:else>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
 							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
