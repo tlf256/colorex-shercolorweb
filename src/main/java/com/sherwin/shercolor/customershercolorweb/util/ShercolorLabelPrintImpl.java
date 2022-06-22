@@ -156,7 +156,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 
 		String partMessage = null;
-		logger.info("JXL: In CreateLabelPdf: printLabelType is {}", printLabelType);
 
 		try {
 			if (reqObj != null) {
@@ -282,28 +281,30 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			//Order Date
 			cell = createCell(row, 25, strDate, haRight, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
 			
-			//Order Number
-			errorLocation = "Order Number";
+			//Order Number and Phone Number.
+			errorLocation = "Order Number and phone number";
 			row = createRow(table, 8);
-			cell = createCell(row, 100, "Order # " + Integer.toString(reqObj.getControlNbr()),  haCenter, vaMiddle);
+			//Future place for store phone number.
+			cell = createCell(row, 50, "XXX-XXX-XXXX", haLeft, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
-			
-			//Blank line
-			createRow(table, 2);
+			cellPaddingAndBorderSettings(cell, 0, 1f, 0, 1f, Color.WHITE, 0);
+			//Order Number
+			cell = createCell(row, 50, "Order # " + Integer.toString(reqObj.getControlNbr()), haRight, vaMiddle);
+			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
+			cellPaddingAndBorderSettings(cell, 0, 1f, 2f, 1f, Color.WHITE, 0);			
 
 			//Use Interior/Exterior.
 			errorLocation = "Interior/Exterior";
 			row = createRow(table, 8);
 			cell = createCell(row, 50, reqObj.getIntExt(), haLeft, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
-			//The current store label prints the usage on the left and right sides of the label.
-			cell = createCell(row, 50, reqObj.getIntExt(), haRight, vaMiddle);
+			cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
+			//Class.
+			cell = createCell(row, 50, reqObj.getKlass(), haRight, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
 			
 			
 			//Quality and Composite
@@ -314,7 +315,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			row = createRow(table, 8);
 			cell = createCell(row, 50, reqObj.getFinish(), haLeft, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 0, 0, 2f, Color.WHITE, 0);
 			
 			if(reqObj.getTinter() == null) {
 				cell = createCell(row, 50, "STANDALONE", haRight, vaMiddle);
@@ -322,7 +323,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				cell = createCell(row, 50, reqObj.getTinter().getModel(), haRight, vaMiddle);
 			}
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 0, 0, 2f, Color.WHITE, 0);
 			
 			//Color Id, Color Name and Formula Type
 			errorLocation = "Color I.D. & Name";
@@ -337,14 +338,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cell = createCell(row, 100, reqObj.getDisplayFormula().getSourceDescr(), haCenter, vaMiddle);
 			if (reqObj.getDisplayFormula().getSourceDescr().equalsIgnoreCase("VINYL SAFE FORMULA")) {
 				cellFontAndColorSettings(cell, 8, Color.WHITE, Color.BLACK);
-				cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+				cellPaddingAndBorderSettings(cell, 1f, 1f, 1f, 1f, Color.WHITE, 0);
 			} else {
 				cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
-				cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+				cellPaddingAndBorderSettings(cell, 0, 0, 0, 1f, Color.WHITE, 0);
 			}
-			
-			//Blank line
-			createRow(table, 4);
 			
 			//Formula Heading and 5 Colorant Lines maximum.
 			row = createRow(table, 8);
@@ -370,7 +368,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			cell = createCell(row, 50, reqObj.getBase(), haRight, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 0, 4f, 0, Color.WHITE, 0);
 
 			
 			errorLocation = "Sales and Product Number";
@@ -381,44 +379,31 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 			cell = createCell(row, 50, reqObj.getSalesNbr(), haRight, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 0, 4f, 0, Color.WHITE, 0);
 
 			//Room Type
-			errorLocation = "Room Type & Non-Return msg";
+			errorLocation = "Room Type";
 			row = createRow(table, 8);
 			cell = createCell(row, 100, reqObj.getRoomByRoom(), haCenter, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 4f, 0, 2f, Color.WHITE, 0);
 			
 			//Formula Messages
 			errorLocation = "Formula Messages";
 			setFormulaMessageRowsForStores(table);
-			
-			//Blank line
-			createRow(table, 8);
 			
 			//Non-Return Msg
 			errorLocation = "Non-Return msg";
 			row = createRow(table, 8);
 			cell = createCell(row, 100, "Non Returnable Tinted Color", haCenter, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
-			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(cell, 0, 4f, 0, 4f, Color.WHITE, 0);
 			
-			//JXL728 To toggle testing between QR and barcode for stores. 
-			//Further discussion needed to determine how we want to toggle this for the store dynamically.			
-			if(reqObj.getCustomerID().startsWith("LB")) {
-				//QR Code & Order Number
-				errorLocation = "QR Code & Order Number";
-				createQRCode(content);
-				String qrCodeChars = String.format("%s-%08d-%03d", reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-				addCenteredText(content, qrCodeChars, fontBold, 8, page, 4.0f);
-			} else {
-				// Bar Code and Order and Line Numbers (part of bar code).
-				errorLocation = "Bar Code & Order Number";
-				createStoreBarcode(content);
-				String barCodeChars = String.format("%s-%08d-%03d", reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-				addCenteredText(content, barCodeChars, fontBold, 8, page, 4.0f);
-			}
+			//QR Code & Order Number
+			errorLocation = "QR Code & Order Number";
+			createQRCode(content);
+			String qrCodeChars = String.format("%s-%08d-%03d", reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
+			addCenteredText(content, qrCodeChars, fontBold, 8, page, 4.0f);
 			
 			//Create the label
 			table.draw();
@@ -917,22 +902,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			String text = cell.getText();
 	
-			//get new font if unicode text found.
-			//if font not available replace unicode chars with '#'
-			//if no unicode chars, just use helvetica
-			if(text != null && text.length() > 0) {
-				if(hasUnicode(text)){
-					fontBold = getUnicode(text);
-					if(fontBold == null) {
-						fontBold = helvetica;
-						cell.setText(replaceUnicode(text));
-					}
-				} else {
-					fontBold = helvetica;
-				}
-			} else { //null case, must have helvetica to avoid error.
-				fontBold = helvetica;
-			}
+			checkForUnicode(cell, text);
 			cell.setFontBold(fontBold);
 			cell.setFont(fontBold);
 			cell.setTextColor(textColor);
@@ -1013,7 +983,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
 		cell = createCell(row, setCompositeParm, reqObj.getComposite(), haRight, vaMiddle);
 		cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-		cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+		cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
 				
 	}
 	
@@ -1063,7 +1033,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		List<String> listIncrementHdr = reqObj.getDisplayFormula().getIncrementHdr();
 		if(!listIncrementHdr.isEmpty()) {
 			Cell<PDPage> fcellHead1 =  createFormulaHeading(row,reqObj.getClrntSys() + " Colorant", 52f, 7,  haLeft);
-			cellPaddingAndBorderSettings(fcellHead1, 0, 0, 2f, 0, Color.WHITE, 0);
+			cellPaddingAndBorderSettings(fcellHead1, 0, 2f, 2f, 0, Color.WHITE, 0);
 						
 			Cell<PDPage> fcellHead2 =  createFormulaHeading(row,listIncrementHdr.get(0), 11f, 8, haCenter);
 			cellPaddingAndBorderSettings(fcellHead2, 0, 0, 2f, 0, Color.WHITE, 0);
@@ -1174,10 +1144,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					if (message.getMessage().length() > 30) {
 						if(message.getMessage().equalsIgnoreCase("NOT RECOMMENDED FOR USE ON VINYL")) {
 							cellFontAndColorSettings(cell, 6, Color.WHITE, Color.BLACK);
+							cellPaddingAndBorderSettings(cell, 1f, 1f, 1f, 1f, Color.WHITE, 0);
 						} else {
 							cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
+							cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
 						}
-						cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
 					} else {
 						cellFontAndColorSettings(cell, 7, Color.BLACK, Color.WHITE);
 						cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
@@ -1224,6 +1195,25 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				}
 			}
 		}	
+	}
+	
+	public void checkForUnicode(Cell<PDPage> cell, String text) {
+		//get new font if unicode text found.
+		//if font not available replace unicode chars with '#'
+		//if no unicode chars, just use helvetica
+		if(text != null && text.length() > 0) {
+			if(hasUnicode(text)){
+				fontBold = getUnicode(text);
+				if(fontBold == null) {
+					fontBold = helvetica;
+					cell.setText(replaceUnicode(text));
+				}
+			} else {
+				fontBold = helvetica;
+			}
+		} else { //null case, must have helvetica to avoid error.
+			fontBold = helvetica;
+		}
 	}
 	
 	boolean hasArabicCharacters(String string) {
@@ -1282,24 +1272,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		try {
 			String text = cell.getText();
 	
-			//get new font if unicode text found.
-			//if font not available replace unicode chars with '#'
-			//if no unicode chars, just use helvetica
-			if(text!=null && text.length()>0) {
-				if(hasUnicode(text)){
-					fontBold = getUnicode(text);
-					if(fontBold == null) {
-						fontBold = helvetica;
-						cell.setText(replaceUnicode(text));
-					}
-				}
-				else {
-					fontBold = helvetica;
-				}
-			}
-			else { //null case, must have helvetica to avoid error.
-				fontBold = helvetica;
-			}
+			checkForUnicode(cell, text);
 			cell.setFontBold(fontBold);
 			cell.setFont(fontBold);
 	
@@ -1372,18 +1345,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	private void createStoreBarcode(PDPageContentStream content) {
-		try {
-			String barCodeChars = String.format("%s-%08d-%03d", reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-			BufferedImage bufferedImage = generateBarcodeImage(barCodeChars);
-			PDImageXObject pdImage = JPEGFactory.createFromImage(document, bufferedImage);
-
-			content.drawImage(pdImage, 20, 12, 100, 15);
-		} catch (IOException e) {
-			logger.error(exceptionDetail, e.getMessage(), colorNameLog, productNbrLog, errorLocation);
-		}
-	}
-	
 	private void createQRCode(PDPageContentStream content ){
 		try {
 			String qrCodeChars = String.format("%s-%08d-%03d", reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
@@ -1413,7 +1374,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	    QRCodeWriter qrCodeWriter = new QRCodeWriter();
 	    BitMatrix bitMatrix = null;
 		try {
-			bitMatrix = qrCodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, 100, 90); // was 200-200
+			bitMatrix = qrCodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, 100, 90);
 		} catch (WriterException e) {
 			logger.error(e.getMessage(),"generateQRCodeImage");
 		}
