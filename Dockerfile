@@ -1,6 +1,21 @@
+FROM maven:3-openjdk-11-slim as builder
+COPY pom.xml .
+RUN mvn -B dependency:resolve-plugins dependency:go-offline
+COPY wildfly wildfly
+COPY src src
+RUN mvn -B package -DskipTests
+
 FROM openjdk:11-jre-slim
 LABEL maintainer="SherColor Team"
 EXPOSE 8090 8543
-COPY target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
+COPY --from=builder target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
 ADD docs /web_apps/server/shercolor/external
 ENTRYPOINT ["java","-jar","SherColorWeb-bootable.jar"]
+
+# Uncomment this section to simply build an image from a jar pre-built with 'mvn package'
+#FROM openjdk:11-jre-slim
+#LABEL maintainer="SherColor Team"
+#EXPOSE 8090 8543
+#COPY target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
+#ADD docs /web_apps/server/shercolor/external
+#ENTRYPOINT ["java","-jar","SherColorWeb-bootable.jar"]
