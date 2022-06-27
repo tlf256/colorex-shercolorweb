@@ -1,5 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,41 +48,40 @@ public class PrintLabelTest2  {
 	ColorMastService colorMastService;
 	
 	private CdsProd cdsProd;
-	ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
 	
 	private List<SwMessage> validationMsgs;
 	private List<SwMessage> displayLabelMsgs;
 	private FormulaInfo displayFormula;
 
 	private String request1[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "0001", "MULBERRY SILK", "650186935", "CCE", 
-			"01/05/17", "false", "16", "421001"};
+			"01/05/17", "false", "16", "421001", "LB6110"};
 	
 	private String request2[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "6385", "DOVER WHITE", "650096514", "CCE", 
-			"01/05/17", "false", "16", "4216385"};
+			"01/05/17", "false", "16", "4216385", "LB6110"};
 	
 	private String request3[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "0002", "CHELSEA MAUVE", "650096522", "CCE", 
-			"01/05/17", "false", "20", "4210002"};
+			"01/05/17", "false", "20", "4210002", "LB6110"};
 	
 	private String request4[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "6108", "LATTE", "650139587", "CCE", 
-			"01/05/17", "false", "14", "426108"};
+			"01/05/17", "false", "14", "426108", "LB6110"};
 	
 	private String request5[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "0065", "VOGUE GREEN", "650187529", "CCE", 
-			"01/05/17", "false", "16", "4210065"};
+			"01/05/17", "false", "16", "4210065", "LB6110"};
 	
 	private String request6[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "6612", "RAVISHING CORAL", "640399697", "CCE", 
-			"01/05/17", "false", "16", "4216612"};
+			"01/05/17", "false", "16", "4216612", "LB6110"};
 	
 	private String request7[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "0064", "BLUE PEACOCK", "640398616", "CCE", 
-			"01/05/17", "false", "16", "4210064"};
+			"01/05/17", "false", "16", "4210064", "LB6110"};
 	
 	private String request8[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "0057", "CHINESE RED", "640399176", "CCE", 
-			"01/05/17", "false", "16", "4211057"};
+			"01/05/17", "false", "16", "4211057", "LB6110"};
 	
 	private String request9[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "6353", "CHIVALRY COPPER", "650131519", "CCE", 
-			"01/05/17", "false", "16", "4216353"};
+			"01/05/17", "false", "16", "4216353", "LB6110"};
 	
 	private String request10[] = {"SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "6600", "ENTICING RED", "640398665", "CCE", 
-			"01/05/17", "false", "16", "4216600"};
+			"01/05/17", "false", "16", "4216600", "LB6110"};
 	
 	private String parms1[] = {"1", "S-W", "SHERWIN-WILLIAMS", "SHERWIN-WILLIAMS", "SW", "CCE", "true", 
 			"SW", "SHERWIN COLOR", "SWMZDP", "SW", "true", "6,4", "10,12,14", "8", "true", "true", "true",
@@ -92,36 +93,41 @@ public class PrintLabelTest2  {
 	
 	@Test
 	public void testLabel5()  {
-		reqObj = GetShercolorFormula(request1, parms1);		
-		printLabel.CreateLabelPdf("label5.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		reqObj = GetShercolorFormula(request1, parms1);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label5.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 5 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel6()  {
 		reqObj = GetShercolorFormula(request2, parms1);
-		printLabel.CreateLabelPdf("label6.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label6.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 6 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel7()  {
 		reqObj = GetShercolorFormula(request3, parms1);
-		printLabel.CreateLabelPdf("label7.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label7.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 7 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel8()  {
 		reqObj = GetShercolorFormula(request4, parms1);
-		printLabel.CreateLabelPdf("label8.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label8.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 8 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel9()  {
 		reqObj = GetShercolorFormula(request5, parms1);
-		printLabel.CreateLabelPdf("label9.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label9.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 9 image created from " + reqObj.getProdNbr());
 	}
 	
@@ -129,35 +135,40 @@ public class PrintLabelTest2  {
 	@Test
 	public void testLabel10()  {
 		reqObj = GetShercolorFormula(request6, parms1);
-		printLabel.CreateLabelPdf("label10.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label10.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 10 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel11()  {
 		reqObj = GetShercolorFormula(request7, parms1);
-		printLabel.CreateLabelPdf("label11.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label11.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 11 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel12()  {
 		reqObj = GetShercolorFormula(request8, parms1);
-		printLabel.CreateLabelPdf("label12.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label12.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 12 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel13()  {
 		reqObj = GetShercolorFormula(request9, parms1);
-		printLabel.CreateLabelPdf("label13.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label13.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 13 image created from " + reqObj.getProdNbr());
 	}
 	
 	@Test
 	public void testLabel14()  {
 		reqObj = GetShercolorFormula(request10, parms1);
-		printLabel.CreateLabelPdf("label14.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		assertTrue(printLabel.CreateLabelPdf("label14.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null));
 		System.out.println("Label 14 image created from " + reqObj.getProdNbr());
 	}
 
@@ -170,6 +181,7 @@ public class PrintLabelTest2  {
 		reqObj.setSalesNbr(request[4]);
 		reqObj.setClrntSys(request[5]);
 		reqObj.setVinylExclude(Boolean.parseBoolean(request[7]));
+		reqObj.setCustomerID(request[10]);
 		
 		cdsProd = productService.readCdsProd(request[4]).get();
 		reqObj.setProdNbr(cdsProd.getPrepComment().substring(0, 9));

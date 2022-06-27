@@ -95,6 +95,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	PDDocument document = new PDDocument();
 	String filename;
 	RequestObject reqObj;
+	boolean success = false;
 
 	// Set all fonts to bold  to resolve light printing issue.
 	
@@ -150,7 +151,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		return ingredients;
 	}
 	
-	public void CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
+	public boolean CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
 		this.filename = filename;
 		this.reqObj = reqObj;
 
@@ -227,6 +228,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			
 
 			document.save(filename);
+			return success;
 		}
 
 		catch(IOException ie) {
@@ -246,6 +248,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			}
 		}
+		return success;
 	}
 	
 	private void DrawStoreLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
@@ -333,6 +336,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellFontAndColorSettings(cell, 10, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
 			
+			
 			errorLocation = "Formula Type";
 			row = createRow(table, 8);
 			cell = createCell(row, 100, reqObj.getDisplayFormula().getSourceDescr(), haCenter, vaMiddle);
@@ -369,7 +373,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cell = createCell(row, 50, reqObj.getBase(), haRight, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 4f, 0, Color.WHITE, 0);
-
 			
 			errorLocation = "Sales and Product Number";
 			row = createRow(table, 8);
@@ -409,6 +412,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			table.draw();
 			content.close();
 			document.addPage(page);
+			success = true;
 			
 		} catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
@@ -513,6 +517,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			table.draw();
 			content.close();
 			document.addPage( page );
+			success = true;
 			
 		} catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
@@ -597,6 +602,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			content.close();
 			
 			document.addPage( page );
+			success = true;
 			
 		} catch(java.lang.IllegalArgumentException ex) {
 			logger.error(exceptionDetail, ex.getMessage(), colorNameLog, productNbrLog, errorLocation);
@@ -729,6 +735,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 			content.close();
 			document.addPage( page );
+			success = true;
 			
 		} catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
@@ -868,6 +875,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			table.draw();
 			content.close();
 			document.addPage( page );
+			success = true;
 			
 		}  catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
@@ -1004,13 +1012,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			colorIDLabelText = "COMP(" + colorMastService.getColorCompPrintId(reqObj.getColorComp()) + ") "
 								+ colorIDLabelText;
 		}
+		
 
 		//Modify input values, replace / and " with -
 		if(!StringUtils.isEmpty(colorIDLabelText) && !StringUtils.isEmpty(colorNameLabelText)){
 			colorIDLabelText = colorIDLabelText.replaceAll("\"|\\\\|\\~", "-");
 			colorNameLabelText = StringEscapeUtils.unescapeHtml4(colorNameLabelText.replaceAll("\"|\\\\|\\~", "-"));
 		}
-		
 		//Subtract the number of characters from the full ColorID to find out how many characters are left for the colorName
 		charsAllowedRemaining = charsAllowedRemaining - colorIDLabelText.length();
 		
