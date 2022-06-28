@@ -32,7 +32,6 @@ spring:
       # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables.
       active: oracle,dev,local
 
-dbPassword: ${dbOraclePassword}
 oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
 
 ---

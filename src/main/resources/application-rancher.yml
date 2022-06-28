@@ -1,3 +1,18 @@
+#spring:
+#  config:
+#    import: file:/vault/secrets/shercolorweb.properties
+
+
+ 
 spring:
   config:
-    import: file:/vault/secrets/dev
+    import: vault://
+  cloud:
+    vault:
+      authentication: KUBERNETES
+      uri: https://vault.sherwin.com
+      application-name: shercolorweb
+      kv:
+        backend: shercolor/kv2
+      kubernetes:
+        role: k8s-np-internal-shercolor-dev
