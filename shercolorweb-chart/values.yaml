@@ -7,10 +7,10 @@ replicaCount: 3
 
 image:
   repository: docker.artifactory.sherwin.com/colorex/shercolorweb
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   # TODO change this to a hard version
-  tag: "test"
+  tag: "testauth"
   
 imagePullSecrets: []
 
@@ -23,15 +23,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: 
-  vault.hashicorp.com/agent-inject: "true"
-  vault.hashicorp.com/agent-inject-secret-dev: "shercolor/kv2/shercolorweb/dev"
-  # Environment variable export template
-  vault.hashicorp.com/agent-inject-template-dev: |
-    {{ with secret "shercolor/kv2/shercolorweb/dev" -}}
-      dbPassword="{{ .Data.data.dbOraclePassword }}"
-    {{- end }}
-  vault.hashicorp.com/role: "k8s-np-internal-shercolor-dev"
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000

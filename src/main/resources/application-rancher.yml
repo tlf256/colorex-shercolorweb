@@ -15,4 +15,5 @@ spring:
       kv:
         backend: shercolor/kv2
       kubernetes:
+        kubernetes-path: kubernetes-np-internal
         role: k8s-np-internal-shercolor-dev
