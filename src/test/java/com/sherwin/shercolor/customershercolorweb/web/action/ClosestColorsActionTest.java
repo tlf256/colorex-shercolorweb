@@ -3,6 +3,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 @Transactional
@@ -28,98 +31,123 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	ClosestColorsAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
+	BigDecimal[] curve = {new BigDecimal(8.5454),new BigDecimal(9.8891),new BigDecimal(13.0628),new BigDecimal(20.4314),
+			new BigDecimal(31.6782),new BigDecimal(39.3078),new BigDecimal(41.9917),new BigDecimal(43.7609),new BigDecimal(45.9493),
+			new BigDecimal(47.5962),new BigDecimal(48.1183),new BigDecimal(48.3551),new BigDecimal(48.7558),new BigDecimal(49.5168),
+			new BigDecimal(50.8593),new BigDecimal(52.5787),new BigDecimal(54.5094),new BigDecimal(56.5196),new BigDecimal(58.3763),
+			new BigDecimal(59.9248),new BigDecimal(61.3052),new BigDecimal(62.8414),new BigDecimal(64.1409),new BigDecimal(64.8976),
+			new BigDecimal(65.1403),new BigDecimal(65.0295),new BigDecimal(64.8936),new BigDecimal(64.6806),new BigDecimal(64.5444),
+			new BigDecimal(64.4543),new BigDecimal(64.3829),new BigDecimal(64.3577),new BigDecimal(64.229),new BigDecimal(64.0975),
+			new BigDecimal(63.898),new BigDecimal(63.7873),new BigDecimal(63.8011),new BigDecimal(63.9099),new BigDecimal(63.9851),new BigDecimal(63.8023)};
+	
+	@Autowired
+	private transient ColorService service;
 	
 	@Test
-	public void getSwAndCompetClosestColors() {
+	public void testGetSwAndCompetClosestColors() {
 		ActionProxy proxy = getActionProxy("/closestColorsResultAction");
 		target = (ClosestColorsAction) proxy.getAction();
 		
+		target.setReqGuid("12345");
 		target.setSwactive(false);
-		target.setIntExt("E");
-		target.setReqGuid(reqGuid);
+		target.setClosestColors(true);
 		
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
-		ColorCoordinates coord = new ColorCoordinates();
-		coord.setCieX(10.741714537);
-		coord.setCieY(12.870018718);
-		coord.setCieZ(17.288416401);
-		coord.setCieL(42.56673975309436);
-		coord.setCieA(-10.502497705042913);
-		coord.setCieB(-7.851476080618114);
-		coord.setCieC(13.112899553071777);
-		coord.setCieH(-2.212747986774148);
-		coord.setRgbRed(72);
-		coord.setRgbGreen(106);
-		coord.setRgbBlue(113);
-		coord.setRgbHex("#486a71");
+		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
 		
-		coordMap.put("colorCoord", coord);
+		assertNotNull(colorCoord);
+		
+		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
+		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 		
 		try {
+			String actionResult = proxy.execute();
+			System.out.println("action result: " + actionResult);
 			String json = executeAction("/closestColorsResultAction");
 			assertNotNull(json);
-			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
 			System.out.println(json);
+			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
 			assertEquals("12345",result.getReqGuid());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			try {
 				throw(e.getCause());
 			} catch (Throwable e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
 	}
 	
 	@Test
-	public void getSwActiveClosestColorsOnly() {
+	public void testGetSwActiveClosestColorsOnly() {
 		ActionProxy proxy = getActionProxy("/closestColorsResultAction");
 		target = (ClosestColorsAction) proxy.getAction();
 		
 		target.setSwactive(true);
-		target.setIntExt("I");
-		target.setReqGuid(reqGuid);
+		target.setReqGuid("12345");
+		target.setClosestColors(true);
 		
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
-		ColorCoordinates coord = new ColorCoordinates();
-		coord.setCieX(10.741714537);
-		coord.setCieY(12.870018718);
-		coord.setCieZ(17.288416401);
-		coord.setCieL(42.56673975309436);
-		coord.setCieA(-10.502497705042913);
-		coord.setCieB(-7.851476080618114);
-		coord.setCieC(13.112899553071777);
-		coord.setCieH(-2.212747986774148);
-		coord.setRgbRed(72);
-		coord.setRgbGreen(106);
-		coord.setRgbBlue(113);
-		coord.setRgbHex("#486a71");
+		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
 		
-		coordMap.put("colorCoord", coord);
+		assertNotNull(colorCoord);
+		
+		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
+		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 		
 		try {
+			String actionResult = proxy.execute();
+			System.out.println("action result: " + actionResult);
 			String json = executeAction("/closestColorsResultAction");
 			assertNotNull(json);
 			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
 			System.out.println(json);
 			assertEquals("12345",result.getReqGuid());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			try {
 				throw(e.getCause());
 			} catch (Throwable e1) {
-				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@Test
+	public void testClosestColorDisplay() {
+		ActionProxy proxy = getActionProxy("/closestColorsDisplayAction");
+		target = (ClosestColorsAction) proxy.getAction();
+		
+		target.setClosestColors(true);
+		target.setReqGuid("12345");
+		
+		reqObj.setCustomerID("TEST");
+		
+		request.setParameter("reqGuid",reqGuid);
+		HttpSession session = request.getSession();
+		System.out.println("session ID - " + session.getId());
+		session.setAttribute(reqGuid, reqObj);
+		
+		try {
+			String actionResult = proxy.execute();
+			System.out.println("action result: " + actionResult);
+			String json = executeAction("/closestColorsDisplayAction");
+			assertNotNull(json);
+			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
+			System.out.println(json);
+			assertEquals("12345",result.getReqGuid());
+		} catch (Exception e) {
+			try {
+				throw(e.getCause());
+			} catch (Throwable e1) {
 				e1.printStackTrace();
 			}
 		}

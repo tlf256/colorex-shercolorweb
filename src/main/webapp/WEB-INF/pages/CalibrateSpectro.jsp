@@ -223,7 +223,7 @@
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
-						<s:hidden name="closestColors" id="closestColor" value="%{closestColors}"/>
+						<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
 						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>
 				</div>

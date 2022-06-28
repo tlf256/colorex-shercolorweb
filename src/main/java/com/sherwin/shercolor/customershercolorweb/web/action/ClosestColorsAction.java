@@ -19,7 +19,6 @@ public class ClosestColorsAction extends ActionSupport implements SessionAware, 
 	private transient Map<String, Object> sessionMap;
 	private String reqGuid;
 	private boolean swactive;
-	private String intExt;
 	private boolean closestColors;
 	private transient List<ClosestColor> closestSwColors;
 	private transient List<ClosestColor> closestCmptColors;
@@ -44,10 +43,10 @@ public class ClosestColorsAction extends ActionSupport implements SessionAware, 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			// find closest colors
-			closestSwColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), intExt, true);
+			closestSwColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), true);
 			if(!swactive) {
 				// also retrieve competitive colors
-				closestCmptColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), null, false);
+				closestCmptColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), false);
 			}
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
@@ -83,14 +82,6 @@ public class ClosestColorsAction extends ActionSupport implements SessionAware, 
 
 	public void setSwactive(boolean swactive) {
 		this.swactive = swactive;
-	}
-
-	public String getIntExt() {
-		return intExt;
-	}
-
-	public void setIntExt(String intExt) {
-		this.intExt = intExt;
 	}
 
 	public boolean isClosestColors() {
