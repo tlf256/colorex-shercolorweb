@@ -53,20 +53,35 @@
 	<body>
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
-		<%-- <s:set var="thisGuid" value="reqGuid" /> --%>
 		<div class="container-fluid">
-			<div class="row mt-4">
-				<div class="col-sm-2"></div>
-				<div class="col-sm-8"><h3><s:text name="closestColors.findClosestColorsFromScan"/></h3></div>
-				<div class="col-sm-2"></div>
-			</div>
-			<br>
-			<br>
 			<div class="row">
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
 				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
-					<div class="card card-body bg-light pb-5 ml-2 mr-2">
+					<div class="card card-body bg-light mt-4">
+					   <div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-3 col-xs-4">
+								<span class="badge badge-secondary" style="font-size: 1.2rem;"><s:text name="closestColors.findClosestColorsFromScan"/></span>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8">
+								<s:form id="" action="" validate="true"  theme="bootstrap">
+									
+								</s:form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+			</div>
+			<s:form id="intExtForm" action="closestColorsResultAction" validate="true" theme="bootstrap">
+			<div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light pb-5 mt-4">
 						<div class="row">
 							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
 							</div>
@@ -104,6 +119,20 @@
 							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-8 col-md-8 col-sm-10 col-xs-12">
+							  	<div class="form-check mt-4">
+			         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
+			         			  <label class="form-check-label" for="swActiveChk">
+								    <s:text name="closestColors.displaySwActiveOnly"/>
+								  </label>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
@@ -112,18 +141,12 @@
 			<br>
 			<br>
 			<br>
-			<br>
-			<br>
-			<br>
-			<s:form id="" action="" validate="true"  theme="bootstrap">
-			<div class="form-row">
-				<s:hidden name="reqGuid" value="%{reqGuid}" />
-			</div>
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
 				<div class="col-lg-8 col-md-8 col-sm-10">
-					<button type="button" id="" class="btn btn-primary mb-5 mt-2 mx-1" onclick="showIntExtModal()"><s:text name="global.next"></s:text></button>
+					<s:hidden name="reqGuid" value="%{reqGuid}" />
+					<button type="button" id="closestColorsNxt" class="btn btn-primary mb-5 mt-2 mx-1"><s:text name="global.next"></s:text></button>
 					<s:submit class="btn btn-secondary pull-right mb-5 mt-2 mx-1" value="%{getText('global.cancel')}" action="userCancelAction"/>
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-1">
@@ -131,84 +154,6 @@
 			</div>
 			</s:form>
 		</div>
-		<div class="modal fade" aria-labelledby="" aria-hidden="true"  id="intExtModal" role="dialog">
-	    	<div class="modal-dialog modal-lg" role="document">
-				<div class="modal-content">
-				  <s:form id="intExtForm" action="closestColorsResultAction" validate="true" focusElement="" theme="bootstrap">
-					<div class="modal-header">
-						<h5 class="modal-title"><s:text name="closestColors.colorUse"/></h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-					  <div class="row">
-						<div class="col-lg-1 col-md-1 col-sm-1">
-							<s:hidden name="reqGuid" value="%{reqGuid}" />
-						</div>
-						<div class="col-lg-10 col-md-10 col-sm-10">
-							<p><s:text name="closestColors.colorUseBaseRecommendation"/></p>
-            			</div>
-						<div class="col-lg-1 col-md-1 col-sm-1">
-						</div>
-					  </div>
-					  <div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-1">
-						</div>
-						<div class="col-lg-7 col-md-7 col-sm-10">
-						  <div class="form-group">
-            				<h6><strong><s:text name="closestColors.chooseProjectTypeColon"/></strong></h6>
-           					<div class="form-check">
-           					  <input class="form-check-input" type="radio" name="intExt" value="I" id="interior" checked>
-           					  <label class="form-check-label" for="interior">
-							    <s:text name="getPercentageIntExt.interior"/>
-							  </label>
-							  <br>
-           					  <input class="form-check-input" type="radio" name="intExt" value="E" id="exterior">
-							  <label class="form-check-label" for="exterior">
-							    <s:text name="getPercentageIntExt.exterior"/>
-							  </label>
-							</div>
-            			</div>
-            			<div class="form-check">
-	         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
-	         			  <label class="form-check-label" for="swActiveChk">
-						    <s:text name="closestColors.displaySwActiveOnly"/>
-						  </label>
-						</div>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-1">
-						</div>
-					  </div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" id="btnNxtIntExt" class="btn btn-primary"><s:text name="global.next"></s:text></button>
-						<button class="btn btn-secondary pull-right" id="btnCancel" data-dismiss="modal"><s:text name="global.cancel"></s:text></button>
-					</div>
-				  </s:form>
-				</div>
-			</div>
-		</div>
-		<div id="waitModal"></div>
-		<%-- <div class="modal fade" aria-labelledby="pleaseWaitModal" aria-hidden="true" id="pleaseWaitModal" role="dialog"
-			data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<em id="spinner" class="fa fa-refresh mr-3 mt-1 text-muted" style="font-size: 1.5rem;"></em>
-						<h5 class="modal-title"><s:text name="closestColors.pleaseWait"/></h5>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="%{getText('global.close')}">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<p class="ml-2" id="process-message"><s:text name="closestColors.loadingColors"/></p>
-					</div>
-					<div class="modal-footer">
-					</div>
-				</div>
-			</div>
-		</div> --%>
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		

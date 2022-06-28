@@ -419,11 +419,12 @@
 			<result name="sample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-			</result>
-			<result name="measure" type="redirectAction">
+			</result>                                                             
+			<result name="ciUtility" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="measure">${measure}</param>
+				<param name="closestColors">${closestColors}</param>
 			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
@@ -452,10 +453,24 @@
 			</result>
 			<result name="success">/WEB-INF/pages/ClosestColorsResult.jsp</result>
 			<result name="input">/WEB-INF/pages/ClosestColorsResult.jsp</result>
-			<result name="error" type="redirectAction">
-				<param name="actionName">loginAction</param>
-				<param name="reqGuid">${reqGuid}</param>
+			<result name="error">/WEB-INF/pages/ClosestColorsResult.jsp</result>
+		</action>
+		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
 			</result>
+			<result name="measure" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<!-- <param name="measureColor">${measureColor}</param> -->
+			</result>
+			<result name="savedMeasure" type="redirectAction">
+				<param name="actionName">MeasureColorNextAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="measuredCurve">${measuredCurve}</param>
+			</result>
+			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
 		</action>
 		<action name="colorUserBackAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="backItUp">
 			<result name="loginRedirect" type="redirectAction">
@@ -482,7 +497,6 @@
 			<result name="closestColors" type="redirectAction">
 				<param name="actionName">closestColorsDisplayAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<param name="closestColors">${closestColors}</param>
 			</result>
 			<result name="sample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>

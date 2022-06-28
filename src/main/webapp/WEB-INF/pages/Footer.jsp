@@ -130,6 +130,24 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
     </div>
   </div>
 </div>
+<!-- Please Wait modal - can be used on any screen to inform user of a wait time during the processing of an action -->
+<div class="modal fade" aria-labelledby="pleaseWaitModal" aria-hidden="true" id="pleaseWaitModal" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-light">
+				<h5 class="modal-title">
+					<em id="spinner" class="fa fa-refresh mr-3 text-muted"></em>
+					<s:text name="global.pleaseWait"></s:text>
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<p class="ml-2" id="processMsg"></p>
+			</div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
+</div>
 <!-- cookie banner -->
 <div id="cookieBanner"></div>
  <!-- Footer -->

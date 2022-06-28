@@ -1,6 +1,5 @@
 package com.sherwin.shercolor.customershercolorweb.web.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -15,11 +14,8 @@ import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
-public class RequestObject implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2837237136401476621L;
+public class RequestObject {
+	
 	private String guid;
 	private String colorComp;
 	private String colorID;
