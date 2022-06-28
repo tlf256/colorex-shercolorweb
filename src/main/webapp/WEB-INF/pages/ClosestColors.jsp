@@ -119,6 +119,7 @@
 							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
 							</div>
 						</div>
+						<!-- 1 -->
 						<div class="row">
 							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
 							</div>
@@ -133,14 +134,87 @@
 							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
 							</div>
 						</div>
+						<!-- 1 -->
 					</div>
 				</div>
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
 			</div>
+			<!-- 3 -->
+			<%-- <div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light mt-4">
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-3 col-xs-4">
+								<div class="form-check mt-1 ml-4">
+			         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
+			         			  <label class="form-check-label" for="swActiveChk">
+								    <s:text name="closestColors.displaySwActiveOnly"/>
+								  </label>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8">
+								<s:hidden name="reqGuid" value="%{reqGuid}" />
+								<button type="button" id="closestColorsNxt" class="btn btn-primary"><s:text name="global.next"></s:text></button>
+								<s:submit class="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+			</div> --%>
+			<!-- 3 -->
+			<!-- 4 -->
+			<%-- <div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light mt-4">
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-3 col-xs-4">
+								<div class="form-check mt-1 ml-4">
+			         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
+			         			  <label class="form-check-label" for="swActiveChk">
+								    <s:text name="closestColors.displaySwActiveOnly"/>
+								  </label>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+			</div> --%>
+			<!-- 4 -->
+			<br>
+			<!-- 2 -->
+			<%-- <div class="row">
+				<div class="col-lg-2 col-md-2 col-sm-1">
+				</div>
+				<div class="col-lg-8 col-md-8 col-sm-10">
+					<div class="form-check mt-4 ml-3">
+         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
+         			  <label class="form-check-label" for="swActiveChk">
+					    <s:text name="closestColors.displaySwActiveOnly"/>
+					  </label>
+					</div>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-1">
+				</div>
+			</div> --%>
+			<!-- 2 -->
 			<br>
 			<br>
-			<br>
+			<!-- 1, 2 & 4 -->
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
@@ -152,6 +226,7 @@
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
 			</div>
+			<!-- 1, 2 & 4 -->
 			</s:form>
 		</div>
 		<!-- Including footer -->
