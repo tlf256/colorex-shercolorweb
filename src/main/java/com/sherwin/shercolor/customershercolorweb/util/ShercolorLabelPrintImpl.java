@@ -151,8 +151,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		return ingredients;
 	}
 	
-	public boolean CreateLabelPdf(String filename,RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
-		this.filename = filename;
+	public boolean CreateLabelPdf(RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
+		this.filename = "label.pdf";
 		this.reqObj = reqObj;
 
 
@@ -167,66 +167,63 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 					productNbrLog = Encode.forJava("[ " + reqObj.getProdNbr() + " ]");
 				}
 			}
+			
 			if (printLabelType.equals("drawdownLabel")) {
 				DrawDrawdownLabelPdf();
-			} else {
-				
-				// Get formula ingredients (colorants) for processing.
-				errorLocation = "Retrieving Formula Ingredients";
-				List<FormulaIngredient> listFormulaIngredients = new ArrayList<>();
-				for (FormulaIngredient displayIngredient : reqObj.getDisplayFormula().getIngredients()) {
-					listFormulaIngredients.add(displayIngredient);
-				}
-				// Merge correction ingredients if the dispense is from an accepted correction dispense
-				if (isCorrectionDispense) {
-					errorLocation = "Merging Correction Ingredients";
-					listFormulaIngredients = mergeCorrectionIngredients(listFormulaIngredients, correctionShotList);
-				}
-				
-				// Determine the number of ingredient (colorant) lines in the formula.
-				int formulaSize = reqObj.getDisplayFormula().getIngredients().size();
-
-				// 5 or less lines in a formula - pass the one part label formula to formatting method.
-				if (formulaSize <= 5){
-					partMessage = " ";
-					errorLocation = "Drawing Label";
-					DrawLabel(listFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
-				}
-				else {
-					// Split the label colorant lines for 2 separate labels and proceed to create 2 labels that print simultaneously.
-					int counter = 0;
-					List<FormulaIngredient>partAListFormulaIngredients = new ArrayList<>(); 
-					List<FormulaIngredient>partBListFormulaIngredients = new ArrayList<>();
-					for(FormulaIngredient ingredient : listFormulaIngredients){
-						if (counter <= 4 ){
-							partAListFormulaIngredients.add(ingredient);
-						}
-						else{
-							partBListFormulaIngredients.add(ingredient);
-						}
-						counter++;
-					}
-					// Write the part A label on first page.
-					if(partAListFormulaIngredients != null && !partAListFormulaIngredients.isEmpty()){
-						partMessage = "* PART A - SEE PART B OF FORMULA *";
-						errorLocation = "Drawing Label Part A";
-						DrawLabel(partAListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
-					}	
-					// Skip to next page to write part B label.
-
-					// Write the part B label on second page.
-					if(partBListFormulaIngredients != null && !partBListFormulaIngredients.isEmpty()){
-						partMessage = "* PART B - SEE PART A OF FORMULA *";
-						errorLocation = "Drawing Label Part B";
-						DrawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
-					}	
-				}
-				// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
-				// Save the results and ensure that the document is properly closed:
-				
+				document.save(filename);
+				return success;
 			}
-			
+				
+			// Get formula ingredients (colorants) for processing.
+			errorLocation = "Retrieving Formula Ingredients";
+			List<FormulaIngredient> listFormulaIngredients = new ArrayList<>();
+			for (FormulaIngredient displayIngredient : reqObj.getDisplayFormula().getIngredients()) {
+				listFormulaIngredients.add(displayIngredient);
+			}
+			// Merge correction ingredients if the dispense is from an accepted correction dispense
+			if (isCorrectionDispense) {
+				errorLocation = "Merging Correction Ingredients";
+				listFormulaIngredients = mergeCorrectionIngredients(listFormulaIngredients, correctionShotList);
+			}
+				
+			// Determine the number of ingredient (colorant) lines in the formula.
+			int formulaSize = reqObj.getDisplayFormula().getIngredients().size();
 
+			// 5 or less lines in a formula - pass the one part label formula to formatting method.
+			if (formulaSize <= 5){
+				partMessage = " ";
+				errorLocation = "Drawing Label";
+				DrawLabel(listFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
+			} else {
+				// Split the label colorant lines for 2 separate labels and proceed to create 2 labels that print simultaneously.
+				int counter = 0;
+				List<FormulaIngredient>partAListFormulaIngredients = new ArrayList<>(); 
+				List<FormulaIngredient>partBListFormulaIngredients = new ArrayList<>();
+				for(FormulaIngredient ingredient : listFormulaIngredients){
+					if (counter <= 4 ){
+						partAListFormulaIngredients.add(ingredient);
+					} else {
+						partBListFormulaIngredients.add(ingredient);
+					}
+					counter++;
+				}
+				// Write the part A label on first page.
+				if(partAListFormulaIngredients != null && !partAListFormulaIngredients.isEmpty()){
+					partMessage = "* PART A - SEE PART B OF FORMULA *";
+					errorLocation = "Drawing Label Part A";
+					DrawLabel(partAListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
+				}	
+				// Skip to next page to write part B label.
+
+				// Write the part B label on second page.
+				if(partBListFormulaIngredients != null && !partBListFormulaIngredients.isEmpty()){
+					partMessage = "* PART B - SEE PART A OF FORMULA *";
+					errorLocation = "Drawing Label Part B";
+					DrawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
+				}	
+			}
+			// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
+			// Save the results and ensure that the document is properly closed:			
 			document.save(filename);
 			return success;
 		}
@@ -417,7 +414,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		} catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
-		} catch(java.lang.IllegalArgumentException ex) {
+		} catch(IllegalArgumentException ex) {
 			logger.error(exceptionDetail, ex.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
 		} catch(RuntimeException re){
@@ -522,7 +519,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		} catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
-		} catch(java.lang.IllegalArgumentException ex) {
+		} catch(IllegalArgumentException ex) {
 			logger.error(exceptionDetail, ex.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
 		} catch(RuntimeException re){
@@ -604,7 +601,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			document.addPage( page );
 			success = true;
 			
-		} catch(java.lang.IllegalArgumentException ex) {
+		} catch(IllegalArgumentException ex) {
 			logger.error(exceptionDetail, ex.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
 		} catch(IOException ie) {
@@ -740,7 +737,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		} catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
 			
-		} catch(java.lang.IllegalArgumentException ex) {
+		} catch(IllegalArgumentException ex) {
 			logger.error(exceptionDetail, ex.getMessage(), colorNameLog, productNbrLog, errorLocation);
 			
 		} catch(Exception e){
@@ -880,7 +877,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}  catch(IOException ie) {
 			logger.error(exceptionDetail, ie.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
-		} catch(java.lang.IllegalArgumentException ex) {
+		} catch(IllegalArgumentException ex) {
 			logger.error(exceptionDetail, ex.getMessage(), colorNameLog, productNbrLog, errorLocation);
 
 		} catch(Exception e){
