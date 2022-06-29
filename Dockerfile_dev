@@ -1,6 +1,8 @@
-FROM maven:3-openjdk-11-slim
-COPY pom.xml .
-RUN mvn -B dependency:resolve-plugins dependency:go-offline
+FROM openjdk:11-jre-slim
+COPY mvnw mvnw
+COPY .mvn .mvn
+COPY pom.xml pom.xml
+RUN ./mvnw -B dependency:resolve dependency:resolve-plugins
 COPY wildfly wildfly
 COPY src src
-ENTRYPOINT mvn wildfly-jar:dev-watch
+ENTRYPOINT ./mvnw -B wildfly-jar:dev-watch

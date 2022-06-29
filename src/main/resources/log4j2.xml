@@ -15,37 +15,39 @@
 			</Policies>
 			<DefaultRolloverStrategy max="10"/>
 		</RollingFile>
-		<Console name="Json">
-			<JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+		<Console name="Console">
+			<PatternLayout>
+				<pattern>${file-pattern}</pattern>
+			</PatternLayout>
 		</Console>
 	</Appenders>
 	<Loggers>
 		<Logger name="org.springframework" level="info" additivity="false">
 			<appender-ref ref="RollingFile" level="info"/>
-			<appender-ref ref="Json" level="info"/>
+			<appender-ref ref="Console" level="info"/>
 		</Logger>
 		<Logger name="org.hibernate.sql" level="error" additivity="false">
 			<appender-ref ref="RollingFile" level="error"/>
-			<appender-ref ref="Json" level="error"/>
+			<appender-ref ref="Console" level="error"/>
 		</Logger>
 		<Logger name="org.hibernate" level="error" additivity="false">
 			<appender-ref ref="RollingFile" level="error"/>
-			<appender-ref ref="Json" level="error"/>
+			<appender-ref ref="Console" level="error"/>
 		</Logger>
 		<Logger name="com.sherwin.shercolor" level="info" additivity="false">
 			<appender-ref ref="RollingFile" level="info"/>
-			<appender-ref ref="Json" level="info"/>
+			<appender-ref ref="Console" level="info"/>
 		</Logger>
 		<Logger name="com.opensymphony.xwork2" level="warn" additivity="false">
 			<appender-ref ref="RollingFile" level="warn"/>
-			<appender-ref ref="Json" level="warn"/>
+			<appender-ref ref="Console" level="warn"/>
 		</Logger>
 		<Logger name="org.apache.struts2" level="warn" additivity="false">
 			<appender-ref ref="RollingFile" level="warn"/>
-			<appender-ref ref="Json" level="warn"/>
+			<appender-ref ref="Console" level="warn"/>
 		</Logger>
 		<Root level="info" additivity="false">
-			<appender-ref ref="Json"/>
+			<appender-ref ref="Console"/>
 			<appenderRef ref="RollingFile"/>
 		</Root>
 	</Loggers>

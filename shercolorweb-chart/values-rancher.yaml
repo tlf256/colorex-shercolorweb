@@ -1,3 +1,6 @@
+podAnnotations: 
+  enabled: true
+
 ingress:
   enabled: true
   namespace: dev-shercolor
