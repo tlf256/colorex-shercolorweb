@@ -52,6 +52,8 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		target.setSwactive(false);
 		target.setClosestColors(true);
 		
+		reqObj.setCustomerID("TEST");
+		
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
 		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
 		
@@ -59,7 +61,6 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		
 		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
-		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
@@ -91,6 +92,8 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		target.setReqGuid("12345");
 		target.setClosestColors(true);
 		
+		reqObj.setCustomerID("TEST");
+		
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
 		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
 		
@@ -98,7 +101,6 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		
 		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
-		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
