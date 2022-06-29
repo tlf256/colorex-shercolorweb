@@ -1,6 +1,5 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
@@ -17,8 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.Gson;
-import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
@@ -45,20 +42,12 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	
 	@Test
 	public void testGetSwAndCompetClosestColors() {
-		ActionProxy proxy = getActionProxy("/closestColorsResultAction");
-		target = (ClosestColorsAction) proxy.getAction();
-		
-		target.setReqGuid("12345");
-		target.setSwactive(false);
-		target.setClosestColors(true);
 		
 		reqObj.setCustomerID("TEST");
 		
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
 		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
-		
-		assertNotNull(colorCoord);
-		
+				
 		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
 		
@@ -67,53 +56,8 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		session.setAttribute(reqGuid, reqObj);
 		
 		try {
-			String actionResult = proxy.execute();
-			System.out.println("action result: " + actionResult);
-			String json = executeAction("/closestColorsResultAction");
-			assertNotNull(json);
-			System.out.println(json);
-			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
-			assertEquals("12345",result.getReqGuid());
-		} catch (Exception e) {
-			try {
-				throw(e.getCause());
-			} catch (Throwable e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
-	
-	@Test
-	public void testGetSwActiveClosestColorsOnly() {
-		ActionProxy proxy = getActionProxy("/closestColorsResultAction");
-		target = (ClosestColorsAction) proxy.getAction();
-		
-		target.setSwactive(true);
-		target.setReqGuid("12345");
-		target.setClosestColors(true);
-		
-		reqObj.setCustomerID("TEST");
-		
-		Map<String, ColorCoordinates> coordMap = new HashMap<>();
-		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
-		
-		assertNotNull(colorCoord);
-		
-		coordMap.put("colorCoord", colorCoord);
-		reqObj.setColorCoordMap(coordMap);
-		
-		request.setParameter("reqGuid",reqGuid);
-		HttpSession session = request.getSession();
-		session.setAttribute(reqGuid, reqObj);
-		
-		try {
-			String actionResult = proxy.execute();
-			System.out.println("action result: " + actionResult);
-			String json = executeAction("/closestColorsResultAction");
-			assertNotNull(json);
-			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
-			System.out.println(json);
-			assertEquals("12345",result.getReqGuid());
+			String result = executeAction("/closestColorsResultAction");
+			assertNotNull(result);
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
@@ -125,27 +69,16 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	
 	@Test
 	public void testClosestColorDisplay() {
-		ActionProxy proxy = getActionProxy("/closestColorsDisplayAction");
-		target = (ClosestColorsAction) proxy.getAction();
-		
-		target.setClosestColors(true);
-		target.setReqGuid("12345");
 		
 		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
-		System.out.println("session ID - " + session.getId());
 		session.setAttribute(reqGuid, reqObj);
 		
 		try {
-			String actionResult = proxy.execute();
-			System.out.println("action result: " + actionResult);
-			String json = executeAction("/closestColorsDisplayAction");
-			assertNotNull(json);
-			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
-			System.out.println(json);
-			assertEquals("12345",result.getReqGuid());
+			String result = executeAction("/closestColorsDisplayAction");
+			assertNotNull(result);
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
