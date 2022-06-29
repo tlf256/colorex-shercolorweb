@@ -42,7 +42,7 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	
 	@Test
 	public void testGetSwAndCompetClosestColors() {
-		
+	
 		reqObj.setCustomerID("TEST");
 		
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
@@ -69,7 +69,7 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	
 	@Test
 	public void testClosestColorDisplay() {
-		
+
 		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);

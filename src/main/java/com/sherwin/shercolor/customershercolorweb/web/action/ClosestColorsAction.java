@@ -50,7 +50,10 @@ public class ClosestColorsAction extends ActionSupport implements SessionAware, 
 			}
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
+<<<<<<< HEAD
 			addActionError("An Error occurred while processing request. Please retry.");
+=======
+>>>>>>> d56151fd3a208e81ba7c1f3d44867f271a9fd8da
 			return ERROR;
 		}
 		logger.info("success ClosestColorsAction execute");
