@@ -487,7 +487,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-			printLabel.CreateLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
+			printLabel.createLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
 			return SUCCESS;
@@ -506,7 +506,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				clrntAmtList = clrntAmtList.replaceAll("\n", "");
 				clrntAmtList = clrntAmtList.replaceAll("\t", "");
 			}
-			printLabel.CreateLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
+			printLabel.createLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];

@@ -111,19 +111,19 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	VerticalAlignment vaMiddle = VerticalAlignment.MIDDLE;
 				
 
-	public void DrawLabel(List<FormulaIngredient> formulaIngredients, String partMessage, String labelType, String canType, String clrntAmtList) {
+	public void drawLabel(List<FormulaIngredient> formulaIngredients, String partMessage, String labelType, String canType, String clrntAmtList) {
 		switch(labelType) {
 		case "storeLabel":
-			DrawStoreLabelPdf(formulaIngredients, partMessage);
+			drawStoreLabelPdf(formulaIngredients, partMessage);
 			break;
 		case "selfTintCustLabel":
-			DrawSelfTintCustLabelPdf(formulaIngredients, partMessage);
+			drawSelfTintCustLabelPdf(formulaIngredients, partMessage);
 			break;
 		case "drawdownStoreLabel":
-			DrawDrawdownStoreLabel(formulaIngredients, partMessage);
+			drawDrawdownStoreLabel(formulaIngredients, partMessage);
 			break;
 		case "sampleCanLabel":
-			DrawDrawdownCanLabel(formulaIngredients, partMessage, canType, clrntAmtList);
+			drawDrawdownCanLabel(formulaIngredients, partMessage, canType, clrntAmtList);
 			break;
 		default:
 			logger.warn("Undefined labelType detected: {}", labelType);
@@ -151,7 +151,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		return ingredients;
 	}
 	
-	public boolean CreateLabelPdf(RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
+	public boolean createLabelPdf(RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
 		this.filename = "label.pdf";
 		this.reqObj = reqObj;
 
@@ -169,7 +169,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			}
 			
 			if (printLabelType.equals("drawdownLabel")) {
-				DrawDrawdownLabelPdf();
+				drawDrawdownLabelPdf();
 				document.save(filename);
 				return success;
 			}
@@ -193,7 +193,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			if (formulaSize <= 5){
 				partMessage = " ";
 				errorLocation = "Drawing Label";
-				DrawLabel(listFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
+				drawLabel(listFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 			} else {
 				// Split the label colorant lines for 2 separate labels and proceed to create 2 labels that print simultaneously.
 				int counter = 0;
@@ -211,7 +211,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				if(partAListFormulaIngredients != null && !partAListFormulaIngredients.isEmpty()){
 					partMessage = "* PART A - SEE PART B OF FORMULA *";
 					errorLocation = "Drawing Label Part A";
-					DrawLabel(partAListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
+					drawLabel(partAListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 				}	
 				// Skip to next page to write part B label.
 
@@ -219,7 +219,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				if(partBListFormulaIngredients != null && !partBListFormulaIngredients.isEmpty()){
 					partMessage = "* PART B - SEE PART A OF FORMULA *";
 					errorLocation = "Drawing Label Part B";
-					DrawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
+					drawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
 				}	
 			}
 			// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
@@ -248,7 +248,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		return success;
 	}
 	
-	private void DrawStoreLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
+	private void drawStoreLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
 
@@ -267,14 +267,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			BaseTable table = createTopTable(page, true, true);
 			
 			
-			//Customer Name and Order Date
+
 			errorLocation = "Name and Date";
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
 			String strDate = sdf.format(date);
 			Row<PDPage> row = createRow(table, 8);
 			
-			//Customer Name
+
 			Cell<PDPage> cell = createCell(row, 75, "Sherwin-Williams " + reqObj.getCustomerID(), haLeft, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
@@ -283,7 +283,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
 			
-			//Order Number and Phone Number.
 			errorLocation = "Order Number and phone number";
 			row = createRow(table, 8);
 			//Future place for store phone number.
@@ -295,22 +294,19 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 1f, 2f, 1f, Color.WHITE, 0);			
 
-			//Use Interior/Exterior.
 			errorLocation = "Interior/Exterior";
 			row = createRow(table, 8);
 			cell = createCell(row, 50, reqObj.getIntExt(), haLeft, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
-			//Class.
+
 			cell = createCell(row, 50, reqObj.getKlass(), haRight, vaMiddle);
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 2f, 0, Color.WHITE, 0);
 			
 			
-			//Quality and Composite
 			setQualityAndCompositeRow(table);
 			
-			//Finish & Tinter Type
 			errorLocation = "Finish & Tinter Type";
 			row = createRow(table, 8);
 			cell = createCell(row, 50, reqObj.getFinish(), haLeft, vaMiddle);
@@ -325,15 +321,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 0, 2f, Color.WHITE, 0);
 			
-			//Color Id, Color Name and Formula Type
 			errorLocation = "Color I.D. & Name";
 			String rowData = setColorIdAndNameRow();
 			row = createRow(table, 12);
 			cell = createCell(row, 100, rowData, haCenter, vaMiddle);
 			cellFontAndColorSettings(cell, 10, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
-			
-			
+						
 			errorLocation = "Formula Type";
 			row = createRow(table, 8);
 			cell = createCell(row, 100, reqObj.getDisplayFormula().getSourceDescr(), haCenter, vaMiddle);
@@ -345,11 +339,9 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				cellPaddingAndBorderSettings(cell, 0, 0, 0, 1f, Color.WHITE, 0);
 			}
 			
-			//Formula Heading and 5 Colorant Lines maximum.
 			row = createRow(table, 8);
 			setStandardFormulaTable(listFormulaIngredients, table, row, 8);
 			
-			//Write Part A/B message if it exists
 			if(partMessage != null) {
 				row = createRow(table, 8);
 				cell = createCell(row, 100, partMessage, haCenter, vaMiddle);
@@ -357,7 +349,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
 			}			
 			
-			//Product Information
 			errorLocation = "Size and Base";
 			// Abbreviating base type name to 16 characters to keep font size on label line.
 			if (reqObj.getBase().length() > 15)
@@ -381,31 +372,26 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 0, 4f, 0, Color.WHITE, 0);
 
-			//Room Type
 			errorLocation = "Room Type";
 			row = createRow(table, 8);
 			cell = createCell(row, 100, reqObj.getRoomByRoom(), haCenter, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 4f, 0, 2f, Color.WHITE, 0);
 			
-			//Formula Messages
 			errorLocation = "Formula Messages";
 			setFormulaMessageRowsForStores(table);
 			
-			//Non-Return Msg
 			errorLocation = "Non-Return msg";
 			row = createRow(table, 8);
 			cell = createCell(row, 100, "Non Returnable Tinted Color", haCenter, vaMiddle);
 			cellFontAndColorSettings(cell, 8, Color.BLACK, Color.WHITE);
 			cellPaddingAndBorderSettings(cell, 0, 4f, 0, 4f, Color.WHITE, 0);
 			
-			//QR Code & Order Number
 			errorLocation = "QR Code & Order Number";
 			createQRCode(content);
 			String qrCodeChars = String.format("%s-%08d-%03d", reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 			addCenteredText(content, qrCodeChars, fontBold, 8, page, 4.0f);
 			
-			//Create the label
 			table.draw();
 			content.close();
 			document.addPage(page);
@@ -423,7 +409,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	private void DrawSelfTintCustLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
+	private void drawSelfTintCustLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
 		int rowHeight;
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
@@ -527,7 +513,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	private void DrawDrawdownLabelPdf() {
+	private void drawDrawdownLabelPdf() {
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
 
@@ -556,7 +542,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			errorLocation = "Retrieving Job Field List";
 			List<JobField> jobFieldList = reqObj.getJobFieldList();
 			List<CustWebDrawdownLabelProfile> labelProfileList = drawdownLabelService.listDrawdownLabelProfilesForCustomer(reqObj.getCustomerID());
-			
 			errorLocation = "Setting Label Info Based on Customer Job Field Sequence Nbr";
 			String customer = jobFieldList.get(labelProfileList.get(0).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
 			String storeCCN = jobFieldList.get(labelProfileList.get(1).getJobFieldDataSourceSeqNbr()-1).getEnteredValue();
@@ -609,10 +594,11 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 		} catch (Exception e) {
 			logger.error(exceptionDetail, e.getMessage(), colorNameLog, productNbrLog, errorLocation);
+			
 		}
 	}
 	
-	private void DrawDrawdownStoreLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
+	private void drawDrawdownStoreLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
 
 		int rowHeight = 2;
 		// Create a new blank page and add it to the document
@@ -745,7 +731,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	public void DrawDrawdownCanLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage, String canType, String clrntAmtList ) {
+	public void drawDrawdownCanLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage, String canType, String clrntAmtList ) {
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
 
