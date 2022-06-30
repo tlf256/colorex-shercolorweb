@@ -1,14 +1,16 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.common.domain.ClosestColor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,8 @@ import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+
+import static org.junit.Assert.*;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,43 +47,73 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	@Autowired
 	private transient ColorService service;
 	
+//	@Test
+//	public void testGetSwAndCompetClosestColors() {
+//		ActionProxy proxy = getActionProxy("/closestColorsResultAction");
+//		target = (ClosestColorsAction) proxy.getAction();
+//
+//		target.setReqGuid("12345");
+//		target.setSwactive(false);
+//		target.setClosestColors(true);
+//
+//		Map<String, ColorCoordinates> coordMap = new HashMap<>();
+//		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
+//
+//		assertNotNull(colorCoord);
+//
+//		coordMap.put("colorCoord", colorCoord);
+//		reqObj.setColorCoordMap(coordMap);
+//		reqObj.setCustomerID("TEST");
+//
+//		request.setParameter("reqGuid",reqGuid);
+//		HttpSession session = request.getSession();
+//		session.setAttribute(reqGuid, reqObj);
+//
+//		try {
+//			String actionResult = proxy.execute();
+//			System.out.println("action result: " + actionResult);
+//			String json = executeAction("/closestColorsResultAction");
+//			assertNotNull(json);
+//			System.out.println(json);
+//			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
+//			assertEquals("12345",result.getReqGuid());
+//		} catch (Exception e) {
+//			try {
+//				throw(e.getCause());
+//			} catch (Throwable e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+//	}
+
 	@Test
-	public void testGetSwAndCompetClosestColors() {
-		ActionProxy proxy = getActionProxy("/closestColorsResultAction");
-		target = (ClosestColorsAction) proxy.getAction();
-		
-		target.setReqGuid("12345");
-		target.setSwactive(false);
-		target.setClosestColors(true);
-		
+	public void testGetSwAndCompetClosestColors() throws ServletException, UnsupportedEncodingException {
+
+		//arrange
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
 		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
-		
 		assertNotNull(colorCoord);
-		
 		coordMap.put("colorCoord", colorCoord);
+
 		reqObj.setColorCoordMap(coordMap);
 		reqObj.setCustomerID("TEST");
-		
-		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
-		
-		try {
-			String actionResult = proxy.execute();
-			System.out.println("action result: " + actionResult);
-			String json = executeAction("/closestColorsResultAction");
-			assertNotNull(json);
-			System.out.println(json);
-			ClosestColorsAction result = new Gson().fromJson(json,ClosestColorsAction.class);
-			assertEquals("12345",result.getReqGuid());
-		} catch (Exception e) {
-			try {
-				throw(e.getCause());
-			} catch (Throwable e1) {
-				e1.printStackTrace();
-			}
-		}
+
+		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("swactive","false");
+		request.setParameter("closestColors","true");
+
+		//act
+		String json = executeAction("/closestColorsResultAction");
+		String result = (String) findValueAfterExecute("reqGuid");
+		List<ClosestColor> closestSwColors = (List<ClosestColor>) findValueAfterExecute("closestSwColors");
+		List<ClosestColor> closestCmptColors = (List<ClosestColor>) findValueAfterExecute("closestCmptColors");
+
+		//assert
+		assertEquals("12345",result);
+		assertTrue(CollectionUtils.isNotEmpty(closestSwColors));
+		assertTrue(CollectionUtils.isNotEmpty(closestCmptColors));
 	}
 	
 	@Test
