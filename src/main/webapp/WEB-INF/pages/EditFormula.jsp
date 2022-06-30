@@ -679,7 +679,7 @@
   
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
-		<s:hidden name="scaleByPercentVisible" value="%{scaleByPercentVisible}"/>
+		<s:hidden id="scaleByPercentVisible" name="scaleByPercentVisible" value="%{scaleByPercentVisible}"/>
 		<!-- Adjust By Percent Modal -->
 	    <div class="modal fade" aria-labelledby="scaleFormulaByPctModal" aria-hidden="true"  id="scaleFormulaByPctModal" role="dialog">
 	    	<div class="modal-dialog" role="document">

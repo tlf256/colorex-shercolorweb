@@ -640,6 +640,8 @@ obj/
 
 ### VisualStudioCode ###
 !.vscode/*.code-snippets
+.vscode/*
+target/
 
 # Local History for Visual Studio Code
 

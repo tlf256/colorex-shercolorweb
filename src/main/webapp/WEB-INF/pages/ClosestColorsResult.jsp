@@ -62,6 +62,18 @@
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
 		<div class="container-fluid">
+<<<<<<< HEAD
+		   <div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<s:actionerror/>
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+			</div>
+=======
+>>>>>>> d56151fd3a208e81ba7c1f3d44867f271a9fd8da
 			<div class="row">
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
