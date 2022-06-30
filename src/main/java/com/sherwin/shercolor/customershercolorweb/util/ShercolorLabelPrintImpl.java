@@ -124,7 +124,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			drawDrawdownStoreLabel(formulaIngredients, partMessage);
 			break;
 		case "sampleCanLabel":
-			drawDrawdownCanLabel(formulaIngredients, partMessage, canType, clrntAmtList);
+			drawDrawdownCanLabel(partMessage, canType, clrntAmtList);
 			break;
 		default:
 			logger.warn("Undefined labelType detected: {}", labelType);
@@ -732,7 +732,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		}
 	}
 	
-	public void drawDrawdownCanLabel(List<FormulaIngredient> listFormulaIngredients, String partMessage, String canType, String clrntAmtList ) {
+	public void drawDrawdownCanLabel(String partMessage, String canType, String clrntAmtList ) {
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
 
