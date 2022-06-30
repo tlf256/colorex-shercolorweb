@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -799,28 +800,27 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// 12/07/2020 | Formula Heading and 5 Colorant Lines maximum.
 			errorLocation = "Formula Heading and Colorant Lines";
 			createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, reqObj.getClrntSys() + " Colorant", 50, haLeft, vaMiddle, reqObj.getDisplayFormula().getIncrementHdr().get(0));
-			int numIngredients = 0;
-			String[] clrntAmtString = new String[5];
-			clrntAmtString = clrntAmtList.split(",");
+			int numIngredients = 0;			
+			String[] clrntAmtString = clrntAmtList.split(",");
+			List<String> clrntIngedientsAndAmts = Arrays.asList(clrntAmtString);
 			List<String> clrntAmtDouble = new ArrayList<>();
 			List<String> clrntIngredientList = new ArrayList<>();
 			int counter = 0;
-			for (String amt : clrntAmtString) {
-				if (amt != null || !amt.equals("")) {
-					if(counter%2==0) {
-						clrntIngredientList.add(amt.replace("-", " "));
-					} else {
-						clrntAmtDouble.add(String.format("%,.8f", Double.parseDouble(amt)));
-					}
+			for (int i = 0; i < clrntIngedientsAndAmts.size(); i++) {
+				if(!clrntIngedientsAndAmts.get(i).trim().equals("") && counter % 2 == 0) {
+					clrntIngredientList.add(clrntIngedientsAndAmts.get(i).replace("-", " "));
+				} else if (!clrntIngedientsAndAmts.get(i).trim().equals("") && counter % 2 != 0) {
+					clrntAmtDouble.add(String.format("%,.8f", Double.parseDouble(clrntIngedientsAndAmts.get(i))));
 				}
 				counter++;
 			}
 			
-			for (FormulaIngredient ingredient : listFormulaIngredients) {
-				createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, clrntIngredientList.get(numIngredients), 50, haLeft, vaMiddle, clrntAmtDouble.get(numIngredients));
+			for(int i = 0; i < clrntIngredientList.size(); i++) {
+				createTwoColumnRow(table, 8, 8, 50, haLeft, vaMiddle, clrntIngredientList.get(i), 50, haLeft, vaMiddle, clrntAmtDouble.get(i));
 				numIngredients++;
 			}
-			for (int index=numIngredients; index<5; index++) {
+			
+			for(int i = numIngredients; i < 5; i++) {
 				createBlankRow(table, 8);
 			}
 			
