@@ -119,30 +119,12 @@
 							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
 							</div>
 						</div>
-<<<<<<< HEAD
-=======
-						<div class="row">
-							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-0">
-							</div>
-							<div class="col-lg-8 col-md-8 col-sm-10 col-xs-12">
-							  	<div class="form-check mt-4">
-			         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
-			         			  <label class="form-check-label" for="swActiveChk">
-								    <s:text name="closestColors.displaySwActiveOnly"/>
-								  </label>
-								</div>
-							</div>
-							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0">
-							</div>
-						</div>
->>>>>>> d56151fd3a208e81ba7c1f3d44867f271a9fd8da
 					</div>
 				</div>
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
 			</div>
 			<br>
-<<<<<<< HEAD
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
@@ -157,9 +139,7 @@
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
 			</div>
-=======
 			<br>
->>>>>>> d56151fd3a208e81ba7c1f3d44867f271a9fd8da
 			<br>
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1">
@@ -174,6 +154,10 @@
 			</div>
 			</s:form>
 		</div>
+		<br>
+		<br>
+		<br>
+		<br>
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
 		
