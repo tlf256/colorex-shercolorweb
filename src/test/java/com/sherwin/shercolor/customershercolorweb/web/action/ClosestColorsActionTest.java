@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
@@ -58,6 +59,9 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		try {
 			String result = executeAction("/closestColorsResultAction");
 			assertNotNull(result);
+			String actionGuid = (String) findValueAfterExecute("reqGuid");
+			System.out.println("/closestColorsResultAction guid is " + actionGuid);
+			assertEquals(actionGuid, reqGuid);
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
@@ -79,6 +83,9 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		try {
 			String result = executeAction("/closestColorsDisplayAction");
 			assertNotNull(result);
+			String actionGuid = (String) findValueAfterExecute("reqGuid");
+			System.out.println("/closestColorsDisplayAction guid is " + actionGuid);
+			assertEquals(actionGuid, reqGuid);
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
