@@ -5,10 +5,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.common.domain.ClosestColor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+
+import static org.junit.Assert.*;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,15 +48,15 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	
 	@Test
 	public void testGetSwAndCompetClosestColors() {
-	
+
 		reqObj.setCustomerID("TEST");
-		
+
 		Map<String, ColorCoordinates> coordMap = new HashMap<>();
 		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
-				
+
 		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
-		
+
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
@@ -60,8 +65,14 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 			String result = executeAction("/closestColorsResultAction");
 			assertNotNull(result);
 			String actionGuid = (String) findValueAfterExecute("reqGuid");
-			System.out.println("/closestColorsResultAction guid is " + actionGuid);
+			//System.out.println("/closestColorsResultAction guid is " + actionGuid);
 			assertEquals(actionGuid, reqGuid);
+			@SuppressWarnings("unchecked")
+			List<ClosestColor> closestSwColors = (List<ClosestColor>) findValueAfterExecute("closestSwColors");
+			@SuppressWarnings("unchecked")
+			List<ClosestColor> closestCmptColors = (List<ClosestColor>) findValueAfterExecute("closestCmptColors");
+			assertTrue(CollectionUtils.isNotEmpty(closestSwColors));
+			assertTrue(CollectionUtils.isNotEmpty(closestCmptColors));
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
@@ -84,7 +95,7 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 			String result = executeAction("/closestColorsDisplayAction");
 			assertNotNull(result);
 			String actionGuid = (String) findValueAfterExecute("reqGuid");
-			System.out.println("/closestColorsDisplayAction guid is " + actionGuid);
+			//System.out.println("/closestColorsDisplayAction guid is " + actionGuid);
 			assertEquals(actionGuid, reqGuid);
 		} catch (Exception e) {
 			try {
