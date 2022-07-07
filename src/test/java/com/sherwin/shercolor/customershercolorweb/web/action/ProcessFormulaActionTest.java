@@ -33,6 +33,7 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 
 	ProcessFormulaAction target;
 	RequestObject reqObj = new RequestObject();
+	TinterInfo tintInfo = new TinterInfo();
 	
 	@Before
 	public void setup() {
@@ -53,9 +54,9 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 		reqObj.setClrntSys("CCE");
 		reqObj.setCustomerID("LB6110");
 		reqObj.setCustomerName("SW STORE");
-		TinterInfo tinter = new TinterInfo();
-		tinter.setModel("COROB CUSTOM MOD16HF");
-		reqObj.setTinter(tinter);
+		tintInfo.setClrntSysId(reqObj.getClrntSys());
+		tintInfo.setModel("SIMULATOR");
+		reqObj.setTinter(tintInfo);
 		
 		//Messages
 		List<SwMessage> canLabelMsgs = new ArrayList<SwMessage>();
@@ -105,6 +106,8 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 		reqObj.setDisplayFormula(formInfo);		
 		reqObj.setColorType("SHER-COLOR FORMULA");
 		reqObj.setPrimerId("P2");
+		reqObj.setSizeCode("16");
+		reqObj.setDisplayMsgs(canLabelMsgs);
 		
 	}
 	
@@ -163,4 +166,37 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 			System.out.println(sw.toString());
 		}
 	}	
+	
+	@Test
+	public void testDisplayAction() {
+		ActionProxy proxy = getActionProxy("/displayFormulaAction");
+		target = (ProcessFormulaAction) proxy.getAction();
+		
+		target.setReqGuid("123456789");
+		
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		
+		try {
+			String success = executeAction("/displayFormulaAction");
+			assertNotNull(success);	
+			
+			reqObj.setCustomerID("400000002");
+			reqObj.setSizeCode("20");
+			target.setTinter(tintInfo);
+			request.setParameter("reqGuid", reqObj.getGuid());
+			session = request.getSession();
+			session.setAttribute(reqObj.getGuid(), reqObj);
+			success = executeAction("/displayFormulaAction");
+			assertNotNull(success);	
+			
+			
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+	}
 }
