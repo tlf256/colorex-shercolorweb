@@ -64,12 +64,12 @@
         <dependency>
             <groupId>com.sherwin.SherColorWeb</groupId>
             <artifactId>SherColorCommon</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sherwin.login</groupId>
             <artifactId>SherColorLogin</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
