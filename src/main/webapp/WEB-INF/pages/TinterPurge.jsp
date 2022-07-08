@@ -40,7 +40,6 @@
 	<script type="text/javascript">
 	 //Global Variables
 	"use strict"; 
-	var purgeAfterClean = false;
 	var ws_tinter = new WSWrapper("tinter");
 	var sendingTinterCommand = "false";
 	var _rgbArr = [];
@@ -468,14 +467,6 @@
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
 						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
-							// If nozzle clean operation was triggered from starting a purge, 
-							// go to the purgeInProgress once the nozzle clean is done
-							// (Nozzle Close has finished successfully)
-							if (purgeAfterClean == true) {
-								purgeAfterClean = false;
-								$("#purgeInProgressModal").modal('show');
-							}
-							
 						} else {
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -544,26 +535,8 @@
 			//closeNozzle();  now done on hidden.bs.modal 
 		});
 	    
-	    $(document).on("click", "#tinterPurgeButton", function(event) {
-	    	console.log("Start Tinter Button Click");
-	    	// Check to see if a nozzle clean needs to be preformed before the tinter can be purged
-	    	// purge status
-	    	var lastPurgeDate = "${sessionScope[thisGuid].tinter.lastPurgeDate}";
-	    	var tinterModel = "${sessionScope[thisGuid].tinter.model}"
-			if(lastPurgeDate!=null){
-				// convert session last purge date (which is a string) to a date
-				var dateFromString = new Date(lastPurgeDate);
-				var today = new Date();
-				if (!tinterModel.startsWith("FM X") && (dateFromString.getFullYear()<today.getFullYear() || 
-						dateFromString.getMonth()<today.getMonth() || 
-						dateFromString.getDate()<today.getDate())){
-					purgeAfterClean = true;
-					$("#cleanNozzleModal").modal('show');
-					
-				} else {
-					$("#purgeInProgressModal").modal('show');
-				}
-			}
+	    $(document).on("click", "#tinterPurgeButton", function(event) {	    	
+			$("#purgeInProgressModal").modal('show');
 	    });
 	    
 		//localhostConfig will be set if they have returned to landing page and have a tinter attached

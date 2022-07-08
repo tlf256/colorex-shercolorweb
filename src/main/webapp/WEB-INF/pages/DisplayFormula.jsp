@@ -1628,7 +1628,7 @@ function ParsePrintMessage() {
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						</s:if>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
-							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
@@ -1672,7 +1672,7 @@ function ParsePrintMessage() {
 								onclick="printSelfTintCustLabel();return false;"><s:text name="global.print"/></button>
 						</s:else>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
-							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
 							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
