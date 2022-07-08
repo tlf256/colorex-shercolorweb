@@ -148,7 +148,9 @@
 			</result>
 		</action>
 		<action name="logoutAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LogoutAction" method="display">
-			<result name="loginRedirect">/WEB-INF/pages/InvalidLogin.jsp</result>
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">logout2Action</param>
 				<param name="reqGuid">${reqGuid}</param>
@@ -321,6 +323,14 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetColor.jsp</result>
+		</action>
+		<action name="checkForceProd" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="checkForceProd">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+			<result name="error" type="json"/>
 		</action>
 		<action name="spectroCalibrateRedirectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="calibrate">
 			<result name="loginRedirect" type="redirectAction">
@@ -528,6 +538,16 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
+		</action>
+		<action name="changeLightSourceAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessLightSourceAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="input">/WEB-INF/pages/GetIlluminantsOption.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">formulateAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
 		</action>
 		<action name="lookupProductOptions" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductChangeAction" method="lookupProductOptions">
 			<result name="loginRedirect" type="redirectAction">
@@ -878,6 +898,13 @@
 			</result>
 			<result name="success" type="json"/>
 		</action>
+		<action name="saveQuantityOrdered" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveQuantityOrdered">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
 		<action name="saveCanType" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveCanType">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1032,8 +1059,23 @@
 				<param name="recDirty">${recDirty}</param>
 			</result>
 		</action>
+		<action name="formulaUserSaveAndContinueAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveAndContinue">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">loginAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">displayFormulaAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="recDirty">${recDirty}</param>
+			</result>
+		</action>
 		<action name="saveBeforeAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="saveBeforeAction">
-			<interceptor-ref name="json" />
+			<interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 				<param name="isAJAX">true</param>

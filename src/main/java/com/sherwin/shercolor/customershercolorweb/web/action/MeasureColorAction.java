@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
+import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorService;
@@ -146,6 +147,12 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			
 			if (colorCoord != null) {
 				rgbHex = colorCoord.getRgbHex();
+				
+				CdsColorMast closestSwColor = colorService.findClosestSwColorFromCoord(colorCoord);	
+				if (closestSwColor != null) {
+					reqObj.setClosestSwColorName(closestSwColor.getColorName());
+					reqObj.setClosestSwColorId(closestSwColor.getColorId());
+				}
 			}
 			
 			//2018-01-15 BKP - copied from below to here to calculated bases based on curve.

@@ -18,8 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon.xml"})
-@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
 public class LookupJobActionTest extends StrutsSpringJUnit4TestCase<LookupJobAction> {
 
 	LookupJobAction target;

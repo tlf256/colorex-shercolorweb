@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.4.6.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
@@ -526,7 +526,7 @@
 	    });
 	    
 	    $(document).on("click", "#cleanNozzleButton", function(event){
-	        $("#cleanNozzleVid").get(0).pause();
+	    	$("#cleanNozzleVid").get(0).pause();
 			event.preventDefault();
 			event.stopPropagation();
 			waitForShowAndHide("#cleanNozzleModal");
@@ -534,6 +534,10 @@
 			
 			//closeNozzle();  now done on hidden.bs.modal 
 		});
+	    
+	    $(document).on("click", "#tinterPurgeButton", function(event) {	    	
+			$("#purgeInProgressModal").modal('show');
+	    });
 	    
 		//localhostConfig will be set if they have returned to landing page and have a tinter attached
 		if($("#tinterPurgeAction_hasAutoNozzle").val()=="false"){ 
@@ -585,12 +589,23 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
-						        <s:if test="%{tinter.model != null && tinter.model.startsWith('FM X')}"> 
-									<p class="lead"><s:text name="tinterPurge.cleanNozzleWithTool2"/></p>
-									<p class="lead"><s:text name="tinterPurge.moistenSponge"/></p>
-									<p class="lead"><s:text name="tinterPurge.clickPurge"/></p>
-									<p></p>
+								<s:if test="#session[reqGuid].tinter.model != null">
+									<s:if test="#session[reqGuid].tinter.model.startsWith('FM X') && (#session[reqGuid].tinter.clrntSysId == 'CCE' || #session[reqGuid].tinter.clrntSysId == 'BAC')">
+										<p class="lead"><s:text name="tinterPurge.tinterPrepXProTintWater"/></p>
+										<p></p>
+									</s:if>
+									<s:if test="#session[reqGuid].tinter.model.startsWith('FM X') && (#session[reqGuid].tinter.clrntSysId == '844' || #session[reqGuid].tinter.clrntSysId == 'GIC')">
+										<p class="lead"><s:text name="tinterPurge.tinterPrepXProTintThinner"/></p>
+										<p></p>
+									</s:if>
+									<s:if test="!#session[reqGuid].tinter.model.startsWith('FM X')"> 
+										<p class="lead"><s:text name="tinterPurge.cleanNozzleWithTool2"/></p>
+										<p class="lead"><s:text name="tinterPurge.moistenSponge"/></p>
+										<p class="lead"><s:text name="tinterPurge.clickPurge"/></p>
+										<p></p>
+									</s:if>
 								</s:if>
+						        
 								<p class="lead" id="lastPurgeText">
 									<s:text name="tinterPurge.lastPurgeDateTimeUser">
 										<s:param><s:property value="lastPurgeDate" escapeHtml="true"/></s:param>
@@ -628,7 +643,7 @@
 						<button type="button" class="btn btn-primary" id="tinterCleanNozzle" data-toggle="modal" data-target="#cleanNozzleModal"><s:text name="tinterPurge.cleanNozzle"/></button>
   						</div>
 					<div class="col-sm-2">	
-						<button type="button" class="btn btn-primary center-block" id="tinterPurge" data-toggle="modal" data-target="#purgeInProgressModal" autofocus="autofocus"><s:text name="global.purge"/></button>
+						<button type="button" class="btn btn-primary center-block" id="tinterPurgeButton" autofocus="autofocus"><s:text name="global.purge"/></button>
   						</div>
 					<div class="col-sm-2">	
 		    			<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.done')}" action="userCancelAction"/>
