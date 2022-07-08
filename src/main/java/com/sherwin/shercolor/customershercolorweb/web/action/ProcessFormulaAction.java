@@ -75,6 +75,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private boolean siteHasPrinter;
 	private boolean displayDeltaEColumn = false;
 	private boolean accountIsDrawdownCenter = false;
+	private boolean accountIsSwStore = false;
 	private boolean accountUsesRoomByRoom = false;
 	private boolean tinterDoesBaseDispense = false;
 	private int dispenseBase;
@@ -375,8 +376,11 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		if (profile != null) {
 			String customerType = profile.getCustomerType();
 			
-			if (customerType != null && customerType.trim().toUpperCase().equals("DRAWDOWN")){
+			if (customerType.trim().equalsIgnoreCase("DRAWDOWN")){
 				setAccountIsDrawdownCenter(true);
+			}
+			if (customerType.trim().equalsIgnoreCase("STORE")) {
+				setAccountIsSwStore(true);
 			}
 			setAccountUsesRoomByRoom(profile.isUseRoomByRoom());
 		}
@@ -483,7 +487,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
+			printLabel.createLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
 			return SUCCESS;
@@ -502,7 +506,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				clrntAmtList = clrntAmtList.replaceAll("\n", "");
 				clrntAmtList = clrntAmtList.replaceAll("\t", "");
 			}
-			printLabel.CreateLabelPdf("label.pdf", reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
+			printLabel.createLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			File file = new File("label.pdf");
 			fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];
@@ -975,6 +979,16 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 	public void setColorNotes(String colorNotes) {
 		this.colorNotes = colorNotes;
+	}
+
+
+	public boolean isAccountIsSwStore() {
+		return accountIsSwStore;
+	}
+
+
+	public void setAccountIsSwStore(boolean accountIsSwStore) {
+		this.accountIsSwStore = accountIsSwStore;
 	}
 	
 }
