@@ -19,13 +19,14 @@ function showSwColorTable(){
 	    "paginate": false,
 	    "scrollY" : '50vh',
 	    "pagingType": "full",
+		"pageLength": 10,
 		"scrollCollapse": true
 	});
 }
 
 function showCmptColorTable(){
 	cmptColorTable = $("#closestCmptColor_table").DataTable({
-		dom: 'ifBrtp',
+		dom: 'fiBrtp',
 		"language": {
         	"emptyTable" : 'No closest colors found'
         },
@@ -34,6 +35,7 @@ function showCmptColorTable(){
 	    "paginate": false,
 	    "scrollY" : '50vh',
 	    "pagingType": "full",
+		"pageLength": 100,
 		"scrollCollapse": true
 	});
 }

@@ -129,9 +129,9 @@
 				<div class="col-lg-2 col-md-2 col-sm-1">
 				</div>
 				<div class="col-lg-8 col-md-8 col-sm-10">
-					<div class="form-check mt-4 ml-3">
-         			  <input class="form-check-input form-control-lg" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
-         			  <label class="form-check-label" for="swActiveChk">
+					<div class="custom-control custom-checkbox mt-4 ml-3">
+         			  <input class="custom-control-input" type="checkbox" name="swactive" id="swActiveChk" value="true" checked>
+         			  <label class="custom-control-label" for="swActiveChk">
 					    <s:text name="closestColors.displaySwActiveOnly"/>
 					  </label>
 					</div>
