@@ -7,13 +7,21 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   name: {{ .Values.ingress.name }}
+  {{- if .Values.store.enabled }}
   namespace: {{ .Values.ingress.namespace }}
+  {{- else }}
+  namespace: {{ include "rancherNamespace" . }}
+  {{- end }}
   labels:
     {{- include "shercolorweb.selectorLabels" . | nindent 8 }}
 spec:
   rules:
     {{- range .Values.ingress.hosts }}
+    {{- if $.Values.store.enabled }}
     - host: {{ .host | quote }}
+    {{- else }}
+    - host: {{ include "rancherHostPath" $ }}
+    {{- end }}
       http:
         paths:
           {{- range .paths }}
@@ -30,7 +38,11 @@ spec:
     {{- range .Values.ingress.tls }}
     - hosts:
         {{- range .hosts }}
+        {{- if $.Values.store.enabled }}
         - {{ . | quote }}
+        {{- else }}
+        - {{ include "rancherHostPath" $ }}
+        {{- end }}
         {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
