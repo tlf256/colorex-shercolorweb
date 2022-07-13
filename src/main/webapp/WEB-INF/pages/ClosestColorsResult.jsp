@@ -147,11 +147,11 @@
            			  <caption><s:text name="closestColors.swColorsTableCaption"/></caption>
 						<thead>
 							<tr>
-								<th><s:text name="global.colorId"/></th>
-								<th><s:text name="global.colorName"/></th>
-								<th><s:text name="closestColors.intBase"/></th>
-								<th><s:text name="closestColors.extBase"/></th>
-								<th><s:text name="getProdFamily.deltaE"/></th>
+								<th id="sw_colorId"><s:text name="global.colorId"/></th>
+								<th id="sw_colorName"><s:text name="global.colorName"/></th>
+								<th id="sw_intBase"><s:text name="closestColors.intBase"/></th>
+								<th id="sw_extBase"><s:text name="closestColors.extBase"/></th>
+								<th id="sw_deltaE"><s:text name="getProdFamily.deltaE"/></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -179,11 +179,11 @@
            			  <caption><s:text name="closestColors.competColorsTableCaption"/></caption>
 						<thead>
 							<tr>
-								<th><s:text name="global.colorCompany"/></th>
-								<th><s:text name="global.colorId"/></th>						
-								<th><s:text name="global.colorName"/></th>
-								<th><s:text name="closestColors.colorPalette"/></th>
-								<th><s:text name="getProdFamily.deltaE"/></th>
+								<th id="compet_colorComp"><s:text name="global.colorCompany"/></th>
+								<th id="compet_colorId"><s:text name="global.colorId"/></th>						
+								<th id="compet_colorName"><s:text name="global.colorName"/></th>
+								<th id="compet_colorPal"><s:text name="closestColors.colorPalette"/></th>
+								<th id="compet_deltaE"><s:text name="getProdFamily.deltaE"/></th>
 							</tr>
 						</thead>
 						<tbody>

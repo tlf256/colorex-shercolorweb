@@ -46,6 +46,7 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 	@Autowired
 	private transient ColorService service;
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetSwAndCompetClosestColors() {
 
@@ -56,7 +57,10 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 
 		coordMap.put("colorCoord", colorCoord);
 		reqObj.setColorCoordMap(coordMap);
+		
 
+		request.setParameter("swactive", "false");
+		request.setParameter("closestColors", "true");
 		request.setParameter("reqGuid",reqGuid);
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
@@ -67,12 +71,82 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 			String actionGuid = (String) findValueAfterExecute("reqGuid");
 			//System.out.println("/closestColorsResultAction guid is " + actionGuid);
 			assertEquals(actionGuid, reqGuid);
-			@SuppressWarnings("unchecked")
+			
 			List<ClosestColor> closestSwColors = (List<ClosestColor>) findValueAfterExecute("closestSwColors");
-			@SuppressWarnings("unchecked")
 			List<ClosestColor> closestCmptColors = (List<ClosestColor>) findValueAfterExecute("closestCmptColors");
+			
 			assertTrue(CollectionUtils.isNotEmpty(closestSwColors));
 			assertTrue(CollectionUtils.isNotEmpty(closestCmptColors));
+		} catch (Exception e) {
+			try {
+				throw(e.getCause());
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetSwClosestColors() {
+
+		reqObj.setCustomerID("TEST");
+
+		Map<String, ColorCoordinates> coordMap = new HashMap<>();
+		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
+
+		coordMap.put("colorCoord", colorCoord);
+		reqObj.setColorCoordMap(coordMap);
+		
+
+		request.setParameter("swactive", "true");
+		request.setParameter("closestColors", "true");
+		request.setParameter("reqGuid",reqGuid);
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		try {
+			String result = executeAction("/closestColorsResultAction");
+			assertNotNull(result);
+			String actionGuid = (String) findValueAfterExecute("reqGuid");
+			//System.out.println("/closestColorsResultAction guid is " + actionGuid);
+			assertEquals(actionGuid, reqGuid);
+			
+			List<ClosestColor> closestSwColors = (List<ClosestColor>) findValueAfterExecute("closestSwColors");
+			List<ClosestColor> closestCmptColors = (List<ClosestColor>) findValueAfterExecute("closestCmptColors");
+			
+			assertTrue(CollectionUtils.isNotEmpty(closestSwColors));
+			assertTrue(closestCmptColors == null);
+		} catch (Exception e) {
+			try {
+				throw(e.getCause());
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testExecuteRuntimeException() {
+
+		reqObj.setCustomerID("TEST");
+		reqObj.setColorCoordMap(null);
+		
+		request.setParameter("swactive", "true");
+		request.setParameter("closestColors", "true");
+		request.setParameter("reqGuid",reqGuid);
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		try {
+			String result = executeAction("/closestColorsResultAction");
+			assertNotNull(result);
+			
+			List<String> actionErrors = (List<String>) findValueAfterExecute("actionErrors");
+			assertTrue(CollectionUtils.isNotEmpty(actionErrors));
+			
+			//System.out.println(actionErrors.get(0).toString());
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
