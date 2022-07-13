@@ -12,7 +12,7 @@ function showSwColorTable(){
 	swColorTable = $("#closestSwColor_table").DataTable({
 		dom: 'iBrtp',
 		"language": {
-        	"emptyTable" : 'No closest colors found'
+        	"emptyTable" : i18n['closestColors.noColorsFound']
         },
         "ordering": true,
         "order": [ 2, "asc" ],
@@ -28,7 +28,7 @@ function showCmptColorTable(){
 	cmptColorTable = $("#closestCmptColor_table").DataTable({
 		dom: 'fiBrtp',
 		"language": {
-        	"emptyTable" : 'No closest colors found'
+        	"emptyTable" : i18n['closestColors.noColorsFound']
         },
         "ordering": true,
         "order": [ 4, "asc" ],
