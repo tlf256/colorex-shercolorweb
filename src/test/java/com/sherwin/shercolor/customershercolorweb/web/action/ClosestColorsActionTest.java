@@ -146,7 +146,6 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 			List<String> actionErrors = (List<String>) findValueAfterExecute("actionErrors");
 			assertTrue(CollectionUtils.isNotEmpty(actionErrors));
 			
-			//System.out.println(actionErrors.get(0).toString());
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());
@@ -168,8 +167,8 @@ public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestC
 		try {
 			String result = executeAction("/closestColorsDisplayAction");
 			assertNotNull(result);
+			
 			String actionGuid = (String) findValueAfterExecute("reqGuid");
-			//System.out.println("/closestColorsDisplayAction guid is " + actionGuid);
 			assertEquals(actionGuid, reqGuid);
 		} catch (Exception e) {
 			try {

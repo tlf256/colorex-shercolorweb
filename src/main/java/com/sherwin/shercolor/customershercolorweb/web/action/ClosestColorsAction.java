@@ -43,10 +43,10 @@ public class ClosestColorsAction extends ActionSupport implements SessionAware, 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			// find closest colors
-			closestSwColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), true);
+			setClosestSwColors(colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), true));
 			if(!swactive) {
 				// also retrieve competitive colors
-				closestCmptColors = colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), false);
+				setClosestCmptColors(colorService.findClosestColorsFromCoord(reqObj.getColorCoordMap().get("colorCoord"), false));
 			}
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
