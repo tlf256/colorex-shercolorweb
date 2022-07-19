@@ -19,7 +19,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script>
@@ -679,7 +679,7 @@
   
 		<!-- Including footer -->
 		<s:include value="Footer.jsp"></s:include>
-		<s:hidden name="scaleByPercentVisible" value="%{scaleByPercentVisible}"/>
+		<s:hidden id="scaleByPercentVisible" name="scaleByPercentVisible" value="%{scaleByPercentVisible}"/>
 		<!-- Adjust By Percent Modal -->
 	    <div class="modal fade" aria-labelledby="scaleFormulaByPctModal" aria-hidden="true"  id="scaleFormulaByPctModal" role="dialog">
 	    	<div class="modal-dialog" role="document">

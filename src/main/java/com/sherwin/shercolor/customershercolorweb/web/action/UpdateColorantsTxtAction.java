@@ -59,21 +59,28 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 		try{
 			// grab existing records 
 			List<CustWebColorantsTxt> currentRecords = tinterService.getCanisterList(customerId, colorantSystem, tinterModel, tinterSerial);
-			//make a map of colorant codes to current amounts so we can set new colorantstxt to current amt if greater than 0.0, otherwise set to full.
+			//make a map of colorant codes to current amounts so we can set new colorantstxt to current amt if greater than 0.0 and not null, otherwise set to full. 
+			// I had to use this function, (existing, replacement) -> existing , because there were two entries with NA as colorant code
 			Map<String, Double> currentAmtMap = 
 			    currentRecords.stream().collect(
 				       Collectors.toMap(CustWebColorantsTxt::getClrntCode,
-				                clrnt-> clrnt.getCurrentClrntAmount() > 0.0 ? clrnt.getCurrentClrntAmount():clrnt.getMaxCanisterFill()));				
-    			// construct updated colorantsTxt list
+				                clrnt-> (clrnt.getCurrentClrntAmount() == null || clrnt.getCurrentClrntAmount() <= 0.0) ? clrnt.getMaxCanisterFill():clrnt.getCurrentClrntAmount(),(existing, replacement) -> existing));				
+    			
+			// fill out missing fields in colorantsTxt list which is the list sent from SWDeviceHandler which got it from the dbf files
 			for (CustWebColorantsTxt colorantsTxt : colorantsTxtList) {
 				colorantsTxt.setCustomerId(customerId);
 				colorantsTxt.setClrntSysId(colorantSystem);
 				colorantsTxt.setTinterModel(tinterModel);
 				colorantsTxt.setTinterSerialNbr(tinterSerial);
 				colorantsTxt.setFillStopLevel(1.2);
-//set current Amount to in new colorants.txt equal to the amount in the current colorants.txt if there is any.
-				
-				colorantsTxt.setCurrentClrntAmount(currentAmtMap.get(colorantsTxt.getClrntCode()));
+//set current Amount in new colorants.txt equal to the amount in the current colorants.txt if there is any.
+				// if colorant is not in the current colorants.txt (probably impossible, but just in case) set amount to 0.0
+				if(currentAmtMap.get(colorantsTxt.getClrntCode()) != null){
+					colorantsTxt.setCurrentClrntAmount(currentAmtMap.get(colorantsTxt.getClrntCode()));
+				}
+				else {
+					colorantsTxt.setCurrentClrntAmount(0.0);
+				}
 				if (colorantsTxt.getMaxCanisterFill() != null) {
 					if (colorantsTxt.getMaxCanisterFill() <= 192) {
 						colorantsTxt.setFillAlarmLevel(32.0);
@@ -82,7 +89,7 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 					}
 				}
 				
-				// fill out tinter canister list to return for the canister layout modal
+				// create canister list for session...  
 				TinterCanister canister = new TinterCanister();
 				canister.setClrntCode(colorantsTxt.getClrntCode());
 				canister.setCurrentClrntAmount(colorantsTxt.getCurrentClrntAmount());
@@ -100,13 +107,13 @@ public class UpdateColorantsTxtAction extends ActionSupport  implements SessionA
 				tinterCanisterList.add(canister);	
 			}
 			
-			// replace canister layout
+			// replace canister layout in db
 			boolean result = tinterService.deleteColorantsTxt(currentRecords);
 			if (result) {
 				result = tinterService.saveColorantsTxt(colorantsTxtList);
 			}
 			if (result) {
-				// update tinter info in session 
+				// update canister list info in session 
 				if(sessionMap != null) {
 					RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 					if(reqObj != null) {

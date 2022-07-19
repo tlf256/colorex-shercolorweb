@@ -21,7 +21,7 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
@@ -120,6 +120,17 @@ function printStoreLabel() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
 	}, 500);
 }
+
+function printSelfTintCustLabel() {
+	
+	myPrintLabelType = "selfTintCustLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setTimeout(function() {
+	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
+}
+
 
 function printDrawdownStoreLabel() {
 	myPrintLabelType = "drawdownStoreLabel";
@@ -1617,7 +1628,7 @@ function ParsePrintMessage() {
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						</s:if>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
-							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
 						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
@@ -1652,10 +1663,16 @@ function ParsePrintMessage() {
 							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
-						<button type="button" class="btn btn-secondary" id="formulaPrint"
-							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+						<s:if test = "%{accountIsSwStore==true}">	
+							<button type="button" class="btn btn-secondary" id="formulaPrint"
+								onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+						</s:if>
+						<s:else>
+							<button type="button" class="btn btn-secondary" id="formulaPrint"
+								onclick="printSelfTintCustLabel();return false;"><s:text name="global.print"/></button>
+						</s:else>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
-							onclick="return validationWithoutModal();" action="formulaUserEditAction" />
+							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
 							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
