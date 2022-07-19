@@ -16,14 +16,14 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 public class ProcessCompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessCompareColorsAction.class);
-	private Map<String, Object> sessionMap;
+	private transient Map<String, Object> sessionMap;
 	private String reqGuid;
 	private boolean compare;
 	private Map<String, Double> compareResults;
-	private ColorDifference colorDiff;
+	private transient ColorDifference colorDiff;
 	
 	@Autowired
-	private ColorService colorService;
+	private transient ColorService colorService;
 	
 	public String display() {
 		try {
@@ -36,12 +36,13 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 		}
 	}
 	
+	@Override
 	public String execute() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			compareResults = new HashMap<String, Double>();
+			compareResults = new HashMap<>();
 			
-			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
+			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("trial")));
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {

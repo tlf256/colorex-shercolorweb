@@ -20,7 +20,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" src="script/spectro.js"></script>
 		<script type="text/javascript" src="script/WSWrapper.js"></script>
 		<script>
@@ -223,6 +223,7 @@
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
 						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
+						<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
 						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>
 				</div>
