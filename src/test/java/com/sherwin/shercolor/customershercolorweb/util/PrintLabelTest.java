@@ -3,11 +3,20 @@ package com.sherwin.shercolor.customershercolorweb.util;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.preflight.PreflightDocument;
+import org.apache.pdfbox.preflight.parser.PreflightParser;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +59,7 @@ public class PrintLabelTest  {
 	private List<SwMessage> formulaMessages;
 	private FormulationResponse formulationResponse = new FormulationResponse();
 	private List<JobField> listJobField;
+	ShercolorLabelPrintImpl printLabel;
 
 
 	private String label1[] = {
@@ -163,40 +173,54 @@ public class PrintLabelTest  {
 	
 	private String formula8[] = {"",""};
 	
+	private String label8[] = {
+			"label27.pdf", "COMPETITIVE", "PPG", "WHITEWATER", "650096514", 
+			"A96W01251", "DURATION HOME", "LATEX", "EXTRA WHITE", "MATTE", "ARCHITECTURAL", 
+			"INTERIOR", "ONE GALLON", "CCE", "400000002", "CLEVELAND CLINIC", "CUSTOM SHER-COLOR-MATCH", "P2", 
+			"4200001", "16"};
+	
+	private String formula9[] = { 
+			"B1", "BLACK", "G2", "NEW GREEN", "Y3", "DEEP GOLD"};
+
+	@Before
+	public void testInitPrintService() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+	}
+	
 	//Store Labels
 	@Test
 	public void test()  {
 		reqObj = BuildReqObject(label1, formula1, message1, job1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test2()  {
 		reqObj = BuildReqObject(label2, formula2, message2, job2);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test3()  {
 		reqObj = BuildReqObject(label3, formula3, message3, job3);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test4()  {
 		reqObj = BuildReqObject(label4, formula4, message4, job4);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test5()  {
 		reqObj = BuildReqObject(label5, formula5, message5, job5);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
@@ -204,111 +228,118 @@ public class PrintLabelTest  {
 		reqObj = BuildReqObject(label6, formula6, message7, job6);
 		reqObj.setTinter(null);
 		reqObj.getDisplayFormula().setSourceDescr("VINYL SAFE FORMULA");
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	//Self Tinting Customer Label.
 	@Test
 	public void test7()  {
 		reqObj = BuildReqObject(label1, formula1, message1, job1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
 	}
 	
 	@Test
 	public void test8()  {
 		reqObj = BuildReqObject(label2, formula2, message2, job2);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
 	}
 	
 	@Test
 	public void test9()  {
 		reqObj = BuildReqObject(label3, formula3, message3, job3);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
 	}
 	
 	@Test
 	public void test10()  {
 		reqObj = BuildReqObject(label4, formula4, message4, job4);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
 	}
 	
 	@Test
 	public void test11()  {
 		reqObj = BuildReqObject(label5, formula5, message5, job5);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
 	}
 	
 	@Test
 	public void test12()  {
 		reqObj = BuildReqObject(label6, formula6, message6, job6);
 		reqObj.setTinter(null);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+
 	}
 	
 	//Drawdown Label
 	@Test
 	public void test13()  {
 		reqObj = BuildReqObject(label1, formula1, message1, job1);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
 	}
 	
 	@Test
 	public void test14()  {
 		reqObj = BuildReqObject(label2, formula2, message2, job2);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
 	}
 	
 	@Test
 	public void test15()  {
 		reqObj = BuildReqObject(label3, formula3, message3, job3);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
 	}
 	
 	@Test
 	public void test16()  {
 		reqObj = BuildReqObject(label4, formula4, message4, job4);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
 	}
 	
 	@Test
 	public void test17()  {
 		reqObj = BuildReqObject(label5, formula5, message5, job5);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
+		
 	}
 	
 	@Test
 	public void test18()  {
 		reqObj = BuildReqObject(label6, formula6, message6, job6);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
 	}
 	
 	//invalid label type
 	@Test
 	public void test19()  {
 		reqObj = BuildReqObject(label7, formula7, message7, job7);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertFalse(printLabel.createLabelPdf(reqObj,"InvalidLabelType","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"InvalidLabelType","PORTRAIT","","",false,null);
+		assertFalse(validatePdf("InvalidLabelType"));
 	}
 	
 	//drawdown label test
 	@Test
 	public void test20()  {
 		reqObj = BuildReqObject(label7, formula7, message7, job7);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"drawdownLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"drawdownLabel","LANDSCAPE","","",false,null);
+		assertTrue(validatePdf("drawdownLabel"));
 	}
 	
 	//Sample label tests
@@ -316,15 +347,15 @@ public class PrintLabelTest  {
 	public void test21()  {
 		reqObj = BuildReqObject(label7, formula7, message7, job7);
 		reqObj.setTinter(null);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"sampleCanLabel","PORTRAIT","","B1-BLACK,1,W1-WHITE,2,,",false,null));
+		printLabel.createLabelPdf(reqObj,"sampleCanLabel","PORTRAIT","","B1-BLACK,1,W1-WHITE,2,,",false,null);
+		assertTrue(validatePdf("sampleCanLabel"));
 	}
 	
 	@Test
 	public void test22()  {
 		reqObj = BuildReqObject(label7, formula7, message7, job7);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"sampleCanLabel","PORTRAIT","","B1-BLACK,1,W1-WHITE,2,L1-BLUE,3,R2-NEW RED,4,G2-GREEN,5",false,null));
+		printLabel.createLabelPdf(reqObj,"sampleCanLabel","PORTRAIT","","B1-BLACK,1,W1-WHITE,2,L1-BLUE,3,R2-NEW RED,4,G2-GREEN,5",false,null);
+		assertTrue(validatePdf("sampleCanLabel"));
 	}
 	
 	//no formula test
@@ -332,10 +363,69 @@ public class PrintLabelTest  {
 	public void test23()  {
 		reqObj = BuildReqObject(label7, formula8, message7, job7);
 		reqObj.setTinter(null);
-		ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
-		assertTrue(printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null));
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
+	}
+	
+	// drawdown competitive color test
+	@Test
+	public void test24()  {
+		reqObj = BuildReqObject(label8, formula9, message1, job7);
+		printLabel.createLabelPdf(reqObj,"drawdownLabel","LANDSCAPE","","",false,null);
+		assertTrue(validatePdf("drawdownLabel"));
 	}
 
+	@After
+	public void cleanUpPdfFile() {
+		String directoryPath = "./";
+		File pdfFile = FileUtils.getFile(new File(directoryPath), "label.pdf");
+		pdfFile.delete();
+		System.out.println("Label PDF files from " + PrintLabelTest2.class.getSimpleName() + " have been cleaned up.");
+	}
+	
+	private boolean validatePdf(String labelType) {
+		boolean pdfIsValid = false;
+		
+		try {
+			String pdfDirectory = "./";
+			File pdfFile = FileUtils.getFile(new File(pdfDirectory), "label.pdf");			
+			PreflightParser parser = new PreflightParser(pdfFile);
+			parser.parse();
+			PreflightDocument pdfDocument = parser.getPreflightDocument();
+			PDFTextStripper pdfStripper = new PDFTextStripper();
+			String text = pdfStripper.getText(pdfDocument);
+			String[] labelRows = text.split("\r\n");
+			int rowsLength = labelRows.length;
+			//validation varies based on labelType
+			switch(labelType) {
+				case "storeLabel":
+				case "sampleCanLabel":
+				case "selfTintCustLabel":
+					if (labelRows[2].contains("Order #")) {
+							pdfIsValid = true;
+						}
+					break;
+				case "drawdownLabel":
+					if (labelRows[0].contains("Customer:")) {
+							pdfIsValid = true;
+						}
+					break;
+				case "drawdownStoreLabel":
+					if (labelRows[1].contains("Order #")) {
+						pdfIsValid = true;
+					}
+					break;
+				default:
+					System.out.println("Non-standard label type entered.");
+					break;
+			}
+			pdfDocument.close();
+		} catch (IOException e) {
+			// Couldn't load the pdf File
+			System.out.println("Could not load: label.pdf");
+		}
+		return pdfIsValid;
+	}
 	
 	private RequestObject BuildReqObject(String label[],  String formula[], String message[], String job[]){
 		reqObj.setGuid("test");
