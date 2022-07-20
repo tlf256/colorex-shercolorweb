@@ -27,11 +27,11 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class MeasureColorAction extends ActionSupport implements SessionAware, LoginRequired {
 
-	private ColorService colorService;
-	private CustomerService customerService;
-	private ColorBaseService colorBaseService;
+	private transient ColorService colorService;
+	private transient CustomerService customerService;
+	private transient ColorBaseService colorBaseService;
 
-	private Map<String, Object> sessionMap;
+	private transient Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(MeasureColorAction.class);
@@ -47,12 +47,18 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String extBases;
 	private boolean measure;
 	private boolean compare;
+	private boolean closestColors;
+	
+	private static final String SAMPLE = "sample";
+	private static final String RESULT = "result";
+	private static final String COLOREYE_UTIL = "ciUtility";
+	private static final String CLOSEST_COLORS = "closestColors";
 	
 	@Autowired
-	private ColorCoordinatesCalculator colorCoordCalc;
+	private transient ColorCoordinatesCalculator colorCoordCalc;
 
 	public MeasureColorAction(){
-		
+		// why is this empty?
 		
 	}
 	
@@ -88,6 +94,7 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		}
 	}
 	
+	@Override
 	public String execute() {
 
 		List<String> baseList;
@@ -108,28 +115,27 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			// Try getting an RGB value for the object.
 			ColorCoordinates colorCoord = colorService.getColorCoordinates(curveArray, "D65");
 			
+			//compare colors can potentially be redirected here twice
+			//so distinction needs to be made between the first and second measurements
 			if(measure || compare) {
 				if(colorCoord == null) {
-					colorCoord = new ColorCoordinates();
 					double[] curveArrDouble = new double[40];
 					
 					for(int i = 0; i < curveArray.length; i++) {
 						curveArrDouble[i] = curveArray[i].doubleValue();
 					}
 					
-					if(colorCoord != null) {
-						colorCoord = colorCoordCalc.getColorCoordinates(curveArrDouble);
-					}
+					colorCoord = colorCoordCalc.getColorCoordinates(curveArrDouble);
 				}
 				
 				Map<String, ColorCoordinates> coordMap = reqObj.getColorCoordMap();
 				
 				if(coordMap == null) {
-					coordMap = new HashMap<String, ColorCoordinates>();
+					coordMap = new HashMap<>();
 				}
 				
 				if(compare) {
-					coordMap.put("sample", colorCoord);
+					coordMap.put("trial", colorCoord);
 				} else {
 					coordMap.put("standard", colorCoord);
 				}
@@ -139,9 +145,9 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				sessionMap.put(reqGuid, reqObj);
 				
 				if(compare) {
-					return "result";
+					return RESULT;
 				} else {
-					return "sample";
+					return SAMPLE;
 				}
 			}
 			
@@ -155,12 +161,26 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				}
 			}
 			
+			reqObj.setRgbHex(rgbHex);
+			reqObj.setCurveArray(curveArray);
+			
+			if(closestColors) {
+				Map<String, ColorCoordinates> coordMap = new HashMap<>();
+				coordMap.put("colorCoord", colorCoord);
+				
+				reqObj.setColorCoordMap(coordMap);
+				
+				sessionMap.put(reqGuid, reqObj);
+				
+				return CLOSEST_COLORS;
+			}
+			
 			//2018-01-15 BKP - copied from below to here to calculated bases based on curve.
 			//confirm that at least one of the intBases and ExtBases lists are populated.  If neither are populated,
 			//call the autobase routine.
 			if (intBases==null && extBases==null) {
 				//call autobase
-				String custID = (String) reqObj.getCustomerID();
+				String custID = reqObj.getCustomerID();
 				CustWebParms bobo = customerService.getDefaultCustWebParms(custID);
 				String custProdComp = bobo.getProdComp();
 				baseList = colorBaseService.GetAutoBase(curveArray, custProdComp );
@@ -168,14 +188,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				setExtBases(StringUtils.join(baseList, ','));
 			}
 			
-			
-
-			
-			
 			reqObj.setIntBases(intBases);
 			reqObj.setExtBases(extBases);
-			reqObj.setRgbHex(rgbHex);
-			reqObj.setCurveArray(curveArray);
 
 			sessionMap.put(reqGuid, reqObj);
 			
@@ -201,13 +215,16 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	public String measure() {
 
 		 try {
-			 if(measure) {
-				 return "measure";
-			 } else if(compare) {
-				 return "sample";
-			 } else {
-				 return SUCCESS;
+			 if(measure || closestColors) {
+				 return COLOREYE_UTIL;
 			 }
+			 
+			 if(compare) {
+				 return SAMPLE;
+			 }
+			 
+			 return SUCCESS;
+				 
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
@@ -301,6 +318,14 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 	public void setCompare(boolean compare) {
 		this.compare = compare;
+	}
+
+	public boolean isClosestColors() {
+		return closestColors;
+	}
+
+	public void setClosestColors(boolean closestColors) {
+		this.closestColors = closestColors;
 	}
 
 }
