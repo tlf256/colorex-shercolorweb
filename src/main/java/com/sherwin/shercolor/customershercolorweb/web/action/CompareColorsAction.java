@@ -49,6 +49,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	private String selectedCompany;
 	private boolean measure;
 	private boolean compare;
+	private boolean compareColors;
 	
 	@Autowired
 	private ColorService colorService;
@@ -59,8 +60,9 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	public String display() {
 		try {
 			
-			buildSourceOptionsMap();
-			buildCompaniesList();
+			//buildSourceOptionsMap();
+			//buildCompaniesList();
+			setCompareColors(true);
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {
@@ -73,7 +75,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 		try {
 			logger.info("excuting compare colors...");
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
+			/*Map<String, ColorCoordinates> coordMap = new HashMap<String, ColorCoordinates>();
 			colorComp = "";
 			colorId = "";
 			
@@ -119,7 +121,7 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 					
 					sessionMap.put(reqGuid, reqObj);
 				}
-			}
+			}*/
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {
@@ -425,6 +427,14 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 
 	public void setCompare(boolean compare) {
 		this.compare = compare;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 
 }

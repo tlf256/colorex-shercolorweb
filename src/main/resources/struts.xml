@@ -464,6 +464,11 @@
 				<param name="reqGuid">${reqGuid}</param>
 				<!-- <param name="measureColor">${measureColor}</param> -->
 			</result>
+			<result name="compareColors" type="redirectAction">
+				<param name="actionName">spectroCompareColorsNextAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<!-- <param name="">${}</param> -->
+			</result>
 			<result name="savedMeasure" type="redirectAction">
 				<param name="actionName">MeasureColorNextAction</param>
 				<param name="reqGuid">${reqGuid}</param>
@@ -1410,7 +1415,11 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="success">/WEB-INF/pages/CompareColors.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">displayColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
 		</action>
 		<action name="spectroCompareColorsNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">

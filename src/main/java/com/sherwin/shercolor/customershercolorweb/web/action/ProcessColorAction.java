@@ -91,6 +91,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private List<String> curvesList;
 	private String measuredCurve;
 	private String measuredName;
+	private boolean compareColors;
 	
 	
 	private void buildCotypesMap() {
@@ -458,6 +459,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				reqObj.setClosestSwColorId("");
 			}
 			sessionMap.put(reqGuid, reqObj);
+			
+			if(compareColors) {
+				return "compareColors";
+			}
+			
 			if (colorType.equals("CUSTOMMATCH")) {
 				return "measure";
 			} else if (colorType.equals("SAVEDMEASURE")) {
@@ -790,6 +796,14 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 	public void setMeasuredName(String measuredName) {
 		this.measuredName = measuredName;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 
 	public ProductService getProductService() {
