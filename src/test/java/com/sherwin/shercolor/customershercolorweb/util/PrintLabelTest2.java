@@ -204,9 +204,8 @@ public class PrintLabelTest2  {
 			PreflightDocument pdfDocument = parser.getPreflightDocument();
 			PDFTextStripper pdfStripper = new PDFTextStripper();
 			String text = pdfStripper.getText(pdfDocument);
-			String[] labelRows = text.split("\r\n");
 			
-			if (labelRows[2].contains("Order #")) {
+			if (text.contains("Order #")) {
 					pdfIsValid = true;
 			}	
 			

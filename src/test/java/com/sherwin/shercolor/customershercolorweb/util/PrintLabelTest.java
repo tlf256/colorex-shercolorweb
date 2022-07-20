@@ -394,26 +394,20 @@ public class PrintLabelTest  {
 			PreflightDocument pdfDocument = parser.getPreflightDocument();
 			PDFTextStripper pdfStripper = new PDFTextStripper();
 			String text = pdfStripper.getText(pdfDocument);
-			String[] labelRows = text.split("\r\n");
-			int rowsLength = labelRows.length;
 			//validation varies based on labelType
 			switch(labelType) {
 				case "storeLabel":
 				case "sampleCanLabel":
 				case "selfTintCustLabel":
-					if (labelRows[2].contains("Order #")) {
+				case "drawdownStoreLabel":
+					if (text.contains("Order #")) {
 							pdfIsValid = true;
 						}
 					break;
 				case "drawdownLabel":
-					if (labelRows[0].contains("Customer:")) {
+					if (text.contains("Customer:")) {
 							pdfIsValid = true;
 						}
-					break;
-				case "drawdownStoreLabel":
-					if (labelRows[1].contains("Order #")) {
-						pdfIsValid = true;
-					}
 					break;
 				default:
 					System.out.println("Non-standard label type entered.");
