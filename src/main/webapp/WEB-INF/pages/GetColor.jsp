@@ -220,8 +220,15 @@
 <%-- 			this sess is <s:property value="#session"/> --%>
 <!-- 			<br> -->
 <%-- 			jf obj is <s:property value="#session[reqGuid].jobFieldList"/> --%>
-			
-			<div class="row">
+			<s:if test="compareColors">
+				<div class="row mt-4">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8"><h3><s:text name="compareColors.chooseStandardSource"/></h3></div>
+					<div class="col-sm-2"></div>
+				</div>
+			</s:if>
+			<s:else>
+				<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
@@ -237,6 +244,7 @@
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
 				</div>
 			</div>
+			</s:else>
 <br>
 			<s:form action="colorUserNextAction" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
 				<div class="row">
