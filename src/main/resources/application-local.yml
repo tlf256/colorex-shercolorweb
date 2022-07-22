@@ -11,5 +11,3 @@ spring:
       approle:
         role-id: 4b851bc5-133f-c30f-b8f7-d560a3a46fa9
         secret-id: 105e90e5-cfd3-bf1a-36e8-a10260029ac8
-logging:
-  config: classpath:log4j2-local.xml

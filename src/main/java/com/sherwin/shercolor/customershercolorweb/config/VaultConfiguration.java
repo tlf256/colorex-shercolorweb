@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-//Exclude Vault config normally, only used in certain use-cases such as local development and testing
+//Exclude Vault config normally, only used in certain use-cases
 @Configuration
 @Profile("!local && !rancher")
 @EnableAutoConfiguration(exclude = org.springframework.cloud.vault.config.VaultAutoConfiguration.class)
