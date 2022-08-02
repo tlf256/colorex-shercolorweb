@@ -352,6 +352,7 @@
 				<param name="measure">${measure}</param>
 				<param name="compare">${compare}</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="closestColors">${closestColors}</param>
 			</result>
 		</action>
 		<action name="spectroCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroCalibrateAction" method="display">
@@ -428,16 +429,41 @@
 			<result name="sample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-			</result>
-			<result name="measure" type="redirectAction">
+			</result>                                                             
+			<result name="ciUtility" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="measure">${measure}</param>
+				<param name="closestColors">${closestColors}</param>
 			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+		</action>
+		<action name="closestColorsDisplayAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ClosestColors.jsp</result>
+		</action>
+		<action name="closestColorsMeasureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorsAction" method="measure">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="closestColors">${closestColors}</param>
+			</result>
+		</action>
+		<action name="closestColorsResultAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorsAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ClosestColorsResult.jsp</result>
+			<result name="input">/WEB-INF/pages/ClosestColorsResult.jsp</result>
+			<result name="error">/WEB-INF/pages/ClosestColorsResult.jsp</result>
 		</action>
 		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -476,6 +502,10 @@
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="result" type="redirectAction">
 				<param name="actionName">spectroCompareColorsResultAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="closestColors" type="redirectAction">
+				<param name="actionName">closestColorsDisplayAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
 			<result name="sample" type="redirectAction">

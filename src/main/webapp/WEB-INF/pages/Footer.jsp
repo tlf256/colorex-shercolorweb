@@ -8,6 +8,8 @@
 var i18n = [];
 i18n['basicFieldValidator.yourDataInputIsInvalid'] = '<s:text name="basicFieldValidator.yourDataInputIsInvalid"/>';
 i18n['basicFieldValidator.pleaseEnterData'] = '<s:text name="basicFieldValidator.pleaseEnterData"/>';
+i18n['closestColors.loadingColors'] = '<s:text name="closestColors.loadingColors"/>';
+i18n['closestColors.noColorsFound'] = '<s:text name="closestColors.noColorsFound"/>';
 i18n['compareColors.chooseFirstSample'] = '<s:text name="compareColors.chooseFirstSample" />';
 i18n['compareColors.measureFirstSamle'] = '<s:text name="compareColors.measureFirstSamle" />'
 i18n['compareColors.measureSecondSample'] = '<s:text name="compareColors.measureSecondSample" />'
@@ -41,8 +43,6 @@ i18n['getColor.primerId'] = '<s:text name="getColor.primerId"/>';
 i18n['getColor.companyName'] = '<s:text name="getColor.companyName"/>';
 i18n['global.colorantLevelCheckInProgress'] = '<s:text name="global.colorantLevelCheckInProgress"/>';
 i18n['global.colorantLevelTooLow'] = '<s:text name="global.colorantLevelTooLow"/>';
-i18n['global.colorId'] = '<s:text name="global.colorId"/>';
-i18n['global.colorName'] = '<s:text name="global.colorName"/>';
 i18n['global.containerFull'] = '<s:text name="global.containerFull"/>';
 i18n['global.cookieBanner'] = '<s:text name="global.cookieBanner"/>';
 i18n['global.dispenseError'] = '<s:text name="global.dispenseError"/>';
@@ -50,7 +50,7 @@ i18n['global.dispenseInProgress'] = '<s:text name="global.dispenseInProgress"/>'
 i18n['global.extend'] = '<s:text name="global.extend"/>';
 i18n['global.failure'] = '<s:text name="global.failure"/>';
 i18n['global.failureColon'] = '<s:text name="global.failureColon"/>';
-i18n['global.login'] = '<s:text name="global.login"/>';
+i18n['global.loading'] = '<s:text name="global.loading"/>';
 i18n['global.lastDispense'] = '<s:text name="global.lastDispense"/>';
 i18n['global.lastDispenseComplete'] = '<s:text name="global.lastDispenseComplete"/>';
 i18n['global.lastDispenseInProgress'] = '<s:text name="global.lastDispenseInProgress"/>';
@@ -59,6 +59,7 @@ i18n['global.lowColorantLevels'] = '<s:text name="global.lowColorantLevels"/>';
 i18n['global.notLoggedInReqGuidNotFound'] = '<s:text name="global.notLoggedInReqGuidNotFound"/>';
 i18n['global.ok'] = '<s:text name="global.ok"/>';
 i18n['global.pleaseWaitClrntLevelCheck'] = '<s:text name="global.pleaseWaitClrntLevelCheck"/>';
+i18n['global.pleaseWait'] = '<s:text name="global.pleaseWait"/>';
 i18n['global.positiveNbr'] = '<s:text name="global.positiveNbr"/>';
 i18n['global.purgeRequired'] = '<s:text name="global.purgeRequired"/>';
 i18n['global.tinterDriverBusyReinitAndRetry'] = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
@@ -135,6 +136,24 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
       </div>
     </div>
   </div>
+</div>
+<!-- Please Wait modal - can be used on any screen to inform user of a wait time during the processing of an action -->
+<div class="modal fade" aria-labelledby="pleaseWaitModal" aria-hidden="true" id="pleaseWaitModal" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-light">
+				<h5 class="modal-title">
+					<em id="spinner" class="fa fa-refresh mr-3 text-muted"></em>
+					<s:text name="global.pleaseWait"></s:text>
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<p class="ml-2" id="processMsg"></p>
+			</div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
 </div>
 <!-- cookie banner -->
 <div id="cookieBanner"></div>

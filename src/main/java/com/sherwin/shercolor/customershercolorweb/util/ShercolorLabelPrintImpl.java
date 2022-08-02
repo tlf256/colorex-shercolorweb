@@ -152,7 +152,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 		return ingredients;
 	}
 	
-	public boolean createLabelPdf(RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
+	public void createLabelPdf(RequestObject reqObj, String printLabelType, String printOrientation, String canType, String clrntAmtList, boolean isCorrectionDispense, List<Map<String,Object>> correctionShotList) {
 		this.filename = "label.pdf";
 		this.reqObj = reqObj;
 
@@ -172,7 +172,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			if (printLabelType.equals("drawdownLabel")) {
 				drawDrawdownLabelPdf();
 				document.save(filename);
-				return success;
+				closeDocument();
+				return;
 			}
 				
 			// Get formula ingredients (colorants) for processing.
@@ -226,7 +227,6 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			// Label Pdf is completed.  1 or 2 labels will print.  Close the document.
 			// Save the results and ensure that the document is properly closed:			
 			document.save(filename);
-			return success;
 		}
 
 		catch(IOException ie) {
@@ -238,17 +238,19 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 
 		}
 		finally {
-			try {
-				errorLocation = "Closing Document";
-				document.close();
-			} catch (IOException e) {
-				logger.error(exceptionDetail, e.getMessage(), colorNameLog, productNbrLog, errorLocation);
-
-			}
+			closeDocument();
 		}
-		return success;
 	}
-	
+
+	private void closeDocument() {
+		try {
+			errorLocation = "Closing Document";
+			document.close();
+		} catch (IOException e) {
+			logger.error(exceptionDetail, e.getMessage(), colorNameLog, productNbrLog, errorLocation);
+
+		}
+	}
 	private void drawStoreLabelPdf(List<FormulaIngredient> listFormulaIngredients, String partMessage ) {
 		// Create a new blank page and add it to the document
 		PDPage page = new PDPage();
@@ -573,8 +575,14 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Room/Use:",cell2Width,haLeft,vaMiddle,roomByRoom);
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"",cell2Width,haLeft,vaMiddle,"");
 			errorLocation = "Color";
+			String colorPrint = "";
+			if (reqObj.getColorComp().equals("SHERWIN-WILLIAMS")) {
+				colorPrint = "SW " + reqObj.getColorID() + " " + reqObj.getColorName();
+			} else {
+				colorPrint = reqObj.getColorID() + " " + reqObj.getColorName();
+			}
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Color:",
-							   cell2Width,haLeft,vaMiddle,reqObj.getColorComp() + " " + reqObj.getColorID() + " " + reqObj.getColorName());
+							   cell2Width,haLeft,vaMiddle,colorPrint);
 			errorLocation = "Product";
 			createTwoColumnRow(table,fontSize,rowHeight,cell1Width,haRight,vaMiddle,"Product:",
 							   cell2Width,haLeft,vaMiddle,reqObj.getQuality() + " " + reqObj.getFinish() + " " + reqObj.getBase() + " " + reqObj.getProdNbr());
