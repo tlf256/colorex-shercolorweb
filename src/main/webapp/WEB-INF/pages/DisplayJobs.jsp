@@ -35,7 +35,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/vfs_fonts.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.5.1.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.5.2.js"></script>
 	</head>
 	<body>
 		<div class="modal fade" tabindex="-1" role="dialog" id="searchmodal" data-backdrop="static" >
@@ -177,20 +177,35 @@
 					<s:hidden name="filter" id="filter" value="%{filter}"/>
 				</div>
 			</div>
+			<s:if test="compareColors">
+				<div class="row">
+					<div class="col-xl-0 col-lg-0 col-md-0 col-sm-0">
+					</div>
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+						<div class="card card-body bg-light mt-4">
+						   <div class="row">
+								<div class="col-lg-4 col-md-4 col-sm-3 col-xs-4">
+									<span class="badge badge-secondary" style="font-size: 1.2rem;"><s:text name="compareColors.selectStandardColor"/></span>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0"></div>
+								<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-0 col-lg-0 col-md-0 col-sm-0">
+					</div>
+				</div>
+			</s:if>
 <br>
 			
 			<div class="row">
 				<div class="col-lg-0 col-md-0">
 				</div>
 				<div class="col-lg-12 col-md-12">
-					<h3 id="title"></h3>
 					<h6 id="dltmsg" class="text-danger d-none"></h6>
 					<s:if test="hasActionMessages()">
 					      <s:actionmessage cssClass="alert-danger"/>
 					</s:if>
-					<%-- <s:if test="match != true">
-						<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
-					</s:if> --%>
 					<table id="job_table" class="table table-striped table-bordered">
 						<thead>
 							<tr>
@@ -265,13 +280,10 @@
             		<div class="col-sm-1">
  						<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
  						<s:hidden id="controlNbr" name="lookupControlNbr" value=""/>
- 						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
+ 						<s:hidden name="compareColors" id="compareColors" value="%{compareColors}"/>
 					</div>
 
 					<div class="col-sm-10">
-						<%-- <s:if test="match != true">
-							<button type="button" id="newSearchBtn" class="btn btn-primary" onclick="showSearchModal()"><s:text name="displayJobs.newSearch" /></button>
-						</s:if> --%>
 						<s:submit id="cancelNewSearch" cssClass="btn btn-secondary pull-right mb-5 mt-2" value="%{getText('global.cancel')}" action="userCancelAction"/>
 					</div>
 					<div class="col-sm-1">

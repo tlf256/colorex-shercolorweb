@@ -22,7 +22,7 @@ $(document).ready(function() {
 		}
 	}
 	
-	var match = $.urlParam('match');
+	//var match = $.urlParam('match');
 	//$("#listJobsAction_formulaUserCorrectAction")
 	var exportColList = $("#listJobsAction_exportColList").val();
 	var columnList = exportColList.split(',').map(function(item) {
@@ -134,15 +134,16 @@ $(document).ready(function() {
         "pagingType": "full"
     });
     
-    //console.log('match is ' + match);
-    
     var newSearchBtn = jobTable.buttons(['#newSearch']);
-    
-    // display the job search filter modal unless match is true
+	var matchStandard = $.urlParam('matchStandard');
+	
+	console.log('matchStandard is ' + matchStandard);
+
+    // display the job search filter modal unless matchStandard is true
     // and in this case the jobs have already been filtered
-    if(match != null && match == "true"){
-    	$('#mainForm').attr('action', 'selectColorMatchAction');
-    	$('#title').text(i18n['compareColors.chooseFirstSample']);
+    if(matchStandard != null && matchStandard == "true"){
+    	//$('#mainForm').attr('action', 'selectColorMatchAction');
+    	//$('#title').text(i18n['compareColors.chooseFirstSample']);
     	$('#searchmodal').modal('hide');
     	newSearchBtn.disable();
     }
