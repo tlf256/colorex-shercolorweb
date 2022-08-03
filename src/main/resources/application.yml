@@ -30,9 +30,11 @@ spring:
 
       # The login-test profile is used to tell Spring to use a JDBC connection for SherColorLogin
       # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables.
-      active: oracle,dev,local
+      active: oracle,dev,rancher
 
 oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+
+artifactoryToken: ${shercolorweb-reader}
 
 ---
 spring:

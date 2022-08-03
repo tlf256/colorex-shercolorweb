@@ -3,12 +3,15 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
-import java.io.File;
-import java.io.FileInputStream;
+import org.jfrog.artifactory.client.Artifactory;
+import org.jfrog.artifactory.client.ArtifactoryClientBuilder;
+
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.opensymphony.xwork2.ActionSupport;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -20,12 +23,10 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private String pdfFile;
-	
 	private InputStream fileInputStream;
-
-	public InputStream getFileInputStream() {
-		return fileInputStream;
-	}
+	
+	@Value("${artifactoryToken}")
+	private String artifactoryToken;
 
 //Opens Help Menu links on the welcome page - edo78r
 	
@@ -67,7 +68,17 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 				logger.error("pdf filename is invalid");
 				return ERROR;
 			}
-			fileInputStream = new FileInputStream(new File("/web_apps/server/shercolor/external/" + pdfFileName));
+			
+			Artifactory artifactory = ArtifactoryClientBuilder.create()
+			        .setUrl("https://artifactory.sherwin.com/artifactory")
+			        .setUsername("shercolorweb-reader")
+			        .setPassword(artifactoryToken)
+			        .build();
+			
+			fileInputStream = artifactory.repository("shercolorweb-generic-local")
+			        .download("com/sherwin/SherColorWeb/" + pdfFileName)
+			        .doDownload();
+				
 	    	return SUCCESS;
 		 } catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -101,6 +112,10 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 
 	public void setPdfFile(String pdfFile) {
 		this.pdfFile = pdfFile;
+	}
+	
+	public InputStream getFileInputStream() {
+		return fileInputStream;
 	}
 }
 
