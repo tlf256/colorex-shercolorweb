@@ -45,11 +45,12 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private String intBases;
 	
 	private String extBases;
-	private boolean measure;
-	private boolean compare;
+	private boolean measureStandard;
+	private boolean measureSample;
 	private boolean closestColors;
+	private boolean compareColors;
 	
-	private static final String SAMPLE = "sample";
+	private static final String SAMPLE = "getSample";
 	private static final String RESULT = "result";
 	private static final String COLOREYE_UTIL = "ciUtility";
 	private static final String CLOSEST_COLORS = "closestColors";
@@ -115,9 +116,22 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 			// Try getting an RGB value for the object.
 			ColorCoordinates colorCoord = colorService.getColorCoordinates(curveArray, "D65");
 			
+			if (colorCoord != null) {
+				rgbHex = colorCoord.getRgbHex();
+				
+				CdsColorMast closestSwColor = colorService.findClosestSwColorFromCoord(colorCoord);	
+				if (closestSwColor != null) {
+					reqObj.setClosestSwColorName(closestSwColor.getColorName());
+					reqObj.setClosestSwColorId(closestSwColor.getColorId());
+				}
+			}
+			
+			reqObj.setRgbHex(rgbHex);
+			reqObj.setCurveArray(curveArray);
+			
 			//compare colors can potentially be redirected here twice
 			//so distinction needs to be made between the first and second measurements
-			if(measure || compare) {
+			if(compareColors) {
 				if(colorCoord == null) {
 					double[] curveArrDouble = new double[40];
 					
@@ -134,8 +148,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 					coordMap = new HashMap<>();
 				}
 				
-				if(compare) {
-					coordMap.put("trial", colorCoord);
+				if(measureSample) {
+					coordMap.put("sample", colorCoord);
 				} else {
 					coordMap.put("standard", colorCoord);
 				}
@@ -144,25 +158,12 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 				
 				sessionMap.put(reqGuid, reqObj);
 				
-				if(compare) {
+				if(measureSample) {
 					return RESULT;
 				} else {
 					return SAMPLE;
 				}
 			}
-			
-			if (colorCoord != null) {
-				rgbHex = colorCoord.getRgbHex();
-				
-				CdsColorMast closestSwColor = colorService.findClosestSwColorFromCoord(colorCoord);	
-				if (closestSwColor != null) {
-					reqObj.setClosestSwColorName(closestSwColor.getColorName());
-					reqObj.setClosestSwColorId(closestSwColor.getColorId());
-				}
-			}
-			
-			reqObj.setRgbHex(rgbHex);
-			reqObj.setCurveArray(curveArray);
 			
 			if(closestColors) {
 				Map<String, ColorCoordinates> coordMap = new HashMap<>();
@@ -215,11 +216,11 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	public String measure() {
 
 		 try {
-			 if(measure || closestColors) {
+			 if(compareColors || closestColors) {
 				 return COLOREYE_UTIL;
 			 }
 			 
-			 if(compare) {
+			 if(measureSample) {
 				 return SAMPLE;
 			 }
 			 
@@ -296,6 +297,22 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		this.extBases = Encode.forHtml(extBases);
 	}
 
+	public boolean isMeasureStandard() {
+		return measureStandard;
+	}
+
+	public void setMeasureStandard(boolean measureStandard) {
+		this.measureStandard = measureStandard;
+	}
+
+	public boolean isMeasureSample() {
+		return measureSample;
+	}
+
+	public void setMeasureSample(boolean measureSample) {
+		this.measureSample = measureSample;
+	}
+
 	public String getIntBases() {
 		return intBases;
 	}
@@ -304,28 +321,20 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 		this.intBases = Encode.forHtml(intBases);
 	}
 
-	public boolean isMeasure() {
-		return measure;
-	}
-
-	public void setMeasure(boolean measure) {
-		this.measure = measure;
-	}
-
-	public boolean isCompare() {
-		return compare;
-	}
-
-	public void setCompare(boolean compare) {
-		this.compare = compare;
-	}
-
 	public boolean isClosestColors() {
 		return closestColors;
 	}
 
 	public void setClosestColors(boolean closestColors) {
 		this.closestColors = closestColors;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 
 }

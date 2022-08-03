@@ -18,17 +18,17 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 	static Logger logger = LogManager.getLogger(ProcessCompareColorsAction.class);
 	private transient Map<String, Object> sessionMap;
 	private String reqGuid;
-	private boolean compare;
+	private boolean measureSample;
 	private Map<String, Double> compareResults;
 	private transient ColorDifference colorDiff;
+	private boolean compareColors;
 	
 	@Autowired
 	private transient ColorService colorService;
 	
 	public String display() {
 		try {
-			setCompare(true);
-			
+			setMeasureSample(true);
 			return SUCCESS;
 		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
@@ -42,7 +42,7 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			compareResults = new HashMap<>();
 			
-			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("trial")));
+			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {
@@ -71,12 +71,12 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 		this.reqGuid = reqGuid;
 	}
 
-	public boolean isCompare() {
-		return compare;
+	public boolean isMeasureSample() {
+		return measureSample;
 	}
 
-	public void setCompare(boolean compare) {
-		this.compare = compare;
+	public void setMeasureSample(boolean measureSample) {
+		this.measureSample = measureSample;
 	}
 
 	public Map<String, Double> getCompareResults() {
@@ -93,5 +93,13 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 
 	public void setColorDiff(ColorDifference colorDiff) {
 		this.colorDiff = colorDiff;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 }
