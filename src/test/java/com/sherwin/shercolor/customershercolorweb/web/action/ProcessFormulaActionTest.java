@@ -165,7 +165,35 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 			e.printStackTrace(pw);
 			System.out.println(sw.toString());
 		}
-	}	
+	}
+	
+	@Test
+	public void testPrintActionNoFormulaOnLabel() {
+		ActionProxy proxy = getActionProxy("/formulaUserPrintActionNoFormula");
+		target = (ProcessFormulaAction) proxy.getAction();
+		
+		target.setReqGuid("123456789");
+		target.setAccountIsSwStore(true);
+		target.setPrintLabelType("storeLabel");
+		target.setPrintOrientation("PORTRAIT");
+		target.setPrintLabelType("");
+		target.setPrintCorrectionLabel(false);
+		target.setShotList(null);
+		
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		
+		try {
+			String success = executeAction("/formulaUserPrintActionNoFormula");
+			assertNotNull(success);						
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+	}
 	
 	@Test
 	public void testDisplayAction() {
