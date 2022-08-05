@@ -19,6 +19,8 @@ $( document ).ready(function() {
 		if(typeof colorListTableVar !== 'undefined') {
 			$('#colorListTable').DataTable().clear();
 			$('#colorListTable').DataTable().destroy();
+		} else {
+			$('#colorListTableDiv').append('<table id="colorListTable" class="table center table-striped table-bordered w-auto"></table>');
 		}
 		
 		if($('#loadingMsg').is(':hidden')) {
@@ -72,6 +74,8 @@ $( document ).ready(function() {
 		if(typeof colorListTableVar !== 'undefined') {
 			$('#colorListTable').DataTable().clear();
 			$('#colorListTable').DataTable().destroy();
+		} else {
+			$('#colorListTableDiv').append('<table id="colorListTable" class="table center table-striped table-bordered w-auto"></table>');
 		}
 		
 		if($('#loadingMsg').is(':hidden')) {
