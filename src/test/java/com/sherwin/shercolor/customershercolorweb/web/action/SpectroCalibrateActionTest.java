@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,38 +19,32 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
-public class CompareColorsActionTest extends StrutsSpringJUnit4TestCase<CompareColorsAction> {
+public class SpectroCalibrateActionTest extends StrutsSpringJUnit4TestCase<SpectroCalibrateAction> {
 	
-	CompareColorsAction target;
+	SpectroCalibrateAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
-
+	
 	@Test
-	public void testCompareColors() {
+	public void testSpectroCalibrateAction_measureStandardRedirect_success() {
 		reqObj.setCustomerID("TEST");
 		
 		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("measureStandard","true");
+		request.setParameter("compareColors","true");
 		
-		//actionproxy is being used for this particular test because
-		//the success result is a redirectAction. executeAction("/action")
-		//will return a 302 error and throw a null pointer exception
-		ActionProxy proxy = getActionProxy("/spectroCompareColorsAction");
+		ActionProxy proxy = getActionProxy("/spectroCalibrateAction");
         assertNotNull(proxy);
         
-        //this isn't necessary since none of the action properties need set
-        //but will add it for reference
-        target = (CompareColorsAction) proxy.getAction();
-
+        target = (SpectroCalibrateAction) proxy.getAction();
+        
         Map<String, Object> sessionMap = new HashMap<>();
         sessionMap.put(reqGuid, reqObj);
         
-        //this is necessary for keeping login interceptor happy!
-        //setting the request object in the http session does not work
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
-        
+		
 		try {
 			String result = proxy.execute();
-			//System.out.println("CompareColorsAction proxy.execute result: " + result);
 			
 			assertEquals(Action.SUCCESS, result);
 		} catch (Exception e) {

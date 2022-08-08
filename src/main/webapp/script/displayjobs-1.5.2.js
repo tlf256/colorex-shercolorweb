@@ -142,8 +142,6 @@ $(document).ready(function() {
     // display the job search filter modal unless matchStandard is true
     // and in this case the jobs have already been filtered
     if(matchStandard != null && matchStandard == "true"){
-    	//$('#mainForm').attr('action', 'selectColorMatchAction');
-    	//$('#title').text(i18n['compareColors.chooseFirstSample']);
     	$('#searchmodal').modal('hide');
     	newSearchBtn.disable();
     }

@@ -19,7 +19,6 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 	private transient Map<String, Object> sessionMap;
 	private String reqGuid;
 	private boolean measureSample;
-	private Map<String, Double> compareResults;
 	private transient ColorDifference colorDiff;
 	private boolean compareColors;
 	
@@ -40,7 +39,6 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 	public String execute() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			compareResults = new HashMap<>();
 			
 			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
 			
@@ -77,14 +75,6 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 
 	public void setMeasureSample(boolean measureSample) {
 		this.measureSample = measureSample;
-	}
-
-	public Map<String, Double> getCompareResults() {
-		return compareResults;
-	}
-
-	public void setCompareResults(Map<String, Double> compareResults) {
-		this.compareResults = compareResults;
 	}
 
 	public ColorDifference getColorDiff() {

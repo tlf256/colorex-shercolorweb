@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,47 +12,43 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
-public class CompareColorsActionTest extends StrutsSpringJUnit4TestCase<CompareColorsAction> {
+public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessColorAction> {
 	
-	CompareColorsAction target;
+	ProcessColorAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
-
+	
 	@Test
-	public void testCompareColors() {
+	public void testColorUserNextAction_compareColors() {
 		reqObj.setCustomerID("TEST");
+		reqObj.setCustomerType("CUSTOMER");
 		
 		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("compareColors", "true");
 		
-		//actionproxy is being used for this particular test because
-		//the success result is a redirectAction. executeAction("/action")
-		//will return a 302 error and throw a null pointer exception
-		ActionProxy proxy = getActionProxy("/spectroCompareColorsAction");
+		ActionProxy proxy = getActionProxy("/colorUserNextAction");
         assertNotNull(proxy);
         
-        //this isn't necessary since none of the action properties need set
-        //but will add it for reference
-        target = (CompareColorsAction) proxy.getAction();
-
+        target = (ProcessColorAction) proxy.getAction();
+        target.setSelectedCoTypes("SW");
+        target.setPartialColorNameOrId("SHERWIN-WILLIAMS 6385");
+        target.setColorData("%5B%7B%22colorNumber%22%3A%226385%22%2C%22companyName%22%3A%22SHERWIN-WILLIAMS%22%2C%22label%22%3A%226385%20DOVER%20WHITE%20261-C2%22%2C%22value%22%3A%22SHERWIN-WILLIAMS%206385%22%7D%5D");        
+        
         Map<String, Object> sessionMap = new HashMap<>();
         sessionMap.put(reqGuid, reqObj);
         
-        //this is necessary for keeping login interceptor happy!
-        //setting the request object in the http session does not work
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
         
 		try {
 			String result = proxy.execute();
-			//System.out.println("CompareColorsAction proxy.execute result: " + result);
 			
-			assertEquals(Action.SUCCESS, result);
+			assertEquals("compareColors", result);
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());

@@ -399,7 +399,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				//We should have thisColor set.  Or not.  If not, throw a validation error?
 
 				List<SwMessage> errlist = colorMastService.validate(colorComp, colorID);
-				if (!errlist.isEmpty()) {
+				if (errlist.size()>0) {
 					for(SwMessage item:errlist) {
 						addFieldError("partialColorNameOrId", item.getMessage());
 					}
@@ -426,8 +426,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					primerId = thisColor.getPrimerId();
 					vinylColor = thisColor.getIsVinylSiding();
 					
-					if ((reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) && thisColor.getOldColorName() != null) {
-						addActionMessage(getText("processColorAction.oldNameAlert",new String[]{thisColor.getOldColorName(),thisColor.getColorName()}));
+					if (reqObj.getCustomerType().equals("STORE") || reqObj.getCustomerType().equals("DRAWDOWN")) {
+						if (thisColor.getOldColorName() != null ) {
+							addActionMessage(getText("processColorAction.oldNameAlert",new String[]{thisColor.getOldColorName(),thisColor.getColorName()}));
+						}
 					}
 				}
 				
