@@ -2,26 +2,23 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
-import org.apache.struts2.StrutsSpringTestCase;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.common.domain.CustWebTran;
-import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,9 +28,6 @@ public class LookupJobActionTest extends StrutsSpringJUnit4TestCase<LookupJobAct
 	LookupJobAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
-	
-	@Autowired
-	private transient TranHistoryService tranHistoryService;
 
 	@Test
 	public void testLookupJobsAction() {
@@ -87,6 +81,35 @@ public class LookupJobActionTest extends StrutsSpringJUnit4TestCase<LookupJobAct
 			String result = proxy.execute();
 			
 			assertEquals("compareColors", result);
+		} catch (Exception e) {
+			try {
+				throw(e.getCause());
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@Test
+	public void testListJobsAction_matchStandard() {
+		reqObj.setCustomerID("400000008");
+		
+		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("compareColors", "true");
+		request.setParameter("matchStandard","true");
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+        
+        try {
+        	String result = executeAction("/listJobsAction");
+			assertNotNull(result);
+			String actionGuid = (String) findValueAfterExecute("reqGuid");
+			assertEquals(actionGuid, reqGuid);
+			
+			@SuppressWarnings("unchecked")
+			List<CustWebTran> tranHistory = (List<CustWebTran>) findValueAfterExecute("tranHistory");
+			
+			assertTrue(CollectionUtils.isNotEmpty(tranHistory));
 		} catch (Exception e) {
 			try {
 				throw(e.getCause());

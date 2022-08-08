@@ -36,10 +36,47 @@ public class SpectroCalibrateActionTest extends StrutsSpringJUnit4TestCase<Spect
 		ActionProxy proxy = getActionProxy("/spectroCalibrateAction");
         assertNotNull(proxy);
         
+        Map<String, Object> sessionMap = new HashMap<>();
+        sessionMap.put(reqGuid, reqObj);
+        
         target = (SpectroCalibrateAction) proxy.getAction();
+        target.setMeasureStandard(true);
+        target.setCompareColors(true);
+        target.setSession(sessionMap);
+        
+        proxy.getInvocation().getInvocationContext().setSession(sessionMap);
+		
+		try {
+			String result = proxy.execute();
+			
+			assertEquals(Action.SUCCESS, result);
+		} catch (Exception e) {
+			try {
+				throw(e.getCause());
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@Test
+	public void testSpectroCalibrateAction_measureSampleRedirect_success() {
+		reqObj.setCustomerID("TEST");
+		
+		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("measureSample","true");
+		request.setParameter("compareColors","true");
+		
+		ActionProxy proxy = getActionProxy("/spectroCalibrateAction");
+        assertNotNull(proxy);
         
         Map<String, Object> sessionMap = new HashMap<>();
         sessionMap.put(reqGuid, reqObj);
+        
+        target = (SpectroCalibrateAction) proxy.getAction();
+        target.setMeasureSample(true);
+        target.setCompareColors(true);
+        target.setSession(sessionMap);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
 		

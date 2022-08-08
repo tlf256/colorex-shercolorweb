@@ -19,8 +19,8 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class SpectroCalibrateAction extends ActionSupport implements SessionAware, LoginRequired {
 
-	private transient ColorService colorService;
-	private transient CustomerService customerService;
+	private ColorService colorService;
+	private CustomerService customerService;
 	private transient Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(SpectroCalibrateAction.class);
