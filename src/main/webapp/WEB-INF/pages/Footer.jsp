@@ -10,9 +10,6 @@ i18n['basicFieldValidator.yourDataInputIsInvalid'] = '<s:text name="basicFieldVa
 i18n['basicFieldValidator.pleaseEnterData'] = '<s:text name="basicFieldValidator.pleaseEnterData"/>';
 i18n['closestColors.loadingColors'] = '<s:text name="closestColors.loadingColors"/>';
 i18n['closestColors.noColorsFound'] = '<s:text name="closestColors.noColorsFound"/>';
-i18n['compareColors.chooseFirstSample'] = '<s:text name="compareColors.chooseFirstSample" />';
-i18n['compareColors.measureFirstSamle'] = '<s:text name="compareColors.measureFirstSamle" />'
-i18n['compareColors.measureSecondSample'] = '<s:text name="compareColors.measureSecondSample" />'
 i18n['colorant.cannotAddOneFullQuart'] = '<s:text name="colorant.cannotAddOneFullQuart"/>';
 i18n['colorant.colorantLevelError'] = '<s:text name="colorant.colorantLevelError"/>';
 i18n['colorant.errorAddingQuart'] = '<s:text name="colorant.errorAddingQuart"/>';
@@ -60,6 +57,7 @@ i18n['global.tinterDriverBusyReinitAndRetry'] = '<s:text name="global.tinterDriv
 i18n['global.tinterError'] = '<s:text name="global.tinterError"/>';
 i18n['global.tinterProgress'] = '<s:text name="global.tinterProgress"/>';
 i18n['global.yourSessionExpiresInFiveMin'] = '<s:text name="global.yourSessionExpiresInFiveMin"/>';
+i18n['measureColor.measureColor'] = '<s:text name="measureColor.measureColor"/>';
 i18n['printer.couldNotFindDefaultPdf'] = '<s:text name="printer.couldNotFindDefaultPdf"/>';
 i18n['printer.couldNotGeneratePdf'] = '<s:text name="printer.couldNotGeneratePdf"/>';
 i18n['processProductAction.clickNext'] = '<s:text name="processProductAction.clickNext"/>'
