@@ -55,7 +55,7 @@
 				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
 					selectedValue = $("[id^=selectedCoTypes]:checked").val();
-					console.log("selected value - " + selectedValue);
+					//console.log("selected value - " + selectedValue);
 					if (selectedValue === "COMPET"){
 						$('#colorCompanies').removeClass('d-none');
 					} else {
