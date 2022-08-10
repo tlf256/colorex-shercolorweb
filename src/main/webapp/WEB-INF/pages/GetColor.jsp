@@ -122,11 +122,8 @@
 					
 					$('#colorNextForm').submit();
 					
-					//var selected = $('#existingMatch').getAttribute('selected');
-					//console.log("color match selected: " + selected);
-					
-					if($('#existingMatch').prop('checked')){
-						console.log('EXISTING_MATCH selected');
+					if(selectedValue === "EXISTING_MATCH"){
+						//console.log('EXISTING_MATCH selected');
 						var displayMessage = '<s:text name="compareColors.loadingColorMatches" />';
 						pleaseWaitModal_show(displayMessage, null);
 					}
