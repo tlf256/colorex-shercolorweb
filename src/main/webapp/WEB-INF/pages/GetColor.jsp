@@ -55,7 +55,7 @@
 				var selectedValue;
 				$("[id^=selectedCoTypes]").change(function(){
 					selectedValue = $("[id^=selectedCoTypes]:checked").val();
-					//console.log("selected value - " + selectedValue);
+					console.log("selected value - " + selectedValue);
 					if (selectedValue === "COMPET"){
 						$('#colorCompanies').removeClass('d-none');
 					} else {
@@ -302,8 +302,8 @@
 		            				</s:iterator>
 		            				<s:if test="compareColors">
 		            				  <div class="form-check">
-		            					<input class="form-check-input" type="radio" name="selectedCoTypes" value="EXISTING_MATCH" id="existingMatch" />
-		            					<label class="form-check-label font-weight-normal" for="existingMatch">
+		            					<input class="form-check-input" type="radio" name="selectedCoTypes" id="selectedCoTypes" value="EXISTING_MATCH" />
+		            					<label class="form-check-label font-weight-normal" for="selectedCoTypes">
 										   <s:text name="compareColors.existingCustomMatch"></s:text>
 										</label>
 									  </div>
