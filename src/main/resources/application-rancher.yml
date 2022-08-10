@@ -49,5 +49,5 @@ spring:
       kv:
         backend: shercolor/kv2
       kubernetes:
-        kubernetes-path: kubernetes-np-internal
-        role: k8s-np-internal-shercolor-dev
+        kubernetes-path: kubernetes-pr-internal
+        role: k8s-pr-internal-shercolor-prod

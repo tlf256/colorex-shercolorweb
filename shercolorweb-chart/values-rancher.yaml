@@ -1,5 +1,4 @@
-#podAnnotations: 
-#  enabled: true
+
 
 ingress:
   enabled: true

@@ -5,10 +5,16 @@ import java.util.Map;
 import org.apache.struts2.interceptor.SessionAware;
 import org.jfrog.artifactory.client.Artifactory;
 import org.jfrog.artifactory.client.ArtifactoryClientBuilder;
+import org.jfrog.artifactory.client.ArtifactoryRequest;
+import org.jfrog.artifactory.client.ArtifactoryResponse;
+import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.opensymphony.xwork2.ActionSupport;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +28,8 @@ public class DownloadExeAction extends ActionSupport  implements SessionAware, L
 	static Logger logger = LogManager.getLogger(DownloadExeAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
+	private String fileName="";
+	
 	private InputStream fileInputStream;
 	
 	@Value("${artifactoryToken}")
@@ -36,11 +44,34 @@ public class DownloadExeAction extends ActionSupport  implements SessionAware, L
 			        .setPassword(artifactoryToken)
 			        .build();
 			
-			fileInputStream = artifactory.repository("shercolorweb-generic-local")
-			        .download("com/sherwin/SherColorWeb/SWDHSetup.exe")
-			        .doDownload();    	
+			ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl()
+					.apiUrl("api/storage/shercolorweb-generic-local/SWDH?lastModified")
+			        .method(ArtifactoryRequest.Method.GET)
+			        .responseType(ArtifactoryRequest.ContentType.JSON);
+			ArtifactoryResponse response = artifactory.restCall(repositoryRequest);	
 			
-			return SUCCESS;
+			if (response.isSuccessResponse()) {
+				String rawBody = response.getRawBody();
+				JsonObject obj = JsonParser.parseString(rawBody).getAsJsonObject();
+				String uri = obj.get("uri").toString();
+				String separator = "SWDH/";
+				int sepPos = uri.indexOf(separator);
+				fileName = uri.substring(sepPos + separator.length(), uri.length()-1);
+			} else {
+				logger.error("Unsuccessful response from Artifactory: " + response);
+				return ERROR;
+			}
+			
+			if (fileName.startsWith("SWDHSetup")) {
+				fileInputStream = artifactory.repository("shercolorweb-generic-local")
+			        .download("SWDH/" + fileName)
+			        .doDownload();
+			} else {
+				logger.error("Last modified file is not an SWDHSetup. Either remove the incorrect deployed file from Artifactory or update the prefix check");
+				return ERROR;
+			}
+			
+	    	return SUCCESS;
 		 } catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;
@@ -69,6 +100,14 @@ public class DownloadExeAction extends ActionSupport  implements SessionAware, L
 
 	public InputStream getFileInputStream() {
 		return fileInputStream;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
 

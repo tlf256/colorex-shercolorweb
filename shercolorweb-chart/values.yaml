@@ -3,14 +3,14 @@
 # Declare variables to be passed into your templates.
 appRoot: /shercolorweb
 
-replicaCount: 3
+replicaCount: 2
 
 image:
   repository: docker.artifactory.sherwin.com/colorex/shercolorweb
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   # TODO change this to a hard version
-  tag: "testauth"
+  tag: "testfiles"
   
 imagePullSecrets: []
 
@@ -43,7 +43,10 @@ service:
     enabled: false
 
 secret:
-  enabled: false    
+  enabled: false  
+
+probes:
+  enabled: true    
 
 ingress:
   enabled: true

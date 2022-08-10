@@ -948,7 +948,7 @@
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>
 			  	<param name="inputName">fileInputStream</param>
-			  	<param name="contentDisposition">attachment;filename="SWDHSetup.exe"</param>
+			  	<param name="contentDisposition">attachment;filename=%{fileName}</param>
 	  			<param name="bufferSize">1024</param>
 			</result>
 		</action>
@@ -961,7 +961,7 @@
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>
 			  	<param name="inputName">fileInputStream</param>
-			  	<param name="contentDisposition">attachment;filename=%{pdfFile}</param>
+			  	<param name="contentDisposition">attachment;filename=%{fileName}</param>
 	  			<param name="bufferSize">1024</param>
 			</result>
 		</action>
