@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -64,6 +65,9 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 	public void testColorUserNextAction_compareColors_input() {
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
+		
+		SpectroInfo spectro = new SpectroInfo();
+		reqObj.setSpectro(spectro);
 		
 		request.setParameter("reqGuid",reqGuid);
 		request.setParameter("compareColors", "true");
