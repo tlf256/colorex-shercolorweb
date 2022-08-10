@@ -394,6 +394,13 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				ColorCoordinates colorCoord = colorService.getColorCoordinates(colorComp, colorID, "D65");
 				if (colorCoord != null) {
 					rgbHex = colorCoord.getRgbHex();
+				} else if(colorCoord == null && compareColors) {
+					//no need for color validation
+					buildCompaniesList();
+					buildNatCompaniesList();
+					buildCotypesMap();
+					addActionMessage(getText("compareColors.colorCannotBeUsed"));
+					return INPUT;
 				}
 				
 				//We should have thisColor set.  Or not.  If not, throw a validation error?
@@ -433,22 +440,12 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					}
 				}
 				
-				String custID = reqObj.getCustomerID();
-				buildBaseLists(custID);
-				
-				// get closest SW color if user picked a competitive one, or comes back null if no close match found
-				if (selectedCoTypes.equalsIgnoreCase("COMPET")) {
-					closestSwColor = colorService.findClosestSwColor(thisColor.getColorComp(), thisColor.getColorId());	
-					if (closestSwColor != null) {
-						closestSwColorName = closestSwColor.getColorName();
-						closestSwColorId = closestSwColor.getColorId();
-					}
-				}
-				
+				//don't need base list or closest color for compare colors
 				if(compareColors) {
 					Map<String, ColorCoordinates> coordMap = new HashMap<>();
 					
 					coordMap.put("standard", colorCoord);
+					
 					reqObj.setColorCoordMap(coordMap);
 					reqObj.setColorComp(colorComp);
 					reqObj.setColorID(colorID);
@@ -459,7 +456,19 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					
 					return "compareColors";
 				}
-			} 
+			}
+				
+				String custID = reqObj.getCustomerID();
+				buildBaseLists(custID);
+				
+				// get closest SW color if user picked a competitive one, or comes back null if no close match found
+				if (selectedCoTypes.equalsIgnoreCase("COMPET")) {
+					closestSwColor = colorService.findClosestSwColor(thisColor.getColorComp(), thisColor.getColorId());	
+					if (closestSwColor != null) {
+						closestSwColorName = closestSwColor.getColorName();
+						closestSwColorId = closestSwColor.getColorId();
+					}
+				} 
 			
 			//set the successful information into the request object.
 			reqObj.setColorComp(colorComp);

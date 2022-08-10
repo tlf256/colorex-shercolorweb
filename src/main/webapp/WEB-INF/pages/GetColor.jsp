@@ -268,6 +268,17 @@
 				</div>
 			</div>
 			</s:else>
+			<s:if test="hasActionMessages()">
+			  <div class="row">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
+					<s:actionmessage/>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
+				</div>
+			  </div>
+			</s:if>
 <br>
 			<s:form id="colorNextForm" action="colorUserNextAction" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
 				<div class="row">
