@@ -417,6 +417,7 @@
 				switch (return_message.command) {
 					case 'PurgeAll':
 					case 'PurgeProgress':
+					case 'PurgeStatus':
 					case 'DispenseStatus':
 			    		sendingTinterCommand = "false";
 						// log tinter event...
