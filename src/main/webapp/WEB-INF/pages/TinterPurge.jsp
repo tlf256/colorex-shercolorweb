@@ -47,6 +47,7 @@
 	<s:iterator value="canList" status="i">
 	_rgbArr["<s:property value="clrntCode"/>"]="<s:property value="rgbHex"/>";  //for colored progress bars
 	</s:iterator>
+	var platform = navigator.platform;
 
     function fkey(e){
     	if(sendingTinterCommand == "true"){
@@ -132,7 +133,7 @@
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
 		if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
 			var cmd = "";
-			if(navigator.platform.startsWith("Win")){
+			if(platform.startsWith("Win")){
 				cmd = "PurgeProgress";
 			} else{
 				cmd = "PurgeStatus";
@@ -178,8 +179,9 @@
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		//$("#progress-message").text(return_message.errorMessage);
 		$("#abort-message").show();
-		if (return_message.errorMessage.indexOf("Done") == -1 && (return_message.errorNumber == 1 ||
-				 return_message.status == 1)) {
+		if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("Done") == -1 || 
+				platform.startsWith("Lin") && return_message.errorMessage.indexOf("Purge Job Complete") == -1) 
+				&& (return_message.errorNumber == 1 || return_message.status == 1)) {
 			//keep updating modal with status
 			//$("#progress-message").text(return_message.errorMessage);
 			$("#tinterProgressList").empty();
@@ -512,6 +514,8 @@
 	}
 
 	$(function(){
+		console.log("platform is: "+ platform);
+		
 		$(document).on("shown.bs.modal", "#purgeInProgressModal", function(event){
 			purge();
 	    });
