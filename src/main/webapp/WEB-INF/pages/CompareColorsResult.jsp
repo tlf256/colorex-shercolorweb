@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
- 
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +20,6 @@
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/CompareColorsResults.js"></script>
 		<style>
 		
 		</style>
@@ -34,30 +33,46 @@
 		<s:include value="Header.jsp"></s:include>
 		
 		<div class="container-fluid">
-			<div class="row mt-4">
-				<div class="col-sm-1"></div>
-				<div class="col-sm-10"><h3><s:text name="compareColorsResult.colorComparisonResults"/></h3></div>
-				<div class="col-sm-1"></div>
+			<div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light mt-4">
+					   <div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-3 col-xs-4">
+								<span class="badge badge-secondary" style="font-size: 1.2rem;"><s:text name="compareColorsResult.colorComparisonResults"/></span>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0"></div>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
 			</div>
 			<br>
-			<br>
 			<div class="row">
-				<div class="col-sm-1"></div>
-				<div class="col-sm-10">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light pb-4">
 					<p style="font-size: 1.4em;"><strong><s:text name="compareColorsResult.deltaEcolon"/></strong> 
 						<span class="badge badge-secondary" style="font-size: 1em;" id="delta-e">
 							<s:property value="getText('{0, number, #.##}', {colorDiff.deDiff})" />
 						</span>
 					</p>
 				</div>
-				<div class="col-sm-1"></div>
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
 			</div>
 			<br>
 			<br>
 			<div class="row">
-				<div class="col-sm-1"></div>
-				<div class="col-sm-10">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
 					<table id="compareResults_table" class="table table-striped table-bordered">
+					  <caption><s:text name="compareColorsResult.tableCaption"/></caption>
 						<thead>
 							<tr>
 								<th><s:text name="compareColorsResult.scale"></s:text></th>
@@ -126,28 +141,27 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="col-sm-1"></div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
 			</div>
-			<br>
 			<div class="row">
-				<div class="col-sm-1"></div>
-				<div class="col-sm-10">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
 					<strong class="" id="deMsg">
 						<s:text name="compareColorsResult.deltaEgreaterThanOneWarning"></s:text>
 					</strong>
 				</div>
-				<div class="col-sm-1"></div>
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
 			</div>
 			<br>
 			<s:form id="" action="" theme="bootstrap">
 				<div class="row">
-					<div class="col-sm-1">
+					<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 					</div>
-					<div class="col-sm-10">
+					<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
 						<s:submit class="btn btn-primary pull-right" value="%{getText('global.done')}" action="userCancelAction"/>
 					</div>
-					<div class="col-sm-1"></div>
+					<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
 				</div>
 			</s:form>
 		</div>
