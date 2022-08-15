@@ -52,11 +52,6 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 			setColorComp(reqObj.getColorComp());
 			setColorName(reqObj.getColorName());
 			setColorId(reqObj.getColorID());
-			System.out.println(colorComp);
-			System.out.println(colorId);
-			System.out.println(colorName);
-			System.out.println(rgbHexStd);
-			System.out.println(rgbHexTrl);
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {
