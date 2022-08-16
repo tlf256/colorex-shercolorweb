@@ -221,8 +221,9 @@
 					<div class="col-sm-3">
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
-						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
-						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
+						<s:hidden name="compareColors" id="compareColors" value="%{compareColors}"/>
+						<s:hidden name="measureStandard" id="measureStandard" value="%{measureStandard}"/>
+						<s:hidden name="measureSample" id="measureSample" value="%{measureSample}"/>
 						<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
 						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>

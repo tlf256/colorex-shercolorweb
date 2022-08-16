@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,6 +89,10 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private String measuredName;
 	private String locatorId;
 	private transient List<CdsColorMast> colorLookupResults;
+	private boolean measureStandard;
+	private boolean matchStandard;
+	private boolean compareColors;
+	private static final String MEASURE = "measure";
 	
 	private void buildCotypesMap() {
 		SW = getText("processColorAction.SherwinWilliams");
@@ -199,13 +204,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					} else {
 						theLabel = item.getColorId() + " " + item.getColorName() + " " +  item.getLocId();
 					}
-					//theValue = item.getColorComp() + Character.toString((char) 31) + " " + item.getColorId();
-					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
 					theValue = item.getColorComp() + " " + item.getColorId();
 				} else {
 					theLabel = item.getColorComp() + " " + item.getColorId() + " " + item.getColorName();
-					//theValue = item.getColorComp() + Character.toString((char) 31) + " " + item.getColorId();
-					//theValue = item.getColorComp() + Character.toString((char) 0) + " " + item.getColorId();
 					theValue = item.getColorComp() + " " + item.getColorId();
 				}
 				
@@ -326,7 +327,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					colorName = "COLOR";
 				}
 				colorType = "CUSTOMMATCH";
-
+				
+				if(compareColors) {
+					setMeasureStandard(true);
+					return MEASURE;
+				}
 			} else if (selectedCoTypes.equalsIgnoreCase("SAVEDMEASURE")) {
 				colorComp = "CUSTOM";
 				colorID   = "MATCH";
@@ -335,7 +340,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					colorName = "COLOR";
 				}
 				colorType = "SAVEDMEASURE";
-			} else {
+			} else if (selectedCoTypes.equalsIgnoreCase("EXISTING_MATCH")) {
+				//for compare colors only
+				setMatchStandard(true);
+				return "existingMatch";
+			}else {
 					
 				// This conditional helps prevent times where colorData doesn't get populated
 				// when the user quickly enters in a number and does a next operation before
@@ -363,7 +372,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				if (colorCoord != null) {
 					rgbHex = colorCoord.getRgbHex();
 				}
-//				setThisColor(colorMastService.read(colorComp, colorID));
 				
 				//We should have thisColor set.  Or not.  If not, throw a validation error?
 				List<SwMessage> errlist = colorMastService.validate(colorComp, colorID);
@@ -412,6 +420,21 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 						closestSwColorId = closestSwColor.getColorId();
 					}
 				}
+				
+				if(compareColors) {
+					Map<String, ColorCoordinates> coordMap = new HashMap<>();
+					
+					coordMap.put("standard", colorCoord);
+					reqObj.setColorCoordMap(coordMap);
+					reqObj.setColorComp(colorComp);
+					reqObj.setColorID(colorID);
+					reqObj.setColorName(colorName);
+					reqObj.setRgbHex(rgbHex);
+					
+					sessionMap.put(reqGuid, reqObj);
+					
+					return "compareColors";
+				}
 			} 
 			
 			//set the successful information into the request object.
@@ -434,8 +457,9 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				reqObj.setClosestSwColorId("");
 			}
 			sessionMap.put(reqGuid, reqObj);
+			
 			if (colorType.equals("CUSTOMMATCH")) {
-				return "measure";
+				return MEASURE;
 			} else if (colorType.equals("SAVEDMEASURE")) {
 				return "savedMeasure";
 			} else {
@@ -810,6 +834,30 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 	public void setMeasuredName(String measuredName) {
 		this.measuredName = measuredName;
+	}
+
+	public boolean isMeasureStandard() {
+		return measureStandard;
+	}
+
+	public void setMeasureStandard(boolean measureStandard) {
+		this.measureStandard = measureStandard;
+	}
+
+	public boolean isMatchStandard() {
+		return matchStandard;
+	}
+
+	public void setMatchStandard(boolean matchStandard) {
+		this.matchStandard = matchStandard;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 
 	public ProductService getProductService() {

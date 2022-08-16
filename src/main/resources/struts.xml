@@ -267,6 +267,11 @@
 				<param name="actionName">displayFormulaAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+			<result name="compareColors" type="redirectAction">
+				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
 		</action>
 		<action name="startNewJob" class="com.sherwin.shercolor.customershercolorweb.web.action.SelectJobAction" method="startNewJob">
 			<result name="loginRedirect" type="redirectAction">
@@ -349,10 +354,11 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">spectroCalibrateAction</param>
 				<param name="measureColor">${measureColor}</param>
-				<param name="measure">${measure}</param>
-				<param name="compare">${compare}</param>
+				<param name="measureStandard">${measureStandard}</param>
+				<param name="measureSample">${measureSample}</param>
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="closestColors">${closestColors}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 		</action>
 		<action name="spectroCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroCalibrateAction" method="display">
@@ -426,15 +432,19 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="sample" type="redirectAction">
+			<result name="getSample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="measureSample">${measureSample}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>                                                             
 			<result name="ciUtility" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<param name="measure">${measure}</param>
+				<param name="measureStandard">${measureStandard}</param>
+				<param name="measureSample">${measureSample}</param>
 				<param name="closestColors">${closestColors}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
@@ -472,12 +482,25 @@
 			<result name="measure" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<!-- <param name="measureColor">${measureColor}</param> -->
+				<param name="measureStandard">${measureStandard}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
+			<result name="compareColors" type="redirectAction">
+				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 			<result name="savedMeasure" type="redirectAction">
 				<param name="actionName">MeasureColorNextAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="measuredCurve">${measuredCurve}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
+			<result name="existingMatch" type="redirectAction">
+				<param name="actionName">listJobsAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
+				<param name="matchStandard">${matchStandard}</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
@@ -508,9 +531,10 @@
 				<param name="actionName">closestColorsDisplayAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
-			<result name="sample" type="redirectAction">
+			<result name="getSample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
 		</action>
@@ -1416,31 +1440,15 @@
 			</result>
 			<result name="success" type="json"/>
 		</action>
-		<action name="spectroCompareColorsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="display">
+		<action name="spectroCompareColorsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/CompareColors.jsp</result>
-		</action>
-		<action name="spectroCompareColorsNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="execute">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="match" type="redirectAction">
-				<param name="actionName">listJobsAction</param>
-				<param name="reqGuid">${reqGuid}</param>
-				<param name="match">${match}</param>
-			</result>
-			<result name="measure" type="redirectAction">
-				<param name="actionName">MeasureColorAction</param>
-				<param name="reqGuid">${reqGuid}</param>
-				<param name="measure">${measure}</param>
 			</result>
 			<result name="success" type="redirectAction">
-				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="actionName">displayColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
-			<result name="input">/WEB-INF/pages/CompareColors.jsp</result>
 		</action>
 		<action name="selectColorMatchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsCustomMatchAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -1458,7 +1466,8 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<param name="compare">${compare}</param>
+				<param name="measureSample">${measureSample}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 		</action>
 		<action name="spectroCompareColorsResultAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCompareColorsAction" method="execute">
