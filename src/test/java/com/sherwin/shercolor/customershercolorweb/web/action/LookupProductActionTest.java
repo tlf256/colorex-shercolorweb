@@ -13,15 +13,14 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
-public class LookupProductActionTest extends StrutsSpringJUnit4TestCase<LookupJobAction> {
+public class LookupProductActionTest extends StrutsSpringJUnit4TestCase<ProcessProductLookupAction> {
 
-	LookupJobAction target;
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
 
 	@Test
-	public void testLookupJobsAction() {
-		System.out.println("Start testLookupJobsAction");
+	public void testLookupProductAction() {
+		System.out.println("Start testLookupProductAction");
 		reqObj.setCustomerID("CCF");
 		reqObj.setExtBases("ULTRADEEP,ACCENT,CHALKY UD");
 		reqObj.setIntBases("ULTRADEEP,DEEPTONE,ACCENT");
@@ -39,12 +38,12 @@ public class LookupProductActionTest extends StrutsSpringJUnit4TestCase<LookupJo
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		System.out.println("End testLookupJobsAction");
+		System.out.println("End testLookupProductAction");
 	}
 	
 	@Test
-	public void testLookupJobsActionNullExt() {
-		System.out.println("Start testLookupJobsActionNullExt");
+	public void testLookupProductActionNullExt() {
+		System.out.println("Start testLookupProductActionNullExt");
 		reqObj.setCustomerID("CCF");
 		reqObj.setExtBases(null);
 		reqObj.setIntBases("ULTRADEEP,DEEPTONE,ACCENT");
@@ -62,12 +61,12 @@ public class LookupProductActionTest extends StrutsSpringJUnit4TestCase<LookupJo
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		System.out.println("End testLookupJobsActionNullExt");
+		System.out.println("End testLookupProductActionNullExt");
 	}
 	
 	@Test
-	public void testLookupJobsActionNullInt() {
-		System.out.println("Start testLookupJobsActionNullInt");
+	public void testLookupProductActionNullInt() {
+		System.out.println("Start testLookupProductActionNullInt");
 		reqObj.setCustomerID("CCF");
 		reqObj.setExtBases("ULTRADEEP,ACCENT,CHALKY UD");
 		reqObj.setIntBases(null);
@@ -85,6 +84,6 @@ public class LookupProductActionTest extends StrutsSpringJUnit4TestCase<LookupJo
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		System.out.println("End testLookupJobsActionNullInt");
+		System.out.println("End testLookupProductActionNullInt");
 	}
 }
