@@ -145,7 +145,7 @@
 			      		<div class="col-sm-1"></div>
 			      	</div>
 			      	<div class="row mt-4" style="display: flex; justify-content: center;">
-				      	<table id="productLookupTable" class="table table-striped table-bordered hover" style="width:100%; cursor:pointer;">
+				      	<table id="productLookupTable" aria-describedby="Product Lookup Table" class="table table-striped table-bordered hover" style="width:100%; cursor:pointer;">
 							<thead>
 								<tr class="headerRow">
 									<th><s:text name="productLookup.salesNbr"/></th>

@@ -33,7 +33,6 @@ public class ProcessProductLookupAction extends ActionSupport implements Session
 			sessionMap.put(reqGuid, reqObj);
 		    return SUCCESS;
 		} catch (RuntimeException e) {
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ERROR;
 		}
