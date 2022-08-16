@@ -15,15 +15,15 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class ProcessProductLookupAction extends ActionSupport implements SessionAware, LoginRequired  {
 
-	private Map<String, Object> sessionMap;
+	private transient Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessProductLookupAction.class);
 	private String reqGuid;
 
 	@Autowired
-	private ProductService productService;
+	private transient ProductService productService;
 
-	private List<CdsProd> productList = new ArrayList<>();
+	private transient List<CdsProd> productList = new ArrayList<>();
 
 	public String loadProductLookup() {
 		try {
