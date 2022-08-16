@@ -122,7 +122,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
-		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("reqGuid",reqObj.getGuid());
 		request.setParameter("compareColors", "true");
 		
 		ActionProxy proxy = getActionProxy("/colorUserNextAction");
@@ -135,7 +135,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
         target.setColorData("%5B%7B%22colorNumber%22%3A%226385%22%2C%22companyName%22%3A%22SHERWIN-WILLIAMS%22%2C%22label%22%3A%226385%20DOVER%20WHITE%20261-C2%22%2C%22value%22%3A%22SHERWIN-WILLIAMS%206385%22%7D%5D");        
         
         Map<String, Object> sessionMap = new HashMap<>();
-        sessionMap.put(reqGuid, reqObj);
+        sessionMap.put(reqObj.getGuid(), reqObj);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
         
@@ -290,7 +290,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
-		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("reqGuid",reqObj.getGuid());
 		request.setParameter("compareColors", "true");
 		
 		ActionProxy proxy = getActionProxy("/colorUserNextAction");
@@ -302,7 +302,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
         target.setPartialColorNameOrId("MATCH");
         
         Map<String, Object> sessionMap = new HashMap<>();
-        sessionMap.put(reqGuid, reqObj);
+        sessionMap.put(reqObj.getGuid(), reqObj);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
         
@@ -388,7 +388,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
-		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("reqGuid",reqObj.getGuid());
 		request.setParameter("compareColors", "true");
 		
 		ActionProxy proxy = getActionProxy("/colorUserNextAction");
@@ -400,7 +400,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
         target.setPartialColorNameOrId("MATCH");
         
         Map<String, Object> sessionMap = new HashMap<>();
-        sessionMap.put(reqGuid, reqObj);
+        sessionMap.put(reqObj.getGuid(), reqObj);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
         

@@ -138,7 +138,7 @@ function createColorSearchResultTable(result) {
 			var selectedColor = colorListTableVar.row(this).data().colorId;
 			log("Color clicked is " + selectedColor);
 			$('#partialColorNameOrId').val(selectedColor);
-			$('#colorUserNextActionForm').submit();
+			$('#colorNextForm').submit();
 		});
 			
 	} else {
@@ -169,7 +169,7 @@ function createColorSearchResultTable(result) {
 			log("Company/Color clicked is " + selectedCompany + "/" + selectedColor);
 			$("#selectedCompany").attr("value",encodeURIComponent(selectedCompany));
 			$('#partialColorNameOrId').val(selectedColor);
-			$('#colorUserNextActionForm').submit();
+			$('#colorNextForm').submit();
 		});
 	}
 	
