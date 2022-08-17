@@ -62,7 +62,7 @@ public class ProcessCompareColorsActionTest extends StrutsSpringJUnit4TestCase<P
         
         try {
 			String result = proxy.execute();
-			
+
 			assertEquals(Action.SUCCESS, result);
 		} catch (Exception e) {
 			try {
@@ -105,5 +105,52 @@ public class ProcessCompareColorsActionTest extends StrutsSpringJUnit4TestCase<P
 			}
 		}
 	}
+	
+	@Test
+	public void testNameCompIDSpectroCompareColorsResultAction() {
+		reqObj.setCustomerID("TEST");
+
+		Map<String, ColorCoordinates> coordMap = new HashMap<>();
+		ColorCoordinates colorCoord = service.getColorCoordinates(curve, "D65");
+
+		coordMap.put("standard", colorCoord);
+		coordMap.put("sample", colorCoord);
+		reqObj.setColorCoordMap(coordMap);
+		reqObj.setColorID("1001");
+		reqObj.setColorComp("SW");
+		reqObj.setColorName("Test Silver");
+		
+		request.setParameter("reqGuid",reqGuid);
+		request.setParameter("compareColors", "true");
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		try {
+			executeAction("/spectroCompareColorsResultAction");
+			String actionGuid = (String) findValueAfterExecute("reqGuid");
+			assertEquals(actionGuid, reqGuid);
+			
+			String ID = (String) findValueAfterExecute("colorId");
+			String comp = (String) findValueAfterExecute("colorComp");
+			String name = (String) findValueAfterExecute("colorName");
+			String Trl = (String) findValueAfterExecute("rgbHexTrl");
+			String Std = (String) findValueAfterExecute("rgbHexStd");
+			Map<String, Object> map = (Map<String, Object>) findValueAfterExecute("sessionMap");
+
+			assertTrue(ID != null & comp != null & name != null & Trl != null & Std != null & map != null);
+		} catch (Exception e) {
+			try {
+				throw(e.getCause());
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	//testDisplayColorAction()
+	
+	//testMeasureColorAction()
+	
+	//testListJobsAction()
 
 }

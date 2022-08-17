@@ -46,8 +46,8 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
-			rgbHexStd = reqObj.getColorCoordMap().get("standard").getRgbHex();
-			rgbHexTrl = reqObj.getColorCoordMap().get("sample").getRgbHex();
+			setRgbHexStd(reqObj.getColorCoordMap().get("standard").getRgbHex());
+			setRgbHexTrl(reqObj.getColorCoordMap().get("sample").getRgbHex());
 
 			setColorComp(reqObj.getColorComp());
 			setColorName(reqObj.getColorName());
