@@ -146,11 +146,5 @@ public class ProcessCompareColorsActionTest extends StrutsSpringJUnit4TestCase<P
 			}
 		}
 	}
-	
-	//testDisplayColorAction()
-	
-	//testMeasureColorAction()
-	
-	//testListJobsAction()
 
 }
