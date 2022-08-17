@@ -74,7 +74,13 @@
 		keys = Object.keys(return_message.statusMessages);
 		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
-				var colorList = item.message.split(" ");
+				var colorList;
+				platform.startsWith("Win"){
+					colorList = item.message.split(" ");
+				} else {
+					colorList = item.message.split("|");
+				}
+				
 				var color= colorList[0];
 				var pct = colorList[1];
 				//fix bug where we are done, but not all pumps report as 100%
