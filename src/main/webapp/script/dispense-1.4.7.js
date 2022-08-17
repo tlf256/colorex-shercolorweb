@@ -7,6 +7,7 @@ var _rgbArr = [];
 
 var shotList = [];
 var processingDispense;
+var platform = navigator.platform;
 $(function(){ // on ready
 	//capture F4 key to abort
 	jQuery(document).on("keydown",fkey);
@@ -43,7 +44,8 @@ function buildProgressBars(return_message) {
 			var color = colorList[0];
 			var pct = colorList[1];
 			//fix bug where we are done, but not all pumps report as 100%
-			if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
+			if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 1 || platform.startsWith("Lin") &&
+				return_message.errorMessage.indexOf("Dispense Job Complete") > 1) && (return_message.errorNumber == 0 &&
 				return_message.status == 0)) {
 				pct = "100%";
 			}
@@ -154,7 +156,8 @@ function dispenseProgressResp(return_message) {
 	//$("#progress-message").text(return_message.errorMessage);
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
-	if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
+	if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") == -1 || platform.startsWith("Lin") &&
+		return_message.errorMessage.indexOf("Dispense Job Complete") == -1) && (return_message.errorNumber == 1 ||
 		return_message.status == 1)) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
@@ -425,6 +428,7 @@ function RecdMessage() {
 				switch (return_message.command) {
 					case 'Dispense':
 					case 'DispenseProgress':
+					case 'DispenseStatus':
 					case 'Abort':
 						$("#dispenseStatus").text('');
 						if (tinterModel != null && tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
