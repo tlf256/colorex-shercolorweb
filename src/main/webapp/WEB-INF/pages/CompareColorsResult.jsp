@@ -85,22 +85,21 @@
 				</div>
 			</div>
 			<br>
-	<!-- new stuff start -->
-	
+
 				<div class="row">
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
 				</div>
 				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
 					<div class="card card-body bg-light pb-4">
-	
+
 				<div class="row">
 				<div class="col-sm-1"></div>
 					<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
-						<p style="font-size: 1.4em;"><strong><s:text name="Standard" /></strong>
+						<p style="font-size: 1.4em;"><strong><s:text name="compareColorsResult.standard" /></strong>
 					</div>
 				<div class="col-sm-1"></div>
 				<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
-						<p style="font-size: 1.4em;"><strong><s:text name="Sample"/></strong>
+						<p style="font-size: 1.4em;"><strong><s:text name="compareColorsResult.sample"/></strong>
 					</div>
 			</div>
 			<div class="row">
@@ -120,7 +119,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- new stuff end -->			
+			
 			<br>
 			<div class="row">
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
@@ -214,7 +213,7 @@
 					</div>
 					<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
 						<s:submit class="btn btn-primary pull-right" value="%{getText('global.done')}" action="userCancelAction"/>
-						<s:submit class="btn btn-secondary pull-left" value="Retry" action="spectroCompareColorsAction"/>
+						<s:submit class="btn btn-secondary pull-left" value="%{getText('compareColorsResult.retry')}" action="spectroCompareColorsAction"/>
 					</div>
 					<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
 				</div>

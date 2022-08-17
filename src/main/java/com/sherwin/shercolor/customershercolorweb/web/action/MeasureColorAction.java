@@ -49,9 +49,6 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private boolean measureSample;
 	private boolean closestColors;
 	private boolean compareColors;
-	private String colorId;
-	private String colorName;
-	private String colorComp;
 	
 	private static final String SAMPLE = "getSample";
 	private static final String RESULT = "result";
@@ -338,29 +335,6 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 
 	public void setCompareColors(boolean compareColors) {
 		this.compareColors = compareColors;
-	}
-	public String getColorId() {
-		return colorId;
-	}
-
-	public void setColorId(String colorId) {
-		this.colorId = colorId;
-	}
-
-	public String getColorName() {
-		return colorName;
-	}
-
-	public void setColorName(String colorName) {
-		this.colorName = colorName;
-	}
-
-	public String getColorComp() {
-		return colorComp;
-	}
-
-	public void setColorComp(String colorComp) {
-		this.colorComp = colorComp;
 	}
 
 }

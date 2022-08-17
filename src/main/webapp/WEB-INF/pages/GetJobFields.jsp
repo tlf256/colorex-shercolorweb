@@ -30,7 +30,6 @@
 </head>
 
 <body>
-ratio
 	<!-- including Header -->
 	<s:include value="Header.jsp"></s:include>
 
