@@ -31,20 +31,26 @@
 		}
 		</style>
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function(){
-				$('#cmpColorsNxt').on('click', function(){
+		$(document).ready(function(){
+			$('#cmpColorsNxt').on('click', function(){
+				
+				var selectedValue;
+				$("[id^=selectedCoTypes]").change(function(){
+					selectedValue = $("[id^=selectedCoTypes]:checked").val();
+					console.log("selected value - " + selectedValue);
 					
-					$('#compareColorsForm').submit();
-					
-					var selected = $('#existingSrc').getAttribute('selected');
-					console.log("color match selected: " + selected);
-					
-					if(selected == "true"){
-						var displayMessage = i18n['closestColors.loadingColorMatches'];
-						pleaseWaitModal_show(displayMessage, null);
-					}
-				});
+				
+				$('#compareColorsForm').submit();
+				
+				var selected = $('#existingSrc').getAttribute('selected');
+				console.log("color match selected: " + selected);
+				
+				if(selected == "true"){
+					var displayMessage = i18n['closestColors.loadingColorMatches'];
+					pleaseWaitModal_show(displayMessage, null);
+				}
 			});
+		});
 		</script>
 	</head>
 	
