@@ -15,8 +15,8 @@
 			</Policies>
 			<DefaultRolloverStrategy max="10"/>
 		</RollingFile>
-		<Console name="Json">
-			<JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+		<Console name="Json" target="SYSTEM_OUT">
+			<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
 		</Console>
 	</Appenders>
 	<Loggers>
