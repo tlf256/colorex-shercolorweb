@@ -32,8 +32,16 @@ i18n['displayJobs.noJobsAvailable'] = '<s:text name="displayJobs.noJobsAvailable
 i18n['displayJobs.pleaseFixErrors'] = '<s:text name="displayJobs.pleaseFixErrors"/>';
 i18n['displayStoredMeasurements.noMeasurementsAvailable'] = '<s:text name="displayStoredMeasurements.noMeasurementsAvailable"/>';
 i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionExpiredClickLogin"/>';
+i18n['getColor.noColorsAvailable'] = '<s:text name="getColor.noColorsAvailable"/>';
+i18n['getColor.locatorId'] = '<s:text name="getColor.locatorId"/>';
+i18n['getColor.palette'] = '<s:text name="getColor.palette"/>';
+i18n['getColor.swatchId'] =	'<s:text name="getColor.swatchId"/>';
+i18n['getColor.primerId'] = '<s:text name="getColor.primerId"/>';
+i18n['getColor.companyName'] = '<s:text name="getColor.companyName"/>';
 i18n['global.colorantLevelCheckInProgress'] = '<s:text name="global.colorantLevelCheckInProgress"/>';
 i18n['global.colorantLevelTooLow'] = '<s:text name="global.colorantLevelTooLow"/>';
+i18n['global.colorId'] = '<s:text name="global.colorId"/>';
+i18n['global.colorName'] = '<s:text name="global.colorName"/>';
 i18n['global.containerFull'] = '<s:text name="global.containerFull"/>';
 i18n['global.cookieBanner'] = '<s:text name="global.cookieBanner"/>';
 i18n['global.dispenseError'] = '<s:text name="global.dispenseError"/>';
@@ -41,6 +49,7 @@ i18n['global.dispenseInProgress'] = '<s:text name="global.dispenseInProgress"/>'
 i18n['global.extend'] = '<s:text name="global.extend"/>';
 i18n['global.failure'] = '<s:text name="global.failure"/>';
 i18n['global.failureColon'] = '<s:text name="global.failureColon"/>';
+i18n['global.loading'] = '<s:text name="global.loading"/>';
 i18n['global.login'] = '<s:text name="global.login"/>';
 i18n['global.lastDispense'] = '<s:text name="global.lastDispense"/>';
 i18n['global.lastDispenseComplete'] = '<s:text name="global.lastDispenseComplete"/>';
@@ -161,3 +170,4 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
   		</p>
 	</div>
 </div>
+
