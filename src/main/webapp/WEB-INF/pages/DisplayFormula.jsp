@@ -1448,18 +1448,6 @@ function ParsePrintMessage() {
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
 			</s:if>
-			<div class="row mt-3">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-							<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-							<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
-							<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
-						</div>
-						<br>
-				<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-			</div>
 			<br>
 			
 			
@@ -1477,7 +1465,7 @@ function ParsePrintMessage() {
 				<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
 			</div>
 			
-							
+	
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
@@ -1576,28 +1564,38 @@ function ParsePrintMessage() {
 				
 				</div>
 			</div>
-			<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
-			<br>
-
-			<s:if test="%{siteHasTinter==true}">
+			
+							<!-- new stuff -->
+							<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+						<div class="col-lg-1 col-md-2 col-sm-3 col-xs-4">
+							<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
+						</div>
+						<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
+							<s:textfield id="qtyOrderedTextField" autofocus="autofocus" onblur="validateQtyOrdered()"/>
+							<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
+						</div>
+						<br>
+				
+				
+							<s:if test="%{siteHasTinter==true}">
 				<div class="row" id="dispenseInfoRow">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+					
+					<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
 						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
 						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
 					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
-				<div class="row" id="remainingInfoRow">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+					<div class="col-lg-12 col-md-2 col-sm-1 col-xs-0">
+									<div class="row" id="remainingInfoRow">
+					<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
 						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyRemaining"></span>
 					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+					</div>
 				</div>
 			</s:if>
 			<s:else>
@@ -1612,6 +1610,12 @@ function ParsePrintMessage() {
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
 			</s:else>
+				<br>
+			</div>
+				
+				<!-- end -->
+
+
 			<br>
 			
 			<s:if test = "%{accountIsDrawdownCenter==true}">
@@ -1622,7 +1626,7 @@ function ParsePrintMessage() {
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:if test = "%{sessionHasTinter}">
-						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
+						<s:submit cssClass="btn btn-primary" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
 							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
 						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
