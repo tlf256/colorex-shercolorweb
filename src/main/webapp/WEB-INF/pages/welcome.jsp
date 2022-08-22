@@ -22,7 +22,7 @@
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/spectro-1.5.2.js"></script>
 	
 	<style>
 		.dropdown-submenu {
@@ -867,6 +867,8 @@
 				}
 				
 				if(isSpectroJSON){
+					var myGuid = $("#startNewJob_reqGuid").val();
+		  		  	sendSpectroEvent(myGuid, spectro_return_message);
 					switch (spectro_return_message.command) {
 						case 'GetCalStatusMinUntilCalExpiration':
 							if (spectro_return_message.errorMessage!="") {

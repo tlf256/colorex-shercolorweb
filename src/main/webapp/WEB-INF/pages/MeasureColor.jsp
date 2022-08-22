@@ -21,11 +21,13 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
-		<script type="text/javascript" src="script/spectro.js"></script>
+		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
 		<script type="text/javascript" src="script/WSWrapper.js"></script>
 		<script>
 
 		  	var ws_coloreye = new WSWrapper('coloreye');
+		    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
+		    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
 		  	
 		  	function InitializeMeasureScreen() {
 	  		    console.log("InitializeMeasureScreen");
@@ -34,8 +36,7 @@
 		  	
 	  	  	function GetCalStatusMinUntilCalExpiration() {
 	  		  	console.log("GetCalStatusMinUntilCalExpiration")
-  	    		var clreyemodel = $('#spectroModel').val();
-				var spectromessage = new SpectroMessage('GetCalStatusMinUntilCalExpiration',clreyemodel);
+				var spectromessage = new SpectroMessage('GetCalStatusMinUntilCalExpiration',clreyemodel,clreyeserial);
 			    var json = JSON.stringify(spectromessage);
 			    ws_coloreye.send(json);
 	  		}
@@ -43,8 +44,7 @@
 	  	  	function SWMeasure() {
 	  		  	console.log("SWMeasure")
 	  		  	checkWsIsReady();
-  	    		var clreyemodel = $('#spectroModel').val();
-				var spectromessage = new SpectroMessage('SWMeasure',clreyemodel);
+	  			var spectromessage = new SpectroMessage('SWMeasure',clreyemodel,clreyeserial);
 			    var json = JSON.stringify(spectromessage);
 			    ws_coloreye.send(json);
 		  		$(".calibrate").hide();
@@ -107,12 +107,15 @@
 	  		  	//parse the spectro
 	  		  	console.log("Message is " + ws_coloreye.wsmsg);
 	  		  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
+	  		  	
 	  		  	if (ws_coloreye.wserrormsg != "") {
 		  		  	$("#errmsg").text('<s:text name="global.webSocketErrorPlusErr"><s:param>' + ws_coloreye.wserrormsg + '</s:param></s:text>');
 	  		  		DisplayError();
 	  		  		return;
 	  		  	}
-	  			var return_message=JSON.parse(ws_coloreye.wsmsg);
+	  		  	var return_message=JSON.parse(ws_coloreye.wsmsg);
+	  		  	var myGuid = "${reqGuid}";
+	  		  	sendSpectroEvent(myGuid, return_message);
 	  			switch (return_message.command) {
 	  				case 'GetCalStatusMinUntilCalExpiration':
 	  					if (return_message.responseMessage.match(/^OK/)) {

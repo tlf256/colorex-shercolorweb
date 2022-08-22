@@ -21,12 +21,14 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
-<script type="text/javascript" src="script/spectro.js"></script>
+<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
 <script type="text/javascript" src="script/WSWrapper.js"></script>
 <script>
 			var calibrate_step = "start";		
 		  	var ws_coloreye = new WSWrapper('coloreye');
-		  	
+		    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
+		    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
+		    
 		  	function InitializeConfigureScreen() {
 	  		    console.log("InitializeConfigureScreen");
 	  		  	var y = document.getElementById("nextButton").style.display = "none";
@@ -73,6 +75,7 @@
 		    	console.log("ReadConfig ws_coloreye.context is " + ws_coloreye.deviceContext);
 		    	
 				var spectromessage = new SpectroMessage(cmd,getCheckedButton("selectedSpectroTypes"), "");
+
 				spectromessage.messageName = "SpectroMessage";
 
 				spectromessage.spectroConfig.port  = " USB";
@@ -136,6 +139,8 @@
 	  			  
 	  		  } else {
 	  			var return_message=JSON.parse(ws_coloreye.wsmsg);
+	  			var myGuid = "${reqGuid}";
+	  		  	sendSpectroEvent(myGuid, return_message);
 	  			switch (return_message.command) {
 	  				case 'Configure':
 	  					if (return_message.errorMessage!="") {
