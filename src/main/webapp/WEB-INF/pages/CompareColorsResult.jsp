@@ -21,7 +21,25 @@
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<style>
-		
+		.sw-bg-main {
+	            background-color: ${sessionScope[thisGuid].rgbHex};
+	        }
+		.chip {
+			  position: relative;
+			  display: -webkit-box;
+			  display: -ms-flexbox;
+			  display: flex;
+			  -webkit-box-orient: vertical;
+			  -webkit-box-direction: normal;
+			  -ms-flex-direction: column;
+			  flex-direction: column;
+			  min-width: 10px;
+			  min-height: 10px;
+			  height: 52px;
+			  width: 52px;
+			  border-radius: 50%;
+			  border: 1px solid rgba(0, 0, 0, 0.125);
+			}		
 		</style>
 		<script type="text/javascript" charset="utf-8">
 			
@@ -67,6 +85,41 @@
 				</div>
 			</div>
 			<br>
+
+				<div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+				</div>
+				<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+					<div class="card card-body bg-light pb-4">
+
+				<div class="row">
+				<div class="col-sm-1"></div>
+					<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
+						<p style="font-size: 1.4em;"><strong><s:text name="compareColorsResult.standard" /></strong>
+					</div>
+				<div class="col-sm-1"></div>
+				<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
+						<p style="font-size: 1.4em;"><strong><s:text name="compareColorsResult.sample"/></strong>
+					</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1"></div>
+					<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
+						<s:property value="colorId"/>
+						<s:property value="colorComp"/>
+						<s:property value="colorName"/>
+						<span class="chip mt-2" style="background: <s:property value="rgbHexStd"/>;"></span>
+					</div>
+				<div class="col-sm-1"></div>
+				<div class="col-lg-5 col-md-5 col-sm-3 col-xs-4">
+						<s:text name="closestColors.measuredColor"/>
+						<span class="chip mt-3" style="background: <s:property value="rgbHexTrl"/>;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+			
 			<br>
 			<div class="row">
 				<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
@@ -160,6 +213,7 @@
 					</div>
 					<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
 						<s:submit class="btn btn-primary pull-right" value="%{getText('global.done')}" action="userCancelAction"/>
+						<s:submit class="btn btn-secondary pull-left" value="%{getText('compareColorsResult.retry')}" action="spectroCompareColorsAction"/>
 					</div>
 					<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0"></div>
 				</div>

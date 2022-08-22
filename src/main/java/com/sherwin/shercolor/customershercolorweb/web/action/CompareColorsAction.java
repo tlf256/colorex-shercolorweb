@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 public class CompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
@@ -18,6 +19,10 @@ public class CompareColorsAction extends ActionSupport implements SessionAware, 
 	public String execute() {
 		setCompareColors(true);
 		//redirect to getColor
+		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+		reqObj.setColorComp("");
+		reqObj.setColorName("COLOR");
+		reqObj.setColorID("MEASURED");
 		return SUCCESS;
 	}
 	
