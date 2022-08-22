@@ -106,36 +106,39 @@ badge {
 <script type="text/javascript">
 //printer scripts
 
-function setLabelPrintEmbedContainer(labelType,orientation) {
-	var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+function setLabelPrintEmbedContainer(labelType,orientation,printWithFormula) {
+	if(printWithFormula === true) {
+		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	} else {
+		var embedString = '<embed src="formulaUserPrintActionNoFormula.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	}
 	$("#printLabelEmbedContainer").html(embedString);
 }
 
-function printStoreLabel() {
-	
+function printStoreLabel(printWithFormula) {
 	myPrintLabelType = "storeLabel";
 	myPrintOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation,printWithFormula);
 	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
 	}, 500);
 }
 
-function printSelfTintCustLabel() {
+function printSelfTintCustLabel(printWithFormula) {
 	
 	myPrintLabelType = "selfTintCustLabel";
 	myPrintOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation,printWithFormula);
 	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
 	}, 500);
 }
 
 
-function printDrawdownStoreLabel() {
+function printDrawdownStoreLabel(printWithFormula) {
 	myPrintLabelType = "drawdownStoreLabel";
 	myPrintOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation,printWithFormula);
 	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
 	}, 500);
@@ -217,16 +220,17 @@ function prePrintSave(labelType, orientation) {
 function showPrintModal(){
 	if(printerConfig && printerConfig.model){
 		
-		$("#printLabelPrint").show();
+		$("#printLabelPrint").css("visibility", "visible");
 		$("#printLabelPrint").focus();
 		
 		
 		$("#numLabels").val(printerConfig.numLabels);
-		$("#numLabels").show();
+		
+		$("#numLabels").css("visibility", "visible");
 	}
 	else{
-		$("#printLabelPrint").hide();
-		$("#numLabels").hide();
+		$("#printLabelPrint").css("visibility", "hidden");
+		$("#numLabels").css("visibility", "hidden");
 	}
 	
 	$("#printLabelModal").modal('show');
@@ -1499,6 +1503,7 @@ function ParsePrintMessage() {
 					<s:hidden value="%{#session[reqGuid].pkgClrTintable}" id="isTintable" />
 					<s:hidden value="%{#session[reqGuid].lightSource}" id="lightSource" />
 					<s:hidden value="%{#session[reqGuid].lightSourceName}" id="lightSourceName" />
+					<s:hidden name="accountIsSwStore" value="%{accountIsSwStore}"/>
 				</div>
 				
 				
@@ -1648,7 +1653,7 @@ function ParsePrintMessage() {
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
-							onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
+							onclick="printDrawdownStoreLabel(true);return false;"><s:text name="global.storeLabel"/></button>
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
@@ -1665,11 +1670,11 @@ function ParsePrintMessage() {
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
 						<s:if test = "%{accountIsSwStore==true}">	
 							<button type="button" class="btn btn-secondary" id="formulaPrint"
-								onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+								onclick="printStoreLabel(true);return false;"><s:text name="global.print"/></button>
 						</s:if>
 						<s:else>
 							<button type="button" class="btn btn-secondary" id="formulaPrint"
-								onclick="printSelfTintCustLabel();return false;"><s:text name="global.print"/></button>
+								onclick="printSelfTintCustLabel(true);return false;"><s:text name="global.print"/></button>
 						</s:else>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
@@ -1904,6 +1909,7 @@ function ParsePrintMessage() {
 					</div>
 				</div>
 			</div>
+			
 			<!-- Print Label Modal Window -->
 			<div class="modal" aria-labelledby="printLabelModal"
 				aria-hidden="true" id="printLabelModal" role="dialog">
@@ -1922,30 +1928,36 @@ function ParsePrintMessage() {
 							</div>
 						</div>
 						<div class="modal-footer">
-							<div class="col-xs-6">
-								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
+							<div class="container">
+								<div class="row">
+									<div class="col-xs-2 mr-3">
+										<button type="button" class="btn btn-primary pull-left"
+												id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
+									</div>
+									<div class="col-xs-2 mr-5">
+										<select id="numLabels" name="numLabels"  >
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+											<option value="6">6</option>
+											<option value="7">7</option>
+											<option value="8">8</option>
+											<option value="9">9</option>
+											<option value="10">10</option>
+										</select>
+									</div>
+									<div class="col-xs-6 mr-5">
+										<input type="checkbox" class="form-check-input" id="labelWithFormula" checked>
+    									<label class="form-check-label" for="labelWithFormula" id="labelWithFormulaLabel"><s:text name="global.formulaOnLabel"/></label>
+									</div>
+									<div class="col-xs-2">
+										<button type="button" class="btn btn-secondary"
+												id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
+									</div>
+								</div>
 							</div>
-							<div class="col-xs-4">
-								
-								<select id="numLabels" name="numLabels"  >
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-									
-								 </select>
-							</div>
-							 <div class="col-xs-2 ">
-								<button type="button" class="btn btn-secondary"
-								id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
-						</div>
 						</div>
 					</div>
 				</div>
@@ -2303,6 +2315,44 @@ function ParsePrintMessage() {
 				updateButtonDisplay();
 			}); 
 
+			//print with/without formula logic
+			$('#labelWithFormula').on('click', function() {
+				var isPrintWithLabelChecked = $('#labelWithFormula').is(":checked");
+				if(isPrintWithLabelChecked === true) {
+					 if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+						printStoreLabel(true);
+					} else {
+						printSelfTintCustLabel(true);
+					}
+				} else {
+					if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+						printStoreLabel(false);
+					} else {
+						printSelfTintCustLabel(false);
+					}
+				}
+				
+			});
+			
+			//Make sure the label with formula checkbox is 'checked' when open the print modal is opened
+			$('#printLabelClose').on('click', function() {
+				var isPrintWithLabelChecked = $('#labelWithFormula').is(":checked");
+				if(isPrintWithLabelChecked === false) {
+					$('#labelWithFormula').prop('checked', true);
+				}
+			});
+			
+			//Ensure that the label with formula checkbox is not displayed in the print modal for drawdowns.
+			$('#drawdownLabelPrint').on('click', function() {
+				$('#labelWithFormula').css("visibility", "hidden");
+				$('#labelWithFormulaLabel').css("visibility", "hidden");
+			});
+			
+			$('#storeLabelPrint').on('click', function() {
+				$('#labelWithFormula').css("visibility", "hidden");
+				$('#labelWithFormulaLabel').css("visibility", "hidden");
+			});
+			
 			//TODO if in correction, go to correction screen.
 		});
 

@@ -21,6 +21,11 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 	private boolean measureSample;
 	private transient ColorDifference colorDiff;
 	private boolean compareColors;
+	private String colorId;
+	private String rgbHexStd;
+	private String rgbHexTrl;
+	private String colorName;
+	private String colorComp;
 	
 	@Autowired
 	private transient ColorService colorService;
@@ -41,6 +46,12 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
+			setRgbHexStd(reqObj.getColorCoordMap().get("standard").getRgbHex());
+			setRgbHexTrl(reqObj.getColorCoordMap().get("sample").getRgbHex());
+
+			setColorComp(reqObj.getColorComp());
+			setColorName(reqObj.getColorName());
+			setColorId(reqObj.getColorID());
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {
@@ -92,4 +103,45 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 	public void setCompareColors(boolean compareColors) {
 		this.compareColors = compareColors;
 	}
+	
+	public String getColorName() {
+		return colorName;
+	}
+
+	public void setColorName(String colorName) {
+		this.colorName = colorName;
+	}
+	
+	public String getColorComp() {
+		return colorComp;
+	}
+
+	public void setColorComp(String colorComp) {
+		this.colorComp = colorComp;
+	}
+	
+	public String getRgbHexTrl() {
+		return rgbHexTrl;
+	}
+
+	public void setRgbHexTrl(String rgbHexTrl) {
+		this.rgbHexTrl = rgbHexTrl;
+	}
+	
+	public String getRgbHexStd() {
+		return rgbHexStd;
+	}
+
+	public void setRgbHexStd(String rgbHexStd) {
+		this.rgbHexStd = rgbHexStd;
+	}
+	
+	public String getColorId() {
+		return colorId;
+	}
+
+	public void setColorId(String colorId) {
+		this.colorId = colorId;
+	}
+	
 }
