@@ -75,7 +75,7 @@
 		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
 				var colorList;
-				platform.startsWith("Win"){
+				if(platform.startsWith("Win")){
 					colorList = item.message.split(" ");
 				} else {
 					colorList = item.message.split("|");
