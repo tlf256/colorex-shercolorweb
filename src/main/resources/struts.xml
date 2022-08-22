@@ -730,6 +730,12 @@
 			</result>
 			<result name="input">/WEB-INF/pages/GetProduct.jsp</result>
 		</action>
+		<action name="loadProductLookupAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductLookupAction" method="loadProductLookup">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
 		<action name="clrntUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
