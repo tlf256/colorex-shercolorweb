@@ -955,6 +955,17 @@
 			<result name="success" type="json"/>
 			<result name="input" type="json"/>
 		</action>
+		<action name="formulaUserPrintActionNoFormula" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printWithoutFormula">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="test.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+		</action>
 		<action name="saveRoomByRoom" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveRoomByRoom">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
