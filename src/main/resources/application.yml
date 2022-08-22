@@ -33,7 +33,6 @@ spring:
       active: oracle,dev,rancher
 
 oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
-
 artifactoryToken: ${shercolorweb-reader}
 
 ---
