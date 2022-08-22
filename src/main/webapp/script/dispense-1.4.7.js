@@ -92,7 +92,10 @@ function buildProgressBars(return_message) {
 		});
 	}
 }
-function FMXAlfaDispenseProgress(tintermessage) {
+
+//old function FMXAlfaDispenseProgress
+//separated alfa and fmx dispense progress
+function alfaDispenseProgress(tintermessage) {
 	console.log('before dispense progress send');
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
@@ -100,21 +103,44 @@ function FMXAlfaDispenseProgress(tintermessage) {
 	var shotList = null;
 	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
-	if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
-
-   		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-	}
-	else{
+	if(tinterModel !=null){ 
 
 		var msgId = tintermessage.msgId;
-		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
-}
+		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId); 
+		
+	}
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
 	sendingTinterCommand = "true";
 	ws_tinter.send(json);
 }
+
+function FMXdispenseProgress(tintermessage) {
+	console.log('before dispense progress send');
+	$('#tinterInProgressMessage').text('');
+	rotateIcon();
+	var cmd = "";
+	if(platform.startsWith("win")){
+		cmd = "DispenseProgress";
+	} else {
+		cmd = "DispenseStatus";
+	}
+	var shotList = null;
+	var configuration = null;
+	var tinterModel = sessionTinterInfo.model;
+	if(tinterModel !=null){ 
+
+   		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+	
+	}
+	var msgId = tintermessage.msgId;
+	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
+	var json = JSON.stringify(tintermessage);
+	sendingTinterCommand = "true";
+	ws_tinter.send(json);
+}
+
 function dispense() {
 	//dispense
 	let cmd = "Dispense";
@@ -144,7 +170,7 @@ function alfaDispenseProgressResp(return_message) {
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			FMXAlfaDispenseProgress(return_message);
+			alfaDispenseProgress(return_message);
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 	}
 	else if (return_message.errorMessage.indexOf("complete") > 0 || return_message.errorNumber != 0) {
@@ -182,7 +208,7 @@ function dispenseProgressResp(return_message) {
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			FMXAlfaDispenseProgress();
+			FMXdispenseProgress();
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
