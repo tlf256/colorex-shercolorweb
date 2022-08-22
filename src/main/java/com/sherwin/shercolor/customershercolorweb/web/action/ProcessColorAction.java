@@ -17,11 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 
-
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
@@ -92,11 +87,12 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private List<String> curvesList;
 	private String measuredCurve;
 	private String measuredName;
+	private String locatorId;
+	private transient List<CdsColorMast> colorLookupResults;
 	private boolean measureStandard;
 	private boolean matchStandard;
 	private boolean compareColors;
 	private static final String MEASURE = "measure";
-	
 	
 	private void buildCotypesMap() {
 		SW = getText("processColorAction.SherwinWilliams");
@@ -179,7 +175,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			}
 		}
 		catch (SherColorException e){
-			//String messageId = Integer.toString(e.getCode());
 			message = e.getMessage();
 			logger.error(Encode.forJava(message), e);
 		} catch (UnsupportedEncodingException e) {
@@ -236,70 +231,42 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	
 	private void parseColorData(String colorData) {
 		
-		String colorEntry = new String("");
+		String colorEntry = "";
+		String colorCompany = "";
 		try {
 			colorData = URLDecoder.decode(colorData,"UTF-8");
+			if(selectedCompany != null) {
+				colorCompany = URLDecoder.decode(selectedCompany,"UTF-8");
+			}
 			colorEntry = StringEscapeUtils.unescapeHtml4(partialColorNameOrId);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 
-		if (colorData.equals("")) {
-			// The user typed nothing, so do nothing
-		} 
-		else if (colorData.equals("[]")){
-			// The user typed a color id or name that does not exist
-			setColorID(partialColorNameOrId);
-			if (selectedCoTypes.equalsIgnoreCase("SW")) {
-				setColorComp("SHERWIN-WILLIAMS");
-			} 
-			else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
-				setColorComp("NATIONAL ACCOUNTS");
-			} 
-			else {
-				setColorComp("COMPETITIVE");
+		// Colordata contains JSON so it sequentially gets broken down to parse an array of
+		// autocomplete results and returns the value typed into the search bar
+		if (colorData.contains("[")) {
+			colorData = colorData.replace("[", "");
+			colorData = colorData.replace("]", "");
+			colorData = colorData.replace("{", "");
+			colorData = colorData.replace("\"", "");
+			String[] outList = colorData.split("},");
+			boolean foundMatch = false;
+			for (String record : outList) {
+				String[] data = record.split(",");
+				String theValue = data[3].replace("value:", "");
+				// The below replace statement fixes a bug when there
+				// is only one object in the autocomplete list
+				theValue = theValue.replace("}", "");
+				if (colorEntry.equals(theValue)) {
+					foundMatch = true;
+					setColorID(data[0].replace("colorNumber:", ""));
+					setColorComp(data[1].replace("companyName:", ""));
+					break;
+				}
 			}
-		}
-		else {
-			// Colordata contains JSON so it sequentially gets broken down to parse an array of
-			// autocomplete results and returns the value typed into the search bar
-			if (colorData.contains("[")) {
-				colorData = colorData.replace("[", "");
-				colorData = colorData.replace("]", "");
-				colorData = colorData.replace("{", "");
-				colorData = colorData.replace("\"", "");
-				String[] outList = colorData.split("},");
-				boolean foundMatch = false;
-				for (String record : outList) {
-					String[] data = record.split(",");
-					String theValue = data[3].replaceAll("value:", "");
-					// The below replace statement fixes a bug when there
-					// is only one object in the autocomplete list
-					theValue = theValue.replace("}", "");
-					if (colorEntry.equals(theValue)) {
-						foundMatch = true;
-						setColorID(data[0].replaceAll("colorNumber:", ""));
-						setColorComp(data[1].replaceAll("companyName:", ""));
-						break;
-					}
-				}
-				if (foundMatch == false) {
-					setColorID(partialColorNameOrId);
-					if (selectedCoTypes.equalsIgnoreCase("SW")) {
-						setColorComp("SHERWIN-WILLIAMS");
-					} 
-					else if (selectedCoTypes.equalsIgnoreCase("NAT")) {
-						setColorComp("NATIONAL ACCOUNTS");
-					} 
-					else {
-						setColorComp("COMPETITIVE");
-					}
-				}
-			} 
-			// colordata does not contain JSON so it directly assigns the colordata
-			// as the colorId and then uses the selectedCoTypes to assign the colorComp
-			else {
-				setColorID(colorData);
+			if (foundMatch == false) {
+				setColorID(partialColorNameOrId);
 				if (selectedCoTypes.equalsIgnoreCase("SW")) {
 					setColorComp("SHERWIN-WILLIAMS");
 				} 
@@ -309,9 +276,20 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				else {
 					setColorComp("COMPETITIVE");
 				}
-			}	
-		}
+			}
+		} 
+		// colordata does not contain JSON so it directly assigns the colordata
+		// as the colorId and then uses the selectedCoTypes to assign the colorComp
+		else {
+			setColorID(colorData);
+			if (selectedCoTypes.equalsIgnoreCase("SW")) {
+				setColorComp("SHERWIN-WILLIAMS");
+			} else {
+				setColorComp(colorCompany);
+			}
+		}	
 	}
+	
 	public String execute() {
 		
 		colorComp = "";
@@ -329,7 +307,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			reqObj.setProductChosenFromDifferentBase(false);
-			
 			//Okay, there is data there.  Interpret it.
 			if (selectedCoTypes.equalsIgnoreCase("CUSTOM")) {
 				//WHAT DO WE DO HERE?
@@ -397,7 +374,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 				}
 				
 				//We should have thisColor set.  Or not.  If not, throw a validation error?
-
 				List<SwMessage> errlist = colorMastService.validate(colorComp, colorID);
 				if (errlist.size()>0) {
 					for(SwMessage item:errlist) {
@@ -611,6 +587,50 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 			setIntBases(StringUtils.join(baseList, ','));
 			setExtBases(StringUtils.join(baseList, ','));
 		}		
+	}
+	
+	public String colorLookup() {
+		String colorCompanyParam = "";
+		String locIdParam = "";
+		String colorIdParam = "";
+		String colorNameParam = "";
+		List<CdsColorMast> colors = new ArrayList<>();
+		
+		try {
+			if(selectedCoTypes.equals("SW")) {
+				locIdParam = URLDecoder.decode(this.locatorId.trim().toUpperCase(), "UTF-8");
+			} else {
+				colorCompanyParam = URLDecoder.decode(this.selectedCompany.trim().toUpperCase(), "UTF-8");
+				if(colorCompanyParam.equals("ALL")) {
+					colorCompanyParam = "";
+				}
+			}
+			 colorIdParam = URLDecoder.decode(this.colorID.trim().toUpperCase(), "UTF-8");
+			 colorNameParam = URLDecoder.decode(this.colorName.trim().toUpperCase(), "UTF-8");
+			 			 
+			 switch(selectedCoTypes) {
+			 	case "SW" :
+			 		colors = colorService.findColorsFromColorLookup(locIdParam, colorIdParam, colorNameParam, "SW");
+			 		break;
+			 	case "COMPET":
+			 		colors = colorService.findColorsFromColorLookup(colorCompanyParam, colorIdParam, colorNameParam, "CP");
+			 		break;
+			 	case "NAT" :
+			 		colors = colorService.findColorsFromColorLookup(colorCompanyParam, colorIdParam, colorNameParam, "NA");
+			 		break;
+			 	default :
+			 		logger.warn("Unknown selectedCoTypes detected. Unable to perform color lookup search. Type is {}", selectedCoTypes);
+			 		break;
+			 }
+			 setColorLookupResults(colors);			 
+			 
+		} catch (UnsupportedEncodingException e) {
+			logger.error("UnsupportedEncodingException Caught in ColorListViewAction.search");
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+		return SUCCESS;
 	}
 	
 	public List<autoComplete> getOptions() {
@@ -846,5 +866,21 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 	public void setProductService(ProductService productService) {
 		this.productService = productService;
+	}
+
+	public String getLocatorId() {
+		return locatorId;
+	}
+
+	public void setLocatorId(String locatorId) {
+		this.locatorId = locatorId;
+	}
+	
+	public List<CdsColorMast> getColorLookupResults() {
+		return colorLookupResults;
+	}
+
+	public void setColorLookupResults(List<CdsColorMast> colorLookupResults) {
+		this.colorLookupResults = colorLookupResults;
 	}
 }
