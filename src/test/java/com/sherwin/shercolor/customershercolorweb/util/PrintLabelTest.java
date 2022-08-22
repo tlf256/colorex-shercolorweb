@@ -184,7 +184,7 @@ public class PrintLabelTest  {
 
 	@Before
 	public void testInitPrintService() {
-		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, true);
 	}
 	
 	//Store Labels
@@ -373,6 +373,31 @@ public class PrintLabelTest  {
 		reqObj = BuildReqObject(label8, formula9, message1, job7);
 		printLabel.createLabelPdf(reqObj,"drawdownLabel","LANDSCAPE","","",false,null);
 		assertTrue(validatePdf("drawdownLabel"));
+	}
+	
+	// test no formula on labels
+	@Test
+	public void test25() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
+		reqObj = BuildReqObject(label1, formula1, message1, job1);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
+	}
+	
+	@Test
+	public void test26() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test27() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
 	}
 
 	@After

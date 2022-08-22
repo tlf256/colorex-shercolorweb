@@ -337,6 +337,16 @@
 			<result name="success" type="json"/>
 			<result name="error" type="json"/>
 		</action>
+		<action name="colorLookupSearchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="colorLookup">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+		 		<param name="root">colorLookupResults</param>
+			</result>
+			<result name="error" type="json"/>
+		</action>
 		<action name="spectroCalibrateRedirectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="calibrate">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -945,6 +955,17 @@
 			<result name="success" type="json"/>
 			<result name="input" type="json"/>
 		</action>
+		<action name="formulaUserPrintActionNoFormula" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printWithoutFormula">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="test.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
+		</action>
 		<action name="saveRoomByRoom" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveRoomByRoom">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1496,6 +1517,6 @@
 		</action>
 		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
 			<result name="success" type="json"/>
-		</action>
+		</action>		
 	</package>
 </struts>
