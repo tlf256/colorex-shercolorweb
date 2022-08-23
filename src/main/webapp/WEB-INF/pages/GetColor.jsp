@@ -141,11 +141,8 @@
 					
 					$('#colorNextForm').submit();
 					
-					//var selected = $('#existingMatch').getAttribute('selected');
-					//console.log("color match selected: " + selected);
-					
-					if($('#existingMatch').prop('checked')){
-						console.log('EXISTING_MATCH selected');
+					if(selectedValue === "EXISTING_MATCH"){
+						//console.log('EXISTING_MATCH selected');
 						var displayMessage = '<s:text name="compareColors.loadingColorMatches" />';
 						pleaseWaitModal_show(displayMessage, null);
 					}
@@ -290,6 +287,17 @@
 				</div>
 			</div>
 			</s:else>
+			<s:if test="hasActionMessages()">
+			  <div class="row">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
+					<s:actionmessage/>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
+				</div>
+			  </div>
+			</s:if>
 <br>
 			<s:form id="colorNextForm" action="colorUserNextAction" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
 				<div class="row">
@@ -321,8 +329,8 @@
 		            				</s:iterator>
 		            				<s:if test="compareColors">
 		            				  <div class="form-check">
-		            					<input class="form-check-input" type="radio" name="selectedCoTypes" value="EXISTING_MATCH" id="existingMatch" />
-		            					<label class="form-check-label font-weight-normal" for="existingMatch">
+		            					<input class="form-check-input" type="radio" name="selectedCoTypes" id="selectedCoTypes" value="EXISTING_MATCH" />
+		            					<label class="form-check-label font-weight-normal" for="selectedCoTypes">
 										   <s:text name="compareColors.existingCustomMatch"></s:text>
 										</label>
 									  </div>
