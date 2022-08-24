@@ -1,10 +1,10 @@
 # Build the image
-docker_build('shercolorweb-dev', '.',
+docker_build('docker.artifactory.sherwin.com/colorex/shercolorweb', '.',
   dockerfile='./Dockerfile_dev',
   live_update=[sync('./src/', '/src'),
                sync('./wildfly/', '/wildfly'), 
                sync('./src/pom.xml', '/pom.xml') ],
-  entrypoint = 'mvn -B wildfly-jar:dev-watch')
+  entrypoint = './mvnw -B wildfly-jar:dev-watch')
 
 # Tell Tilt to watch specific files for live reload
 
