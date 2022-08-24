@@ -1,18 +1,25 @@
 package com.sherwin.shercolor.customershercolorweb.util;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.util.*;
-
-
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.commons.lang.StringUtils;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.preflight.PreflightDocument;
+import org.apache.pdfbox.preflight.parser.PreflightParser;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
@@ -50,13 +57,13 @@ public class PrintLabelTest  {
 	private List<SwMessage> formulaMessages;
 	private FormulationResponse formulationResponse = new FormulationResponse();
 	private List<JobField> listJobField;
-	private ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+	ShercolorLabelPrintImpl printLabel;
 
 
 	private String label1[] = {
 			"label.pdf", "SHERWIN-WILLIAMS", "6385", "DOVER WHITE", "640512901", 
 			"A87W00051", "SUPER PAINT", "LATEX", "EXTRA WHITE", "SATIN", "ARCHITECTURAL", 
-			"INTERIOR", "ONE GALLON", "CCE", "CCF", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", " ", "33", "16"};
+			"INTERIOR", "ONE GALLON", "CCE", "LB6110", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", " ", "33", "16"};
 	
 	private String formula1[] = { 
 			"B1", "BLACK", "R2", "MAROON", "Y3", "DEEP GOLD", "N1", "RAW UMBER", "R4", "RED"};
@@ -71,7 +78,7 @@ public class PrintLabelTest  {
 	private String label2[] = {
 			"label2.pdf", "SHERWIN-WILLIAMS", "0001", "MULBERRY SILK", "640512901", 
 			"B20W02653", "PROMAR 200 ZERO VOC", "ACRYLIC LATEX", "DEEP", "EG-SHELL", "ARCHITECTURAL", 
-			"INTERIOR", "ONE GALLON", "CCE", "CCF", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", "31", "16"};
+			"INTERIOR", "ONE GALLON", "CCE", "LB6110", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", "31", "16"};
 	
 	private String formula2[] = { 
 			"B1", "BLACK", "R2", "RED OXIDE", "Y3", "YELLOW OXIDE"};
@@ -86,7 +93,7 @@ public class PrintLabelTest  {
 	private String label3[] = {
 			"label4.pdf", "SHERWIN-WILLIAMS", "01234567890", "MULBERRY90123", "650186935", 
 			"B20W02653", "123456789012345678", "1234567890123456789", "DEEP5678901234567890", "EG-SHELL901234567890", "ARCHITECTURAL567890", 
-			"INTERIOR90", "FIVE GALLON", "CCE", "CCF", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
+			"INTERIOR90", "FIVE GALLON", "CCE", "LB6110", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
 			"1270003", "16"};
 	
 	private String formula3[] = { 
@@ -102,7 +109,7 @@ public class PrintLabelTest  {
 	private String label4[] = {
 			"label4.pdf", "SHERWIN-WILLIAMS", "0002", "CHELSEA MAUVE456789012", "650186935", 
 			"B20W02651", "123456789012345678", "1234567890123456789", "DEEP567890123456789", "EG-SHELL901234567890", "ARCHITECTURAL567890", 
-			"INTERIOR90", "FIVE GALLON", "CCE", "CCF", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
+			"INTERIOR90", "FIVE GALLON", "CCE", "LB6110", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
 			"1270004", "14"};
 	
 	private String formula4[] = { 
@@ -118,7 +125,7 @@ public class PrintLabelTest  {
 	private String label5[] = {
 			"label25.pdf", "SHERWIN-WILLIAMS", "0003", "CABBAGE ROSE", "650096514", 
 			"A96W01251", "DURATION HOME", "LATEX", "EXTRA WHITE", "MATTE", "ARCHITECTURAL", 
-			"INTERIOR", "ONE GALLON", "CCE", "CCF", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
+			"INTERIOR", "ONE GALLON", "CCE", "LB6110", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
 			"4200001", "16"};
 	
 	private String formula5[] = { 
@@ -134,7 +141,7 @@ public class PrintLabelTest  {
 	private String label6[] = {
 			"label26.pdf", "SHERWIN-WILLIAMS", "MANUAL", "CABBAGE ROSE", "650096514", 
 			"A96W01251", "DURATION HOME", "LATEX", "EXTRA WHITE", "MATTE", "ARCHITECTURAL", 
-			"INTERIOR", "ONE GALLON", "CCE", "CCF", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
+			"INTERIOR", "ONE GALLON", "CCE", "LB6110", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
 			"4200001", "16"};
 	
 	private String formula6[] = { 
@@ -147,40 +154,294 @@ public class PrintLabelTest  {
 			"CCF Hillcrest", "Location Name", "G", "Building Code", "", "", "555", "Room", "Wall", "Surface Type", 
 				"THIS IS A NEW LABEL", "Painter's Comment"};
 	
+	private String label7[] = {
+			"label26.pdf", "SHERWIN-WILLIAMS", "MANUAL", "CABBAGE ROSE", "650096514", 
+			"A96W01251", "DURATION HOME", "LATEX", "EXTRA WHITE", "MATTE", "ARCHITECTURAL", 
+			"INTERIOR", "ONE GALLON", "CCE", "400000002", "CLEVELAND CLINIC", "SHER-COLOR FORMULA", "P2", 
+			"4200001", "16"};
+	
+	private String formula7[] = { 
+			"B1", "BLACK", "R2", "RED OXIDE", "Y3", "DEEP GOLD", "N1", "RAW UMBER", "W1", "WHITE", "L1", "BLUE", "R3", "MAGENTA" };
+
+	private String message7[] = {
+			"Room by Room message 1", "<Colorant message 2>", "Primer message 3"};
+	
+	private String job7[] = {
+			"Location", "BTC", "Customer", "John Doe", "Store CCN", "999", "Job", "123", "Project Info", "Wall", "Schedule", "TBD", "Control Number", "987654"};
+	
+	private String formula8[] = {"",""};
+	
+	private String label8[] = {
+			"label27.pdf", "COMPETITIVE", "PPG", "WHITEWATER", "650096514", 
+			"A96W01251", "DURATION HOME", "LATEX", "EXTRA WHITE", "MATTE", "ARCHITECTURAL", 
+			"INTERIOR", "ONE GALLON", "CCE", "400000002", "CLEVELAND CLINIC", "CUSTOM SHER-COLOR-MATCH", "P2", 
+			"4200001", "16"};
+	
+	private String formula9[] = { 
+			"B1", "BLACK", "G2", "NEW GREEN", "Y3", "DEEP GOLD"};
+
+	@Before
+	public void testInitPrintService() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, true);
+	}
+	
+	//Store Labels
 	@Test
 	public void test()  {
 		reqObj = BuildReqObject(label1, formula1, message1, job1);
-		printLabel.CreateLabelPdf("label1.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test2()  {
-		reqObj = BuildReqObject(label2, formula2, message2, job2);		
-		printLabel.CreateLabelPdf("label2.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test3()  {
 		reqObj = BuildReqObject(label3, formula3, message3, job3);
-		printLabel.CreateLabelPdf("label3.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test4()  {
 		reqObj = BuildReqObject(label4, formula4, message4, job4);
-		printLabel.CreateLabelPdf("label4.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test5()  {
 		reqObj = BuildReqObject(label5, formula5, message5, job5);
-		printLabel.CreateLabelPdf("label25.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
 	}
 	
 	@Test
 	public void test6()  {
+		reqObj = BuildReqObject(label6, formula6, message7, job6);
+		reqObj.setTinter(null);
+		reqObj.getDisplayFormula().setSourceDescr("VINYL SAFE FORMULA");
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
+	}
+	
+	//Self Tinting Customer Label.
+	@Test
+	public void test7()  {
+		reqObj = BuildReqObject(label1, formula1, message1, job1);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test8()  {
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test9()  {
+		reqObj = BuildReqObject(label3, formula3, message3, job3);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test10()  {
+		reqObj = BuildReqObject(label4, formula4, message4, job4);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test11()  {
+		reqObj = BuildReqObject(label5, formula5, message5, job5);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test12()  {
 		reqObj = BuildReqObject(label6, formula6, message6, job6);
-		printLabel.CreateLabelPdf("label26.pdf", reqObj,"storeLabel","PORTRAIT","","",false,null);
+		reqObj.setTinter(null);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+
+	}
+	
+	//Drawdown Label
+	@Test
+	public void test13()  {
+		reqObj = BuildReqObject(label1, formula1, message1, job1);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
+	}
+	
+	@Test
+	public void test14()  {
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
+	}
+	
+	@Test
+	public void test15()  {
+		reqObj = BuildReqObject(label3, formula3, message3, job3);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
+	}
+	
+	@Test
+	public void test16()  {
+		reqObj = BuildReqObject(label4, formula4, message4, job4);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
+	}
+	
+	@Test
+	public void test17()  {
+		reqObj = BuildReqObject(label5, formula5, message5, job5);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+
+		
+	}
+	
+	@Test
+	public void test18()  {
+		reqObj = BuildReqObject(label6, formula6, message6, job6);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+	}
+	
+	//invalid label type
+	@Test
+	public void test19()  {
+		reqObj = BuildReqObject(label7, formula7, message7, job7);
+		printLabel.createLabelPdf(reqObj,"InvalidLabelType","PORTRAIT","","",false,null);
+		assertFalse(validatePdf("InvalidLabelType"));
+	}
+	
+	//drawdown label test
+	@Test
+	public void test20()  {
+		reqObj = BuildReqObject(label7, formula7, message7, job7);
+		printLabel.createLabelPdf(reqObj,"drawdownLabel","LANDSCAPE","","",false,null);
+		assertTrue(validatePdf("drawdownLabel"));
+	}
+	
+	//Sample label tests
+	@Test
+	public void test21()  {
+		reqObj = BuildReqObject(label7, formula7, message7, job7);
+		reqObj.setTinter(null);
+		printLabel.createLabelPdf(reqObj,"sampleCanLabel","PORTRAIT","","B1-BLACK,1,W1-WHITE,2,,",false,null);
+		assertTrue(validatePdf("sampleCanLabel"));
+	}
+	
+	@Test
+	public void test22()  {
+		reqObj = BuildReqObject(label7, formula7, message7, job7);
+		printLabel.createLabelPdf(reqObj,"sampleCanLabel","PORTRAIT","","B1-BLACK,1,W1-WHITE,2,L1-BLUE,3,R2-NEW RED,4,G2-GREEN,5",false,null);
+		assertTrue(validatePdf("sampleCanLabel"));
+	}
+	
+	//no formula test
+	@Test
+	public void test23()  {
+		reqObj = BuildReqObject(label7, formula8, message7, job7);
+		reqObj.setTinter(null);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
+	}
+	
+	// drawdown competitive color test
+	@Test
+	public void test24()  {
+		reqObj = BuildReqObject(label8, formula9, message1, job7);
+		printLabel.createLabelPdf(reqObj,"drawdownLabel","LANDSCAPE","","",false,null);
+		assertTrue(validatePdf("drawdownLabel"));
+	}
+	
+	// test no formula on labels
+	@Test
+	public void test25() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
+		reqObj = BuildReqObject(label1, formula1, message1, job1);
+		printLabel.createLabelPdf(reqObj,"storeLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("storeLabel"));
+	}
+	
+	@Test
+	public void test26() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"selfTintCustLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("selfTintCustLabel"));
+	}
+	
+	@Test
+	public void test27() {
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
+		reqObj = BuildReqObject(label2, formula2, message2, job2);
+		printLabel.createLabelPdf(reqObj,"drawdownStoreLabel","PORTRAIT","","",false,null);
+		assertTrue(validatePdf("drawdownStoreLabel"));
+	}
+
+	@After
+	public void cleanUpPdfFile() {
+		String directoryPath = "./";
+		File pdfFile = FileUtils.getFile(new File(directoryPath), "label.pdf");
+		pdfFile.delete();
+		System.out.println("Label PDF files from " + PrintLabelTest2.class.getSimpleName() + " have been cleaned up.");
+	}
+	
+	private boolean validatePdf(String labelType) {
+		boolean pdfIsValid = false;
+		
+		try {
+			String pdfDirectory = "./";
+			File pdfFile = FileUtils.getFile(new File(pdfDirectory), "label.pdf");			
+			PreflightParser parser = new PreflightParser(pdfFile);
+			parser.parse();
+			PreflightDocument pdfDocument = parser.getPreflightDocument();
+			PDFTextStripper pdfStripper = new PDFTextStripper();
+			String text = pdfStripper.getText(pdfDocument);
+			//validation varies based on labelType
+			switch(labelType) {
+				case "storeLabel":
+				case "sampleCanLabel":
+				case "selfTintCustLabel":
+				case "drawdownStoreLabel":
+					if (text.contains("Order #")) {
+							pdfIsValid = true;
+						}
+					break;
+				case "drawdownLabel":
+					if (text.contains("Customer:")) {
+							pdfIsValid = true;
+						}
+					break;
+				default:
+					System.out.println("Non-standard label type entered.");
+					break;
+			}
+			pdfDocument.close();
+		} catch (IOException e) {
+			// Couldn't load the pdf File
+			System.out.println("Could not load: label.pdf");
+		}
+		return pdfIsValid;
 	}
 	
 	private RequestObject BuildReqObject(String label[],  String formula[], String message[], String job[]){
@@ -231,7 +492,7 @@ public class PrintLabelTest  {
 		reqObj.setSizeText(label[19]);
 		
 		reqObj.setControlNbr(Integer.parseInt(label[18]));
-
+		reqObj.setRoomByRoom("BEDROOM");
 		
 		return reqObj;
 	}
@@ -270,12 +531,12 @@ public class PrintLabelTest  {
 	private List<FormulaIngredient> BuildFormulaIngredients(String formulas[]){
 		FormulaIngredient ingredient = null;
 		List<FormulaIngredient> listIngredients = new ArrayList<FormulaIngredient>();
-		for(int i = 0; i < formulas.length; i = i + 2){
-			ingredient = BuildFormulaIngredient(formulas[i], formulas[i+1]);
-			listIngredients.add(ingredient);
+			for(int i = 0; i < formulas.length; i = i + 2){
+				ingredient = BuildFormulaIngredient(formulas[i], formulas[i+1]);
+				listIngredients.add(ingredient);
 			}
 		return listIngredients;
-		}
+	}
 
 	
 	private FormulaIngredient BuildFormulaIngredient(String tintSysId, String name){
@@ -290,19 +551,11 @@ public class PrintLabelTest  {
 	private List<JobField> BuildJobFieldList(String job[]){
 		JobField jobField = null;
 		List<JobField> listJobField = new ArrayList<JobField>();
-
-		jobField = BuildJobField(job[0], job[1]);
-		listJobField.add(jobField);
-		jobField = BuildJobField(job[2], job[3]);
-		listJobField.add(jobField);
-		jobField = BuildJobField(job[4], job[5]);
-		listJobField.add(jobField);
-		jobField = BuildJobField(job[6], job[7]);
-		listJobField.add(jobField);
-		jobField = BuildJobField(job[8], job[9]);
-		listJobField.add(jobField);
-		jobField = BuildJobField(job[10], job[11]);
-		listJobField.add(jobField);
+		
+		for(int i = 0; i < job.length - 1; i += 2) {
+			jobField = BuildJobField(job[i], job[i + 1]);
+			listJobField.add(jobField);
+		}
 		return listJobField;
 	}
 

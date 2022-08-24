@@ -12,6 +12,7 @@
 		
 		<title><s:text name="global.chooseProduct"/></title>
 			<!-- JQuery -->
+		<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" type="text/css">
 		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
 		<link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
@@ -20,8 +21,12 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/dataTables.buttons.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/product-lookup-1.5.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		
 		<style>
@@ -44,6 +49,19 @@
 			  border-radius: 50%;
 			  border: 1px solid rgba(0, 0, 0, 0.125);
 			}
+			
+			#productLookupTable tbody tr:hover {
+			  background-color: #ffa;
+			}
+			 
+			#productLookupTable tbody tr:hover > .sorting_1 {
+			  background-color: #ffa;
+			}
+			
+ 			#prodLookupBtn {
+			  margin-left: 15%;
+			}
+			
 	    </style>
 	    <script type="text/javascript">
 	    	$(function(){
@@ -75,6 +93,85 @@
 	</head>
 
 	<body>
+		<div class="modal fade" tabindex="-1" role="dialog" id="productLookupModal" data-backdrop="static" >
+		  <div class="modal-dialog modal-lg" role="document" style="max-height: 90vh; max-width: 60vw; overflow-y: initial !important">
+		   <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h5 class="modal-title"><s:text name="productLookup.title"/></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      
+		       <s:form id="productLookupForm" action="productLookupAction">
+			      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+			        <div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-5"></div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<br>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="productLookup.intext"/><s:text name="global.colonDelimiter"/></strong>
+			      			<select name="" id="intExtList" class="form-control">
+							    <option value="ALL">ALL</option>
+							</select>
+			      		</div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="productLookup.quality"/><s:text name="global.colonDelimiter"/></strong>
+			      			<select name="" id="qualityList" class="form-control" disabled>
+							    <option value="ALL">ALL</option>
+							</select>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			        <div class="row mt-4">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="productLookup.sheen"/><s:text name="global.colonDelimiter"/></strong>
+			      			<select name="" id="sheenList" class="form-control" disabled>
+							    <option value="ALL">ALL</option>
+							</select>
+			      		</div>
+					    <div class="col-sm-5">
+			      			<strong><s:text name="productLookup.size"/><s:text name="global.colonDelimiter"/></strong>
+			      			<select name="" id="sizeList" class="form-control" disabled>
+							    <option value="ALL">ALL</option>
+							</select>
+			      		</div>
+			      		<div class="col-sm-1"></div>
+			      	</div>
+			      	<div class="row mt-4" style="display: flex; justify-content: center;">
+				      	<table id="productLookupTable" aria-describedby="Product Lookup Table" class="table table-striped table-bordered hover" style="width:100%; cursor:pointer;">
+							<thead>
+								<tr class="headerRow">
+									<th><s:text name="productLookup.salesNbr"/></th>
+									<th><s:text name="productLookup.product"/></th>
+									<th><s:text name="productLookup.base"/></th>
+									<th><s:text name="productLookup.intext"/></th>
+									<th><s:text name="productLookup.quality"/></th>
+									<th><s:text name="productLookup.composite"/></th>
+									<th><s:text name="productLookup.sheen"/></th>
+									<th><s:text name="productLookup.size"/></th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+			      </div>
+			      <div class="modal-footer">
+			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>
+			      </div>
+		      </s:form>
+	       </div>
+  		  </div>
+  		    <span class="close">&times;</span>
+		</div>
+		
 		<!-- including Header -->
 		<s:include value="Header.jsp"></s:include>
 		
@@ -222,6 +319,7 @@
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
 							<s:submit cssClass="btn btn-secondary" value="%{getText('global.back')}" action="productUserBackAction"/>
+    						<button class="btn btn-info" type="button" id="prodLookupBtn"><s:text name="productLookup.button"/></button>
 							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">	

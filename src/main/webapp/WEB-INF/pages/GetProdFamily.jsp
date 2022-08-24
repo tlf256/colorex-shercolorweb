@@ -25,7 +25,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/buttons.html5.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/buttons.print.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<style type="text/css">
 			.table-hover tbody tr:hover{
 				background: #FFFF99;

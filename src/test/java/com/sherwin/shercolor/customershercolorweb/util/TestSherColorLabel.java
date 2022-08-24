@@ -38,7 +38,7 @@ public class TestSherColorLabel {
 	@Autowired
 	FormulationService formulationService;
 	
-	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+	ShercolorLabelPrintImpl testClass = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService,true);
 	// Create a new empty document
 	PDDocument document = new PDDocument();
 

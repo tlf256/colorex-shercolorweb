@@ -1,7 +1,14 @@
 # SherColorWeb
 ## Description
+Our signature SherColor application
 ### What does this application do?
-//TODO
+-Formulate SW and competitive colors
+-Formulate via color match using a ColorEye.
+-Dispense a formula using an automated dispenser
+-Save jobs for future dispensing
+-Maintain tint queue
+-Print labels
+-Performs functions to run the drawdown center
 ### Technologies
 - Struts 2
 - Spring Framework
@@ -11,9 +18,9 @@
 - Kubernetes
 - Docker
 ## Business Owner
-//TODO
+//TAG Color Excellence
 ## Where is it running?
-//TODO
+//SW application servers
 ## Prerequisites
 - SherColorCommon
 - SherColorLogin

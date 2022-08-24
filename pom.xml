@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- Spring Boot starter provides a number of properties OOTB to set common dependency versions according to the Spring version/requirements,
         use these if specific versions are needed https://docs.spring.io/spring-boot/docs/2.6.x/reference/htmlsingle/#dependency-versions.properties-->
@@ -210,6 +209,13 @@
             <artifactId>pdfbox</artifactId>
             <version>2.0.26</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>preflight</artifactId>
+		    <version>2.0.26</version>
+		    <scope>test</scope>
+		</dependency>
         <!-- create pdf tables -->
         <dependency>
             <groupId>com.github.dhorions</groupId>
@@ -238,6 +244,17 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.3</version>
         </dependency>
         <dependency>
             <groupId>net.minidev</groupId>
@@ -278,7 +295,17 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-   </dependencies>
+        <dependency>
+           	<groupId>com.google.zxing</groupId>
+    		<artifactId>core</artifactId>
+    		<version>3.3.0</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.google.zxing</groupId>
+    		<artifactId>javase</artifactId>
+    		<version>3.3.0</version>
+		</dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -358,8 +385,6 @@
         <profile>
             <id>quality</id>
             <properties>
-                <sonar.projectKey>${project.artifactId}</sonar.projectKey>
-                <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 <!--                <sonar.coverage.exclusions>-->
 <!--                    src/main/java/com/sherwin/login/domain/*PK.java-->
 <!--                </sonar.coverage.exclusions>-->

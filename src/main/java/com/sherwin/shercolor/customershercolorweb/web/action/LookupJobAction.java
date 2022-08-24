@@ -3,6 +3,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,8 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
+import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
 import com.sherwin.shercolor.common.domain.CdsClrntSys;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsProd;
@@ -81,10 +84,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	@Autowired 
 	private UtilityService utilityService;
 	
+	@Autowired
+	private transient ColorCoordinatesCalculator colorCoordCalc;
+	
 	List<CustWebTran> tranHistory;
 	
 	List<JobHistoryInfo> jobHistory;
-	private boolean match;
+	private boolean matchStandard;
+	private boolean compareColors;
 	
 	public String search() {
 		try {
@@ -159,13 +166,13 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			if (displayTintQueue) {
 				tranHistory = tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(),false);
 			} else {
-				if(match) {
+				if(matchStandard) {
 					//only pull CUSTOMMATCH records for compare colors selection
-					TranHistoryCriteria TranCriteria = new TranHistoryCriteria();
-					TranCriteria.setCustomerId(reqObj.getCustomerID());
-					TranCriteria.setColorType("CUSTOMMATCH");
+					TranHistoryCriteria tranCriteria = new TranHistoryCriteria();
+					tranCriteria.setCustomerId(reqObj.getCustomerID());
+					tranCriteria.setColorType("CUSTOMMATCH");
 					
-					tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(TranCriteria, false);
+					tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(tranCriteria, false);
 				} else {
 					// pass JobSearch object to service for criteria
 					tranHistory = tranHistoryService.filterActiveCustomerJobsByTranHistCriteria(thc, false);
@@ -304,6 +311,25 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			String customerId = reqObj.getCustomerID();
 			
 			CustWebTran webTran = tranHistoryService.readTranHistory(customerId, lookupControlNbr, 1);
+			
+			if(compareColors) {
+				Map<String, ColorCoordinates> coordMap = new HashMap<>();
+				
+				ColorCoordinates colorCoord = getColorCoordinates(webTran);
+				
+				coordMap.put("standard", colorCoord);
+				
+				reqObj.setColorCoordMap(coordMap);
+				reqObj.setColorName(webTran.getColorName());
+				reqObj.setColorComp(webTran.getColorComp());
+				reqObj.setColorID(webTran.getColorId());
+				reqObj.setRgbHex(webTran.getRgbHex());
+				
+				sessionMap.put(reqGuid, reqObj);
+				
+				return "compareColors";
+			}
+			
 			CustWebDrawdownTran drawdownTran = tranHistoryService.readDrawdownTran(customerId, lookupControlNbr, 1);
 			if (drawdownTran != null) {
 				reqObj.setCanType(drawdownTran.getCanType());
@@ -326,6 +352,14 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			return ERROR;
 		}
 		
+	}
+	
+	private ColorCoordinates getColorCoordinates(CustWebTran cwt) {
+		ColorCoordinates colorCoord;
+		
+		colorCoord = colorCoordCalc.getColorCoordinates(cwt.getMeasCurve());
+		
+		return colorCoord;
 	}
 	
 	private List<JobField> createJobFieldList(List<CustWebJobFields> custWebJobFields) {
@@ -678,14 +712,6 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 		return jobFields;
 	}
 
-	public boolean isMatch() {
-		return match;
-	}
-
-	public void setMatch(boolean match) {
-		this.match = match;
-	}
-
 	public boolean isAccountIsDrawdownCenter() {
 		return accountIsDrawdownCenter;
 	}
@@ -725,6 +751,22 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 
 	public void setSearch(boolean search) {
 		this.search = search;
+	}
+
+	public boolean isMatchStandard() {
+		return matchStandard;
+	}
+
+	public void setMatchStandard(boolean matchStandard) {
+		this.matchStandard = matchStandard;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 
 }

@@ -69,6 +69,54 @@ function waitForShowAndHide(showString){
 	}
 }
 
+function showWaitModal(){
+	$('#pleaseWaitModal').modal('show');
+	rotateSpinner('#pleaseWaitModal');
+}
+
+/** Please Wait modal js - use for displaying wait modal located in footer **/
+//provide message to be displayed in modal body and modal ID 
+//of bs modal that contains input to be processed in java action
+//if relevant, otherwise pass in null
+function pleaseWaitModal_show(displayMessage, inputModal){
+	$('#processMsg').text(displayMessage);
+	
+	if(inputModal){
+		hideInputModal(inputModal);
+	}
+	
+	showWaitModal();
+}
+
+/** Please Wait modal js - use for hiding wait modal located in footer **/
+//call this function when it is necessary to hide the wait modal
+function pleaseWaitModal_hide(){
+	$('#pleaseWaitModal').modal('hide');
+}
+
+function hideInputModal(inputModal){
+	waitForShowAndHide(inputModal);
+}
+
+function rotateSpinner(processModal){
+	let n = 0;
+	$('#spinner').removeClass('d-none');
+	let interval = setInterval(function(){
+    	n += 1;
+    	if(n >= 60000){
+            $('#spinner').addClass('d-none');
+        	clearInterval(interval);
+        }else{
+        	$('#spinner').css("transform","rotate(" + n + "deg)");
+        }
+	},5);
+	
+	$(processModal).on('hide.bs.modal',function(){
+		$('#spinner').addClass('d-none');
+    	if(interval){clearInterval(interval);}
+	});
+}
+
 //Will return an object containing browser name & version
 function getBrowser(){
 	var ua= navigator.userAgent, tem, 
