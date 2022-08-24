@@ -20,7 +20,7 @@ public class LoginActionTest extends StrutsSpringJUnit4TestCase<LoginAction> {
 	
 	LoginAction target;
 	RequestObject reqObj = new RequestObject();
-	String reqGuid = "12345";
+	String guid1 = "12345";
 
 	@Test
 	public void testLoginAction() {
@@ -28,18 +28,19 @@ public class LoginActionTest extends StrutsSpringJUnit4TestCase<LoginAction> {
 		reqObj.setUserId("shercolortest");
 		reqObj.setFirstName("SherColor");
 		reqObj.setLastName("test");
-		reqObj.setGuid(reqGuid);
+		reqObj.setGuid(guid1);
 		reqObj.setHomeStore(9989);
 		reqObj.setTerritory("null");
 		
-		request.setParameter("guid1",reqGuid);
+		request.setParameter("guid1",guid1);
 		HttpSession session = request.getSession();
-		session.setAttribute(reqGuid, reqObj);
+		session.setAttribute(guid1, reqObj);
 		
 		try {
 			executeAction("/loginAction");
 			
 			String reqGuid = (String) findValueAfterExecute("reqGuid");
+			//System.out.println("loginAction reqGuid is " + reqGuid);
 			assertTrue(reqGuid != null);
 			
 		} catch (Exception e) {
