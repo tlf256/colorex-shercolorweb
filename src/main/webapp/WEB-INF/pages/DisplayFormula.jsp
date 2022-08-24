@@ -1218,7 +1218,7 @@ function ParsePrintMessage() {
 
 </script>
 </head>
-<body>
+<body onLoad="window.scroll(0, document.body.scrollHeight)">
 	<!-- including Header -->
 	<s:include value="Header.jsp"></s:include>
 
@@ -1591,9 +1591,7 @@ function ParsePrintMessage() {
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
 						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
-					</div>
-					<div class="col-lg-12 col-md-2 col-sm-1 col-xs-0">
-									<div class="row" id="remainingInfoRow">
+						<div class="row" id="remainingInfoRow">
 					<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
 						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
@@ -2298,13 +2296,28 @@ function ParsePrintMessage() {
 			
 			updateButtonDisplay();
 			
+			//testing new stuff
 			//Enable enter key to print.  No need for mouse click
-			$("#printLabelPrint").keypress(function(event){
+			$("#qtyOrderedTextField").keypress(function(event){
 			    var keycode = (event.keyCode ? event.keyCode : event.which);
 			    if(keycode == '13'){
 					if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
 					    // print button is visible
-						 printButtonClickGetJson(); 
+					    event.preventDefault();
+						$("#formulaDispense").click();
+					}
+			       
+			    }
+			});
+			
+			
+			//Enable enter key to print.  No need for mouse click
+			$("#printLabelPrint").keypress(function(event){
+			    var keycode = (event.keyCode ? event.keyCode : event.which);
+			    if(keycode == '13'){
+					if (qtyOrdered != 0){
+					    // print button is visible
+						 printButtonClickGetJson();
 					}
 			       
 			    }
