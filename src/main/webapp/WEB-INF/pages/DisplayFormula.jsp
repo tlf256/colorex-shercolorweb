@@ -519,9 +519,17 @@ function ParsePrintMessage() {
 							event.stopPropagation();
 							// verify quantity input
 							//var quantity = parseInt($("#dispenseQuantityInput").val);
-							var quantity = parseInt($("#dispenseQuantityInput")
-									.val());
-
+							var quantity = parseInt($("#dispenseQuantityInput").val());
+							var dispensed = parseInt($("#qtyDispensed").text());
+							var ordered = parseInt($('#qtyOrderedTextField').val());
+							
+							//don't let them dispense if they're over the limit
+							if(ordered < dispensed + quantity){
+								console.log("Invalid input was entered. Input was: "+ quantity);
+								$("#dispenseQuantityInputError").text('<s:text name="displayFormula.valueExceeded"/>');
+								$("#dispenseQuantityInput").select();
+							}
+							else{
 							//$("#dispenseQuantityInput").attr("value",quantity);
 							if (quantity > 0 && quantity < 1000) {
 								console
@@ -583,7 +591,8 @@ function ParsePrintMessage() {
 												'<s:text name="displayFormula.invalidInput"/>');
 								$("#dispenseQuantityInput").select();
 							}
-						});
+						}
+					});
 
 		$(document).on("shown.bs.modal", "#positionContainerModal",
 				function(event) {
@@ -1590,13 +1599,17 @@ function ParsePrintMessage() {
 						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
 						<div class="row" id="remainingInfoRow">
 					<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
 						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
 							class="dispenseInfo badge badge-secondary"
 							style="font-size: .9rem;" id="qtyRemaining"></span>
 					</div>
+				</div>
+				<div class="row">
+				<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+				<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+				</div>
 				</div>
 					</div>
 				</div>
