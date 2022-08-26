@@ -6,6 +6,8 @@ server:
         secure: true
         http-only: true
 spring:
+  config:
+    import: optional:file:${user.home}/dev.properties
   datasource:
     password: ${dbPassword}
     username: ${dbUsername}
