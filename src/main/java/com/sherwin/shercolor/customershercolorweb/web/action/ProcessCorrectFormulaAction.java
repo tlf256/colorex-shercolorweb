@@ -84,6 +84,8 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	TinterService tinterService;
 	@Autowired
 	ProductService productService;
+	@Autowired
+	CorrectionInfoBuilder correctionInfoBuilder;
 
 	TinterInfo tinter = null;
 	
@@ -106,9 +108,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			
 			correctionHistory = new ArrayList<CorrectionStep>();
 			
-			CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-			
-			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+			CorrectionInfo corrInfo = correctionInfoBuilder.getCorrectionInfo(reqObj, tranCorrList);
 			logger.debug("back from getCorrInfo");
 			nextUnitNbr = corrInfo.getNextUnitNbr();
 			cycle = corrInfo.getCycle();
@@ -436,8 +436,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 					// This conditional will help pass back information to help construct a shotList for the first accepted container
 					if (stepStatus.equalsIgnoreCase("ACCEPTED")) {
 						List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-						CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-						CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+						CorrectionInfo corrInfo = correctionInfoBuilder.getCorrectionInfo(reqObj, tranCorrList);
 						dispenseItemList = corrInfo.getAcceptedDispenseList();
 					}
 					retVal = SUCCESS;

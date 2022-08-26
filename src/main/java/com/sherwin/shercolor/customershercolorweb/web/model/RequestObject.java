@@ -15,7 +15,7 @@ import com.sherwin.shercolor.common.domain.FormulationResponse;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
 public class RequestObject {
-	
+
 	private String guid;
 	private String colorComp;
 	private String colorID;
@@ -63,6 +63,7 @@ public class RequestObject {
 	private String sizeCode;
 	private List<SwMessage> displayMsgs;
 	private List<SwMessage> canLabelMsgs;
+	private String sherLinkURL;
 	private String tinterSerialNbr;
 	private String tinterModel;
 	private String spectroSerialNbr;
@@ -88,35 +89,35 @@ public class RequestObject {
 	private int dispenseBase = -1;
 	private List<CdsRoomList> allRooms;
 	private String customerType;
-	
+
 	public String getColorComp() {
 		return colorComp;
 	}
 	public void setColorComp(String colorComp) {
 		this.colorComp = colorComp;
 	}
-	
+
 	public String getColorID() {
 		return colorID;
 	}
 	public void setColorID(String colorID) {
 		this.colorID = colorID;
 	}
-	
+
 	public String getColorName() {
 		return colorName;
 	}
 	public void setColorName(String colorName) {
 		this.colorName = colorName;
 	}
-	
+
 	public String getSalesNbr() {
 		return salesNbr;
 	}
 	public void setSalesNbr(String salesNbr) {
 		this.salesNbr = salesNbr;
 	}
-	
+
 	public String getClrntSys() {
 		return clrntSys;
 	}
@@ -213,7 +214,7 @@ public class RequestObject {
 	}
 	public void setIntExt(String intExt) {
 		this.intExt = intExt;
-	}	
+	}
 	public String getRgbHex() {
 		return rgbHex;
 	}
@@ -425,6 +426,12 @@ public class RequestObject {
 		this.colorNotes = "";
 		this.customerType = "";
 	}
+	public String getSherLinkURL() {
+		return sherLinkURL;
+	}
+	public void setSherLinkURL(String sherLinkURL) {
+		this.sherLinkURL = sherLinkURL;
+	}
 	public String getTinterSerialNbr() {
 		return tinterSerialNbr;
 	}
@@ -498,16 +505,16 @@ public class RequestObject {
 		this.printerConfigured = printerConfigured;
 	}
 	public String getClosestSwColorName() {
-		return closestSwColorName;		
+		return closestSwColorName;
 	}
 	public void setClosestSwColorName(String closestSwColorName) {
-		this.closestSwColorName = closestSwColorName;		
+		this.closestSwColorName = closestSwColorName;
 	}
 	public String getClosestSwColorId() {
-		return closestSwColorId;		
+		return closestSwColorId;
 	}
 	public void setClosestSwColorId(String closestSwColorId) {
-		this.closestSwColorId = closestSwColorId;		
+		this.closestSwColorId = closestSwColorId;
 	}
 	public boolean isProductChosenFromDifferentBase() {
 		return productChosenFromDifferentBase;
@@ -516,10 +523,10 @@ public class RequestObject {
 		this.productChosenFromDifferentBase = productChosenFromDifferentBase;
 	}
 	public String getRoomByRoom() {
-		return roomByRoom;		
+		return roomByRoom;
 	}
 	public void setRoomByRoom(String roomByRoom) {
-		this.roomByRoom = roomByRoom;		
+		this.roomByRoom = roomByRoom;
 	}
 	public boolean isPackageColor() {
 		return packageColor;

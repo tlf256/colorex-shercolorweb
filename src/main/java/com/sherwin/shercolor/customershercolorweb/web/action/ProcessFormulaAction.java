@@ -124,6 +124,9 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	
 	@Autowired
 	private ColorService colorService;
+
+	@Autowired
+	private CorrectionInfoBuilder correctionInfoBuilder;
 	
 	public String display(){
 		String retVal = null;
@@ -177,9 +180,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			// Check if correction in process
 			List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 
-			CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-
-			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+			CorrectionInfo corrInfo = correctionInfoBuilder.getCorrectionInfo(reqObj, tranCorrList);
 			if(corrInfo.getCorrStatus().equalsIgnoreCase("MIDUNIT") || corrInfo.getCorrStatus().equalsIgnoreCase("MIDCYCLE")){
 				midCorrection = true;
 				addActionMessage(getText("processFormulaAction.currentlyBeingCorrected"));

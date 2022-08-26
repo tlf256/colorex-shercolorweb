@@ -66,17 +66,12 @@ import be.quodlibet.boxable.line.LineStyle;
  * a change for a potential cause of label PDF open failure.
  * */
 
-@Service
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	static Logger logger = LoggerFactory.getLogger(ShercolorLabelPrintImpl.class);
 
-	@Autowired
 	DrawdownLabelService drawdownLabelService;
-	@Autowired
 	CustomerService customerService;
-	@Autowired
 	ColorMastService colorMastService;
-	@Autowired
 	FormulationService formulationService;
 	
 	private boolean putFormulaOnLabel;
