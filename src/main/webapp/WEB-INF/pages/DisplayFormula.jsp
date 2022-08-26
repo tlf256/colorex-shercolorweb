@@ -424,7 +424,7 @@ function ParsePrintMessage() {
 								qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 								if (parseInt(qtyRemaining.text())<=0) {
 									qtyRemaining.text(0);
-									$("#qtyOrderedTextField").prop('disabled', true);
+								//	$("#qtyOrderedTextField").prop('disabled', true);
 								}
 								
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
@@ -568,7 +568,7 @@ function ParsePrintMessage() {
 														qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 														if (parseInt(qtyRemaining.text())<=0) {
 															qtyRemaining.text(0);
-															$("#qtyOrderedTextField").prop('disabled', true);
+														//	$("#qtyOrderedTextField").prop('disabled', true);
 														}
 
 														updateButtonDisplay();
@@ -1075,9 +1075,9 @@ function ParsePrintMessage() {
 					//console.log("successfully saved room");
 					var qtyRemaining = qtyOrdered - parseInt($('#qtyDispensed').text());
 					$("#qtyRemaining").text(qtyRemaining);
-					if (qtyRemaining == 0) {
-						$("#qtyOrderedTextField").prop('disabled', true);
-					}
+					//if (qtyRemaining == 0) {
+					//	$("#qtyOrderedTextField").prop('disabled', true);
+					//}
 					$("#formulaUserPrintAction_recDirty").val(1);
 				}
 			},
@@ -2289,9 +2289,9 @@ function ParsePrintMessage() {
 			if(qtyOrdered != 0) {
 				$("#qtyOrderedTextField").val(qtyOrdered);
 				//console.log("QTY ORDER TEXTFIELD VALUE = " + $("#qtyOrderedTextField").val());
-				if (remaining == 0 ) {
-					$("#qtyOrderedTextField").prop('disabled', true);
-				}
+				//if (remaining == 0 ) {
+				//	$("#qtyOrderedTextField").prop('disabled', true);
+				//}
 			} else {
 				$("#qtyOrderedTextField").val("");
 			}
