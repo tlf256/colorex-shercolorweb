@@ -2,12 +2,8 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
