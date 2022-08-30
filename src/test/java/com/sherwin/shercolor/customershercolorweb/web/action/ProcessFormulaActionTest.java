@@ -12,10 +12,16 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -27,13 +33,27 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
 @Transactional
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(Parameterized.class)
 @ContextConfiguration("classpath:config/spring/shercolorcommon-test.xml")
 public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<ProcessFormulaAction> {
 
 	ProcessFormulaAction target;
 	RequestObject reqObj = new RequestObject();
 	TinterInfo tintInfo = new TinterInfo();
+	
+    @ClassRule
+    public static final SpringClassRule scr = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule smr = new SpringMethodRule();
+    
+    @Parameter
+    public String actionName;
+    
+    @Parameters
+    public static Object[] data() {
+    	return new Object[] {"/formulaUserPrintAction", "/formulaUserPrintAsJsonAction", "/formulaUserPrintActionNoFormula", "/displayFormulaAction"};
+    }
 	
 	@Before
 	public void setup() {
@@ -112,8 +132,9 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 	}
 	
 	@Test
-	public void testPrintAction() {
-		ActionProxy proxy = getActionProxy("/formulaUserPrintAction");
+	public void testProcessFormulaActions() {
+		ActionProxy proxy = getActionProxy(actionName);
+		System.out.println("actionName is " + actionName);
 		target = (ProcessFormulaAction) proxy.getAction();
 		
 		target.setReqGuid("123456789");
@@ -129,68 +150,21 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 		session.setAttribute(reqObj.getGuid(), reqObj);
 		
 		try {
-			String success = executeAction("/formulaUserPrintAction");
-			assertNotNull(success);						
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
-	}
-	
-	@Test
-	public void testPrintActionJson() {
-		ActionProxy proxy = getActionProxy("/formulaUserPrintAsJsonAction");
-		target = (ProcessFormulaAction) proxy.getAction();
-		
-		target.setReqGuid("123456789");
-		target.setAccountIsSwStore(true);
-		target.setPrintLabelType("storeLabel");
-		target.setPrintOrientation("PORTRAIT");
-		target.setPrintLabelType("");
-		target.setPrintCorrectionLabel(false);
-		target.setShotList(null);
-		
-		request.setParameter("reqGuid", reqObj.getGuid());
-		HttpSession session = request.getSession();
-		session.setAttribute(reqObj.getGuid(), reqObj);
-		
-		try {
-			String success = executeAction("/formulaUserPrintAsJsonAction");
-			assertNotNull(success);						
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
-	}	
-	
-	@Test
-	public void testDisplayAction() {
-		ActionProxy proxy = getActionProxy("/displayFormulaAction");
-		target = (ProcessFormulaAction) proxy.getAction();
-		
-		target.setReqGuid("123456789");
-		
-		request.setParameter("reqGuid", reqObj.getGuid());
-		HttpSession session = request.getSession();
-		session.setAttribute(reqObj.getGuid(), reqObj);
-		
-		try {
-			String success = executeAction("/displayFormulaAction");
-			assertNotNull(success);	
+			String success = executeAction(actionName);
+			assertNotNull(success);
 			
-			reqObj.setCustomerID("400000002");
-			reqObj.setSizeCode("20");
-			target.setTinter(tintInfo);
-			request.setParameter("reqGuid", reqObj.getGuid());
-			session = request.getSession();
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			success = executeAction("/displayFormulaAction");
-			assertNotNull(success);	
-			
+			if(actionName.equals("/displayFormulaAction")) {
+				System.out.println("Running displayFormulaAction using Drawdown account");
+				reqObj.setCustomerID("400000002");
+				reqObj.setSizeCode("20");
+				target.setTinter(tintInfo);
+				request.setParameter("reqGuid", reqObj.getGuid());
+				session = request.getSession();
+				session.setAttribute(reqObj.getGuid(), reqObj);
+				success = executeAction(actionName);
+				assertNotNull(success);	
+				
+			}
 			
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

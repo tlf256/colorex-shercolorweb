@@ -78,12 +78,15 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 	ColorMastService colorMastService;
 	
 	FormulationService formulationService;
+	
+	private boolean putFormulaOnLabel;
 
-	public ShercolorLabelPrintImpl(DrawdownLabelService drawdownLabelService, CustomerService customerService, ColorMastService colorMastService, FormulationService formulationService) {
+	public ShercolorLabelPrintImpl(DrawdownLabelService drawdownLabelService, CustomerService customerService, ColorMastService colorMastService, FormulationService formulationService, boolean putFormulaOnLabel) {
 		this.drawdownLabelService = drawdownLabelService;
 		this.customerService = customerService;
 		this.colorMastService = colorMastService;
 		this.formulationService = formulationService;
+		this.putFormulaOnLabel = putFormulaOnLabel;
 	}
 	
 	//Creating exception string
@@ -218,7 +221,7 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				// Skip to next page to write part B label.
 
 				// Write the part B label on second page.
-				if(partBListFormulaIngredients != null && !partBListFormulaIngredients.isEmpty()){
+				if(partBListFormulaIngredients != null && !partBListFormulaIngredients.isEmpty() && putFormulaOnLabel){
 					partMessage = "* PART B - SEE PART A OF FORMULA *";
 					errorLocation = "Drawing Label Part B";
 					drawLabel(partBListFormulaIngredients, partMessage, printLabelType, canType, clrntAmtList);
@@ -342,15 +345,20 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 				cellPaddingAndBorderSettings(cell, 0, 0, 0, 1f, Color.WHITE, 0);
 			}
 			
-			row = createRow(table, 8);
-			setStandardFormulaTable(listFormulaIngredients, table, row, 8);
-			
-			if(partMessage != null) {
+			if(putFormulaOnLabel) {
 				row = createRow(table, 8);
-				cell = createCell(row, 100, partMessage, haCenter, vaMiddle);
-				cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
-				cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
-			}			
+				setStandardFormulaTable(listFormulaIngredients, table, row, 8);
+			
+				if(partMessage != null) {
+					row = createRow(table, 8);
+					cell = createCell(row, 100, partMessage, haCenter, vaMiddle);
+					cellFontAndColorSettings(cell, 6, Color.BLACK, Color.WHITE);
+					cellPaddingAndBorderSettings(cell, 0, 0, 0, 0, Color.WHITE, 0);
+				}
+				
+			} else {
+				createRow(table, 48);
+			}
 			
 			errorLocation = "Size and Base";
 			// Abbreviating base type name to 16 characters to keep font size on label line.
@@ -471,9 +479,13 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			createOneColumnRow(table, 8, 8, 100, haCenter, vaMiddle, reqObj.getDisplayFormula().getSourceDescr());
 			
 			//Formula Heading and 5 Colorant Lines maximum.
-			rowHeight = 8;
-			Row<PDPage> row = table.createRow(rowHeight);
-			setStandardFormulaTable(listFormulaIngredients, table, row, rowHeight);
+			if(putFormulaOnLabel) {
+				rowHeight = 8;
+				Row<PDPage> row = table.createRow(rowHeight);
+				setStandardFormulaTable(listFormulaIngredients, table, row, rowHeight);
+			} else {
+				createRow(table, 48);
+			}
 			
 			//Product Information
 			errorLocation = "Size and Base";

@@ -168,13 +168,14 @@
 				
 			$(document).ready(function() {	
 				console.log("in docready");
+				
+				var standard = $('#measureStandard').val();
+				var sample = $('#measureSample').val();
 
-				//var measure = $.urlParam('measure');
-				console.log('measure is ' + $('#measureSample').val());
-			    
-			    if($('#measureSample').val() != null && $('#measureSample').val() == "true"){
-			    	$('#measureModalTitle').text(i18n['compareColors.measureFirstSamle']);
-			    }
+				console.log('standard: ' + standard);
+				console.log('sample: ' + sample);
+				
+				setMeasureModalTitle(standard, sample);
 				
 				//this loads on startup!  
 				InitializeMeasureScreen();
@@ -183,6 +184,25 @@
 				GetCalStatusMinUntilCalExpiration();
 				
 			});
+	  	  
+	  	  function setMeasureModalTitle(standard, sample){
+	  		var modalTitle = "";
+			
+			if(standard != null && standard == "true"){
+				console.log("color standard measure");
+				modalTitle = '<s:text name="compareColors.measureStandard"/>';
+		    } else if(sample != null && sample == "true"){
+		    	console.log("color sample measure");
+		    	modalTitle = '<s:text name="compareColors.measureSample"/>';
+		    } else {
+		    	console.log("color measure");
+		    	modalTitle = '<s:text name="measureColor.measureColor"/>';
+		    }
+			
+			console.log("setting modal title to " + modalTitle);
+			
+			$('#measureModalTitle').text(modalTitle);
+	  	  }
 
 		</script>
 	</head>
@@ -193,9 +213,10 @@
 		<s:set var="thisGuid" value="reqGuid" />
 		<s:form id="calibrateForm" action="spectroCalibrateRedirectAction">
 			<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
-			<s:hidden name="compare" id="compareColors" value="%{compare}"/>
-			<s:hidden name="measure" id="measureSample" value="%{measure}"/>
-			<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
+			<s:hidden name="measureStandard" id="measureStandardCal" value="%{measureStandard}"/>
+			\<s:hidden name="measureSample" id="measureSampleCal" value="%{measureSample}"/>
+			<s:hidden name="closestColors" id="closestColorsCal" value="%{closestColors}"/>
+			<s:hidden name="compareColors" id="compareColorsCal" value="%{compareColors}"/>
 		</s:form>
 		<s:form id="measure-color-form" action="MeasureColorNextAction" validate="true"  theme="bootstrap" method="post">
 			<div class="container-fluid">
@@ -206,9 +227,10 @@
 						<s:hidden name="measuredCurve" id="measuredCurve" value=""/>
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
-						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
-						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
+						<s:hidden name="measureStandard" id="measureStandard" value="%{measureStandard}"/>
+						<s:hidden name="measureSample" id="measureSample" value="%{measureSample}"/>
 						<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
+						<s:hidden name="compareColors" id="compareColors" value="%{compareColors}"/>
 					</div>
 				</div>
 				<br>
@@ -259,7 +281,7 @@
 		      		<h2 class="modal-title ml-3"><s:text name="compareColors.measureSecondSample"></s:text></h2>
 		      	</s:if>
 		      	<s:else>
-		      		<h2 class="modal-title ml-3" id="measureModalTitle"><s:text name="measureColor.measureColor"/></h2>
+		      		<h2 class="modal-title ml-3" id="measureModalTitle"></h2>
 		      	</s:else>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" onclick="cancelMeasure()">
 		          <span aria-hidden="true">&times;</span>
