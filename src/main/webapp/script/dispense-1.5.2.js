@@ -349,7 +349,6 @@ function dispenseComplete(return_message) {
 		showTinterErrorModal(i18n['global.dispenseError'], null, return_message);
 	}
 	sendingTinterCommand = "false";
-	//processingDispense = false;
 	startSessionTimeoutTimers();
 }
 function abort() {
