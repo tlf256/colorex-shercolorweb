@@ -56,7 +56,7 @@ var processingDispense = false;
 		// Handle/validate form input on click
 		$('div #dispense').on('click', function() {
 			if (processingDispense == false) {
-				processingDispense = true
+				processingDispense = true;
 			//Starts chain of functions to do all predispense checks and subsequently dispense if all is well.
 				preDispenseRoutine();
 			}

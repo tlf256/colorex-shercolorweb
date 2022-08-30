@@ -321,7 +321,7 @@ function alfaDispenseComplete(return_message) {
 	startSessionTimeoutTimers();
 }
 function dispenseComplete(return_message) {
-
+	processingDispense = false;
 	return_message.command = "Dispense";
 	var teDetail = new TintEventDetail("DISPENSE USER", sessionTinterInfo.lastPurgeUser, 0);
 	var tedArray = [teDetail];
@@ -349,6 +349,7 @@ function dispenseComplete(return_message) {
 		showTinterErrorModal(i18n['global.dispenseError'], null, return_message);
 	}
 	sendingTinterCommand = "false";
+	//processingDispense = false;
 	startSessionTimeoutTimers();
 }
 function abort() {
@@ -567,6 +568,8 @@ function preDispenseRoutine() {
 	}
 	else {
 		console.log("ShotList empty or more than 8 colorants selected to dispense, dispense not executed.");
+		//reset processingDispense flag
+		processingDispense = false;
 	}
 }
 
