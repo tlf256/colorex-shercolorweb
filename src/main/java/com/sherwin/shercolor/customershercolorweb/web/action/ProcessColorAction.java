@@ -445,7 +445,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					
 					return "compareColors";
 				}
-			}
 				
 				String custID = reqObj.getCustomerID();
 				buildBaseLists(custID);
@@ -461,6 +460,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 						closestSwColorId = "";
 					}
 				} 
+			}
 			
 			//set the successful information into the request object.
 			reqObj.setColorComp(colorComp);
