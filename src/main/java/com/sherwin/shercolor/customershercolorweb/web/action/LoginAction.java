@@ -32,19 +32,19 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private Map<String, Object> sessionMap;
+	private transient Map<String, Object> sessionMap;
 
 	@Autowired
-	private CustomerService customerService;
+	private transient CustomerService customerService;
 	@Autowired
-	private EulaService eulaService;
+	private transient EulaService eulaService;
 	@Autowired
-	private TinterService tinterService;
+	private transient TinterService tinterService;
 	@Autowired
-	private TranHistoryService tranHistoryService;
+	private transient TranHistoryService tranHistoryService;
 
 	static Logger logger = LogManager.getLogger(LoginAction.class);
-	private RequestObject reqObj;
+	private transient RequestObject reqObj;
 	private String reqGuid;
 	private String guid1;
 	private String acct;
@@ -56,9 +56,9 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean siteHasTinter;
 	private boolean sessionHasTinter;
 	private boolean siteHasPrinter;
-	private TinterInfo tinter;
+	private transient TinterInfo tinter;
 	private boolean siteHasSpectro;
-	private SpectroInfo spectro;
+	private transient SpectroInfo spectro;
 	private boolean reReadLocalHostTinter;
 	private String loMessage;
 	private int tintQueueCount;
