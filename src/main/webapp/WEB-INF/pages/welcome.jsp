@@ -242,7 +242,7 @@
 			var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
 			spectromessage.messageName = "SpectroMessage";
 
-			spectromessage.spectroConfig.port  = " USB";
+			spectromessage.spectroConfig.port  = "USB";
 			var json = JSON.stringify(spectromessage);
 			sendingSpectroCommand = "true";
 	    	ws_spectro.send(json);
@@ -258,7 +258,7 @@
 			var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
 			spectromessage.messageName = "SpectroMessage";
 
-			spectromessage.spectroConfig.port  = " USB";
+			spectromessage.spectroConfig.port  = "USB";
 			var json = JSON.stringify(spectromessage);
 			sendingSpectroCommand = "true";
 	    	ws_spectro.send(json);

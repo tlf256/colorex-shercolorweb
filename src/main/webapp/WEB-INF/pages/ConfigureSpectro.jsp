@@ -78,7 +78,7 @@
 
 				spectromessage.messageName = "SpectroMessage";
 
-				spectromessage.spectroConfig.port  = " USB";
+				spectromessage.spectroConfig.port  = "USB";
 				var json = JSON.stringify(spectromessage);
 				sendingSpectroCommand = "true";
 				ws_coloreye.send(json);
