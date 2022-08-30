@@ -102,7 +102,7 @@ public class PrintLabelTest2  {
 	
 	@Before
 	public void testInitPrintService() {
-		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+		printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, true);
 	}
 	
 	@Test

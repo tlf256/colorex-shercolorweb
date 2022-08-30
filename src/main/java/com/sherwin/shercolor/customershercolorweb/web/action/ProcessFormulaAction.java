@@ -486,7 +486,22 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, true);
+			printLabel.createLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
+			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
+
+			return SUCCESS;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+	}
+	
+	public String printWithoutFormula() {
+
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, false);
 			printLabel.createLabelPdf(reqObj, printLabelType, printOrientation, canType, clrntAmtList, printCorrectionLabel, shotList);
 			inputStream = new DataInputStream( new FileInputStream(new File("label.pdf")));
 
@@ -501,7 +516,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 		FileInputStream fin = null;
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService);
+			ShercolorLabelPrintImpl printLabel = new ShercolorLabelPrintImpl(drawdownLabelService,customerService,colorMastService,formulationService, true);
 			if (clrntAmtList != null) {
 				clrntAmtList = clrntAmtList.replaceAll("\n", "");
 				clrntAmtList = clrntAmtList.replaceAll("\t", "");
