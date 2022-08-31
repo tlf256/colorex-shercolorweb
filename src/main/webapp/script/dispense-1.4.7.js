@@ -102,13 +102,12 @@ function alfaDispenseProgress(tintermessage) {
 	var shotList = null;
 	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
-	//why is this here?
-	/*if(tinterModel !=null){ 
+	if(tinterModel !=null){ 
 
 		var msgId = tintermessage.msgId;
 		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId); 
 		
-	}*/
+	}
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
@@ -129,13 +128,11 @@ function FMXdispenseProgress(tintermessage) {
 	var shotList = null;
 	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
-	//why is this here?
-	/*if(tinterModel !=null){ 
+	if(tinterModel !=null){ 
 		
-		var msgId = tintermessage.msgId;
-   		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+   		var tintermessage = new TinterMessage(cmd,null,null,null,null);
 	
-	}*/
+	}
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
