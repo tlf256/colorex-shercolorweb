@@ -44,7 +44,7 @@ function buildProgressBars(return_message) {
 			var color = colorList[0];
 			var pct = colorList[1];
 			//fix bug where we are done, but not all pumps report as 100%
-			if (platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
+			if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 				return_message.status == 0)) {
 				pct = "100%";
 			}
@@ -181,8 +181,8 @@ function dispenseProgressResp(return_message) {
 	//$("#progress-message").text(return_message.errorMessage);
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
-	if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") == -1 || platform.startsWith("Lin") &&
-		return_message.errorMessage.indexOf("Dispense Job Complete") == -1) && (return_message.errorNumber == 1 ||
+	if ((return_message.errorMessage.indexOf("done") == -1 || return_message.errorMessage.indexOf("Dispense Job Complete") == -1) 
+		&& (return_message.errorNumber == 1 ||
 		return_message.status == 1)) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
@@ -211,7 +211,7 @@ function dispenseProgressResp(return_message) {
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
-	else if ((return_message.errorMessage.indexOf("done") > 0 || return_message.errorMessage.indexOf("Dispense Job Complete") > 0) 
+	else if ((return_message.errorMessage.indexOf("done") > 0 || return_message.errorMessage.indexOf("Dispense Job Complete") == 0) 
 		|| return_message.errorNumber != 0) {
 		if (return_message.errorNumber == 4226) {
 			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry']
@@ -276,9 +276,7 @@ function FMXDispenseComplete(return_message) {
 //	buildProgressBars(return_message);
 	$("#abort-message").hide();
 
-	if ((return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0 
-		|| platform.startsWith("Lin") && return_message.commandRC == 2)) 
-		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 
@@ -359,9 +357,7 @@ function dispenseComplete(return_message) {
 	let curDate = new Date();
 	sendTinterEvent($('#reqGuid').val(), curDate, return_message, tedArray);
 
-	if ((return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0 
-		|| platform.startsWith("Lin") && return_message.commandRC == 2)) 
-		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
