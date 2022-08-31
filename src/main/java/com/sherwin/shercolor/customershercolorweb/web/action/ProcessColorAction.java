@@ -552,6 +552,11 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	private void buildBaseLists(String custID) {
+		
+		if (thisColor == null) {
+			return;
+		}
+		
 		List<String> baseList;
 		Set<String> interiorBases = new HashSet<>();
 		Set<String> exteriorBases = new HashSet<>();

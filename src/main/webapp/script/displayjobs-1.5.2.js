@@ -332,6 +332,13 @@ function removeWarningPopover(){
 
 function validate() {
 	if(valid) {
+		
+		//Pad shorthand entry of the product number with zeroes
+		let prodNbr = $('#prdnbr').val();
+		//Called from shorthand-prodnbr.js, must be included in the jsp file before this js file
+		prodNbr = checkForZeroes(prodNbr);
+		$('#prdnbr').val(prodNbr);
+		
 		$('#jobSearchForm').submit();
 	} else {
 		$('#searchError').text(i18n['displayJobs.pleaseFixErrors']);
@@ -375,3 +382,4 @@ function validateDateFormat(selector, value) {
 //$(document).ready(function() {
 //	displayJobTable()
 //});
+

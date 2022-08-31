@@ -333,6 +333,24 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			setMessage(e.getMessage());
 		}
 		
+		/* Try to autocomplete the product based on shorthand product format */
+		try {
+			String extendedProdList = productService.extendProdNbr(partialProductNameOrId.toUpperCase());
+			if (extendedProdList != null && extendedProdList.length() > 0) {
+				if (colorType.equals("CUSTOM")) {
+					setOptions(mapToOptions(productService.productAutocompleteBothActive(extendedProdList,reqObj.getCustomerID())));
+				} 
+				else {
+					setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(extendedProdList, intBasesList, extBasesList, reqObj.getCustomerID())));
+				}
+				return SUCCESS;
+			}
+		} 
+		catch (SherColorException e){
+			logger.error(Encode.forJava(e.getMessage()), e);
+			setMessage(e.getMessage());
+		}
+		
 		try {
 			// list all products in autocomplete search because the custom manual option does not have primary base types
 			if (colorType.equals("CUSTOM")) {
