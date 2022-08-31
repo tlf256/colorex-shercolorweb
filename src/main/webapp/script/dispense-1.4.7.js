@@ -44,8 +44,7 @@ function buildProgressBars(return_message) {
 			var color = colorList[0];
 			var pct = colorList[1];
 			//fix bug where we are done, but not all pumps report as 100%
-			if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 1 || platform.startsWith("Lin") &&
-				return_message.errorMessage.indexOf("Dispense Job Complete") > 1) && (return_message.errorNumber == 0 &&
+			if (platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 				return_message.status == 0)) {
 				pct = "100%";
 			}
@@ -103,12 +102,13 @@ function alfaDispenseProgress(tintermessage) {
 	var shotList = null;
 	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
-	if(tinterModel !=null){ 
+	//why is this here?
+	/*if(tinterModel !=null){ 
 
 		var msgId = tintermessage.msgId;
 		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId); 
 		
-	}
+	}*/
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
@@ -129,11 +129,13 @@ function FMXdispenseProgress(tintermessage) {
 	var shotList = null;
 	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
-	if(tinterModel !=null){ 
-
+	//why is this here?
+	/*if(tinterModel !=null){ 
+		
+		var msgId = tintermessage.msgId;
    		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
 	
-	}
+	}*/
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
@@ -212,7 +214,8 @@ function dispenseProgressResp(return_message) {
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
-	else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0) {
+	else if ((return_message.errorMessage.indexOf("done") > 0 || return_message.errorMessage.indexOf("Dispense Job Complete") > 0) 
+		|| return_message.errorNumber != 0) {
 		if (return_message.errorNumber == 4226) {
 			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry']
 		}
