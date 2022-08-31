@@ -1,6 +1,7 @@
 //Global Variables
  var sendingTinterCommand = "false";
  var ws_tinter = new WSWrapper("tinter");
+ var platform = navigator.platform;
 
 $(function(){
     //Initial method calls
@@ -237,7 +238,12 @@ $(function(){
 function move(position){
 	var tinterModel = $("#colorantLevels_tinterModel").val();
 	if(tinterModel.startsWith("FM X")){ // only rotate FM XTinter.
-		var cmd = "MoveToFill";
+		var cmd = "";
+		if(platform.startsWith("Win")){
+			cmd = "MoveToFill";
+		} else {
+			cmd = "Move";
+		}
 		$("#moveInProgressModal").modal('show');
 		rotateIcon();
 		var shotList = [];
@@ -255,7 +261,8 @@ function move(position){
 function moveComplete(myGuid, curDate,return_message){
 	sendTinterEvent(myGuid, curDate, return_message, null);
     waitForShowAndHide("#moveInProgressModal");
-	if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+	if(return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0
+		|| platform.startsWith("Lin") && return_message.commandRC == 2)){
 		// show success message in alert area
 		$("#tinterAlertList").empty();
 		$("#tinterAlertList").append("<li>" + i18n["colorant.moveComplete"] + "</li>");
@@ -364,6 +371,7 @@ function RecdMessage() {
 		if(isTintJSON){
 			switch (return_message.command) {
 				case 'MoveToFill':
+				case 'Move':
 					sendingTinterCommand = "false";
 					moveComplete(myGuid,curDate,return_message,null);
 					break;

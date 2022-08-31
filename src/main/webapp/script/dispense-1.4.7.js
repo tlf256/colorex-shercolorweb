@@ -182,8 +182,7 @@ function dispenseProgressResp(return_message) {
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
 	if ((return_message.errorMessage.indexOf("done") == -1 || return_message.errorMessage.indexOf("Dispense Job Complete") == -1) 
-		&& (return_message.errorNumber == 1 ||
-		return_message.status == 1)) {
+		&& (return_message.errorNumber == 1 || return_message.status == 1)) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
@@ -201,7 +200,7 @@ function dispenseProgressResp(return_message) {
 				tinterErrorList.push(item.message);
 			});
 		}
-		if (return_message.errorMessage != null) {
+		if (platform.startsWith("Win") && return_message.errorMessage != null) {
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
@@ -297,9 +296,10 @@ function FMXDispenseComplete(return_message) {
 						});
 						*/
 		} else {
-
-			tinterErrorList.push(return_message.errorMessage);
-			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			if(platform.startsWith("Win")){
+				tinterErrorList.push(return_message.errorMessage);
+				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			}
 		}
 		if ($('#progressok').length > 0 ) {
 			$('#progressok').removeClass('d-none');
