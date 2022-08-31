@@ -359,7 +359,9 @@ function dispenseComplete(return_message) {
 	let curDate = new Date();
 	sendTinterEvent($('#reqGuid').val(), curDate, return_message, tedArray);
 
-	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+	if ((return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0 
+		|| platform.startsWith("Lin") && return_message.commandRC == 2)) 
+		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
