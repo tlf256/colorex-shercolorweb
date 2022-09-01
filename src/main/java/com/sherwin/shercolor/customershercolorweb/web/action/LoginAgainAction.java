@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -55,10 +56,15 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 		RequestObject reqObj = null;
 		try {
 			// Get the customershercolorweb.properties file data first.
-			if (ArrayUtils.contains(environment.getActiveProfiles(),"test"))
+			if (ArrayUtils.contains(environment.getActiveProfiles(),"test")) {
 				prop.load(this.getClass().getResourceAsStream("/customershercolorweb.properties"));
-			else
-				prop.load(Files.newInputStream(Paths.get("/web_apps/server/shercolor/deploy/customershercolorweb.properties")));
+			}
+			else {
+				try (InputStream inputStream = Files.newInputStream(Paths.get("/web_apps/server/shercolor/deploy/customershercolorweb.properties")))
+				{
+					prop.load(inputStream);
+				}
+			}
 
 			dbEnv = prop.getProperty("dbEnv");
 			sherLinkURL = prop.getProperty("sherLinkLoginUrl." + dbEnv);
