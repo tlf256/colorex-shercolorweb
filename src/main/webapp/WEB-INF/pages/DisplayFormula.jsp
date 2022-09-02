@@ -487,10 +487,10 @@ function ParsePrintMessage() {
 							event.preventDefault();
 							event.stopPropagation();
 
-							//Attempt to expand the shorthand product
-							let expandedProdNbr = "";
+							//Attempt to fill the shorthand product
+							let filledProdNbr = "";
 							$.ajax({	
-								url : "expandProdNbrAction",
+								url : "fillProdNbrAction",
 								dataType : "json",
 								data : {"shorthandProdNbr" : $("#verifyScanInput").val(), "reqGuid" : $('#reqGuid').val() },
 								success : function(data){
@@ -498,13 +498,13 @@ function ParsePrintMessage() {
 				                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
 				                	}
 									else {
-										expandedProdNbr = data.shorthandProdNbr;
+										filledProdNbr = data.shorthandProdNbr;
 										// verify scan
 										if ($("#verifyScanInput").val() !== "" 
 											&& ($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}" 
 											|| $("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}"
 									        || $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" 
-											|| expandedProdNbr == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}"
+											|| filledProdNbr == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}"
 											|| $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
 												waitForShowAndHide("#verifyModal");
 												$("#positionContainerModal").modal('show');

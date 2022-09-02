@@ -458,7 +458,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
-	public String expandProdNbr() {
+	public String fillProdNbr() {
 		try {
 			//Shorthand prodNbr-szCode passed
 			if (shorthandProdNbr.contains("-")) {
