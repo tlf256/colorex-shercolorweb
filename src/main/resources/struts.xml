@@ -337,6 +337,12 @@
 			<result name="success" type="json"/>
 			<result name="error" type="json"/>
 		</action>
+		<action name="expandProdNbrAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="expandProdNbr">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
 		<action name="colorLookupSearchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="colorLookup">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

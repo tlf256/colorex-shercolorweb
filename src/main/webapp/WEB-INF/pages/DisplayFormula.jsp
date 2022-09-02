@@ -2401,7 +2401,7 @@ function ParsePrintMessage() {
 			});
 			
 			//TODO if in correction, go to correction screen.
-		});
+		};
 
 		function updateButtonDisplay() {
 			// update button display only if account is customer, not drawdown center

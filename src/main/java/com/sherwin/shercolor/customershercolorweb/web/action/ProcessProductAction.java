@@ -51,6 +51,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String reqGuid;
 	private String OVERRIDEWARNMSG;
 	private String forceProd;
+	private String shorthandProdNbr;
 	
 	@Autowired
 	private ProductService productService;
@@ -97,7 +98,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			 
 			 //convert entered value to salesNbr (could be entered as SalesNbr or UPC)
 			 String enteredSalesNbr = productService.getSalesNbr(partialProductNameOrId);
-			 if(enteredSalesNbr==null){
+			 if(enteredSalesNbr == null){
 				 this.setSalesNbr(partialProductNameOrId);
 			 } else {
 				 this.setSalesNbr(enteredSalesNbr);
@@ -335,15 +336,20 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		
 		/* Try to autocomplete the product based on shorthand product format */
 		try {
-			String extendedProdList = productService.extendProdNbr(partialProductNameOrId.toUpperCase());
-			if (extendedProdList != null && extendedProdList.length() > 0) {
+			String expandedProdList = productService.fillProdNbr(partialProductNameOrId.toUpperCase());
+			if (expandedProdList != null && expandedProdList.length() > 0) {
+				List<CdsProd> cdsProdList = new ArrayList<>();
 				if (colorType.equals("CUSTOM")) {
-					setOptions(mapToOptions(productService.productAutocompleteBothActive(extendedProdList,reqObj.getCustomerID())));
+					cdsProdList = productService.productAutocompleteBothActive(expandedProdList,reqObj.getCustomerID());
+					setOptions(mapToOptions(cdsProdList));
 				} 
 				else {
-					setOptions(mapToOptions(productService.productAutocompleteCompatibleBase(extendedProdList, intBasesList, extBasesList, reqObj.getCustomerID())));
+					cdsProdList = productService.productAutocompleteCompatibleBase(expandedProdList, intBasesList, extBasesList, reqObj.getCustomerID());
+					setOptions(mapToOptions(cdsProdList));
 				}
-				return SUCCESS;
+				if (!cdsProdList.isEmpty()) {
+					return SUCCESS;
+				}
 			}
 		} 
 		catch (SherColorException e){
@@ -452,7 +458,33 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
-	
+	public String expandProdNbr() {
+		try {
+			//Shorthand prodNbr-szCode passed
+			if (shorthandProdNbr.contains("-")) {
+				String prodNbr = shorthandProdNbr.substring(0, shorthandProdNbr.indexOf("-"));
+				String szCode = shorthandProdNbr.substring(shorthandProdNbr.indexOf("-"));
+				String expandedProduct = productService.fillProdNbr(prodNbr);
+				shorthandProdNbr = expandedProduct + szCode;
+			}
+			//Shorthand prodNbr szCode passed
+			else if (shorthandProdNbr.contains(" ")) {
+				String prodNbr = shorthandProdNbr.substring(0, shorthandProdNbr.indexOf(" "));
+				String szCode = shorthandProdNbr.substring(shorthandProdNbr.indexOf(" ") + 1);
+				String expandedProduct = productService.fillProdNbr(prodNbr);
+				shorthandProdNbr = expandedProduct + "-" + szCode;
+			}
+			//Only shorthand product number was passed
+			else {
+				String expandedProduct = productService.fillProdNbr(shorthandProdNbr);
+				shorthandProdNbr = expandedProduct;
+			}
+			return SUCCESS;
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(), e);
+			return ERROR;
+		}
+	}
 
 	public List<autoComplete> getOptions() {
 		return options;
@@ -534,6 +566,16 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 	public void setForceProd(String forceProd) {
 		this.forceProd = forceProd;
+	}
+
+
+	public String getShorthandProdNbr() {
+		return shorthandProdNbr;
+	}
+
+
+	public void setShorthandProdNbr(String shorthandProdNbr) {
+		this.shorthandProdNbr = shorthandProdNbr;
 	}	
 
 }
