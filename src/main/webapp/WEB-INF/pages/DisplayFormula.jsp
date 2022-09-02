@@ -486,22 +486,39 @@ function ParsePrintMessage() {
 						function(event) {
 							event.preventDefault();
 							event.stopPropagation();
-							// verify scan
-							if ($("#verifyScanInput").val() !== ""
-									&& ($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}"
-											|| $("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}"
-											|| $("#verifyScanInput").val()
-													.toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" || $(
-											"#verifyScanInput").val()
-											.toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
-								waitForShowAndHide("#verifyModal");
 
-								$("#positionContainerModal").modal('show');
-							} else {
-								$("#verifyScanInputError").text(
-										'<s:text name="displayFormula.productScannedDoesNotMatch"/>');
-								$("#verifyScanInput").select();
-							}
+							//Attempt to expand the shorthand product
+							let expandedProdNbr = "";
+							$.ajax({	
+								url : "expandProdNbrAction",
+								dataType : "json",
+								data : {"shorthandProdNbr" : $("#verifyScanInput").val(), "reqGuid" : $('#reqGuid').val() },
+								success : function(data){
+									if(data.sessionStatus === "expired"){
+				                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				                	}
+									else {
+										expandedProdNbr = data.shorthandProdNbr;
+										// verify scan
+										if ($("#verifyScanInput").val() !== "" 
+											&& ($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}" 
+											|| $("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}"
+									        || $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" 
+											|| expandedProdNbr == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}"
+											|| $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
+												waitForShowAndHide("#verifyModal");
+												$("#positionContainerModal").modal('show');
+										} 
+										else {
+											$("#verifyScanInputError").text(
+													'<s:text name="displayFormula.productScannedDoesNotMatch"/>');
+											$("#verifyScanInput").select();
+										}
+									}
+								}
+							});
+							
+					
 						});
 		
 		$(document).on("keypress", "#dispenseQuantityInput", function(event) {
