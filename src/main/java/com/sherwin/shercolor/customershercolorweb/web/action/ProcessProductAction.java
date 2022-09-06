@@ -460,6 +460,11 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	
 	public String fillProdNbr() {
 		try {
+			if (shorthandProdNbr == null) {
+				shorthandProdNbr = "";
+				return ERROR;
+			}
+			
 			//Shorthand prodNbr-szCode passed
 			if (shorthandProdNbr.contains("-")) {
 				String prodNbr = shorthandProdNbr.substring(0, shorthandProdNbr.indexOf("-"));
