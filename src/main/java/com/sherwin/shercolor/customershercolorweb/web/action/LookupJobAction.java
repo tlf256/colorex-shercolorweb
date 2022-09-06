@@ -143,9 +143,11 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			//Expand the product number if shorthand is used
-			String enteredProduct = thc.getProdNbr();
-			if (enteredProduct != null && enteredProduct.length() < 9 && enteredProduct.length() > 0) {
-				thc.setProdNbr(productService.fillProdNbr(enteredProduct));
+			if (thc != null) {
+				String enteredProduct = thc.getProdNbr();
+				if (enteredProduct != null && enteredProduct.length() < 9 && enteredProduct.length() > 0) {
+					thc.setProdNbr(productService.fillProdNbr(enteredProduct));
+				}	
 			}
 			
 			// check if this account is a drawdown center
