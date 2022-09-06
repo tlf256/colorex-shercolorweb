@@ -30,6 +30,11 @@ $(function(){
         var curRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[0]);
         var maxRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[1]);
         var position = $('#key', this).attr('value');
+
+		var color = $('#color' + rowVal).text();
+        var colorArr = color.split(" ");
+        var clrnt = colorArr[0];
+        console.log("COLORANT CODE: " + clrnt);
         
         var str = {
         		"updateType" : idSubstr,
@@ -37,7 +42,7 @@ $(function(){
         		"reqGuid" : $('#reqGuid').val()
         		};
         //move in to position
-        move($('#key', this).attr('value'));
+        move($('#key', this).attr('value'), clrnt);
         if(idSubstr == "addqt"){
             console.log("in add function");
             if((curRowAmt + 32.0) <= maxRowAmt){
@@ -235,19 +240,20 @@ $(function(){
     }
 
 });
-function move(position){
+function move(position, clrntCode){
 	var tinterModel = $("#colorantLevels_tinterModel").val();
 	if(tinterModel.startsWith("FM X")){ // only rotate FM XTinter.
 		var cmd = "";
 		if(platform.startsWith("Win")){
 			cmd = "MoveToFill";
+			clrntCode = null;
 		} else {
 			cmd = "Move";
 		}
 		$("#moveInProgressModal").modal('show');
 		rotateIcon();
 		var shotList = [];
-		shotList.push(new Colorant(null, 1, position,0));
+		shotList.push(new Colorant(clrntCode, 1, position,0));
 		var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
 		var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
