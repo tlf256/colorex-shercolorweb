@@ -49,11 +49,11 @@ public class ProcessProductLookupAction extends ActionSupport implements Session
 
 		boolean buildTable = false;
 		
-		if (intBasesStr != null) {
+		if (intBasesStr != null && intBasesStr.length() > 0 && !intBasesStr.equals("PACKAGE COLOR")) {
 			buildTable = true;
 			intBases = intBasesStr.split(",");
 		}
-		if (extBasesStr != null) {
+		if (extBasesStr != null && extBasesStr.length() > 0 && !extBasesStr.equals("PACKAGE COLOR")) {
 			buildTable = true;
 			extBases = extBasesStr.split(",");
 		}
