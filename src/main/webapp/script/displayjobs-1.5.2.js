@@ -375,3 +375,4 @@ function validateDateFormat(selector, value) {
 //$(document).ready(function() {
 //	displayJobTable()
 //});
+
