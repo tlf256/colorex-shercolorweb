@@ -253,6 +253,10 @@ function printButtonClickGetJson() {
 			numLabels = numLabelsVal;
 		}
 		printLabel(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+		var isPrintWithLabelChecked = $('#labelWithFormula').is(":checked");
+		if(isPrintWithLabelChecked === false) {
+			$('#labelWithFormula').prop('checked', true);
+		}
 	}
 
 }
