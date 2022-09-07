@@ -338,7 +338,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		try {
 			String expandedProdList = productService.fillProdNbr(partialProductNameOrId.toUpperCase());
 			if (expandedProdList != null && expandedProdList.length() > 0) {
-				List<CdsProd> cdsProdList = new ArrayList<>();
+				List<CdsProd> cdsProdList;
 				if (colorType.equals("CUSTOM")) {
 					cdsProdList = productService.productAutocompleteBothActive(expandedProdList,reqObj.getCustomerID());
 					setOptions(mapToOptions(cdsProdList));
