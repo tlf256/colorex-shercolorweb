@@ -38,13 +38,14 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 	private String spectroModel;
 	private String spectroSerialNbr;
 	private String spectroPort;
+	RequestObject reqObj;
 	
 	@Override
 	public String execute(){
 		String retVal=null;
 		
 		try {
-			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
 			if(reqObj == null) {
 				logger.error("Session expired");
@@ -68,9 +69,14 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 			String[] config = configString.split(",");
 			
 			spectroEvent.setSpectroSerialNbr(config[0].substring(7));
-			spectroEvent.setSpectroPort(config[1].substring(5));
-			spectroEvent.setSpectroModel(config[2].substring(6));
+			spectroEvent.setSpectroPort(config[1].substring(6));
+			spectroEvent.setSpectroModel(config[2].substring(7));
 			
+		}
+		
+		if(spectroEvent.getSpectroCommand().equals("ReadConfig")) {
+			reqObj.setSpectroModel(spectroEvent.getSpectroModel());
+			reqObj.setSpectroSerialNbr(spectroEvent.getSpectroSerialNbr());
 		}
 	}
 	
@@ -103,7 +109,7 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 		getItemsFromSpectroConfig();
 		
 		List<SwMessage> errorList = spectroService.writeSpectroEvent(spectroEvent);
-		
+		sessionMap.put(reqGuid, reqObj);
 		if (!errorList.isEmpty()) {
 			return ERROR;
 		}
