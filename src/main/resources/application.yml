@@ -26,7 +26,7 @@ spring:
     ansi:
       enabled: ALWAYS
   profiles:
-      # login profile is unconditionally included in order to use Wildfly security JNDI connection
+      # login profile is unconditionally included in order to use the Wildfly security JNDI connection
       include: login
       # activate db type (oracle or postgres) and environment (dev, qa or prod)
 

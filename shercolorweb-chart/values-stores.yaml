@@ -59,3 +59,20 @@ postgresql:
 dbPostgresUrl: "jdbc:postgresql://{{ .Chart.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
 springProfilesActive: "{{ .Values.env }},postgres"
 dbUsername: "{{ .Values.postgresql.global.postgresql.auth.username }}"
+
+#app config values per env
+dev:
+  oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+  sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=extd-scan.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=STECOMD)))"
+  sherlinkDbUsername: "ecomm7"
+  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
+qa:
+  oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+  sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=extd-scan.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=STECOMQ)))"
+  sherlinkDbUsername: "ecomm7"
+  sherlinkLoginUrl: "https://wqweb1.sherwin.com/sher-link/user/login.do"
+prod:
+  oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+  sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(FAILOVER = ON) (LOAD_BALANCE = OFF) (ADDRESS=(PROTOCOL=TCP)(HOST=stecomp_dbhost.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=STECOMP_PRIM)))"
+  sherlinkDbUsername: "ecomm7"
+  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"

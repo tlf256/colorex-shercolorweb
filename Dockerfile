@@ -9,6 +9,10 @@ FROM openjdk:8-jre-slim
 LABEL maintainer="SherColor Team"
 EXPOSE 8090 8543
 COPY --from=builder target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
+RUN echo $HOME
+#ARG local
+#RUN if [[ "$local" = "true" ]] ; then cp ~/dev.properties home/dev.properties ; fi
+#RUN ls -la home
 ENTRYPOINT ["java","-jar","SherColorWeb-bootable.jar"]
 
 # Uncomment this section to simply build an image from a jar pre-built with 'mvn package'

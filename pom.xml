@@ -282,11 +282,7 @@
 	      <artifactId>groovy</artifactId>
 	      <version>3.0.10</version>
 	    </dependency>
-        <dependency>
-            <groupId>org.jeasy</groupId>
-            <artifactId>easy-random-bean-validation</artifactId>
-            <version>5.0.0</version>
-        </dependency><!-- Needed only to appease Spring Boot/Wildfly integration -->
+        <!-- Needed only to appease Spring Boot/Wildfly integration -->
         <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
