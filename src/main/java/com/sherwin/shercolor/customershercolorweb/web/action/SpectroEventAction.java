@@ -133,7 +133,7 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 		this.spectroMessage = spectroMessage;
 	}
 	
-	public Map<String, Object> getTinterMessage() {
+	public Map<String, Object> getSpectroMessage() {
 		return spectroMessage;
 	}
 
