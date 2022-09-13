@@ -61,8 +61,9 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 		return retVal;
 	}
 	
-	private void getItemsFromSpectroConfig() {
+	private boolean getItemsFromSpectroConfig() {
 		
+		boolean validSpectro = false;
 		if(spectroMessage.get("spectroConfig")!=null) {
 			String spectroConfig = spectroMessage.get("spectroConfig").toString();
 			String configString = StringUtils.substringBetween(spectroConfig, "{", "}");
@@ -72,12 +73,20 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 			spectroEvent.setSpectroPort(config[1].substring(6));
 			spectroEvent.setSpectroModel(config[2].substring(7));
 			
+		
+		
+			if(spectroEvent.getSpectroCommand().equals("ReadConfig")) {
+				reqObj.setSpectroModel(spectroEvent.getSpectroModel());
+				reqObj.setSpectroSerialNbr(spectroEvent.getSpectroSerialNbr());
+			}
+			
+			if(!spectroEvent.getSpectroModel().isEmpty() &&
+			   !spectroEvent.getSpectroSerialNbr().isEmpty()) {
+				validSpectro = true;
+			}
 		}
 		
-		if(spectroEvent.getSpectroCommand().equals("ReadConfig")) {
-			reqObj.setSpectroModel(spectroEvent.getSpectroModel());
-			reqObj.setSpectroSerialNbr(spectroEvent.getSpectroSerialNbr());
-		}
+		return validSpectro;
 	}
 	
 	private String processSpectroEvent() {
@@ -106,7 +115,11 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 		if(spectroMessage.get("errorCode")!=null) spectroEvent.setErrorCode(Integer.parseInt(spectroMessage.get("errorCode").toString()));
 		if(spectroMessage.get("errorMessage")!=null) spectroEvent.setErrorMsg(spectroMessage.get("errorMessage").toString());
 		if(spectroMessage.get("deltaE")!=null) spectroEvent.setDeltaE(Integer.parseInt(spectroMessage.get("deltaE").toString()));
-		getItemsFromSpectroConfig();
+		//If an invalid model or serial number is found an error is returned
+		boolean validSpectro = getItemsFromSpectroConfig();
+		if(!validSpectro) {
+			return ERROR;
+		}
 		
 		List<SwMessage> errorList = spectroService.writeSpectroEvent(spectroEvent);
 		sessionMap.put(reqGuid, reqObj);
