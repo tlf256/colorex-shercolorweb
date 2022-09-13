@@ -1665,14 +1665,14 @@ function ParsePrintMessage() {
 						<s:if test = "%{sessionHasTinter}">
 						<s:submit cssClass="btn btn-primary" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
 							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
-						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
+						<s:submit cssClass="btn btn-secondary" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						</s:if>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.nextJob')}"
                         	onclick="return promptToSave();" action="userCancelAction" />
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -1700,8 +1700,6 @@ function ParsePrintMessage() {
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<button type="button" class="btn btn-primary" id="formulaDispense"
 							onclick="setDispenseQuantity(false)" autofocus="autofocus"><s:text name="global.dispense"/></button>
-						<button type="button" class="btn btn-primary" id="formulaManualDispense"
-							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
 						<s:if test = "%{accountIsSwStore==true}">	
@@ -1718,7 +1716,7 @@ function ParsePrintMessage() {
 							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.nextJob')}"
 	                        onclick="return promptToSave();" action="userCancelAction" />
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -1728,6 +1726,8 @@ function ParsePrintMessage() {
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:submit cssClass="btn btn-secondary" id="changeProductBtn" action="changeProductAction" 
 							onclick="return true;" value="%{getText('displayFormula.changeProduct')}"/>
+						<button type="button" class="btn btn-secondary" id="formulaManualDispense"
+							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:if test="%{#session[reqGuid].colorType.equals('COMPETITIVE') || #session[reqGuid].colorType.equals('CUSTOMMATCH') || #session[reqGuid].colorType.equals('SAVEDMEASURE')}">	
 							<s:submit cssClass="btn btn-secondary" id="changeLightSourceBtn" action="changeLightSourceAction" 
 								onclick="return true;" value="%{getText('displayFormula.changeLightSource')}"/>
@@ -2356,6 +2356,7 @@ function ParsePrintMessage() {
 			       
 			    }
 			});
+			
 			$('#printLabelModal').on('shown.bs.modal', function () {
 				$("#printLabelPrint").focus();
 			}); 
@@ -2403,6 +2404,37 @@ function ParsePrintMessage() {
 				$('#labelWithFormula').css("visibility", "hidden");
 				$('#labelWithFormulaLabel').css("visibility", "hidden");
 			});
+			
+			//Check if tinter is present. If so, make sure the dispense button has a primary color.
+			if( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+				$('#dispenseSampleButton').attr('class', 'btn btn-primary');
+				$('#drawdownSaveButton').attr('class', 'btn btn-secondary');
+			} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'false' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+				$('#dispenseSampleButton').attr('class', 'btn btn-secondary');
+				$('#drawdownSaveButton').attr('class', 'btn btn-primary');
+			} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'false' ) {
+				$('#formulaDispense').attr('class', 'btn btn-primary');
+				$('#formulaUserPrintAction_formulaUserSaveAction').attr('class', 'btn btn-secondary');
+			} else {
+				$('#formulaDispense').attr('class', 'btn btn-secondary');
+				$('#formulaUserPrintAction_formulaUserSaveAction').attr('class', 'btn btn-primary');
+			}
+			
+			//Trigger the button based on what the primary button is on the page via the Enter key.
+			$(document).on('keyup', function(event) {
+				if(event.which === 13) {
+					if( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+						$('#dispenseSampleButton').click();
+					} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'false' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true') {
+						$('#drawdownSaveButton').click();
+					} else if ($('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'false' ) {
+						$('#formulaDispense').click();
+					} else {
+						$('#formulaUserPrintAction_formulaUserSaveAction').click();
+					}
+				}
+			});
+			
 			
 			//TODO if in correction, go to correction screen.
 		});
