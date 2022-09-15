@@ -1668,7 +1668,7 @@ function ParsePrintMessage() {
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary ml-5" value="%{getText('displayFormula.nextJob')}"
                         	onclick="return promptToSave();" action="userCancelAction" />
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
