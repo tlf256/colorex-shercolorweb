@@ -34,7 +34,7 @@ public class SpectroEventAction extends ActionSupport implements SessionAware, L
 	private String responseDate;
 	private String requestDate;
 	
-	RequestObject reqObj;
+	private transient RequestObject reqObj;
 	
 	@Override
 	public String execute(){
