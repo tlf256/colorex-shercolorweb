@@ -23,7 +23,7 @@
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
 <script type="text/javascript">
 var processingDispense = false;
 	<s:iterator value="tinter.canisterList" status="i">
@@ -56,7 +56,7 @@ var processingDispense = false;
 		// Handle/validate form input on click
 		$('div #dispense').on('click', function() {
 			if (processingDispense == false) {
-				processingDispense = true
+				processingDispense = true;
 			//Starts chain of functions to do all predispense checks and subsequently dispense if all is well.
 				preDispenseRoutine();
 			}

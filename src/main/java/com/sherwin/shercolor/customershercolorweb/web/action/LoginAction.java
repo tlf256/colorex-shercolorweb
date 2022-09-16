@@ -3,6 +3,9 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -10,6 +13,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.owasp.encoder.Encode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +32,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
+import org.springframework.core.env.Environment;
+
+
 public class LoginAction extends ActionSupport  implements SessionAware, LoginRequired {
 	/**
 	 * 
@@ -36,6 +43,9 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private transient Map<String, Object> sessionMap;
 	private transient CustomerService customerService;
 	private transient EulaService eulaService;
+
+	@Autowired
+	private transient Environment environment;
 
 	@Autowired
 	private transient TinterService tinterService;
@@ -105,7 +115,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				testMode = "";
 			}
 			// Get the customershercolorweb.properties file data next.
-			prop.load(new FileInputStream("/web_apps/server/shercolor/deploy/customershercolorweb.properties"));
+			if (ArrayUtils.contains(environment.getActiveProfiles(),"test"))
+				prop.load(this.getClass().getResourceAsStream("/customershercolorweb.properties"));
+			else
+				prop.load(Files.newInputStream(Paths.get("/web_apps/server/shercolor/deploy/customershercolorweb.properties")));
+
 			dbEnv = prop.getProperty("dbEnv");
 			sherLinkURL = prop.getProperty("sherLinkLoginUrl." + dbEnv);
 			sherLinkTokenWSURL = prop.getProperty("sherLinkTokenSWUrl." + dbEnv);
@@ -776,5 +790,4 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	public int getTintQueueCount() {
 		return tintQueueCount;
 	}
-
 }

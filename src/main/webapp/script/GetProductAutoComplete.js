@@ -8,22 +8,19 @@ $(document).ready(function() {
 		delay : 500,
 		autoFocus : 'true',
 		source : function(request, response){
+//			let prodNbr = request.term;
+			//Called from shorthand-prodnbr.js, must be included in the jsp file before this js file
+//			prodNbr = checkForZeroes(prodNbr);
+//			console.log(prodNbr);
 			$.ajax({	
 				url : "listProducts.action",
 				dataType : "json",
 				data : {"partialProductNameOrId" : request.term, "reqGuid" : $('#reqGuid').val()  },
-//				success : function(data){
-//					response: ($.map(data, function(v,i){
-//                        return {
-//                            label: v.label,
-//                            value: v.value
-//                        }}))
-//				}
 				success : function(data){
 					if(data.sessionStatus === "expired"){
                 		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
                 	}
-                	else{
+                	else {
                 		response(data.slice(0,100));
                 	}
 				}

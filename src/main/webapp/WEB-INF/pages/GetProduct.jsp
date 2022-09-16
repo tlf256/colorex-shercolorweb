@@ -71,6 +71,7 @@
 	    		// internationalize CUSTOM, MANUAL, and MATCH; otherwise leave color company and ID untranslated
 		    	switch("${sessionScope[thisGuid].colorComp}"){
 		    		case "CUSTOM":
+		    			$('#prodLookupBtn').hide();
 		    			colorCompany = '<s:text name="processColorAction.custom"/>';
 		    			break;
 		    		default:
@@ -78,9 +79,11 @@
 		    	}
 		    	switch("${sessionScope[thisGuid].colorID}"){
 		    		case "MANUAL":
+		    			$('#prodLookupBtn').hide();
 		    			colorID = '<s:text name="processColorAction.manual"/>';
 		    			break;
 		    		case "MATCH":
+		    			$('#prodLookupBtn').hide();
 		    			colorID = '<s:text name="processColorAction.match"/>';
 		    			break;
 		    		default:
