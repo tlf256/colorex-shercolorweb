@@ -1,21 +1,11 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-//import javax.net.ssl.HostnameVerifier;
-//import javax.net.ssl.HttpsURLConnection;
-//import javax.net.ssl.SSLContext;
-//import javax.net.ssl.SSLSession;
-//import javax.net.ssl.TrustManager;
-//import javax.net.ssl.X509TrustManager;
-//import javax.xml.soap.*;
-
 import java.io.FileInputStream;
 import java.io.IOException;
-//import java.security.SecureRandom;
-//
-//import java.security.cert.CertificateException;
-//import java.security.cert.X509Certificate;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -24,16 +14,12 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.owasp.encoder.Encode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.Node;
-
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
@@ -45,8 +31,9 @@ import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
-import com.sherwin.shercolor.customershercolorweb.web.action.LoginRequired;
+
 import org.springframework.core.env.Environment;
+
 
 public class LoginAction extends ActionSupport  implements SessionAware, LoginRequired {
 	/**
