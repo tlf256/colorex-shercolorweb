@@ -1252,6 +1252,16 @@
 			<result name="success" type="json"/>
 			<result name="error" type="json"/>
 		</action>
+		<action name="logSpectroEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroEventAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+			<result name="error" type="json"/>
+		</action>
 		<action name="updateColorantsTxtAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateColorantsTxtAction" method="execute">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
