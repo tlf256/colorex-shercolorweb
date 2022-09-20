@@ -1411,27 +1411,7 @@ function ParsePrintMessage() {
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
 			</s:if>
-			<s:if test="%{accountUsesRoomByRoom==true}">
-				<div class="row mt-3">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-						<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
-							listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
-						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
-							<s:text name="displayFormula.pleaseSelectARoom"/>
-						</div>
-						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" maxlength="30" onblur="validateCustomRoom()"/>
-						<s:hidden name="roomChoice" value="" />
-						<div id="otherRoomErrorText" style="color:red" class="d-none">
-							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
-						</div>
-					</div>
-					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
-			</s:if>
+
 			<s:if test = "%{accountIsDrawdownCenter==true && sessionHasTinter == true}">
 				<div class="row mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
@@ -1600,61 +1580,77 @@ function ParsePrintMessage() {
 				</div>
 			</div>
 			
-							<!-- new stuff -->
-							<div class="row mt-3">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-						<div class="col-lg-1 col-md-2 col-sm-3 col-xs-4">
-							<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
-						</div>
-						<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
-							<s:textfield id="qtyOrderedTextField" autofocus="autofocus" onblur="validateQtyOrdered()"/>
-							<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
-						</div>
-						<br>
-				
-				
-							<s:if test="%{siteHasTinter==true}">
-				<div class="row" id="dispenseInfoRow">
-					
-					<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
-							class="dispenseInfo badge badge-secondary"
-							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-						<div class="row" id="remainingInfoRow">
-					<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
-							class="dispenseInfo badge badge-secondary"
-							style="font-size: .9rem;" id="qtyRemaining"></span>
+			<s:if test="%{accountUsesRoomByRoom==true}">
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-3">
+						<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
 					</div>
-				</div>
-				<div class="row">
-				<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
-				<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
-				</div>
-				</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+							listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseSelectARoom"/>
+						</div>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" maxlength="30" onblur="validateCustomRoom()"/>
+						<s:hidden name="roomChoice" value="" />
+						<div id="otherRoomErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
+						</div>
 					</div>
+					<div class="col-lg-6 col-md-3 col-sm-2 col-xs-1"></div>
 				</div>
 			</s:if>
-			<s:else>
-				<div class="row" id="dispenseInfoRow">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
-							class="dispenseInfo d-none badge badge-secondary"
-							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+			
+			<!-- new stuff -->
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-1 col-md-2 col-sm-3 col-xs-4">
+					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
 				</div>
-			</s:else>
+				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
+					<s:textfield id="qtyOrderedTextField" autofocus="autofocus" onblur="validateQtyOrdered()"/>
+					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
+				</div>
+				<br>
+				<s:if test="%{siteHasTinter==true}">
+					<div class="row" id="dispenseInfoRow">
+						<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+							<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+								class="dispenseInfo badge badge-secondary"
+								style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+							<div class="row" id="remainingInfoRow">
+								<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+									<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
+										class="dispenseInfo badge badge-secondary"
+										style="font-size: .9rem;" id="qtyRemaining"></span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+									<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+								</div>
+							</div>
+						</div>
+					</div>
+				</s:if>
+				<s:else>
+					<div class="row" id="dispenseInfoRow">
+						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+						<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+							<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+								class="dispenseInfo d-none badge badge-secondary"
+								style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+							<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
+						</div>
+						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+					</div>
+				</s:else>
 				<br>
 			</div>
-				
-				<!-- end -->
+			<br>	
+			<!-- end -->
 
-
-			<br>
-			
 			<s:if test = "%{accountIsDrawdownCenter==true}">
 			<!-- validation methods: validationWithoutModal() verifies room by room dropdown is set and lets the user nav away from the page
 			without modal prompt for unsaved changes. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box.  
@@ -1672,7 +1668,7 @@ function ParsePrintMessage() {
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary ml-5" value="%{getText('displayFormula.nextJob')}"
                         	onclick="return promptToSave();" action="userCancelAction" />
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -1716,7 +1712,7 @@ function ParsePrintMessage() {
 							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary ml-5" value="%{getText('displayFormula.nextJob')}"
 	                        onclick="return promptToSave();" action="userCancelAction" />
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -2431,6 +2427,21 @@ function ParsePrintMessage() {
 						$('#formulaDispense').click();
 					} else {
 						$('#formulaUserPrintAction_formulaUserSaveAction').click();
+					}
+				}
+			});
+			
+			//Verify contents of Room-By-Room when tabbing off of field.
+			$('#roomsList').on('keydown', function(event) {
+				if(event.which === 9) {
+					event.preventDefault();
+					var roomByRoomValue = $('#roomsList option:selected').text().trim();
+					if(roomByRoomValue === '') {
+						$('#roomsDropdownErrorText').attr('class', '');
+						$("#roomsList").focus();
+					} else {
+						$('#roomsDropdownErrorText').attr('class', 'd-none');
+						$('#qtyOrderedTextField').focus();
 					}
 				}
 			});
