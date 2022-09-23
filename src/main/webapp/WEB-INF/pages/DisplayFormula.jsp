@@ -1659,11 +1659,11 @@ function ParsePrintMessage() {
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:if test = "%{sessionHasTinter}">
-						<s:submit cssClass="btn btn-primary" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
-							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
+							<s:submit cssClass="btn btn-primary" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
+								onclick="return validationWithoutModal();" action="saveDrawdownAction" />
+						</s:if>
 						<s:submit cssClass="btn btn-secondary" id="drawdownSaveButton" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
-						</s:if>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
