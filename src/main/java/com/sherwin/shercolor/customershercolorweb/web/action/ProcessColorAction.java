@@ -245,7 +245,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 		// Colordata contains JSON so it sequentially gets broken down to parse an array of
 		// autocomplete results and returns the value typed into the search bar
-		if (colorData.contains("[")) {
+		if (colorData.contains("[") && !colorData.equals("[]")) {
 			colorData = colorData.replace("[", "");
 			colorData = colorData.replace("]", "");
 			colorData = colorData.replace("{", "");
