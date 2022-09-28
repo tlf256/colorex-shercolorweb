@@ -337,6 +337,12 @@
 			<result name="success" type="json"/>
 			<result name="error" type="json"/>
 		</action>
+		<action name="fillProdNbrAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="fillProdNbr">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
 		<action name="colorLookupSearchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="colorLookup">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1237,6 +1243,16 @@
 			<result name="error" type="json"/>
 		</action>
 		<action name="logTinterEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.TinterEventAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+			<result name="error" type="json"/>
+		</action>
+		<action name="logSpectroEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroEventAction" method="execute">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
 			<result name="loginRedirect" type="redirectAction">
