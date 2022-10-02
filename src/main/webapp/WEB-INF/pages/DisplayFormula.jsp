@@ -873,8 +873,11 @@ function ParsePrintMessage() {
 					}
 				}
 			}
-			$("#roomsList").focus();
 		}
+		//When page comes up. Focus on roomList if possible.
+		if($("#formulaUserPrintAction_accountUsesRoomByRoom").val() === 'true') {
+			$("#roomsList").focus();
+		} 
 	});
 	
 	
@@ -1300,7 +1303,7 @@ function ParsePrintMessage() {
 
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+		<div id="colorCompLabel" class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 			<strong><s:text name="global.colorCompanyColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
@@ -1416,6 +1419,35 @@ function ParsePrintMessage() {
 				<div class="row mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+							listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseSelectARoom"/>
+						</div>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" maxlength="30" onblur="validateCustomRoom()"/>
+						<s:hidden name="roomChoice" value="" />
+						<div id="otherRoomErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
+						</div>
+					</div>
+					<div class="col-lg-5 col-md-5 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.productSampleFill"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:textfield id="sampleFill" readonly="true" />
+					</div>
+					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 						<strong><s:text name="sampleDispense.canTypeColon"/></strong>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
@@ -1432,16 +1464,6 @@ function ParsePrintMessage() {
 						<div>
 							<p id="savedCanTypeError" style="color:red" class="d-none"></p>
 						</div>
-					</div>
-					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
-				<div class="row mt-3">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong><s:text name="sampleDispense.productSampleFill"/></strong>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-						<s:textfield id="sampleFill" readonly="true" />
 					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
@@ -1580,7 +1602,7 @@ function ParsePrintMessage() {
 				</div>
 			</div>
 			
-			<s:if test="%{accountUsesRoomByRoom==true}">
+			<s:if test="%{(accountUsesRoomByRoom==true && !accountIsDrawdownCenter) || (accountUsesRoomByRoom==true && accountIsDrawdownCenter && !sessionHasTinter)}">
 				<div class="row mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-3">
@@ -1609,7 +1631,7 @@ function ParsePrintMessage() {
 					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
 				</div>
 				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
-					<s:textfield id="qtyOrderedTextField" autofocus="autofocus" onblur="validateQtyOrdered()"/>
+					<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
 					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
 				</div>
 				<br>
@@ -2441,11 +2463,21 @@ function ParsePrintMessage() {
 						$("#roomsList").focus();
 					} else {
 						$('#roomsDropdownErrorText').attr('class', 'd-none');
-						$('#qtyOrderedTextField').focus();
+						if($('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' && $('#formulaUserPrintAction_sessionHasTinter').val() === 'true') {
+							$('#canTypesList').focus();
+						} else {
+							$('#qtyOrderedTextField').focus();
+						}
 					}
 				}
 			});
 			
+			//Scroll screen so that the color company label is at the top for drawdowns.
+			if($('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true') {
+				$('html, body').animate({
+					scrollTop: $("#colorCompLabel").offset().top
+				}, 750);
+			}
 			
 			//TODO if in correction, go to correction screen.
 		});
