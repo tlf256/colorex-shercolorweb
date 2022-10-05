@@ -60,7 +60,8 @@ dbPostgresUrl: "jdbc:postgresql://{{ .Chart.Name }}-postgresql.{{ .Release.Names
 springProfilesActive: "{{ .Values.env }},postgres"
 dbUsername: "{{ .Values.postgresql.global.postgresql.auth.username }}"
 
-#app config values per env
+# App config values per env
+# These will likely be removed as we will not have different environments in the stores?
 dev:
   oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
   sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=extd-scan.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=STECOMD)))"

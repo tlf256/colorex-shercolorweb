@@ -1,13 +1,37 @@
 spring:
   config:
-    import: vault://
-  cloud:
-    vault:
+    activate:
+      on-profile: dev
+    import: vault://shercolor/kv2/shercolorweb/dev
+  cloud.vault:
       authentication: APPROLE
       uri: https://vault.sherwin.com
-      application-name: shercolorweb
-      kv:
-        backend: shercolor/kv2
       approle:
         role-id: ${roleId}
         secret-id: ${secretId}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+    import: vault://shercolor/kv2/shercolorweb/qa
+  cloud.vault:
+    authentication: APPROLE
+    uri: https://vault.sherwin.com
+    approle:
+      role-id: ${roleId}
+      secret-id: ${secretId}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: vault://shercolor/kv2/shercolorweb/prod
+  cloud.vault:
+    authentication: APPROLE
+    uri: https://vault.sherwin.com
+    approle:
+      role-id: ${roleId}
+      secret-id: ${secretId}

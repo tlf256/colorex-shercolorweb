@@ -14,10 +14,8 @@ spec:
       {{- include "shercolorweb.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        rollme: {{ randAlphaNum 5 | quote }}
       labels:
         {{- include "shercolorweb.selectorLabels" . | nindent 8 }}
     spec:
@@ -57,20 +55,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Chart.Name }}-configmap
-          {{- if .Values.store.enabled }}      
-          env:
-            - name: dbPassword
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Chart.Name }}-secret
-                  key: {{ .Values.postgresql.global.postgresql.auth.secretKeys.userPasswordKey }}
-          {{- else if .Values.secret.enabled }}
-          env:
-            - name: dbPassword
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Chart.Name }}-secret
-                  key: password
+          {{- if .Values.secret.enabled }}
+            - secretRef:
+                name: {{ .Chart.Name }}-secret
+          {{- end }}
+          {{- if .Values.local.enabled }}
+            - secretRef:
+                name: colorex-props-secret
           {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}

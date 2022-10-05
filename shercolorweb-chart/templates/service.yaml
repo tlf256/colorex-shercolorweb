@@ -34,3 +34,4 @@ spec:
       nodePort: 31000 
 
 {{- end }}
+

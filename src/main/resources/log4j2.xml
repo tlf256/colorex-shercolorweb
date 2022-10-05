@@ -2,12 +2,11 @@
 <Configuration status="INFO">
 <Properties>
 	<Property name="file-pattern">%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</Property>
+	<Property name="file-pattern-v2">%d{dd/MMM/yyyy HH:mm:ss,SSS} %-4level %C{3}.%M:%L - %m%n</Property>
 </Properties>
 <Appenders>
 	<Console name="Console">
-		<PatternLayout>
-			<pattern>${file-pattern}</pattern>
-		</PatternLayout>
+		<PatternLayout pattern="${file-pattern-v2}"/>
 	</Console>
 </Appenders>
 <Loggers>

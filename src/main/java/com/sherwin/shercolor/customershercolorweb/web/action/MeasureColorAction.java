@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculatorImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,9 +57,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private static final String RESULT = "result";
 	private static final String COLOREYE_UTIL = "ciUtility";
 	private static final String CLOSEST_COLORS = "closestColors";
-	
-	@Autowired
-	private transient ColorCoordinatesCalculator colorCoordCalc;
+
+	private transient ColorCoordinatesCalculator colorCoordCalc = new ColorCoordinatesCalculatorImpl();
 
 	public MeasureColorAction(){
 		// why is this empty?

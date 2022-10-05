@@ -22,9 +22,6 @@ spring:
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
-  output:
-    ansi:
-      enabled: ALWAYS
   profiles:
       # login profile is unconditionally included in order to use the Wildfly security JNDI connection
       include: login

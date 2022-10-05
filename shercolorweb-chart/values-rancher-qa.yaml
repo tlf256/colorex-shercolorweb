@@ -1,6 +1,6 @@
 ingress:
   enabled: true
-  namespace: ""
+  namespace: qa-shercolor
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/affinity: "cookie"
@@ -8,16 +8,15 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
   hosts:
-  # Environment-specific Rancher host paths are defined in _helpers.tpl
-  - host: example-shercolorweb.np-rancher.sherwin.com
+  - host: qa-shercolorweb.np-rancher.sherwin.com
     paths:
       - path: /
         pathType: Prefix   
   tls:
   - hosts:
-    - example-shercolorweb.np-rancher.sherwin.com
+    - qa-shercolorweb.np-rancher.sherwin.com
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
-springProfilesActive: "{{ .Values.env }},oracle,rancher"
+springProfilesActive: "qa,oracle,rancher"
 
-
+env: qa

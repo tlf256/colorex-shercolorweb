@@ -37,6 +37,7 @@ Our signature SherColor web application
 - Helm
 - Kubernetes
 - Docker
+- Vault (Secrets Management)
 ## Business Owner
 TAG Color Excellence
 ## Where is it running?
@@ -63,16 +64,18 @@ TAG Color Excellence
 For debugging documentation and more visit https://docs.wildfly.org/bootablejar 
 
 ### Docker
-1. From the root directory of this project, you can use the following command to install the `shercolorweb` Docker image:
+1. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
     ```sh
-    docker build -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<version> .
+    docker build -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag-version> .
     ```
-    > **Note:** If running locally pass the `--build-arg local=true` argument to the end of this command to copy the vault-specific dev.properties into the image
 
-2. Run the image using the following command:
+2. Run the image locally using the following command:
     ```sh
-    docker run -p 8090:8090 docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<version>
+    docker run --env-file $HOME/dev.properties -p 8090:8090 -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag-version>
     ```
+    This command does a few important things:
+    1. Copies the values in the dev.properties file as environment variables into the container which pass credential keys to Spring Boot used to authenticate to Vault
+    2. Maps our local port to the container port
 ### Kubernetes
 Be sure to configure your local Kubernetes/Docker environment by using Docker Desktop or another Kubernetes distribution as well as Helm 3 installed.
 
@@ -80,18 +83,19 @@ Be sure to configure your local Kubernetes/Docker environment by using Docker De
 
 From the `shercolorweb-chart` directory of this project, you can use the following command to install the `shercolorweb` Helm chart:
 ##### Local
-You must pass the sherlink DB url in this command in order to keep this secret out of source control
-```sh
-helm install -f values.yaml -f values-local.yaml --set sherlinkDbUrl=<value> shercolorweb
-```
+1. Download `secret-colorex-props.yaml` from Teams via **SherColor > Java Tools > Files** and apply it to your cluster via `kubectl apply`. This creates a local Kubernetes secret that contains the keys necessary to authenticate to Vault locally.
+2. 
+    ```sh
+    helm install -f values.yaml -f values-local.yaml shercolorweb .
+    ```
 ##### Rancher
 ```sh
-helm install -f values.yaml -f values-rancher.yaml shercolorweb
+helm install -f values.yaml -f values-rancher-<env>.yaml shercolorweb
 ```
-##### Stores (k3s distribution)
+##### Stores
 You must pass the sherlink DB url in this command in order to keep this secret out of source control
 ```sh
-helm install -f values.yaml -f values-stores.yaml --set sherlinkDbUrl=<value> shercolorweb
+helm install -f values.yaml -f values-stores.yaml --set sherlinkDbPassword=<value> shercolorweb
 ```
 In order to apply updates to the release (running Helm chart), simply update the chart's configuration and then use the following command to execute a rolling update:
 ```sh

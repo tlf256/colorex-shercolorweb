@@ -23,8 +23,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
-
 podSecurityContext: {}
   # fsGroup: 2000
 
@@ -84,5 +82,8 @@ affinity: {}
 # This attribute should be used to enable all kubernetes resources needed for store usage.
 store:
   enabled: false
+
+local:
+  enabled: false 
 
 env: dev

@@ -28,33 +28,3 @@ Selector labels
 app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-
-{{/*
-Environment-specific namespaces
-*/}}
-{{- define "rancherNamespace" -}}
-{{- if eq .Values.env "dev" -}}
-dev-shercolor
-{{- else if eq .Values.env "qa" -}}
-qa-shercolor
-{{- else if eq .Values.env "prod" -}}
-shercolor
-{{- end }}
-{{- end }}
-
-{{/*
-Environment-specific paths
-*/}}
-{{- define "rancherHostPath" -}}
-{{- if eq .Values.env "dev" -}}
-dev-shercolorweb.np-rancher.sherwin.com
-{{- else if eq .Values.env "qa" -}}
-qa-shercolorweb.np-rancher.sherwin.com
-{{- else if eq .Values.env "prod" -}}
-shercolorweb.rancher.sherwin.com
-{{- end }}
-{{- end }}
-
-
-

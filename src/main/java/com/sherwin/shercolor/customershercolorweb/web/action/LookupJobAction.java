@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -83,9 +84,8 @@ public class LookupJobAction extends ActionSupport implements SessionAware, Logi
 	
 	@Autowired 
 	private UtilityService utilityService;
-	
-	@Autowired
-	private transient ColorCoordinatesCalculator colorCoordCalc;
+
+	private transient ColorCoordinatesCalculator colorCoordCalc = new ColorCoordinatesCalculatorImpl();
 	
 	List<CustWebTran> tranHistory;
 	

@@ -1,12 +1,12 @@
-logging:
-  config: classpath:log4j2-elk.xml
-
----
+#logging:
+#  config: classpath:log4j2-elk.xml
+#
+#---
 spring:
   config:
     activate:
       on-profile: dev
-    import: vault://
+    import: vault://shercolor/kv2/shercolorweb/dev
   cloud:
     vault:
       authentication: KUBERNETES
@@ -23,7 +23,7 @@ spring:
   config:
     activate:
       on-profile: qa
-    import: vault://
+    import: vault://shercolor/kv2/shercolorweb/qa
   cloud:
     vault:
       authentication: KUBERNETES
@@ -40,7 +40,7 @@ spring:
   config:
     activate:
       on-profile: prod
-    import: vault://
+    import: vault://shercolor/kv2/shercolorweb/prod
   cloud:
     vault:
       authentication: KUBERNETES

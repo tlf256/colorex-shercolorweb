@@ -20,7 +20,10 @@ replicaCount: 1
 
 service: 
   nodeport:
-    enabled: true
+    enabled: true  
+
+local:
+  enabled: true      
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
-springProfilesActive: "{{ .Values.env }},oracle,local"
+springProfilesActive: "dev,oracle,local"
