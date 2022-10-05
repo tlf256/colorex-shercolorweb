@@ -44,14 +44,22 @@ public class ProcessProductLookupAction extends ActionSupport implements Session
 		String [] intBases = new String[1];
 		String [] extBases = new String[1];
 
-		if (reqObj.getIntBases() != null) {
-			intBases = reqObj.getIntBases().split(",");
-		}
-		if (reqObj.getExtBases() != null) {
-			extBases = reqObj.getExtBases().split(",");
-		}
+		String intBasesStr = reqObj.getIntBases();
+		String extBasesStr = reqObj.getExtBases();
 
-		productList = productService.productAutocompleteCompatibleBase("", intBases, extBases, reqObj.getCustomerID());
+		boolean buildTable = false;
+		
+		if (intBasesStr != null && intBasesStr.length() > 0 && !intBasesStr.equals("PACKAGE COLOR")) {
+			buildTable = true;
+			intBases = intBasesStr.split(",");
+		}
+		if (extBasesStr != null && extBasesStr.length() > 0 && !extBasesStr.equals("PACKAGE COLOR")) {
+			buildTable = true;
+			extBases = extBasesStr.split(",");
+		}
+		if (buildTable) {
+			productList = productService.productAutocompleteCompatibleBase("", intBases, extBases, reqObj.getCustomerID());
+		}
 	}
 
 	public void setSession(Map<String, Object> sessionMap) {

@@ -254,7 +254,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 
 		// Colordata contains JSON so it sequentially gets broken down to parse an array of
 		// autocomplete results and returns the value typed into the search bar
-		if (colorData.contains("[")) {
+		if (colorData.contains("[") && !colorData.equals("[]")) {
 			colorData = colorData.replace("[", "");
 			colorData = colorData.replace("]", "");
 			colorData = colorData.replace("{", "");
@@ -454,7 +454,6 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 					
 					return "compareColors";
 				}
-			}
 				
 				String custID = reqObj.getCustomerID();
 				buildBaseLists(custID);
@@ -470,6 +469,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 						closestSwColorId = "";
 					}
 				} 
+			}
 			
 			//set the successful information into the request object.
 			reqObj.setColorComp(colorComp);
@@ -561,6 +561,7 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	}
 	
 	private void buildBaseLists(String custID) {
+		
 		List<String> baseList;
 		Set<String> interiorBases = new HashSet<>();
 		Set<String> exteriorBases = new HashSet<>();

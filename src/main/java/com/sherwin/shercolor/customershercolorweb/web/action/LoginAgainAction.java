@@ -1,8 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.io.FileInputStream;
 import java.util.Map;
-import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -10,8 +8,8 @@ import org.owasp.encoder.Encode;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class LoginAgainAction extends ActionSupport  implements SessionAware  {
@@ -19,6 +17,7 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
 	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
+
 	private String reqGuid;
 	private String loMessage;
 	private String isAJAX = "false";
@@ -40,6 +39,7 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 
 		RequestObject reqObj = null;
 		try {
+
 			//logger.error("in loginagain, getting testsession");
 			Map<String, Object> testsession = ActionContext.getContext().getSession();
 			//logger.error("in loginagain, got testsession, checking if it's null");

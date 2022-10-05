@@ -9,7 +9,9 @@ import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransac
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +22,11 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SherColorWebTransactionalTest
 public class LoginActionTest extends StrutsSpringJUnit4TestCase<LoginAction> {
-	
-	LoginAction target;
+
 	RequestObject reqObj = new RequestObject();
 	String guid1 = "12345";
+
+
 	
 	@Test
 	public void testLoginAction_success() {
@@ -34,11 +37,11 @@ public class LoginActionTest extends StrutsSpringJUnit4TestCase<LoginAction> {
 		reqObj.setGuid(guid1);
 		reqObj.setHomeStore(9989);
 		reqObj.setTerritory("null");
-		
+
 		ActionProxy proxy = getActionProxy("/loginAction");
         assertNotNull(proxy);
-        
-        target = (LoginAction) proxy.getAction();
+
+		LoginAction target = (LoginAction) proxy.getAction();
         target.setGuid1(guid1);
 
         Map<String, Object> sessionMap = new HashMap<>();
