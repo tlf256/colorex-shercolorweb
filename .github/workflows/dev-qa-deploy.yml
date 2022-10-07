@@ -10,7 +10,7 @@ on:
 #       - 'release/**'
     types: [closed]
 env:
-  java_version: 8
+  java_version: '8'
     
 jobs:
   get-app-version:
