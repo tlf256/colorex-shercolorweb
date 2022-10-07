@@ -4,9 +4,10 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - development
-      - master
-      - 'release/**'
+      - dja557/spring-boot-wildfly-bootable-k8s
+#       - development
+#       - master
+#       - 'release/**'
     types: [closed]
     
 jobs:
