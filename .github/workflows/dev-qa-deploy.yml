@@ -10,10 +10,40 @@ on:
     types: [closed]
     
 jobs:
-  snapshot-publish:
+  get-app-version:
+    runs-on: sw-ubuntu-k8s
+    outputs:
+      ARTIFACT_VERSION: ${{ steps.set-artifact-version.outputs.artifact-version }}
+    steps:
+      - name: Setup Java
+        id: java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ inputs.java_version }}
+
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.8.2
+
+      - name: Setup Maven settings.xml
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          repositories: '[{ "id": "artifactory", "url": "https://artifactory.sherwin.com/artifactory/maven-virtual" }]'
+          servers: '[{"id": "artifactory","username": "${{secrets.ARTIFACTORY_USERNAME}}","password": "${{secrets.ARTIFACTORY_API_KEY}}"}]'
+          plugin_repositories: '[{ "id": "artifactory", "url": "https://artifactory.sherwin.com/artifactory/maven-virtual" }]'
+          mirrors: '[{ "mirrorOf":"*", "id": "artifactory", "url": "https://artifactory.sherwin.com/artifactory/maven-virtual" }]'
+
+      - name: Set artifact-version job output variable to pom.xml version with "-SNAPSHOT" stripped
+        id: set-artifact-version
+        run: echo "::set-output name=artifact-version::$(echo ${$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)%"-SNAPSHOT"})"
+
+  dev-qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
     with:
       java_version: 8
+      app_version: ${{ needs.build-and-test.outputs.ARTIFACT_ID }}
     secrets:
       ARTIFACTORY_REGISTRY: ${{ secrets.ARTIFACTORY_REGISTRY }}
       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
