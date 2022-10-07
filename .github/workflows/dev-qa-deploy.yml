@@ -46,7 +46,7 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
     needs: [get-app-version]
     with:
-      java_version: ${{ env.java_version }}
+      java_version: $java_version
       app_version: ${{ needs.get-app-version.outputs.ARTIFACT_VERSION }}
     secrets:
       ARTIFACTORY_REGISTRY: ${{ secrets.ARTIFACTORY_REGISTRY }}
