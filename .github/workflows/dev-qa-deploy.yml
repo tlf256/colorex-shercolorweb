@@ -9,6 +9,8 @@ on:
 #       - master
 #       - 'release/**'
     types: [closed]
+env:
+  java_version: 8
     
 jobs:
   get-app-version:
@@ -21,7 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: ${{ inputs.java_version }}
+          java-version: ${{ env.java_version }}
 
       - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
@@ -43,7 +45,7 @@ jobs:
   dev-qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
     with:
-      java_version: 8
+      java_version: ${{ env.java_version }}
       app_version: ${{ needs.build-and-test.outputs.ARTIFACT_ID }}
     secrets:
       ARTIFACTORY_REGISTRY: ${{ secrets.ARTIFACTORY_REGISTRY }}
