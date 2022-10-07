@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: ${{ env.java_version }}
+          java-version: '$java_version'
 
       - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
