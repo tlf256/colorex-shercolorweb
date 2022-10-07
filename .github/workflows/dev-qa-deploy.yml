@@ -40,7 +40,7 @@ jobs:
 
       - name: Set artifact-version job output variable to pom.xml version with "-SNAPSHOT" stripped
         id: set-artifact-version
-        run: echo "::set-output name=artifact-version::$(echo ${$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)%"-SNAPSHOT"})"
+        run: echo "::set-output name=artifact-version::$(echo ${$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)%'-SNAPSHOT'})"
 
   dev-qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
