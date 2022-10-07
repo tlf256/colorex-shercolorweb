@@ -1,5 +1,5 @@
 #Executes on merge of each PR to development
-name: Publish Snapshot
+name: Deploy to DEV & QA
 on:
   workflow_dispatch:
   pull_request:
