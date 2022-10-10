@@ -17,6 +17,8 @@ jobs:
       java_version: 8
       app_version: ${{ needs.get-app-version.outputs.ARTIFACT_VERSION }}
       chart_directory: shercolorweb-chart
+      dev_url: 'https://dev-shercolorweb.np-rancher.sherwin.com/shercolorweb'
+      qa_url: 'https://qa-shercolorweb.np-rancher.sherwin.com/shercolorweb'
       dev_helm_values_files: '["values.yaml","values-rancher-dev.yaml"]'
       qa_helm_values_files: '["values.yaml","values-rancher-qa.yaml"]'
     secrets: inherit
