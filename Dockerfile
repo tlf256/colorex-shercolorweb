@@ -1,6 +1,5 @@
 FROM maven:3-openjdk-8-slim as builder
 COPY pom.xml .
-RUN mvn -B dependency:resolve-plugins dependency:go-offline
 COPY wildfly wildfly
 COPY src src
 RUN mvn -B package -DskipTests
