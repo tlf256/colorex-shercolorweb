@@ -22,8 +22,6 @@ jobs:
       dev_helm_values_files: '["values.yaml","values-rancher-dev.yaml"]'
       qa_helm_values_files: '["values.yaml","values-rancher-qa.yaml"]'
     secrets: inherit
-#       DEV_URL: ${{ secrets.DEV_URL }}
-#       QA_URL: ${{ secrets.QA_URL }}
 #       ARTIFACTORY_REGISTRY: ${{ secrets.ARTIFACTORY_REGISTRY }}
 #       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
 #       ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
