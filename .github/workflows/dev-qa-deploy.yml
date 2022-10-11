@@ -19,8 +19,8 @@ jobs:
       chart_directory: shercolorweb-chart
       dev_url: 'https://dev-shercolorweb.np-rancher.sherwin.com/shercolorweb'
       qa_url: 'https://qa-shercolorweb.np-rancher.sherwin.com/shercolorweb'
-      dev_helm_values_files: '["values.yaml","values-rancher-dev.yaml"]'
-      qa_helm_values_files: '["values.yaml","values-rancher-qa.yaml"]'
+      dev_helm_values_files: '["./shercolorweb-chart/values.yaml","./shercolorweb-chart/values-rancher-dev.yaml"]'
+      qa_helm_values_files: '["./shercolorweb-chart/values.yaml","./shercolorweb-chart/values-rancher-qa.yaml"]'
     secrets: inherit
 #       ARTIFACTORY_REGISTRY: ${{ secrets.ARTIFACTORY_REGISTRY }}
 #       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
