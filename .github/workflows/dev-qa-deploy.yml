@@ -16,6 +16,7 @@ jobs:
     with:
       java_version: 8
       chart_directory: shercolorweb-chart
+      release_name: shercolorweb
       dev_url: 'https://dev-shercolorweb.np-rancher.sherwin.com/shercolorweb'
       qa_url: 'https://qa-shercolorweb.np-rancher.sherwin.com/shercolorweb'
       dev_helm_values_files: '["./shercolorweb-chart/values.yaml","./shercolorweb-chart/values-rancher-dev.yaml"]'
