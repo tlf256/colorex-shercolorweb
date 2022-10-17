@@ -65,6 +65,8 @@ spec:
           {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}
+          args:
+            - {{ .Values.env }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -26,8 +26,6 @@
         <java.version>8</java.version>
         <wildfly.version>24.0.1.Final</wildfly.version>
         <spring.cloud-version>2021.0.4</spring.cloud-version>
-        <!-- defaulted here to dev, but can be set via a command-line arg ex: -Dshercolorweb.env={dev,qa,prod} -->
-        <shercolorweb.env>dev</shercolorweb.env>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -339,20 +337,11 @@
                         <extra-content>wildfly/includes</extra-content>
                     </extra-server-content-dirs>
                     <context-root>false</context-root>
-                    <!-- Configuration below enables CLI scripting configuration vs direct standalone.xml -->
-                    <cli-sessions>
-                        <cli-session>
-                            <script-files>
-                                <script>wildfly/scripts/setup.cli</script>
-                            </script-files>
-                            <properties-file>wildfly/scripts/properties/server-${shercolorweb.env}.properties</properties-file>
-                        </cli-session>
-                    </cli-sessions>
                     <!-- Only enable the argument below for remote debugging purposes. These should always be commented
                      out when committing to source control. -->
-                    <jvmArguments>
+                    <!-- <jvmArguments>
                         <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
-                    </jvmArguments>
+                    </jvmArguments> -->
                 </configuration>
                 <executions>
                     <execution>
