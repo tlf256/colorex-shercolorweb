@@ -310,7 +310,7 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-jar-maven-plugin</artifactId>
-                <version>7.0.0.Final</version>
+                <version>7.0.2.Final</version>
                 <configuration>
                     <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
                     <layers>
@@ -323,9 +323,6 @@
                         <layer>bean-validation</layer>
                         <layer>logging</layer>
                         <layer>security-manager</layer>
-                        <layer>ee</layer>
-                        <layer>io</layer>
-                        <layer>pojo</layer>
                     </layers>
                     <excluded-layers>
                         <excluded-layer>cdi</excluded-layer>
@@ -337,6 +334,15 @@
                         <extra-content>wildfly/includes</extra-content>
                     </extra-server-content-dirs>
                     <context-root>false</context-root>
+                    <!-- Configuration below enables CLI scripting configuration vs direct standalone.xml -->
+                    <cli-sessions>
+                        <cli-session>
+                            <script-files>
+                                <script>wildfly/scripts/setup.cli</script>
+                            </script-files>
+                            <properties-file>wildfly/scripts/properties/dev.properties</properties-file>
+                        </cli-session>
+                    </cli-sessions>
                     <!-- Only enable the argument below for remote debugging purposes. These should always be commented
                      out when committing to source control. -->
                     <!-- <jvmArguments>
