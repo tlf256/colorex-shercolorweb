@@ -1,5 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +17,13 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.common.domain.CdsClrnt;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.domain.ProductFillInfo;
+import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TinterService;
@@ -75,6 +79,12 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	private String stepMethod;
 	private String stepStatus;
 	private String corrStatus;
+	
+	//for manual corrections(No tinter detected)
+	private String clrntSysId;
+	private transient List<CdsClrnt> colorantLookupResults;
+	@Autowired
+	private transient ColorantService colorantService;
 	
 	@Autowired
 	TranHistoryService tranHistoryService;
@@ -246,31 +256,47 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 						logger.debug("about to convertIncrToShots");
 						formulationService.convertIncrToShots(ingredientList);
 						//Make a list of dispenseItems to return to user
-						logger.debug("getting colorantMap for can position");
-						HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
+						if(tinter.getModel() != null) {
+							logger.debug("Tinter detected... returning dispense items with position mapped in CustWebColorantsTxt for {}", reqObj.getTinter().getModel());
+							logger.debug("getting colorantMap for can position");
+							HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
 
-						logger.debug("back from tinterService");
-						if(colorantMap!=null){
-							logger.debug("colorant map is not null");
-							if(dispenseItemList==null) dispenseItemList = new ArrayList<DispenseItem>();
-							else dispenseItemList.clear();
+							logger.debug("back from tinterService");
+							if(colorantMap!=null){
+								logger.debug("colorant map is not null");
+								if(dispenseItemList==null) dispenseItemList = new ArrayList<DispenseItem>();
+								else dispenseItemList.clear();
 
+								for(FormulaIngredient ingr : ingredientList){
+									logger.debug("pulling map info for " + ingr.getTintSysId());
+									DispenseItem addItem = new DispenseItem();
+									addItem.setClrntCode(ingr.getTintSysId());
+									addItem.setShots(ingr.getShots());
+									addItem.setUom(ingr.getShotSize());
+									addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
+									dispenseItemList.add(addItem);
+								}
+
+								retVal = SUCCESS;
+
+							} else {
+								logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
+								errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
+								retVal = ERROR;
+							}
+						} else {
+							logger.debug("No Tinter detected... returning dispense items with position 0");
+							dispenseItemList = new ArrayList<>();
+							
 							for(FormulaIngredient ingr : ingredientList){
-								logger.debug("pulling map info for " + ingr.getTintSysId());
 								DispenseItem addItem = new DispenseItem();
 								addItem.setClrntCode(ingr.getTintSysId());
 								addItem.setShots(ingr.getShots());
 								addItem.setUom(ingr.getShotSize());
-								addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
+								addItem.setPosition(0);
 								dispenseItemList.add(addItem);
 							}
-
 							retVal = SUCCESS;
-
-						} else {
-							logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
-							errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
-							retVal = ERROR;
 						}
 						retVal = SUCCESS;
 					}
@@ -460,6 +486,20 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 		
 	}
 	
+	public String colorantLookupForManual() {
+		List<CdsClrnt> colorants = new ArrayList<>();
+		try {
+			String colorantSystem = URLDecoder.decode(this.clrntSysId.trim().toUpperCase(), "UTF-8");
+			if(colorantSystem != null) {
+				colorants.addAll(colorantService.getColorantList(colorantSystem));
+				setColorantLookupResults(colorants);
+			}
+		} catch (UnsupportedEncodingException e) {
+			logger.error("UnsupportedEncodingException Caught in ProcessCorrectFormulaAction.colorantLookupForManual");
+			return ERROR;
+		}
+		return SUCCESS;
+	}
 	
 	public void setSession(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;		
@@ -598,6 +638,22 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 
 	public void setSiteHasPrinter(boolean siteHasPrinter) {
 		this.siteHasPrinter = siteHasPrinter;
+	}
+
+	public String getClrntSysId() {
+		return clrntSysId;
+	}
+
+	public void setClrntSysId(String clrntSysId) {
+		this.clrntSysId = clrntSysId;
+	}
+
+	public List<CdsClrnt> getColorantLookupResults() {
+		return colorantLookupResults;
+	}
+
+	public void setColorantLookupResults(List<CdsClrnt> colorantLookupResults) {
+		this.colorantLookupResults = colorantLookupResults;
 	}
 	
 }

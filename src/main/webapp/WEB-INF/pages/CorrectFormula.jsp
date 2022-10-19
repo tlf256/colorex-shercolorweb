@@ -116,11 +116,12 @@
 	}
 	
 	function addStepClick(){
-		$("#formulaAdditions > tbody").empty();
 		$("#addIngredients").show();
 		$("#currentCont").text($("#mainForm_nextUnitNbr").val());
 		$('#pct').text('');
-		$('#percentPrompt').toggle();
+		if($('#percentPrompt').css("display") !== 'none') {
+			$('#percentPrompt').toggle();
+		}
 		$("#addStep").hide();
 		$("#acceptContainer").hide();
 		$("#skipContainer").hide();
@@ -197,7 +198,11 @@
 		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
-		preDispenseCheck();
+		if($("#mainForm_sessionHasTinter").val()=="true") {
+			preDispenseCheck();
+		} else {
+			$("#startDispenseButton").click();
+		}
 	}
 
 	function mistintContainerClick(){
@@ -492,7 +497,7 @@
 		
 	function cancelAddClick(){
 		$("#addIngredients").hide();
-		
+		$("#formulaAdditions > tbody").empty();
 		updateButtonDisplay();
 	}
 
@@ -508,7 +513,11 @@
 		newRow = newRow + '</tr>';
 		$("#formulaAdditions > tbody:last-child").append(newRow);
 		$('html,body').animate({scrollTop: $("#formulaAdditions > tbody:last-child").offset().top -= 80});
-		rebuildColorantList();
+		if($(mainForm_sessionHasTinter).val() === 'true') {
+			rebuildColorantList();
+		} else {		
+			document.getElementById(myClrnt).remove();
+		}
 	}
 
 	function percentAddClick(){
@@ -565,7 +574,11 @@
     					$('#pct').text('');
     					$('#percentPrompt').toggle();
     				});
-    				rebuildColorantList();
+    				if($(mainForm_sessionHasTinter).val() === 'true') {
+    					rebuildColorantList();
+    				} else {
+    					loadManualDispenseColorantDropdown();
+    				}
             	}
 			},
 			error: function(err){
@@ -789,7 +802,11 @@
 			}
 		} else {
 			console.log("product fill OK");
-			preDispenseCheck();
+			if($("#mainForm_sessionHasTinter").val()=="true") {
+				preDispenseCheck();
+			} else {
+				$("#startDispenseButton").click();
+			}
 		}
 	}
 
@@ -911,11 +928,13 @@
     					}
     					sendingDispCommand = "false";
 						// send tinter event (no blocking here)
-						var curDate = new Date();
-						var myGuid = $( "#reqGuid" ).val();
-						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-						var tedArray = [teDetail];
-						sendTinterEvent(myGuid, curDate, return_message, tedArray);
+						if($("#mainForm_sessionHasTinter").val()=="true") {
+							var curDate = new Date();
+							var myGuid = $( "#reqGuid" ).val();
+							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+							var tedArray = [teDetail];
+							sendTinterEvent(myGuid, curDate, return_message, tedArray);
+						}
     					
     					//alert("Write Successful");
     				} else {
@@ -1048,15 +1067,18 @@
 				processingDispense = true
 				event.preventDefault();
 				event.stopPropagation();
-				waitForShowAndHide("#positionContainerModal");
-				$("#tinterInProgressModal").modal('show');
-				rotateIcon();
-				$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress" />');
-				$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense" />');
-				
-				
-				// Call decrement colorants which will call dispense
-				decrementColorantLevels();
+				if($("#mainForm_sessionHasTinter").val()=="true") {
+					waitForShowAndHide("#positionContainerModal");
+					$("#tinterInProgressModal").modal('show');
+					rotateIcon();
+					$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress" />');
+					$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense" />');
+					// Call decrement colorants which will call dispense
+					decrementColorantLevels();
+				} else {
+					//No Tinter. Just write the dispense.
+					writeDispense();
+				}
 			}
 		});
 		
@@ -1236,6 +1258,7 @@
  						<s:hidden name="stepStatus" value="OPEN"/>
  						<s:hidden name="acceptedContNbr" value="%{acceptedContNbr}"/>
  						<s:hidden name="mergeCorrWithStartingForm" value="%{mergeCorrWithStartingForm}"/>
+ 						<s:hidden name="formulaClrntSysId" id="formulaClrntSys" value="%{#session[reqGuid].displayFormula.clrntSysId}" />
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
@@ -1698,8 +1721,47 @@
 
 		function updateButtonDisplay(){
 			$("#mainForm_displayFormulaAction").show(); //Leave button
-			if($("#mainForm_sessionHasTinter").val()=="true"){
-				if($("#mainForm_corrStatus").val()=="NONE"){
+			if($("#mainForm_corrStatus").val()=="NONE"){
+				$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
+						'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
+				$("#startNewCycle").hide();
+				$("#addStep").show();
+				$("#acceptContainer").hide();
+				$("#mistintContainer").hide();
+				$("#dispenseAccepted").hide();
+				$("#skipContainer").hide();
+			} 
+			if($("#mainForm_corrStatus").val()=="NEWCYCLE"){
+				var prevCycle = <s:property value="%{cycle}"/> - 1;
+				$("#currentPrompt").text('<s:text name="correctFormula.correctionCycleCompleted"><s:param>' + prevCycle + '</s:param></s:text>');
+				$("#startNewCycle").show();
+				$("#addStep").hide();
+				$("#acceptContainer").hide();
+				$("#mistintContainer").hide();
+				$("#dispenseAccepted").hide();
+				$("#skipContainer").hide();
+			}
+			if($("#mainForm_corrStatus").val()=="MIDUNIT"){
+				$("#currentPrompt").text('<s:text name="correctFormula.currentlyCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' + 
+						'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
+				$("#startNewCycle").hide();
+				$("#addStep").show();
+				$("#acceptContainer").show();
+				$("#mistintContainer").show();
+				$("#dispenseAccepted").hide();
+				$("#skipContainer").hide();
+			}
+			if($("#mainForm_corrStatus").val()=="MIDCYCLE"){
+				if($("#mainForm_acceptedContNbr").val()>0){
+					$("#currentPrompt").text('<s:text name="correctFormula.chooseAction"><s:param><s:property value="%{nextUnitNbr}"/>' + 
+							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
+					$("#startNewCycle").hide();
+					$("#addStep").hide();
+					$("#acceptContainer").hide();
+					$("#mistintContainer").hide();
+					$("#dispenseAccepted").show();
+					$("#skipContainer").show();
+				} else {
 					$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
 							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
 					$("#startNewCycle").hide();
@@ -1708,58 +1770,48 @@
 					$("#mistintContainer").hide();
 					$("#dispenseAccepted").hide();
 					$("#skipContainer").hide();
-				} 
-				if($("#mainForm_corrStatus").val()=="NEWCYCLE"){
-					var prevCycle = <s:property value="%{cycle}"/> - 1;
-					$("#currentPrompt").text('<s:text name="correctFormula.correctionCycleCompleted"><s:param>' + prevCycle + '</s:param></s:text>');
-					$("#startNewCycle").show();
-					$("#addStep").hide();
-					$("#acceptContainer").hide();
-					$("#mistintContainer").hide();
-					$("#dispenseAccepted").hide();
-					$("#skipContainer").hide();
 				}
-				if($("#mainForm_corrStatus").val()=="MIDUNIT"){
-					$("#currentPrompt").text('<s:text name="correctFormula.currentlyCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' + 
-							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
-					$("#startNewCycle").hide();
-					$("#addStep").show();
-					$("#acceptContainer").show();
-					$("#mistintContainer").show();
-					$("#dispenseAccepted").hide();
-					$("#skipContainer").hide();
-				}
-				if($("#mainForm_corrStatus").val()=="MIDCYCLE"){
-					if($("#mainForm_acceptedContNbr").val()>0){
-						$("#currentPrompt").text('<s:text name="correctFormula.chooseAction"><s:param><s:property value="%{nextUnitNbr}"/>' + 
-								'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
-						$("#startNewCycle").hide();
-						$("#addStep").hide();
-						$("#acceptContainer").hide();
-						$("#mistintContainer").hide();
-						$("#dispenseAccepted").show();
-						$("#skipContainer").show();
-					} else {
-						$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
-								'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
-						$("#startNewCycle").hide();
-						$("#addStep").show();
-						$("#acceptContainer").hide();
-						$("#mistintContainer").hide();
-						$("#dispenseAccepted").hide();
-						$("#skipContainer").hide();
-					}
-				}
-				// go get tinter info to load colorant dropdown
+			}
+			// go get tinter info to load colorant dropdown
+			if($("#mainForm_sessionHasTinter").val()=="true"){
 				getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
 			} else {
-				$("#currentPrompt").text("");
-				$("#addStep").hide();
-				$("#acceptContainer").hide();
-				$("#mistintContainer").hide();
-				$("#skipContainer").hide();
-				$("#dispenseAccepted").hide();
+				loadManualDispenseColorantDropdown();
 			}
+		}
+		
+		function loadManualDispenseColorantDropdown() {
+			var clrntSys = $('#formulaClrntSys').val();
+			$.ajax({
+				url: 'getColorantsForManualCorrection.action',
+				dataType : "json",
+				data: {
+					'clrntSysId' : encodeURIComponent(clrntSys.trim()),
+					'reqGuid' : $("#reqGuid").val()
+				},
+				success: function(result){
+					$("#clrntList").empty();
+					$.each(result, function(index, item){
+						var clrntIdentifier = item.tintSysId + '-' + item.name;
+						var clrntAdded = false;
+						$('#formulaAdditions > tbody tr').each(function(){
+		            		var clrntInRow = $(this).find('#clrntString').text();
+		       	    		if (clrntInRow == clrntIdentifier){
+		           				clrntAdded = true;
+		            		}
+						});
+	       	    		if(!clrntAdded) {
+							var link = '<li class="dropdown-item" id=\''+item.tintSysId+'-'+item.name+'\'><a class="dropdown-item" href="#" onclick="addManClrnt(\''+item.tintSysId+'-'+item.name+'\')">'+item.tintSysId+'-'+item.name+'</a></li>';
+							$("#clrntList").append(link);
+	       	    		}
+					});
+				},
+				error: function(xhr, statusTxt) {
+					console.log(xhr.status);
+					console.log(xhr.statusTxt);
+				}
+			});
+			
 		}
 
 		</script>

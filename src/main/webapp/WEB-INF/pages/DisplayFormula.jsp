@@ -2600,8 +2600,6 @@ function ParsePrintMessage() {
 					} else {
 						console.log("button on/off");
 						console.log("hasTinter is false");
-						// No Tinter, hide correct button
-						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 	
 						// if dispensed (could have been done at another station)
 						var myint = parseInt($.trim($("#qtyDispensed").text()));
@@ -2613,9 +2611,15 @@ function ParsePrintMessage() {
 							$("#formulaUserPrintAction_formulaUserEditAction").hide();
 							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
 							btnCount += 1;
+							// only show correct if product is not package color
+							if($("#isPackageColor").val() == "false"){
+								$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+								btnCount += 1;
+							}
 							// make Print primary
 							makePrintPrimary()
 						} else {
+							$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 							// Has not been dispensed, always show Edit
 							// unless product is package color and cannot be tinted
 							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
