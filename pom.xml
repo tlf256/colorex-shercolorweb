@@ -310,15 +310,12 @@
                 <configuration>
                     <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
                     <layers>
-                        <layer>legacy-management</layer>
-                        <layer>legacy-remoting</layer>
                         <layer>legacy-security</layer>
                         <layer>undertow-legacy-https</layer>
                         <layer>core-tools</layer>
                         <layer>datasources</layer>
                         <layer>bean-validation</layer>
                         <layer>logging</layer>
-                        <layer>security-manager</layer>
                     </layers>
                     <excluded-layers>
                         <excluded-layer>cdi</excluded-layer>
