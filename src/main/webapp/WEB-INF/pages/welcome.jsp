@@ -87,6 +87,7 @@
 		var sendingSpectroCommand = "false";
 		var detectAttempt = 0;
 		var layoutUpdateChosen = false;
+		var platform = navigator.platform;
 
 		<s:if test="%{tinter.model != null && tinter.model != ''}">
 			// setup local host config
@@ -221,6 +222,30 @@
 			sendingTinterCommand = "true";
 	    	ws_tinter.send(json);
 		}
+		
+		function initTinter(){
+			var tinterModel = sessionTinterInfo.model;
+			console.log("init tinter - tinter model is: " + tinterModel);
+			if(tinterModel.startsWith("FM X") && !platform.startsWith("Win")){
+				resetTinter();
+			} else {
+				detectTinter();
+			}
+		}
+		
+		function resetTinter(){
+			//$("#progress-message").text("Reset Tinter in Progress...");
+			$("#initTinterInProgressModal").modal('show');
+			rotateIcon();
+			var cmd = "Reset";
+			var shotList = null;
+			var configuration = null;
+			var tintermessage = new TinterMessage(cmd,null,null,null,null);
+			var json = JSON.stringify(tintermessage);
+			sendingTinterCommand = "true";
+	    	ws_tinter.send(json);
+		}
+		
 		function AfterDetectTinterGetStatus(){
 			var cmd = "InitStatus";
 			$("#initTinterInProgressModal").modal('show');
@@ -785,6 +810,39 @@
 								getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 							} // end else init current
 							break;
+						case 'Reset':
+							/*console.log("Processing FMX Reset Response");
+							var initErrorList=[];
+							// log event
+							var curDate = new Date();
+							var myGuid = $("#startNewJob_reqGuid").val();
+							if(return_message.errorMessage.trim() === 'Reset Complete'){
+								sendingTinterCommand = "false";
+								// clear init error in session
+								//initErrorList = [];
+								//saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+								sendTinterEvent(myGuid, curDate, return_message, null);
+								
+								$("#progress-message").text(return_message.errorMessage);
+							
+								// Detected and no errors from tinter 
+								waitForShowAndHide('#initTinterInProgressModal');
+								
+								// get session for tinter status
+					    		//getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
+							} else {
+								sendingTinterCommand = "false";
+								initErrorList = [];
+								sendTinterEvent(myGuid, curDate, return_message, null); 
+								waitForShowAndHide('#initTinterInProgressModal');
+								//Show a modal with error message to make sure the user is forced to read it.
+								$("#tinterErrorList").empty();
+								initErrorList.push(return_message.errorMessage);
+								$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+								$("#tinterErrorListTitle").text('Tinter Reset Failed');
+								$("#tinterErrorListModal").modal('show');
+								saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+							}*/
 						case 'Detect':
 						case 'Init':
 							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.length > 0){
@@ -1174,7 +1232,7 @@
 								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> <s:text name="welcome.updateCanisterLayout"/></a></li>
 				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> <s:text name="global.colorantLevels"/></a></li>
 				        				<li id="dispenseColorants"><a class="dropdown-item" tabindex="-1" href='<s:url action="displayDispenseColorantsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-random pr-1'></span>  <s:text name="global.dispenseColorants"/></a></li>
-								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=detectTinter();><span class='fa fa-retweet pr-1'></span> <s:text name="welcome.initializeTinter"/></a></li>
+								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=initTinter();><span class='fa fa-retweet pr-1'></span> <s:text name="welcome.initializeTinter"/></a></li>
 								        <li id="tinterEcal"><a class="dropdown-item" tabindex="-1" href='<s:url action="ecalManagerAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>' ><span class='fa fa-exchange pr-1'></span> <s:text name="global.calibrationManager"/></a></li>
 										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="welcome.addNewTinter"/></a></li>
 										<li id="tinterRemove"><a class="dropdown-item" tabindex="-1" href="#" onclick="showRemoveTinterModal();"><span class='fa fa-eject pr-1'></span> <s:text name="welcome.removeTinter"/></a></li>
