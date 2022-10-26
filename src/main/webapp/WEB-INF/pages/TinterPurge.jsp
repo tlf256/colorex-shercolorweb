@@ -75,15 +75,20 @@
 		keys = Object.keys(return_message.statusMessages);
 		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
-				var colorList;
+				var colorList = item.message.split(" ");
+				var color;
+				var pct;
 				if(platform.startsWith("Win")){
-					colorList = item.message.split(" ");
+					//colorList = item.message.split(" ");
+					color= colorList[0];
+					pct = colorList[1];
 				} else {
-					colorList = item.message.split("|");
+					//colorList = item.message;
+					color= "";
+					pct = item.message;
 				}
 				
-				var color= colorList[0];
-				var pct = colorList[1];
+				
 				//fix bug where we are done, but not all pumps report as 100%
 				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 						 return_message.status == 0)) {
@@ -119,8 +124,12 @@
 					break;
 				}
 				
+				if(platform.startsWith("Win")){
+					$bar.children("span").text(color + " " + pct);
+				} else{
+					$bar.children("span").text(pct);
+				}
 				
-				$bar.children("span").text(color + " " + pct);
 				console.log("barring " + item.message);
 				//console.log($clone);
 				
@@ -608,7 +617,9 @@
 	    	if(cleanNozzleBeforePurge){
 	    		$("#purgeInProgressModal").modal('show');
 	    	} else {
-	    		$("#fmxCleanNozzleModal").modal('show');
+	    		if(!$("#tinterErrorListModal").is(":visible")){
+	    			$("#fmxCleanNozzleModal").modal('show');
+	    		}
 	    	}
 	    });
 	    

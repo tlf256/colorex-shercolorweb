@@ -208,6 +208,7 @@
 
 		function detectTinter(){
 			// show layout update progress modal if the call is a result of choosing Update Layout in menu
+			console.log("sending detect");
 			if (layoutUpdateChosen){
 				$("#layoutUpdateInProgressModal").modal('show');
 			} else {
@@ -234,7 +235,8 @@
 		}
 		
 		function resetTinter(){
-			//$("#progress-message").text("Reset Tinter in Progress...");
+			console.log("sending reset");
+			$("#progress-message").text("Initializing tinter. Process may take up to 2 min.");
 			$("#initTinterInProgressModal").modal('show');
 			rotateIcon();
 			var cmd = "Reset";
@@ -811,16 +813,16 @@
 							} // end else init current
 							break;
 						case 'Reset':
-							/*console.log("Processing FMX Reset Response");
+							console.log("Processing FMX Reset Response");
 							var initErrorList=[];
 							// log event
 							var curDate = new Date();
 							var myGuid = $("#startNewJob_reqGuid").val();
-							if(return_message.errorMessage.trim() === 'Reset Complete'){
+							if(return_message.errorMessage.trim() === 'Reset complete'){
 								sendingTinterCommand = "false";
 								// clear init error in session
-								//initErrorList = [];
-								//saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+								initErrorList = [];
+								saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 								sendTinterEvent(myGuid, curDate, return_message, null);
 								
 								$("#progress-message").text(return_message.errorMessage);
@@ -839,10 +841,15 @@
 								$("#tinterErrorList").empty();
 								initErrorList.push(return_message.errorMessage);
 								$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
-								$("#tinterErrorListTitle").text('Tinter Reset Failed');
+								$("#tinterErrorListTitle").text('Tinter Initialization Failed');
+								$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
 								$("#tinterErrorListModal").modal('show');
 								saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
-							}*/
+							}
+							
+							getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
+							
+							break;
 						case 'Detect':
 						case 'Init':
 							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.length > 0){
