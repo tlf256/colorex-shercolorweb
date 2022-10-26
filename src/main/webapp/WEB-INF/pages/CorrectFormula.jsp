@@ -198,7 +198,7 @@
 		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
-		if($("#mainForm_sessionHasTinter").val()=="true") {
+		if($("#mainForm_sessionHasTinter").val()=="true" && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
 			preDispenseCheck();
 		} else {
 			$("#startDispenseButton").click();
@@ -513,7 +513,7 @@
 		newRow = newRow + '</tr>';
 		$("#formulaAdditions > tbody:last-child").append(newRow);
 		$('html,body').animate({scrollTop: $("#formulaAdditions > tbody:last-child").offset().top -= 80});
-		if($(mainForm_sessionHasTinter).val() === 'true') {
+		if($(mainForm_sessionHasTinter).val() === 'true' && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
 			rebuildColorantList();
 		} else {		
 			document.getElementById(myClrnt).remove();
@@ -574,7 +574,7 @@
     					$('#pct').text('');
     					$('#percentPrompt').toggle();
     				});
-    				if($(mainForm_sessionHasTinter).val() === 'true') {
+    				if($(mainForm_sessionHasTinter).val() === 'true' && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
     					rebuildColorantList();
     				} else {
     					loadManualDispenseColorantDropdown();
@@ -643,6 +643,8 @@
 		shotList = [];
 		var invalidFlag = false;
 		var correctionList = [];
+		var eventTriggerId = event.target.id;
+
 		$('#formulaAdditions > tbody tr').each(function(){
             var rowClrntString = $(this).find('#clrntString').text();
             var rowIncrArray = [];
@@ -692,7 +694,7 @@
     					console.log(shotList); // After removing potential Zero Shot colorants
     					
     					// start dispense process (productFillLevelCheck --> preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
-    					productFillLevelCheck();
+    					productFillLevelCheck(eventTriggerId);
                 	}
 	            },
 	            error: function(textStatus, errorThrown ) {
@@ -760,7 +762,7 @@
 	}
 </script>
 <script type="text/javascript"> // dispense checks
-	function productFillLevelCheck(){
+	function productFillLevelCheck(eventTriggerId){
 		// Check Colorant Load in can and see if space avail in can
 		var ozEntered = 0.0;
 		//shotList is the colorant they want to add
@@ -802,10 +804,12 @@
 			}
 		} else {
 			console.log("product fill OK");
-			if($("#mainForm_sessionHasTinter").val()=="true") {
+			//Run preDispenseCheck for tinter when clicking dispense addition button.
+			//Otherwise, skip checks and write the dispense for hand dispense.
+			if(eventTriggerId === 'dispenseAdd') {
 				preDispenseCheck();
 			} else {
-				$("#startDispenseButton").click();
+				writeHandDispense();
 			}
 		}
 	}
@@ -928,13 +932,11 @@
     					}
     					sendingDispCommand = "false";
 						// send tinter event (no blocking here)
-						if($("#mainForm_sessionHasTinter").val()=="true") {
-							var curDate = new Date();
-							var myGuid = $( "#reqGuid" ).val();
-							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-							var tedArray = [teDetail];
-							sendTinterEvent(myGuid, curDate, return_message, tedArray);
-						}
+						var curDate = new Date();
+						var myGuid = $( "#reqGuid" ).val();
+						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+						var tedArray = [teDetail];
+						sendTinterEvent(myGuid, curDate, return_message, tedArray);
     					
     					//alert("Write Successful");
     				} else {
@@ -961,6 +963,75 @@
             }
         });
 	}
+	
+    function writeHandDispense() {
+		//Build correction step info and save to DB
+		var curDate = new Date();
+		// ajax call to convert correctionList to dispenseItems
+        var str = { 
+				    "reqGuid": $('#reqGuid').val(),
+				    "jsDateString": curDate.toString(),
+				    "cycle": $("#mainForm_currCycle").val(),
+				    "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),
+				    "reason": $("#reason").val(),
+				    "stepStatus": $("#mainForm_stepStatus").val(),
+				    "stepMethod": method,
+				    "shotList": shotList
+				  };
+        var jsonIN = JSON.stringify(str);
+        $.ajax({	
+            url : "saveCorrectionStepAction.action",
+            type: "POST",
+            contentType : "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            data : jsonIN,
+            success : function(data){
+            	processingDispense = false;
+				//console.log(data);
+				if(data.sessionStatus === "expired"){
+            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            	}
+            	else{
+            		if(data.errorMessage==null){
+    					console.log("Write Successful!");
+    					if(data.mergeCorrWithStartingForm == true){
+    						// end of cycle, merge Correction with orig (this will refresh screen)
+    						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
+    					} else {
+    						// not end of cycle just refresh page
+    						reloadScreen()
+    					}
+    					if (dispenseAccepted == true && printerConfig && printerConfig.printOnDispense) {
+    						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
+    						printJsonIN = JSON.stringify(str);
+    						printOnDispenseGetJson(data.reqGuid,printJsonIN);
+    						dispenseAccepted == false;
+    					}
+    				} else {
+    					// Error Tell the user
+    					//console.log("Write Failed!" + data.errorMessage);
+    					$("#tinterErrorList").empty();
+    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdWriteDispense" /></li>');
+    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
+    					$("#tinterErrorListModal").modal('show');
+    				}
+            	}
+            },
+            error: function(textStatus, errorThrown ) {
+                console.log("JSON Write Correction failed here");
+                console.log(textStatus + " " + errorThrown);
+				// Error Tell the user
+				console.log("Write Failed! " + data.errorMessage);
+				$("#tinterErrorList").empty();
+				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedToCallAction" /></li>');
+				$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
+				$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
+				$("#tinterErrorListModal").modal('show');
+            }
+        });
+    }
 	</script>
 	<script type="text/javascript"> //print functions
 	function ParsePrintMessage() {
@@ -1067,18 +1138,13 @@
 				processingDispense = true
 				event.preventDefault();
 				event.stopPropagation();
-				if($("#mainForm_sessionHasTinter").val()=="true") {
-					waitForShowAndHide("#positionContainerModal");
-					$("#tinterInProgressModal").modal('show');
-					rotateIcon();
-					$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress" />');
-					$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense" />');
-					// Call decrement colorants which will call dispense
-					decrementColorantLevels();
-				} else {
-					//No Tinter. Just write the dispense.
-					writeDispense();
-				}
+				waitForShowAndHide("#positionContainerModal");
+				$("#tinterInProgressModal").modal('show');
+				rotateIcon();
+				$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress" />');
+				$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense" />');
+				// Call decrement colorants which will call dispense
+				decrementColorantLevels();
 			}
 		});
 		
@@ -1259,6 +1325,7 @@
  						<s:hidden name="acceptedContNbr" value="%{acceptedContNbr}"/>
  						<s:hidden name="mergeCorrWithStartingForm" value="%{mergeCorrWithStartingForm}"/>
  						<s:hidden name="formulaClrntSysId" id="formulaClrntSys" value="%{#session[reqGuid].displayFormula.clrntSysId}" />
+ 						<s:hidden name="tinterClrntSysId" id="tinterClrntSys" value="%{#session[reqGuid].tinter.clrntSysId}" />
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
@@ -1395,8 +1462,15 @@
 									</button>
 								</td></tr>
 								<tr><td>
-									<button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">
-										<s:text name="correctFormula.dispenseAddition"></s:text>
+									<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
+									    <button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">
+										    <s:text name="correctFormula.dispenseAddition"></s:text>
+									    </button>
+									</div>
+								</td></tr>
+								<tr><td>
+									<button type="button" class="btn btn-secondary btn-block" id="dispenseAddManual" onclick="dispenseAddClick()">
+										<s:text name="global.handDispense"></s:text>
 									</button>
 								</td></tr>
 								<tr><td>
@@ -1716,7 +1790,7 @@
 				   scrollTop: $(document).height()-$(window).height()}, 
 				   1400, 
 				   "easeOutQuint"
-			);
+			);			
 		});
 
 		function updateButtonDisplay(){
@@ -1774,9 +1848,28 @@
 			}
 			// go get tinter info to load colorant dropdown
 			if($("#mainForm_sessionHasTinter").val()=="true"){
-				getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
+				if($('#tinterClrntSys').val() !== $('#formulaClrntSys').val()) {
+					loadManualDispenseColorantDropdown();
+					$('#dispenseAdd').prop('disabled', true);
+					$('#dispenseAdd').css('pointer-events', 'none');
+					$('#disableWrapper').prop('title', '<s:text name="correctFormula.wrongTinterColorantSys" />');
+					$('#disableWrapper').css('cursor', 'not-allowed');
+					$('#dispenseAddManual').attr('class', 'btn btn-primary btn-block');
+					$('#dispenseAdd').attr('class', 'btn btn-secondary btn-block');
+					$('[data-toggle="tooltip"]').tooltip();
+				} else {
+					getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
+				}
 			} else {
+				console.log("No tinter detected. Setting hand dispense as primary");
 				loadManualDispenseColorantDropdown();
+				$('#dispenseAdd').prop('disabled', true);
+				$('#dispenseAdd').css('pointer-events', 'none');
+				$('#disableWrapper').prop("title", '<s:text name="correctFormula.noTinterDetected" />');
+				$('#disableWrapper').css('cursor', 'not-allowed');
+				$('#dispenseAddManual').attr('class', 'btn btn-primary btn-block');
+				$('#dispenseAdd').attr('class', 'btn btn-secondary btn-block');
+				$('[data-toggle="tooltip"]').tooltip();
 			}
 		}
 		

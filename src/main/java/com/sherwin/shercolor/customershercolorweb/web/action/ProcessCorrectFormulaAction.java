@@ -256,7 +256,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 						logger.debug("about to convertIncrToShots");
 						formulationService.convertIncrToShots(ingredientList);
 						//Make a list of dispenseItems to return to user
-						if(tinter.getModel() != null) {
+						if(tinter.getModel() != null && tinter.getClrntSysId().equals(reqObj.getDisplayFormula().getClrntSysId())) {
 							logger.debug("Tinter detected... returning dispense items with position mapped in CustWebColorantsTxt for {}", reqObj.getTinter().getModel());
 							logger.debug("getting colorantMap for can position");
 							HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
@@ -285,7 +285,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 								retVal = ERROR;
 							}
 						} else {
-							logger.debug("No Tinter detected... returning dispense items with position 0");
+							logger.debug("No tinter detected or tinter clrnt sys does not match formula clrnt sys... returning dispense items with position 0");
 							dispenseItemList = new ArrayList<>();
 							
 							for(FormulaIngredient ingr : ingredientList){
