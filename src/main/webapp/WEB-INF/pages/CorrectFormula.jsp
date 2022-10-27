@@ -747,18 +747,30 @@
 	}
 	
 	function validateReason(invalidFlag){
+		var isInputInvalid = false;
+		
 		//validate reason text, check for length
 		if($('#reason').val().length < 2 || $('#reason').val().length > 100){
-			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
+			isInputInvalid = true;
+			$('#reason').attr("data-content", '<s:text name="correctFormula.reasonMustBeGtTwoChar" />');
+		// keep < and > characters out of reason input
+		} else if($('#reason').val().includes(">") || $('#reason').val().includes("<")){
+			isInputInvalid = true;
+			$('#reason').attr("data-content", '<s:text name="global.invalidEntryLtGt" />');
+		}
+
+		if(isInputInvalid) {
 			console.log("Invalid entries detected.");
+			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
 			$('#reason').attr("data-toggle", "popover");
 			$('#reason').attr("data-placement","top");
-			$('#reason').attr("data-content", '<s:text name="correctFormula.reasonMustBeGtTwoChar" />');
 			$('#reason').popover({trigger : 'manual'});
 			$('#reason').popover('toggle');
 			$('.popover').addClass('popover-danger');
 			return true;
-		}else{return false;}
+		}
+		return false;
+		
 	}
 </script>
 <script type="text/javascript"> // dispense checks
@@ -805,11 +817,11 @@
 		} else {
 			console.log("product fill OK");
 			//Run preDispenseCheck for tinter when clicking dispense addition button.
-			//Otherwise, skip checks and write the dispense for hand dispense.
+			//Otherwise, skip checks and write the dispense for hand dispense upon confirmation.
 			if(eventTriggerId === 'dispenseAdd') {
 				preDispenseCheck();
 			} else {
-				writeHandDispense();
+				$('#confirmHandDispenseModal').modal('show');
 			}
 		}
 	}
@@ -1148,34 +1160,10 @@
 			}
 		});
 		
-		// keep < and > characters out of reason input
-		$(document).on({
-			'keypress blur':function(){
-				try{
-					if(event.key == ">" || event.key == "<"){
-						throw '<s:text name="global.noLtOrGt" />';
-					}
-					if($(this).val().includes(">") || $(this).val().includes("<")){
-						throw '<s:text name="global.invalidEntryLtGt" />';
-					}
-					$(document).find('#errortxt').remove();
-					$(':button').attr('disabled', false);
-				} catch(msg){
-					if(event.type=="keypress"){
-						event.preventDefault();
-					}
-					if(!$(document).find('#errortxt').is(':visible')){
-						$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
-					}
-					$(document).find('#errortxt').text(msg);
-					if(event.type=="blur"){
-						$(this).focus();
-						$(':button').attr('disabled', true);
-					}
-				}
-			}
-		}, '#reason');
-		
+		$('#confirmHandDispenseAddition').on('click', function() {
+			writeHandDispense();
+		});
+	
 		//Hide unnecessary rows onload
 		var dupText = [];
 		var cycle = <s:property value="%{cycle}"/>;
@@ -1540,7 +1528,26 @@
 							</div>
 						</div>
 					</div>
-				</div>			    
+				</div>
+				
+				<!-- Hand Dispense Modal Window for Confirmation -->
+			    <div class="modal fade" aria-labelledby="confirmHandDispenseModal" aria-hidden="true"  id="confirmHandDispenseModal" role="dialog">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><s:text name="global.confirmDispense"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<p><s:text name="correctFormula.confirmHandDispenseOfAddition"></s:text></p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.no"></s:text></button>
+	        					<button type="button" class="btn btn-primary" id="confirmHandDispenseAddition"><s:text name="global.yes"></s:text></button>
+							</div>
+						</div>
+					</div>
+				</div>				    
 
 			    <!-- Tinter In Progress Modal Window -->
 			    <div class="modal fade" aria-labelledby="tinterInProgressModal" aria-hidden="true"  id="tinterInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
