@@ -52,7 +52,19 @@ jobs:
         # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
-        
+    - name: Setup Maven
+      uses: stCarolas/setup-maven@v4.2
+      with:
+        maven-version: 3.8.2
+
+    - name: Setup Maven settings.xml
+      uses: whelk-io/maven-settings-xml-action@v20
+      with:
+        repositories: '[{ "id": "artifactory", "url": "https://artifactory.sherwin.com/artifactory/maven-virtual" }]'
+        servers: '[{"id": "artifactory","username": "${{secrets.ARTIFACTORY_USERNAME}}","password": "${{secrets.ARTIFACTORY_API_KEY}}"}]'
+        plugin_repositories: '[{ "id": "artifactory", "url": "https://artifactory.sherwin.com/artifactory/maven-virtual" }]'
+        mirrors: '[{ "mirrorOf":"*", "id": "artifactory", "url": "https://artifactory.sherwin.com/artifactory/maven-virtual" }]' 
+     
     # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
