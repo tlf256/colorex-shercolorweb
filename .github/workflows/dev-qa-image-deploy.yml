@@ -1,0 +1,25 @@
+#Executes on merge of each PR to development
+name: Deploy to DEV & QA
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - dja557/spring-boot-wildfly-bootable-k8s
+#       - development
+#       - master
+#       - 'release/**'
+    types: [closed]
+    paths-ignore: 
+      - 'shercolorweb-chart/**'
+jobs:
+  dev-qa-deploy:
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
+    with:
+      java_version: 8
+      chart_directory: shercolorweb-chart
+      release_name: shercolorweb
+      dev_url: 'https://dev-shercolorweb.np-rancher.sherwin.com/shercolorweb'
+      qa_url: 'https://qa-shercolorweb.np-rancher.sherwin.com/shercolorweb'
+      dev_helm_values_files: '--values=values.yaml --values=values-rancher-dev.yaml'
+      qa_helm_values_files: '--values=values.yaml --values=values-rancher-qa.yaml'
+    secrets: inherit
