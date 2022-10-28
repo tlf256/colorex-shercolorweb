@@ -8,7 +8,7 @@ on:
 #       - master
 #       - 'release/**'
     types: [closed]
-    paths-ignore: 
+    paths: 
       - 'shercolorweb-chart/**'
 jobs:
   dev-qa-deploy:
