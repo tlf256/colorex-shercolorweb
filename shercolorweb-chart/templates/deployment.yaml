@@ -39,7 +39,7 @@ spec:
             httpGet:
               path: {{ .Values.appRoot }}/heartbeat.jsp
               port: {{ .Values.service.port }}
-            periodSeconds: 70
+            periodSeconds: 150
             failureThreshold: 2
             timeoutSeconds: 5
           livenessProbe:

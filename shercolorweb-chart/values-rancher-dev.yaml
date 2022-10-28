@@ -8,13 +8,13 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
   hosts:
-  - host: dev-shercolorweb.np-rancher.sherwin.com
+  - host: dev-shercolor.sherwin.com
     paths:
-      - path: /
+      - path: /shercolorweb
         pathType: Prefix   
   tls:
   - hosts:
-    - dev-shercolorweb.np-rancher.sherwin.com
+    - dev-shercolor.sherwin.com
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
 springProfilesActive: "dev,oracle,rancher"
