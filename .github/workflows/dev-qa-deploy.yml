@@ -9,7 +9,8 @@ on:
 #       - master
 #       - 'release/**'
     types: [closed]
-    
+    paths-ignore: 
+      - 'shercolorweb-chart/**'
 jobs:
   dev-qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
