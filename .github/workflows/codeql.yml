@@ -52,6 +52,13 @@ jobs:
         # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
+    - name: Setup Java
+      id: java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 8
+    
     - name: Setup Maven
       uses: stCarolas/setup-maven@v4.2
       with:
