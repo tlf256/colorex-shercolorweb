@@ -119,10 +119,8 @@ function FMXdispenseProgress(tintermessage) {
 	console.log('before dispense progress send');
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
-	var cmd = "";
-	if(platform.startsWith("win")){
-		cmd = "DispenseProgress";
-	} else {
+	var cmd = "DispenseProgress";
+	if(!platform.startsWith("Win")){
 		cmd = "DispenseStatus";
 	}
 	var shotList = null;
