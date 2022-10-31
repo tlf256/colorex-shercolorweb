@@ -8,8 +8,9 @@ on:
 #       - master
 #       - 'release/**'
     types: [closed]
-    paths: 
-      - 'shercolorweb-chart/**'
+    #TODO - make sure path ignoring works
+#     paths: 
+#       - 'shercolorweb-chart/**'
 jobs:
   dev-qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-helm-deploy-workflow.yml@dja557/SCD-59
