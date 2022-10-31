@@ -14,7 +14,7 @@ on:
 #       - 'shercolorweb-chart/**'
 jobs:
   dev-qa-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-image-deploy-workflow.yml@dja557/SCD-59
     with:
       java_version: 8
       chart_directory: shercolorweb-chart
