@@ -155,7 +155,7 @@ function printDrawdownLabel() {
 
 function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
-	if (verifyRoomSelected() == true){
+	if (verifyRoomSelected() == true && validateQtyOrdered()){
 		// save before action
 		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
 		if (isNaN(myCtlNbr))
