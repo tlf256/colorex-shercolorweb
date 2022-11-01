@@ -5,7 +5,7 @@ on:
     branches: 
       - development
       - master
-      - 'release/**'
+      - release/**
     types: [opened, synchronize]
     paths-ignore: 
       - '**.md'
