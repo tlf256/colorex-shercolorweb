@@ -2348,17 +2348,20 @@ function ParsePrintMessage() {
 			
 			updateButtonDisplay();
 			
-			//testing new stuff
-			//Enable enter key to print.  No need for mouse click
+			//Enable enter key to print
 			$("#qtyOrderedTextField").keypress(function(event){
 			    var keycode = (event.keyCode ? event.keyCode : event.which);
 			    if(keycode == '13'){
-					if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
-					    // print button is visible
-					    event.preventDefault();
-						$("#formulaDispense").click();
+				    event.preventDefault();
+					if( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+						$('#dispenseSampleButton').click();
+					} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'false' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true') {
+						$('#drawdownSaveButton').click();
+					} else if ($('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'false' ) {
+						$('#formulaDispense').click();
+					} else {
+						$('#formulaUserPrintAction_formulaUserSaveAction').click();
 					}
-			       
 			    }
 			});
 			
@@ -2437,21 +2440,6 @@ function ParsePrintMessage() {
 				$('#formulaDispense').attr('class', 'btn btn-secondary');
 				$('#formulaUserPrintAction_formulaUserSaveAction').attr('class', 'btn btn-primary');
 			}
-			
-			//Trigger the button based on what the primary button is on the page via the Enter key.
-			$(document).on('keyup', function(event) {
-				if(event.which === 13) {
-					if( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
-						$('#dispenseSampleButton').click();
-					} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'false' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true') {
-						$('#drawdownSaveButton').click();
-					} else if ($('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'false' ) {
-						$('#formulaDispense').click();
-					} else {
-						$('#formulaUserPrintAction_formulaUserSaveAction').click();
-					}
-				}
-			});
 			
 			//Verify contents of Room-By-Room when tabbing off of field.
 			$('#roomsList').on('keydown', function(event) {
