@@ -236,7 +236,8 @@
 		
 		function resetTinter(){
 			console.log("sending reset");
-			$("#progress-message").text("Initializing tinter. Process may take up to 2 min.");
+			var initTinterText = '<s:text name="welcome.initializingTinter"/>';
+			$("#progress-message").text(initTinterText);
 			$("#initTinterInProgressModal").modal('show');
 			rotateIcon();
 			var cmd = "Reset";
@@ -829,9 +830,6 @@
 							
 								// Detected and no errors from tinter 
 								waitForShowAndHide('#initTinterInProgressModal');
-								
-								// get session for tinter status
-					    		//getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 							} else {
 								sendingTinterCommand = "false";
 								initErrorList = [];

@@ -23,7 +23,7 @@
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-2.0.0.js"></script>
 <script type="text/javascript">
 var processingDispense = false;
 	<s:iterator value="tinter.canisterList" status="i">

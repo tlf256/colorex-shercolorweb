@@ -211,7 +211,7 @@ function dispenseProgressResp(return_message) {
 	else if ((return_message.errorMessage.indexOf("done") > 0 || return_message.errorMessage.indexOf("Dispense Job Complete") == 0) 
 		|| return_message.errorNumber != 0) {
 		if (return_message.errorNumber == 4226) {
-			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry']
+			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
 		}
 		FMXDispenseComplete(return_message);
 
@@ -294,10 +294,11 @@ function FMXDispenseComplete(return_message) {
 						});
 						*/
 		} else {
-			if(platform.startsWith("Win")){
+			// why was this here? Test with this commented --
+			//if(platform.startsWith("Win")){
 				tinterErrorList.push(return_message.errorMessage);
 				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-			}
+			//}
 		}
 		if ($('#progressok').length > 0 ) {
 			$('#progressok').removeClass('d-none');
