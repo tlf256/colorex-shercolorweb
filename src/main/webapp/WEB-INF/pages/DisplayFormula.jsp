@@ -155,7 +155,7 @@ function printDrawdownLabel() {
 
 function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
-	if (verifyRoomSelected() == true && validateQtyOrdered()){
+	if (verifyRoomSelected() == true && validateQtyOrderedForPrint()){
 		// save before action
 		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
 		if (isNaN(myCtlNbr))
@@ -1128,6 +1128,28 @@ function ParsePrintMessage() {
 				return false;
 			} else {
 				saveQtyOrdered(qtyOrdered);
+				return true;
+			}
+		} else {
+			qtyOrderedErrText.text('<s:text name="displayFormula.invalidInput"></s:text>');
+			qtyOrderedErrText.removeClass("d-none");
+			return false;
+		}
+	}
+	
+	function validateQtyOrderedForPrint() {
+		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
+		var qtyOrderedErrText = $("#qtyOrderedErrorText");
+
+		$("#qtyOrderedErrorText").addClass("d-none");
+		
+		 if (qtyOrdered > 0 && qtyOrdered < 1000){
+			if (qtyDisp > qtyOrdered) {
+				qtyOrderedErrText.text('<s:text name="displayFormula.invalidInputDispQty"></s:text>');
+				qtyOrderedErrText.removeClass("d-none");
+				return false;
+			} else {
 				return true;
 			}
 		} else {
