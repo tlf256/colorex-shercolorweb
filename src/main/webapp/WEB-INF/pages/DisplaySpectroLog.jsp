@@ -68,15 +68,6 @@
 			      		<div class="col-sm-5"></div>
 			      		<div class="col-sm-1"></div>
 			      	</div>
-			      	<div class="row" id="spectroFunctionList">
-				    	<div class="col-sm-3"></div>
-				      	<div class="col-sm-6">
-				      		<strong><s:text name="displaySpectroLog.functions"/><s:text name="global.colonDelimiter"/></strong>
-				      		<s:select list="spectroCommands" id="spectroCommands" headerKey="-1" headerValue="--" >
-				      		</s:select>
-				      	</div>
-				    	<div class="col-sm-3"></div>
-				    </div>
 			        <div class="row">
 			      		<div class="col-sm-1"></div>
 			      		<div class="col-sm-5">
@@ -89,6 +80,15 @@
 			      		</div>
 			      		<div class="col-sm-1"></div>
 			      	</div>
+			      	<div class="row" id="spectroFunctionList">
+				    	<div class="col-sm-3"></div>
+				      	<div class="col-sm-6">
+				      		<strong><s:text name="displaySpectroLog.functions"/><s:text name="global.colonDelimiter"/></strong>
+				      		<s:select list="spectroCommands" id="spectroCommands" headerKey="-1" headerValue="--" >
+				      		</s:select>
+				      	</div>
+				    	<div class="col-sm-3"></div>
+				    </div>
 			      </div>
 			      <div class="modal-footer">
 			      	<s:hidden id="guid" name="reqGuid" value="%{reqGuid}"/>

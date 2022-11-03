@@ -40,16 +40,12 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 		List<String> commands = new ArrayList<>();
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		try {
-			logger.info("in SearchSpectroLogAction.display.. reqObj.customerId is {} and reqObj.getSpectro().getModel() is {} and reqObj.getSpectro().getSerialNbr() is {}",
-					reqObj.getCustomerID(), reqObj.getSpectro().getModel(), reqObj.getSpectro().getSerialNbr());
-		
 			if(reqObj.getSpectro() != null && reqObj.getSpectro().getModel() != null && reqObj.getSpectro().getSerialNbr() != null) {
 				commands = spectroService.getSpectroCommands(reqObj.getCustomerID(), reqObj.getSpectro().getModel(), reqObj.getSpectro().getSerialNbr());
 			} else {
 				commands = spectroService.getSpectroCommands(reqObj.getCustomerID());
 			}
-			
-			logger.info("commands.size is {}", commands.size());
+
 			if(!commands.isEmpty()) {
 				setSpectroCommands(commands);
 			}
@@ -74,8 +70,6 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 		String spectroSerial = "";
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		try {
-			logger.info("in SearchSpectroLogAction.logLookup.. reqObj.customerId is {} and reqObj.getSpectro().getModel() is {} and reqObj.getSpectro().getSerialNbr() is {}",
-					reqObj.getCustomerID(), reqObj.getSpectro().getModel(), reqObj.getSpectro().getSerialNbr());
 			cmd = URLDecoder.decode(this.spectroCommand.trim(), "UTF-8");
 			fdate = URLDecoder.decode(this.fromDate.trim(), "UTF-8");
 			tdate = URLDecoder.decode(this.toDate.trim(), "UTF-8");
@@ -91,19 +85,17 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 			if(!tdate.equals("")) {
 				toRequestTime = jsdf.parse(tdate);
 			}
-			logger.info("cmd: {}. fdate: {}. tdate: {}. spectroModel: {}. spectroSerial: {}. CustomerId {}", cmd, fdate, tdate, spectroModel, spectroSerial, reqObj.getCustomerID());
 			results = spectroService.searchSpectroEvents(reqObj.getCustomerID(), spectroModel, spectroSerial, cmd, fromRequestTime, toRequestTime);
-			logger.info("results size is {}",  results.size());
 			setSpectroEventResults(results);
 			
 		} catch (UnsupportedEncodingException e) {
-			logger.error("UnsupportedEncodingException Caught in SearchSpectroLogAction.logLookup");
+			logger.error("UnsupportedEncodingException Caught in SearchSpectroLogAction.logLookup {} {}", e, e.getMessage());
 			return ERROR;
-		} catch (ParseException e) {
-			logger.error("ParseException Caught in SearchSpectroLogAction.logLookup");
+		} catch (ParseException e1) {
+			logger.error("ParseException Caught in SearchSpectroLogAction.logLookup {} {}", e1, e1.getMessage());
 			return ERROR;
-		} catch (RuntimeException e) {
-			logger.error(e.getMessage(), e);
+		} catch (RuntimeException e2) {
+			logger.error("Exception Caught: {} {}", e2, e2.getMessage());
 			return ERROR;
 		}
 		
