@@ -1,6 +1,8 @@
 name: Deploy helm chart to DEV & QA
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [shercolorweb-build-deploy]
   pull_request:
     branches:
       - dja557/spring-boot-wildfly-bootable-k8s
