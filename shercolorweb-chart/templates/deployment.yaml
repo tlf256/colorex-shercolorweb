@@ -5,6 +5,11 @@ metadata:
   labels:
     {{- include "shercolorweb.labels" . | nindent 4 }}
 spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
   minReadySeconds: 10
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
