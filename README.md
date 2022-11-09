@@ -66,16 +66,22 @@ For debugging documentation and more visit https://docs.wildfly.org/bootablejar
 ### Docker
 1. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
     ```sh
-    docker build -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag-version> .
+    docker build -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag> .
     ```
 
 2. Run the image locally using the following command:
     ```sh
-    docker run --env-file $HOME/dev.properties -p 8090:8090 -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag-version>
+    docker run --env-file $HOME/dev.properties -p 8090:8090 -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag> <env>
     ```
     This command does a few important things:
     1. Copies the values in the dev.properties file as environment variables into the container which pass credential keys to Spring Boot used to authenticate to Vault
     2. Maps our local port to the container port
+    3. Specifies the Wildfly application server environment to use which connects us to the proper Sherlink DB for user authentication
+
+    Example:
+    ```sh
+    docker run --env-file $HOME/dev.properties -p 8090:8090 -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:2.0.0 dev
+    ```
 ### Kubernetes
 Be sure to configure your local Kubernetes/Docker environment by using Docker Desktop or another Kubernetes distribution as well as Helm 3 installed.
 
