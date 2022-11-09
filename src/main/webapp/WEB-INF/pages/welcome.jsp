@@ -19,10 +19,10 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/spectro-1.5.2.js"></script>
 	
 	<style>
 		.dropdown-submenu {
@@ -242,7 +242,7 @@
 			var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
 			spectromessage.messageName = "SpectroMessage";
 
-			spectromessage.spectroConfig.port  = " USB";
+			spectromessage.spectroConfig.port  = "USB";
 			var json = JSON.stringify(spectromessage);
 			sendingSpectroCommand = "true";
 	    	ws_spectro.send(json);
@@ -258,7 +258,7 @@
 			var spectromessage = new SpectroMessage(cmd,clreyemodel, clreyeserial);
 			spectromessage.messageName = "SpectroMessage";
 
-			spectromessage.spectroConfig.port  = " USB";
+			spectromessage.spectroConfig.port  = "USB";
 			var json = JSON.stringify(spectromessage);
 			sendingSpectroCommand = "true";
 	    	ws_spectro.send(json);
@@ -867,6 +867,8 @@
 				}
 				
 				if(isSpectroJSON){
+					var myGuid = $("#startNewJob_reqGuid").val();
+		  		  	sendSpectroEvent(myGuid, spectro_return_message);
 					switch (spectro_return_message.command) {
 						case 'GetCalStatusMinUntilCalExpiration':
 							if (spectro_return_message.errorMessage!="") {
@@ -1161,6 +1163,7 @@
 										<li id="spectroGetInfo"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroGetInfoAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="global.colorEyeInformation"/></a></li>
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
 										<li id="compareColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCompareColorsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-adjust pr-1'></span> <s:text name="welcome.compareTwoColors"/></a></li>
+										<li id="closestColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="closestColorsMeasureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-crosshairs pr-1'></span> <s:text name="closestColors.findClosestColors"/></a></li>
 				        			</ul>
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">

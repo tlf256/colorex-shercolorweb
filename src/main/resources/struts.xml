@@ -267,6 +267,11 @@
 				<param name="actionName">displayFormulaAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+			<result name="compareColors" type="redirectAction">
+				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
 		</action>
 		<action name="startNewJob" class="com.sherwin.shercolor.customershercolorweb.web.action.SelectJobAction" method="startNewJob">
 			<result name="loginRedirect" type="redirectAction">
@@ -332,6 +337,22 @@
 			<result name="success" type="json"/>
 			<result name="error" type="json"/>
 		</action>
+		<action name="fillProdNbrAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="fillProdNbr">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
+		<action name="colorLookupSearchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="colorLookup">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+		 		<param name="root">colorLookupResults</param>
+			</result>
+			<result name="error" type="json"/>
+		</action>
 		<action name="spectroCalibrateRedirectAction" class="com.sherwin.shercolor.customershercolorweb.web.action.MeasureColorAction" method="calibrate">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -339,9 +360,11 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">spectroCalibrateAction</param>
 				<param name="measureColor">${measureColor}</param>
-				<param name="measure">${measure}</param>
-				<param name="compare">${compare}</param>
+				<param name="measureStandard">${measureStandard}</param>
+				<param name="measureSample">${measureSample}</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="closestColors">${closestColors}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 		</action>
 		<action name="spectroCalibrateAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroCalibrateAction" method="display">
@@ -415,19 +438,48 @@
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
 			</result>
-			<result name="sample" type="redirectAction">
+			<result name="getSample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-			</result>
-			<result name="measure" type="redirectAction">
+				<param name="measureSample">${measureSample}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>                                                             
+			<result name="ciUtility" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<param name="measure">${measure}</param>
+				<param name="measureStandard">${measureStandard}</param>
+				<param name="measureSample">${measureSample}</param>
+				<param name="closestColors">${closestColors}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
+		</action>
+		<action name="closestColorsDisplayAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorsAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ClosestColors.jsp</result>
+		</action>
+		<action name="closestColorsMeasureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorsAction" method="measure">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">MeasureColorAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="closestColors">${closestColors}</param>
+			</result>
+		</action>
+		<action name="closestColorsResultAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ClosestColorsAction" method="execute">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/ClosestColorsResult.jsp</result>
+			<result name="input">/WEB-INF/pages/ClosestColorsResult.jsp</result>
+			<result name="error">/WEB-INF/pages/ClosestColorsResult.jsp</result>
 		</action>
 		<action name="colorUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -436,12 +488,25 @@
 			<result name="measure" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<!-- <param name="measureColor">${measureColor}</param> -->
+				<param name="measureStandard">${measureStandard}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
+			<result name="compareColors" type="redirectAction">
+				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 			<result name="savedMeasure" type="redirectAction">
 				<param name="actionName">MeasureColorNextAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 				<param name="measuredCurve">${measuredCurve}</param>
+				<param name="compareColors">${compareColors}</param>
+			</result>
+			<result name="existingMatch" type="redirectAction">
+				<param name="actionName">listJobsAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
+				<param name="matchStandard">${matchStandard}</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetProduct.jsp</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
@@ -468,9 +533,14 @@
 				<param name="actionName">spectroCompareColorsResultAction</param>
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
-			<result name="sample" type="redirectAction">
+			<result name="closestColors" type="redirectAction">
+				<param name="actionName">closestColorsDisplayAction</param>
+				<param name="reqGuid">${reqGuid}</param>
+			</result>
+			<result name="getSample" type="redirectAction">
 				<param name="actionName">spectroMeasureSampleAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 			<result name="input">/WEB-INF/pages/GetColor.jsp</result>
 		</action>
@@ -665,6 +735,12 @@
 				<param name="reqGuid">${reqGuid}</param>
 			</result>
 			<result name="input">/WEB-INF/pages/GetProduct.jsp</result>
+		</action>
+		<action name="loadProductLookupAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductLookupAction" method="loadProductLookup">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="json"/>
 		</action>
 		<action name="clrntUserNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -890,6 +966,17 @@
 			</result>
 			<result name="success" type="json"/>
 			<result name="input" type="json"/>
+		</action>
+		<action name="formulaUserPrintActionNoFormula" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="printWithoutFormula">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">inline;filename="test.pdf"</param>
+                <param name="bufferSize">1024</param>
+			</result>
 		</action>
 		<action name="saveRoomByRoom" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveRoomByRoom">
 			<result name="loginRedirect" type="redirectAction">
@@ -1165,6 +1252,16 @@
 			<result name="success" type="json"/>
 			<result name="error" type="json"/>
 		</action>
+		<action name="logSpectroEventAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SpectroEventAction" method="execute">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+			<result name="error" type="json"/>
+		</action>
 		<action name="updateColorantsTxtAction" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateColorantsTxtAction" method="execute">
 	        <interceptor-ref name="defaultStack"/>
 	        <interceptor-ref name="json" />
@@ -1376,31 +1473,15 @@
 			</result>
 			<result name="success" type="json"/>
 		</action>
-		<action name="spectroCompareColorsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="display">
+		<action name="spectroCompareColorsAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/CompareColors.jsp</result>
-		</action>
-		<action name="spectroCompareColorsNextAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsAction" method="execute">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="match" type="redirectAction">
-				<param name="actionName">listJobsAction</param>
-				<param name="reqGuid">${reqGuid}</param>
-				<param name="match">${match}</param>
-			</result>
-			<result name="measure" type="redirectAction">
-				<param name="actionName">MeasureColorAction</param>
-				<param name="reqGuid">${reqGuid}</param>
-				<param name="measure">${measure}</param>
 			</result>
 			<result name="success" type="redirectAction">
-				<param name="actionName">spectroMeasureSampleAction</param>
+				<param name="actionName">displayColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
-			<result name="input">/WEB-INF/pages/CompareColors.jsp</result>
 		</action>
 		<action name="selectColorMatchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.CompareColorsCustomMatchAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -1418,7 +1499,8 @@
 			<result name="success" type="redirectAction">
 				<param name="actionName">MeasureColorAction</param>
 				<param name="reqGuid">${reqGuid}</param>
-				<param name="compare">${compare}</param>
+				<param name="measureSample">${measureSample}</param>
+				<param name="compareColors">${compareColors}</param>
 			</result>
 		</action>
 		<action name="spectroCompareColorsResultAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCompareColorsAction" method="execute">
@@ -1457,6 +1539,6 @@
 		</action>
 		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
 			<result name="success" type="json"/>
-		</action>
+		</action>		
 	</package>
 </struts>

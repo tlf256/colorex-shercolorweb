@@ -26,8 +26,9 @@
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
 	 	<script type="text/javascript" charset="utf-8" src="js/datetime-moment.js"></script> 
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/getcolorautocomplete-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/GetColor-1.5.2.js"></script>
 		<style>
 		.chip {
 		    width: 40px;
@@ -84,6 +85,24 @@
 						$('#partialColorNameOrId').val('');
 				    }
 					
+					//Hide color lookup button if custom/saved measurement.
+					if(selectedValue === "SAVEDMEASURE" || selectedValue === "CUSTOM" || selectedValue === "CUSTOMMATCH") {
+						$('#colorLookupBtn').hide();
+					} else {
+						if(selectedValue === "COMPET") {
+							$('#colorLookupBtn').attr('data-target', '#searchModalCPNA');
+							$('#natAcctList').hide();
+							$('#competList').show();
+						} else if(selectedValue === "NAT") {
+							$('#colorLookupBtn').attr('data-target', '#searchModalCPNA');
+							$('#natAcctList').show();
+							$('#competList').hide();
+						} else {
+							$('#colorLookupBtn').attr('data-target', '#searchModalSW');
+						}
+						$('#colorLookupBtn').show();
+					}
+					
 				});
 				
 				//validate partialColorNameOrId if custom manual or custom match
@@ -118,8 +137,18 @@
 					}
 				}, '#partialColorNameOrId');
 				
-			});
-			
+				$('#colorNxtBtn').on('click', function(){
+					
+					$('#colorNextForm').submit();
+					
+					if(selectedValue === "EXISTING_MATCH"){
+						//console.log('EXISTING_MATCH selected');
+						var displayMessage = '<s:text name="compareColors.loadingColorMatches" />';
+						pleaseWaitModal_show(displayMessage, null);
+					}
+				});
+				
+			});			
 			
 			$(document).ready(function() {
 				displaySavedMeasurementsTable();
@@ -220,8 +249,28 @@
 <%-- 			this sess is <s:property value="#session"/> --%>
 <!-- 			<br> -->
 <%-- 			jf obj is <s:property value="#session[reqGuid].jobFieldList"/> --%>
-			
-			<div class="row">
+			<s:if test="compareColors">
+				<div class="row">
+					<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+					</div>
+					<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12">
+						<div class="card card-body bg-light mt-4">
+						   <div class="row">
+								<div class="col-lg-4 col-md-4 col-sm-3 col-xs-4">
+									<span class="badge badge-secondary" style="font-size: 1.2rem;"><s:text name="compareColors.compareColors"/></span>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-1 col-xs-0"></div>
+								<div class="col-lg-5 col-md-5 col-sm-7 col-xs-8"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 col-lg-2 col-md-1 col-sm-0">
+					</div>
+				</div>
+				<br>
+			</s:if>
+			<s:else>
+				<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
@@ -237,28 +286,55 @@
 				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
 				</div>
 			</div>
+			</s:else>
+			<s:if test="hasActionMessages()">
+			  <div class="row">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
+					<s:actionmessage/>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-1 col-xs-0">
+				</div>
+			  </div>
+			</s:if>
 <br>
-			<s:form action="colorUserNextAction" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
+			<s:form id="colorNextForm" action="colorUserNextAction" validate="true" focusElement="partialColorNameOrId" theme="bootstrap">
 				<div class="row">
 						<div class="col-lg-2 col-md-2 col-sm-1">
 						</div>
 	            		<div class="col-lg-8 col-md-8 col-sm-10">
 	            			<div class="form-group">
-	            				<strong><s:text name="getColor.colorTypeColon"/></strong>
+	            			  <s:if test="compareColors">
+	            			    <strong><s:text name="compareColors.chooseStandardSourceColon"/></strong>
+	            			  </s:if>
+	            			  <s:else>
+	            			    <strong><s:text name="getColor.colorTypeColon"/></strong>
+	            			  </s:else>
 	            				<div class="controls">
 	            					<s:iterator value="cotypes" status="i">
-		            					<div class="form-check">
+		            				  <div class="form-check">
+		            				    <s:if test="!compareColors || (compareColors && key != 'CUSTOM')">
 		            					  <s:if test="%{#i.index == 0}">
 		            					  	<input class="form-check-input" type="radio" name="selectedCoTypes" value='<s:property value="key"/>' id="selectedCoTypes-<s:property value="%{#i.index}"/>" checked>
 		            					  </s:if>
 		            					  <s:else>
-		            					  	<input class="form-check-input" type="radio" name="selectedCoTypes" value='<s:property value="key"/>' id="selectedCoTypes-<s:property value="%{#i.index}"/>">
+		            					  	  <input class="form-check-input" type="radio" name="selectedCoTypes" value='<s:property value="key"/>' id="selectedCoTypes-<s:property value="%{#i.index}"/>">
 		            					  </s:else>
 										  <label class="form-check-label font-weight-normal" for="selectedCoTypes-<s:property value="%{#i.index}"/>">
-										    <s:property value="value"/>
+										      <s:property value="value"/>
 										  </label>
-										</div>
+										</s:if>
+									  </div>
 		            				</s:iterator>
+		            				<s:if test="compareColors">
+		            				  <div class="form-check">
+		            					<input class="form-check-input" type="radio" name="selectedCoTypes" id="selectedCoTypes" value="EXISTING_MATCH" />
+		            					<label class="form-check-label font-weight-normal" for="selectedCoTypes">
+										   <s:text name="compareColors.existingCustomMatch"></s:text>
+										</label>
+									  </div>
+		            				</s:if>
 	            				</div>
 	            			</div>
  	            			<%-- <s:radio label="Color Type" name="selectedCoTypes" list="cotypes" value="defaultCoTypeValue" /> --%>
@@ -341,6 +417,9 @@
 						<div class="col-lg-2 col-md-2 col-sm-1">
 							<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
 							<s:hidden name="colorData" id="colorData" value=""/>
+							<s:hidden name="selectedCompany" id="selectedCompany" value=""/>
+							<s:hidden name="measureStandard" id="measureStandard" value="%{measureStandard}"/>
+							<s:hidden name="compareColors" id="compareColors" value="%{compareColors}"/>
 						</div>
 						<div class="col-lg-8 col-md-8 col-sm-10">
 							<s:textfield name="partialColorNameOrId" id="partialColorNameOrId" label="%{getText('getColor.enterColorNameOrNumber')}" 
@@ -354,10 +433,11 @@
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 						</div>	
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3" id="nextBtnDiv">
-							<s:submit cssClass="btn btn-primary" value="%{getText('global.next')}" action="colorUserNextAction"/>
+							<button id="colorNxtBtn" class="btn btn-primary" autofocus="autofocus"><s:text name="global.next"/></button>
 						</div>
-						<div class="col-lg-7 col-md-7 col-sm-9 col-xs-9">
+						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-7">
 							<s:submit cssClass="btn btn-secondary" action="colorUserBackAction" value="%{getText('global.back')}" />
+							<button id="colorLookupBtn" class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#searchModalSW"><s:text name="getColor.advancedColorLookup"/></button>
 							<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('global.cancel')}" action="userCancelAction"/>
 						</div>
 						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">	
@@ -402,6 +482,133 @@
 				</div>			
 			</s:form>
 		</div>
+
+		
+		<!-- Modal for SW color lookup -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchModalSW" data-backdrop="static">
+		  <div class="modal-dialog" role="document" style="max-height: 70vh;">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h5 class="modal-title"><s:text name="getColor.advancedColorLookup"/></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <s:form action="colorSearchAction">
+			      <div class="modal-body" style="max-height: 70vh;">
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="getColor.locatorIdColon"/></strong>
+			      			<s:textfield id="locatorId" name="locatorNum" maxlength="10" placeholder="%{getText('getColor.allLocatorIds')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-6"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.colorIdColon"/></strong>
+			      			<s:textfield id="clridSW" name="colorId" maxlength="10" placeholder="%{getText('getColor.allColorIds')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-6"></div>
+			      	</div>
+			    	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-8">
+			      			<strong><s:text name="global.colorNameColon"/></strong>
+			      			<s:textfield id="clrnmSW" name="colorName" maxlength="30" placeholder="%{getText('getColor.allColorNames')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-3"></div>
+			      	</div>
+			      </div>
+			      <div class="modal-footer">
+			      	<button id="searchBtnSW" type="button" class="btn btn-primary"><s:text name="getColor.search"/></button>
+			      	<button type="button" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
+			      </div>
+		      </s:form>
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Modal for Nat. Acct. color lookup -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="searchModalCPNA" data-backdrop="static">
+		  <div class="modal-dialog" role="document" style="max-height: 70vh;">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h5 class="modal-title"><s:text name="getColor.advancedColorLookup"/></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <s:form action="colorSearchAction">
+			      <div class="modal-body" style="max-height: 70vh;">
+			      	<div id="natAcctList" class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-11">
+			      			<s:select label="%{getText('getColor.companyName')}" id="modalNAList" list="natColorCompanies"/>
+			      		</div>
+			      	</div>
+			 		<div id="competList" class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-7">
+			      			<s:select label="%{getText('getColor.companyName')}" id="modalCompetList" list="colorCompanies"/>
+			      		</div>
+			      		<div class="col-sm-4"></div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-5">
+			      			<strong><s:text name="global.colorIdColon"/></strong>
+			      			<s:textfield id="clridCPNA" name="colorId" maxlength="10" placeholder="%{getText('getColor.allColorIds')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-6"></div>
+			      	</div>
+			    	<div class="row">
+			      		<div class="col-sm-1"></div>
+			      		<div class="col-sm-8">
+			      			<strong><s:text name="global.colorNameColon"/></strong>
+			      			<s:textfield id="clrnmCPNA" name="colorName" maxlength="30" placeholder="%{getText('getColor.allColorNames')}"></s:textfield>
+			      		</div>
+			      		<div class="col-sm-3"></div>
+			      	</div>
+			      </div>
+			      <div class="modal-footer">
+			      	<button id="searchBtnCPNA" type="button" class="btn btn-primary"><s:text name="getColor.search"/></button>
+			      	<button type="button" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
+			      </div>
+		      </s:form>
+		    </div>
+		  </div>
+		</div>
+				
+		<!-- Modal for color lookup results -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="colorLookupResultModal" data-backdrop="static">
+		  <div class="modal-dialog modal-lg" role="document" style="max-height: 100vh; max-width: 80vh;">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		        <h5 class="modal-title"><s:text name="getColor.advancedColorLookup"/></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+			      <div class="modal-body">
+			      <div class="row" id="loadingMsg">
+			      	<div class="col-lg-12 col-md-12 col-sm-12">
+						<h5><s:text name="global.loading"/></h5>
+			      	</div>
+			      </div>
+			      	<div class="row">
+			      		<div class="col-lg-12 col-md-12 col-sm-12" id="colorListTableDiv">
+						</div>
+			      	</div>
+			      </div>
+			      <div class="modal-footer">
+			      	<button type="button" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.cancel"/></button>
+			      </div>
+		    </div>
+		  </div>
+		</div>
+		
 		<br>
 		<br>
 		<br>

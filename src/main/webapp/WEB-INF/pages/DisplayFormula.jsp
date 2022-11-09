@@ -21,11 +21,11 @@
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/moment.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.4.7.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/ProductChange.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
@@ -106,25 +106,39 @@ badge {
 <script type="text/javascript">
 //printer scripts
 
-function setLabelPrintEmbedContainer(labelType,orientation) {
-	var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+function setLabelPrintEmbedContainer(labelType,orientation,printWithFormula) {
+	if(printWithFormula === true) {
+		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	} else {
+		var embedString = '<embed src="formulaUserPrintActionNoFormula.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	}
 	$("#printLabelEmbedContainer").html(embedString);
 }
 
-function printStoreLabel() {
-	
+function printStoreLabel(printWithFormula) {
 	myPrintLabelType = "storeLabel";
 	myPrintOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation,printWithFormula);
 	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
 	}, 500);
 }
 
-function printDrawdownStoreLabel() {
+function printSelfTintCustLabel(printWithFormula) {
+	
+	myPrintLabelType = "selfTintCustLabel";
+	myPrintOrientation = "PORTRAIT";
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation,printWithFormula);
+	setTimeout(function() {
+	prePrintSave(myPrintLabelType,myPrintOrientation);
+	}, 500);
+}
+
+
+function printDrawdownStoreLabel(printWithFormula) {
 	myPrintLabelType = "drawdownStoreLabel";
 	myPrintOrientation = "PORTRAIT";
-	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation);
+	setLabelPrintEmbedContainer(myPrintLabelType,myPrintOrientation,printWithFormula);
 	setTimeout(function() {
 	prePrintSave(myPrintLabelType,myPrintOrientation);
 	}, 500);
@@ -141,7 +155,7 @@ function printDrawdownLabel() {
 
 function prePrintSave(labelType, orientation) {
 	// check whether room dropdown needs to be set first
-	if (verifyRoomSelected() == true){
+	if (verifyRoomSelected() == true && validateQtyOrderedForPrint()){
 		// save before action
 		var myCtlNbr = parseInt($.trim($("#controlNbr").text()));
 		if (isNaN(myCtlNbr))
@@ -206,16 +220,17 @@ function prePrintSave(labelType, orientation) {
 function showPrintModal(){
 	if(printerConfig && printerConfig.model){
 		
-		$("#printLabelPrint").show();
+		$("#printLabelPrint").css("visibility", "visible");
 		$("#printLabelPrint").focus();
 		
 		
 		$("#numLabels").val(printerConfig.numLabels);
-		$("#numLabels").show();
+		
+		$("#numLabels").css("visibility", "visible");
 	}
 	else{
-		$("#printLabelPrint").hide();
-		$("#numLabels").hide();
+		$("#printLabelPrint").css("visibility", "hidden");
+		$("#numLabels").css("visibility", "hidden");
 	}
 	
 	$("#printLabelModal").modal('show');
@@ -238,6 +253,10 @@ function printButtonClickGetJson() {
 			numLabels = numLabelsVal;
 		}
 		printLabel(myPdf, numLabels, myPrintLabelType, myPrintOrientation);
+		var isPrintWithLabelChecked = $('#labelWithFormula').is(":checked");
+		if(isPrintWithLabelChecked === false) {
+			$('#labelWithFormula').prop('checked', true);
+		}
 	}
 
 }
@@ -409,7 +428,7 @@ function ParsePrintMessage() {
 								qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 								if (parseInt(qtyRemaining.text())<=0) {
 									qtyRemaining.text(0);
-									$("#qtyOrderedTextField").prop('disabled', true);
+								//	$("#qtyOrderedTextField").prop('disabled', true);
 								}
 								
 								//$("#formulaUserPrintAction_qtyDispensed").val(data.qtyDispensed);
@@ -471,22 +490,39 @@ function ParsePrintMessage() {
 						function(event) {
 							event.preventDefault();
 							event.stopPropagation();
-							// verify scan
-							if ($("#verifyScanInput").val() !== ""
-									&& ($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}"
-											|| $("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}"
-											|| $("#verifyScanInput").val()
-													.toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" || $(
-											"#verifyScanInput").val()
-											.toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
-								waitForShowAndHide("#verifyModal");
 
-								$("#positionContainerModal").modal('show');
-							} else {
-								$("#verifyScanInputError").text(
-										'<s:text name="displayFormula.productScannedDoesNotMatch"/>');
-								$("#verifyScanInput").select();
-							}
+							//Attempt to fill the shorthand product
+							let filledProdNbr = "";
+							$.ajax({	
+								url : "fillProdNbrAction",
+								dataType : "json",
+								data : {"shorthandProdNbr" : $("#verifyScanInput").val(), "reqGuid" : $('#reqGuid').val() },
+								success : function(data){
+									if(data.sessionStatus === "expired"){
+				                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				                	}
+									else {
+										filledProdNbr = data.shorthandProdNbr;
+										// verify scan
+										if ($("#verifyScanInput").val() !== "" 
+											&& ($("#verifyScanInput").val() == "${sessionScope[thisGuid].upc}" 
+											|| $("#verifyScanInput").val() == "${sessionScope[thisGuid].salesNbr}"
+									        || $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr} ${sessionScope[thisGuid].sizeCode}" 
+											|| filledProdNbr == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}"
+											|| $("#verifyScanInput").val().toUpperCase() == "${sessionScope[thisGuid].prodNbr}-${sessionScope[thisGuid].sizeCode}")) {
+												waitForShowAndHide("#verifyModal");
+												$("#positionContainerModal").modal('show');
+										} 
+										else {
+											$("#verifyScanInputError").text(
+													'<s:text name="displayFormula.productScannedDoesNotMatch"/>');
+											$("#verifyScanInput").select();
+										}
+									}
+								}
+							});
+							
+					
 						});
 		
 		$(document).on("keypress", "#dispenseQuantityInput", function(event) {
@@ -504,9 +540,17 @@ function ParsePrintMessage() {
 							event.stopPropagation();
 							// verify quantity input
 							//var quantity = parseInt($("#dispenseQuantityInput").val);
-							var quantity = parseInt($("#dispenseQuantityInput")
-									.val());
-
+							var quantity = parseInt($("#dispenseQuantityInput").val());
+							var dispensed = parseInt($("#qtyDispensed").text());
+							var ordered = parseInt($('#qtyOrderedTextField').val());
+							
+							//don't let them dispense if they're over the limit
+							if(ordered < dispensed + quantity){
+								console.log("Invalid input was entered. Input was: "+ quantity);
+								$("#dispenseQuantityInputError").text('<s:text name="displayFormula.valueExceeded"/>');
+								$("#dispenseQuantityInput").select();
+							}
+							else{
 							//$("#dispenseQuantityInput").attr("value",quantity);
 							if (quantity > 0 && quantity < 1000) {
 								console
@@ -545,7 +589,7 @@ function ParsePrintMessage() {
 														qtyRemaining.text(parseInt(qtyRemaining.text()-1));
 														if (parseInt(qtyRemaining.text())<=0) {
 															qtyRemaining.text(0);
-															$("#qtyOrderedTextField").prop('disabled', true);
+														//	$("#qtyOrderedTextField").prop('disabled', true);
 														}
 
 														updateButtonDisplay();
@@ -568,7 +612,8 @@ function ParsePrintMessage() {
 												'<s:text name="displayFormula.invalidInput"/>');
 								$("#dispenseQuantityInput").select();
 							}
-						});
+						}
+					});
 
 		$(document).on("shown.bs.modal", "#positionContainerModal",
 				function(event) {
@@ -828,8 +873,11 @@ function ParsePrintMessage() {
 					}
 				}
 			}
-			$("#roomsList").focus();
 		}
+		//When page comes up. Focus on roomList if possible.
+		if($("#formulaUserPrintAction_accountUsesRoomByRoom").val() === 'true') {
+			$("#roomsList").focus();
+		} 
 	});
 	
 	
@@ -1051,9 +1099,9 @@ function ParsePrintMessage() {
 					//console.log("successfully saved room");
 					var qtyRemaining = qtyOrdered - parseInt($('#qtyDispensed').text());
 					$("#qtyRemaining").text(qtyRemaining);
-					if (qtyRemaining == 0) {
-						$("#qtyOrderedTextField").prop('disabled', true);
-					}
+					//if (qtyRemaining == 0) {
+					//	$("#qtyOrderedTextField").prop('disabled', true);
+					//}
 					$("#formulaUserPrintAction_recDirty").val(1);
 				}
 			},
@@ -1080,6 +1128,28 @@ function ParsePrintMessage() {
 				return false;
 			} else {
 				saveQtyOrdered(qtyOrdered);
+				return true;
+			}
+		} else {
+			qtyOrderedErrText.text('<s:text name="displayFormula.invalidInput"></s:text>');
+			qtyOrderedErrText.removeClass("d-none");
+			return false;
+		}
+	}
+	
+	function validateQtyOrderedForPrint() {
+		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
+		var qtyOrderedErrText = $("#qtyOrderedErrorText");
+
+		$("#qtyOrderedErrorText").addClass("d-none");
+		
+		 if (qtyOrdered > 0 && qtyOrdered < 1000){
+			if (qtyDisp > qtyOrdered) {
+				qtyOrderedErrText.text('<s:text name="displayFormula.invalidInputDispQty"></s:text>');
+				qtyOrderedErrText.removeClass("d-none");
+				return false;
+			} else {
 				return true;
 			}
 		} else {
@@ -1203,7 +1273,7 @@ function ParsePrintMessage() {
 
 </script>
 </head>
-<body>
+<body onLoad="window.scroll(0, document.body.scrollHeight)">
 	<!-- including Header -->
 	<s:include value="Header.jsp"></s:include>
 
@@ -1255,7 +1325,7 @@ function ParsePrintMessage() {
 
 	<div class="row">
 		<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+		<div id="colorCompLabel" class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 			<strong><s:text name="global.colorCompanyColon"/></strong>
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-7 col-xs-8">
@@ -1366,7 +1436,8 @@ function ParsePrintMessage() {
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
 			</s:if>
-			<s:if test="%{accountUsesRoomByRoom==true}">
+
+			<s:if test = "%{accountIsDrawdownCenter==true && sessionHasTinter == true}">
 				<div class="row mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
@@ -1384,10 +1455,18 @@ function ParsePrintMessage() {
 							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
 						</div>
 					</div>
+					<div class="col-lg-5 col-md-5 col-sm-1 col-xs-0"></div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+						<strong><s:text name="sampleDispense.productSampleFill"/></strong>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:textfield id="sampleFill" readonly="true" />
+					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
-			</s:if>
-			<s:if test = "%{accountIsDrawdownCenter==true && sessionHasTinter == true}">
 				<div class="row mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
@@ -1410,16 +1489,6 @@ function ParsePrintMessage() {
 					</div>
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
-				<div class="row mt-3">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-						<strong><s:text name="sampleDispense.productSampleFill"/></strong>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-						<s:textfield id="sampleFill" readonly="true" />
-					</div>
-					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
 				<div class="row mt-3 d-none" id="baseDispenseRow">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
 					<div class="col-lg-5 col-md-8 col-sm-10 col-xs-12">
@@ -1437,18 +1506,6 @@ function ParsePrintMessage() {
 					<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
 				</div>
 			</s:if>
-			<div class="row mt-3">
-				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-							<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
-							<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
-							<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
-						</div>
-						<br>
-				<div class="col-lg-5 col-md-2 col-sm-1 col-xs-0"></div>
-			</div>
 			<br>
 			
 			
@@ -1466,7 +1523,7 @@ function ParsePrintMessage() {
 				<div class="col-lg-5 col-md-3 col-sm-2 col-xs-0"></div>
 			</div>
 			
-							
+	
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0">
 					<s:hidden name="reqGuid" value="%{reqGuid}"  id="reqGuid"/>
@@ -1488,6 +1545,7 @@ function ParsePrintMessage() {
 					<s:hidden value="%{#session[reqGuid].pkgClrTintable}" id="isTintable" />
 					<s:hidden value="%{#session[reqGuid].lightSource}" id="lightSource" />
 					<s:hidden value="%{#session[reqGuid].lightSourceName}" id="lightSourceName" />
+					<s:hidden name="accountIsSwStore" value="%{accountIsSwStore}"/>
 				</div>
 				
 				
@@ -1565,44 +1623,78 @@ function ParsePrintMessage() {
 				
 				</div>
 			</div>
-			<div class="col-lg-6 col-md-4 col-sm-5 col-xs-0"></div>
-			<br>
-
-			<s:if test="%{siteHasTinter==true}">
-				<div class="row" id="dispenseInfoRow">
+			
+			<s:if test="%{(accountUsesRoomByRoom==true && !accountIsDrawdownCenter) || (accountUsesRoomByRoom==true && accountIsDrawdownCenter && !sessionHasTinter)}">
+				<div class="row mt-3">
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
-							class="dispenseInfo badge badge-secondary"
-							style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-						<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+					<div class="col-lg-1 col-md-1 col-sm-2 col-xs-3">
+						<strong><s:text name="displayFormula.roomByRoomColon"/></strong>
 					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
-				<div class="row" id="remainingInfoRow">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
-							class="dispenseInfo badge badge-secondary"
-							style="font-size: .9rem;" id="qtyRemaining"></span>
+					<div class="col-lg-3 col-md-6 col-sm-7 col-xs-8">
+						<s:select id="roomsList" onchange="validateRoomChoice()" list="roomByRoomList" 
+							listKey="roomUse" listValue="roomUse" headerKey="-1" headerValue="" value="%{roomByRoom}"/>
+						<div id="roomsDropdownErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseSelectARoom"/>
+						</div>
+						<s:textfield id="otherRoom" class="d-none" placeholder="%{getText('displayFormula.pleaseSpecifyRoom')}" maxlength="30" onblur="validateCustomRoom()"/>
+						<s:hidden name="roomChoice" value="" />
+						<div id="otherRoomErrorText" style="color:red" class="d-none">
+							<s:text name="displayFormula.pleaseEnterWithinThirty"/>
+						</div>
 					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+					<div class="col-lg-6 col-md-3 col-sm-2 col-xs-1"></div>
 				</div>
 			</s:if>
-			<s:else>
-				<div class="row" id="dispenseInfoRow">
-					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
-					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-						<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
-							class="dispenseInfo d-none badge badge-secondary"
-							style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
-						<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
-					</div>
-					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
-				</div>
-			</s:else>
-			<br>
 			
+			<!-- new stuff -->
+			<div class="row mt-3">
+				<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+				<div class="col-lg-1 col-md-2 col-sm-3 col-xs-4">
+					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
+				</div>
+				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
+					<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
+					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
+				</div>
+				<br>
+				<s:if test="%{siteHasTinter==true}">
+					<div class="row" id="dispenseInfoRow">
+						<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+							<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+								class="dispenseInfo badge badge-secondary"
+								style="font-size: .9rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+							<div class="row" id="remainingInfoRow">
+								<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+									<strong><s:text name="displayFormula.qtyRemainingColon"/></strong> <span
+										class="dispenseInfo badge badge-secondary"
+										style="font-size: .9rem;" id="qtyRemaining"></span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
+									<strong class="dispenseInfo pull-right" id="dispenseStatus"></strong>
+								</div>
+							</div>
+						</div>
+					</div>
+				</s:if>
+				<s:else>
+					<div class="row" id="dispenseInfoRow">
+						<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0"></div>
+						<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+							<strong><s:text name="displayFormula.qtyDispensedColon"/></strong> <span
+								class="dispenseInfo d-none badge badge-secondary"
+								style="font-size: .8rem;" id="qtyDispensed">${sessionScope[thisGuid].quantityDispensed}</span>
+							<strong class="dispenseInfo d-none pull-right" id="dispenseStatus"></strong>
+						</div>
+						<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0"></div>
+					</div>
+				</s:else>
+				<br>
+			</div>
+			<br>	
+			<!-- end -->
+
 			<s:if test = "%{accountIsDrawdownCenter==true}">
 			<!-- validation methods: validationWithoutModal() verifies room by room dropdown is set and lets the user nav away from the page
 			without modal prompt for unsaved changes. verifyRoomSelected() checks dropdown and browser shows unsaved changes dialog box.  
@@ -1611,16 +1703,16 @@ function ParsePrintMessage() {
 					<div class="col-lg-2 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:if test = "%{sessionHasTinter}">
-						<s:submit cssClass="btn btn-primary" autofocus="autofocus" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
-							onclick="return validationWithoutModal();" action="saveDrawdownAction" />
-						<s:submit cssClass="btn btn-success" id="drawdownSaveButton" value="%{getText('global.save')}" 
-							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
+							<s:submit cssClass="btn btn-primary" id="dispenseSampleButton" value="%{getText('displayFormula.goToDispensePage')}"
+								onclick="return validationWithoutModal();" action="saveDrawdownAction" />
 						</s:if>
+						<s:submit cssClass="btn btn-secondary" id="drawdownSaveButton" value="%{getText('global.save')}" 
+							onclick="return validationWithoutModal();" action="formulaUserSaveAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}" 
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary ml-5" value="%{getText('displayFormula.nextJob')}"
                         	onclick="return promptToSave();" action="userCancelAction" />
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -1637,7 +1729,7 @@ function ParsePrintMessage() {
 						<button type="button" class="btn btn-secondary" id="drawdownLabelPrint"
 							onclick="printDrawdownLabel();return false;"><s:text name="global.drawdownLabel"/></button>
 						<button type="button" class="btn btn-secondary" id="storeLabelPrint"
-							onclick="printDrawdownStoreLabel();return false;"><s:text name="global.storeLabel"/></button>
+							onclick="printDrawdownStoreLabel(true);return false;"><s:text name="global.storeLabel"/></button>
                 	</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
 				</div>
@@ -1648,19 +1740,23 @@ function ParsePrintMessage() {
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<button type="button" class="btn btn-primary" id="formulaDispense"
 							onclick="setDispenseQuantity(false)" autofocus="autofocus"><s:text name="global.dispense"/></button>
-						<button type="button" class="btn btn-primary" id="formulaManualDispense"
-							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('global.save')}" 
 							onclick="return validationWithoutModal();" action="formulaUserSaveAction" autofocus="autofocus" />
-						<button type="button" class="btn btn-secondary" id="formulaPrint"
-							onclick="printStoreLabel();return false;"><s:text name="global.print"/></button>
+						<s:if test = "%{accountIsSwStore==true}">	
+							<button type="button" class="btn btn-secondary" id="formulaPrint"
+								onclick="printStoreLabel(true);return false;"><s:text name="global.print"/></button>
+						</s:if>
+						<s:else>
+							<button type="button" class="btn btn-secondary" id="formulaPrint"
+								onclick="printSelfTintCustLabel(true);return false;"><s:text name="global.print"/></button>
+						</s:else>
 						<s:submit cssClass="btn btn-secondary" value="%{getText('editFormula.editFormula')}"
 							onclick="setFormSubmitting();" action="formulaUserEditAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.correct')}"
 							onclick="return validationWithoutModal();" action="formulaUserCorrectAction" />
 						<s:submit cssClass="btn btn-secondary" value="%{getText('displayFormula.copytoNewJob')}"
 							onclick="return verifyRoomSelected();" action="displayJobFieldUpdateAction" />
-						<s:submit cssClass="btn btn-secondary pull-right" value="%{getText('displayFormula.nextJob')}"
+						<s:submit cssClass="btn btn-secondary ml-5" value="%{getText('displayFormula.nextJob')}"
 	                        onclick="return promptToSave();" action="userCancelAction" />
 					</div>
 					<div class="col-lg-4 col-md-2 col-sm-1 col-xs-0 p-2"></div>
@@ -1670,6 +1766,8 @@ function ParsePrintMessage() {
 					<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 p-2">
 						<s:submit cssClass="btn btn-secondary" id="changeProductBtn" action="changeProductAction" 
 							onclick="return true;" value="%{getText('displayFormula.changeProduct')}"/>
+						<button type="button" class="btn btn-secondary" id="formulaManualDispense"
+							onclick="setDispenseQuantity(true)" autofocus="autofocus"><s:text name="global.handDispense"/></button>
 						<s:if test="%{#session[reqGuid].colorType.equals('COMPETITIVE') || #session[reqGuid].colorType.equals('CUSTOMMATCH') || #session[reqGuid].colorType.equals('SAVEDMEASURE')}">	
 							<s:submit cssClass="btn btn-secondary" id="changeLightSourceBtn" action="changeLightSourceAction" 
 								onclick="return true;" value="%{getText('displayFormula.changeLightSource')}"/>
@@ -1887,6 +1985,7 @@ function ParsePrintMessage() {
 					</div>
 				</div>
 			</div>
+			
 			<!-- Print Label Modal Window -->
 			<div class="modal" aria-labelledby="printLabelModal"
 				aria-hidden="true" id="printLabelModal" role="dialog">
@@ -1905,30 +2004,36 @@ function ParsePrintMessage() {
 							</div>
 						</div>
 						<div class="modal-footer">
-							<div class="col-xs-6">
-								<button type="button" class="btn btn-primary pull-left"
-									id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
+							<div class="container">
+								<div class="row">
+									<div class="col-xs-2 mr-3">
+										<button type="button" class="btn btn-primary pull-left"
+												id="printLabelPrint" data-dismiss="modal" aria-label="Print"  onclick="printButtonClickGetJson()"><s:text name="global.print"/></button>
+									</div>
+									<div class="col-xs-2 mr-5">
+										<select id="numLabels" name="numLabels"  >
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+											<option value="6">6</option>
+											<option value="7">7</option>
+											<option value="8">8</option>
+											<option value="9">9</option>
+											<option value="10">10</option>
+										</select>
+									</div>
+									<div class="col-xs-6 mr-5">
+										<input type="checkbox" class="form-check-input" id="labelWithFormula" checked>
+    									<label class="form-check-label" for="labelWithFormula" id="labelWithFormulaLabel"><s:text name="global.formulaOnLabel"/></label>
+									</div>
+									<div class="col-xs-2">
+										<button type="button" class="btn btn-secondary"
+												id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
+									</div>
+								</div>
 							</div>
-							<div class="col-xs-4">
-								
-								<select id="numLabels" name="numLabels"  >
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-									
-								 </select>
-							</div>
-							 <div class="col-xs-2 ">
-								<button type="button" class="btn btn-secondary"
-								id="printLabelClose" data-dismiss="modal" aria-label="Close"><s:text name="global.close"/></button>
-						</div>
 						</div>
 					</div>
 				</div>
@@ -2245,9 +2350,9 @@ function ParsePrintMessage() {
 			if(qtyOrdered != 0) {
 				$("#qtyOrderedTextField").val(qtyOrdered);
 				//console.log("QTY ORDER TEXTFIELD VALUE = " + $("#qtyOrderedTextField").val());
-				if (remaining == 0 ) {
-					$("#qtyOrderedTextField").prop('disabled', true);
-				}
+				//if (remaining == 0 ) {
+				//	$("#qtyOrderedTextField").prop('disabled', true);
+				//}
 			} else {
 				$("#qtyOrderedTextField").val("");
 			}
@@ -2265,17 +2370,36 @@ function ParsePrintMessage() {
 			
 			updateButtonDisplay();
 			
+			//Enable enter key to print
+			$("#qtyOrderedTextField").keypress(function(event){
+			    var keycode = (event.keyCode ? event.keyCode : event.which);
+			    if(keycode == '13'){
+				    event.preventDefault();
+					if( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+						$('#dispenseSampleButton').click();
+					} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'false' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true') {
+						$('#drawdownSaveButton').click();
+					} else if ($('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'false' ) {
+						$('#formulaDispense').click();
+					} else {
+						$('#formulaUserPrintAction_formulaUserSaveAction').click();
+					}
+			    }
+			});
+			
+			
 			//Enable enter key to print.  No need for mouse click
 			$("#printLabelPrint").keypress(function(event){
 			    var keycode = (event.keyCode ? event.keyCode : event.which);
 			    if(keycode == '13'){
-					if ( $("#printLabelPrint").css('display') != 'none' && $("#printLabelPrint").css("visibility") != "hidden"){
+					if (qtyOrdered != 0){
 					    // print button is visible
-						 printButtonClickGetJson(); 
+						 printButtonClickGetJson();
 					}
 			       
 			    }
 			});
+			
 			$('#printLabelModal').on('shown.bs.modal', function () {
 				$("#printLabelPrint").focus();
 			}); 
@@ -2286,6 +2410,85 @@ function ParsePrintMessage() {
 				updateButtonDisplay();
 			}); 
 
+			//print with/without formula logic
+			$('#labelWithFormula').on('click', function() {
+				var isPrintWithLabelChecked = $('#labelWithFormula').is(":checked");
+				if(isPrintWithLabelChecked === true) {
+					 if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+						printStoreLabel(true);
+					} else {
+						printSelfTintCustLabel(true);
+					}
+				} else {
+					if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+						printStoreLabel(false);
+					} else {
+						printSelfTintCustLabel(false);
+					}
+				}
+				
+			});
+			
+			//Make sure the label with formula checkbox is 'checked' when open the print modal is opened
+			$('#printLabelClose').on('click', function() {
+				var isPrintWithLabelChecked = $('#labelWithFormula').is(":checked");
+				if(isPrintWithLabelChecked === false) {
+					$('#labelWithFormula').prop('checked', true);
+				}
+			});
+			
+			//Ensure that the label with formula checkbox is not displayed in the print modal for drawdowns.
+			$('#drawdownLabelPrint').on('click', function() {
+				$('#labelWithFormula').css("visibility", "hidden");
+				$('#labelWithFormulaLabel').css("visibility", "hidden");
+			});
+			
+			$('#storeLabelPrint').on('click', function() {
+				$('#labelWithFormula').css("visibility", "hidden");
+				$('#labelWithFormulaLabel').css("visibility", "hidden");
+			});
+			
+			//Check if tinter is present. If so, make sure the dispense button has a primary color.
+			if( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+				$('#dispenseSampleButton').attr('class', 'btn btn-primary');
+				$('#drawdownSaveButton').attr('class', 'btn btn-secondary');
+			} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'false' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' ) {
+				$('#dispenseSampleButton').attr('class', 'btn btn-secondary');
+				$('#drawdownSaveButton').attr('class', 'btn btn-primary');
+			} else if ( $('#formulaUserPrintAction_sessionHasTinter').val() === 'true' && $('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'false' ) {
+				$('#formulaDispense').attr('class', 'btn btn-primary');
+				$('#formulaUserPrintAction_formulaUserSaveAction').attr('class', 'btn btn-secondary');
+			} else {
+				$('#formulaDispense').attr('class', 'btn btn-secondary');
+				$('#formulaUserPrintAction_formulaUserSaveAction').attr('class', 'btn btn-primary');
+			}
+			
+			//Verify contents of Room-By-Room when tabbing off of field.
+			$('#roomsList').on('keydown', function(event) {
+				if(event.which === 9) {
+					event.preventDefault();
+					var roomByRoomValue = $('#roomsList option:selected').text().trim();
+					if(roomByRoomValue === '') {
+						$('#roomsDropdownErrorText').attr('class', '');
+						$("#roomsList").focus();
+					} else {
+						$('#roomsDropdownErrorText').attr('class', 'd-none');
+						if($('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true' && $('#formulaUserPrintAction_sessionHasTinter').val() === 'true') {
+							$('#canTypesList').focus();
+						} else {
+							$('#qtyOrderedTextField').focus();
+						}
+					}
+				}
+			});
+			
+			//Scroll screen so that the color company label is at the top for drawdowns.
+			if($('#formulaUserPrintAction_accountIsDrawdownCenter').val() === 'true') {
+				$('html, body').animate({
+					scrollTop: $("#colorCompLabel").offset().top
+				}, 750);
+			}
+			
 			//TODO if in correction, go to correction screen.
 		});
 

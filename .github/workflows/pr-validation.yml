@@ -1,10 +1,11 @@
 name: Validate Pull Request
 on:
+  workflow_dispatch:
   pull_request:
     branches: 
       - development
       - master
-      - 'release/**'
+      - release/*
     types: [opened, synchronize]
     paths-ignore: 
       - '**.md'
@@ -18,7 +19,9 @@ jobs:
     secrets:
       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
       ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-      SHERCOLOR_SONAR_TOKEN: ${{ secrets.SHERCOLOR_SONAR_TOKEN }}
-      SHERCOLOR_SONAR_HOST_URL: ${{ secrets.SHERCOLOR_SONAR_HOST_URL }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_SHERLINK }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_SHERLINK }}
+      VAULT_ROLE_ID: ${{ secrets.SHERCOLOR_VAULT_ROLE_ID }}
+      VAULT_SECRET_ID: ${{ secrets.SHERCOLOR_VAULT_SECRET_ID }}
       SHERCOLOR_VERACODE_API_ID: ${{ secrets.SHERCOLOR_VERACODE_API_ID }}
       SHERCOLOR_VERACODE_API_KEY: ${{ secrets.SHERCOLOR_VERACODE_API_KEY }}

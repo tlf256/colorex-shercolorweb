@@ -21,17 +21,19 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 
 	private ColorService colorService;
 	private CustomerService customerService;
-	private Map<String, Object> sessionMap;
+	private transient Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(SpectroCalibrateAction.class);
 	private String reqGuid;
 	private String message;
 	private boolean measureColor;
-	private boolean measure;
-	private boolean compare;
+	private boolean measureStandard;
+	private boolean measureSample;
+	private boolean closestColors;
+	private boolean compareColors;
 	
 	public SpectroCalibrateAction(){
-		
+		//default constructor?
 		
 	}
 	
@@ -111,20 +113,36 @@ public class SpectroCalibrateAction extends ActionSupport implements SessionAwar
 		this.measureColor = measureColor;
 	}
 
-	public boolean isMeasure() {
-		return measure;
+	public boolean isMeasureSample() {
+		return measureSample;
 	}
 
-	public void setMeasure(boolean measure) {
-		this.measure = measure;
+	public void setMeasureSample(boolean measureSample) {
+		this.measureSample = measureSample;
 	}
 
-	public boolean isCompare() {
-		return compare;
+	public boolean isMeasureStandard() {
+		return measureStandard;
 	}
 
-	public void setCompare(boolean compare) {
-		this.compare = compare;
+	public void setMeasureStandard(boolean measureStandard) {
+		this.measureStandard = measureStandard;
+	}
+
+	public boolean isClosestColors() {
+		return closestColors;
+	}
+
+	public void setClosestColors(boolean closestColors) {
+		this.closestColors = closestColors;
+	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
 	}
 
 }

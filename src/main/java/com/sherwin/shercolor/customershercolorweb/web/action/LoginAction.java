@@ -1,19 +1,11 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-//import javax.net.ssl.HostnameVerifier;
-//import javax.net.ssl.HttpsURLConnection;
-//import javax.net.ssl.SSLContext;
-//import javax.net.ssl.SSLSession;
-//import javax.net.ssl.TrustManager;
-//import javax.net.ssl.X509TrustManager;
-//import javax.xml.soap.*;
-
 import java.io.FileInputStream;
 import java.io.IOException;
-//import java.security.SecureRandom;
-//
-//import java.security.cert.CertificateException;
-//import java.security.cert.X509Certificate;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -21,15 +13,13 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.owasp.encoder.Encode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.Node;
-
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
@@ -41,25 +31,30 @@ import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
-import com.sherwin.shercolor.customershercolorweb.web.action.LoginRequired;
+
+import org.springframework.core.env.Environment;
+
 
 public class LoginAction extends ActionSupport  implements SessionAware, LoginRequired {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Map<String, Object> sessionMap;
-	private CustomerService customerService;
-	private EulaService eulaService;
+	private transient Map<String, Object> sessionMap;
+	private transient CustomerService customerService;
+	private transient EulaService eulaService;
 
 	@Autowired
-	private TinterService tinterService;
+	private transient Environment environment;
+
+	@Autowired
+	private transient TinterService tinterService;
 	
 	@Autowired
-	private TranHistoryService tranHistoryService;
+	private transient TranHistoryService tranHistoryService;
 	
 	static Logger logger = LogManager.getLogger(LoginAction.class);
-	private RequestObject reqObj;
+	private transient RequestObject reqObj;
 	private String reqGuid;
 	private String guid1;
 	private String acct;
@@ -71,9 +66,9 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private boolean siteHasTinter;
 	private boolean sessionHasTinter;
 	private boolean siteHasPrinter;
-	private TinterInfo tinter;
+	private transient TinterInfo tinter;
 	private boolean siteHasSpectro;
-	private SpectroInfo spectro;
+	private transient SpectroInfo spectro;
 	private boolean reReadLocalHostTinter;
 	private String sherLinkURL;
 	private String loMessage;
@@ -120,7 +115,11 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				testMode = "";
 			}
 			// Get the customershercolorweb.properties file data next.
-			prop.load(new FileInputStream("/web_apps/server/shercolor/deploy/customershercolorweb.properties"));
+			if (ArrayUtils.contains(environment.getActiveProfiles(),"test"))
+				prop.load(this.getClass().getResourceAsStream("/customershercolorweb.properties"));
+			else
+				prop.load(Files.newInputStream(Paths.get("/web_apps/server/shercolor/deploy/customershercolorweb.properties")));
+
 			dbEnv = prop.getProperty("dbEnv");
 			sherLinkURL = prop.getProperty("sherLinkLoginUrl." + dbEnv);
 			sherLinkTokenWSURL = prop.getProperty("sherLinkTokenSWUrl." + dbEnv);
@@ -791,5 +790,4 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	public int getTintQueueCount() {
 		return tintQueueCount;
 	}
-
 }

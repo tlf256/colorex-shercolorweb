@@ -20,13 +20,15 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
-		<script type="text/javascript" src="script/spectro.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
 		<script type="text/javascript" src="script/WSWrapper.js"></script>
 		<script>
 		
 		var calibrate_step = "start";		
 		var ws_coloreye = new WSWrapper('coloreye');
+	    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
+	    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
 
 		function InitializeCalibrationScreen() {
 		    console.log("InitializeCalibrationScreen");
@@ -40,10 +42,9 @@
 		function GetCalSteps() {
 		  	console.log("GetCalSteps")
 		  	calibrate_step = "GetCalSteps";
-			var clreyemodel = $('#spectroModel').val();
-			var spectromessage = new SpectroMessage('GetCalSteps',clreyemodel);
-			    var json = JSON.stringify(spectromessage);
-			    ws_coloreye.send(json);
+			var spectromessage = new SpectroMessage('GetCalSteps',clreyemodel,clreyeserial);
+			var json = JSON.stringify(spectromessage);
+			ws_coloreye.send(json);
 		}
 		  
 		function CalibrateWhite() {
@@ -52,8 +53,7 @@
 				.css('background-color', 'white');
 			console.log("CalibrateWhite")
 		  	calibrate_step = "CalibrateWhite";
-			var clreyemodel = $('#spectroModel').val();
-			var spectromessage = new SpectroMessage('CalibrateWhite',clreyemodel);
+			var spectromessage = new SpectroMessage('CalibrateWhite',clreyemodel,clreyeserial);
 		    var json = JSON.stringify(spectromessage);
 		    ws_coloreye.send(json);
 			$(".pleasewait").hide();
@@ -69,8 +69,7 @@
 				.css('background-color', 'black');
 		  	console.log("CalibrateBlack")
 		  	calibrate_step = "CalibrateBlack";
-			var clreyemodel = $('#spectroModel').val();
-			var spectromessage = new SpectroMessage('CalibrateBlack',clreyemodel);
+			var spectromessage = new SpectroMessage('CalibrateBlack',clreyemodel,clreyeserial);
 		    var json = JSON.stringify(spectromessage);
 		    ws_coloreye.send(json);
 		    $(".pleasewait").hide();
@@ -86,8 +85,7 @@
 				.css('background-color', 'green');
 		  	console.log("MeasureGreen")
 		  	calibrate_step = "MeasureGreen";
-			var clreyemodel = $('#spectroModel').val();
-			var spectromessage = new SpectroMessage('MeasureGreen',clreyemodel);
+			var spectromessage = new SpectroMessage('MeasureGreen',clreyemodel,clreyeserial);
 		    var json = JSON.stringify(spectromessage);
 		    ws_coloreye.send(json);
 		    $(".pleasewait").hide();
@@ -141,6 +139,8 @@
 		  	}
 		  		
 			var return_message=JSON.parse(ws_coloreye.wsmsg);
+			var myGuid = "${reqGuid}";
+  		  	sendSpectroEvent(myGuid, return_message);
 			switch (return_message.command) {
 				case 'GetCalSteps':
 					//TO DO: Evaluate the responseMssage and process in appropriate order.
@@ -221,8 +221,10 @@
 					<div class="col-sm-3">
 						<s:hidden name="spectroModel" id="spectroModel" value="%{#session[reqGuid].spectroModel}"/>
 						<s:hidden name="reqGuid" id="reqGuid" value="%{reqGuid}"/>
-						<s:hidden name="compare" id="compareColors" value="%{compare}"/>
-						<s:hidden name="measure" id="measureSample" value="%{measure}"/>
+						<s:hidden name="compareColors" id="compareColors" value="%{compareColors}"/>
+						<s:hidden name="measureStandard" id="measureStandard" value="%{measureStandard}"/>
+						<s:hidden name="measureSample" id="measureSample" value="%{measureSample}"/>
+						<s:hidden name="closestColors" id="closestColors" value="%{closestColors}"/>
 						<%-- <s:hidden name="measureColor" id="measureColor" value="%{measureColor}" /> --%>
 					</div>
 				</div>

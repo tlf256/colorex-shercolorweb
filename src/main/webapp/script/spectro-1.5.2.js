@@ -1,6 +1,8 @@
 /**
  * Script to define a javascript Spectro message - needed to pass data to SWDeviceHandler service
  */
+let requestDates = [];
+
 function SpectralCurve(){
 	this.curve=[];
 	this.curvePointCnt=0;
@@ -25,6 +27,39 @@ function SpectroMessage(command,model,serno){
 	this.messageName="SpectroMessage";
 	this.curve=new SpectralCurve();
 	this.spectroConfig=new SpectroConfig(model,serno,"USB");
+	this.deltaE=0;
+	requestDates.push(new Date().toString());
+}
+
+/***
+ * @param myGuid - Session Guid from page (i.e. reqGuid) 
+ * @param myMessage - SpectroMessage object
+ * @returns
+ */
+function sendSpectroEvent(myGuid, myMessage) {
+	/* use global variable if null sent for myGuid*/
+	if(myGuid == null){
+		if(reqGuid != null){
+			myGuid=reqGuid;
+		}
+	}
+	var responseDate = new Date().toString();
+	var requestDate = requestDates.shift();
+	var mydata = {reqGuid:myGuid, spectroMessage: myMessage, requestDate: requestDate, responseDate: responseDate};
+	var jsonIn = JSON.stringify(mydata);
+	console.log("Logging Spectro Event" + jsonIn);
+	$.ajax({
+		url: "logSpectroEventAction.action",
+		contentType: "application/json; charset=utf-8",
+		type: "POST",
+		data: jsonIn,
+		datatype: "json",
+		success: function (data) {
+			if (data.sessionStatus === "expired") {
+        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+			}
+		}
+	});
 }
 
 function createUUID() {

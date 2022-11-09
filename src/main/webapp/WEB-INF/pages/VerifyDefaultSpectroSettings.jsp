@@ -20,9 +20,9 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/spectro.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/spectro-1.5.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -44,23 +44,22 @@
 	    <script type="text/javascript">
 	    
 	    var ws_coloreye = new WSWrapper('coloreye');
+	    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
+	    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
 	    var settingsTable;
 	    var spectroSettings;
-	    var clreyemodel;
 	    var match = "fa fa-check fa-lg green";
 	    var notMatch = "fa fa-times fa-lg red";
 	    
 	    
 	    function RetrieveAllDeviceSettings() {
-	    	clreyemodel = $('#spectroModel').val();
-		 	var spectromessage = new SpectroMessage('GetVerifySettings',clreyemodel);
+		 	var spectromessage = new SpectroMessage('GetVerifySettings',clreyemodel,clreyeserial);
 		    var json = JSON.stringify(spectromessage);
 		    ws_coloreye.send(json);
 	    }
 	    
 	    function SetAllDeviceSettingsToDefault() {
-	    	clreyemodel = $('#spectroModel').val();
-	    	var spectromessage = new SpectroMessage('SetVerifySettings',clreyemodel);
+	    	var spectromessage = new SpectroMessage('SetVerifySettings',clreyemodel,clreyeserial);
 		    var json = JSON.stringify(spectromessage);
 		    ws_coloreye.send(json);
 	    }
@@ -174,6 +173,8 @@
 		  	//console.log("Message is " + ws_coloreye.wsmsg);
 		  	//console.log("isReady is " + ws_coloreye.isReady + " BTW");
 		  	var return_message=JSON.parse(ws_coloreye.wsmsg);
+		  	var myGuid = "${reqGuid}";
+  		  	sendSpectroEvent(myGuid, return_message);
 		  	switch (return_message.command) {
 		  	case 'GetVerifySettings':
 		  		if (return_message.errorMessage!="") {

@@ -16,19 +16,23 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 public class ProcessCompareColorsAction extends ActionSupport implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessCompareColorsAction.class);
-	private Map<String, Object> sessionMap;
+	private transient Map<String, Object> sessionMap;
 	private String reqGuid;
-	private boolean compare;
-	private Map<String, Double> compareResults;
-	private ColorDifference colorDiff;
+	private boolean measureSample;
+	private transient ColorDifference colorDiff;
+	private boolean compareColors;
+	private String colorId;
+	private String rgbHexStd;
+	private String rgbHexTrl;
+	private String colorName;
+	private String colorComp;
 	
 	@Autowired
-	private ColorService colorService;
+	private transient ColorService colorService;
 	
 	public String display() {
 		try {
-			setCompare(true);
-			
+			setMeasureSample(true);
 			return SUCCESS;
 		} catch(RuntimeException e) {
 			logger.error(e.getMessage(), e);
@@ -36,12 +40,18 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 		}
 	}
 	
+	@Override
 	public String execute() {
 		try {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-			compareResults = new HashMap<String, Double>();
 			
 			setColorDiff(colorService.getColorDifference(reqObj.getColorCoordMap().get("standard"), reqObj.getColorCoordMap().get("sample")));
+			setRgbHexStd(reqObj.getColorCoordMap().get("standard").getRgbHex());
+			setRgbHexTrl(reqObj.getColorCoordMap().get("sample").getRgbHex());
+
+			setColorComp(reqObj.getColorComp());
+			setColorName(reqObj.getColorName());
+			setColorId(reqObj.getColorID());
 			
 			return SUCCESS;
 		} catch(RuntimeException e) {
@@ -70,20 +80,12 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 		this.reqGuid = reqGuid;
 	}
 
-	public boolean isCompare() {
-		return compare;
+	public boolean isMeasureSample() {
+		return measureSample;
 	}
 
-	public void setCompare(boolean compare) {
-		this.compare = compare;
-	}
-
-	public Map<String, Double> getCompareResults() {
-		return compareResults;
-	}
-
-	public void setCompareResults(Map<String, Double> compareResults) {
-		this.compareResults = compareResults;
+	public void setMeasureSample(boolean measureSample) {
+		this.measureSample = measureSample;
 	}
 
 	public ColorDifference getColorDiff() {
@@ -93,4 +95,53 @@ public class ProcessCompareColorsAction extends ActionSupport implements Session
 	public void setColorDiff(ColorDifference colorDiff) {
 		this.colorDiff = colorDiff;
 	}
+
+	public boolean isCompareColors() {
+		return compareColors;
+	}
+
+	public void setCompareColors(boolean compareColors) {
+		this.compareColors = compareColors;
+	}
+	
+	public String getColorName() {
+		return colorName;
+	}
+
+	public void setColorName(String colorName) {
+		this.colorName = colorName;
+	}
+	
+	public String getColorComp() {
+		return colorComp;
+	}
+
+	public void setColorComp(String colorComp) {
+		this.colorComp = colorComp;
+	}
+	
+	public String getRgbHexTrl() {
+		return rgbHexTrl;
+	}
+
+	public void setRgbHexTrl(String rgbHexTrl) {
+		this.rgbHexTrl = rgbHexTrl;
+	}
+	
+	public String getRgbHexStd() {
+		return rgbHexStd;
+	}
+
+	public void setRgbHexStd(String rgbHexStd) {
+		this.rgbHexStd = rgbHexStd;
+	}
+	
+	public String getColorId() {
+		return colorId;
+	}
+
+	public void setColorId(String colorId) {
+		this.colorId = colorId;
+	}
+	
 }
