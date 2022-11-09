@@ -6,6 +6,7 @@ on:
       - development
       - master
       - release/*
+
     types: [opened, synchronize]
     paths-ignore: 
       - '**.md'
