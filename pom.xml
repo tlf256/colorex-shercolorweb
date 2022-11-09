@@ -3,7 +3,7 @@
     <groupId>com.sherwin.SherColorWeb</groupId>
     <artifactId>CustomerSherColorWeb</artifactId>
     <packaging>war</packaging>
-    <version>1.5.2</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>CustomerSherColorWeb Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <properties>
@@ -254,7 +254,7 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/sherwin-williams-co/colorex-shercolorweb.git</developerConnection>
-        <tag>v1.5.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
