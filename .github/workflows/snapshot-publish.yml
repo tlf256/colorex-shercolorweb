@@ -14,6 +14,4 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/snapshot-publish-workflow.yml@master
     with:
       java_version: 8
-    secrets:
-      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+    secrets: inherit
