@@ -2,13 +2,13 @@
 ## Description
 Our signature SherColor application
 ### What does this application do?
--Formulate SW and competitive colors
--Formulate via color match using a ColorEye.
--Dispense a formula using an automated dispenser
--Save jobs for future dispensing
--Maintain tint queue
--Print labels
--Performs functions to run the drawdown center
+- Formulate SW and competitive colors
+- Formulate via color match using a ColorEye.
+- Dispense a formula using an automated dispenser
+- Save jobs for future dispensing
+- Maintain tint queue
+- Print labels
+- Performs functions to run the drawdown center
 ### Technologies
 - Struts 2
 - Spring Framework
