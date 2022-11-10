@@ -13,6 +13,4 @@ jobs:
   dast-security-scan:
     if: ${{ contains(github.ref, 'refs/heads/release/') }}
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dast-security-scan-workflow.yml@master
-    secrets:
-      SHERCOLOR_ORCA_API_KEY: ${{ secrets.SHERCOLOR_ORCA_API_KEY }}
-      ORCA_QUALYS_CONFIG_ID: ${{ secrets.ORCA_QUALYS_CONFIG_ID }}
+    secrets: inherit
