@@ -1,0 +1,15 @@
+name: Promote QA to PROD
+on:
+  workflow_dispatch:
+    #TODO - make sure path ignoring works
+#     paths: 
+#       - 'shercolorweb-chart/**'
+jobs:
+  prod-promote:
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/prod-promotion-workflow.yml@dja557/SCD-59
+    with:
+      chart_directory: shercolorweb-chart
+      release_name: shercolorweb
+      prod_helm_values: '--values=values.yaml --values=values-rancher-prod.yaml'
+      prod_url: 'https://shercolorweb.rancher.sherwin.com/shercolorweb'
+    secrets: inherit
