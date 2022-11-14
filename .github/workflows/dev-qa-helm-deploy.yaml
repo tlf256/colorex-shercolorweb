@@ -23,5 +23,5 @@ jobs:
       dev_url: 'https://dev-shercolor.sherwin.com/shercolorweb'
       qa_url: 'https://qa-shercolor.sherwin.com/shercolorweb'
       dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
-      qa_helm_values: '--values=values.yaml --values=values-rancher-qa.yaml'
+      qa_helm_values: '"values.yaml" "values-rancher-qa.yaml"'
     secrets: inherit
