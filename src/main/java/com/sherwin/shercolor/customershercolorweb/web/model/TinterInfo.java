@@ -16,6 +16,7 @@ public class TinterInfo {
 	private boolean tinterOnFile;
 	private List<String> lastInitErrorList;
 	private List<TinterCanister> canisterList;
+	private String tinterIp;
 	
 	public String getClrntSysId() {
 		return clrntSysId;
@@ -76,6 +77,12 @@ public class TinterInfo {
 	}
 	public void setLastInitErrorList(List<String> lastInitErrorList) {
 		this.lastInitErrorList = lastInitErrorList;
+	}
+	public String getTinterIp() {
+		return tinterIp;
+	}
+	public void setTinterIp(String tinterIp) {
+		this.tinterIp = tinterIp;
 	}
 	
 	

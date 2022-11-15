@@ -262,9 +262,18 @@
 		return rc;
 	}
 
-	function changeModel() {
-		$('#tSerialNbr').focus();
+	function changeModel(model) {
+		if(model.startsWith('AS')){
+			// show tinter IP and hide serial nbr textfields
+			// also show next button to detect 9500 to get serial
+			$('#tinterIp').removeClass('d-none');
+			$('#tinterSerial').addClass('d-none');
+			$('#btn_tinterIpNxt').removeClass('d-none');
+		} else {
+			$('#tSerialNbr').focus();
+		}
 	}
+	
 	function onSubmit(event){
 		event.preventDefault();
 		$('#tSerialNbr').val($('#tSerialNbr').val().toUpperCase());
@@ -862,6 +871,26 @@
 		}
 	}
 	
+	$(document).on('keyup', '#tIpAddr', function(e){
+		var val = $(this).val();
+		var count = val.length;
+		// can't use this - there can be less than 3 digits in the octets
+		if(count == 3 || count == 7 || count == 11){
+			val += ".";
+		}
+	});
+	
+	$(document).on('click', '#btn_tinterIpNxt', function(){
+		// get tinter serial by calling detect...
+		var displayMessage = 'Retrieving tinter serial...';
+		pleaseWaitModal_show(displayMessage, null);
+	});
+	
+	$('#pleaseWaitModal').on('shown.bs.modal', function(){
+		// detect tinter and get serial number
+		init();
+	});
+	
 	//Used to rotate loader icon in modals
 	function rotateIcon(){
 		let n = 0;
@@ -938,28 +967,37 @@
 				<label class="sw-label" for="modelSelect"><s:text name="tinterConfig.model"/></label>
 				<s:select id="modelSelect" name="newtinter.Model"
 					autofocus="autofocus" list="defaultModelList" headerKey="-1"
-					headerValue="" onchange='changeModel()'>
+					headerValue="" onchange='changeModel(this.value)'>
 				</s:select>
 
 			</div>
+			
+			<div id="tinterIp" class="form-label-group d-none">
+				<label class="sw-label" for="tIpAddr">Tinter IP Address</label>
+				<s:textfield id="tIpAddr" name="newtinter.tinterIp"></s:textfield>
 
-			<div class="form-label-group">
+			</div>
+
+			<div id="tinterSerial" class="form-label-group">
 				<label class="sw-label" for="tSerialNbr"><s:text name="tinterConfig.serialNumber"/></label>
 				<s:textfield id="tSerialNbr" name="newtinter.serialNbr"></s:textfield>
 
 				<p style="color: red; font-weight: bold" id="SNValidationError"></p>
-
-				<br>
-
-				<s:actionerror />
+				
 			</div>
-
+			
+			<br>
 
 			<div class="form-row">
-
+				<s:actionerror />
+				
+				<input type="button" class="btn btn-lg btn-primary btn-block d-none"
+					id="btn_tinterIpNxt" value='<s:text name="global.next"/>' />
+				
 				<input type="button" class="btn btn-lg btn-primary btn-block"
 					id="btn_tinterConfig" data-toggle="modal"
 					data-target="#verifyModal" value='<s:text name="global.configure"/>' />
+					
 
 				<s:submit cssClass="btn btn-lg btn-secondary btn-block"
 					value="%{getText('global.cancel')}" action="userCancelAction" />
