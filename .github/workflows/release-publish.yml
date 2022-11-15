@@ -23,11 +23,4 @@ jobs:
       java_version: ${{ github.event.inputs.java_version }}
       release_version: ${{ github.event.inputs.release_version }}
       development_version: ${{ github.event.inputs.development_version }}
-    secrets:
-      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-      VAULT_ROLE_ID: ${{ secrets.SHERCOLOR_VAULT_ROLE_ID }}
-      VAULT_SECRET_ID: ${{ secrets.SHERCOLOR_VAULT_SECRET_ID }}
-      SW_GH_APP_APPLICATION_ID: ${{ secrets.SW_GH_APP_APPLICATION_ID }}
-      SW_GH_APP_PRIVATE_KEY: ${{ secrets.SW_GH_APP_PRIVATE_KEY }}
-      SW_GH_APP_CLIENT_ID: ${{ secrets.SHERCOLOR_VERACODE_API_ID }}
+    secrets: inherit
