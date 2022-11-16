@@ -1,12 +1,12 @@
 name: Promote QA to PROD
 on:
-#   pull_request:
-#     branches:
-#       - dja557/spring-boot-wildfly-bootable-k8s
-# #       - development
-# #       - master
-# #       - 'release/**'
-#     types: [closed]
+  pull_request:
+    branches:
+      - dja557/spring-boot-wildfly-bootable-k8s
+#       - development
+#       - master
+#       - 'release/**'
+    types: [closed]
   workflow_dispatch:
     #TODO - make sure path ignoring works
 #     paths: 
@@ -17,6 +17,6 @@ jobs:
     with:
       chart_directory: shercolorweb-chart
       release_name: shercolorweb
-      prod_helm_values: '--values=values.yaml --values=values-rancher-prod.yaml'
+      prod_helm_values: '"values.yaml" "values-rancher-prod.yaml"'
       prod_url: 'https://shercolor.sherwin.com/shercolorweb'
     secrets: inherit
