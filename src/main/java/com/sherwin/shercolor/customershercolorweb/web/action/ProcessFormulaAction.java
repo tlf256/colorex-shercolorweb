@@ -659,6 +659,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 				boolean noNull = true;
 				for (int i = 0; i < 40; i++) {
 					curveArray[i] = BigDecimal.valueOf(projCurve[i]);
+					
 					//Checks if the entire curve is 0
 					if (projCurve[i] != 0d) {
 						allZero = false;
