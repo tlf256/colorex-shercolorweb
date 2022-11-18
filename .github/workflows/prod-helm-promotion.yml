@@ -8,9 +8,7 @@ on:
 #       - 'release/**'
     types: [closed]
   workflow_dispatch:
-    #TODO - make sure path ignoring works
-#     paths: 
-#       - 'shercolorweb-chart/**'
+
 jobs:
   prod-promote:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/prod-promotion-workflow.yml@dja557/SCD-59
