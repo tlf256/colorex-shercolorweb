@@ -8,6 +8,10 @@ on:
       - master
       - release/*
     types: [closed]
+    paths-ignore: 
+    - '.github/**'
+    - '**/*.md'
+    - '.gitignore'
     
 jobs:
   snapshot-publish:
