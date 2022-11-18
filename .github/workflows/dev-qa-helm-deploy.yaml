@@ -4,12 +4,12 @@ on:
   repository_dispatch:
     types: [shercolorweb-build-deploy]
   pull_request:
-    branches:
-      - dja557/spring-boot-wildfly-bootable-k8s
-#       - development
-#       - master
-#       - 'release/**'
-    types: [closed]
+#     branches:
+#       - dja557/spring-boot-wildfly-bootable-k8s
+# #       - development
+# #       - master
+# #       - 'release/**'
+#     types: [closed]
     paths-ignore: 
     - '.github/**'
     - '**/*.md'
