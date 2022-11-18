@@ -22,7 +22,8 @@ jobs:
       release_name: shercolorweb
       dev_url: 'https://dev-shercolor.sherwin.com/shercolorweb'
       qa_url: 'https://qa-shercolor.sherwin.com/shercolorweb'
-      helm_lint_values: '"values.yaml" "values-local.yaml"'
+#       helm_lint_values: '"values.yaml" "values-local.yaml"'
+      helm_lint_values: '"values.yaml"'
       dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
       qa_helm_values: '"values.yaml" "values-rancher-qa.yaml"'
     secrets: inherit
