@@ -12,6 +12,8 @@ on:
     types: [closed]
     paths-ignore: 
     - '.github/**'
+    - '**/*.md'
+    - '.gitignore'
     
 jobs:
   dev-qa-deploy:
