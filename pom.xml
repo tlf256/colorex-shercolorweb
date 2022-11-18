@@ -13,6 +13,7 @@
             <id>artifactory</id>
             <url>https://artifactory.sherwin.com/artifactory/maven-virtual</url>
         </repository>
+	    
     </repositories>
 
     <groupId>com.sherwin.shercolor</groupId>
