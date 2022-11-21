@@ -445,8 +445,12 @@ function ParsePrintMessage() {
 
 								if (printerConfig
 										&& printerConfig.printOnDispense) {
-									// Currently only storeLabels can be printed through dispense
-									myPrintLabelType = "storeLabel";
+									// Currently only storeLabels can be printed through dispense - JXL change conditional
+									if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+										myPrintLabelType = "storeLabel";
+									} else {
+										myPrintLabelType = "selfTintCustLabel";
+									}
 									myPrintOrientation = "PORTRAIT";
 									var myguid = $("#reqGuid").val();
 									var correctionStr = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
