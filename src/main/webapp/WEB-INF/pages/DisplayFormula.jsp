@@ -445,7 +445,8 @@ function ParsePrintMessage() {
 
 								if (printerConfig
 										&& printerConfig.printOnDispense) {
-									// Currently only storeLabels can be printed through dispense - JXL change conditional
+									// Currently only storeLabels can be printed through dispense.
+									//Added conditional so the proper label prints for stores and self tinting customers.
 									if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
 										myPrintLabelType = "storeLabel";
 									} else {
