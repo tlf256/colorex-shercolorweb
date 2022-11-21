@@ -17,6 +17,6 @@ ingress:
     - qa-shercolor.sherwin.com
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
-springProfilesActive: "qa,oracle,rancher"
+springProfilesActive: "qa,oracle,rancher-dmz"
 
 env: qa
