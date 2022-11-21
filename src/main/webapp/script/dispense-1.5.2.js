@@ -16,8 +16,8 @@ $(function(){ // on ready
 function fkey(e) {
 	if (sendingTinterCommand == "true") {
 		e = e || window.event;
-
-		if (e.code === 'F4') {
+		console.log("key code: " + e.code);
+		if ((platform.startsWith("Win") && e.code === 'F4') || (platform.startsWith("Lin") && e.code === 'KeyA')) {
 			if(processingDispense == true){
 				abort();
 				console.log(e);

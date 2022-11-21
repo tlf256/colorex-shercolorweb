@@ -21,7 +21,7 @@
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-2.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
 
@@ -340,6 +340,13 @@ badge {
 	/* Dispense validation methods */
 	
 	$(function() {
+		var platform = navigator.platform;
+		if(platform.startsWith("Win")){
+			$('#abort-message').html('<s:text name="global.pressF4ToAbort"/>');
+		} else {
+			$('#abort-message').html('<s:text name="global.pressAkeyToAbort"/>');
+		}
+		
 		$("#tinterWarningListOK").on("click", function(event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -840,7 +847,7 @@ badge {
 				<div class="modal-body">
 					<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 					<p id="tinterInProgressMessage" font-size="4"></p>
-					<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
+					<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"></p>
 					<ul class="list-unstyled" id="tinterProgressList"></ul> 
 					<div class="progress-wrapper "></div>
 	        	</div>

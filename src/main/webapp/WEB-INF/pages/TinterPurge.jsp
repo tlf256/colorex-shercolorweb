@@ -587,6 +587,11 @@
 
 	$(function(){
 		console.log("platform is: "+ platform);
+		if(platform.startsWith("Win")){
+			$('#abort-message').html('<s:text name="global.pressF4ToAbort"/>');
+		} else {
+			$('#abort-message').html('<s:text name="global.pressAkeyToAbort"/>');
+		}
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
 		
 		$(document).on("shown.bs.modal", "#purgeInProgressModal", function(event){
@@ -871,7 +876,7 @@
 							<div class="modal-body">
 							
 								<p id="progress-message" font-size="4"><s:text name="tinterPurge.pleaseWaitPurgeAll"/></p>
-								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
+								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"></p>
 								<div class="progress-wrapper "></div>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>
