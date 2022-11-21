@@ -3,16 +3,19 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [shercolorweb-build-deploy]
-  pull_request:
-    branches:
-      - dja557/spring-boot-wildfly-bootable-k8s
-#       - development
-#       - master
-#       - 'release/**'
-    types: [closed]
-    #TODO - make sure path ignoring works
-#     paths: 
-#       - 'shercolorweb-chart/**'
+#   pull_request:
+# #     branches:
+# #       - dja557/spring-boot-wildfly-bootable-k8s
+# # #       - development
+# # #       - master
+# # #       - 'release/**'
+# #     types: [closed]
+#     paths-ignore: 
+#     - '.github/**'
+#     - '**/*.md'
+#     - '.gitignore'
+
+    
 jobs:
   dev-qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@dja557/SCD-59
@@ -22,6 +25,7 @@ jobs:
       release_name: shercolorweb
       dev_url: 'https://dev-shercolor.sherwin.com/shercolorweb'
       qa_url: 'https://qa-shercolor.sherwin.com/shercolorweb'
+      helm_lint_values: '"values.yaml" "values-local.yaml"'
       dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
       qa_helm_values: '"values.yaml" "values-rancher-qa.yaml"'
     secrets: inherit
