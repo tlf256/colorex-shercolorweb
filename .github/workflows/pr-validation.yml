@@ -17,5 +17,5 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@dja557/SCD-376
     with:
       java_version: 8
-      codeql_languages: 'java, javascript'
+#       codeql_languages: 'java, javascript'
     secrets: inherit
