@@ -20,3 +20,4 @@ jobs:
       java_version: 8
       codeql_languages: "['java','javascript']"
     secrets: inherit
+    
