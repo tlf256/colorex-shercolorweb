@@ -5,3 +5,4 @@ packs:
     - 'codeql/javascript-upgrades'
     - 'codeql/javascript-queries'
     - 'codeql/javascript-queries'
+    
