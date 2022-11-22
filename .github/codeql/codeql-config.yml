@@ -1,0 +1,5 @@
+name: "na-pos codeql config"
+
+query-filters:
+- exclude:
+    id: codeql/javascript-experimental-atm-queries
