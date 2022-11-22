@@ -2,7 +2,6 @@ name: "na-pos codeql config"
 
 packs:
   javascript:
-    - 'codeql/javascript-experimental-atm-model'
     - 'codeql/javascript-upgrades'
     - 'codeql/javascript-queries'
     - 'codeql/javascript-queries'
