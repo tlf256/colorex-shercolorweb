@@ -1,5 +1,8 @@
 name: "na-pos codeql config"
 
 packs:
-- exclude:
-    id: codeql/javascript-experimental-atm-queries
+  javascript:
+    - 'codeql/javascript-experimental-atm-model'
+    - 'codeql/javascript-upgrades'
+    - 'codeql/javascript-queries'
+    - 'codeql/javascript-queries'
