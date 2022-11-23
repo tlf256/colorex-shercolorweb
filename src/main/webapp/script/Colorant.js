@@ -30,9 +30,6 @@ $(function(){
         var curRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[0]);
         var maxRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[1]);
         var position = $('#key', this).attr('value');
-
-		//var color = $('#color' + rowVal).text();
-        //var colorArr = color.split(" ");
         var clrnt = null;
 		if(!platform.startsWith("Win")){
 			clrnt = $('#color' + rowVal).text().split(" ")[0];

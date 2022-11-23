@@ -762,7 +762,7 @@
 					</div>
 					<div class="col-sm-2">	
 						<button type="button" class="btn btn-primary" id="tinterCleanNozzle" data-toggle="modal" data-target="#cleanNozzleModal"><s:text name="tinterPurge.cleanNozzle"/></button>
-  						<button type="button" class="btn btn-success d-none" id="fmxCleanNozzle" data-toggle="modal" data-target="#cleanNozzleInProgress"><s:text name="tinterPurge.cleanNozzle"/></button>
+  						<button type="button" class="btn btn-primary d-none" id="fmxCleanNozzle" data-toggle="modal" data-target="#cleanNozzleInProgress"><s:text name="tinterPurge.cleanNozzle"/></button>
   					</div>
 					<div class="col-sm-2">	
 						<button type="button" class="btn btn-primary center-block" id="tinterPurgeButton" autofocus="autofocus"><s:text name="global.purge"/></button>
