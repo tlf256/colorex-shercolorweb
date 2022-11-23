@@ -179,8 +179,8 @@ function dispenseProgressResp(return_message) {
 	//$("#progress-message").text(return_message.errorMessage);
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
-	if ((return_message.errorMessage.indexOf("done") == -1 || return_message.errorMessage.indexOf("Dispense Job Complete") == -1) 
-		&& (return_message.errorNumber == 1 || return_message.status == 1)) {
+	if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") == -1 || !platform.startsWith("Win") && 
+		return_message.errorMessage.indexOf("Dispense Job Complete") == -1) && (return_message.errorNumber == 1 || return_message.status == 1)) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
@@ -208,8 +208,8 @@ function dispenseProgressResp(return_message) {
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
-	else if ((return_message.errorMessage.indexOf("done") > 0 || return_message.errorMessage.indexOf("Dispense Job Complete") == 0) 
-		|| return_message.errorNumber != 0) {
+	else if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 0 || !platform.startsWith("Win") && 
+		return_message.errorMessage.indexOf("Dispense Job Complete") == 0) || return_message.errorNumber != 0) {
 		if (return_message.errorNumber == 4226) {
 			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
 		}
