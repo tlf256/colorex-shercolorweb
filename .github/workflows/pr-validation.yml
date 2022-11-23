@@ -6,6 +6,7 @@ on:
       - development
       - master
       - release/*
+
     types: [opened, synchronize]
     paths-ignore: 
       - '**.md'
@@ -13,15 +14,8 @@ on:
       
 jobs:
   pr-validation:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@master
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@dja557/SCD-376
     with:
       java_version: 8
-    secrets:
-      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_SHERLINK }}
-      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_SHERLINK }}
-      VAULT_ROLE_ID: ${{ secrets.SHERCOLOR_VAULT_ROLE_ID }}
-      VAULT_SECRET_ID: ${{ secrets.SHERCOLOR_VAULT_SECRET_ID }}
-      SHERCOLOR_VERACODE_API_ID: ${{ secrets.SHERCOLOR_VERACODE_API_ID }}
-      SHERCOLOR_VERACODE_API_KEY: ${{ secrets.SHERCOLOR_VERACODE_API_KEY }}
+      codeql_languages: "['java']"
+    secrets: inherit

@@ -445,8 +445,13 @@ function ParsePrintMessage() {
 
 								if (printerConfig
 										&& printerConfig.printOnDispense) {
-									// Currently only storeLabels can be printed through dispense
-									myPrintLabelType = "storeLabel";
+									// Currently only storeLabels can be printed through dispense.
+									//Added conditional so the proper label prints for stores and self tinting customers.
+									if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+										myPrintLabelType = "storeLabel";
+									} else {
+										myPrintLabelType = "selfTintCustLabel";
+									}
 									myPrintOrientation = "PORTRAIT";
 									var myguid = $("#reqGuid").val();
 									var correctionStr = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
