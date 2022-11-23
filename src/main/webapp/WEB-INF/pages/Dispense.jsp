@@ -167,7 +167,6 @@ input[type=number] {
 							<s:set var="thisGuid" value="reqGuid" />
 							<s:hidden value="%{thisGuid}" id="reqGuid"></s:hidden>
 							<s:hidden value="%{tinter.model}" id="tinterModel"></s:hidden>
-							<s:hidden value="" id="abortKey"></s:hidden>
 						</div>
 					</div>
 					<br>

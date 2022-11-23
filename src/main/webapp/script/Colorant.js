@@ -31,9 +31,12 @@ $(function(){
         var maxRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[1]);
         var position = $('#key', this).attr('value');
 
-		var color = $('#color' + rowVal).text();
-        var colorArr = color.split(" ");
-        var clrnt = colorArr[0];
+		//var color = $('#color' + rowVal).text();
+        //var colorArr = color.split(" ");
+        var clrnt = null;
+		if(!platform.startsWith("Win")){
+			clrnt = $('#color' + rowVal).text().split(" ")[0];
+		}
         console.log("COLORANT CODE: " + clrnt);
         
         var str = {
@@ -243,11 +246,8 @@ $(function(){
 function move(position, clrntCode){
 	var tinterModel = $("#colorantLevels_tinterModel").val();
 	if(tinterModel.startsWith("FM X")){ // only rotate FM XTinter.
-		var cmd = "";
-		if(platform.startsWith("Win")){
-			cmd = "MoveToFill";
-			clrntCode = null;
-		} else {
+		var cmd = "MoveToFill";
+		if(!platform.startsWith("Win")){
 			cmd = "Move";
 		}
 		$("#moveInProgressModal").modal('show');
@@ -268,7 +268,7 @@ function moveComplete(myGuid, curDate,return_message){
 	sendTinterEvent(myGuid, curDate, return_message, null);
     waitForShowAndHide("#moveInProgressModal");
 	if(return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0
-		|| platform.startsWith("Lin") && return_message.commandRC == 2)){
+		|| !platform.startsWith("Win") && return_message.commandRC == 2)){
 		// show success message in alert area
 		$("#tinterAlertList").empty();
 		$("#tinterAlertList").append("<li>" + i18n["colorant.moveComplete"] + "</li>");

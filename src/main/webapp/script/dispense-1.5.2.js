@@ -17,7 +17,7 @@ function fkey(e) {
 	if (sendingTinterCommand == "true") {
 		e = e || window.event;
 		console.log("key code: " + e.code);
-		if ((platform.startsWith("Win") && e.code === 'F4') || (platform.startsWith("Lin") && e.code === 'KeyA')) {
+		if ((platform.startsWith("Win") && e.code === 'F4') || (!platform.startsWith("Win") && e.code === 'KeyA')) {
 			if(processingDispense == true){
 				abort();
 				console.log(e);
@@ -274,7 +274,7 @@ function FMXDispenseComplete(return_message) {
 	$("#abort-message").hide();
 
 	if ((return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0 
-		|| platform.startsWith("Lin") && return_message.commandRC == 2)) 
+		|| !platform.startsWith("Win") && return_message.commandRC == 2)) 
 		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
@@ -294,11 +294,10 @@ function FMXDispenseComplete(return_message) {
 						});
 						*/
 		} else {
-			// why was this here? Test with this commented --
-			//if(platform.startsWith("Win")){
+			if(platform.startsWith("Win")){
 				tinterErrorList.push(return_message.errorMessage);
 				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-			//}
+			}
 		}
 		if ($('#progressok').length > 0 ) {
 			$('#progressok').removeClass('d-none');
