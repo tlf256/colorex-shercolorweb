@@ -2,14 +2,14 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: vault://shercolor/kv2/shercolorweb/dev
+    import: vault://tag/shercolor/kv2/dev/shercolorweb
   cloud:
     vault:
       authentication: KUBERNETES
       uri: https://vault.sherwin.com
       application-name: shercolorweb
       kv:
-        backend: shercolor/kv2
+        backend: tag/shercolor/kv2
       kubernetes:
         kubernetes-path: kubernetes-np-internal
         role: k8s-np-internal-shercolor-dev
@@ -19,14 +19,14 @@ spring:
   config:
     activate:
       on-profile: qa
-    import: vault://shercolor/kv2/shercolorweb/qa
+    import: vault://tag/shercolor/kv2/qa/shercolorweb
   cloud:
     vault:
       authentication: KUBERNETES
       uri: https://vault.sherwin.com
       application-name: shercolorweb
       kv:
-        backend: shercolor/kv2
+        backend: tag/shercolor/kv2
       kubernetes:
         kubernetes-path: kubernetes-np-internal
         role: k8s-np-internal-shercolor-qa
@@ -36,14 +36,14 @@ spring:
   config:
     activate:
       on-profile: prod
-    import: vault://shercolor/kv2/shercolorweb/prod
+    import: vault://tag/shercolor/kv2/prod/shercolorweb
   cloud:
     vault:
       authentication: KUBERNETES
       uri: https://vault.sherwin.com
       application-name: shercolorweb
       kv:
-        backend: shercolor/kv2
+        backend: tag/shercolor/kv2
       kubernetes:
         kubernetes-path: kubernetes-pr-internal
         role: k8s-pr-internal-shercolor-prod
