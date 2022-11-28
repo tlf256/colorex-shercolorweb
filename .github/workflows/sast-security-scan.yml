@@ -11,8 +11,4 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/sast-security-scan-workflow.yml@master
     with:
       java_version: 8
-    secrets:
-      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-      SHERCOLOR_ORCA_API_KEY: ${{ secrets.SHERCOLOR_ORCA_API_KEY }}
-      ORCA_VERACODE_CONFIG_ID: ${{ secrets.ORCA_VERACODE_CONFIG_ID }}
+    secrets: inherit
