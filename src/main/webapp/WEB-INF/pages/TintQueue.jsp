@@ -38,7 +38,7 @@
 	 	<script type="text/javascript" charset="utf-8" src="js/datetime-moment.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
-		<script type="text/javascript" src="script/displayjobs-1.5.1.js"></script>
+		<script type="text/javascript" src="script/displayjobs-1.5.2.js"></script>
 	</head>
 	<body>
 	<!-- including Header -->

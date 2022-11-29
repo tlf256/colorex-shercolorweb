@@ -56,8 +56,8 @@ public class SpectroGetInfoAction extends ActionSupport implements SessionAware,
 	
 	public String display() {
 
-		 try {
-		     return SUCCESS;
+		try {
+		    return SUCCESS;
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
 			return ERROR;

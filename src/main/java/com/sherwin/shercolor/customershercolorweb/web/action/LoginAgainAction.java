@@ -1,9 +1,13 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -13,6 +17,8 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	/**
@@ -22,6 +28,9 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	private Map<String, Object> sessionMap;
 
 	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
+
+	@Autowired
+	private transient Environment environment;
 
 	private String reqGuid;
 	private String sherLinkURL;
@@ -47,7 +56,16 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 		RequestObject reqObj = null;
 		try {
 			// Get the customershercolorweb.properties file data first.
-			prop.load(new FileInputStream("/web_apps/server/shercolor/deploy/customershercolorweb.properties"));
+			if (ArrayUtils.contains(environment.getActiveProfiles(),"test")) {
+				prop.load(this.getClass().getResourceAsStream("/customershercolorweb.properties"));
+			}
+			else {
+				try (InputStream inputStream = Files.newInputStream(Paths.get("/web_apps/server/shercolor/deploy/customershercolorweb.properties")))
+				{
+					prop.load(inputStream);
+				}
+			}
+
 			dbEnv = prop.getProperty("dbEnv");
 			sherLinkURL = prop.getProperty("sherLinkLoginUrl." + dbEnv);
 			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);

@@ -1,10 +1,12 @@
 name: Validate Pull Request
 on:
+  workflow_dispatch:
   pull_request:
     branches: 
       - development
       - master
-      - 'release/**'
+      - release/*
+
     types: [opened, synchronize]
     paths-ignore: 
       - '**.md'
@@ -15,10 +17,5 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@master
     with:
       java_version: 8
-    secrets:
-      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-      ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-      SHERCOLOR_SONAR_TOKEN: ${{ secrets.SHERCOLOR_SONAR_TOKEN }}
-      SHERCOLOR_SONAR_HOST_URL: ${{ secrets.SHERCOLOR_SONAR_HOST_URL }}
-      SHERCOLOR_VERACODE_API_ID: ${{ secrets.SHERCOLOR_VERACODE_API_ID }}
-      SHERCOLOR_VERACODE_API_KEY: ${{ secrets.SHERCOLOR_VERACODE_API_KEY }}
+      codeql_languages: "['java']"
+    secrets: inherit
