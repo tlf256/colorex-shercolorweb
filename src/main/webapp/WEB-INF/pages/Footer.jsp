@@ -144,7 +144,7 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
 		<div class="modal-content">
 			<div class="modal-header bg-light">
 				<h5 class="modal-title">
-					<em id="spinner" class="fa fa-refresh mr-3 text-muted"></em>
+					<em id="pwSpinner" class="d-none fa fa-refresh mr-3 text-muted"></em>
 					<s:text name="global.pleaseWait"></s:text>
 				</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" ><span aria-hidden="true">&times;</span></button>

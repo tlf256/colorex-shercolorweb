@@ -269,6 +269,7 @@
 			$('#tinterIp').removeClass('d-none');
 			$('#tinterSerial').addClass('d-none');
 			$('#btn_tinterIpNxt').removeClass('d-none');
+			$('#btn_tinterConfig').addClass('d-none');
 		} else {
 			$('#tSerialNbr').focus();
 		}
@@ -381,6 +382,9 @@
                    	}
                    	else{
                    		modellist = objs.defaultModelList;
+                   		$.each(modellist, function(index, value) {
+                   			console.log("Ajax success: TINTER MODEL: " + value);
+                   		});
                    	}
 				},
 				error : function() {
@@ -399,7 +403,7 @@
 			if (modellist != null) {
 				$('#hidden_modellist').html("");
 				$.each(modellist, function(index, value) {
-
+					console.log("TINTER MODEL: " + value);
 					box.append($("<option></option>").attr("value", value)
 							.text(value));
 					var name = "defaultModelList[" + index + "]";
@@ -494,6 +498,9 @@
 		}
 		else if(tinter.model.indexOf("SANTINT") >= 0){
 			RecdMessageSantint();
+		}
+		else if(tinter.model.indexOf("AS") >= 0){
+			RecdMessageFM();
 		}
 		else{
 			RecdMessageFMAlfa();
@@ -778,6 +785,126 @@
 			
 		}
 	}
+	// modify the following to accomodate the AS 9500...
+	// the name may have to be changed if this cannot be used 
+	// with any other FM tinters...
+	function RecdMessageFM() {
+		var curDate = new Date();
+		console.log("Received FM Message");
+		//parse the spectro
+		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
+				console.log(ws_tinter.wsmsg);
+				console.log("isReady is " + ws_tinter.isReady + " BTW");
+				//Show a modal with error message to make sure the user is forced to read it.
+				$("#configError").text(ws_tinter.wserrormsg);
+				$("#configErrorModal").modal('show');			
+		} else {
+			var return_message = JSON.parse(ws_tinter.wsmsg);
+			switch (return_message.command) {
+			case 'Config':
+				if (return_message.errorNumber == 0) {
+					init();
+					$("#detectInProgressModal").modal('show');
+					rotateIcon();
+				} else {
+					$("#configError").text(return_message.errorMessage);
+					$("#configErrorModal").modal('show');
+				}
+				sendTinterEventConfig(reqGuid, curDate, return_message,null);
+				break;
+			case 'Detect':
+			case 'Init':
+			case 'InitStatus':
+				let ucErrorMessage = return_message.errorMessage.toUpperCase().trim()
+				//status = 1, means, still trying serial ports so still in progress.
+				if (( ucErrorMessage.trim() != initializationDone) &&
+						 (return_message.errorNumber >= 0 ||
+						 return_message.status == 1)) {
+					 	//save		
+					$("#progress-message").text(return_message.errorMessage);
+					if(detectAttempt < 85){
+						setTimeout(
+							  function() 
+							  { //make sure we are not slamming everything
+									AfterDetectTinterGetStatus(); // keep sending init status until you get something.
+							  }, 5000);
+
+						detectAttempt++;
+					}
+					else{ // close up shop with this error.
+						//sendTinterEvent(myGuid, curDate, return_message, null); 
+						waitForShowAndHide('#detectInProgressModal');
+						return_message.errorMessage = "Timeout Waiting for X-Tinter Detect";
+						return_message.errorNumber = -1;
+					
+						
+						$("#detectErrorList").append("<li>" + return_message.errorMessage + "</li>");
+					
+						$("#errorModalTitle").text('<s:text name="global.timeoutWaitingForXTinterDetect"/>');
+						$("#detectErrorMessage").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
+						$("#detectErrorModal").modal('show');
+					
+				
+						}
+					//console.log(return_message.errorMessage);
+				}
+				else if(return_message.errorMessage.toUpperCase().trim() == initializationDone){
+					console.log("init done: " + (return_message.errorMessage.toUpperCase().trim() == initializationDone));
+					
+					
+					waitForShowAndHide("#detectInProgressModal");
+		           
+					$("#detectStatusModal").modal('show');
+					
+					$("#detectStatus") 
+							.text(
+									'<s:text name="global.tinterDetectConfigComplete"/>');
+				}
+				else {
+					
+					waitForShowAndHide("#detectInProgressModal");
+		           
+					$("#detectErrorModal").modal('show');
+					
+					switch (return_message.errorNumber) {
+					case -10500:
+					case -3084:
+						$("#errorModalTitle")
+								.text(
+										'<s:text name="tinterConfig.tinterDetectConfigCompleteWithErrors"/>');
+						$("#detectErrorMessage").text(
+								return_message.errorMessage);
+						break;
+					default:
+						$("#errorModalTitle").text(
+								'<s:text name="tinterConfig.tinterInitErrors"/>');
+						$("#detectErrorMessage").text(
+								return_message.errorMessage);
+						break;
+					}
+					$("#detectErrorMessage").text(return_message.errorMessage);
+					if (return_message.errorList != undefined) {
+
+						for (var i = 0, len = return_message.errorList.length; i < len; i++) {
+							var error = return_message.errorList[i];
+							var errorText = "<li>" + error.num + "\t"
+									+ error.message + "</li>";
+							$("#detectErrorList").append(errorText);
+						}
+					}
+				}
+				if ((return_message.errorMessage.toUpperCase().trim() == initializationDone) || return_message.errorNumber < 0) {
+					sendTinterEventConfig(reqGuid, curDate, return_message,null);
+				}
+				break;
+			default:
+				//Not an response we expected...
+				console
+						.log("Message from different command is junk, throw it out");
+			}
+			
+		}
+	}
 	function RecdMessageFMAlfa() {
 		var curDate = new Date();
 		console.log("Received FM Message");
@@ -884,12 +1011,14 @@
 		// get tinter serial by calling detect...
 		var displayMessage = 'Retrieving tinter serial...';
 		pleaseWaitModal_show(displayMessage, null);
-	});
-	
-	$('#pleaseWaitModal').on('shown.bs.modal', function(){
 		// detect tinter and get serial number
 		init();
 	});
+	
+	//$('#pleaseWaitModal').on('shown.bs.modal', function(){
+		// detect tinter and get serial number
+		//init();
+	//});
 	
 	//Used to rotate loader icon in modals
 	function rotateIcon(){

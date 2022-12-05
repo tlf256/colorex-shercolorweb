@@ -71,7 +71,7 @@ function waitForShowAndHide(showString){
 
 function showWaitModal(){
 	$('#pleaseWaitModal').modal('show');
-	rotateSpinner('#pleaseWaitModal');
+	rotateSpinner('#pleaseWaitModal', '#pwSpinner');
 }
 
 /** Please Wait modal js - use for displaying wait modal located in footer **/
@@ -98,21 +98,21 @@ function hideInputModal(inputModal){
 	waitForShowAndHide(inputModal);
 }
 
-function rotateSpinner(processModal){
+function rotateSpinner(processModal, spinnerId){
 	let n = 0;
-	$('#spinner').removeClass('d-none');
+	$(spinnerId).removeClass('d-none');
 	let interval = setInterval(function(){
     	n += 1;
     	if(n >= 60000){
-            $('#spinner').addClass('d-none');
+            $(spinnerId).addClass('d-none');
         	clearInterval(interval);
         }else{
-        	$('#spinner').css("transform","rotate(" + n + "deg)");
+        	$(spinnerId).css("transform","rotate(" + n + "deg)");
         }
 	},5);
 	
 	$(processModal).on('hide.bs.modal',function(){
-		$('#spinner').addClass('d-none');
+		$(spinnerId).addClass('d-none');
     	if(interval){clearInterval(interval);}
 	});
 }
