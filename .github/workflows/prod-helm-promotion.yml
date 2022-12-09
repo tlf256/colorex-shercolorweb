@@ -1,6 +1,6 @@
 name: Promote QA to PROD
 on:
-  pull_request:
+#   pull_request:
 #     branches:
 #       - dja557/spring-boot-wildfly-bootable-k8s
 # #       - development
