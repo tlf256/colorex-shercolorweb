@@ -29,7 +29,7 @@
 		<appender-ref ref="Console" level="warn"/>
 	</Logger>
 	<Root level="info" additivity="false">
-		<appender-ref ref="Console"/>
+		<appender-ref ref="Console" level="info"/>
 	</Root>
 </Loggers>
 </Configuration>

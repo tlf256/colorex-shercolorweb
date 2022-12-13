@@ -30,6 +30,9 @@ else
 end-if
 
 /subsystem=logging:write-attribute(name="add-logging-api-dependencies",value=false)
+# Use to enable debug logging
+#/subsystem=logging/root-logger=ROOT:write-attribute(name="level", value="DEBUG")
+#/subsystem=logging/console-handler=CONSOLE:write-attribute(name="level", value="DEBUG")
 
 if (outcome != success) of /subsystem=security/security-domain=ecommerce-security-domain:read-resource
   /subsystem=security/security-domain=ecommerce-security-domain:add(cache-type=default)
