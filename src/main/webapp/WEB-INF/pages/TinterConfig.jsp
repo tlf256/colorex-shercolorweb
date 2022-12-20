@@ -43,6 +43,7 @@
 	var initStarted = 0;
 	var detectAttempt = 0;
 	
+	// TODO add tinter ip here??
 	const tinter = {
 			clrntSysId:null,
 			model:null,
@@ -80,13 +81,14 @@
 		var canister_layout = [ canister0, canister1, canister2, canister3,
 				canister4, canister5, canister6, canister7, canister8,
 				canister9, canister10, canister11 ];
+		// TODO add tinter ip here??
 		configuration = new Configuration(
 				"<s:property value="tinter.clrntSysId" escapeHtml="true"/>",
 				"<s:property value="tinter.model" escapeHtml="true"/>",
 				"<s:property value="tinter.serialNbr" escapeHtml="true"/>", canister_layout);
 
 	}
-	function config_tinter(mycolorantid, mymodel, myserial, mycanister_layout) {
+	function config_tinter(mycolorantid, mymodel, myserial, mytinter_ip, mycanister_layout) {
 		var canister_layout = [];
 		for (var i = 0, len = mycanister_layout.length; i < len; i++) {
 			var code = mycanister_layout[i].clrntCode;
@@ -94,12 +96,14 @@
 			var canister1 = new Canister(pos, code);
 			canister_layout.push(canister1);
 		}
-		var command = "Config"
+		var command = "Config";
+		// add tinter IP to configuration
 		var configuration = new Configuration(mycolorantid, mymodel, myserial,
-				canister_layout);
+				mytinter_ip, canister_layout);
 
 		var calibration = null;
 		//alfa and santint do not have cal files that we manage
+		// TODO add AS 9500SW to this?
 		if(mymodel != null && (!mymodel.includes("ALFA") && !mymodel.includes("SANTINT"))){  //these models do not have cal files
 			calibration =  new Calibration(mycolorantid, mymodel, myserial);
 			//console.log("calibration");
@@ -264,12 +268,10 @@
 
 	function changeModel(model) {
 		if(model.startsWith('AS')){
-			// show tinter IP and hide serial nbr textfields
-			// also show next button to detect 9500 to get serial
 			$('#tinterIp').removeClass('d-none');
 			$('#tinterSerial').addClass('d-none');
-			$('#btn_tinterIpNxt').removeClass('d-none');
-			$('#btn_tinterConfig').addClass('d-none');
+			$('#tSerialNbr').addClass('d-none');
+			$('#tIpAddr').focus(); // check id
 		} else {
 			$('#tSerialNbr').focus();
 		}
@@ -277,13 +279,36 @@
 	
 	function onSubmit(event){
 		event.preventDefault();
-		$('#tSerialNbr').val($('#tSerialNbr').val().toUpperCase());
-		var serial = $('#tSerialNbr').val();
-		if (ValidateSN(serial) == 0) {
-			tinter.clrntSysId = $('#selectClrntSysId').val();
-			tinter.model = $('#modelSelect').val();
-			tinter.serialNbr = serial;
-			config();
+		if($('#modelSelect').val().indexOf('AS') >= 0){
+			// write tinter IP to file on windows
+			if(platform.startsWith('Win')){
+				// write tinter IP + hostname to file
+				// send tinter command to write file before config
+				// send tinter IP in configuration?
+				var tinterIp = $('#tIpAddr').val().trim();
+				// TODO validate IP here??
+				var configuration = new Configuration(null, null, null, tinterIp, null);
+				var command = "Setup"; //keep command name as setup??
+				initmessage = new TinterMessage(command, null, configuration, null, null);
+				var json = JSON.stringify(initmessage);
+		
+				if (ws_tinter && ws_tinter.isReady == "false") {
+					console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+					ws_tinter = new WSWrapper("tinter");
+				}
+				ws_tinter.send(json);
+			} else {
+				// launch password program on linux
+			}
+		} else {
+			$('#tSerialNbr').val($('#tSerialNbr').val().toUpperCase());
+			var serial = $('#tSerialNbr').val();
+			if (ValidateSN(serial) == 0) {
+				tinter.clrntSysId = $('#selectClrntSysId').val();
+				tinter.model = $('#modelSelect').val();
+				tinter.serialNbr = serial;
+				config();
+			}
 		}
 	}
 	
@@ -998,22 +1023,24 @@
 		}
 	}
 	
-	$(document).on('keyup', '#tIpAddr', function(e){
+	/*$(document).on('keyup', '#tIpAddr', function(e){
 		var val = $(this).val();
 		var count = val.length;
 		// can't use this - there can be less than 3 digits in the octets
 		if(count == 3 || count == 7 || count == 11){
 			val += ".";
 		}
-	});
+	});*/
 	
-	$(document).on('click', '#btn_tinterIpNxt', function(){
+	//$(document).on('click', '#btn_tinterIpNxt', function(){
 		// get tinter serial by calling detect...
-		var displayMessage = 'Retrieving tinter serial...';
-		pleaseWaitModal_show(displayMessage, null);
-		// detect tinter and get serial number
-		init();
-	});
+		//var displayMessage = 'Retrieving tinter serial...';
+		//pleaseWaitModal_show(displayMessage, null);
+		// check credentials
+		// ajax call to action to verify the password is set and not expired
+		// if it's expired, get new password. admin password will be expired.
+		
+	//});
 	
 	//$('#pleaseWaitModal').on('shown.bs.modal', function(){
 		// detect tinter and get serial number
@@ -1103,7 +1130,7 @@
 			
 			<div id="tinterIp" class="form-label-group d-none">
 				<label class="sw-label" for="tIpAddr">Tinter IP Address</label>
-				<s:textfield id="tIpAddr" name="newtinter.tinterIp"></s:textfield>
+				<s:textfield id="tIpAddr" class="form-control" name="newtinter.tinterIp" data-inputmask="'alias':'ip'"></s:textfield>
 
 			</div>
 
@@ -1120,8 +1147,8 @@
 			<div class="form-row">
 				<s:actionerror />
 				
-				<input type="button" class="btn btn-lg btn-primary btn-block d-none"
-					id="btn_tinterIpNxt" value='<s:text name="global.next"/>' />
+				<%-- <input type="button" class="btn btn-lg btn-primary btn-block d-none"
+					id="btn_tinterIpNxt" value='<s:text name="global.next"/>' /> --%>
 				
 				<input type="button" class="btn btn-lg btn-primary btn-block"
 					id="btn_tinterConfig" data-toggle="modal"
@@ -1244,6 +1271,28 @@
 				<div class="modal-footer">
 					<button id="detectErrorClose" type="button" class="btn btn-primary"
 						data-dismiss="modal" aria-label="%{getText('global.close')}"><s:text name="global.close"/></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- AS 9500SW password modal -->
+	<div class="modal fade" aria-labelledby="" data-backdrop="static"
+		aria-hidden="true" id="password_modal" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">AS 9500SW Password Setup</h5>
+				</div>
+				<div class="modal-body">
+					<p id=""></p>
+					<div id="passwrd" class="form-label-group">
+						<label class="sw-label" for="passwrd">Password:</label>
+						<s:textfield id="passwrd" name="passwrd"></s:textfield>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="" type="button" class="btn btn-primary"
+						data-dismiss="modal" aria-label="%{getText('global.continue')}"><s:text name="global.continue"/></button>
 				</div>
 			</div>
 		</div>
