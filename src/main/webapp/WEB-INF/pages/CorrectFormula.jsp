@@ -913,67 +913,7 @@
 		// ajax call to convert correctionList to dispenseItems
         var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
-        $.ajax({	
-            url : "saveCorrectionStepAction.action",
-            type: "POST",
-            contentType : "application/json; charset=utf-8",
-            dataType: "json",
-            async: true,
-            data : jsonIN,
-            success : function(data){
-            	processingDispense = false;
-				//console.log(data);
-				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
-            	}
-            	else{
-            		if(data.errorMessage==null){
-    					console.log("Write Successful!");
-    					if(data.mergeCorrWithStartingForm == true){
-    						// end of cycle, merge Correction with orig (this will refresh screen)
-    						mergeCorrWithStartingForm($("#mainForm_currCycle").val());
-    					} else {
-    						// not end of cycle just refresh page
-    						reloadScreen()
-    					}
-    					if (dispenseAccepted == true && printerConfig && printerConfig.printOnDispense) {
-    						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
-    						printJsonIN = JSON.stringify(str);
-    						printOnDispenseGetJson(data.reqGuid,printJsonIN);
-    						dispenseAccepted == false;
-    					}
-    					sendingDispCommand = "false";
-						// send tinter event (no blocking here)
-						var curDate = new Date();
-						var myGuid = $( "#reqGuid" ).val();
-						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-						var tedArray = [teDetail];
-						sendTinterEvent(myGuid, curDate, return_message, tedArray);
-    					
-    					//alert("Write Successful");
-    				} else {
-    					// Error Tell the user
-    					//console.log("Write Failed!" + data.errorMessage);
-    					$("#tinterErrorList").empty();
-    					$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedDbUpdWriteDispense" /></li>');
-    					$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
-    					$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
-    					$("#tinterErrorListModal").modal('show');
-    				}
-            	}
-            },
-            error: function(textStatus, errorThrown ) {
-                console.log("JSON Write Correction failed here");
-                console.log(textStatus + " " + errorThrown);
-				// Error Tell the user
-				console.log("Write Failed! " + data.errorMessage);
-				$("#tinterErrorList").empty();
-				$("#tinterErrorList").append('<li class="alert alert-danger"><s:text name="correctFormula.failedToCallAction" /></li>');
-				$("#tinterErrorListTitle").text('<s:text name="correctFormula.internalDatabaseError" />');
-				$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
-				$("#tinterErrorListModal").modal('show');
-            }
-        });
+		saveCorrectionStep(jsonIN, "Tinter", return_message);
 	}
 	
     function writeHandDispense() {
@@ -991,6 +931,10 @@
 				    "shotList": shotList
 				  };
         var jsonIN = JSON.stringify(str);
+		saveCorrectionStep(jsonIN, "Hand", "");
+    }
+    
+    function saveCorrectionStep(jsonIN, dispenseType, return_message) {
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -1014,12 +958,26 @@
     						// not end of cycle just refresh page
     						reloadScreen()
     					}
+    					
     					if (dispenseAccepted == true && printerConfig && printerConfig.printOnDispense) {
     						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
     						printJsonIN = JSON.stringify(str);
     						printOnDispenseGetJson(data.reqGuid,printJsonIN);
     						dispenseAccepted == false;
     					}
+    					
+    					if(dispenseType === "Tinter") {
+    						console.log("dispense type is Tinter for this correction. Writing tinter event.");
+    						sendingDispCommand = "false";
+							// send tinter event (no blocking here)
+							var curDate = new Date();
+							var myGuid = $( "#reqGuid" ).val();
+							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+							var tedArray = [teDetail];
+							sendTinterEvent(myGuid, curDate, return_message, tedArray);
+    					}
+    					//alert("Write Successful");
+    					
     				} else {
     					// Error Tell the user
     					//console.log("Write Failed!" + data.errorMessage);
@@ -1042,8 +1000,9 @@
 				$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
 				$("#tinterErrorListModal").modal('show');
             }
-        });
+        });	
     }
+    
 	</script>
 	<script type="text/javascript"> //print functions
 	function ParsePrintMessage() {

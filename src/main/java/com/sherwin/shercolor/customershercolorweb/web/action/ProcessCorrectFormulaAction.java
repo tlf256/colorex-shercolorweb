@@ -209,120 +209,110 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	
 	@SuppressWarnings("unchecked")
 	public String convertFormulaToDispenseItems(){
-		String retVal = null;
 		logger.debug("inside convertFormulaToDispenseItems");
 		try{
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			logger.debug("inside convertFormulaToDispenseItems: got reqObj");
 			
-			TinterInfo tinter = reqObj.getTinter();
+			tinter = reqObj.getTinter();
 			logger.debug("inside convertFormulaToDispenseItems: got tinter");
 			
-			if(correctionList!=null){
-				if(correctionList.size()>0){
-					logger.debug("inside convertFormulaToDispenseItems: walking map ");
-					List<FormulaIngredient> ingredientList = new ArrayList<FormulaIngredient>();
-					for(Map<String,Object> item : correctionList){
-						String clrntString=null;
-						logger.debug("inside convertFormulaToDispenseItems: item is " + item.toString());
-						if(item.get("clrntString")!=null) clrntString= item.get("clrntString").toString();
-						logger.debug("pulled clrntString and it is " + clrntString);
-						List<Long> incrList = null;
-						List<Object> objList = null;
-						logger.debug(item.get("incrArray").getClass().getName());
-						objList = (ArrayList<Object>) item.get("incrArray");
-						for(Object obj : objList){
-							logger.debug(obj.getClass().getName());
-						}
-						if(item.get("incrArray") != null) incrList = (ArrayList<Long>) item.get("incrArray");
-
-						int[] incr = {0,0,0,0};
-						if(clrntString!=null && incrList!=null && incrList.size()==4){
-							for(int i=0;i<4;i++){
-								incr[i] = incrList.get(i).intValue();
-							}
-							FormulaIngredient addMe = new FormulaIngredient();
-							addMe.setIncrement(incr);
-							addMe.setClrntSysId(reqObj.getClrntSys());
-							addMe.setTintSysId(clrntString.substring(0, clrntString.indexOf("-")));
-							ingredientList.add(addMe);
-						} else {
-							retVal = ERROR;
-							errorMessage = getText("processCorrectFormulaAction.badClrntIncrementConversionFailed");//"Bad Colorant Increments! Colorant Increment Conversion Failed.";
-						}
-					} // end for each correctionList
-					if(retVal==null || !retVal.equals(ERROR)){
-						//ConvertIncrToShots
-						logger.debug("about to convertIncrToShots");
-						formulationService.convertIncrToShots(ingredientList);
-						//Make a list of dispenseItems to return to user
-						if(tinter.getModel() != null && tinter.getClrntSysId().equals(reqObj.getDisplayFormula().getClrntSysId())) {
-							logger.debug("Tinter detected... returning dispense items with position mapped in CustWebColorantsTxt for {}", reqObj.getTinter().getModel());
-							logger.debug("getting colorantMap for can position");
-							HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
-
-							logger.debug("back from tinterService");
-							if(colorantMap!=null){
-								logger.debug("colorant map is not null");
-								if(dispenseItemList==null) dispenseItemList = new ArrayList<DispenseItem>();
-								else dispenseItemList.clear();
-
-								for(FormulaIngredient ingr : ingredientList){
-									logger.debug("pulling map info for " + ingr.getTintSysId());
-									DispenseItem addItem = new DispenseItem();
-									addItem.setClrntCode(ingr.getTintSysId());
-									addItem.setShots(ingr.getShots());
-									addItem.setUom(ingr.getShotSize());
-									addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
-									dispenseItemList.add(addItem);
-								}
-
-								retVal = SUCCESS;
-
-							} else {
-								logger.debug(Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr()));
-								errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
-								retVal = ERROR;
-							}
-						} else {
-							logger.debug("No tinter detected or tinter clrnt sys does not match formula clrnt sys... returning dispense items with position 0");
-							dispenseItemList = new ArrayList<>();
-							
-							for(FormulaIngredient ingr : ingredientList){
-								DispenseItem addItem = new DispenseItem();
-								addItem.setClrntCode(ingr.getTintSysId());
-								addItem.setShots(ingr.getShots());
-								addItem.setUom(ingr.getShotSize());
-								addItem.setPosition(0);
-								dispenseItemList.add(addItem);
-							}
-							retVal = SUCCESS;
-						}
-						retVal = SUCCESS;
+			if(correctionList != null && !correctionList.isEmpty()){
+				logger.debug("inside convertFormulaToDispenseItems: walking map ");
+				ingredientList = new ArrayList<>();
+				for(Map<String,Object> item : correctionList){
+					String clrntString=null;
+					logger.debug("inside convertFormulaToDispenseItems: item is {}", item);
+					if(item.get("clrntString")!=null) clrntString = item.get("clrntString").toString();
+					logger.debug("pulled clrntString and it is {}", clrntString);
+					List<Long> incrList = null;
+					List<Object> objList = null;
+					logger.debug(item.get("incrArray").getClass().getName());
+					objList = (ArrayList<Object>) item.get("incrArray");
+					for(Object obj : objList){
+						logger.debug(obj.getClass().getName());
 					}
 					
+					if(item.get("incrArray") != null)
+						incrList = (ArrayList<Long>) item.get("incrArray");
+					int[] incr = {0,0,0,0};
+					if(clrntString!=null && incrList!=null && incrList.size()==4){
+						for(int i=0;i<4;i++){
+							incr[i] = incrList.get(i).intValue();
+						}
+						FormulaIngredient addMe = new FormulaIngredient();
+						addMe.setIncrement(incr);
+						addMe.setClrntSysId(reqObj.getClrntSys());
+						addMe.setTintSysId(clrntString.substring(0, clrntString.indexOf("-")));
+						ingredientList.add(addMe);
+					} else {
+						//Bad Colorant Increments! Colorant Increment Conversion Failed.
+						errorMessage = getText("processCorrectFormulaAction.badClrntIncrementConversionFailed");
+						return ERROR;
+					}
+				} // end for each correctionList
+				
+				//ConvertIncrToShots
+				logger.debug("about to convertIncrToShots");
+				formulationService.convertIncrToShots(ingredientList);
+				//Make a list of dispenseItems to return to user
+				if(tinter.getModel() != null && tinter.getClrntSysId().equals(reqObj.getDisplayFormula().getClrntSysId())) {
+					logger.debug("Tinter detected... returning dispense items with position mapped in CustWebColorantsTxt for {}", reqObj.getTinter().getModel());
+					logger.debug("getting colorantMap for can position");
+					HashMap<String,CustWebColorantsTxt> colorantMap = tinterService.getCanisterMap(reqObj.getCustomerID(), tinter.getClrntSysId(), tinter.getModel(), tinter.getSerialNbr());
+
+					logger.debug("back from tinterService");
+					if(colorantMap!=null){
+						logger.debug("colorant map is not null");
+						if(dispenseItemList == null) {
+							dispenseItemList = new ArrayList<>();
+						} else {
+							dispenseItemList.clear();
+						}
+
+						for(FormulaIngredient ingr : ingredientList){
+							logger.debug("pulling map info for {}",  ingr.getTintSysId());
+							DispenseItem addItem = new DispenseItem();
+							addItem.setClrntCode(ingr.getTintSysId());
+							addItem.setShots(ingr.getShots());
+							addItem.setUom(ingr.getShotSize());
+							addItem.setPosition(colorantMap.get(ingr.getTintSysId()).getPosition());
+							dispenseItemList.add(addItem);
+						}
+
+					} else {
+						String errMsg = Encode.forJava("colorant map is null for " + reqObj.getCustomerID() + " " + tinter.getClrntSysId() + " " + tinter.getModel() + " " + tinter.getSerialNbr());
+						logger.debug(errMsg);
+						errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
+						return ERROR;
+					}
 				} else {
-					// empty list passed in
-					logger.debug("inside convertFormulaToDispenseItems: correctionList is empty");
-					errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
-					retVal = ERROR;
+					logger.debug("No tinter detected or tinter clrnt sys does not match formula clrnt sys... returning dispense items with position 0");
+					dispenseItemList = new ArrayList<>();
+						
+					for(FormulaIngredient ingr : ingredientList){
+						DispenseItem addItem = new DispenseItem();
+						addItem.setClrntCode(ingr.getTintSysId());
+						addItem.setShots(ingr.getShots());
+						addItem.setUom(ingr.getShotSize());
+						addItem.setPosition(0);
+						dispenseItemList.add(addItem);
+					}
 				}
 			} else {
 				// null list passed in
-				logger.debug("inside convertFormulaToDispenseItems: correctionList is null");
+				logger.debug("inside convertFormulaToDispenseItems: correctionList is null or empty");
 				errorMessage = getText("processCorrectFormulaAction.clrntIncrementConversionFailed");
-				retVal = ERROR;
+				return ERROR;
 			}
 
-			
-			retVal = SUCCESS;
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
-			retVal = ERROR;
 			errorMessage = getText("processCorrectFormulaAction.exceptionThrown");
+			return ERROR;
 		}
 
-		return retVal;
+		return SUCCESS;
 		
 	}
 	
@@ -451,7 +441,6 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			displayFormula = reqObj.getDisplayFormula();
 			
 			logger.debug("in postContainerStatus, about to parse info sent from javascript");
-			
 			if(stepStatus!=null){
 				SwMessage result = tranHistoryService.updateTranCorrectionStatus(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr(), cycle, nextUnitNbr, stepStatus);
 				if(result==null || result.getCode()==null){
@@ -536,6 +525,10 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	public List<DispenseItem> getDispenseItemList() {
 		return dispenseItemList;
 	}
+	
+	public List<Map<String, Object>> getCorrectionList() {
+		return correctionList;
+	}
 
 	public void setCorrectionList(List<Map<String, Object>> correctionList) {
 		this.correctionList = correctionList;
@@ -564,8 +557,13 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	public void setStepMethod(String stepMethod) {
 		this.stepMethod = Encode.forHtml(stepMethod);
 	}
+	
+	public String getStepStatus() {
+		return stepStatus;
+	}
 
 	public void setStepStatus(String stepStatus) {
+//		this.stepStatus = stepStatus;
 		if (stepStatus==null) {
 			this.stepStatus = stepStatus;
 		} else {
