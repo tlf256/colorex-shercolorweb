@@ -52,19 +52,6 @@ public class ProcessCorrectFormulaActionTest extends StrutsSpringJUnit4TestCase<
 	private static String[] colorants = {"W1","N1","R4","R3","G2","NA","B1","Y3","L1","R2","Y1","NA"};
 	private static String[] colorantName = {"White", "Raw Umber", "New Red", "Magenta", "New Green", null, "Black", "Deep Gold", "Blue", "Maroon", "Yellow", null};
 	private static String[] rgbHex = {"#ffffff","#996633","#ff0000","#ff3399","#009933","#000000","#000000","#ffcc00","#0000ff","#990000","#ffff00","#000000"};
-
-	
-	class incrArray {
-		private long[] arr;
-
-		public long[] getArr() {
-			return arr;
-		}
-
-		public void setArr(long[] arr) {
-			this.arr = arr;
-		}
-	}
 	
 	@Before
 	public void setup() {
@@ -284,10 +271,10 @@ public class ProcessCorrectFormulaActionTest extends StrutsSpringJUnit4TestCase<
 		List<Map<String,Object>> rawCorrectList = new ArrayList<>();
 		Map<String,Object> listItems = new HashMap<>();
 		List<Long> values = new ArrayList<>();
-		values.add(new Long(1));
-		values.add(new Long(0));
-		values.add(new Long(1));
-		values.add(new Long(0));
+		values.add(Long.valueOf(1));
+		values.add(Long.valueOf(0));
+		values.add(Long.valueOf(1));
+		values.add(Long.valueOf(0));
 		listItems.put("incrArray", values);
 		listItems.put("clrntString", "B1-Black");
 		rawCorrectList.add(listItems);
@@ -325,10 +312,10 @@ public class ProcessCorrectFormulaActionTest extends StrutsSpringJUnit4TestCase<
 		List<Map<String,Object>> rawCorrectList = new ArrayList<>();
 		Map<String,Object> listItems = new HashMap<>();
 		List<Long> values = new ArrayList<>();
-		values.add(new Long(1));
-		values.add(new Long(0));
-		values.add(new Long(1));
-		values.add(new Long(0));
+		values.add(Long.valueOf(1));
+		values.add(Long.valueOf(0));
+		values.add(Long.valueOf(1));
+		values.add(Long.valueOf(0));
 		listItems.put("incrArray", values);
 		listItems.put("clrntString", "B1-Black");
 		rawCorrectList.add(listItems);
@@ -351,6 +338,33 @@ public class ProcessCorrectFormulaActionTest extends StrutsSpringJUnit4TestCase<
 		}
 	}
 	
-	
+	@Test
+	public void testConvertFormulaToDispenseItemsNoList() {
+		ActionProxy proxy = getActionProxy("/correctionConvertIncrementsAction");
+		target = (ProcessCorrectFormulaAction) proxy.getAction();
+
+		target.setReqGuid("123456789");
+		target.setStepStatus("ACCEPTED");
+		target.setNextUnitNbr(1);
+		target.setCycle(1);
+		reqObj.getTinter().setClrntSysId("CCE");
+		reqObj.setQuantityDispensed(1);
+		
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+
+		try {
+			String success = executeAction("/correctionConvertIncrementsAction");
+			assertNotNull(success);
+
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+	}
 
 }

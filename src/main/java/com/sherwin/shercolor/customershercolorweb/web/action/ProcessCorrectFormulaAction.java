@@ -563,7 +563,6 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	}
 
 	public void setStepStatus(String stepStatus) {
-//		this.stepStatus = stepStatus;
 		if (stepStatus==null) {
 			this.stepStatus = stepStatus;
 		} else {
