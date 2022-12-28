@@ -63,6 +63,10 @@ TAG Color Excellence
     ```
 For debugging documentation and more visit https://docs.wildfly.org/bootablejar 
 
+### Wildfly Bootable Jar Maven Plugin
+Check out these maven commands for running locally:  
+https://docs.wildfly.org/bootablejar/#_maven_plugin
+
 ### Docker
 1. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
     ```sh
