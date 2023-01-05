@@ -16,6 +16,6 @@ import java.lang.annotation.*;
 @Documented
 @Transactional
 @SpringBootTest
-@ActiveProfiles(profiles = {"oracle","login-test","dev","local"})
+@ActiveProfiles(profiles = {"oracle","dev","local"})
 public @interface SherColorWebTransactionalTest {
 }
