@@ -97,16 +97,22 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 		//Formula
 		int [] increment = {10, 33, 1, 1};
 		FormulaIngredient ind1 = new FormulaIngredient();
+		ind1.setClrntSysId(reqObj.getClrntSys());
+		ind1.setFbSysId("K");
 		ind1.setTintSysId("B1");
 		ind1.setName("BLACK");
 		ind1.setShots(128);
 		ind1.setIncrement(increment);		
 		FormulaIngredient ind2 = new FormulaIngredient();
+		ind2.setClrntSysId(reqObj.getClrntSys());
+		ind2.setFbSysId("H");
 		ind2.setTintSysId("L1");
 		ind2.setName("BLUE");
 		ind2.setShots(128);
 		ind2.setIncrement(increment);		
 		FormulaIngredient ind3 = new FormulaIngredient();
+		ind3.setClrntSysId(reqObj.getClrntSys());
+		ind3.setFbSysId("N");
 		ind3.setTintSysId("G2");
 		ind3.setName("GREEN");
 		ind3.setShots(128);
@@ -117,6 +123,12 @@ public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<Process
 		ingredients.add(ind3);
 		
 		FormulaInfo formInfo = new FormulaInfo();
+		formInfo.setColorComp(reqObj.getColorComp());
+		formInfo.setColorId(reqObj.getColorID());
+		formInfo.setSalesNbr(reqObj.getSalesNbr());
+		formInfo.setProdNbr(reqObj.getProdNbr());
+		formInfo.setProdComp("SW");
+		formInfo.setClrntSysId(reqObj.getClrntSys());
 		formInfo.setIngredients(ingredients);
 		formInfo.setSourceDescr("SHER-COLOR FORMULA");
 		formInfo.setProcOrder(9999);

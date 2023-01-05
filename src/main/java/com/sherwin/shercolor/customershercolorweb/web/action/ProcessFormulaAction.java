@@ -645,47 +645,61 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	}
 	
 	private void estimateRgbHex() {
+		
+		try {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			
-		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
-		
-		//Do not estimate if there is no formula
-		if (displayFormula == null) {
-			return;
-		}
-		
-		String rgbHex = null;
-		BigDecimal[] curveArray = new BigDecimal[40];
-		CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
-		custWebParms.setClrntSysId(reqObj.getClrntSys());
-		
-		//Estimate a curve based on the displayed formula
-		Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);
-		if(projCurve != null){
-			boolean allZero = true;
-			for (int i = 0; i < 40; i++) {
-				if(projCurve[i] != 0D) allZero = false;
-				curveArray[i] = new BigDecimal(projCurve[i]);
+			//Do not estimate if there is no formula
+			if (displayFormula == null) {
+				return;
 			}
-		
-			if(!allZero){
-				//Try getting an RGB value for the estimated curve
-				ColorCoordinates colorCoord = null;
-				
-				//Either use the light source stored in the request object, or use a default light source of D65
-				if (reqObj.getLightSource() != null) {
-					colorCoord = colorService.getColorCoordinates(curveArray, reqObj.getLightSource());
+			
+			String rgbHex = null;
+			BigDecimal[] curveArray = new BigDecimal[40];
+			CustWebParms  custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
+			custWebParms.setClrntSysId(reqObj.getClrntSys());
+			
+			//Estimate a curve based on the displayed formula
+			Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);
+			if(projCurve != null){
+				boolean allZero = true;
+				boolean noNull = true;
+				for (int i = 0; i < 40; i++) {
+					curveArray[i] = BigDecimal.valueOf(projCurve[i]);
+					
+					//Checks if the entire curve is 0
+					if (projCurve[i] != 0d) {
+						allZero = false;
+					}
+					//Checks if any curve value is null
+					if (curveArray[i] == null) {
+						noNull = false;
+					}
 				}
-				else {
-					colorCoord = colorService.getColorCoordinates(curveArray, "D65");
-				}
 				
-				if (colorCoord != null) {
-					rgbHex = colorCoord.getRgbHex();
-					if(rgbHex != null) {
-						reqObj.setRgbHex(rgbHex);
+				if(!allZero && noNull){
+					//Try getting an RGB value for the estimated curve
+					ColorCoordinates colorCoord = null;
+					
+					//Either use the light source stored in the request object, or use a default light source of D65
+					if (reqObj.getLightSource() != null) {
+						colorCoord = colorService.getColorCoordinates(curveArray, reqObj.getLightSource());
+					}
+					else {
+						colorCoord = colorService.getColorCoordinates(curveArray, "D65");
+					}
+					
+					if (colorCoord != null) {
+						rgbHex = colorCoord.getRgbHex();
+						if(rgbHex != null) {
+							reqObj.setRgbHex(rgbHex);
+						}
 					}
 				}
 			}
+		}
+		catch (Exception e) {
+			logger.error(String.format("Exception Caught: %s %s %s", e.toString(), e.getMessage(), e));
 		}
 	}
 	
