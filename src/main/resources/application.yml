@@ -27,6 +27,15 @@ spring:
       include: login
       # activate db type (oracle or postgres) and environment (dev, qa or prod)
 
-      # The login-test profile is used to tell Spring to use a JDBC connection for SherColorLogin
+      # The login-jdbc profile is used to tell Spring to use a JDBC connection for SherColorLogin
       # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables.
       active: oracle,dev,local
+
+logging:
+  pattern:
+    console: "%d{dd/MMM/yyyy HH:mm:ss,SSS} %-4level %C{3}.%M:%L - %m%n"
+  level:
+    org.hibernate.sql: error
+    org.hibernate: error
+    org.apache.struts: warn
+    com.opensymphony.xwork2: warn
