@@ -78,11 +78,11 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 				spectroSerial = reqObj.getSpectro().getSerialNbr();
 			}
 			
-			if(!fdate.equals("")) {
+			if(fdate != null && fdate.length() != 0) {
 				fromRequestTime = jsdf.parse(fdate);
 			}
 			
-			if(!tdate.equals("")) {
+			if (tdate != null && tdate.length() != 0) {
 				toRequestTime = jsdf.parse(tdate);
 			}
 			results = spectroService.searchSpectroEvents(reqObj.getCustomerID(), spectroModel, spectroSerial, cmd, fromRequestTime, toRequestTime);
