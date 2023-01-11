@@ -1,3 +1,5 @@
+## WORK IN PROGRESS ##
+
 # Build the image
 docker_build('docker.artifactory.sherwin.com/colorex/shercolorweb', '.',
   dockerfile='./Dockerfile_dev',

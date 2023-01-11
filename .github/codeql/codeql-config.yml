@@ -1,4 +1,4 @@
-name: "na-pos codeql config"
+name: "scw codeql config"
 
 packs:
   javascript:

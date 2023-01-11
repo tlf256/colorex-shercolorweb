@@ -20,8 +20,8 @@ public class SherColorWebApplication extends SpringBootServletInitializer {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+    public FilterRegistrationBean<StrutsPrepareAndExecuteFilter> filterRegistrationBean() {
+        FilterRegistrationBean<StrutsPrepareAndExecuteFilter> registrationBean = new FilterRegistrationBean<>();
         StrutsPrepareAndExecuteFilter struts = new StrutsPrepareAndExecuteFilter();
         registrationBean.setFilter(struts);
         registrationBean.setOrder(1);
