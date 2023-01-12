@@ -32,6 +32,8 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	private String clrntSysId;
 	private String tinterModel;
 	private String tinterSerialNbr;
+	private String tinterIp;
+
 	//to send back canister list
 	private TinterInfo newtinter;
 
@@ -312,6 +314,14 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 	public void setTinterSerialNbr(String tinterSerialNbr) {
 		this.tinterSerialNbr = Encode.forHtml(tinterSerialNbr);
+	}
+
+	public String getTinterIp() {
+		return tinterIp;
+	}
+
+	public void setTinterIp(String tinterIp) {
+		this.tinterIp = tinterIp;
 	}
 
 	public TinterInfo getNewtinter() {
