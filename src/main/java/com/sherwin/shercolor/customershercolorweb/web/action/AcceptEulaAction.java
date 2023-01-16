@@ -3,9 +3,10 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.Calendar;
 import java.util.Map;
 import com.sherwin.shercolor.common.domain.EulaHist;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.struts2.interceptor.SessionAware;
-import org.slf4j.Logger;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 @Component
 public class AcceptEulaAction extends ActionSupport implements SessionAware {
-	
-	static Logger logger = LoggerFactory.getLogger(AcceptEulaAction.class);
+
+	static Logger logger = LogManager.getLogger(AcceptEulaAction.class);
 	private Map<String, Object> sessionMap;
 	private String reqGuid;
 	private int eulaSeqNbr;

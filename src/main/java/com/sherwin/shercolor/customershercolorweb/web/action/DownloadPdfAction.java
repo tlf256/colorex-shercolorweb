@@ -1,6 +1,7 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.struts2.interceptor.SessionAware;
 import org.jfrog.artifactory.client.Artifactory;
 import org.jfrog.artifactory.client.ArtifactoryClientBuilder;
@@ -39,7 +40,8 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 	private String artifactoryToken;
 
 //Opens Help Menu links on the welcome page - edo78r
-	
+
+	@Override
 	public String execute() {
 		String dirPath = "";
 		String repoName = "shercolorweb-generic-local";
@@ -109,7 +111,7 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 			        .download(dirPath + "/" + fileName)
 			        .doDownload();
 			} else {
-				logger.error("Last modified file is {}, not of type {}. Either remove the incorrect deployed file from Artifactory or update the prefix check", fileName, pdfType);
+				logger.error("Last modified file is {}, not of type {}. Either remove the incorrect deployed file from Artifactory or update the prefix check", () -> FilenameUtils.getName(fileName), () -> pdfType);
 				return ERROR;
 			}
 			

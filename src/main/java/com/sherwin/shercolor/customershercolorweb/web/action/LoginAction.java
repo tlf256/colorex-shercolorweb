@@ -67,6 +67,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 	private int daysUntilPwdExp;
 
 
+	@Override
 	public String execute() {
 		String custName = "";
 		String returnStatus = "SUCCESS";
@@ -89,8 +90,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 				// we've never set anything.  Check the account and if it's not empty, try using it for a login.
 				//System.setProperty("jsse.enableSNIExtension", "false");
 				//call the Sher-link validation service to confirm we have a valid token before logging in.
-				logger.info("DEBUG reqGuid not empty {}", reqGuid);
-				logger.debug("Guid1 = {}", guid1);
+				logger.info("DEBUG reqGuid not empty {}", () -> Encode.forJava(reqGuid));
+				logger.debug("Guid1 = {}", () -> Encode.forJava(guid1));
 				RequestObject loginReqObj = (RequestObject) sessionMap.get(guid1);
 				if (loginReqObj==null) {
 					logger.info("DEBUG loginReqObj is null - probably a session timeout");
@@ -186,7 +187,7 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 
 			} else {
 				// reset the existing request object.
-				logger.info("Ready to reset request object using reqGuid {}", reqGuid);
+				logger.info("Ready to reset request object using reqGuid {}", () -> Encode.forJava(reqGuid));
 				RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
 				if (origReqObj==null) {
 					logger.info("DEBUG origReqObj is null - probably a session timeout");

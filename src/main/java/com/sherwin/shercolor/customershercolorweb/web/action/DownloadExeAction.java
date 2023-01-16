@@ -36,6 +36,7 @@ public class DownloadExeAction extends ActionSupport  implements SessionAware, L
 	private String artifactoryToken;
 
 
+	@Override
 	public String execute() {
 		try {
 			Artifactory artifactory = ArtifactoryClientBuilder.create()
