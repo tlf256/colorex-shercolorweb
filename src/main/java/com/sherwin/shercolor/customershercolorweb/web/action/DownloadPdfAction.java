@@ -100,7 +100,7 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 				int sepPos = uri.indexOf(separator);
 				fileName = uri.substring(sepPos + separator.length(), uri.length()-1);
 			} else {
-				logger.error("Unsuccessful response from Artifactory: " + response);
+				logger.error("Unsuccessful response from Artifactory: {}", response);
 				return ERROR;
 			}
 			
@@ -109,7 +109,7 @@ public class DownloadPdfAction extends ActionSupport  implements SessionAware, L
 			        .download(dirPath + "/" + fileName)
 			        .doDownload();
 			} else {
-				logger.error("Last modified file is " + fileName + ", not of type " + pdfType + ". Either remove the incorrect deployed file from Artifactory or update the prefix check");
+				logger.error("Last modified file is {}, not of type {}. Either remove the incorrect deployed file from Artifactory or update the prefix check", fileName, pdfType);
 				return ERROR;
 			}
 			

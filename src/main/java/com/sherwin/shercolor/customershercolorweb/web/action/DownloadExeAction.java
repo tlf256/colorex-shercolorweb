@@ -58,7 +58,7 @@ public class DownloadExeAction extends ActionSupport  implements SessionAware, L
 				int sepPos = uri.indexOf(separator);
 				fileName = uri.substring(sepPos + separator.length(), uri.length()-1);
 			} else {
-				logger.error("Unsuccessful response from Artifactory: " + response);
+				logger.error("Unsuccessful response from Artifactory: {}", response);
 				return ERROR;
 			}
 			

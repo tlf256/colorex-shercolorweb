@@ -77,15 +77,15 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	private String corrStatus;
 	
 	@Autowired
-	TranHistoryService tranHistoryService;
+	transient TranHistoryService tranHistoryService;
 	@Autowired
-	FormulationService formulationService;
+	transient FormulationService formulationService;
 	@Autowired
-	TinterService tinterService;
+	transient TinterService tinterService;
 	@Autowired
-	ProductService productService;
+	transient ProductService productService;
 	@Autowired
-	CorrectionInfoBuilder correctionInfoBuilder;
+	transient CorrectionInfoBuilder correctionInfoBuilder;
 
 	TinterInfo tinter = null;
 	

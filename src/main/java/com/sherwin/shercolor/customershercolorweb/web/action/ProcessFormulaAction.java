@@ -92,14 +92,14 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private String clrntAmtList;
 
 	@Autowired
-	private TinterService tinterService;
+	private transient TinterService tinterService;
 	@Autowired
-	private TranHistoryService tranHistoryService;
+	private transient TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
 	@Autowired
-	private DrawdownLabelService drawdownLabelService;
+	private transient DrawdownLabelService drawdownLabelService;
 	@Autowired
-	private ColorMastService colorMastService;
+	private transient ColorMastService colorMastService;
 
 	private List<CdsRoomList> roomByRoomList;
 	private String roomByRoom;
@@ -111,22 +111,22 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private String colorNotes;
 	
 	@Autowired
-	private CustomerService customerService;
+	private transient CustomerService customerService;
 	
 	@Autowired
-	private FormulationService formulationService;
+	private transient FormulationService formulationService;
 	
 	@Autowired 
-	private ProductService productService;
+	private transient ProductService productService;
 	
 	@Autowired 
-	private UtilityService utilityService;
+	private transient UtilityService utilityService;
 	
 	@Autowired
-	private ColorService colorService;
+	private transient ColorService colorService;
 
 	@Autowired
-	private CorrectionInfoBuilder correctionInfoBuilder;
+	private transient CorrectionInfoBuilder correctionInfoBuilder;
 	
 	public String display(){
 		String retVal = null;
