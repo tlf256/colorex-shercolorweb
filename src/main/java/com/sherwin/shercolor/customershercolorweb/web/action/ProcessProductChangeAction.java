@@ -336,6 +336,8 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 		FormulationResponse reformulation = null;
 		CustWebParms custWebParms = customerService.getDefaultCustWebParms(reqObj.getCustomerID()); 
 		custWebParms.setClrntSysId(reqObj.getClrntSys());
+		logger.info("ProcessProductChangeAction.lookupReformulation for customerID: {}, controlNbr: {}, clrntSys: {}, colorComp: {}, colorID: {}, oldSalesNbr: {}, newSalesNbr: {}",
+				  reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getClrntSys(), reqObj.getColorComp(), reqObj.getColorID(), reqObj.getSalesNbr(), salesNbr);
 		
 		FormulaInfo displayFormula = reqObj.getDisplayFormula();
 		Double[] projCurve = formulationService.projectCurve(displayFormula, custWebParms);
@@ -366,6 +368,11 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			
 			oeRequest.setIllum(illums);
 			reformulation = formulationService.formulate(oeRequest, custWebParms);
+			if(reformulation == null) {
+				logger.error("formulationService.formulate returned Null in ProcessProductChangeAction.lookupReformulation.");
+			}
+		} else {
+			logger.error("formulationService.projectCurve returned Null in ProcessProductChangeAction.lookupReformulation.");
 		}
 		
 		return reformulation;
@@ -380,7 +387,10 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			FormulationResponse reformulation = lookupReformulation();
 			
 			// we shouldn't be seeing errors if we've gotten this far, but just in case,
-			if (reformulation.getStatus().equals("ERROR")) {
+			if(reformulation == null) {
+				setMessage("Unknown Error");
+				return ERROR;
+			} else if (reformulation.getStatus().equals("ERROR")) {
 				for(SwMessage item : reformulation.getMessages()) {
 					if(item.getSeverity().isInRange(Level.FATAL, Level.ERROR)){
 						addFieldError("partialProductNameOrId", item.getMessage());
