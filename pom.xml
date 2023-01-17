@@ -348,9 +348,10 @@
         <profile>
             <id>quality</id>
             <properties>
-<!--                <sonar.coverage.exclusions>-->
-<!--                    src/main/java/com/sherwin/login/domain/*PK.java-->
-<!--                </sonar.coverage.exclusions>-->
+                <sonar.coverage.exclusions>
+                    src/main/java/com/sherwin/shercolor/customershercolorweb/config/*,
+                    src/main/java/com/sherwin/shercolor/customershercolorweb/SherColorWebApplication.java
+                </sonar.coverage.exclusions>
             </properties>
             <build>
                 <plugins>
