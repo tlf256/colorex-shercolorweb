@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.http.HttpSession;
 
@@ -40,8 +41,7 @@ public class ECalActionTest extends StrutsSpringJUnit4TestCase<EcalAction> {
 	    reqObj.setCustomerID("TEST");
 	    request.setParameter("colorantid",colorantid);
 	    request.setParameter("reqGuid",reqGuid);
-	    HttpSession session = request.getSession();
-	    session.setAttribute(reqGuid, reqObj);
+	    Objects.requireNonNull(request.getSession()).setAttribute(reqGuid, reqObj);
 	 	
 
 		try {

@@ -25,7 +25,8 @@ public class AcceptEulaAction extends ActionSupport implements SessionAware {
 	
 	@Autowired 
 	private EulaService target;
-	
+
+	@Override
 	public String execute() {
 		logger.info("in AcceptEulaActuionExecute");
 		logger.info(Encode.forJava("reqGuid is " + reqGuid));
