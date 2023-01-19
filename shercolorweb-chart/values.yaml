@@ -1,0 +1,91 @@
+# Default values for shercolorweb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+appRoot: /shercolorweb
+
+replicaCount: 3
+
+image:
+  repository: docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  # TODO change this to a hard version
+  # tag: "latest"
+  
+imagePullSecrets: []
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8090
+  nodeport:
+    enabled: false
+
+secret:
+  enabled: false  
+
+probes:
+  enabled: true    
+
+ingress:
+  enabled: true
+  name: ingress
+  namespace: default
+  hosts:
+  - host: chart-example.local
+    paths:
+      - path: /
+        pathType: Prefix
+  tls: []
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+   limits:
+    #  cpu: 1.5
+     cpu: 800m
+     memory: 2000Mi
+   requests:
+    #  cpu: 1
+     cpu: 500m
+     memory: 1200Mi
+
+autoscaling:
+  enabled: false
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Conditional attribute only meant to be set via the Helm install command. 
+# This attribute should be used to enable all kubernetes resources needed for store usage.
+store:
+  enabled: false
+
+local:
+  enabled: false 
+
+env: dev

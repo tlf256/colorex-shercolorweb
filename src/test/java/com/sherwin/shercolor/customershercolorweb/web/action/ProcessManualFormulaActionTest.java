@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.apache.struts2.dispatcher.mapper.ActionMapping;
@@ -20,9 +21,9 @@ import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.*;
 
-@Transactional
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class ProcessManualFormulaActionTest extends StrutsSpringJUnit4TestCase<ProcessManualFormulaAction> {
 
     @Test

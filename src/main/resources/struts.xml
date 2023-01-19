@@ -103,6 +103,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="loginRedirect">/WEB-INF/pages/login.jsp</result>
+			<result name="login">/WEB-INF/pages/login.jsp</result>
 			<result name="success">/WEB-INF/pages/welcome.jsp</result>
 		</action>
 		<action name="declineEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeclineEulaAction" method="execute">
@@ -169,9 +170,7 @@
 			<result name="success">/WEB-INF/pages/LoggedOut.jsp</result>
 		</action>
 		<action name="loginAgainAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAgainAction" method="loginagain">
-			<result name="success" type="redirect">
-				<param name="location">${sherLinkURL}</param>
-			</result>
+			<result name="success">/WEB-INF/pages/setLogin.jsp</result>
 		</action>
 		<action name="displayCookieBanner" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="display">
 			<interceptor-ref name="defaultStack"/>
@@ -1037,12 +1036,12 @@
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>
 			  	<param name="inputName">fileInputStream</param>
-			  	<param name="contentDisposition">attachment;filename="SWDHSetup.exe"</param>
+			  	<param name="contentDisposition">attachment;filename=%{fileName}</param>
 	  			<param name="bufferSize">1024</param>
 			</result>
 		</action>
 
-<!--  added by edo78r for Help Menu 7/10/2019 -->
+		<!--  added by edo78r for Help Menu 7/10/2019 -->
 		<action name="downloadPdfAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadPdfAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1050,7 +1049,7 @@
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>
 			  	<param name="inputName">fileInputStream</param>
-			  	<param name="contentDisposition">attachment;filename=%{pdfFile}</param>
+			  	<param name="contentDisposition">attachment;filename=%{fileName}</param>
 	  			<param name="bufferSize">1024</param>
 			</result>
 		</action>

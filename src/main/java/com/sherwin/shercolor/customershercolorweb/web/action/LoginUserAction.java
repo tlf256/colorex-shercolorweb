@@ -1,7 +1,5 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -10,8 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
-
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -26,9 +22,12 @@ import com.sherwin.login.domain.SWUser;
 import com.sherwin.login.domain.SWUserComments;
 import com.sherwin.login.service.SWUserCommentService;
 import com.sherwin.login.service.SWUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
 // BKP 2/16/2018 - new action used for SherColor login page display and evaluation.
+@Component
 public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 	public static final String ROLE_SHERCOLOR = "SherColorRole";
 	private static final long serialVersionUID = 1L;
@@ -46,8 +45,10 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 	private String gemsEmpId;
 	private Date changePasswordDate;
 	private RequestObject reqObj;
-	
+
+	@Autowired
 	private SWUserService swUserService;
+	@Autowired
 	private SWUserCommentService swUserCommentService;
 
 	
@@ -60,9 +61,9 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 
 	//private static String SQL_USER_GROUP_JOB_CHECK_STMT;
 	public static final String TXT_ZERO = "0";
-	
+
 	static Logger logger = LogManager.getLogger(LoginUserAction.class);
-	
+
 	public String display() {
 		
 		try {
@@ -184,7 +185,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 			} catch (Exception e) {
 				logger.error(Encode.forJava("sher-link authentication error for user -> " + userId));
 				logger.error("sher-link authentication error is -> " + e.getMessage());
-				
+
 				// Check Number of Login Attempts
 				loginAttemptCnt = checkNumberOfLoginAttempts(loginAttemptCnt, userId, request, e);
 				
@@ -258,7 +259,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 
 	
 	private void disableActiveUser(String theUserId) {
-		if(!swUserService.disableActiveUser(theUserId)) {
+		if(swUserService.disableActiveUser(theUserId) <= 0) {
 			//log an error that something happened (odds are, the DAO also logged it too)
 			//then continue on. 
 			logger.error(Encode.forJava("Attempt to disable active user " + theUserId + " failed"));
@@ -396,25 +397,4 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 	public void setGuid1(String guid1) {
 		this.guid1 = guid1;
 	}
-
-	public SWUserCommentService getSwUserCommentService() {
-		return swUserCommentService;
-	}
-
-	public void setSwUserCommentService(SWUserCommentService swUserCommentService) {
-		this.swUserCommentService = swUserCommentService;
-	}
-
-	public SWUserService getSwUserService() {
-		return swUserService;
-	}
-
-	public void setSwUserService(SWUserService swUserService) {
-		this.swUserService = swUserService;
-	}
-
-
-	
-
-
 }

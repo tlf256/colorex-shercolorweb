@@ -3,16 +3,18 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.List;
 import java.util.Map;
 
+
+import com.sherwin.shercolor.common.domain.CustWebDealer;
+import com.sherwin.shercolor.common.domain.CustWebDealerCust;
+import com.sherwin.shercolor.common.domain.CustWebDealerCustOrd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.HibernateException;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
-import com.sherwin.shercolor.common.domain.CustWebDealer;
-import com.sherwin.shercolor.common.domain.CustWebDealerCust;
-import com.sherwin.shercolor.common.domain.CustWebDealerCustOrd;
 import com.sherwin.shercolor.common.service.CustomerOrderService;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerCustDto;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerCustDtoBuilder;
@@ -21,12 +23,14 @@ import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerCustOrdDt
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerDto;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerDtoBuilder;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 @SuppressWarnings("serial")
 public class ListDealerCustomerOrdersAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	static Logger logger = LogManager.getLogger(LookupJobAction.class);
-	
+
 	private Map<String, Object> sessionMap;
 	
 	@Autowired
@@ -41,8 +45,9 @@ public class ListDealerCustomerOrdersAction extends ActionSupport implements Ses
 
 	public String display() {
 		List<CustWebDealerCustOrd> listCustWebDealerCustOrd;
-		CustWebDealer				custWebDealer;
-		CustWebDealerCust			custWebDealerCust;
+		CustWebDealer custWebDealer;
+		CustWebDealerCust custWebDealerCust;
+
 		logger.debug("Request GuId is -> " + reqGuid + " lookup Cust Id is -> " + lookupCustomerId
 				+ " lookup DlrCustid is -> " + lookupDlrCustId);
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
@@ -67,17 +72,10 @@ public class ListDealerCustomerOrdersAction extends ActionSupport implements Ses
 		}
 		return SUCCESS;
 	}
-	
+
+	@Override
 	public String execute(){
 		return SUCCESS;
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static void setLogger(Logger logger) {
-		ListDealerCustomersAction.logger = logger;
 	}
 
 	public CustomerOrderService getCustomerOrderService() {
