@@ -1,25 +1,24 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Map;
-
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-
 import com.opensymphony.xwork2.ActionSupport;
-
-
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
+@Component
 public class SpectroCalibrateAction extends ActionSupport implements SessionAware, LoginRequired {
 
+	@Autowired
 	private ColorService colorService;
+	@Autowired
 	private CustomerService customerService;
 	private transient Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;

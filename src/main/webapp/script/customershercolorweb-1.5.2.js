@@ -23,10 +23,10 @@ function startSessionTimeoutTimers(){
 	var t2 = setTimeout(function(){ 
 		$('#sessionModalBody').text(i18n['footer.yourSessionExpiredClickLogin']);
 		if (typeof formSubmitting !== 'undefined' && typeof setFormSubmitting() === 'function'){
-			$('#sessionModalButton').attr('onclick','setFormSubmitting(); window.location="' + $('#sherLinkURL').val() + '";');
-		} else {
-			$('#sessionModalButton').attr('onclick','window.location="' + $('#sherLinkURL').val() + '";');
-		}
+            $('#sessionModalButton').attr('onclick','setFormSubmitting(); window.location="./loginAgainAction.action";');
+        } else {
+            $('#sessionModalButton').attr('onclick','window.location="./loginAgainAction.action";');
+        }
 		$('#sessionModalButton').text(i18n['global.login']);
 		if($('#sessionModal').css('display') === 'none'){$('#sessionModal').modal('show');}
 	},1800000);

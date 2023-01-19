@@ -1,47 +1,32 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Properties;
-
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class LoginAgainAction extends ActionSupport  implements SessionAware  {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
-
 	static Logger logger = LogManager.getLogger(LoginAgainAction.class);
 
-	@Autowired
-	private transient Environment environment;
-
 	private String reqGuid;
-	private String sherLinkURL;
 	private String loMessage;
 	private String isAJAX = "false";
 	private String sessionStatus;
+
+
 	
 	public String loginagain() {
 		try {
-
-			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			 return SUCCESS;
 		     
 		} catch (RuntimeException e) {
@@ -51,24 +36,10 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 	}
 	
 	public String invalidLogin() {
-		String dbEnv;
-		Properties prop = new Properties();
+
 		RequestObject reqObj = null;
 		try {
-			// Get the customershercolorweb.properties file data first.
-			if (ArrayUtils.contains(environment.getActiveProfiles(),"test")) {
-				prop.load(this.getClass().getResourceAsStream("/customershercolorweb.properties"));
-			}
-			else {
-				try (InputStream inputStream = Files.newInputStream(Paths.get("/web_apps/server/shercolor/deploy/customershercolorweb.properties")))
-				{
-					prop.load(inputStream);
-				}
-			}
 
-			dbEnv = prop.getProperty("dbEnv");
-			sherLinkURL = prop.getProperty("sherLinkLoginUrl." + dbEnv);
-			//logger.error("in loginagain, sherLinkURL is " + sherLinkURL);
 			//logger.error("in loginagain, getting testsession");
 			Map<String, Object> testsession = ActionContext.getContext().getSession();
 			//logger.error("in loginagain, got testsession, checking if it's null");
@@ -116,18 +87,6 @@ public class LoginAgainAction extends ActionSupport  implements SessionAware  {
 
 	public void setReqGuid(String reqGuid) {
 		this.reqGuid = reqGuid;
-	}
-
-
-
-	public String getSherLinkURL() {
-		return sherLinkURL;
-	}
-
-
-
-	public void setSherLinkURL(String sherLinkURL) {
-		this.sherLinkURL = Encode.forHtml(sherLinkURL);
 	}
 	
 	public String getLoMessage() {

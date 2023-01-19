@@ -170,4 +170,3 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
   		</p>
 	</div>
 </div>
-

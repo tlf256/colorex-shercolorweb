@@ -1,0 +1,29 @@
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+   limits:
+     cpu: 1.5
+     memory: 2000Mi
+   requests:
+     cpu: 1
+     memory: 1200Mi
+
+probes:
+  enabled: false       
+
+ingress:
+  enabled: false
+
+replicaCount: 1 
+
+service: 
+  nodeport:
+    enabled: true  
+
+local:
+  enabled: true      
+
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
+springProfilesActive: "dev,oracle,local"

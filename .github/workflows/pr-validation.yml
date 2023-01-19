@@ -9,8 +9,9 @@ on:
 
     types: [opened, synchronize]
     paths-ignore: 
-      - '**.md'
-      - '.gitignore'
+    - '.github/**'
+    - '**/*.md'
+    - '.gitignore'
       
 jobs:
   pr-validation:

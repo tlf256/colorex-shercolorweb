@@ -54,9 +54,11 @@ import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
 
 @SuppressWarnings("serial")
+@Component
 public class ProcessFormulaAction extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private DataInputStream inputStream;
@@ -89,11 +91,15 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	List<CustWebCanTypes> canTypesList = null;
 	private String clrntAmtList;
 
-	private TinterService tinterService;
-	private TranHistoryService tranHistoryService;
+	@Autowired
+	private transient TinterService tinterService;
+	@Autowired
+	private transient TranHistoryService tranHistoryService;
 	private List<CustWebTran> tranHistory;
-	private DrawdownLabelService drawdownLabelService;
-	private ColorMastService colorMastService;
+	@Autowired
+	private transient DrawdownLabelService drawdownLabelService;
+	@Autowired
+	private transient ColorMastService colorMastService;
 
 	private List<CdsRoomList> roomByRoomList;
 	private String roomByRoom;
@@ -105,19 +111,22 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 	private String colorNotes;
 	
 	@Autowired
-	private CustomerService customerService;
+	private transient CustomerService customerService;
 	
 	@Autowired
-	private FormulationService formulationService;
+	private transient FormulationService formulationService;
 	
 	@Autowired 
-	private ProductService productService;
+	private transient ProductService productService;
 	
 	@Autowired 
-	private UtilityService utilityService;
+	private transient UtilityService utilityService;
 	
 	@Autowired
-	private ColorService colorService;
+	private transient ColorService colorService;
+
+	@Autowired
+	private transient CorrectionInfoBuilder correctionInfoBuilder;
 	
 	public String display(){
 		String retVal = null;
@@ -171,9 +180,7 @@ public class ProcessFormulaAction extends ActionSupport implements SessionAware,
 			// Check if correction in process
 			List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 
-			CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-
-			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+			CorrectionInfo corrInfo = correctionInfoBuilder.getCorrectionInfo(reqObj, tranCorrList);
 			if(corrInfo.getCorrStatus().equalsIgnoreCase("MIDUNIT") || corrInfo.getCorrStatus().equalsIgnoreCase("MIDCYCLE")){
 				midCorrection = true;
 				addActionMessage(getText("processFormulaAction.currentlyBeingCorrected"));

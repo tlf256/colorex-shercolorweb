@@ -1,31 +1,25 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 
-
 import org.junit.Test;
+
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionProxy;
 
-import com.sherwin.shercolor.common.domain.CustWebEcal;
-import com.sherwin.shercolor.customershercolorweb.web.action.EcalAction;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
+import java.util.List;
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:config/spring/shercolorcommon-test.xml")
+@SherColorWebTransactionalTest
 public class ConfigActionTest extends StrutsSpringJUnit4TestCase<ProcessTinterConfigAction> {
 
 	ProcessTinterConfigAction target;
@@ -34,6 +28,7 @@ public class ConfigActionTest extends StrutsSpringJUnit4TestCase<ProcessTinterCo
 
 	@Test
 	public void testGetTinterModelsAction(){
+
 		ActionProxy proxy = getActionProxy("/GetTinterModelsAction");
 
 		 target = (ProcessTinterConfigAction) proxy.getAction();

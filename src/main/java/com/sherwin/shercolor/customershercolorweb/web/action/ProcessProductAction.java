@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.struts2.interceptor.SessionAware;
@@ -14,7 +13,6 @@ import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsFbColor;
@@ -33,15 +31,16 @@ import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
 
-
+@Component
 public class ProcessProductAction extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
-	private String partialProductNameOrId; 
+	private String partialProductNameOrId;
 	private List<autoComplete> options;
 	private String message;
 	private String colorComp;

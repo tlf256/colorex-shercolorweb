@@ -11,12 +11,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+import com.sherwin.shercolor.common.domain.CdsColorMast;
+import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
+import com.sherwin.shercolor.common.domain.CustWebDrawdownLabelProfile;
+import com.sherwin.shercolor.common.domain.FormulaConversion;
+import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -27,20 +31,15 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.owasp.encoder.Encode;
 import org.springframework.stereotype.Service;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code128Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.sherwin.shercolor.common.domain.CdsColorMast;
-import com.sherwin.shercolor.common.domain.CustWebCustomerProfile;
-import com.sherwin.shercolor.common.domain.CustWebDrawdownLabelProfile;
-import com.sherwin.shercolor.common.domain.FormulaConversion;
-import com.sherwin.shercolor.common.domain.FormulaIngredient;
 import com.sherwin.shercolor.common.service.ColorMastService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.DrawdownLabelService;
@@ -67,16 +66,12 @@ import be.quodlibet.boxable.line.LineStyle;
  * a change for a potential cause of label PDF open failure.
  * */
 
-@Service
 public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
-	static Logger logger = LogManager.getLogger(ShercolorLabelPrintImpl.class);
+	static Logger logger = LoggerFactory.getLogger(ShercolorLabelPrintImpl.class);
 
 	DrawdownLabelService drawdownLabelService;
-	
 	CustomerService customerService;
-	
 	ColorMastService colorMastService;
-	
 	FormulationService formulationService;
 	
 	private boolean putFormulaOnLabel;
