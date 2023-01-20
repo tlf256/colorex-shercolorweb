@@ -27,5 +27,5 @@ jobs:
       helm_lint_values: '"values.yaml" "values-local.yaml"'
       dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
       qa_helm_values: '"values.yaml" "values-rancher-qa.yaml"'
-      kube_config: 'KUBE_CONFIG_NP_RANCHER'
+      kube_config_secret_name: 'KUBE_CONFIG_NP_RANCHER'
     secrets: inherit
