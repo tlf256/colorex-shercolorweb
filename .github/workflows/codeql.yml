@@ -17,5 +17,5 @@ jobs:
     with:
       java_version: 8
       codeql_languages: "['java']"
-      codeql_config_path: '.github/codeql/codeql-config.yml'
+      codeql_config_path: '.github/codeql-config.yml'
     secrets: inherit
