@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
@@ -17,10 +18,9 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Transactional
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
-@ActiveProfiles("test")
+@SherColorWebTransactionalTest
 public class LoginAgainActionTest extends StrutsSpringJUnit4TestCase<LoginAgainAction> {
 
 	RequestObject reqObj = new RequestObject();

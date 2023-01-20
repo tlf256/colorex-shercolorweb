@@ -1,0 +1,15 @@
+{{ $environment := .Values.env }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-configmap
+data: 
+  SPRING_PROFILES_ACTIVE: {{ .Values.springProfilesActive }}
+  dbPostgresUrl: {{ tpl .Values.dbPostgresUrl . | quote }}
+  {{- if .Values.store.enabled }}
+    dbUsername: {{ tpl .Values.dbUsername . | quote }}
+    oeBaseUrl: {{ index .Values $environment "oeBaseUrl" | quote }}
+    sherlinkDbUrl: {{ index .Values $environment "sherlinkDbUrl" | quote }}
+    sherlinkDbUsername: {{ index .Values $environment "sherlinkDbUsername" | quote }}
+    sherlinkLoginUrl: {{ index .Values $environment "sherlinkLoginUrl" | quote }}
+  {{- end }}

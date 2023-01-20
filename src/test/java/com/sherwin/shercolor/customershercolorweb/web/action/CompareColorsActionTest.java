@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +17,9 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
-@Transactional
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class CompareColorsActionTest extends StrutsSpringJUnit4TestCase<CompareColorsAction> {
 	
 	CompareColorsAction target;

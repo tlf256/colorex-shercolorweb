@@ -8,14 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CookieConsentAction extends ActionSupport implements SessionAware, LoginRequired, ServletRequestAware, ServletResponseAware {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(CookieConsentAction.class);
