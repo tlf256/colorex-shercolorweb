@@ -1,7 +1,0 @@
-name: "scw codeql config"
-
-packs:
-  javascript:
-    - 'codeql/javascript-upgrades'
-    
-    
