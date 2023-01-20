@@ -3,12 +3,10 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebEcal;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
@@ -18,7 +16,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import org.owasp.encoder.Encode;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessTinterConfigAction extends ActionSupport implements SessionAware, LoginRequired  {
 	private Map<String, Object> sessionMap;
 	private List<CustWebEcal> myEcalList; // for future

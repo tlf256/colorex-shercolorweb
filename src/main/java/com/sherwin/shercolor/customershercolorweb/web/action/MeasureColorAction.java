@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculatorImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.colormath.domain.ColorCoordinates;
 import com.sherwin.shercolor.colormath.functions.ColorCoordinatesCalculator;
@@ -21,21 +21,24 @@ import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.service.ColorBaseService;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
-
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class MeasureColorAction extends ActionSupport implements SessionAware, LoginRequired {
 
+	@Autowired
 	private transient ColorService colorService;
+	@Autowired
 	private transient CustomerService customerService;
+	@Autowired
 	private transient ColorBaseService colorBaseService;
 
 	private transient Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(MeasureColorAction.class);
-	
+
 	private String reqGuid;
 	private boolean measureColor;
 	private String measuredCurve;
@@ -54,9 +57,8 @@ public class MeasureColorAction extends ActionSupport implements SessionAware, L
 	private static final String RESULT = "result";
 	private static final String COLOREYE_UTIL = "ciUtility";
 	private static final String CLOSEST_COLORS = "closestColors";
-	
-	@Autowired
-	private transient ColorCoordinatesCalculator colorCoordCalc;
+
+	private transient ColorCoordinatesCalculator colorCoordCalc = new ColorCoordinatesCalculatorImpl();
 
 	public MeasureColorAction(){
 		// why is this empty?

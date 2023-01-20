@@ -9,6 +9,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
@@ -22,17 +25,14 @@ import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
-@Service
+@Component
 public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 	static Logger logger = LogManager.getLogger(CorrectionInfoBuilder.class.getName());
 
-	TranHistoryService tranHistoryService;
-	TinterService tinterService;
-	
-	public CorrectionInfoBuilderImpl(TranHistoryService tranHistoryService, TinterService tinterService){
-		this.tranHistoryService = tranHistoryService;
-		this.tinterService = tinterService;
-	}
+	@Autowired
+	private TranHistoryService tranHistoryService;
+	@Autowired
+	private TinterService tinterService;
 
 	public CorrectionInfo getCorrectionInfo(RequestObject reqObj, List<CustWebTranCorr> tranCorrList){
 		logger.trace("Inside CorrBuilder.getCorrInfo");

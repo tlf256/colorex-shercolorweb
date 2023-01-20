@@ -2,6 +2,7 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class LookupProductActionTest extends StrutsSpringJUnit4TestCase<ProcessProductLookupAction> {
 
 	RequestObject reqObj = new RequestObject();

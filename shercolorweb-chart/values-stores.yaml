@@ -1,0 +1,79 @@
+#This flag will tell Helm to install postgres
+store:
+  enabled: true  
+
+service:
+  annotations:
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+    traefik.ingress.kubernetes.io/service.sticky.cookie.name: INGRESSID
+
+secret:
+  enabled: true    
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  hosts:
+  - host: shercolorweb.ingress.lb0020.sites.sherwin.com
+    paths:
+      - path: /
+        pathType: Prefix
+  - host: shercolorweb.ingress.local.sites.sherwin.com
+    paths:
+      - path: /
+        pathType: Prefix  
+  tls:
+  - hosts:
+    - shercolorweb.ingress.lb0020.sites.sherwin.com
+    - shercolorweb.ingress.local.sites.sherwin.com
+    secretName: shercolorweb-tls-secrets
+
+# Values for the postgresql dependency chart
+postgresql:
+  global:
+    imageRegistry: docker.artifactory.sherwin.com
+    storageClass: "longhorn"
+    postgresql:
+      auth:
+        database: "sherd"
+        username: "shercolor"
+        existingSecret: "shercolorweb-secret"
+        secretKeys:
+            userPasswordKey: shercolorPass
+  auth:
+    enablePostgresUser: false          
+  image:
+    registry: docker.artifactory.sherwin.com
+    tag: 14.1.0-debian-10-r9
+  primary:
+    service:
+      type: LoadBalancer
+      annotations: {metallb.universe.tf/allow-shared-ip: 172-30-0-8}
+      loadBalancerIP: "172.30.0.8"
+      externalTrafficPolicy: Cluster
+      port: 5432
+    persistence:
+      existingClaim: data-shercolor-postgres-postgresql-0
+      size: 4Gi
+
+dbPostgresUrl: "jdbc:postgresql://{{ .Chart.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.postgresql.primary.service.port }}/{{ .Values.postgresql.global.postgresql.auth.database }}"
+springProfilesActive: "{{ .Values.env }},postgres"
+dbUsername: "{{ .Values.postgresql.global.postgresql.auth.username }}"
+
+# App config values per env
+# These will likely be removed as we will not have different environments in the stores?
+dev:
+  oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+  sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=extd-scan.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=STECOMD)))"
+  sherlinkDbUsername: "ecomm7"
+  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"
+qa:
+  oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+  sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=extd-scan.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=STECOMQ)))"
+  sherlinkDbUsername: "ecomm7"
+  sherlinkLoginUrl: "https://wqweb1.sherwin.com/sher-link/user/login.do"
+prod:
+  oeBaseUrl: "http://stscpw01.sherwin.com/sw/rest/SherColor"
+  sherlinkDbUrl: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(FAILOVER = ON) (LOAD_BALANCE = OFF) (ADDRESS=(PROTOCOL=TCP)(HOST=stecomp_dbhost.sherwin.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=STECOMP_PRIM)))"
+  sherlinkDbUsername: "ecomm7"
+  sherlinkLoginUrl: "https://cdweb.sherwin.com/sher-link/user/login.do"

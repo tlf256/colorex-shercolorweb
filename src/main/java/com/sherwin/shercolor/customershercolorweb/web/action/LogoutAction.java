@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -16,18 +15,15 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
 public class LogoutAction extends ActionSupport  implements SessionAware, LoginRequired  {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
 
 	static Logger logger = LogManager.getLogger(LogoutAction.class);
-
 	private String reqGuid;
-	private String sherLinkURL;
 	private String loMessage;
 	
 	HttpServletRequest request = ServletActionContext.getRequest();
@@ -50,7 +46,6 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 				// reset the existing request object.
 				// but before resetting, set the action's sherLinkURL property.
 				RequestObject origReqObj = (RequestObject) sessionMap.get(reqGuid);
-				sherLinkURL = origReqObj.getSherLinkURL();
 				origReqObj.reset();
 				sessionMap.put(origReqObj.getGuid(), origReqObj);
 				sessionMap.remove(reqGuid);
@@ -99,15 +94,11 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 
 
 
-	public String getSherLinkURL() {
-		return sherLinkURL;
-	}
 
 
 
-	public void setSherLinkURL(String sherLinkURL) {
-		this.sherLinkURL = Encode.forHtml(sherLinkURL);
-	}
+
+
 	
 	public String getLoMessage() {
 		return loMessage;

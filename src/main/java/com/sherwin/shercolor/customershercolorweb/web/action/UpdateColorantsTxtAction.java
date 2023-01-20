@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsClrnt;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
@@ -20,8 +17,9 @@ import com.sherwin.shercolor.common.service.TinterService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterCanister;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class UpdateColorantsTxtAction extends ActionSupport  implements SessionAware, LoginRequired {
 	private static final long serialVersionUID = 1L;
 
