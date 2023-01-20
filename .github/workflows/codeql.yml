@@ -16,5 +16,5 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/codeql-workflow.yml@master
     with:
       java_version: 8
-      codeql_languages: "['java']"
+      codeql_languages: "['java','javascript']"
     secrets: inherit
