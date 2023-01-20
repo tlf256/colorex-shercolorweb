@@ -2,6 +2,6 @@ name: "scw codeql config"
 
 packs:
   javascript:
-    - 'codeql/javascript-queries'
+    - 'codeql/javascript-all'
     
     
