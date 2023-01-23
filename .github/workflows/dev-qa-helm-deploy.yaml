@@ -1,4 +1,4 @@
-name: Deploy helm chart to DEV & QA
+name: Deploy to DEV
 on:
   workflow_dispatch:
   repository_dispatch:
