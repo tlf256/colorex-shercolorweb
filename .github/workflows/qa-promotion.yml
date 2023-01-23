@@ -1,4 +1,4 @@
-name: Promote helm chart and image from DEV to QA
+name: Promote deployment from DEV to QA
 on:
   workflow_dispatch:
   
