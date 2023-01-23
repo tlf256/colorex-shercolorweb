@@ -3,25 +3,26 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
-
 import com.opensymphony.xwork2.ActionSupport;
-
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulationResponse;
-
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.FormulationService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessPctIntExtAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
+	@Autowired
 	private FormulationService formulationService;
+	@Autowired
 	private CustomerService customerService;
 	
 	private String selectedIntExt;
@@ -43,7 +44,7 @@ public class ProcessPctIntExtAction extends ActionSupport implements SessionAwar
 	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessPctIntExtAction.class);
-	
+
 	private void buildIntExtTypesMap() {
 		INTERIOR = getText("getPercentageIntExt.interior");
 		EXTERIOR = getText("getPercentageIntExt.exterior");

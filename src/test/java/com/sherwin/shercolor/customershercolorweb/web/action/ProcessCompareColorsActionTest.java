@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +24,8 @@ import com.sherwin.shercolor.colormath.domain.ColorDifference;
 import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class ProcessCompareColorsActionTest extends StrutsSpringJUnit4TestCase<ProcessCompareColorsAction> {
 	
 	ProcessCompareColorsAction target;

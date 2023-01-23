@@ -1,20 +1,19 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import org.owasp.encoder.Encode;
-
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.ecom.security.assertion.SsoHelper;
 import com.sherwin.login.service.SWUserService;
 import com.sherwin.login.util.SWLoginValidator;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordAction extends ActionSupport  implements SessionAware, LoginRequired {
 	private String guid1;
 	private String whereFrom;
@@ -22,12 +21,13 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 	private String userPassConfirm;
 	private static final long serialVersionUID = 1L;
 	private Map<String, Object> sessionMap;
+	@Autowired
 	private SWUserService swUserService;
+	@Autowired
 	private SWLoginValidator swLoginValidator;
 
-	
 	static Logger logger = LogManager.getLogger(PasswordAction.class);
-	
+
 	public String display() {
 		String returnStatus = "";
 
@@ -153,23 +153,6 @@ public class PasswordAction extends ActionSupport  implements SessionAware, Logi
 
 	public void setUserPassConfirm(String userPassConfirm) {
 		this.userPassConfirm = Encode.forHtml(userPassConfirm);
-	}
-	
-	public SWUserService getSwUserService() {
-		return swUserService;
-	}
-
-	public void setSwUserService(SWUserService swUserService) {
-		this.swUserService = swUserService;
-	}
-	
-	
-	public SWLoginValidator getSwLoginValidator() {
-		return swLoginValidator;
-	}
-
-	public void setSwLoginValidator(SWLoginValidator swLoginValidator) {
-		this.swLoginValidator = swLoginValidator;
 	}
 
 }

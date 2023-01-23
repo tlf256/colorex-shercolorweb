@@ -3,8 +3,16 @@ name: Run Veracode SAST Policy Scan
 on:
   pull_request_review:
     types: [submitted]
+    paths-ignore: 
+    - '.github/**'
+    - '**/*.md'
+    - '.gitignore'
   pull_request:
     types: [labeled]
+    paths-ignore: 
+      - '.github/**'
+      - '**/*.md'
+      - '.gitignore'
     
 jobs:
   sast-security-scan:

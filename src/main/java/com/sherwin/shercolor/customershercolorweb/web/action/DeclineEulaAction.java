@@ -2,7 +2,6 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.Calendar;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -13,7 +12,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.EulaHist;
 import com.sherwin.shercolor.common.service.EulaService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DeclineEulaAction extends ActionSupport implements SessionAware, LoginRequired {
 	/**
 	 * 

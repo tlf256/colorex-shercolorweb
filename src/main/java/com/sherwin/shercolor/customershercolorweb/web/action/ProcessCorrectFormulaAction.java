@@ -7,13 +7,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
 import com.sherwin.shercolor.common.domain.CustWebTranCorr;
@@ -32,13 +30,15 @@ import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessCorrectFormulaAction extends ActionSupport implements SessionAware, LoginRequired {
 	private Map<String, Object> sessionMap;
 	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessCorrectFormulaAction.class.getName());
-	
+
 	private String reqGuid;
 	private FormulaInfo displayFormula;
 	
@@ -77,13 +77,15 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 	private String corrStatus;
 	
 	@Autowired
-	TranHistoryService tranHistoryService;
+	transient TranHistoryService tranHistoryService;
 	@Autowired
-	FormulationService formulationService;
+	transient FormulationService formulationService;
 	@Autowired
-	TinterService tinterService;
+	transient TinterService tinterService;
 	@Autowired
-	ProductService productService;
+	transient ProductService productService;
+	@Autowired
+	transient CorrectionInfoBuilder correctionInfoBuilder;
 
 	TinterInfo tinter = null;
 	
@@ -106,9 +108,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 			
 			correctionHistory = new ArrayList<CorrectionStep>();
 			
-			CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-			
-			CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+			CorrectionInfo corrInfo = correctionInfoBuilder.getCorrectionInfo(reqObj, tranCorrList);
 			logger.debug("back from getCorrInfo");
 			nextUnitNbr = corrInfo.getNextUnitNbr();
 			cycle = corrInfo.getCycle();
@@ -436,8 +436,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 					// This conditional will help pass back information to help construct a shotList for the first accepted container
 					if (stepStatus.equalsIgnoreCase("ACCEPTED")) {
 						List<CustWebTranCorr> tranCorrList = tranHistoryService.getCorrections(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-						CorrectionInfoBuilder corrBuilder = new CorrectionInfoBuilderImpl(tranHistoryService, tinterService);
-						CorrectionInfo corrInfo = corrBuilder.getCorrectionInfo(reqObj, tranCorrList);
+						CorrectionInfo corrInfo = correctionInfoBuilder.getCorrectionInfo(reqObj, tranCorrList);
 						dispenseItemList = corrInfo.getAcceptedDispenseList();
 					}
 					retVal = SUCCESS;

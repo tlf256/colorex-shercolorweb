@@ -46,11 +46,11 @@ i18n['getColor.palette'] = '<s:text name="getColor.palette"/>';
 i18n['getColor.swatchId'] =	'<s:text name="getColor.swatchId"/>';
 i18n['getColor.primerId'] = '<s:text name="getColor.primerId"/>';
 i18n['getColor.companyName'] = '<s:text name="getColor.companyName"/>';
-i18n['global.back'] = '<s:text name="global.back"/>';
 i18n['global.colorantLevelCheckInProgress'] = '<s:text name="global.colorantLevelCheckInProgress"/>';
 i18n['global.colorantLevelTooLow'] = '<s:text name="global.colorantLevelTooLow"/>';
 i18n['global.colorId'] = '<s:text name="global.colorId"/>';
-i18n['global.colorName'] = '<s:text name="global.colorName"/>';
+i18n['global.colorName'] = '<s:text name="global.colorName"/>';i
+i18n['global.back'] = '<s:text name="global.back"/>';
 i18n['global.containerFull'] = '<s:text name="global.containerFull"/>';
 i18n['global.cookieBanner'] = '<s:text name="global.cookieBanner"/>';
 i18n['global.dispenseError'] = '<s:text name="global.dispenseError"/>';
@@ -179,4 +179,3 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
   		</p>
 	</div>
 </div>
-
