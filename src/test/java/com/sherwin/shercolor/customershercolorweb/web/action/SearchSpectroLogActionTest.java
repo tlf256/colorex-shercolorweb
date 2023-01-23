@@ -16,12 +16,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class SearchSpectroLogActionTest extends StrutsSpringJUnit4TestCase<SearchSpectroLogAction> {
 	
 	SearchSpectroLogAction target;
