@@ -4,7 +4,7 @@ on:
   
 jobs:
   qa-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/qa-deploy-workflow.yml@dja557/remove-qa-deploy
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/qa-promotion-workflow.yml@dja557/remove-qa-deploy
     with:
       java_version: 8
       release_name: shercolorweb
