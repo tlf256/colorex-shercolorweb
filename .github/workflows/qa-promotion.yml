@@ -1,4 +1,4 @@
-name: Promote deployment from DEV to QA
+name: Promote DEV to QA
 on:
   workflow_dispatch:
   
