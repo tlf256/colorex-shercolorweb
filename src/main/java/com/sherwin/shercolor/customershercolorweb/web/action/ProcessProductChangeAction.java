@@ -16,7 +16,6 @@ import com.sherwin.shercolor.common.domain.CdsFbProd;
 import com.sherwin.shercolor.common.domain.CdsMiscCodes;
 import com.sherwin.shercolor.common.domain.CdsProd;
 import com.sherwin.shercolor.common.domain.CdsProdCharzd;
-import com.sherwin.shercolor.common.domain.CdsTsfOver;
 import com.sherwin.shercolor.common.domain.CustWebParms;
 import com.sherwin.shercolor.common.domain.FormulaInfo;
 import com.sherwin.shercolor.common.domain.FormulaIngredient;
@@ -125,7 +124,9 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		String colorComp = reqObj.getColorComp();
 		String colorId = reqObj.getColorID();
-		
+		String clrntSysId = reqObj.getClrntSys();
+		boolean gotARealError = false;
+
 		// convert entered value to salesNbr (could be entered as SalesNbr or UPC)
 		String enteredSalesNbr = productService.getSalesNbr(partialProductNameOrId);
 		if (enteredSalesNbr == null){
@@ -133,84 +134,74 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 		} else {
 			this.setSalesNbr(enteredSalesNbr);
 		}
-		 
+		
+		System.out.println(colorComp + "-" + colorId + "-" + clrntSysId + "-" + enteredSalesNbr);
+		
+		logger.debug("Validating product info...");
 		//Call the validation.  If it validates successfully, call a read and get the data.
 		List<SwMessage> errlist = productService.validateProduct(salesNbr);
-		if (errlist.size()>0) {
-			Boolean gotARealError = false;
-			for(SwMessage item:errlist) {
-				if (item.getSeverity()!=null) {
-					if (item.getSeverity().equals(Level.ERROR)) {
-						addFieldError("partialProductNameOrId", item.getMessage());
-						gotARealError = true;
-					}
-				}
-			}
-			if (gotARealError) {
-				return INPUT;
-			} else {
-				// call the product color validation
-				List<SwMessage> errmsg = productColorService.validate(colorComp, colorId, salesNbr);
-				if (errmsg.size() > 0) {
-					Boolean gotARealError2 = false;
-					for(SwMessage item:errmsg) {
-						if (item.getSeverity()!=null) {
-							if (item.getSeverity().equals(Level.ERROR)) {
-								addFieldError("partialProductNameOrId", item.getMessage());
-								gotARealError2 = true;
-							} else {
-								//check if this is a warning on the same salesNbr, and we have already displayed a warning for this sales number
-								if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr() != null && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
-									// let the user go past the warning
-								} else {
-									addActionMessage(item.getMessage());
-									reqObj.setValidationWarning(true);
-									sessionMap.put(reqGuid, reqObj);
-									gotARealError2 = true;
-								}
-							}
-						}
-					}
-					if (reqObj.isValidationWarning()) {
-						reqObj.setValidationWarningSalesNbr(salesNbr);
-					}
-					if (gotARealError2) {
-						return INPUT;
-					}
-				}
-			}
-		} else {
-			// call the product color validation
-			List<SwMessage> errmsg = productColorService.validate(colorComp, colorId, salesNbr);
-			if (errmsg.size() > 0) {
-				Boolean gotARealError = false;
-				for(SwMessage item:errmsg) {
-					if (item.getSeverity()!=null) {
-						if (item.getSeverity().equals(Level.ERROR)) {
-							addFieldError("partialProductNameOrId", item.getMessage());
-							gotARealError = true;
-						} else {
-							if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr() != null && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
-								// let the user go past the warning
-							} else {
-								addActionMessage(item.getMessage());
-								reqObj.setValidationWarning(true);
-								sessionMap.put(reqGuid, reqObj);
-								gotARealError = true;
-							}
-						}
-					}
-				}
+		if(!errlist.isEmpty()) {
+			gotARealError = checkMessageSeverity(errlist, reqObj);
+			if(gotARealError) {
 				if (reqObj.isValidationWarning()) {
 					reqObj.setValidationWarningSalesNbr(salesNbr);
 				}
-				if (gotARealError) {
-					return INPUT;
-				}
+				sessionMap.put(reqGuid, reqObj);
+				return INPUT;
 			}
-		} 
+		}
+		
+		logger.debug("Validating product colorant system usage...");
+		errlist = productService.validateColorantSystemUsage(salesNbr, clrntSysId);
+		if(!errlist.isEmpty()) {
+			gotARealError = checkMessageSeverity(errlist, reqObj);
+			if(gotARealError) {
+				if (reqObj.isValidationWarning()) {
+					reqObj.setValidationWarningSalesNbr(salesNbr);
+				}
+				sessionMap.put(reqGuid, reqObj);
+				return INPUT;
+			} 
+		}
+		
+		logger.debug("Validating product color info...");
+		errlist = productColorService.validate(colorComp, colorId, salesNbr);
+		if(!errlist.isEmpty()) {
+			gotARealError = checkMessageSeverity(errlist, reqObj);
+			if(gotARealError) {
+				if (reqObj.isValidationWarning()) {
+					reqObj.setValidationWarningSalesNbr(salesNbr);
+				}
+				sessionMap.put(reqGuid, reqObj);
+				return INPUT;
+			} 
+		}
 		sessionMap.put(reqGuid, reqObj);
 		return SUCCESS;
+	}
+	
+	private boolean checkMessageSeverity(List<SwMessage> errlist, RequestObject reqObj) {
+		boolean result = false;
+		for(SwMessage item:errlist) {
+			if (item.getSeverity() != null && item.getSeverity().equals(Level.ERROR)) {
+				logger.debug("Validation Error received: {}", item.getMessage());
+				addFieldError("partialProductNameOrId", item.getMessage());
+				result = true;
+			} else {
+				logger.debug("Validation Warning code: {} and message: {}", item.getCode(), item.getMessage());
+				if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr() != null && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
+					// let the user go past the warning
+					logger.debug("Validation warning is already flagged for this salesNbr {}. letting it through", salesNbr);
+					result = false;
+				} else {
+					logger.debug("Validation warning has not been flagged for this salesNbr {}. Notifying the user", salesNbr);
+					addActionMessage(item.getMessage());
+					reqObj.setValidationWarning(true);
+					result = true;
+				}
+			}
+		}
+		return result;
 	}
 
 	
