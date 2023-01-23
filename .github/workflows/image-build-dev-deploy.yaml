@@ -1,4 +1,4 @@
-name: Deploy to DEV
+name: Image Build & Deploy to DEV
 on:
   workflow_dispatch:
   repository_dispatch:
@@ -17,15 +17,13 @@ on:
     
 jobs:
   dev-qa-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/dev-qa-deploy-workflow.yml@master
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-dev-deploy-workflow.yml@dja557/remove-qa-deploy
     with:
       java_version: 8
       chart_directory: shercolorweb-chart
       release_name: shercolorweb
       dev_url: 'https://dev-shercolor.sherwin.com/shercolorweb'
-      qa_url: 'https://qa-shercolor.sherwin.com/shercolorweb'
       helm_lint_values: '"values.yaml" "values-local.yaml"'
       dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
-      qa_helm_values: '"values.yaml" "values-rancher-qa.yaml"'
-      kube_config_secret_name: 'KUBE_CONFIG_NP_RANCHER'
+      kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
     secrets: inherit
