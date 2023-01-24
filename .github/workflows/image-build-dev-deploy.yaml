@@ -1,18 +1,18 @@
 name: Image Build & Deploy to DEV
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: [shercolorweb-build-deploy]
-  pull_request:
-    branches:
-       - development
-       - master
-       - 'release/**'
-    types: [closed]
-    paths-ignore: 
-    - '.github/**'
-    - '**/*.md'
-    - '.gitignore'
+#   repository_dispatch:
+#     types: [shercolorweb-build-deploy]
+#   pull_request:
+#     branches:
+#        - development
+#        - master
+#        - 'release/**'
+#     types: [closed]
+#     paths-ignore: 
+#     - '.github/**'
+#     - '**/*.md'
+#     - '.gitignore'
 
     
 jobs:
