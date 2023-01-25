@@ -222,7 +222,7 @@ public class ProcessCorrectFormulaAction extends ActionSupport implements Sessio
 				ingredientList = new ArrayList<>();
 				for(Map<String,Object> item : correctionList){
 					String clrntString=null;
-					logger.debug("inside convertFormulaToDispenseItems: item is {}", item);
+					logger.debug("inside convertFormulaToDispenseItems: item is {}", () -> Encode.forJava(item.toString()));
 					if(item.get("clrntString")!=null) clrntString = item.get("clrntString").toString();
 					logger.debug("pulled clrntString and it is {}", clrntString);
 					List<Long> incrList = null;
