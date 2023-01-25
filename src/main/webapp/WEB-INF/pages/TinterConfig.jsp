@@ -86,7 +86,7 @@
 				"<s:property value="tinter.clrntSysId" escapeHtml="true"/>",
 				"<s:property value="tinter.model" escapeHtml="true"/>",
 				"<s:property value="tinter.serialNbr" escapeHtml="true"/>",
-				"<s:property value=\"tinter.tinterIp\" escapeHtml=\"true\"/>", canister_layout);
+				"<s:property value="tinter.tinterIp" escapeHtml="true"/>", canister_layout);
 
 	}
 	function config_tinter(mycolorantid, mymodel, myserial, mytinter_ip, mycanister_layout) {
@@ -161,6 +161,7 @@
 		console.log("config tinter");
 		console.log(tinter.clrntSysId);
 		console.log(tinter.model);
+		console.log(tinter.tinterIp);
 		console.log(tinter.serialNbr);
 		if (tinter.clrntSysId == -1 || tinter.model == -1 || tinter.serialNbr == null || tinter.serialNbr == ""){
 			alert('<s:text name="tinterConfig.emptyConfigSetting"/>');
@@ -274,8 +275,10 @@
 			// check for tinter-ip file 
 			// send command that retrieves the hostname
 			// if the file exists
+			var dspMsg = "Retrieving hostname..."
+			pleaseWaitModal_show(dspMsg, null);
 			$('#tinterSerial').addClass('d-none');
-			$('#tinterIp').removeClass('d-none');
+			$('#btn_tinterConfig').prop('disabled', true);
 			tinter.clrntSysId = $('#selectClrntSysId').val();
 			tinter.model = $('#modelSelect').val();
 			getHostName();
@@ -299,10 +302,22 @@
 		ws_tinter.send(json);
 	}
 
+	function setHostName() {
+		var command = "SetHostname";
+		var tinterMsg = new TinterMessage(command, null, null, null, null);
+		var json = JSON.stringify(tinterMsg);
+
+		if (ws_tinter && ws_tinter.isReady == "false") {
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			ws_tinter = new WSWrapper("tinter");
+		}
+		ws_tinter.send(json);
+	}
+
 	function getSerial(){
 		var command = "GetSerialCode";
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
-		var json = JSON.stringify(initmessage);
+		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
 			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
@@ -314,7 +329,7 @@
 	function checkCredentials(){
 		var command = "CheckCredentials";
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
-		var json = JSON.stringify(initmessage);
+		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
 			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
@@ -326,7 +341,7 @@
 	function updateCredentials(){
 		var command = "UpdateCredentials";
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
-		var json = JSON.stringify(initmessage);
+		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
 			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
@@ -343,8 +358,11 @@
 			// show modal, retrieve serial number
 			// then continue with credential process
 			var ip = $('#tIpAddr').val().trim();
+			console.log("onSubmit tinter IP: " + ip);
 			tinter.tinterIp = ip;
-			//$('#ipAddr').val(ip);
+			var dspMsg = "Validating credentials..."
+			pleaseWaitModal_show(dspMsg, null);
+
 			// TODO validate IP address here
 
 			// retrieve serial number and write hostname to file
@@ -364,17 +382,17 @@
 		}
 	}
 
-	function togglePassword(element, showPassword){
-		//toggle showPassword attribute for password input
-		if(showPassword){
-			$('#reveal_btn').html('<i class="text-muted fa fa-eye-slash"></i>');
-			$(element).prop('showPassword', false);
-		}
-		else{
-			$('#reveal_btn').html('<i class="text-muted fa fa-eye"></i>');
-			$(element).prop('showPassword', true);
-		}
-	}
+	$(document).on('click', '#srvPwdToggle', function(){
+		//toggle showPassword and icon
+		var srvPwd = $('#srvPwd');
+		var icon = $('#srvPwdToggle');
+
+		const type = (srvPwd.prop('type') === 'password') ? 'text' : 'password';
+		srvPwd.prop('type', type);
+
+		this.classList.toggle('fa-eye-slash');
+		
+	});
 
 	/*prevent submission when the enter key is pressed, rather run config() which will perform the submit */
 	$(document).on('keyup keypress', '#tSerialNbr', function(e) {
@@ -412,14 +430,16 @@
 
 	});
 
-	/*$('#passwordModal').on('hide-bs-modal', function(e){
-		var closeBtn = $('#pModalClose_btn');
-		if(e.currentTarget != closeBtn){
-			// get serial
-		}
-	});*/
+	$('#passwordModal').on('hidden-bs-modal', function(e){
+		// detect after updating credentials
+		init();
+		$("#detectInProgressModal").modal('show');
+		rotateIcon();
+	});
 
 	$(document).on('click', '#updateCreds_btn', function(){
+		var dspMsg = "Updating credentials..."
+		pleaseWaitModal_show(dspMsg, '#passwordModal');
 		updateCredentials();
 	});
 
@@ -504,7 +524,7 @@
 			if (modellist != null) {
 				$('#hidden_modellist').html("");
 				$.each(modellist, function(index, value) {
-					console.log("TINTER MODEL: " + value);
+					//console.log("TINTER MODEL: " + value);
 					box.append($("<option></option>").attr("value", value)
 							.text(value));
 					var name = "defaultModelList[" + index + "]";
@@ -584,6 +604,11 @@
 			console.log("model not set before receiving this message, getting current value selected");
 			tinter.model = $('#modelSelect').val();
 			console.log(tinter.model);
+		}
+		if(tinter.tinterIp == null) {
+			console.log("IP not set before receiving this message, getting current value");
+			tinter.model = $('#tIpAddr').val();
+			console.log(tinter.tinterIp);
 		}
 		if(tinter.serialNbr == null) {
 			console.log("serialNbr not set before receiving this message, getting current value");
@@ -900,10 +925,11 @@
 			var return_message = JSON.parse(ws_tinter.wsmsg);
 			switch (return_message.command) {
 			case 'Config':
+				// no need to detect?
 				if (return_message.errorNumber == 0) {
-					init();
-					$("#detectInProgressModal").modal('show');
-					rotateIcon();
+					//init();
+					//$("#detectInProgressModal").modal('show');
+					//rotateIcon();
 				} else {
 					$("#configError").text(return_message.errorMessage);
 					$("#configErrorModal").modal('show');
@@ -913,55 +939,14 @@
 			case 'Detect':
 			case 'Init':
 			case 'InitStatus':
-				let ucErrorMessage = return_message.errorMessage.toUpperCase().trim()
-				//status = 1, means, still trying serial ports so still in progress.
-				if (( ucErrorMessage.trim() != initializationDone) &&
-						 (return_message.errorNumber >= 0 ||
-						 return_message.status == 1)) {
-					 	//save		
-					$("#progress-message").text(return_message.errorMessage);
-					if(detectAttempt < 85){
-						setTimeout(
-							  function() 
-							  { //make sure we are not slamming everything
-									AfterDetectTinterGetStatus(); // keep sending init status until you get something.
-							  }, 5000);
-
-						detectAttempt++;
-					}
-					else{ // close up shop with this error.
-						//sendTinterEvent(myGuid, curDate, return_message, null); 
+				let ucErrorMessage = return_message.errorMessage.trim()
+				if (ucErrorMessage == "" && return_message.commandRC == 2) {
+					// set a timeout for detect modal
+					setTimeout(function(){
 						waitForShowAndHide('#detectInProgressModal');
-						return_message.errorMessage = "Timeout Waiting for X-Tinter Detect";
-						return_message.errorNumber = -1;
-					
-						
-						$("#detectErrorList").append("<li>" + return_message.errorMessage + "</li>");
-					
-						$("#errorModalTitle").text('<s:text name="global.timeoutWaitingForXTinterDetect"/>');
-						$("#detectErrorMessage").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
-						$("#detectErrorModal").modal('show');
-					
-				
-						}
-					//console.log(return_message.errorMessage);
-				}
-				else if(return_message.errorMessage.toUpperCase().trim() == initializationDone){
-					console.log("init done: " + (return_message.errorMessage.toUpperCase().trim() == initializationDone));
-					
-					
-					waitForShowAndHide("#detectInProgressModal");
-		           
-					$("#detectStatusModal").modal('show');
-					
-					$("#detectStatus") 
-							.text(
-									'<s:text name="global.tinterDetectConfigComplete"/>');
+					}, 2000);
 				}
 				else {
-					
-					waitForShowAndHide("#detectInProgressModal");
-		           
 					$("#detectErrorModal").modal('show');
 					
 					switch (return_message.errorNumber) {
@@ -991,17 +976,22 @@
 						}
 					}
 				}
-				if ((return_message.errorMessage.toUpperCase().trim() == initializationDone) || return_message.errorNumber < 0) {
+				if (return_message.commandRC == 2) {
 					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				break;
 			case 'GetHostName':
 				// check if the hostname was returned
 				// if so, set the value of the textfield
-				if(!return_message.errorMessage.isEmpty() && return_message.commandRC == 2){
+				if(return_message.errorMessage != "" && return_message.commandRC == 2){
 					var ip = return_message.errorMessage.trim();
+					pleaseWaitModal_hide();
+					$('#tinterIp').removeClass('d-none');
+					$('#tIpAddr').val(ip);
+					$('#tIpAddr').focus();
+					$('#btn_tinterConfig').prop('disabled', false);
 				}
-				else if(!return_message.errorMessage.isEmpty() && return_message.commandRC == 0) {
+				else if(return_message.errorMessage != "" && return_message.commandRC == 0) {
 					// error reading/writing hostname file
 					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>"
 					$('#error').html(errorText);
@@ -1017,18 +1007,42 @@
 				if(return_message.commandRC == 2){
 					// credentials do not need updating
 					// continue with configuration
-					getSerial();
+					init();
+					$("#detectInProgressModal").modal('show');
+					rotateIcon();
 				}
 				else {
 					// credentials need updated
 					// prompt for password
-					// maybe this is where the password modal should be shown?
-					$('#ipAddr').val(tinter.tinterIp);
+					pleaseWaitModal_hide();
+					//$('#ipAddr').val(tinter.tinterIp);
 					$('#passwordModal').modal('show');
 				}
 				break;
 			case 'UpdateCredentials':
-				// if successful, get serial
+				if(return_message.commandRC != 2) {
+					// error updating credentials
+					pleaseWaitModal_hide();
+					var errorText = "<h6>" + return_message.errorMessage + "</h6>"
+					$('#error').html(errorText);
+				}
+				break;
+			case 'GetSerialCode':
+				if(return_message.commandRC == 2) {
+					// set hostname
+					setHostName();
+				}
+				else {
+					//fail, display error message
+				}
+				break;
+			case 'SetHostname':
+				if(return_message.commandRC == 2) {
+					// continue configuration
+				}
+				else {
+					// display error message
+				}
 				break;
 			default:
 				//Not an response we expected...
@@ -1286,7 +1300,7 @@
 		data-backdrop="static" data-keyboard="false">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-light">
 					<h5 class="modal-title">Device Credentials</h5>
 					<button type="button" id="pModalClose_btn" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}">
 						<span aria-hidden="true">&times;</span>
@@ -1294,37 +1308,42 @@
 				</div>
 				<div class="modal-body">
 					<div class="container">
+						<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-8">
+							<div id="credError" class="text-danger"></div>
+						</div>
+						<div class="col-sm-2"></div>
+						</div>
 						<s:form class="form-sw-centered" id="" action="" validate="true" theme="bootstrap">
 						<div class="row">
-						  <div class="col-sm-3"></div>
-						  <div class="col-sm-6">
+						  <div class="col-sm-2"></div>
+						  <div class="col-sm-8">
 							<div id="ipAddress" class="form-label-group">
 								<label class="sw-label" for="ipAddr">Tinter IP Address</label>
-								<s:textfield id="ipAddr" class="form-control" name="newtinter.tinterIp" aria-disabled="true"></s:textfield>
+								<s:textfield id="ipAddr" class="form-control" name="newtinter.tinterIp" 
+								  value="tinter.tinterIp" aria-disabled="true"></s:textfield>
 							</div>
 						  </div>
-						  <div class="col-sm-3"></div>
+						  <div class="col-sm-2"></div>
 						</div>
 						<div class="row">
-						  <div class="col-sm-3"></div>
-						  <div class="col-sm-6">
+						  <div class="col-sm-2"></div>
+						  <div class="col-sm-8">
 							<div id="servicePwd" class="form-label-group">
 								<label class="sw-label" for="">Service Password</label>
-								<s:password id="srvPwd" class="form-control" name="">
-									<button id="reveal_btn" onclick="togglePassword(this.parent.id, this.parent.showPassword)">
-										<i class="text-muted fa fa-eye"></i>
-									</button>
-								</s:password>
+								<i class="text-muted fa fa-eye pwd-toggle" id="srvPwdToggle"></i>
+								<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
 							</div>
 						  </div>
-						  <div class="col-sm-3"></div>
+						  <div class="col-sm-2"></div>
 						</div>
 						</s:form>
 					</div>
 				</div>
-				<div class="modal-footer">
+				<div class="modal-footer bg-light">
 					<button type="button" class="btn btn-primary" id="updateCreds_btn"
-						aria-label="%{getText('global.continue')}"><s:text name="global.submit"/></button>
+						aria-label="%{getText('global.continue')}">Submit</button>
 				</div>
 			</div>
 		</div>
