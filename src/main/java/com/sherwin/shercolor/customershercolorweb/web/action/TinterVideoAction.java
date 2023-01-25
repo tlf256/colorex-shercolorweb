@@ -4,13 +4,14 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionSupport;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TinterVideoAction extends ActionSupport  implements SessionAware, LoginRequired{
 	private static final long serialVersionUID = 1L;
 	

@@ -14,8 +14,10 @@ import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
+@Component
 public class DeleteJobAction extends ActionSupport implements SessionAware, LoginRequired {
 	
 	static Logger logger = LogManager.getLogger(DeleteJobAction.class);

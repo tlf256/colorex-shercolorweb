@@ -1,0 +1,20 @@
+name: "CodeQL"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "development", master, release/* ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "development", master, release/* ]
+  schedule:
+    - cron: '41 11 * * 0'
+    
+
+jobs:
+  analyze:
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/codeql-workflow.yml@master
+    with:
+      java_version: 8
+      codeql_languages: "['java','javascript']"
+    secrets: inherit

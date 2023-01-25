@@ -1,17 +1,15 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import javax.servlet.http.HttpSession;
-
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class LookupJobActionTest extends StrutsSpringJUnit4TestCase<LookupJobAction> {
 
 	LookupJobAction target;

@@ -1,0 +1,6 @@
+dependencies:
+- name: postgresql
+  repository: https://artifactory.sherwin.com/artifactory/helm-virtual/
+  version: 11.6.4
+digest: sha256:6b517fd1fa670671fb80da05f6a796968fee1b8d676a089d6d82775bf4cc76d1
+generated: "2022-06-08T14:29:23.266601-04:00"

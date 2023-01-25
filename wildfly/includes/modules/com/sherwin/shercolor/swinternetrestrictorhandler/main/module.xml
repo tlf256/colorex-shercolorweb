@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+
+<module xmlns="urn:jboss:module:1.1" name="com.sherwin.shercolor.swinternetrestrictorhandler" slot="main">
+
+    <resources>
+        <resource-root path="SWInternetRestrictorHandler-0.0.1-SNAPSHOT.jar"/>
+    </resources>
+
+    <dependencies>
+        <module name="io.undertow.core"/>
+        <module name="javaee.api"/>
+        <module name="javax.api"/>
+    </dependencies>
+</module>

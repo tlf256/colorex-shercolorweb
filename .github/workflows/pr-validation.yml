@@ -9,13 +9,13 @@ on:
 
     types: [opened, synchronize]
     paths-ignore: 
-      - '**.md'
-      - '.gitignore'
+    - '.github/**'
+    - '**/*.md'
+    - '.gitignore'
       
 jobs:
   pr-validation:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@master
     with:
       java_version: 8
-      codeql_languages: "['java']"
     secrets: inherit
