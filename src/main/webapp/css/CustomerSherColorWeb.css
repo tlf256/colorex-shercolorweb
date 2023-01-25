@@ -3,7 +3,10 @@ html {
   position: relative;
   min-height: 100%;
 }
-
+.pwd-toggle {
+  cursor: pointer;
+  margin-top: 10px;
+}
 navbar-brandcenter {
   transform: translateX(-50%);
   left: 50%;

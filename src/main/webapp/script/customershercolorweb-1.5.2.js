@@ -83,7 +83,7 @@ function showWaitModal(){
 //of bs modal that contains input to be processed in java action
 //if relevant, otherwise pass in null
 function pleaseWaitModal_show(displayMessage, inputModal){
-	$('#processMsg').text(displayMessage);
+	pleaseWaitModal_updateMsg(displayMessage);
 	
 	if(inputModal){
 		hideInputModal(inputModal);
@@ -96,6 +96,10 @@ function pleaseWaitModal_show(displayMessage, inputModal){
 //call this function when it is necessary to hide the wait modal
 function pleaseWaitModal_hide(){
 	$('#pleaseWaitModal').modal('hide');
+}
+
+function pleaseWaitModal_updateMsg(displayMessage){
+	$('#processMsg').text(displayMessage);
 }
 
 function hideInputModal(inputModal){

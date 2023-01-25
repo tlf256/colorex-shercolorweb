@@ -152,7 +152,7 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
 			<div class="modal-body">
 				<p class="ml-2" id="processMsg"></p>
 			</div>
-			<div class="modal-footer"></div>
+			<div class="modal-footer bg-light"></div>
 		</div>
 	</div>
 </div>
