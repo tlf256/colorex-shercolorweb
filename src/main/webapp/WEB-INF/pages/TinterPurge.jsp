@@ -24,6 +24,7 @@
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -49,17 +50,6 @@
 	</s:iterator>
 	var platform = navigator.platform;
 	var cleanNozzleBeforePurge = false;
-
-    function fkey(e){
-    	if(sendingTinterCommand == "true"){
-        e = e || window.event;
-        
-        if (e.code === 'F4') {
-        	abort();
-            console.log(e);
-            e.preventDefault();
-        }
-    }
 }
 	function getRGB(colorantCode){
 		var rgb = "";
@@ -586,12 +576,6 @@
 	}
 
 	$(function(){
-		console.log("platform is: "+ platform);
-		if(platform.startsWith("Win")){
-			$('#abort-message').html('<s:text name="global.pressF4ToAbort"/>');
-		} else {
-			$('#abort-message').html('<s:text name="global.pressAkeyToAbort"/>');
-		}
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
 		
 		$(document).on("shown.bs.modal", "#purgeInProgressModal", function(event){
@@ -662,8 +646,6 @@
 			console.log("starting purge");
 			rotateIcon($("#purgeInProgressModal"), $("#purgeSpinner"));
 		});
-		//capture F4 key to abort
-		jQuery(document).on("keydown",fkey);
 		
 		if (tinterModel != null && tinterModel.startsWith("SANTINT")){
 			// hide Clean Nozzle button for Santint tinters
@@ -876,7 +858,9 @@
 							<div class="modal-body">
 							
 								<p id="progress-message" font-size="4"><s:text name="tinterPurge.pleaseWaitPurgeAll"/></p>
-								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold"></p>
+								<p id="abort-message" font-size="4" style="display:none; color:purple;font-weight:bold">
+									<s:text name="global.pressAkeyToAbort"/>
+								</p>
 								<div class="progress-wrapper "></div>
 								<ul class="list-unstyled" id="tinterProgressList">
 										</ul>

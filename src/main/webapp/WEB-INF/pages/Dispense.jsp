@@ -38,14 +38,7 @@ var processingDispense = false;
 
 	//Document ON-Load
 	$(function() {
-		var platform = navigator.platform;
-		if(platform.startsWith("Win")){
-			$('#abort-message').html('<s:text name="global.pressF4ToAbort"/>');
-		} else {
-			$('#abort-message').html('<s:text name="global.pressAkeyToAbort"/>');
-		}
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
-		jQuery(document).on("keydown",fkey);
 		//Popover closing functionality
 		$('table.table-bordered').on('click', function(event) {
 			$('.popover').each(function() {
@@ -87,8 +80,6 @@ var processingDispense = false;
 		$('#progressok').click(function() {
 			$('#progressok').addClass('d-none');
 		});
-
-		jQuery(document).on("keydown", fkey);
 
 	});
 </script>
@@ -254,7 +245,9 @@ input[type=number] {
 								<div class="modal-body">
 									<p id="dispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"></p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold">
+										<s:text name="global.pressAkeyToAbort"/>
+									</p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>

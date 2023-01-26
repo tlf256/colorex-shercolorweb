@@ -8,21 +8,20 @@ var _rgbArr = [];
 var shotList = [];
 var processingDispense;
 var platform = navigator.platform;
+
 $(function(){ // on ready
-	//capture F4 key to abort
-	jQuery(document).on("keydown",fkey);
+	//capture A key to abort
+	jQuery(document).on("keydown",akey);
 	});
 
-function fkey(e) {
+function akey(e) {
 	if (sendingTinterCommand == "true") {
 		e = e || window.event;
-		console.log("key code: " + e.code);
-		if ((platform.startsWith("Win") && e.code === 'F4') || (!platform.startsWith("Win") && e.code === 'KeyA')) {
-			if(processingDispense == true){
-				abort();
-				console.log(e);
-				e.preventDefault();
-			}
+		//console.log("key code: " + e.code);
+		if (e.code === 'KeyA' && processingDispense == true) {
+			abort();
+			console.log(e);
+			e.preventDefault();
 		}
 	}
 }

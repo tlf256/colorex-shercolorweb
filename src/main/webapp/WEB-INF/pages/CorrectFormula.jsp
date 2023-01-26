@@ -1005,14 +1005,7 @@
 	
 	
 	//Add collapse classes for duplicate cycle rows
-	$(function(){
-		var platform = navigator.platform;
-		if(platform.startsWith("Win")){
-			$('#abort-message').html('<s:text name="global.pressF4ToAbort"/>');
-		} else {
-			$('#abort-message').html('<s:text name="global.pressAkeyToAbort"/>');
-		}
-		
+	$(function(){		
 		$(document).on("shown.bs.modal", "#skipConfirmModal", function(event){
 	        $("#skipConfirmInput").val("");
 	        $("#skipConfirmInputError").text("");
@@ -1144,7 +1137,6 @@
 			$('#percentPrompt').toggle();
 		});
 		
-		jQuery(document).on("keydown", fkey); // for abort
 	});
 	
 	//Used to rotate loader icon in modals
@@ -1462,7 +1454,9 @@
 							<div class="modal-body">
 								<p id="dispenseStatus" font-size="4"></p>
 								<p id="tinterInProgressMessage" font-size="4"></p>
-								<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"></p>
+								<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold">
+									<s:text name="global.pressAkeyToAbort"/>
+								</p>
 								<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 								<div class="progress-wrapper"></div>

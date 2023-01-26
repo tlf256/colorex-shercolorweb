@@ -680,7 +680,6 @@ function ParsePrintMessage() {
 			}
 		});
 		*/
-		jQuery(document).on("keydown", fkey); // capture F4
 	
 </script>
 <script type="text/javascript">
@@ -809,12 +808,6 @@ function ParsePrintMessage() {
 	
 	
 	$(function() {
-		var platform = navigator.platform;
-		if(platform.startsWith("Win")){
-			$('#abort-message').html('<s:text name="global.pressF4ToAbort"/>');
-		} else {
-			$('#abort-message').html('<s:text name="global.pressAkeyToAbort"/>');
-		}
 		// if account is profiled as room by room and a room choice is in session, show it in dropdown
 		var roomByRoomFlag = "${accountUsesRoomByRoom}";
 		var userRoomChoice = "${roomByRoom}";
@@ -1883,7 +1876,9 @@ function ParsePrintMessage() {
 								<div class="modal-body">
 									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"></p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold">
+										<s:text name="global.pressAkeyToAbort"/>
+									</p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>
