@@ -61,11 +61,38 @@ TAG Color Excellence
     ```sh
     java -jar ./target/SherColorWeb-bootable.jar
     ```
-For debugging documentation and more visit https://docs.wildfly.org/bootablejar 
+For documentation and more visit https://docs.wildfly.org/bootablejar 
 
 ### Wildfly Bootable Jar Maven Plugin
 Check out these maven commands for running locally:  
 https://docs.wildfly.org/bootablejar/#_maven_plugin
+
+#### Debugging
+Prior to build the jar, uncomment the following configuration in the `wildfly-jar-maven-plugin`:
+ ```xml
+  <plugin>
+     <groupId>org.wildfly.plugins</groupId>
+     <artifactId>wildfly-jar-maven-plugin</artifactId>
+     <version>7.0.2.Final</version>
+     <configuration>
+         ...
+         <!-- Only enable the argument below for remote debugging purposes. These should always be commented
+          out when committing to source control. -->
+         <!-- <jvmArguments>
+             <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
+         </jvmArguments> -->
+     </configuration>
+     <executions>
+         <execution>
+             <goals>
+                 <goal>package</goal>
+             </goals>
+         </execution>
+     </executions>
+ </plugin>
+ ```
+ 
+Once the application is running, attach a remote debugger to the process using your IDE or command line (https://www.baeldung.com/java-application-remote-debugging)
 
 ### Docker
 1. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
