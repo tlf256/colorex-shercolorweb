@@ -1,18 +1,18 @@
 name: Image Build & Deploy to DEV
 on:
   workflow_dispatch:
-#   repository_dispatch:
-#     types: [shercolorweb-build-deploy]
-#   pull_request:
-#     branches:
-#        - development
-#        - master
-#        - 'release/**'
-#     types: [closed]
-#     paths-ignore: 
-#     - '.github/**'
-#     - '**/*.md'
-#     - '.gitignore'
+  repository_dispatch:
+    types: [shercolorweb-build-deploy]
+  pull_request:
+    branches:
+       - development
+       - master
+       - 'release/**'
+    types: [closed]
+    paths-ignore: 
+    - '.github/**'
+    - '**/*.md'
+    - '.gitignore'
 
     
 jobs:
@@ -25,5 +25,5 @@ jobs:
       dev_url: 'https://dev-shercolor.sherwin.com/shercolorweb'
       helm_lint_values: '"values.yaml" "values-local.yaml"'
       dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
-      kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
+      kube_config_secret_name: 'KUBE_CONFIG_NP_RANCHER'
     secrets: inherit
