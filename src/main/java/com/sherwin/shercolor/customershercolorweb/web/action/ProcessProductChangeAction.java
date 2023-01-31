@@ -135,8 +135,6 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			this.setSalesNbr(enteredSalesNbr);
 		}
 		
-		System.out.println(colorComp + "-" + colorId + "-" + clrntSysId + "-" + enteredSalesNbr);
-		
 		logger.debug("Validating product info...");
 		//Call the validation.  If it validates successfully, call a read and get the data.
 		List<SwMessage> errlist = productService.validateProduct(salesNbr);
