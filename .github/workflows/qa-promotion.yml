@@ -3,11 +3,11 @@ on: workflow_dispatch
   
 jobs:
   qa-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/qa-promotion-workflow.yml@dja557/remove-qa-deploy
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/qa-promotion-workflow.yml@master
     with:
-      java_version: 8
+      java_version: '8'
       release_name: shercolorweb
-      qa_url: 'https://qa-shercolor.sherwin.com/shercolorweb'
-      qa_helm_values: '"values.yaml" "values-rancher-qa.yaml"'
-      kube_config_secret_name: 'KUBE_CONFIG_NP_RANCHER'
+      qa_url: 'https://qa-shercolor.np-dmz-rancher.sherwin.com/shercolorweb'
+      qa_helm_values: '"values.yaml" "values-rancher-dmz-qa.yaml"'
+      kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
     secrets: inherit
