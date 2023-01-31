@@ -24,7 +24,6 @@
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -50,7 +49,24 @@
 	</s:iterator>
 	var platform = navigator.platform;
 	var cleanNozzleBeforePurge = false;
-}
+
+	$(function(){ // on ready
+		//capture A key to abort
+		jQuery(document).on("keydown",akey);
+	});
+
+	function akey(e) {
+		if (sendingTinterCommand == "true") {
+			e = e || window.event;
+			console.log("KEY CODE: " + e.code);
+			if (e.code === 'KeyA') {
+				abort();
+				console.log(e);
+				e.preventDefault();
+			}
+		}
+	}
+
 	function getRGB(colorantCode){
 		var rgb = "";
 		if(colorantCode != null){
@@ -624,7 +640,6 @@
 	    
 	    $(document).on("click", "#tinterPurgeButton", function(event) {	  
 	    	if(tinterModel.startsWith("FM X") && cleanNozzleRequired()){
-	    		console.log("clean nozzle required before purge");
 	    		$("#cleanNozzleInProgress").modal('show');
 	    	} else {
 	    		$("#purgeInProgressModal").modal('show');
