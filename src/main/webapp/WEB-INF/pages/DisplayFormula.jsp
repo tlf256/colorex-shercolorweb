@@ -1119,7 +1119,8 @@ function ParsePrintMessage() {
 	/* -------- Validation functions ----------- */
 	
 	function validateQtyOrdered(){
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 			//$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>');
@@ -1143,7 +1144,8 @@ function ParsePrintMessage() {
 	}
 	
 	function validateQtyOrderedForPrint() {
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 
@@ -1658,7 +1660,7 @@ function ParsePrintMessage() {
 					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
 				</div>
 				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
-					<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
+					<s:textfield type="number" id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
 					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
 				</div>
 				<br>
