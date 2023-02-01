@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [shercolorweb-build-deploy]
-  workflow_call:
 
     
 jobs:
