@@ -1538,6 +1538,23 @@
 		</action>
 		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
 			<result name="success" type="json"/>
-		</action>		
+		</action>	
+		<!-- 10/27/2022 - JXL: New actions for viewing the Color Eye Log -->
+		<action name="searchSpectroEventLog" class="com.sherwin.shercolor.customershercolorweb.web.action.SearchSpectroLogAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplaySpectroLog.jsp</result>
+		</action>	
+		<action name="spectroLogLookupAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SearchSpectroLogAction" method="logLookup">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+		 		<param name="root">spectroEventResults</param>
+			</result>
+			<result name="error" type="json"/>
+		</action>
 	</package>
 </struts>
