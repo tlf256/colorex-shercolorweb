@@ -19,8 +19,3 @@ jobs:
     with:
       java_version: 8
     secrets: inherit
-
-  image-build-deploy:
-    needs: [snapshot-publish]
-    uses: sherwin-williams-co/colorex-shercolorweb/.github/workflows/image-build-dev-deploy.yaml@development
-    secrets: inherit
