@@ -1227,6 +1227,7 @@
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
 										<li id="compareColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCompareColorsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-adjust pr-1'></span> <s:text name="welcome.compareTwoColors"/></a></li>
 										<li id="closestColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="closestColorsMeasureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-crosshairs pr-1'></span> <s:text name="closestColors.findClosestColors"/></a></li>
+										<li id="spectroEventLog"><a class="dropdown-item" tabindex="-1" href='<s:url action="searchSpectroEventLog"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-book pr-1'></span> <s:text name="welcome.viewColorEyeLog"/></a></li>
 				        			</ul>
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">
