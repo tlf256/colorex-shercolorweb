@@ -142,8 +142,9 @@ $(function(){
                 $('#addModal').modal('show');
             } 
         }
-        else if(idSubstr = "moveT"){
+        else if(idSubstr == "moveT"){
         	//move function is called first for any button press
+            console.log("already in place");
         }
         else console.log("Condition failed");
     });
@@ -255,7 +256,7 @@ function move(position, clrntCode){
 		var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
 		if(ws_tinter!=null && ws_tinter.isReady=="false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -337,8 +338,6 @@ function rotateIcon(){
 	}
 }
 function RecdMessage() {
-	
-	var initErrorList = [];
 	console.log("Received Message");
 	var curDate = new Date();
 	var myGuid = $('#reqGuid').val();
@@ -376,7 +375,7 @@ function RecdMessage() {
 				case 'MoveToFill':
 				case 'Move':
 					sendingTinterCommand = "false";
-					moveComplete(myGuid,curDate,return_message,null);
+					moveComplete(myGuid,curDate,return_message);
 					break;
 				default:
 					//Not an response we expected...

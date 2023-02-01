@@ -98,8 +98,6 @@ function alfaDispenseProgress(tintermessage) {
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
 	var cmd = "DispenseProgress";
-	var shotList = null;
-	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
 	if(tinterModel !=null){ 
 
@@ -122,8 +120,6 @@ function FMXdispenseProgress(tintermessage) {
 	if(!platform.startsWith("Win")){
 		cmd = "DispenseStatus";
 	}
-	var shotList = null;
-	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
 	if(tinterModel !=null){ 
 		
@@ -307,7 +303,7 @@ function FMXDispenseComplete(return_message) {
 		}
 	} else {
 		if (return_message.errorNumber == 4226) {
-			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry']
+			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry'];
 		}
 		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
 		waitForShowAndHide("#tinterInProgressModal");
@@ -384,8 +380,6 @@ function abort() {
 	processingDispense = false;
 
 	var cmd = "Abort";
-	var shotList = null;
-	var configuration = null;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null);
 	var json = JSON.stringify(tintermessage);
 
@@ -706,13 +700,13 @@ function preDispenseCheckCallback() {
 			$('#progressok').removeClass('d-none');
 		}
 	}
-	else { console.log("Predispense Check failed with errors. Dispense not executed.") }
+	else { console.log("Predispense Check failed with errors. Dispense not executed."); }
 }
 
 function decrementCallback(myPassFail) {
 	console.log("checking decrement pass/fail " + myPassFail);
 	if (myPassFail === true) {
-		dispense(shotList);
+		dispense();
 	} else {
 		//TODO show error on decrement, 
 		waitForShowAndHide("#tinterInProgressModal");
