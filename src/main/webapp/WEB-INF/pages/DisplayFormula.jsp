@@ -25,7 +25,7 @@
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/ProductChange.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
@@ -680,7 +680,6 @@ function ParsePrintMessage() {
 			}
 		});
 		*/
-		jQuery(document).on("keydown", fkey); // capture F4
 	
 </script>
 <script type="text/javascript">
@@ -1877,7 +1876,9 @@ function ParsePrintMessage() {
 								<div class="modal-body">
 									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold">
+										<s:text name="global.pressAkeyToAbort"/>
+									</p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>
