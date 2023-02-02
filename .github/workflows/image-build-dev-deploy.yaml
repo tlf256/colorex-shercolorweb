@@ -3,27 +3,17 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [shercolorweb-build-deploy]
-  pull_request:
-    branches:
-       - development
-       - master
-       - 'release/**'
-    types: [closed]
-    paths-ignore: 
-    - '.github/**'
-    - '**/*.md'
-    - '.gitignore'
 
     
 jobs:
   dev-qa-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-dev-deploy-workflow.yml@dja557/remove-qa-deploy
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-dev-deploy-workflow.yml@master
     with:
-      java_version: 8
+      java_version: '8'
       chart_directory: shercolorweb-chart
       release_name: shercolorweb
-      dev_url: 'https://dev-shercolor.sherwin.com/shercolorweb'
+      dev_url: 'https://dev-shercolor.np-dmz-rancher.sherwin.com/shercolorweb'
       helm_lint_values: '"values.yaml" "values-local.yaml"'
-      dev_helm_values: '"values.yaml" "values-rancher-dev.yaml"'
+      dev_helm_values: '"values.yaml" "values-rancher-dmz-dev.yaml"'
       kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
     secrets: inherit
