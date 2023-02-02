@@ -3,10 +3,20 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [shercolorweb-build-deploy]
+  pull_request:
+    branches:
+      - development
+      - master
+      - release/*
+    types: [ closed ]
+    paths-ignore:
+      - '.github/**'
+      - '**/*.md'
+      - '.gitignore'
 
     
 jobs:
-  dev-qa-deploy:
+  image-build-dev-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-dev-deploy-workflow.yml@master
     with:
       java_version: '8'
