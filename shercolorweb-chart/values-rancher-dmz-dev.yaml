@@ -8,13 +8,13 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
   hosts:
-  - host: dev-shercolor.sherwin.com
+  - host: dev-shercolor.np-dmz-rancher.sherwin.com
     paths:
       - path: /shercolorweb
         pathType: Prefix   
   tls:
   - hosts:
-    - dev-shercolor.sherwin.com
+    - dev-shercolor.np-dmz-rancher.sherwin.com
 
 replicaCount: 1
 
