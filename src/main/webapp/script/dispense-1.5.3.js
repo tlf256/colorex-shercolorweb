@@ -7,21 +7,21 @@ var _rgbArr = [];
 
 var shotList = [];
 var processingDispense;
+var platform = navigator.platform;
+
 $(function(){ // on ready
-	//capture F4 key to abort
-	jQuery(document).on("keydown",fkey);
+	//capture A key to abort
+	jQuery(document).on("keydown",akey);
 	});
 
-function fkey(e) {
+function akey(e) {
 	if (sendingTinterCommand == "true") {
 		e = e || window.event;
-
-		if (e.code === 'F4') {
-			if(processingDispense == true){
-				abort();
-				console.log(e);
-				e.preventDefault();
-			}
+		//console.log("key code: " + e.code);
+		if (e.code === 'KeyA' && processingDispense == true) {
+			abort();
+			console.log(e);
+			e.preventDefault();
 		}
 	}
 }
@@ -90,29 +90,49 @@ function buildProgressBars(return_message) {
 		});
 	}
 }
-function FMXAlfaDispenseProgress(tintermessage) {
+
+//old function FMXAlfaDispenseProgress
+//separated alfa and fmx dispense progress
+function alfaDispenseProgress(tintermessage) {
 	console.log('before dispense progress send');
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
 	var cmd = "DispenseProgress";
-	var shotList = null;
-	var configuration = null;
 	var tinterModel = sessionTinterInfo.model;
-	if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
-
-   		var tintermessage = new TinterMessage(cmd,null,null,null,null);  
-	}
-	else{
+	if(tinterModel !=null){ 
 
 		var msgId = tintermessage.msgId;
-		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
-}
+		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId); 
+		
+	}
 	var msgId = tintermessage.msgId;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
 	var json = JSON.stringify(tintermessage);
 	sendingTinterCommand = "true";
 	ws_tinter.send(json);
 }
+
+function FMXdispenseProgress(tintermessage) {
+	console.log('before dispense progress send');
+	$('#tinterInProgressMessage').text('');
+	rotateIcon();
+	var cmd = "DispenseProgress";
+	if(!platform.startsWith("Win")){
+		cmd = "DispenseStatus";
+	}
+	var tinterModel = sessionTinterInfo.model;
+	if(tinterModel !=null){ 
+		
+   		var tintermessage = new TinterMessage(cmd,null,null,null,null);
+	
+	}
+	var msgId = tintermessage.msgId;
+	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
+	var json = JSON.stringify(tintermessage);
+	sendingTinterCommand = "true";
+	ws_tinter.send(json);
+}
+
 function dispense() {
 	//dispense
 	let cmd = "Dispense";
@@ -142,7 +162,7 @@ function alfaDispenseProgressResp(return_message) {
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			FMXAlfaDispenseProgress(return_message);
+			alfaDispenseProgress(return_message);
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 	}
 	else if (return_message.errorMessage.indexOf("complete") > 0 || return_message.errorNumber != 0) {
@@ -154,8 +174,8 @@ function dispenseProgressResp(return_message) {
 	//$("#progress-message").text(return_message.errorMessage);
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
-	if (return_message.errorMessage.indexOf("done") == -1 && (return_message.errorNumber == 1 ||
-		return_message.status == 1)) {
+	if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") == -1 || !platform.startsWith("Win") && 
+		return_message.errorMessage.indexOf("Dispense Job Complete") == -1) && (return_message.errorNumber == 1 || return_message.status == 1)) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
@@ -173,19 +193,20 @@ function dispenseProgressResp(return_message) {
 				tinterErrorList.push(item.message);
 			});
 		}
-		if (return_message.errorMessage != null) {
+		if (platform.startsWith("Win") && return_message.errorMessage != null) {
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			FMXAlfaDispenseProgress();
+			FMXdispenseProgress();
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
-	else if (return_message.errorMessage.indexOf("done") > 0 || return_message.errorNumber != 0) {
+	else if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 0 || !platform.startsWith("Win") && 
+		return_message.errorMessage.indexOf("Dispense Job Complete") == 0) || return_message.errorNumber != 0) {
 		if (return_message.errorNumber == 4226) {
-			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry']
+			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
 		}
 		FMXDispenseComplete(return_message);
 
@@ -247,7 +268,9 @@ function FMXDispenseComplete(return_message) {
 //	buildProgressBars(return_message);
 	$("#abort-message").hide();
 
-	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+	if ((return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0 
+		|| !platform.startsWith("Win") && return_message.commandRC == 2)) 
+		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 
@@ -266,9 +289,10 @@ function FMXDispenseComplete(return_message) {
 						});
 						*/
 		} else {
-
-			tinterErrorList.push(return_message.errorMessage);
-			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			if(platform.startsWith("Win")){
+				tinterErrorList.push(return_message.errorMessage);
+				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			}
 		}
 		if ($('#progressok').length > 0 ) {
 			$('#progressok').removeClass('d-none');
@@ -279,7 +303,7 @@ function FMXDispenseComplete(return_message) {
 		}
 	} else {
 		if (return_message.errorNumber == 4226) {
-			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry']
+			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry'];
 		}
 		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
 		waitForShowAndHide("#tinterInProgressModal");
@@ -356,8 +380,6 @@ function abort() {
 	processingDispense = false;
 
 	var cmd = "Abort";
-	var shotList = null;
-	var configuration = null;
 	var tintermessage = new TinterMessage(cmd, null, null, null, null);
 	var json = JSON.stringify(tintermessage);
 
@@ -425,6 +447,7 @@ function RecdMessage() {
 				switch (return_message.command) {
 					case 'Dispense':
 					case 'DispenseProgress':
+					case 'DispenseStatus':
 					case 'Abort':
 						$("#dispenseStatus").text('');
 						if (tinterModel != null && tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
@@ -677,13 +700,13 @@ function preDispenseCheckCallback() {
 			$('#progressok').removeClass('d-none');
 		}
 	}
-	else { console.log("Predispense Check failed with errors. Dispense not executed.") }
+	else { console.log("Predispense Check failed with errors. Dispense not executed."); }
 }
 
 function decrementCallback(myPassFail) {
 	console.log("checking decrement pass/fail " + myPassFail);
 	if (myPassFail === true) {
-		dispense(shotList);
+		dispense();
 	} else {
 		//TODO show error on decrement, 
 		waitForShowAndHide("#tinterInProgressModal");
