@@ -8,14 +8,14 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
   hosts:
-  - host: qa-shercolor.sherwin.com
+  - host: qa-shercolor.np-dmz-rancher.sherwin.com
     paths:
       - path: /shercolorweb
         pathType: Prefix   
   tls:
   - hosts:
-    - qa-shercolor.sherwin.com
-
+    - qa-shercolor.np-dmz-rancher.sherwin.com
+    
 replicaCount: 3    
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
