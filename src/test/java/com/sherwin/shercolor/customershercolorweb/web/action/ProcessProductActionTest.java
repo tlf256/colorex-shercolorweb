@@ -2,14 +2,16 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import javax.servlet.http.HttpSession;
 
+import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -18,6 +20,7 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
+	ProcessProductAction target;
 
 	@Test
 	public void testfillProdNbrActionA() {
@@ -129,5 +132,101 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 			e.printStackTrace();
 		}	
 		System.out.println("End testListProductsFillProdB");
+	}
+	
+	@Test
+	public void testExecuteSuccess() { 
+		ActionProxy proxy = getActionProxy("/ProcessProductAction");
+		target = (ProcessProductAction) proxy.getAction();
+		reqObj.setCustomerID("CCF");
+		reqObj.setColorType("CUSTOM");
+		reqObj.setColorID("RED");
+		reqObj.setColorComp("CUSTOM");
+		reqObj.setIntBases("");
+		reqObj.setExtBases("");
+		request.setParameter("partialProductNameOrId", "640389151");
+		request.setParameter("reqGuid",reqGuid);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+
+		try {
+			String success = executeAction("/ProcessProductAction");
+			assertNotNull(success);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	@Test
+	public void testExecuteInvalidProduct() { 
+		ActionProxy proxy = getActionProxy("/ProcessProductAction");
+		target = (ProcessProductAction) proxy.getAction();
+		reqObj.setCustomerID("CCF");
+		reqObj.setColorType("CUSTOM");
+		reqObj.setColorID("RED");
+		reqObj.setColorComp("CUSTOM");
+		reqObj.setIntBases("");
+		reqObj.setExtBases("");
+		request.setParameter("partialProductNameOrId", "99ZZ99ZZ9");
+		request.setParameter("reqGuid",reqGuid);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+
+		try {
+			String success = executeAction("/ProcessProductAction");
+			assertNotNull(success);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	@Test
+	public void testExecuteInvalidSize() { 
+		ActionProxy proxy = getActionProxy("/ProcessProductAction");
+		target = (ProcessProductAction) proxy.getAction();
+		reqObj.setCustomerID("CCF");
+		reqObj.setColorType("SHERWIN-WILLIAMS");
+		reqObj.setColorID("1001");
+		reqObj.setColorComp("SHERWIN-WILLIAMS");
+		reqObj.setIntBases("");
+		reqObj.setExtBases("");
+		request.setParameter("partialProductNameOrId", "100000157");
+		request.setParameter("reqGuid",reqGuid);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+
+		try {
+			String success = executeAction("/ProcessProductAction");
+			assertNotNull(success);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	@Test
+	public void testExecuteInvalidProductColor() { 
+		ActionProxy proxy = getActionProxy("/ProcessProductAction");
+		target = (ProcessProductAction) proxy.getAction();
+		reqObj.setCustomerID("CCF");
+		reqObj.setColorType("SHERWIN-WILLIAMS");
+		reqObj.setColorID("VS301");
+		reqObj.setColorComp("SHERWIN-WILLIAMS");
+		reqObj.setIntBases("");
+		reqObj.setExtBases("");
+		request.setParameter("partialProductNameOrId", "640515755");
+		request.setParameter("reqGuid",reqGuid);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+
+		try {
+			String success = executeAction("/ProcessProductAction");
+			assertNotNull(success);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
 	}
 }
