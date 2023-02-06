@@ -17,6 +17,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import org.springframework.stereotype.Component;
 
+@Component
 public class LogoutAction extends ActionSupport  implements SessionAware, LoginRequired  {
 
 	private static final long serialVersionUID = 1L;
@@ -25,9 +26,6 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 	static Logger logger = LogManager.getLogger(LogoutAction.class);
 	private String reqGuid;
 	private String loMessage;
-	
-	HttpServletRequest request = ServletActionContext.getRequest();
-	HttpServletResponse response = ServletActionContext.getResponse();
 
 	public String display() {
 		//logger.info("in logoutAction.display, sherLinkURL is " + sherLinkURL + " reqGuid is " + reqGuid);
@@ -36,6 +34,10 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 	
 	@SuppressWarnings("rawtypes")
 	public String execute() {
+
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+
 		String returnStatus = SUCCESS;
 		try {
 			request.logout();

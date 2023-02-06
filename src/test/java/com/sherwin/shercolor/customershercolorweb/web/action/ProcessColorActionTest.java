@@ -3,14 +3,17 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
 
 import static org.junit.Assert.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +49,7 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 	}
 
 	@Test
-	public void testListColors() {
+	public void testListColors() throws ServletException, UnsupportedEncodingException {
 		ActionProxy proxy = getActionProxy("/listColors");
 		target = (ProcessColorAction) proxy.getAction();
 		
@@ -59,68 +62,60 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 		
-		try {
-			String success = executeAction("/listColors");
-			assertNotNull(success);
-			
-			//Compet autocomplete w/ company
-			target.setPartialColorNameOrId("101-5");
-			target.setColorName("TINT OF TURQUOISE");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("selectedCoType", "COMPET");
-			request.setParameter("selectedCompany", "PPG");
-			request.setParameter("colorData", "101-5");
-			request.setSession(session);
-			
-			success = executeAction("/listColors");
-			assertNotNull(success);
-			
-			//Compet autocomplete w/o company
-			target.setPartialColorNameOrId("101-5");
-			target.setColorName("TINT OF TURQUOISE");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("selectedCoType", "COMPET");
-			request.setParameter("selectedCompany", "ALL");
-			request.setParameter("colorData", "101-5");
-			request.setSession(session);
-			
-			success = executeAction("/listColors");
-			assertNotNull(success);
-			
-			//Nat. Acct. autocomplete w/ company
-			target.setPartialColorNameOrId("CL-5");
-			target.setColorName("");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "CL-5");
-			request.setParameter("selectedCompany", "ALDI INC");
-			request.setParameter("selectedCoType", "NAT");
-			request.setSession(session);
-			
-			success = executeAction("/listColors");
-			assertNotNull(success);
-			
-			//Nat. Acct. autocomplete w/ company
-			target.setPartialColorNameOrId("CL-5");
-			target.setColorName("");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("selectedCompany", "ALL");
-			request.setParameter("colorData", "CL-5");
-			request.setSession(session);
-			
-			success = executeAction("/listColors");
-			assertNotNull(success);
-			
-			
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-    }
- }
+
+		String success = executeAction("/listColors");
+		assertTrue(StringUtils.contains(success,"SHERWIN-WILLIAMS 6000"));
+
+		//Compet autocomplete w/ company
+		target.setPartialColorNameOrId("101-5");
+		target.setColorName("TINT OF TURQUOISE");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("selectedCoType", "COMPET");
+		request.setParameter("selectedCompany", "PPG");
+		request.setParameter("colorData", "101-5");
+		request.setSession(session);
+
+		success = executeAction("/listColors");
+		assertTrue(StringUtils.contains(success,"101-5"));
+
+		//Compet autocomplete w/o company
+		target.setPartialColorNameOrId("101-5");
+		target.setColorName("TINT OF TURQUOISE");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("selectedCoType", "COMPET");
+		request.setParameter("selectedCompany", "ALL");
+		request.setParameter("colorData", "101-5");
+		request.setSession(session);
+
+		success = executeAction("/listColors");
+		assertTrue(StringUtils.contains(success,"101-5"));
+
+		//Nat. Acct. autocomplete w/ company
+		target.setPartialColorNameOrId("CL-5");
+		target.setColorName("");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "CL-5");
+		request.setParameter("selectedCompany", "ALDI INC");
+		request.setParameter("selectedCoType", "NAT");
+		request.setSession(session);
+
+		success = executeAction("/listColors");
+		assertTrue(StringUtils.contains(success,"CL-5"));
+
+		//Nat. Acct. autocomplete w/ company
+		target.setPartialColorNameOrId("CL-5");
+		target.setColorName("");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("selectedCompany", "ALL");
+		request.setParameter("colorData", "CL-5");
+		request.setSession(session);
+
+		success = executeAction("/listColors");
+		assertTrue(StringUtils.contains(success,"CL-5"));
+ 	}
 
 	@Test
-	public void testColorUserNextAction_compareColors() {
+	public void testColorUserNextAction_compareColors() throws Exception {
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
@@ -140,21 +135,13 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
         sessionMap.put(reqObj.getGuid(), reqObj);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
-        
-		try {
-			String result = proxy.execute();
-			
-			assertEquals("compareColors", result);
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+
+		String result = proxy.execute();
+		assertEquals("compareColors", result);
 	}
 	
 	@Test
-	public void testColorUserNextAction_compareColors_input() {
+	public void testColorUserNextAction_compareColors_input() throws Exception {
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
@@ -177,44 +164,26 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 	    sessionMap.put(reqGuid, reqObj);
 	    
 	    proxy.getInvocation().getInvocationContext().setSession(sessionMap);
-	    
-		try {
-			String result = proxy.execute();
-			
-			assertEquals(Action.INPUT, result);
-			
-		} catch (Exception e) {
-			try {
-				throw(e.getCause());
-			} catch (Throwable e1) {
-				e1.printStackTrace();
-			}
-	   }
+
+		String result = proxy.execute();
+		assertEquals(Action.INPUT, result);
 	}
 
 
-	public void testDisplay() {
+	public void testDisplay() throws ServletException, UnsupportedEncodingException {
 		ActionProxy proxy = getActionProxy("/displayColorAction");
 		target = (ProcessColorAction) proxy.getAction();
 		
 		request.setParameter("reqGuid", reqObj.getGuid());
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
-		
-		try {
-			String success = executeAction("/displayColorAction");
-			assertNotNull(success);
-			
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+
+		String success = executeAction("/displayColorAction");
+		assertEquals(Action.SUCCESS,success);
 	}
 	
 	@Test
-	public void testExecute() {
+	public void testExecute() throws ServletException, UnsupportedEncodingException {
 		ActionProxy proxy = getActionProxy("/colorUserNextAction");
 		target = (ProcessColorAction) proxy.getAction();
 		
@@ -228,106 +197,100 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 		
-		try {
-			String success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//SW test execute simulating autocomplete selection
-			target.setColorName("SILVERPLATE");
-			target.setPartialColorNameOrId("SHERWIN-WILLIAMS 1001");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "[{\"colorNumber\":\"1001\",\"companyName\":\"SHERWIN-WILLIAMS\",\"label\":\"1001 SILVERPLATE\",\"value\":\"SHERWIN-WILLIAMS 1001\"}]");
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//SW test execute simulating autocomplete selection failure on match
-			target.setColorName("SILVERPLATE");
-			target.setPartialColorNameOrId(" 1001");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "[{\"colorNumber\":\"1001\",\"companyName\":\"SHERWIN-WILLIAMS\",\"label\":\"1001 SILVERPLATE\",\"value\":\"SHERWIN-WILLIAMS 1001\"}]");
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//Nat Acct. execute w/ interior forced product.
-			target.setPartialColorNameOrId("CL-5");
-			
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "CL-5");
-			request.setParameter("selectedCompany", "ALDI INC");
-			request.setParameter("selectedCoTypes", "NAT");
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//Nat Acct. execute w/ Int/Ext forced product.
-			target.setPartialColorNameOrId("CL-1");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "CL-1");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//Nat. Acct. execute w/ Exterior forced product.
-			target.setPartialColorNameOrId("EP3");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "EP3");
-			request.setParameter("selectedCompany", "CHILIS RESTAURANTS");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//Nat. Acct. execute with xref-id xref-comp values.
-			target.setPartialColorNameOrId("C-2");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "C-2");
-			request.setParameter("selectedCompany", "BUFFALO WILD WINGS");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//Custom execute.
-			target.setPartialColorNameOrId("CUSTOM");
-			request.setParameter("selectedCoTypes", "CUSTOM");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
-			
-			//Competitive execute
-			target.setPartialColorNameOrId("101-5");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("colorData", "101-5");
-			request.setParameter("selectedCoTypes", "COMPET");
-			request.setParameter("selectedCompany", "PPG");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorUserNextAction");
-			assertNotNull(success);
 
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-    }
+		String success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//SW test execute simulating autocomplete selection
+		target.setColorName("SILVERPLATE");
+		target.setPartialColorNameOrId("SHERWIN-WILLIAMS 1001");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "[{\"colorNumber\":\"1001\",\"companyName\":\"SHERWIN-WILLIAMS\",\"label\":\"1001 SILVERPLATE\",\"value\":\"SHERWIN-WILLIAMS 1001\"}]");
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//SW test execute simulating autocomplete selection failure on match
+		target.setColorName("SILVERPLATE");
+		target.setPartialColorNameOrId(" 1001");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "[{\"colorNumber\":\"1001\",\"companyName\":\"SHERWIN-WILLIAMS\",\"label\":\"1001 SILVERPLATE\",\"value\":\"SHERWIN-WILLIAMS 1001\"}]");
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Nat Acct. execute w/ interior forced product.
+		target.setPartialColorNameOrId("CL-5");
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "CL-5");
+		request.setParameter("selectedCompany", "ALDI INC");
+		request.setParameter("selectedCoTypes", "NAT");
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Nat Acct. execute w/ Int/Ext forced product.
+		target.setPartialColorNameOrId("CL-1");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "CL-1");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Nat. Acct. execute w/ Exterior forced product.
+		target.setPartialColorNameOrId("EP3");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "EP3");
+		request.setParameter("selectedCompany", "CHILIS RESTAURANTS");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Nat. Acct. execute with xref-id xref-comp values.
+		target.setPartialColorNameOrId("C-2");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "C-2");
+		request.setParameter("selectedCompany", "BUFFALO WILD WINGS");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Custom execute.
+		target.setPartialColorNameOrId("CUSTOM");
+		request.setParameter("selectedCoTypes", "CUSTOM");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Competitive execute
+		target.setPartialColorNameOrId("101-5");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("colorData", "101-5");
+		request.setParameter("selectedCoTypes", "COMPET");
+		request.setParameter("selectedCompany", "PPG");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorUserNextAction");
+		assertEquals(Action.SUCCESS,success);
+
   }
 
   @Test
-	public void testColorUserNextAction_measure() {
+	public void testColorUserNextAction_measure() throws Exception {
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
@@ -346,21 +309,13 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
         sessionMap.put(reqObj.getGuid(), reqObj);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
-        
-		try {
-			String result = proxy.execute();
-			
-			assertEquals("measure", result);
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+
+		String result = proxy.execute();
+		assertEquals("measure", result);
 	}
 	
 	@Test
-	public void testColorLookupAction() {
+	public void testColorLookupAction() throws ServletException, UnsupportedEncodingException {
 		ActionProxy proxy = getActionProxy("/colorLookupSearchAction");
 		target = (ProcessColorAction) proxy.getAction();
 		
@@ -374,58 +329,50 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
 		request.setParameter("reqGuid", reqObj.getGuid());
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
-		
-		try {
-			String success = executeAction("/colorLookupSearchAction");
-			assertNotNull(success);	
-			
-			//Nat. Acct. lookup
-			target.setColorID("1631");
-			target.setColorName("MIDNIGHT OIL");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("selectedCompany", "BEST BUY");
-			request.setParameter("selectedCoTypes", "NAT");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorLookupSearchAction");
-			assertNotNull(success);
-			
-			//SW Lookup
-			target.setColorID("1015");
-			target.setColorName("SKYLINE STEEL");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("locatorId", "283-C3");
-			request.setParameter("selectedCoTypes", "SW");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorLookupSearchAction");
-			assertNotNull(success);
-			
-			
-			//Invalid Lookup
-			target.setColorID("1631");
-			target.setColorName("MIDNIGHT OIL");
-			request.setParameter("reqGuid", reqObj.getGuid());
-			request.setParameter("selectedCompany", "ALL");
-			request.setParameter("selectedCoTypes", "INVALID");
-			session.setAttribute(reqObj.getGuid(), reqObj);
-			request.setSession(session);
-			
-			success = executeAction("/colorLookupSearchAction");
-			assertNotNull(success);
-						
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+
+		String success = executeAction("/colorLookupSearchAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//Nat. Acct. lookup
+		target.setColorID("1631");
+		target.setColorName("MIDNIGHT OIL");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("selectedCompany", "BEST BUY");
+		request.setParameter("selectedCoTypes", "NAT");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorLookupSearchAction");
+		assertEquals(Action.SUCCESS,success);
+
+		//SW Lookup
+		target.setColorID("1015");
+		target.setColorName("SKYLINE STEEL");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("locatorId", "283-C3");
+		request.setParameter("selectedCoTypes", "SW");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		assertEquals(Action.SUCCESS,success);
+
+		success = executeAction("/colorLookupSearchAction");
+		assertEquals(Action.SUCCESS,success);
+
+
+		//Invalid Lookup
+		target.setColorID("1631");
+		target.setColorName("MIDNIGHT OIL");
+		request.setParameter("reqGuid", reqObj.getGuid());
+		request.setParameter("selectedCompany", "ALL");
+		request.setParameter("selectedCoTypes", "INVALID");
+		session.setAttribute(reqObj.getGuid(), reqObj);
+		request.setSession(session);
+
+		success = executeAction("/colorLookupSearchAction");
+		assertEquals(Action.SUCCESS,success);
 	}
 
   @Test
-	public void testColorUserNextAction_existingMatch() {
+	public void testColorUserNextAction_existingMatch() throws Exception {
 		reqObj.setCustomerID("TEST");
 		reqObj.setCustomerType("CUSTOMER");
 		
@@ -444,16 +391,8 @@ public class ProcessColorActionTest extends StrutsSpringJUnit4TestCase<ProcessCo
         sessionMap.put(reqObj.getGuid(), reqObj);
         
         proxy.getInvocation().getInvocationContext().setSession(sessionMap);
-        
-		try {
-			String result = proxy.execute();
-			
-			assertEquals("existingMatch", result);
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+
+		String result = proxy.execute();
+		assertEquals("existingMatch", result);
 	}
 }
