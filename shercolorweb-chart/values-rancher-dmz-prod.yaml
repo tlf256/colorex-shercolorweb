@@ -16,9 +16,10 @@ ingress:
   - hosts:
     - shercolor.sherwin.com
 
+
 replicaCount: 3
 
 dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
-springProfilesActive: "prod,oracle,rancher"
+springProfilesActive: "prod,oracle,rancher-dmz"
 
 env: prod
