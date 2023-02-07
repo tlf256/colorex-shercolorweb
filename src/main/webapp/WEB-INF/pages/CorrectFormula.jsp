@@ -122,7 +122,7 @@
 		 /*These checks are for color eye corrections
 		 This has been tested and finished but is to be commented out for the time being 
 		 Uncomment this block out once a color formulation service backend has been finished for coloreye corrections 
-		 See JIRA ticket SCD-111 
+		 See JIRA ticket SCD-111 */
 		 
 		//customerId, controlNbr, lineNbr 
 		ws_coloreye.receiver = RecdSpectroMessage;
@@ -132,13 +132,15 @@
 		//new stuff
 		isCharacterized();
 		//if fill limit reached
-		isFull();*/
+		isFull();
 		
 		$("#formulaAdditions > tbody").empty();
 		$("#addIngredients").show();
 		$("#currentCont").text($("#mainForm_nextUnitNbr").val());
 		$('#pct').text('');
-		$('#percentPrompt').toggle();
+		if($('#percentPrompt').css("display") !== 'none') {
+			$('#percentPrompt').toggle();
+		}
 		$("#addStep").hide();
 		$("#acceptContainer").hide();
 		$("#skipContainer").hide();
@@ -215,7 +217,11 @@
 		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
-		preDispenseCheck();
+		if($("#mainForm_sessionHasTinter").val()=="true" && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
+			preDispenseCheck();
+		} else {
+			$("#startDispenseButton").click();
+		}
 	}
 
 	function mistintContainerClick(){
@@ -510,7 +516,7 @@
 		
 	function cancelAddClick(){
 		$("#addIngredients").hide();
-		
+		$("#formulaAdditions > tbody").empty();
 		updateButtonDisplay();
 	}
 
@@ -526,7 +532,11 @@
 		newRow = newRow + '</tr>';
 		$("#formulaAdditions > tbody:last-child").append(newRow);
 		$('html,body').animate({scrollTop: $("#formulaAdditions > tbody:last-child").offset().top -= 80});
-		rebuildColorantList();
+		if($(mainForm_sessionHasTinter).val() === 'true' && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
+			rebuildColorantList();
+		} else {		
+			document.getElementById(myClrnt).remove();
+		}
 	}
 
 	function percentAddClick(){
@@ -583,7 +593,11 @@
     					$('#pct').text('');
     					$('#percentPrompt').toggle();
     				});
-    				rebuildColorantList();
+    				if($(mainForm_sessionHasTinter).val() === 'true' && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
+    					rebuildColorantList();
+    				} else {
+    					loadManualDispenseColorantDropdown();
+    				}
             	}
 			},
 			error: function(err){
@@ -648,6 +662,8 @@
 		shotList = [];
 		var invalidFlag = false;
 		var correctionList = [];
+		var eventTriggerId = event.target.id;
+
 		$('#formulaAdditions > tbody tr').each(function(){
             var rowClrntString = $(this).find('#clrntString').text();
             var rowIncrArray = [];
@@ -697,7 +713,7 @@
     					console.log(shotList); // After removing potential Zero Shot colorants
     					
     					// start dispense process (productFillLevelCheck --> preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
-    					productFillLevelCheck();
+    					productFillLevelCheck(eventTriggerId);
                 	}
 	            },
 	            error: function(textStatus, errorThrown ) {
@@ -750,18 +766,30 @@
 	}
 	
 	function validateReason(invalidFlag){
+		var isInputInvalid = false;
+		
 		//validate reason text, check for length
 		if($('#reason').val().length < 2 || $('#reason').val().length > 100){
-			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
+			isInputInvalid = true;
+			$('#reason').attr("data-content", '<s:text name="correctFormula.reasonMustBeGtTwoChar" />');
+		// keep < and > characters out of reason input
+		} else if($('#reason').val().includes(">") || $('#reason').val().includes("<")){
+			isInputInvalid = true;
+			$('#reason').attr("data-content", '<s:text name="global.invalidEntryLtGt" />');
+		}
+
+		if(isInputInvalid) {
 			console.log("Invalid entries detected.");
+			$('html,body').animate({scrollTop: $('#reason').offset().top -= 80});
 			$('#reason').attr("data-toggle", "popover");
 			$('#reason').attr("data-placement","top");
-			$('#reason').attr("data-content", '<s:text name="correctFormula.reasonMustBeGtTwoChar" />');
 			$('#reason').popover({trigger : 'manual'});
 			$('#reason').popover('toggle');
 			$('.popover').addClass('popover-danger');
 			return true;
-		}else{return false;}
+		}
+		return false;
+		
 	}
 	
 	
@@ -1091,7 +1119,7 @@ function IllumModalClose() {
 	
 </script>
 <script type="text/javascript"> // dispense checks
-	function productFillLevelCheck(){
+	function productFillLevelCheck(eventTriggerId){
 		// Check Colorant Load in can and see if space avail in can
 		var ozEntered = 0.0;
 		//shotList is the colorant they want to add
@@ -1133,7 +1161,13 @@ function IllumModalClose() {
 			}
 		} else {
 			console.log("product fill OK");
-			preDispenseCheck();
+			//Run preDispenseCheck for tinter when clicking dispense addition button.
+			//Otherwise, skip checks and write the dispense for hand dispense upon confirmation.
+			if(eventTriggerId === 'dispenseAdd') {
+				preDispenseCheck();
+			} else {
+				$('#confirmHandDispenseModal').modal('show');
+			}
 		}
 	}
 
@@ -1359,6 +1393,28 @@ function IllumModalClose() {
 		// ajax call to convert correctionList to dispenseItems
         var str = { "reqGuid" : $('#reqGuid').val(), "jsDateString" : curDate.toString(), "cycle" : $("#mainForm_currCycle").val(), "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),"reason" : $("#reason").val(), "stepStatus": $("#mainForm_stepStatus").val(), "stepMethod":method, "shotList" : shotList};
         var jsonIN = JSON.stringify(str);
+		saveCorrectionStep(jsonIN, "Tinter", return_message);
+	}
+	
+    function writeHandDispense() {
+		//Build correction step info and save to DB
+		var curDate = new Date();
+		// ajax call to convert correctionList to dispenseItems
+        var str = { 
+				    "reqGuid": $('#reqGuid').val(),
+				    "jsDateString": curDate.toString(),
+				    "cycle": $("#mainForm_currCycle").val(),
+				    "nextUnitNbr": $("#mainForm_nextUnitNbr").val(),
+				    "reason": $("#reason").val(),
+				    "stepStatus": $("#mainForm_stepStatus").val(),
+				    "stepMethod": method,
+				    "shotList": shotList
+				  };
+        var jsonIN = JSON.stringify(str);
+		saveCorrectionStep(jsonIN, "Hand", "");
+    }
+    
+    function saveCorrectionStep(jsonIN, dispenseType, return_message) {
         $.ajax({	
             url : "saveCorrectionStepAction.action",
             type: "POST",
@@ -1382,21 +1438,26 @@ function IllumModalClose() {
     						// not end of cycle just refresh page
     						reloadScreen()
     					}
+    					
     					if (dispenseAccepted == true && printerConfig && printerConfig.printOnDispense) {
     						str = { "reqGuid" : data.reqGuid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : true, "shotList" : shotList};
     						printJsonIN = JSON.stringify(str);
     						printOnDispenseGetJson(data.reqGuid,printJsonIN);
     						dispenseAccepted == false;
     					}
-    					sendingDispCommand = "false";
-						// send tinter event (no blocking here)
-						var curDate = new Date();
-						var myGuid = $( "#reqGuid" ).val();
-						var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-						var tedArray = [teDetail];
-						sendTinterEvent(myGuid, curDate, return_message, tedArray);
     					
+    					if(dispenseType === "Tinter") {
+    						console.log("dispense type is Tinter for this correction. Writing tinter event.");
+    						sendingDispCommand = "false";
+							// send tinter event (no blocking here)
+							var curDate = new Date();
+							var myGuid = $( "#reqGuid" ).val();
+							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+							var tedArray = [teDetail];
+							sendTinterEvent(myGuid, curDate, return_message, tedArray);
+    					}
     					//alert("Write Successful");
+    					
     				} else {
     					// Error Tell the user
     					//console.log("Write Failed!" + data.errorMessage);
@@ -1419,8 +1480,9 @@ function IllumModalClose() {
 				$("#tinterErrorListSummary").text('<s:text name="correctFormula.pleaseRetry" />');
 				$("#tinterErrorListModal").modal('show');
             }
-        });
-	}
+        });	
+    }
+    
 	</script>
 	<script type="text/javascript"> //print functions
 	function ParsePrintMessage() {
@@ -1530,41 +1592,15 @@ function IllumModalClose() {
 				rotateIcon();
 				$("#tinterInProgressTitle").text('<s:text name="global.dispenseInProgress" />');
 				$("#tinterInProgressMessage").text('<s:text name="global.pleaseWaitTinterDispense" />');
-				
-				
 				// Call decrement colorants which will call dispense
 				decrementColorantLevels();
 			}
 		});
 		
-		// keep < and > characters out of reason input
-		$(document).on({
-			'keypress blur':function(){
-				try{
-					if(event.key == ">" || event.key == "<"){
-						throw '<s:text name="global.noLtOrGt" />';
-					}
-					if($(this).val().includes(">") || $(this).val().includes("<")){
-						throw '<s:text name="global.invalidEntryLtGt" />';
-					}
-					$(document).find('#errortxt').remove();
-					$(':button').attr('disabled', false);
-				} catch(msg){
-					if(event.type=="keypress"){
-						event.preventDefault();
-					}
-					if(!$(document).find('#errortxt').is(':visible')){
-						$(this).parent().append('<div id="errortxt" class="text-danger mt-2"></div>');
-					}
-					$(document).find('#errortxt').text(msg);
-					if(event.type=="blur"){
-						$(this).focus();
-						$(':button').attr('disabled', true);
-					}
-				}
-			}
-		}, '#reason');
-		
+		$('#confirmHandDispenseAddition').on('click', function() {
+			writeHandDispense();
+		});
+	
 		//Hide unnecessary rows onload
 		var dupText = [];
 		var cycle = <s:property value="%{cycle}"/>;
@@ -1712,6 +1748,8 @@ function IllumModalClose() {
  						<s:hidden name="stepStatus" value="OPEN"/>
  						<s:hidden name="acceptedContNbr" value="%{acceptedContNbr}"/>
  						<s:hidden name="mergeCorrWithStartingForm" value="%{mergeCorrWithStartingForm}"/>
+ 						<s:hidden name="formulaClrntSysId" id="formulaClrntSys" value="%{#session[reqGuid].displayFormula.clrntSysId}" />
+ 						<s:hidden name="tinterClrntSysId" id="tinterClrntSys" value="%{#session[reqGuid].tinter.clrntSysId}" />
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
@@ -1835,13 +1873,13 @@ function IllumModalClose() {
 								<!-- This has been tested and finished but is to be commented out for the time being -->
 								<!-- Uncomment this block out once a color formulation service backend has been finished for coloreye corrections -->
 								<!-- See JIRA ticket SCD-111 -->
-								<!--<tr><td>
+								<tr><td>
 								<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
 									<button type="button" class="btn btn-secondary btn-block" id="eyeAdd" onclick="hasIllum()">
 											<s:text name="correctFormula.colorEyeAddition"></s:text>
 										</button>
 									</div>
-								</td></tr>-->
+								</td></tr>
 								<tr><td>
 									<button type="button" class="btn btn-secondary btn-block dropdown-toggle" id="manualAdd" data-toggle="dropdown">
 										<s:text name="correctFormula.manualAddition"></s:text>
@@ -1859,8 +1897,15 @@ function IllumModalClose() {
 									</button>
 								</td></tr>
 								<tr><td>
-									<button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">
-										<s:text name="correctFormula.dispenseAddition"></s:text>
+									<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
+									    <button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">
+										    <s:text name="correctFormula.dispenseAddition"></s:text>
+									    </button>
+									</div>
+								</td></tr>
+								<tr><td>
+									<button type="button" class="btn btn-secondary btn-block" id="dispenseAddManual" onclick="dispenseAddClick()">
+										<s:text name="global.handDispense"></s:text>
 									</button>
 								</td></tr>
 								<tr><td>
@@ -1930,7 +1975,26 @@ function IllumModalClose() {
 							</div>
 						</div>
 					</div>
-				</div>			    
+				</div>
+				
+				<!-- Hand Dispense Modal Window for Confirmation -->
+			    <div class="modal fade" aria-labelledby="confirmHandDispenseModal" aria-hidden="true"  id="confirmHandDispenseModal" role="dialog">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><s:text name="global.confirmDispense"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}" ><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<p><s:text name="correctFormula.confirmHandDispenseOfAddition"></s:text></p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal"><s:text name="global.no"></s:text></button>
+	        					<button type="button" class="btn btn-primary" id="confirmHandDispenseAddition"><s:text name="global.yes"></s:text></button>
+							</div>
+						</div>
+					</div>
+				</div>				    
 
 			    <!-- Tinter In Progress Modal Window -->
 			    <div class="modal fade" aria-labelledby="tinterInProgressModal" aria-hidden="true"  id="tinterInProgressModal" role="dialog" data-backdrop="static" data-keyboard="false">
@@ -2373,13 +2437,52 @@ function IllumModalClose() {
 				   scrollTop: $(document).height()-$(window).height()}, 
 				   1400, 
 				   "easeOutQuint"
-			);
+			);			
 		});
 
 		function updateButtonDisplay(){
 			$("#mainForm_displayFormulaAction").show(); //Leave button
-			if($("#mainForm_sessionHasTinter").val()=="true"){
-				if($("#mainForm_corrStatus").val()=="NONE"){
+			if($("#mainForm_corrStatus").val()=="NONE"){
+				$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
+						'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
+				$("#startNewCycle").hide();
+				$("#addStep").show();
+				$("#acceptContainer").hide();
+				$("#mistintContainer").hide();
+				$("#dispenseAccepted").hide();
+				$("#skipContainer").hide();
+			} 
+			if($("#mainForm_corrStatus").val()=="NEWCYCLE"){
+				var prevCycle = <s:property value="%{cycle}"/> - 1;
+				$("#currentPrompt").text('<s:text name="correctFormula.correctionCycleCompleted"><s:param>' + prevCycle + '</s:param></s:text>');
+				$("#startNewCycle").show();
+				$("#addStep").hide();
+				$("#acceptContainer").hide();
+				$("#mistintContainer").hide();
+				$("#dispenseAccepted").hide();
+				$("#skipContainer").hide();
+			}
+			if($("#mainForm_corrStatus").val()=="MIDUNIT"){
+				$("#currentPrompt").text('<s:text name="correctFormula.currentlyCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' + 
+						'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
+				$("#startNewCycle").hide();
+				$("#addStep").show();
+				$("#acceptContainer").show();
+				$("#mistintContainer").show();
+				$("#dispenseAccepted").hide();
+				$("#skipContainer").hide();
+			}
+			if($("#mainForm_corrStatus").val()=="MIDCYCLE"){
+				if($("#mainForm_acceptedContNbr").val()>0){
+					$("#currentPrompt").text('<s:text name="correctFormula.chooseAction"><s:param><s:property value="%{nextUnitNbr}"/>' + 
+							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
+					$("#startNewCycle").hide();
+					$("#addStep").hide();
+					$("#acceptContainer").hide();
+					$("#mistintContainer").hide();
+					$("#dispenseAccepted").show();
+					$("#skipContainer").show();
+				} else {
 					$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
 							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
 					$("#startNewCycle").hide();
@@ -2388,58 +2491,67 @@ function IllumModalClose() {
 					$("#mistintContainer").hide();
 					$("#dispenseAccepted").hide();
 					$("#skipContainer").hide();
-				} 
-				if($("#mainForm_corrStatus").val()=="NEWCYCLE"){
-					var prevCycle = <s:property value="%{cycle}"/> - 1;
-					$("#currentPrompt").text('<s:text name="correctFormula.correctionCycleCompleted"><s:param>' + prevCycle + '</s:param></s:text>');
-					$("#startNewCycle").show();
-					$("#addStep").hide();
-					$("#acceptContainer").hide();
-					$("#mistintContainer").hide();
-					$("#dispenseAccepted").hide();
-					$("#skipContainer").hide();
 				}
-				if($("#mainForm_corrStatus").val()=="MIDUNIT"){
-					$("#currentPrompt").text('<s:text name="correctFormula.currentlyCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' + 
-							'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
-					$("#startNewCycle").hide();
-					$("#addStep").show();
-					$("#acceptContainer").show();
-					$("#mistintContainer").show();
-					$("#dispenseAccepted").hide();
-					$("#skipContainer").hide();
-				}
-				if($("#mainForm_corrStatus").val()=="MIDCYCLE"){
-					if($("#mainForm_acceptedContNbr").val()>0){
-						$("#currentPrompt").text('<s:text name="correctFormula.chooseAction"><s:param><s:property value="%{nextUnitNbr}"/>' + 
-								'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
-						$("#startNewCycle").hide();
-						$("#addStep").hide();
-						$("#acceptContainer").hide();
-						$("#mistintContainer").hide();
-						$("#dispenseAccepted").show();
-						$("#skipContainer").show();
-					} else {
-						$("#currentPrompt").text('<s:text name="correctFormula.startCorrectingContainer"><s:param><s:property value="%{nextUnitNbr}"/>' +
-								'</s:param><s:param>${sessionScope[thisGuid].quantityDispensed}</s:param></s:text>');
-						$("#startNewCycle").hide();
-						$("#addStep").show();
-						$("#acceptContainer").hide();
-						$("#mistintContainer").hide();
-						$("#dispenseAccepted").hide();
-						$("#skipContainer").hide();
-					}
-				}
-				// go get tinter info to load colorant dropdown
-				getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
-			} else {
-				$("#currentPrompt").text("");
-				$("#addStep").hide();
-				$("#acceptContainer").hide();
-				$("#mistintContainer").hide();
-				$("#skipContainer").hide();
-				$("#dispenseAccepted").hide();
 			}
+			// go get tinter info to load colorant dropdown
+			if($("#mainForm_sessionHasTinter").val()=="true"){
+				if($('#tinterClrntSys').val() !== $('#formulaClrntSys').val()) {
+					loadManualDispenseColorantDropdown();
+					$('#dispenseAdd').prop('disabled', true);
+					$('#dispenseAdd').css('pointer-events', 'none');
+					$('#disableWrapper').prop('title', '<s:text name="correctFormula.wrongTinterColorantSys" />');
+					$('#disableWrapper').css('cursor', 'not-allowed');
+					$('#dispenseAddManual').attr('class', 'btn btn-primary btn-block');
+					$('#dispenseAdd').attr('class', 'btn btn-secondary btn-block');
+					$('[data-toggle="tooltip"]').tooltip();
+				} else {
+					getSessionTinterInfo($("#reqGuid").val(),sessionTinterInfoCallback);
+				}
+			} else {
+				console.log("No tinter detected. Setting hand dispense as primary");
+				loadManualDispenseColorantDropdown();
+				$('#dispenseAdd').prop('disabled', true);
+				$('#dispenseAdd').css('pointer-events', 'none');
+				$('#disableWrapper').prop("title", '<s:text name="correctFormula.noTinterDetected" />');
+				$('#disableWrapper').css('cursor', 'not-allowed');
+				$('#dispenseAddManual').attr('class', 'btn btn-primary btn-block');
+				$('#dispenseAdd').attr('class', 'btn btn-secondary btn-block');
+				$('[data-toggle="tooltip"]').tooltip();
+			}
+		}
+		
+		function loadManualDispenseColorantDropdown() {
+			var clrntSys = $('#formulaClrntSys').val();
+			$.ajax({
+				url: 'getColorantsForManualCorrection.action',
+				dataType : "json",
+				data: {
+					'clrntSysId' : encodeURIComponent(clrntSys.trim()),
+					'reqGuid' : $("#reqGuid").val()
+				},
+				success: function(result){
+					$("#clrntList").empty();
+					$.each(result, function(index, item){
+						var clrntIdentifier = item.tintSysId + '-' + item.name;
+						var clrntAdded = false;
+						$('#formulaAdditions > tbody tr').each(function(){
+		            		var clrntInRow = $(this).find('#clrntString').text();
+		       	    		if (clrntInRow == clrntIdentifier){
+		           				clrntAdded = true;
+		            		}
+						});
+	       	    		if(!clrntAdded) {
+							var link = '<li class="dropdown-item" id=\''+item.tintSysId+'-'+item.name+'\'><a class="dropdown-item" href="#" onclick="addManClrnt(\''+item.tintSysId+'-'+item.name+'\')">'+item.tintSysId+'-'+item.name+'</a></li>';
+							$("#clrntList").append(link);
+	       	    		}
+					});
+				},
+				error: function(xhr, statusTxt) {
+					console.log(xhr.status);
+					console.log(xhr.statusTxt);
+				}
+			});
+			
 		}
 
 		</script>
