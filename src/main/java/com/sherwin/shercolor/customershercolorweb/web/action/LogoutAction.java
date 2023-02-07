@@ -36,7 +36,6 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 	public String execute() {
 
 		HttpServletRequest request = ServletActionContext.getRequest();
-		HttpServletResponse response = ServletActionContext.getResponse();
 
 		String returnStatus = SUCCESS;
 		try {
@@ -55,17 +54,8 @@ public class LogoutAction extends ActionSupport  implements SessionAware, LoginR
 			}
 			
 			////////////////////////////////////////////////////////////////////
-			//Remediate Qualys 150069 Static session ID 
-			try {
-				((org.apache.struts2.dispatcher.SessionMap) sessionMap).invalidate();
-			} catch (IllegalStateException e) {
-				logger.error(e.getMessage(), e);
-			}
-			//AND/OR
-			SessionMap mySession = (SessionMap) ActionContext.getContext().getSession();
-
-			//invalidate
-			mySession.invalidate();
+			//Remediate Qualys 150069 Static session ID
+			request.getSession().invalidate();
 			//END  Remediate Qualys 150069 Static session ID 
 			////////////////////////////////////////////////////////////////////
 			
