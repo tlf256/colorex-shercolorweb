@@ -10,6 +10,7 @@ function WSWrapper(devicecontext) {
         var ws;
         var self = this;
         var timeoutVar;
+        var receiver;
         
         //Detect browser and create ws
         var browser = getBrowser();
@@ -34,7 +35,12 @@ function WSWrapper(devicecontext) {
         	//console.log("recd msg: " + evt.data);
         	console.log("recd msg: " + encodeURI(evt.data));
         	self.wsmsg = evt.data;
-        	RecdMessage();
+        	if(self.receiver==null){
+				RecdMessage();
+			}
+        	else{
+				self.receiver();	
+			}
         };
         
         ws.onerror = function (evt) {
@@ -48,7 +54,12 @@ function WSWrapper(devicecontext) {
             } else {
             	self.wserrormsg = evt.data;
             }
-            RecdMessage();
+            if(self.receiver==null){
+				RecdMessage();
+			}
+        	else{
+				self.receiver();	
+			}
         };
 
         this.send = function (message, callback) {
