@@ -77,8 +77,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private CustomerService customerService;
 	@Autowired
 	private ColorMastService colorMastService;
-	private TranHistoryService tranHistoryService;
 	@Autowired
+	private TranHistoryService tranHistoryService;
+	
 
 	
 	public String checkForceProd() {
@@ -243,7 +244,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	
 	//Check if a color is characterized
 		public String checkCharacterizedProduct() {
-			CdsProdCharzd characterizedObj = productService.getCharacterizedProduct(prodNum, clrntSysId);
+			CdsProdCharzd characterizedObj = productService.readCdsProdCharzd(prodNum, clrntSysId);
 			if(characterizedObj!=null) {
 				setChard(true);
 				if(characterizedObj.getIsWhite()) {
@@ -256,7 +257,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 		//Check if a product has a primary illumination
 		public String checkIlluminatedProduct() {
-			CustWebTran illuminatedObj = productService.getIlluminatedProduct(customerId, controlNbr, lineNbr);
+			CustWebTran illuminatedObj = tranHistoryService.readTranHistory(customerId, controlNbr, lineNbr);
+			//CustWebTran illuminatedObj = productService.getIlluminatedProduct(customerId, controlNbr, lineNbr);
 				if(illuminatedObj!=null) {
 					if(illuminatedObj.getIllumPrimary() != null) {
 					setIllum(illuminatedObj.getIllumPrimary());
