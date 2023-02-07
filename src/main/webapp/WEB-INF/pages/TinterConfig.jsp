@@ -105,7 +105,7 @@
 		var calibration = null;
 		//alfa and santint do not have cal files that we manage
 		// TODO add AS 9500SW to this conditional?
-		if(mymodel != null && (!mymodel.includes("ALFA") && !mymodel.includes("SANTINT"))){  //these models do not have cal files
+		if(mymodel != null && (!mymodel.includes("ALFA") && !mymodel.includes("SANTINT") && !mymodel.includes("AS"))){  //these models do not have cal files
 			calibration =  new Calibration(mycolorantid, mymodel, myserial);
 			//console.log("calibration");
 			//console.log(calibration);
@@ -180,7 +180,6 @@
 				clrntSysId : tinter.clrntSysId,
 				tinterModel : tinter.model,
 				tinterSerialNbr : tinter.serialNbr,
-				tinterIp : tinter.tinterIp,
 				reqGuid : "${reqGuid}" //without this guid you will get a login exception and you won't even get an error
 			},
 			async : false,
@@ -198,7 +197,7 @@
 						config_tinter(objs.newtinter.clrntSysId,
 								objs.newtinter.model,
 								objs.newtinter.serialNbr,
-								objs.newTinter.tinterIp,
+								tinter.tinterIp,
 								objs.newtinter.canisterList);
 					} else {
 						
@@ -281,7 +280,13 @@
 			$('#btn_tinterConfig').prop('disabled', true);
 			tinter.clrntSysId = $('#selectClrntSysId').val();
 			tinter.model = $('#modelSelect').val();
-			getHostName();
+
+			// set timeout for retrieval to give 
+			// wait modal time to show
+			setTimeout(() => {
+				getHostName();
+			}, 1000);
+			
 		} else {
 			$('#tSerialNbr').focus();
 		}
@@ -367,8 +372,9 @@
 
 			// retrieve serial number and write hostname to file
 			// first get credentials
-			checkCredentials();
-
+			setTimeout(() => {
+				checkCredentials();
+			}, 1000);
 			
 		} else {
 			$('#tSerialNbr').val($('#tSerialNbr').val().toUpperCase());
@@ -432,9 +438,9 @@
 
 	$('#passwordModal').on('hidden-bs-modal', function(e){
 		// detect after updating credentials
-		init();
-		$("#detectInProgressModal").modal('show');
-		rotateIcon();
+		
+		//$("#detectInProgressModal").modal('show');
+		//rotateIcon();
 	});
 
 	$(document).on('click', '#updateCreds_btn', function(){
@@ -607,7 +613,7 @@
 		}
 		if(tinter.tinterIp == null) {
 			console.log("IP not set before receiving this message, getting current value");
-			tinter.model = $('#tIpAddr').val();
+			tinter.tinterIp = $('#tIpAddr').val();
 			console.log(tinter.tinterIp);
 		}
 		if(tinter.serialNbr == null) {
@@ -939,12 +945,16 @@
 			case 'Detect':
 			case 'Init':
 			case 'InitStatus':
-				let ucErrorMessage = return_message.errorMessage.trim()
-				if (ucErrorMessage == "" && return_message.commandRC == 2) {
-					// set a timeout for detect modal
-					setTimeout(function(){
-						waitForShowAndHide('#detectInProgressModal');
-					}, 2000);
+				if (return_message.commandRC == 2) {
+					// retrieve serial
+					var displayMessage = "Retrieving tinter serial...";
+					pleaseWaitModal_updateMsg(displayMessage);
+					getSerial();
+					waitForShowAndHide("#detectInProgressModal");
+					$("#detectStatusModal").modal('show');
+					$("#detectStatus").text(
+						'<s:text name="global.tinterDetectConfigComplete"/>');
+					sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				else {
 					$("#detectErrorModal").modal('show');
@@ -976,16 +986,17 @@
 						}
 					}
 				}
-				if (return_message.commandRC == 2) {
-					sendTinterEventConfig(reqGuid, curDate, return_message,null);
-				}
+				//if (return_message.commandRC == 2) {
+					//sendTinterEventConfig(reqGuid, curDate, return_message,null);
+				//}
 				break;
 			case 'GetHostName':
 				// check if the hostname was returned
 				// if so, set the value of the textfield
+				console.log("received GetHostName msg");
+				pleaseWaitModal_hide();
 				if(return_message.errorMessage != "" && return_message.commandRC == 2){
 					var ip = return_message.errorMessage.trim();
-					pleaseWaitModal_hide();
 					$('#tinterIp').removeClass('d-none');
 					$('#tIpAddr').val(ip);
 					$('#tIpAddr').focus();
@@ -993,61 +1004,93 @@
 				}
 				else if(return_message.errorMessage != "" && return_message.commandRC == 0) {
 					// error reading/writing hostname file
-					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>"
+					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>";
 					$('#error').html(errorText);
 				}
 				else {
 					// other unknown error
-					var errorText = "<br><h5>Error retrieving hostname</h5>"
+					var errorText = "<br><h5>Error retrieving hostname</h5>";
 					$('#error').html(errorText);
 				}
 				break;
 			case 'CheckCredentials':
+				
 				// check if credentials need updating
 				if(return_message.commandRC == 2){
 					// credentials do not need updating
 					// continue with configuration
-					init();
-					$("#detectInProgressModal").modal('show');
-					rotateIcon();
+					var displayMessage = "Detecting tinter...";
+					pleaseWaitModal_updateMsg(displayMessage);
+					setTimeout(() => {
+						init();
+					}, 1000);
+				}
+				else if(return_message.commandRC == -1){
+					// error
+					pleaseWaitModal_hide();
+					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>";
+					$('#error').html(errorText);
 				}
 				else {
 					// credentials need updated
 					// prompt for password
 					pleaseWaitModal_hide();
-					//$('#ipAddr').val(tinter.tinterIp);
-					$('#passwordModal').modal('show');
+					$('#ipAddr').val(tinter.tinterIp);
+					waitForShowAndHide('#passwordModal');
 				}
 				break;
 			case 'UpdateCredentials':
-				if(return_message.commandRC != 2) {
+				if(return_message.commandRC == 2) {
+					var dspMsg = "Detecting tinter..."
+					pleaseWaitModal_show(dspMsg, '#passwordModal');
+					init();
+					//waitForShowAndHide("#detectInProgressModal");
+					//$("#detectInProgressModal").modal('show');
+					//rotateIcon();
+				}
+				else {
 					// error updating credentials
 					pleaseWaitModal_hide();
-					var errorText = "<h6>" + return_message.errorMessage + "</h6>"
+					var errorText = "<h6>" + return_message.errorMessage + "</h6>";
 					$('#error').html(errorText);
 				}
 				break;
 			case 'GetSerialCode':
 				if(return_message.commandRC == 2) {
-					// set hostname
+					// parse serial nbr then set hostname
+					// leave wait modal displaying with previous msg
+					var serial = return_message.messageText.trim();
+					console.log("get serial code returned: " + serial);
+					tinter.serialNbr = serial;
+					$('#tSerialNbr').val(serial);
 					setHostName();
 				}
 				else {
 					//fail, display error message
+					pleaseWaitModal_hide();
+					var errorText = "<h6>" + return_message.errorMessage + "</h6>";
+					$('#error').html(errorText);
 				}
 				break;
 			case 'SetHostname':
 				if(return_message.commandRC == 2) {
 					// continue configuration
+					pleaseWaitModal_hide();
+					waitForShowAndHide("#detectInProgressModal");
+					config();
+					//$("#detectInProgressModal").modal('show');
+					//rotateIcon();
 				}
 				else {
 					// display error message
+					pleaseWaitModal_hide();
+					var errorText = "<h6>" + return_message.errorMessage + "</h6>";
+					$('#error').html(errorText);
 				}
 				break;
 			default:
 				//Not an response we expected...
-				console
-						.log("Message from different command is junk, throw it out");
+				console.log("Message from different command is junk, throw it out");
 			}
 			
 		}
@@ -1322,7 +1365,7 @@
 							<div id="ipAddress" class="form-label-group">
 								<label class="sw-label" for="ipAddr">Tinter IP Address</label>
 								<s:textfield id="ipAddr" class="form-control" name="newtinter.tinterIp" 
-								  value="tinter.tinterIp" aria-disabled="true"></s:textfield>
+									disabled="true"></s:textfield>
 							</div>
 						  </div>
 						  <div class="col-sm-2"></div>
@@ -1342,8 +1385,9 @@
 					</div>
 				</div>
 				<div class="modal-footer bg-light">
-					<button type="button" class="btn btn-primary" id="updateCreds_btn"
+					<button type="button" class="btn btn-primary pull-right" id="updateCreds_btn"
 						aria-label="%{getText('global.continue')}">Submit</button>
+					<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction" />
 				</div>
 			</div>
 		</div>
