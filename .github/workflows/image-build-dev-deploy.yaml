@@ -17,7 +17,7 @@ on:
     
 jobs:
   image-build-dev-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-dev-deploy-workflow.yml@dja557/fixing-non-chart-deploy
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-dev-deploy-workflow.yml@master
     with:
       java_version: '8'
       chart_directory: shercolorweb-chart
