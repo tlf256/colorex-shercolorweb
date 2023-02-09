@@ -1,0 +1,49 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: vault://tag/shercolor/kv2/dev/shercolorweb
+  cloud:
+    vault:
+      authentication: KUBERNETES
+      uri: https://vault.sherwin.com
+      application-name: shercolorweb
+      kv:
+        backend: tag/shercolor/kv2
+      kubernetes:
+        kubernetes-path: kubernetes-np-dmz
+        role: k8s-np-dmz-shercolor-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+    import: vault://tag/shercolor/kv2/qa/shercolorweb
+  cloud:
+    vault:
+      authentication: KUBERNETES
+      uri: https://vault.sherwin.com
+      application-name: shercolorweb
+      kv:
+        backend: tag/shercolor/kv2
+      kubernetes:
+        kubernetes-path: kubernetes-np-dmz
+        role: k8s-np-dmz-shercolor-qa
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: vault://tag/shercolor/kv2/prod/shercolorweb
+  cloud:
+    vault:
+      authentication: KUBERNETES
+      uri: https://vault.sherwin.com
+      application-name: shercolorweb
+      kv:
+        backend: tag/shercolor/kv2
+      kubernetes:
+        kubernetes-path: kubernetes-pr-dmz
+        role: k8s-pr-dmz-shercolor-prod

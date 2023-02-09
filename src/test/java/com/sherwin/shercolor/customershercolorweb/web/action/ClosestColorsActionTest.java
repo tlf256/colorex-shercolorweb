@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import com.sherwin.shercolor.common.domain.ClosestColor;
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
@@ -26,9 +27,8 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
 import static org.junit.Assert.*;
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class ClosestColorsActionTest extends StrutsSpringJUnit4TestCase<ClosestColorsAction> {
 	
 	ClosestColorsAction target;

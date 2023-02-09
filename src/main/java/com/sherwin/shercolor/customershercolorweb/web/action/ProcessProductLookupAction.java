@@ -58,7 +58,7 @@ public class ProcessProductLookupAction extends ActionSupport implements Session
 			extBases = extBasesStr.split(",");
 		}
 		if (buildTable) {
-			productList = productService.productAutocompleteCompatibleBase("", intBases, extBases, reqObj.getCustomerID());
+			productList = productService.productAutocompleteCompatibleBase("%", intBases, extBases, reqObj.getCustomerID());
 		}
 	}
 

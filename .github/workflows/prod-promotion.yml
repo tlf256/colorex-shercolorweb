@@ -1,0 +1,13 @@
+name: Promote QA to PROD
+on:
+  workflow_dispatch:
+
+jobs:
+  prod-promote:
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/prod-promotion-workflow.yml@master
+    with:
+      chart_directory: shercolorweb-chart
+      release_name: shercolorweb
+      prod_helm_values: '"values.yaml" "values-rancher-prod.yaml"'
+      prod_url: 'https://shercolor.sherwin.com/shercolorweb'
+    secrets: inherit

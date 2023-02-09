@@ -25,12 +25,14 @@ import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebDealerDtoBuilde
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebTranDto;
 import com.sherwin.shercolor.customershercolorweb.web.dto.CustWebTranDtoBuilder;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
+@Component
 public class ListDealerCustomerOrdDtlAction extends ActionSupport implements SessionAware, LoginRequired {
 
 	static Logger logger = LogManager.getLogger(LookupJobAction.class);
-	
+
 	private Map<String, Object> sessionMap;
 	
 	@Autowired
@@ -81,17 +83,10 @@ public class ListDealerCustomerOrdDtlAction extends ActionSupport implements Ses
 		}
 		return SUCCESS;
 	}
-	
+
+	@Override
 	public String execute(){
 		return SUCCESS;
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static void setLogger(Logger logger) {
-		ListDealerCustomersAction.logger = logger;
 	}
 
 	public CustomerOrderService getCustomerOrderService() {

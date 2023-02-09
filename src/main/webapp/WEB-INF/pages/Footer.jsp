@@ -30,6 +30,14 @@ i18n['displayJobs.filterColon'] = '<s:text name="displayJobs.filterColon"/>';
 i18n['displayJobs.newSearch'] = '<s:text name="displayJobs.newSearch" />'
 i18n['displayJobs.noJobsAvailable'] = '<s:text name="displayJobs.noJobsAvailable"/>';
 i18n['displayJobs.pleaseFixErrors'] = '<s:text name="displayJobs.pleaseFixErrors"/>';
+i18n['displaySpectroLog.newSearch'] = '<s:text name="displaySpectroLog.newSearch"/>';
+i18n['displaySpectroLog.noSpectroEventsAvailable'] = '<s:text name="displaySpectroLog.noSpectroEventsAvailable"/>';
+i18n['displaySpectroLog.requestTime'] = '<s:text name="displaySpectroLog.requestTime"/>';
+i18n['displaySpectroLog.responseCode'] = '<s:text name="displaySpectroLog.responseCode"/>';
+i18n['displaySpectroLog.responseMessage'] = '<s:text name="displaySpectroLog.responseMessage"/>';
+i18n['displaySpectroLog.spectroCommand'] = '<s:text name="displaySpectroLog.spectroCommand"/>';
+i18n['displaySpectroLog.spectroModel'] = '<s:text name="displaySpectroLog.spectroModel"/>';
+i18n['displaySpectroLog.spectroSerialNbr'] = '<s:text name="displaySpectroLog.spectroSerialNbr"/>';
 i18n['displayStoredMeasurements.noMeasurementsAvailable'] = '<s:text name="displayStoredMeasurements.noMeasurementsAvailable"/>';
 i18n['footer.yourSessionExpiredClickLogin'] = '<s:text name="footer.yourSessionExpiredClickLogin"/>';
 i18n['getColor.noColorsAvailable'] = '<s:text name="getColor.noColorsAvailable"/>';
@@ -38,6 +46,7 @@ i18n['getColor.palette'] = '<s:text name="getColor.palette"/>';
 i18n['getColor.swatchId'] =	'<s:text name="getColor.swatchId"/>';
 i18n['getColor.primerId'] = '<s:text name="getColor.primerId"/>';
 i18n['getColor.companyName'] = '<s:text name="getColor.companyName"/>';
+i18n['global.back'] = '<s:text name="global.back"/>';
 i18n['global.colorantLevelCheckInProgress'] = '<s:text name="global.colorantLevelCheckInProgress"/>';
 i18n['global.colorantLevelTooLow'] = '<s:text name="global.colorantLevelTooLow"/>';
 i18n['global.colorId'] = '<s:text name="global.colorId"/>';
@@ -170,4 +179,3 @@ log_english['tinterResponse.unableToSaveConfigureColorLink'] = 'Error during dis
   		</p>
 	</div>
 </div>
-

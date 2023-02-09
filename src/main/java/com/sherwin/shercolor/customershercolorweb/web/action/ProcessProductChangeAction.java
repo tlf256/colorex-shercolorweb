@@ -1,19 +1,15 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
 import org.apache.struts2.interceptor.SessionAware;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.common.domain.CdsFbProd;
@@ -34,13 +30,14 @@ import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.UtilityService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class ProcessProductChangeAction extends ActionSupport implements SessionAware, LoginRequired  {
 	
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessProductAction.class);
 	private String partialProductNameOrId; 
 	private String message;
 	private String salesNbr;

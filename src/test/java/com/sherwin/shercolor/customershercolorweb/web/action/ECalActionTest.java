@@ -1,47 +1,26 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
-import org.apache.struts2.StrutsSpringTestCase;
-import org.apache.struts2.dispatcher.HttpParameters;
-import org.apache.struts2.dispatcher.Parameter;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionProxy;
 
 import com.sherwin.shercolor.common.domain.CustWebEcal;
-import com.sherwin.shercolor.customershercolorweb.web.action.EcalAction;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 
-
-
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class ECalActionTest extends StrutsSpringJUnit4TestCase<EcalAction> {
 
 	EcalAction target = new EcalAction();
@@ -62,8 +41,7 @@ public class ECalActionTest extends StrutsSpringJUnit4TestCase<EcalAction> {
 	    reqObj.setCustomerID("TEST");
 	    request.setParameter("colorantid",colorantid);
 	    request.setParameter("reqGuid",reqGuid);
-	    HttpSession session = request.getSession();
-	    session.setAttribute(reqGuid, reqObj);
+	    Objects.requireNonNull(request.getSession()).setAttribute(reqGuid, reqObj);
 	 	
 
 		try {

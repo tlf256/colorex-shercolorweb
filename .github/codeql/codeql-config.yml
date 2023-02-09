@@ -1,9 +1,0 @@
-name: "na-pos codeql config"
-
-packs:
-  javascript:
-    - 'codeql/javascript-upgrades'
-    - 'codeql/javascript-queries'
-    - 'codeql/javascript-queries'
-    
-    

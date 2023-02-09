@@ -2,14 +2,14 @@ package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessLightSourceAction  extends ActionSupport implements SessionAware, LoginRequired  {
 
 	private Map<String, Object> sessionMap;
@@ -18,7 +18,7 @@ public class ProcessLightSourceAction  extends ActionSupport implements SessionA
 	
 	private static final long serialVersionUID = 1L;
 	static Logger logger = LogManager.getLogger(ProcessLightSourceAction.class);
-	
+
 	private String reqGuid;
 	
 	private String selectedLightSources;

@@ -1,0 +1,25 @@
+ingress:
+  enabled: true
+  namespace: shercolor
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "INGRESSID"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+  hosts:
+  - host: shercolor.sherwin.com
+    paths:
+      - path: /shercolorweb
+        pathType: Prefix   
+  tls:
+  - hosts:
+    - shercolor.sherwin.com
+
+
+replicaCount: 3
+
+dbPostgresUrl: "jdbc:postgresql://loadbalancer.lb0020.sites.sherwin.com:5432/sherd?currentSchema=shercolor"   
+springProfilesActive: "prod,oracle,rancher-dmz"
+
+env: prod

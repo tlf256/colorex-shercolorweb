@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.apache.struts2.StrutsSpringTestCase;
 import org.apache.struts2.dispatcher.HttpParameters;
@@ -51,9 +52,8 @@ import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
 
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/shercolorcommon-test.xml"})
+@SherColorWebTransactionalTest
 public class UpdateColorantsTxtActionTest extends StrutsSpringJUnit4TestCase<EcalAction> {
 
 	UpdateColorantsTxtAction target = null;

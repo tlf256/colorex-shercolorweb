@@ -103,6 +103,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="loginRedirect">/WEB-INF/pages/login.jsp</result>
+			<result name="login">/WEB-INF/pages/login.jsp</result>
 			<result name="success">/WEB-INF/pages/welcome.jsp</result>
 		</action>
 		<action name="declineEulaAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DeclineEulaAction" method="execute">
@@ -169,9 +170,7 @@
 			<result name="success">/WEB-INF/pages/LoggedOut.jsp</result>
 		</action>
 		<action name="loginAgainAction" class="com.sherwin.shercolor.customershercolorweb.web.action.LoginAgainAction" method="loginagain">
-			<result name="success" type="redirect">
-				<param name="location">${sherLinkURL}</param>
-			</result>
+			<result name="success">/WEB-INF/pages/setLogin.jsp</result>
 		</action>
 		<action name="displayCookieBanner" class="com.sherwin.shercolor.customershercolorweb.web.action.CookieConsentAction" method="display">
 			<interceptor-ref name="defaultStack"/>
@@ -1037,12 +1036,12 @@
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>
 			  	<param name="inputName">fileInputStream</param>
-			  	<param name="contentDisposition">attachment;filename="SWDHSetup.exe"</param>
+			  	<param name="contentDisposition">attachment;filename=%{fileName}</param>
 	  			<param name="bufferSize">1024</param>
 			</result>
 		</action>
 
-<!--  added by edo78r for Help Menu 7/10/2019 -->
+		<!--  added by edo78r for Help Menu 7/10/2019 -->
 		<action name="downloadPdfAction" class="com.sherwin.shercolor.customershercolorweb.web.action.DownloadPdfAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
@@ -1050,7 +1049,7 @@
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>
 			  	<param name="inputName">fileInputStream</param>
-			  	<param name="contentDisposition">attachment;filename=%{pdfFile}</param>
+			  	<param name="contentDisposition">attachment;filename=%{fileName}</param>
 	  			<param name="bufferSize">1024</param>
 			</result>
 		</action>
@@ -1125,6 +1124,16 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"/>
+			<result name="error" type="json"/>
+		</action>
+		<action name="getColorantsForManualCorrection" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessCorrectFormulaAction" method="colorantLookupForManual">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+		 		<param name="root">colorantLookupResults</param>
+			</result>
 			<result name="error" type="json"/>
 		</action>
 		<action name="mergeCorrWithStartingFormAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SaveNewJobAction" method="mergeCorrWithStartForm">
@@ -1539,6 +1548,23 @@
 		</action>
 		<action name="updateLocale" class="com.sherwin.shercolor.customershercolorweb.web.action.UpdateLocaleAction" method="execute">
 			<result name="success" type="json"/>
-		</action>		
+		</action>	
+		<!-- 10/27/2022 - JXL: New actions for viewing the Color Eye Log -->
+		<action name="searchSpectroEventLog" class="com.sherwin.shercolor.customershercolorweb.web.action.SearchSpectroLogAction" method="display">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+			</result>
+			<result name="success">/WEB-INF/pages/DisplaySpectroLog.jsp</result>
+		</action>	
+		<action name="spectroLogLookupAction" class="com.sherwin.shercolor.customershercolorweb.web.action.SearchSpectroLogAction" method="logLookup">
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json">
+		 		<param name="root">spectroEventResults</param>
+			</result>
+			<result name="error" type="json"/>
+		</action>
 	</package>
 </struts>

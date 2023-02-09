@@ -9,6 +9,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.sherwin.shercolor.common.domain.CustWebColorantsTxt;
@@ -22,17 +25,14 @@ import com.sherwin.shercolor.customershercolorweb.web.model.DispenseItem;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 
-@Service
+@Component
 public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 	static Logger logger = LogManager.getLogger(CorrectionInfoBuilder.class.getName());
 
-	TranHistoryService tranHistoryService;
-	TinterService tinterService;
-	
-	public CorrectionInfoBuilderImpl(TranHistoryService tranHistoryService, TinterService tinterService){
-		this.tranHistoryService = tranHistoryService;
-		this.tinterService = tinterService;
-	}
+	@Autowired
+	private TranHistoryService tranHistoryService;
+	@Autowired
+	private TinterService tinterService;
 
 	public CorrectionInfo getCorrectionInfo(RequestObject reqObj, List<CustWebTranCorr> tranCorrList){
 		logger.trace("Inside CorrBuilder.getCorrInfo");
@@ -77,7 +77,9 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 				addMe.setClrntSysId(tranCorr.getClrntSysId());
 				// convert clrnt items to ingredients
 				List<FormulaIngredient> ingredients = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(tranCorr);
-				addMe.setIngredients(ingredients);
+				//Prevents first cycle's formula ingredients from being overwritten with the last element in the list.
+				List<FormulaIngredient> sCopy = new ArrayList<>(ingredients);
+				addMe.setIngredients(sCopy);
 				// Store accepted correction formula and set boolean
 				if (tranCorr.getStatus().equalsIgnoreCase("ACCEPTED") && (acceptedUnitNbr == 0 || acceptedUnitNbr == tranCorr.getUnitNbr())) {
 					if (currentAcceptedCycle != tranCorr.getCycle()) {

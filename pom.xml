@@ -1,32 +1,131 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sherwin.SherColorWeb</groupId>
-    <artifactId>CustomerSherColorWeb</artifactId>
-    <packaging>war</packaging>
+    <!-- Spring Boot starter provides a number of properties OOTB to set common dependency versions according to the Spring version/requirements,
+        use these if specific versions are needed https://docs.spring.io/spring-boot/docs/2.6.x/reference/htmlsingle/#dependency-versions.properties-->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.7</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+    <groupId>com.sherwin.shercolor</groupId>
+    <artifactId>SherColorWeb</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <name>CustomerSherColorWeb Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+    <name>SherColorWeb</name>
+    <packaging>war</packaging>
     <properties>
-            <struts2.version>2.5.30</struts2.version>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <struts2.version>2.5.30</struts2.version>
+        <java.version>8</java.version>
+        <wildfly.version>24.0.1.Final</wildfly.version>
+        <spring.cloud-version>2021.0.4</spring.cloud-version>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ucp</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.ha</groupId>
+                <artifactId>ons</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.ha</groupId>
+                <artifactId>simplefan</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.security</groupId>
+                <artifactId>oraclepki</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.security</groupId>
+                <artifactId>osdt_core</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.database.security</groupId>
+                <artifactId>osdt_cert</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>com.sherwin.SherColorWeb</groupId>
+            <artifactId>SherColorCommon</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sherwin.login</groupId>
+            <artifactId>SherColorLogin</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.sherwin.ecom.security</groupId>
+            <artifactId>EcommSecurity</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <version>4.13.1</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-web</artifactId>
-            <version>2.17.1</version>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-    		<groupId>org.freemarker</groupId>
-    		<artifactId>freemarker</artifactId>
-    		<version>2.3.31</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
@@ -54,74 +153,33 @@
             <groupId>com.jgeppert.struts2.bootstrap</groupId>
             <artifactId>struts2-bootstrap-plugin</artifactId>
             <version>4.0.1</version>
-            <exclusions>
-            	<exclusion>
-                	<artifactId>freemarker</artifactId>
-                	<groupId>freemarker</groupId>
-            	</exclusion>
-        	</exclusions>
         </dependency>
         <dependency>
-            <groupId>com.sherwin.SherColorWeb</groupId>
-            <artifactId>SherColorCommon</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sherwin.login</groupId>
-            <artifactId>SherColorLogin</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.taglibs</groupId>
-            <artifactId>taglibs-standard-impl</artifactId>
-            <version>1.2.5</version>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
         </dependency>
         <dependency>
             <groupId>com.redhat.jboss.support</groupId>
             <artifactId>AddCustomFilterHeader</artifactId>
             <version>1</version>
         </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.lang -->
-        <!-- https://mvnrepository.com/artifact/org.owasp.encoder/encoder -->
         <dependency>
             <groupId>org.owasp.encoder</groupId>
             <artifactId>encoder</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.owasp.encoder</groupId>
             <artifactId>encoder-jsp</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.sherwin.ecom.security</groupId>
-            <artifactId>EcommSecurity</artifactId>
-            <version>2.8.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jboss.spec.javax.servlet/jboss-servlet-api_3.0_spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-            <version>1.0.2.Final</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Changed below dependency. Potential deprecation? as it would not install -->
-        <!-- https://mvnrepository.com/artifact/org.jboss.spec.javax.servlet.jsp/jboss-jsp-api_2.2_spec -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
             <artifactId>jboss-jsp-api_2.2_spec</artifactId>
             <version>1.0.2.Final</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
@@ -141,21 +199,11 @@
             <artifactId>boxable</artifactId>
             <version>1.5</version>
         </dependency>
-        <!-- old pdf maker
-         <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.0.6</version>
-        </dependency>
-        -->
-        <!-- Previous Dependency version that wouldnt install
         <dependency>
-            <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
-            <artifactId>jboss-jsp-api_2.2_spec</artifactId>
-            <version>1.0.1.Final-redhat-2</version>
-            <scope>test</scope>
+            <groupId>net.sf.barcode4j</groupId>
+            <artifactId>barcode4j</artifactId>
+            <version>2.1</version>
         </dependency>
-        -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
@@ -167,19 +215,8 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>adal4j</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -199,7 +236,6 @@
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
-            <version>2.3.1</version>
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>
@@ -214,18 +250,26 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>7.9</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>net.minidev</groupId>
-            		<artifactId>json-smart</artifactId>
-            	</exclusion>
-            </exclusions>
+		    <groupId>org.jfrog.artifactory.client</groupId>
+		    <artifactId>artifactory-java-client-services</artifactId>
+		    <version>2.13.0</version>
+		</dependency>
+		<dependency>
+	      <groupId>org.codehaus.groovy</groupId>
+	      <artifactId>groovy</artifactId>
+	      <version>3.0.10</version>
+	    </dependency>
+        <!-- Needed only to appease Spring Boot/Wildfly integration -->
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
         </dependency>
         <dependency>
-    		<groupId>com.google.zxing</groupId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+           	<groupId>com.google.zxing</groupId>
     		<artifactId>core</artifactId>
     		<version>3.3.0</version>
 		</dependency>
@@ -239,18 +283,54 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-jar-maven-plugin</artifactId>
+                <version>7.0.2.Final</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                    </archive>
+                    <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
+                    <layers>
+                        <layer>legacy-security</layer>
+                        <layer>undertow-legacy-https</layer>
+                        <layer>core-tools</layer>
+                        <layer>datasources</layer>
+                        <layer>bean-validation</layer>
+                        <layer>logging</layer>
+                    </layers>
+                    <excluded-layers>
+                        <excluded-layer>cdi</excluded-layer>
+                    </excluded-layers>
+                    <plugin-options>
+                        <jboss-fork-embedded>true</jboss-fork-embedded>
+                    </plugin-options>
+                    <extra-server-content-dirs>
+                        <extra-content>wildfly/includes</extra-content>
+                    </extra-server-content-dirs>
+                    <context-root>false</context-root>
+                    <!-- Configuration below enables CLI scripting configuration vs direct standalone.xml -->
+                    <cli-sessions>
+                        <cli-session>
+                            <script-files>
+                                <script>wildfly/scripts/setup.cli</script>
+                            </script-files>
+                            <properties-file>wildfly/scripts/properties/dev.properties</properties-file>
+                        </cli-session>
+                    </cli-sessions>
+                    <!-- Only enable the argument below for remote debugging purposes. These should always be commented
+                     out when committing to source control. -->
+                    <!-- <jvmArguments>
+                        <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
+                    </jvmArguments> -->
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+        <finalName>${project.artifactId}</finalName>
     </build>
 
     <scm>
@@ -268,9 +348,10 @@
         <profile>
             <id>quality</id>
             <properties>
-<!--                <sonar.coverage.exclusions>-->
-<!--                    src/main/java/com/sherwin/login/domain/*PK.java-->
-<!--                </sonar.coverage.exclusions>-->
+                <sonar.coverage.exclusions>
+                    src/main/java/com/sherwin/shercolor/customershercolorweb/config/*,
+                    src/main/java/com/sherwin/shercolor/customershercolorweb/SherColorWebApplication.java
+                </sonar.coverage.exclusions>
             </properties>
             <build>
                 <plugins>

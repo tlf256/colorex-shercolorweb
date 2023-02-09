@@ -87,6 +87,7 @@
 		var sendingSpectroCommand = "false";
 		var detectAttempt = 0;
 		var layoutUpdateChosen = false;
+		var platform = navigator.platform;
 
 		<s:if test="%{tinter.model != null && tinter.model != ''}">
 			// setup local host config
@@ -207,6 +208,7 @@
 
 		function detectTinter(){
 			// show layout update progress modal if the call is a result of choosing Update Layout in menu
+			console.log("sending detect");
 			if (layoutUpdateChosen){
 				$("#layoutUpdateInProgressModal").modal('show');
 			} else {
@@ -221,6 +223,32 @@
 			sendingTinterCommand = "true";
 	    	ws_tinter.send(json);
 		}
+		
+		function initTinter(){
+			var tinterModel = sessionTinterInfo.model;
+			console.log("init tinter - tinter model is: " + tinterModel);
+			if(tinterModel.startsWith("FM X") && !platform.startsWith("Win")){
+				resetTinter();
+			} else {
+				detectTinter();
+			}
+		}
+		
+		function resetTinter(){
+			console.log("sending reset");
+			var initTinterText = '<s:text name="welcome.initializingTinter"/>';
+			$("#progress-message").text(initTinterText);
+			$("#initTinterInProgressModal").modal('show');
+			rotateIcon();
+			var cmd = "Reset";
+			var shotList = null;
+			var configuration = null;
+			var tintermessage = new TinterMessage(cmd,null,null,null,null);
+			var json = JSON.stringify(tintermessage);
+			sendingTinterCommand = "true";
+	    	ws_tinter.send(json);
+		}
+		
 		function AfterDetectTinterGetStatus(){
 			var cmd = "InitStatus";
 			$("#initTinterInProgressModal").modal('show');
@@ -785,6 +813,41 @@
 								getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 							} // end else init current
 							break;
+						case 'Reset':
+							console.log("Processing FMX Reset Response");
+							var initErrorList=[];
+							// log event
+							var curDate = new Date();
+							var myGuid = $("#startNewJob_reqGuid").val();
+							if(return_message.errorMessage.trim() === 'Reset complete'){
+								sendingTinterCommand = "false";
+								// clear init error in session
+								initErrorList = [];
+								saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+								sendTinterEvent(myGuid, curDate, return_message, null);
+								
+								$("#progress-message").text(return_message.errorMessage);
+							
+								// Detected and no errors from tinter 
+								waitForShowAndHide('#initTinterInProgressModal');
+							} else {
+								sendingTinterCommand = "false";
+								initErrorList = [];
+								sendTinterEvent(myGuid, curDate, return_message, null); 
+								waitForShowAndHide('#initTinterInProgressModal');
+								//Show a modal with error message to make sure the user is forced to read it.
+								$("#tinterErrorList").empty();
+								initErrorList.push(return_message.errorMessage);
+								$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+								$("#tinterErrorListTitle").text('Tinter Initialization Failed');
+								$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
+								$("#tinterErrorListModal").modal('show');
+								saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+							}
+							
+							getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
+							
+							break;
 						case 'Detect':
 						case 'Init':
 							if(localhostConfig != null && localhostConfig.model != null && localhostConfig.model.length > 0){
@@ -1164,6 +1227,7 @@
 										<li id="spectroConfig"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroConfigureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="global.configure"/></a></li>
 										<li id="compareColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="spectroCompareColorsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-adjust pr-1'></span> <s:text name="welcome.compareTwoColors"/></a></li>
 										<li id="closestColors"><a class="dropdown-item" tabindex="-1" href='<s:url action="closestColorsMeasureAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-crosshairs pr-1'></span> <s:text name="closestColors.findClosestColors"/></a></li>
+										<li id="spectroEventLog"><a class="dropdown-item" tabindex="-1" href='<s:url action="searchSpectroEventLog"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-book pr-1'></span> <s:text name="welcome.viewColorEyeLog"/></a></li>
 				        			</ul>
 	       						</li> 
 	        					<li class="dropdown-item dropdown-submenu">
@@ -1174,7 +1238,7 @@
 								    	<li id="updateCanisterLayout" style="display:none;"><a class="dropdown-item" tabindex="-1" href="#" onclick="layoutUpdateChosen=true; detectTinter();"><span class='fa fa-refresh pr-1'></span> <s:text name="welcome.updateCanisterLayout"/></a></li>
 				        				<li id="colorantLevels"><a class="dropdown-item" tabindex="-1" href='<s:url action="processColorantLevelsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-align-left pr-1'></span> <s:text name="global.colorantLevels"/></a></li>
 				        				<li id="dispenseColorants"><a class="dropdown-item" tabindex="-1" href='<s:url action="displayDispenseColorantsAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-random pr-1'></span>  <s:text name="global.dispenseColorants"/></a></li>
-								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=detectTinter();><span class='fa fa-retweet pr-1'></span> <s:text name="welcome.initializeTinter"/></a></li>
+								    	<li id="tinterInit"><a class="dropdown-item" tabindex="-1" href="#" onclick=initTinter();><span class='fa fa-retweet pr-1'></span> <s:text name="welcome.initializeTinter"/></a></li>
 								        <li id="tinterEcal"><a class="dropdown-item" tabindex="-1" href='<s:url action="ecalManagerAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>' ><span class='fa fa-exchange pr-1'></span> <s:text name="global.calibrationManager"/></a></li>
 										<li id="tinterAdd"><a class="dropdown-item" tabindex="-1" href='<s:url action="tinterConfigAction"><s:param name="reqGuid" value="%{reqGuid}"/></s:url>'><span class='fa fa-cog pr-1'></span> <s:text name="welcome.addNewTinter"/></a></li>
 										<li id="tinterRemove"><a class="dropdown-item" tabindex="-1" href="#" onclick="showRemoveTinterModal();"><span class='fa fa-eject pr-1'></span> <s:text name="welcome.removeTinter"/></a></li>
@@ -1195,15 +1259,15 @@
 				        		<li class="dropdown-item dropdown-submenu">
 	        						<a class="sub dropdown-item pr-1" tabindex="-1" href="#"><s:text name="welcome.helpMenu"/></a>
 	        						<ul class="dropdown-menu" id="helpMenu">
-	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Customer_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToUseCustomerSherColorWeb"/></a></li>
-	        							<li id="setupXProtint"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_XProtint_Tinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAXProtint"/></a></li>
-	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Accutinter_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAnAccutinter"/></a></li>
-								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Fluid_Management_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateAnAccutinter"/></a></li>
-								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Color_Eye_Installation.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAColorEye"/></a></li>
-								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Installation_Guide.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpACorob"/></a></li>
-								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Corob_Calibration.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateACorob"/></a></li>
-								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Dymo_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpADymoLabelPrinter"/></a></li>
-								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfFile">SherColor_Web_Zebra_Install.pdf</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAZebraLabelPrinter"/></a></li>
+	        							<li id="useCSW"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Customer_Guide</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToUseCustomerSherColorWeb"/></a></li>
+	        							<li id="setupXProtint"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_XProtint_Tinter_Installation_Guide</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAXProtint"/></a></li>
+	        							<li id="setupAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Accutinter_Installation_Guide</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAnAccutinter"/></a></li>
+								    	<li id="calibrateAccutinter"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Fluid_Management_Calibration</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateAnAccutinter"/></a></li>
+								    	<li id="setupXrite"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Color_Eye_Installation</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAColorEye"/></a></li>
+								    	<li id="setupCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Corob_Installation_Guide</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpACorob"/></a></li>
+								    	<li id="calibrateCorob"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Corob_Calibration</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToCalibrateACorob"/></a></li>
+								    	<li id="setupDymo"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Dymo_Install</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpADymoLabelPrinter"/></a></li>
+								    	<li id="setupZebra"><a class="dropdown-item" tabindex="-1" href='<s:url action="downloadPdfAction"><s:param name="reqGuid" value="%{reqGuid}"/><s:param name="pdfType">SherColor_Web_Zebra_Install</s:param></s:url>'><span class='fa fa-info-circle pr-1'></span> <s:text name="welcome.howToSetUpAZebraLabelPrinter"/></a></li>
 				        			</ul>
 				        			
 	       						</li>

@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -32,9 +33,8 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.TinterInfo;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
-@Transactional
 @RunWith(Parameterized.class)
-@ContextConfiguration("classpath:config/spring/shercolorcommon-test.xml")
+@SherColorWebTransactionalTest
 public class ProcessFormulaActionTest extends StrutsSpringJUnit4TestCase<ProcessFormulaAction> {
 
 	ProcessFormulaAction target;
