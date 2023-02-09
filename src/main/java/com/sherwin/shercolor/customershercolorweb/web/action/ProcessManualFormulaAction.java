@@ -51,6 +51,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private List<JobField> jobFields;
 	private int recDirty;
 	private boolean userWarningOverride = false;
+	private boolean userFillCheckMsg = false;
 	private boolean scaleByPercentVisible = true;
 	private List<String> previousWarningMessages;
 	private String selectedColorantFocus ="MfUserNextAction_ingredientList_0__selectedColorant";
@@ -486,6 +487,9 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 							if(!userWarningOverride || newWarningCount>0){
 								// user hasn't seen this yet or didn't choose override, show it
 								logger.debug("it is a warning, show in action message");
+								if(item.getCode().equals("1151") || item.getCode().equals("1152")) {
+									userFillCheckMsg = true;
+								}
 								addActionMessage(item.getMessage());
 								currentWarningMessages.add(item.getMessage());
 								retVal = INPUT; // show same screen with warnings to override
@@ -699,6 +703,14 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 
 	public void setColorNotes(String colorNotes) {
 		this.colorNotes = colorNotes;
+	}
+
+	public boolean isUserFillCheckMsg() {
+		return userFillCheckMsg;
+	}
+
+	public void setUserFillCheckMsg(boolean userFillCheckMsg) {
+		this.userFillCheckMsg = userFillCheckMsg;
 	}
 	
 	
