@@ -687,7 +687,7 @@ function ParsePrintMessage() {
 //callback stuff
 	function setDispenseQuantity(handDispense) {
 		// check that user doesn't need to set rooms dropdown
-		if (verifyRoomSelected() == true){
+		if (verifyRoomSelected() == true && validateQtyOrdered() == true){
 			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
 			$("#dispenseQuantityInput").val("1");
