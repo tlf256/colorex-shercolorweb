@@ -227,7 +227,7 @@
 		function initTinter(){
 			var tinterModel = sessionTinterInfo.model;
 			console.log("init tinter - tinter model is: " + tinterModel);
-			if(tinterModel.startsWith("FM X") && !platform.startsWith("Win")){
+			if((tinterModel.startsWith("FM X") || tinterModel.startsWith("AS")) && !platform.startsWith("Win")){
 				resetTinter();
 			} else {
 				detectTinter();
@@ -322,6 +322,7 @@
  				//TODO anything to do here?  maybe check result of stamp...
  			});
 		}
+
 		function DetectFMResp(return_message){
 			console.log("Processing FM Detect Response");
 			var initErrorList=[];
@@ -330,7 +331,7 @@
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			console.log(return_message);
 			//status = 1, means, still trying serial ports so still in progress.
-			if (return_message.errorMessage.toUpperCase().trim() !== initializationDone
+			if ((return_message.errorMessage.toUpperCase().trim() !== initializationDone)
 					 && (return_message.errorNumber >= 0 ||
 					 return_message.status == 1)) {
 				//save				
@@ -387,6 +388,7 @@
 				getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 			}
     	}
+
 		function DetectCorobResp(return_message){
 			console.log("Processing Corob Detect Response");
 			var initErrorList;

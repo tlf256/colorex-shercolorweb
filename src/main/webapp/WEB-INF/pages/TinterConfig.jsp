@@ -931,7 +931,7 @@
 			var return_message = JSON.parse(ws_tinter.wsmsg);
 			switch (return_message.command) {
 			case 'Config':
-				// no need to detect?
+				// no need to detect since it is initiated before retrieving serial
 				if (return_message.errorNumber == 0) {
 					//init();
 					//$("#detectInProgressModal").modal('show');
@@ -945,7 +945,7 @@
 			case 'Detect':
 			case 'Init':
 			case 'InitStatus':
-				if (return_message.commandRC == 2) {
+				if (return_message.commandRC == 0) {
 					// retrieve serial
 					var displayMessage = "Retrieving tinter serial...";
 					pleaseWaitModal_updateMsg(displayMessage);
@@ -995,14 +995,14 @@
 				// if so, set the value of the textfield
 				console.log("received GetHostName msg");
 				pleaseWaitModal_hide();
-				if(return_message.errorMessage != "" && return_message.commandRC == 2){
+				if(return_message.messageText != "" && return_message.commandRC == 0){
 					var ip = return_message.errorMessage.trim();
 					$('#tinterIp').removeClass('d-none');
 					$('#tIpAddr').val(ip);
 					$('#tIpAddr').focus();
 					$('#btn_tinterConfig').prop('disabled', false);
 				}
-				else if(return_message.errorMessage != "" && return_message.commandRC == 0) {
+				else if(return_message.messageText != "" && return_message.commandRC == -1) {
 					// error reading/writing hostname file
 					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>";
 					$('#error').html(errorText);
@@ -1016,7 +1016,7 @@
 			case 'CheckCredentials':
 				
 				// check if credentials need updating
-				if(return_message.commandRC == 2){
+				if(return_message.commandRC == 0){
 					// credentials do not need updating
 					// continue with configuration
 					var displayMessage = "Detecting tinter...";
@@ -1040,7 +1040,7 @@
 				}
 				break;
 			case 'UpdateCredentials':
-				if(return_message.commandRC == 2) {
+				if(return_message.commandRC == 0) {
 					var dspMsg = "Detecting tinter..."
 					pleaseWaitModal_show(dspMsg, '#passwordModal');
 					init();
@@ -1056,7 +1056,7 @@
 				}
 				break;
 			case 'GetSerialCode':
-				if(return_message.commandRC == 2) {
+				if(return_message.commandRC == 0) {
 					// parse serial nbr then set hostname
 					// leave wait modal displaying with previous msg
 					var serial = return_message.messageText.trim();
@@ -1073,7 +1073,7 @@
 				}
 				break;
 			case 'SetHostname':
-				if(return_message.commandRC == 2) {
+				if(return_message.commandRC == 0) {
 					// continue configuration
 					pleaseWaitModal_hide();
 					waitForShowAndHide("#detectInProgressModal");
@@ -1375,12 +1375,41 @@
 						  <div class="col-sm-8">
 							<div id="servicePwd" class="form-label-group">
 								<label class="sw-label" for="">Service Password</label>
-								<i class="text-muted fa fa-eye pwd-toggle" id="srvPwdToggle"></i>
+								<i class="text-muted fa fa-eye pwd-toggle mt-1" id="srvPwdToggle"></i>
 								<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
 							</div>
 						  </div>
 						  <div class="col-sm-2"></div>
 						</div>
+						<s:if test="OS_NAME.contains('win')">
+							<p>Windows OS TEST</p>
+						</s:if>
+						<s:else>
+							<p>Linux/Mac OS TEST</p>
+						</s:else>
+						<!-- windows implementation -- inactive -- 
+							<div class="row">
+							<div class="col-sm-2"></div>
+							<div class="col-sm-8">
+								<div id="currentPwd" class="form-label-group">
+									<label class="sw-label" for="">Current Password</label>
+									<i class="text-muted fa fa-eye pwd-toggle mt-1" id="currentPwdToggle"></i>
+									<s:password id="currentPwd" class="form-control" aria-autocomplete="none"></s:password>
+								</div>
+							</div>
+							<div class="col-sm-2"></div>
+							</div>
+							<div class="row">
+							<div class="col-sm-2"></div>
+							<div class="col-sm-8">
+								<div id="newPwd" class="form-label-group">
+									<label class="sw-label" for="">New Password</label>
+									<i class="text-muted fa fa-eye pwd-toggle mt-1" id="newPwdToggle"></i>
+									<s:password id="newPwd" class="form-control" aria-autocomplete="none"></s:password>
+								</div>
+							</div>
+							<div class="col-sm-2"></div>
+							</div> -->
 						</s:form>
 					</div>
 				</div>
