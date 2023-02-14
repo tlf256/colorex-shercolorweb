@@ -365,9 +365,6 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			
 			oeRequest.setIllum(illums);
 			reformulation = formulationService.formulate(oeRequest, custWebParms);
-			if(reformulation == null) {
-				logger.error("formulationService.formulate returned Null in ProcessProductChangeAction.lookupReformulation.");
-			}
 		} else {
 			logger.error("formulationService.projectCurve returned Null in ProcessProductChangeAction.lookupReformulation.");
 		}
