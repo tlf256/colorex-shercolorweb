@@ -686,7 +686,7 @@ function ParsePrintMessage() {
 //callback stuff
 	function setDispenseQuantity(handDispense) {
 		// check that user doesn't need to set rooms dropdown
-		if (verifyRoomSelected() == true){
+		if (verifyRoomSelected() == true && validateQtyOrdered() == true){
 			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
 			$("#dispenseQuantityInput").val("1");
@@ -1118,7 +1118,8 @@ function ParsePrintMessage() {
 	/* -------- Validation functions ----------- */
 	
 	function validateQtyOrdered(){
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 			//$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>');
@@ -1142,7 +1143,8 @@ function ParsePrintMessage() {
 	}
 	
 	function validateQtyOrderedForPrint() {
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 
@@ -1657,7 +1659,7 @@ function ParsePrintMessage() {
 					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
 				</div>
 				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
-					<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
+					<s:textfield type="number" id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
 					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
 				</div>
 				<br>
@@ -2616,8 +2618,6 @@ function ParsePrintMessage() {
 					} else {
 						console.log("button on/off");
 						console.log("hasTinter is false");
-						// No Tinter, hide correct button
-						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 	
 						// if dispensed (could have been done at another station)
 						var myint = parseInt($.trim($("#qtyDispensed").text()));
@@ -2629,9 +2629,15 @@ function ParsePrintMessage() {
 							$("#formulaUserPrintAction_formulaUserEditAction").hide();
 							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
 							btnCount += 1;
+							// only show correct if product is not package color
+							if($("#isPackageColor").val() == "false"){
+								$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+								btnCount += 1;
+							}
 							// make Print primary
 							makePrintPrimary()
 						} else {
+							$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 							// Has not been dispensed, always show Edit
 							// unless product is package color and cannot be tinted
 							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
