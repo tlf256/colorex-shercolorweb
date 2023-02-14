@@ -1013,6 +1013,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"/>
+			<result name="error" type="json"/>
 		</action>
 		<action name="saveCanType" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveCanType">
 			<result name="loginRedirect" type="redirectAction">
