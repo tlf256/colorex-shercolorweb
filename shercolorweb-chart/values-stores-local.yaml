@@ -3,37 +3,20 @@ store:
   enabled: true  
 
 service:
-  annotations:
-    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
-    traefik.ingress.kubernetes.io/service.sticky.cookie.name: INGRESSID
+  nodeport:
+    enabled: true
 
 secret:
   enabled: true    
 
 ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: traefik
-  hosts:
-  - host: shercolorweb.ingress.lb0020.sites.sherwin.com
-    paths:
-      - path: /
-        pathType: Prefix
-  - host: shercolorweb.ingress.local.sites.sherwin.com
-    paths:
-      - path: /
-        pathType: Prefix  
-  tls:
-  - hosts:
-    - shercolorweb.ingress.lb0020.sites.sherwin.com
-    - shercolorweb.ingress.local.sites.sherwin.com
-    secretName: shercolorweb-tls-secrets
+  enabled: false
 
 # Values for the postgresql dependency chart
 postgresql:
   global:
     imageRegistry: docker.artifactory.sherwin.com
-    storageClass: "longhorn"
+    storageClass: "hostpath"
     postgresql:
       auth:
         database: "sherd"
