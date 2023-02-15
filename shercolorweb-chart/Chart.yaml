@@ -27,6 +27,6 @@ icon: file://src/main/webapp/graphics/shercolor-sm.jpg
 
 dependencies:
     - name: postgresql
-      version: 11.6.4
+      version: 12.1.15
       repository: https://artifactory.sherwin.com/artifactory/helm-virtual/
       condition: store.enabled

@@ -123,21 +123,21 @@ From the `shercolorweb-chart` directory of this project, you can use the followi
 1. Download `secret-colorex-props.yaml` from Teams via **SherColor > Java Tools > Files** and apply it to your cluster via `kubectl apply`. This creates a local Kubernetes secret that contains the keys necessary to authenticate to Vault locally.
 2. 
     ```sh
-    helm install -f values.yaml -f values-local.yaml shercolorweb .
+    helm upgrade shercolorweb . --install -f values.yaml -f values-local.yaml
     ```
 ##### Rancher
 ```sh
-helm install -f values.yaml -f values-rancher-<env>.yaml shercolorweb
+helm upgrade shercolorweb . --install -f values.yaml -f values-rancher-<env>.yaml
 ```
 ##### Stores
-You must pass the sherlink DB url in this command in order to keep this secret out of source control
+You must pass the following values manually to this command in order to keep these secrets out of source control:
+- sherlinkDbPassword
+- postgres.shercolorPass (PG password)
+- artifactoryToken
 ```sh
-helm install -f values.yaml -f values-stores.yaml --set sherlinkDbPassword=<value> shercolorweb
+helm upgrade shercolorweb . --install -f values.yaml -f values-stores.yaml --set sherlinkDbPassword=<value> --set postgres.shercolorPass=<value> --set artifactoryToken=<value>
 ```
-In order to apply updates to the release (running Helm chart), simply update the chart's configuration and then use the following command to execute a rolling update:
-```sh
-helm upgrade --set store.enabled=<store.enabled> shercolorweb ./shercolorweb-chart
-```
+
 
 ## Testing
 This application is tested in a number of ways:
