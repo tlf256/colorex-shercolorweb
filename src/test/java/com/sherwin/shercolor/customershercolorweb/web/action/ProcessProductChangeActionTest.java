@@ -265,6 +265,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		target.setOldTintStrength(100);
 		target.setOldSizeCode("16");
 		target.setNewSizeCode("20");
+		
 
 		request.setParameter("reqGuid", reqObj.getGuid());
 		HttpSession session = request.getSession();
