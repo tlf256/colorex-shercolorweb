@@ -1,12 +1,11 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
 import static org.junit.Assert.assertNotNull;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
@@ -107,7 +106,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 
 
 	@Test
-	public void testLookupProductOptionsAction() {
+	public void testLookupProductOptionsAction() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/lookupProductOptions");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -118,21 +117,13 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/lookupProductOptions");
-			assertNotNull(success);
-			
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+		String success = executeAction("/lookupProductOptions");
+		assertNotNull(success);
 
 	}
 	
 	@Test
-	public void testLookupProductOptionsActionCannotUseClrntSys() {
+	public void testLookupProductOptionsActionCannotUseClrntSys() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/lookupProductOptions");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -143,21 +134,13 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/lookupProductOptions");
-			assertNotNull(success);
+		String success = executeAction("/lookupProductOptions");
+		assertNotNull(success);
 			
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
-
 	}
 	
 	@Test
-	public void testLookupProductOptionsActionNoCdsProduct() {
+	public void testLookupProductOptionsActionNoCdsProduct() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/lookupProductOptions");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -168,21 +151,13 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/lookupProductOptions");
-			assertNotNull(success);
-			
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+		String success = executeAction("/lookupProductOptions");
+		assertNotNull(success);
 
 	}
 	
 	@Test
-	public void testLookupProductOptionsActionProductColorFail() {
+	public void testLookupProductOptionsActionProductColorFail() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/lookupProductOptions");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -193,21 +168,12 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/lookupProductOptions");
-			assertNotNull(success);
-			
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
-
+		String success = executeAction("/lookupProductOptions");
+		assertNotNull(success);
 	}
 
 	@Test
-	public void testUpdateProductNoAdjustmentAction() {
+	public void testUpdateProductNoAdjustmentAction() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/updateProductNoAdjustment");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -218,20 +184,13 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/updateProductNoAdjustment");
-			assertNotNull(success);
+		String success = executeAction("/updateProductNoAdjustment");
+		assertNotNull(success);
 
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
 	}
 
 	@Test
-	public void testUpdateProductSizeChangeAction() {
+	public void testUpdateProductSizeChangeAction() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/updateProductSizeChange");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -242,20 +201,12 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/updateProductSizeChange");
-			assertNotNull(success);
-
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+		String success = executeAction("/updateProductSizeChange");
+		assertNotNull(success);
 	}
 
 	@Test
-	public void testUpdateProductReformulateAction() {
+	public void testUpdateProductReformulateAction() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/updateProductReformulate");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -266,20 +217,12 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/updateProductReformulate");
-			assertNotNull(success);
-
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+		String success = executeAction("/updateProductReformulate");
+		assertNotNull(success);
 	}
 
 	@Test
-	public void testUpdateProductRematchAction() {
+	public void testUpdateProductRematchAction() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/updateProductRematch");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -291,20 +234,13 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/updateProductRematch");
-			assertNotNull(success);
+		String success = executeAction("/updateProductRematch");
+		assertNotNull(success);
 
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
 	}
 
 	@Test
-	public void testUpdateProductTintStrength() {
+	public void testUpdateProductTintStrength() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/updateProductTintStrength");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -317,20 +253,12 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/updateProductTintStrength");
-			assertNotNull(success);
-
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+		String success = executeAction("/updateProductTintStrength");
+		assertNotNull(success);
 	}
 
 	@Test
-	public void testUpdateProductTintStrengthSize() {
+	public void testUpdateProductTintStrengthSize() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/updateProductTintStrengthSize");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
@@ -345,15 +273,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		HttpSession session = request.getSession();
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
-		try {
-			String success = executeAction("/updateProductTintStrengthSize");
-			assertNotNull(success);
-
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			System.out.println(sw.toString());
-		}
+		String success = executeAction("/updateProductTintStrengthSize");
+		assertNotNull(success);
 	}
 }
