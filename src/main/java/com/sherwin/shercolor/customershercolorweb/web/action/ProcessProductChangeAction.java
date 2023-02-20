@@ -182,8 +182,8 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 	 * to the validation process. It will check the last warning message displayed to the user as to not
 	 * show it twice when the user confirms the warning to proceed.
 	 * 
-	 * @param errlist. The list of messages returned by the validation methods.
-	 * @param reqObj. The current request object.
+	 * @param errlist
+	 * @param reqObj
 	 * @return true if the validation process encountered an error-level message. Or if the validation process encountered a warning that it has not encountered yet.
 	 */
 	private boolean checkMessageSeverity(List<SwMessage> errlist, RequestObject reqObj) {
