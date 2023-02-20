@@ -61,11 +61,38 @@ TAG Color Excellence
     ```sh
     java -jar ./target/SherColorWeb-bootable.jar
     ```
-For debugging documentation and more visit https://docs.wildfly.org/bootablejar 
+For documentation and more visit https://docs.wildfly.org/bootablejar 
 
 ### Wildfly Bootable Jar Maven Plugin
 Check out these maven commands for running locally:  
 https://docs.wildfly.org/bootablejar/#_maven_plugin
+
+#### Debugging
+Prior to build the jar, uncomment the following configuration in the `wildfly-jar-maven-plugin`:
+ ```xml
+  <plugin>
+     <groupId>org.wildfly.plugins</groupId>
+     <artifactId>wildfly-jar-maven-plugin</artifactId>
+     <version>7.0.2.Final</version>
+     <configuration>
+         ...
+         <!-- Only enable the argument below for remote debugging purposes. These should always be commented
+          out when committing to source control. -->
+         <!-- <jvmArguments>
+             <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
+         </jvmArguments> -->
+     </configuration>
+     <executions>
+         <execution>
+             <goals>
+                 <goal>package</goal>
+             </goals>
+         </execution>
+     </executions>
+ </plugin>
+ ```
+ 
+Once the application is running, attach a remote debugger to the process using your IDE or command line (https://www.baeldung.com/java-application-remote-debugging)
 
 ### Docker
 1. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
@@ -96,21 +123,21 @@ From the `shercolorweb-chart` directory of this project, you can use the followi
 1. Download `secret-colorex-props.yaml` from Teams via **SherColor > Java Tools > Files** and apply it to your cluster via `kubectl apply`. This creates a local Kubernetes secret that contains the keys necessary to authenticate to Vault locally.
 2. 
     ```sh
-    helm install -f values.yaml -f values-local.yaml shercolorweb .
+    helm upgrade shercolorweb . --install -f values.yaml -f values-local.yaml
     ```
 ##### Rancher
 ```sh
-helm install -f values.yaml -f values-rancher-<env>.yaml shercolorweb
+helm upgrade shercolorweb . --install -f values.yaml -f values-rancher-<env>.yaml
 ```
 ##### Stores
-You must pass the sherlink DB url in this command in order to keep this secret out of source control
+You must pass the following values manually to this command in order to keep these secrets out of source control:
+- sherlinkDbPassword
+- postgres.shercolorPass (PG password)
+- artifactoryToken
 ```sh
-helm install -f values.yaml -f values-stores.yaml --set sherlinkDbPassword=<value> shercolorweb
+helm upgrade shercolorweb . --install -f values.yaml -f values-stores.yaml --set sherlinkDbPassword=<value> --set postgres.shercolorPass=<value> --set artifactoryToken=<value>
 ```
-In order to apply updates to the release (running Helm chart), simply update the chart's configuration and then use the following command to execute a rolling update:
-```sh
-helm upgrade --set store.enabled=<store.enabled> shercolorweb ./shercolorweb-chart
-```
+
 
 ## Testing
 This application is tested in a number of ways:

@@ -52,6 +52,8 @@ public class ProcessColorAction extends ActionSupport implements SessionAware, L
 	private ColorValidator colorValidator;
 
 	private Map<String, Object> sessionMap;
+
+	@Autowired
 	private ProductService productService;
 
 	private static final long serialVersionUID = 1L;

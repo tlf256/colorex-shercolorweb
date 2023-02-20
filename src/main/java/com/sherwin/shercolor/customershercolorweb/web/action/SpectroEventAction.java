@@ -16,7 +16,9 @@ import com.sherwin.shercolor.common.domain.CustWebSpectroEvents;
 import com.sherwin.shercolor.common.service.SpectroService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpectroEventAction extends ActionSupport implements SessionAware, LoginRequired {
 	
 	@Autowired

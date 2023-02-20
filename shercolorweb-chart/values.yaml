@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 appRoot: /shercolorweb
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb
