@@ -77,7 +77,9 @@ public class CorrectionInfoBuilderImpl implements CorrectionInfoBuilder{
 				addMe.setClrntSysId(tranCorr.getClrntSysId());
 				// convert clrnt items to ingredients
 				List<FormulaIngredient> ingredients = tranHistoryService.mapTranCorrClrntFieldsToIngredientList(tranCorr);
-				addMe.setIngredients(ingredients);
+				//Prevents first cycle's formula ingredients from being overwritten with the last element in the list.
+				List<FormulaIngredient> sCopy = new ArrayList<>(ingredients);
+				addMe.setIngredients(sCopy);
 				// Store accepted correction formula and set boolean
 				if (tranCorr.getStatus().equalsIgnoreCase("ACCEPTED") && (acceptedUnitNbr == 0 || acceptedUnitNbr == tranCorr.getUnitNbr())) {
 					if (currentAcceptedCycle != tranCorr.getCycle()) {
