@@ -157,7 +157,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 	}
 	
 	@Test
-	public void testLookupProductOptionsActionUndefinedSizeCode() {
+	public void testLookupProductOptionsActionUndefinedSizeCode() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/lookupProductOptions");
 		target = (ProcessProductChangeAction) proxy.getAction();
 
