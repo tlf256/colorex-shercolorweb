@@ -1,5 +1,6 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -14,6 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SherColorWebTransactionalTest
 public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<ProcessProductAction> {
@@ -23,7 +26,7 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 	ProcessProductAction target;
 
 	@Test
-	public void testfillProdNbrActionA() {
+	public void testfillProdNbrActionA() throws UnsupportedEncodingException, ServletException {
 		System.out.println("Start testfillProdNbrActionA");
 		
 		reqObj.setCustomerID("CCF");
@@ -33,17 +36,13 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String json = executeAction("/fillProdNbrAction");
-			assertTrue(json.contains("A06W00151"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String json = executeAction("/fillProdNbrAction");
+		assertTrue(json.contains("A06W00151"));
 		System.out.println("End testfillProdNbrActionA");
 	}
 	
 	@Test
-	public void testfillProdNbrActionB() {
+	public void testfillProdNbrActionB() throws UnsupportedEncodingException, ServletException {
 		System.out.println("Start testfillProdNbrActionB");
 		
 		reqObj.setCustomerID("CCF");
@@ -53,17 +52,13 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String json = executeAction("/fillProdNbrAction");
-			assertTrue(json.contains("KW0007730-16"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String json = executeAction("/fillProdNbrAction");
+		assertTrue(json.contains("KW0007730-16"));
 		System.out.println("End testfillProdNbrActionB");
 	}
 	
 	@Test
-	public void testfillProdNbrActionC() {
+	public void testfillProdNbrActionC() throws UnsupportedEncodingException, ServletException {
 		System.out.println("Start testfillProdNbrActionC");
 		
 		reqObj.setCustomerID("CCF");
@@ -73,17 +68,13 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String json = executeAction("/fillProdNbrAction");
-			assertTrue(json.contains("A08T00154-20"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String json = executeAction("/fillProdNbrAction");
+		assertTrue(json.contains("A08T00154-20"));
 		System.out.println("End testfillProdNbrActionC");
 	}
 	
 	@Test
-	public void testListProductsFillProdA() {
+	public void testListProductsFillProdA() throws UnsupportedEncodingException, ServletException {
 		System.out.println("Start testListProductsFillProdA");
 		
 		reqObj.setCustomerID("CCF");
@@ -99,17 +90,13 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String json = executeAction("/listProducts");
-			assertTrue(json.contains("A08T00154"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String json = executeAction("/listProducts");
+		assertTrue(json.contains("A08T00154"));	
 		System.out.println("End testListProductsFillProdA");
 	}
 	
 	@Test
-	public void testListProductsFillProdB() {
+	public void testListProductsFillProdB() throws UnsupportedEncodingException, ServletException {
 		System.out.println("Start testListProductsFillProdB");
 		
 		reqObj.setCustomerID("CCF");
@@ -125,17 +112,14 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String json = executeAction("/listProducts");
-			assertTrue(json.contains("A08T00154"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+
+		String json = executeAction("/listProducts");
+		assertTrue(json.contains("A08T00154"));	
 		System.out.println("End testListProductsFillProdB");
 	}
 	
 	@Test
-	public void testExecuteSuccess() { 
+	public void testExecuteSuccess() throws UnsupportedEncodingException, ServletException { 
 		ActionProxy proxy = getActionProxy("/ProcessProductAction");
 		target = (ProcessProductAction) proxy.getAction();
 		reqObj.setCustomerID("CCF");
@@ -150,16 +134,12 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String success = executeAction("/ProcessProductAction");
-			assertNotNull(success);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String success = executeAction("/ProcessProductAction");
+		assertNotNull(success);
 	}
 	
 	@Test
-	public void testExecuteInvalidProduct() { 
+	public void testExecuteInvalidProduct() throws UnsupportedEncodingException, ServletException { 
 		ActionProxy proxy = getActionProxy("/ProcessProductAction");
 		target = (ProcessProductAction) proxy.getAction();
 		reqObj.setCustomerID("CCF");
@@ -174,16 +154,12 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String success = executeAction("/ProcessProductAction");
-			assertNotNull(success);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String success = executeAction("/ProcessProductAction");
+		assertNotNull(success);
 	}
 	
 	@Test
-	public void testExecuteInvalidSize() { 
+	public void testExecuteInvalidSize() throws UnsupportedEncodingException, ServletException { 
 		ActionProxy proxy = getActionProxy("/ProcessProductAction");
 		target = (ProcessProductAction) proxy.getAction();
 		reqObj.setCustomerID("CCF");
@@ -198,16 +174,12 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String success = executeAction("/ProcessProductAction");
-			assertNotNull(success);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String success = executeAction("/ProcessProductAction");
+		assertNotNull(success);
 	}
 	
 	@Test
-	public void testExecuteInvalidProductColor() { 
+	public void testExecuteInvalidProductColor() throws UnsupportedEncodingException, ServletException { 
 		ActionProxy proxy = getActionProxy("/ProcessProductAction");
 		target = (ProcessProductAction) proxy.getAction();
 		reqObj.setCustomerID("CCF");
@@ -222,11 +194,7 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 
-		try {
-			String success = executeAction("/ProcessProductAction");
-			assertNotNull(success);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
+		String success = executeAction("/ProcessProductAction");
+		assertNotNull(success);
 	}
 }
