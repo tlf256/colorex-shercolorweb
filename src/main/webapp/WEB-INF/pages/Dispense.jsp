@@ -23,7 +23,7 @@
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 <script type="text/javascript">
 var processingDispense = false;
 	<s:iterator value="tinter.canisterList" status="i">
@@ -39,7 +39,6 @@ var processingDispense = false;
 	//Document ON-Load
 	$(function() {
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
-		jQuery(document).on("keydown",fkey);
 		//Popover closing functionality
 		$('table.table-bordered').on('click', function(event) {
 			$('.popover').each(function() {
@@ -81,8 +80,6 @@ var processingDispense = false;
 		$('#progressok').click(function() {
 			$('#progressok').addClass('d-none');
 		});
-
-		jQuery(document).on("keydown", fkey);
 
 	});
 </script>
@@ -248,7 +245,9 @@ input[type=number] {
 								<div class="modal-body">
 									<p id="dispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold">
+										<s:text name="global.pressAkeyToAbort"/>
+									</p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>

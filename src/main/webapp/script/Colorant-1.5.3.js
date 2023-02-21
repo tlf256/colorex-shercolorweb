@@ -1,6 +1,7 @@
 //Global Variables
  var sendingTinterCommand = "false";
  var ws_tinter = new WSWrapper("tinter");
+ var platform = navigator.platform;
 
 $(function(){
     //Initial method calls
@@ -29,6 +30,11 @@ $(function(){
         var curRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[0]);
         var maxRowAmt = parseInt($('#ounces' + rowVal).text().split("/")[1]);
         var position = $('#key', this).attr('value');
+        var clrnt = null;
+		if(!platform.startsWith("Win")){
+			clrnt = $('#color' + rowVal).text().split(" ")[0];
+		}
+        console.log("COLORANT CODE: " + clrnt);
         
         var str = {
         		"updateType" : idSubstr,
@@ -36,7 +42,7 @@ $(function(){
         		"reqGuid" : $('#reqGuid').val()
         		};
         //move in to position
-        move($('#key', this).attr('value'));
+        move($('#key', this).attr('value'), clrnt);
         if(idSubstr == "addqt"){
             console.log("in add function");
             if((curRowAmt + 32.0) <= maxRowAmt){
@@ -136,8 +142,9 @@ $(function(){
                 $('#addModal').modal('show');
             } 
         }
-        else if(idSubstr = "moveT"){
+        else if(idSubstr == "moveT"){
         	//move function is called first for any button press
+            console.log("already in place");
         }
         else console.log("Condition failed");
     });
@@ -234,19 +241,22 @@ $(function(){
     }
 
 });
-function move(position){
+function move(position, clrntCode){
 	var tinterModel = $("#colorantLevels_tinterModel").val();
 	if(tinterModel.startsWith("FM X")){ // only rotate FM XTinter.
 		var cmd = "MoveToFill";
+		if(!platform.startsWith("Win")){
+			cmd = "Move";
+		}
 		$("#moveInProgressModal").modal('show');
 		rotateIcon();
 		var shotList = [];
-		shotList.push(new Colorant(null, 1, position,0));
+		shotList.push(new Colorant(clrntCode, 1, position,0));
 		var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
 		var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
 		if(ws_tinter!=null && ws_tinter.isReady=="false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -255,7 +265,8 @@ function move(position){
 function moveComplete(myGuid, curDate,return_message){
 	sendTinterEvent(myGuid, curDate, return_message, null);
     waitForShowAndHide("#moveInProgressModal");
-	if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+	if(return_message.errorNumber == 0 && (platform.startsWith("Win") && return_message.commandRC == 0
+		|| !platform.startsWith("Win") && return_message.commandRC == 2)){
 		// show success message in alert area
 		$("#tinterAlertList").empty();
 		$("#tinterAlertList").append("<li>" + i18n["colorant.moveComplete"] + "</li>");
@@ -327,8 +338,6 @@ function rotateIcon(){
 	}
 }
 function RecdMessage() {
-	
-	var initErrorList = [];
 	console.log("Received Message");
 	var curDate = new Date();
 	var myGuid = $('#reqGuid').val();
@@ -364,8 +373,9 @@ function RecdMessage() {
 		if(isTintJSON){
 			switch (return_message.command) {
 				case 'MoveToFill':
+				case 'Move':
 					sendingTinterCommand = "false";
-					moveComplete(myGuid,curDate,return_message,null);
+					moveComplete(myGuid,curDate,return_message);
 					break;
 				default:
 					//Not an response we expected...
