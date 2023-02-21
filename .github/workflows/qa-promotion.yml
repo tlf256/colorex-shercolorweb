@@ -5,7 +5,6 @@ jobs:
   qa-deploy:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/qa-promotion-workflow.yml@master
     with:
-      java_version: '8'
       release_name: shercolorweb
       qa_url: 'https://qa-shercolor.np-dmz-rancher.sherwin.com/shercolorweb'
       qa_helm_values: '"values.yaml" "values-rancher-dmz-qa.yaml"'
