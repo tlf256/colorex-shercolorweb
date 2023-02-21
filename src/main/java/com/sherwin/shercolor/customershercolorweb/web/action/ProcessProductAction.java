@@ -108,81 +108,42 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			// if not, do validation checks
 			if(!reqObj.isPackageColor()) {
 				//Call the validation.  If it validates successfully, call a read and get the data.
-				List<SwMessage> errlist = productService.validateProduct(salesNbr);
+				boolean gotARealError = false;
 				
-				// We need to review how validation errors are handled - product validation and color validation are
-				// slightly different.  Would be better if they were consistent.
-				if (errlist.size()>0) {
-					Boolean gotARealError = false;
-					for(SwMessage item:errlist) {
-						if (item.getSeverity()!=null) {
-							if (item.getSeverity().equals(Level.ERROR)) {
-								addFieldError("partialProductNameOrId", item.getMessage());
-								gotARealError = true;
-							}
-						}
-					}
-					if (gotARealError) {
+				logger.debug("Validating product info in master product table...");
+				List<SwMessage> errlist = productService.validateProductInPOS(salesNbr);
+				if(!errlist.isEmpty()) {
+					gotARealError = checkMessageSeverity(errlist, reqObj);
+					if(gotARealError) {
 						return INPUT;
-					} else {
-						//probably got a single result back that indicated successful validation.
-						//call the product color validation.
-						List<SwMessage> errmsg = productColorService.validate(colorComp, colorId, salesNbr);
-						if (errmsg.size() > 0) {
-							Boolean gotARealError2 = false;
-							for(SwMessage item:errmsg) {
-								if (item.getSeverity()!=null) {
-									if (item.getSeverity().equals(Level.ERROR)) {
-										addFieldError("partialProductNameOrId", item.getMessage());
-										gotARealError2 = true;
-									} else {
-										//check if this is a warning on the same salesNbr, and we have already displayed a 
-										//warning for this sales number.  If so, then the user wants to go past the warning.
-										if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
-											//All is well, John Spartan.  
-										} else {
-											//Since this is a warning, add the warning "Click Next to override and continue" at 
-											//the end here.  Eventually we may wish to convert this to retrieve this from a
-											//properties file for globalization.
-											addActionMessage(item.getMessage() + " " + OVERRIDEWARNMSG);
-											reqObj.setValidationWarning(true);
-											reqObj.setValidationWarningSalesNbr(salesNbr);
-											sessionMap.put(reqGuid, reqObj);
-											gotARealError2 = true;
-										}
-									}
-								}
-
-							}
-							if (gotARealError2) {
-								return INPUT;
-							}
-						}
-					}
-				} else {
-					//call the product color validation.
-					List<SwMessage> errmsg = productColorService.validate(colorComp, colorId, salesNbr);
-					if (errmsg.size() > 0) {
-						Boolean gotARealError = false;
-						for(SwMessage item:errmsg) {
-							if (item.getSeverity()!=null) {
-								if (item.getSeverity().equals(Level.ERROR)) {
-									addFieldError("partialProductNameOrId", item.getMessage());
-									gotARealError = true;
-								} else {
-									addActionMessage(item.getMessage());
-									reqObj.setValidationWarning(true);
-									reqObj.setValidationWarningSalesNbr(salesNbr);
-									sessionMap.put(reqGuid, reqObj);
-									gotARealError = true;
-								}
-							}
-						}
-						if (gotARealError) {
-							return INPUT;
-						}
 					}
 				}
+				
+				logger.debug("Validating product size code in CDS...");
+				errlist = productService.validateProductSizeCode(salesNbr, reqObj.getColorType());
+				if(!errlist.isEmpty()) {
+					gotARealError = checkMessageSeverity(errlist, reqObj);
+					//Custom Manual colors can use products whose size code is not defined in SherColor.
+					if(gotARealError) {
+						if (reqObj.isValidationWarning()) {
+							reqObj.setValidationWarningSalesNbr(salesNbr);
+						}
+						return INPUT;
+					}
+				}
+				
+				logger.debug("Validating product color info...");
+				errlist = productColorService.validate(colorComp, colorId, salesNbr);
+				if(!errlist.isEmpty()) {
+					gotARealError = checkMessageSeverity(errlist, reqObj);
+					if(gotARealError) {
+						if (reqObj.isValidationWarning()) {
+							reqObj.setValidationWarningSalesNbr(salesNbr);
+						}
+						return INPUT;
+					} 
+				}
+				
 			 }
 			 
 		 	PosProd posProd = productService.readPosProd(salesNbr);
@@ -294,6 +255,30 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 			}
 		}
 	 }
+	
+	private boolean checkMessageSeverity(List<SwMessage> errlist, RequestObject reqObj) {
+		boolean result = false;
+		for(SwMessage item:errlist) {
+			if (item.getSeverity() != null && item.getSeverity().equals(Level.ERROR)) {
+				logger.debug("Validation Error received: {}", item.getMessage());
+				addFieldError("partialProductNameOrId", item.getMessage());
+				result = true;
+			} else {
+				logger.debug("Validation Warning code: {} and message: {}", item.getCode(), item.getMessage());
+				if (reqObj.isValidationWarning() && reqObj.getValidationWarningSalesNbr() != null && reqObj.getValidationWarningSalesNbr().equals(salesNbr)) {
+					// let the user go past the warning
+					logger.debug("Validation warning is already flagged for this salesNbr {}. letting it through", salesNbr);
+					result = false;
+				} else {
+					logger.debug("Validation warning has not been flagged for this salesNbr {}. Notifying the user", salesNbr);
+					addActionMessage(item.getMessage());
+					reqObj.setValidationWarning(true);
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
 	
 	
 	public String listProducts() {
