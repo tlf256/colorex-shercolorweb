@@ -263,7 +263,12 @@ function printButtonClickGetJson() {
 
 function printFromManualDispense(dispenseQuantity) {
 	if (printerConfig && printerConfig.model && printerConfig.printOnDispense) {
-		myPrintLabelType = "storeLabel";
+		//Added conditional so the proper label prints for stores and self tinting customers.
+		if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+			myPrintLabelType = "storeLabel";
+		} else {
+			myPrintLabelType = "selfTintCustLabel";
+		}
 		myPrintOrientation = "PORTRAIT";
 		var myguid = $("#reqGuid").val();
 		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};

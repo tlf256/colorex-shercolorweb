@@ -590,6 +590,11 @@
 									</div>
 									<div class="modal-body">
 										<s:actionmessage style="color:black; background-color:#FAFF98; border-color:#FAFF98"/>
+										<s:if test="%{userFillCheckMsg==true}"> 
+										    <div class="alert alert-danger" role="alert">
+											    <s:text name="processManualFormulaAction.userFillCheckMsg"/>
+											</div>
+										</s:if>
 									</div>
 									<div class="modal-footer">
 										<s:submit cssClass="btn btn-primary" id="overrideWarning" value="%{getText('global.yes')}" onclick="setOverride();" action="MfUserNextAction"/>
