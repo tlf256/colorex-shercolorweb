@@ -36,7 +36,7 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 	
 	private Map<String, Object> sessionMap;
 	private static final long serialVersionUID = 1L;
-	static Logger logger = LoggerFactory.getLogger(ProcessProductAction.class);
+	static Logger logger = LoggerFactory.getLogger(ProcessProductChangeAction.class);
 	private String partialProductNameOrId; 
 	private String message;
 	private String salesNbr;
@@ -135,9 +135,8 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			this.setSalesNbr(enteredSalesNbr);
 		}
 		
-		logger.debug("Validating product info...");
-		//Call the validation.  If it validates successfully, call a read and get the data.
-		List<SwMessage> errlist = productService.validateProduct(salesNbr);
+		logger.debug("Validating product info in master product table...");
+		List<SwMessage> errlist = productService.validateProductInPOS(salesNbr);
 		if(!errlist.isEmpty()) {
 			gotARealError = checkMessageSeverity(errlist, reqObj);
 			if(gotARealError) {
@@ -160,6 +159,21 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 				sessionMap.put(reqGuid, reqObj);
 				return INPUT;
 			} 
+		}
+		
+		logger.debug("Validating product size code in CDS...");
+		logger.debug("reqObj.getColorType() is: {}", reqObj.getColorType());
+		errlist = productService.validateProductSizeCode(salesNbr, reqObj.getColorType());
+		if(!errlist.isEmpty()) {
+			gotARealError = checkMessageSeverity(errlist, reqObj);
+			//Custom Manual colors can use products whose size code is not defined in SherColor.
+			if(gotARealError) {
+				if (reqObj.isValidationWarning()) {
+					reqObj.setValidationWarningSalesNbr(salesNbr);
+				}
+				sessionMap.put(reqGuid, reqObj);
+				return INPUT;
+			}
 		}
 		
 		logger.debug("Validating product color info...");

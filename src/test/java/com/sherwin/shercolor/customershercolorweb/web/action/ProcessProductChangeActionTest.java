@@ -145,7 +145,24 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		target = (ProcessProductChangeAction) proxy.getAction();
 
 		target.setReqGuid("123456789");
-		target.setPartialProductNameOrId("100000546");
+		target.setPartialProductNameOrId("zz99zz99");
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+
+		String success = executeAction("/lookupProductOptions");
+		assertNotNull(success);
+
+	}
+	
+	@Test
+	public void testLookupProductOptionsActionUndefinedSizeCode() {
+		ActionProxy proxy = getActionProxy("/lookupProductOptions");
+		target = (ProcessProductChangeAction) proxy.getAction();
+
+		target.setReqGuid("123456789");
+		target.setPartialProductNameOrId("100000157");
 
 		request.setParameter("reqGuid", reqObj.getGuid());
 		HttpSession session = request.getSession();
