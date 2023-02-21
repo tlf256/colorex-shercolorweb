@@ -197,4 +197,44 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		String success = executeAction("/ProcessProductAction");
 		assertNotNull(success);
 	}
+	
+	@Test
+	public void testExecuteProductColorWarning() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/ProcessProductAction");
+		target = (ProcessProductAction) proxy.getAction();
+		reqObj.setCustomerID("CCF");
+		reqObj.setColorType("SHERWIN-WILLIAMS");
+		reqObj.setColorID("0057");
+		reqObj.setColorComp("SHERWIN-WILLIAMS");
+		reqObj.setIntBases("");
+		reqObj.setExtBases("");
+		request.setParameter("partialProductNameOrId", "640515755");
+		request.setParameter("reqGuid",reqGuid);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+
+		String success = executeAction("/ProcessProductAction");
+		assertNotNull(success);
+	}
+	
+	@Test
+	public void testExecuteProductWarning() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/ProcessProductAction");
+		target = (ProcessProductAction) proxy.getAction();
+		reqObj.setCustomerID("CCF");
+		reqObj.setColorType("CUSTOM");
+		reqObj.setColorID("0057");
+		reqObj.setColorComp("CUSTOM");
+		reqObj.setIntBases("");
+		reqObj.setExtBases("");
+		request.setParameter("partialProductNameOrId", "100000157");
+		request.setParameter("reqGuid",reqGuid);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+
+		String success = executeAction("/ProcessProductAction");
+		assertNotNull(success);
+	}
 }

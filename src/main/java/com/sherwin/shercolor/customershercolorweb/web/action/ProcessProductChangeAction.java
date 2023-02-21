@@ -135,7 +135,6 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			this.setSalesNbr(enteredSalesNbr);
 		}
 		
-		System.out.println(colorComp + "-" + colorId + "-" + clrntSysId + "-" + enteredSalesNbr);
 		
 		logger.debug("Validating product info in master product table...");
 		List<SwMessage> errlist = productService.validateProductInPOS(salesNbr);
