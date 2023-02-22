@@ -133,6 +133,27 @@ function FMXdispenseProgress(tintermessage) {
 	ws_tinter.send(json);
 }
 
+function ASDispenseProgress(tintermessage) {
+	console.log('before dispense progress send');
+	$('#tinterInProgressMessage').text('');
+	rotateIcon();
+	var cmd = "DispenseProgress";
+	if(!platform.startsWith("Win")){
+		cmd = "DispenseStatus";
+	}
+	var tinterModel = sessionTinterInfo.model;
+	if(tinterModel !=null){ 
+		
+   		var tintermessage = new TinterMessage(cmd,null,null,null,null);
+	
+	}
+	var msgId = tintermessage.msgId;
+	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
+	var json = JSON.stringify(tintermessage);
+	sendingTinterCommand = "true";
+	ws_tinter.send(json);
+}
+
 function dispense() {
 	//dispense
 	let cmd = "Dispense";
@@ -213,7 +234,7 @@ function dispenseProgressResp(return_message) {
 	}
 }
 
-function fmDispenseProgressResp(return_message) {
+function asDispenseProgressResp(return_message) {
 
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
@@ -222,7 +243,7 @@ function fmDispenseProgressResp(return_message) {
 		tinterErrorList = [];
 		if (return_message.errorMessage != null) {
 			//keep updating modal with status
-			buildFMProgressBars(return_message); // TODO create function
+			buildProgressBars(return_message);
 		}
 		if (return_message.errorList != null && return_message.errorList[0] != null) {
 			// show errors
@@ -237,7 +258,7 @@ function fmDispenseProgressResp(return_message) {
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			FMdispenseProgress(); //TODO create function
+			ASDispenseProgress(); //TODO create function
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
@@ -246,7 +267,7 @@ function fmDispenseProgressResp(return_message) {
 		if (return_message.errorNumber == 4226) {
 			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
 		}
-		FMDispenseComplete(return_message);
+		ASDispenseComplete(return_message);
 
 	}
 }
@@ -349,6 +370,50 @@ function FMXDispenseComplete(return_message) {
 		console.log('hide done');
 		//Show a modal with error message to make sure the user is forced to read it.
 		FMXShowTinterErrorModal(i18n['global.dispenseError'], null, return_message);
+	}
+	sendingTinterCommand = "false";
+}
+
+function ASDispenseComplete(return_message) {
+	processingDispense = false; // allow user to start another dispense after tinter error
+	$('#spinner').addClass('d-none');
+	$("#abort-message").hide();
+
+	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) 
+		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+		// save a dispense (will bump the counter)
+		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
+
+		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
+
+		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
+		$('#tinterInProgressMessage').text('');
+		$("#tinterProgressList").empty();
+		tinterErrorList = [];
+		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
+			buildProgressBars(return_message);
+		} else {
+			if(platform.startsWith("Win")){
+				tinterErrorList.push(return_message.errorMessage);
+				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+			}
+		}
+		if ($('#progressok').length > 0 ) {
+			$('#progressok').removeClass('d-none');
+		}
+		else {
+			writeDispense(return_message); // will also send tinter event
+			waitForShowAndHide("#tinterInProgressModal");
+		}
+	} else {
+		if (return_message.errorNumber == 4226) {
+			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry'];
+		}
+		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
+		waitForShowAndHide("#tinterInProgressModal");
+		console.log('hide done');
+		//Show a modal with error message to make sure the user is forced to read it.
+		showTinterErrorModal(i18n['global.dispenseError'], null, return_message);
 	}
 	sendingTinterCommand = "false";
 }
@@ -497,7 +562,7 @@ function RecdMessage() {
 						}
 						else if(tinterModel != null && tinterModel.startsWith("AS")) {
 							// implement dispense progress for 9500
-							fmDispenseProgressResp(return_message);
+							asDispenseProgressResp(return_message);
 						}
 						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 

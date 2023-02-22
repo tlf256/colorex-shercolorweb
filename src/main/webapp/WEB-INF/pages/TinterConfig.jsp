@@ -345,7 +345,9 @@
 
 	function updateCredentials(){
 		var command = "UpdateCredentials";
+		var srvcred = $('#srvPwd').val().trim();
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
+		tinterMsg.javaMessage = srvcred;
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
@@ -353,6 +355,12 @@
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
+	}
+
+	function validatePasswords() {
+		// ensure current password is correct
+		// and new password fits requirements
+		// ajax action gets new password and evaluates...
 	}
 	
 	function onSubmit(event){
@@ -443,10 +451,14 @@
 		//rotateIcon();
 	});
 
-	$(document).on('click', '#updateCreds_btn', function(){
+	$(document).on('click', '#updateCredsBtn_lnx', function(){
 		var dspMsg = "Updating credentials..."
 		pleaseWaitModal_show(dspMsg, '#passwordModal');
 		updateCredentials();
+	});
+
+	$(document).on('click', '#updateCredsBtn_win', function(){
+		// write password file to disk
 	});
 
 	/***
@@ -555,7 +567,7 @@
 		$('#ecals').hide();
 		$('#selectClrntSysId').val("CCE");
 		GetModelsForColorant($('#selectClrntSysId').val());
-		
+		$('[data-toggle="tooltip"]').tooltip();
 		
 		/*  var dt_arr = buildEcal();
 
@@ -1006,11 +1018,15 @@
 					// error reading/writing hostname file
 					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>";
 					$('#error').html(errorText);
+					$('#modelSelect')[0].selectedIndex = 0;
+					$('#tinterSerial').removeClass('d-none');
 				}
 				else {
 					// other unknown error
 					var errorText = "<br><h5>Error retrieving hostname</h5>";
 					$('#error').html(errorText);
+					$('#modelSelect')[0].selectedIndex = 0;
+					$('#tinterSerial').removeClass('d-none');
 				}
 				break;
 			case 'CheckCredentials':
@@ -1350,6 +1366,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
+					<p>Credentials need updated. Enter the service password given by Manufacturer.</p>
 					<div class="container">
 						<div class="row">
 						<div class="col-sm-2"></div>
@@ -1374,7 +1391,7 @@
 						  <div class="col-sm-2"></div>
 						  <div class="col-sm-8">
 							<div id="servicePwd" class="form-label-group">
-								<label class="sw-label" for="">Service Password</label>
+								<label class="sw-label" for="srvPwd">Service Password</label>
 								<i class="text-muted fa fa-eye pwd-toggle mt-1" id="srvPwdToggle"></i>
 								<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
 							</div>
@@ -1387,12 +1404,12 @@
 						<s:else>
 							<p>Linux/Mac OS TEST</p>
 						</s:else>
-						<!-- windows implementation -- inactive -- 
+						<!-- windows implementation -- inactive
 							<div class="row">
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
 								<div id="currentPwd" class="form-label-group">
-									<label class="sw-label" for="">Current Password</label>
+									<label class="sw-label" for="currentPwd">Current Password</label>
 									<i class="text-muted fa fa-eye pwd-toggle mt-1" id="currentPwdToggle"></i>
 									<s:password id="currentPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
@@ -1403,7 +1420,7 @@
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
 								<div id="newPwd" class="form-label-group">
-									<label class="sw-label" for="">New Password</label>
+									<label class="sw-label" for="newPwd">New Password</label>
 									<i class="text-muted fa fa-eye pwd-toggle mt-1" id="newPwdToggle"></i>
 									<s:password id="newPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
@@ -1414,8 +1431,14 @@
 					</div>
 				</div>
 				<div class="modal-footer bg-light">
-					<button type="button" class="btn btn-primary pull-right" id="updateCreds_btn"
-						aria-label="%{getText('global.continue')}">Submit</button>
+					<s:if test="OS_NAME.contains('win')">
+						<button type="button" class="btn btn-primary pull-right" id="updateCredsBtn_win" data-toggle="tooltip"
+						 aria-label="%{getText('global.continue')}" title="Configuration not implemented for Windows" disabled></button>
+					</s:if>
+					<s:else>
+						<button type="button" class="btn btn-primary pull-right" id="updateCredsBtn_lnx"
+						 aria-label="%{getText('global.continue')}"></button>
+					</s:else>
 					<s:submit cssClass="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction" />
 				</div>
 			</div>

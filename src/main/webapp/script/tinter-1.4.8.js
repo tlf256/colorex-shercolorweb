@@ -298,6 +298,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata,mymessage
 	this.statusMessages=null;
 	this.msgId = mymessageId;
 }
+
 function createUUID() {
     // http://www.ietf.org/rfc/rfc4122.txt
     var s = [];
