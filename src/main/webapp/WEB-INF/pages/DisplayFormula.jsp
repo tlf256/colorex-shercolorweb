@@ -263,7 +263,12 @@ function printButtonClickGetJson() {
 
 function printFromManualDispense(dispenseQuantity) {
 	if (printerConfig && printerConfig.model && printerConfig.printOnDispense) {
-		myPrintLabelType = "storeLabel";
+		//Added conditional so the proper label prints for stores and self tinting customers.
+		if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+			myPrintLabelType = "storeLabel";
+		} else {
+			myPrintLabelType = "selfTintCustLabel";
+		}
 		myPrintOrientation = "PORTRAIT";
 		var myguid = $("#reqGuid").val();
 		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
@@ -685,12 +690,15 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 //callback stuff
 	function setDispenseQuantity(handDispense) {
+		var quantityOrdered = parseInt($('#qtyOrderedTextField').val());
+		var quantityDispensed = parseInt($("#qtyDispensed").text());
+		var quantityToDispense = quantityOrdered - quantityDispensed;
 		// check that user doesn't need to set rooms dropdown
 		if (verifyRoomSelected() == true && validateQtyOrdered() == true){
 			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
-			$("#dispenseQuantityInput").val("1");
-			$("#dispenseQuantityInput").attr("value", "1");
+			$("#dispenseQuantityInput").val(quantityToDispense);
+			$("#dispenseQuantityInput").attr("value", quantityToDispense);
 			$("#setDispenseQuantityModal").modal('show');
 			$("#dispenseQuantityInput").select();
 		}

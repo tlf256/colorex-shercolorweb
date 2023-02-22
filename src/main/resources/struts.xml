@@ -440,6 +440,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetClrntSys.jsp</result>
+			<result name="input" type="json"/>
 		</action>
 		<action name="ProcessClrntSysAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
