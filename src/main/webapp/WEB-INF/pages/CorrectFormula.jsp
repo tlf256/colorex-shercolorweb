@@ -28,7 +28,6 @@
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
-		<script type="text/javascript" src="script/WSWrapper.js"></script> 
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -122,7 +121,7 @@
 		 /*These checks are for color eye corrections
 		 This has been tested and finished but is to be commented out for the time being 
 		 Uncomment this block out once a color formulation service backend has been finished for coloreye corrections 
-		 See JIRA ticket SCD-111 
+		 See JIRA ticket SCD-111*/
 		 
 		//customerId, controlNbr, lineNbr 
 		ws_coloreye.receiver = RecdSpectroMessage;
@@ -132,7 +131,7 @@
 		//new stuff
 		isCharacterized();
 		//if fill limit reached
-		isFull();*/
+		isFull();
 		
 		$("#formulaAdditions > tbody").empty();
 		$("#addIngredients").show();
@@ -1883,13 +1882,13 @@ function IllumModalClose() {
 								<!-- This has been tested and finished but is to be commented out for the time being -->
 								<!-- Uncomment this block out once a color formulation service backend has been finished for coloreye corrections -->
 								<!-- See JIRA ticket SCD-111 -->
-								<!--<tr><td>
+								<tr><td>
 								<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
 									<button type="button" class="btn btn-secondary btn-block" id="eyeAdd" onclick="hasIllum()">
 											<s:text name="correctFormula.colorEyeAddition"></s:text>
 										</button>
 									</div>
-								</td></tr>-->
+								</td></tr>
 								<tr><td>
 									<button type="button" class="btn btn-secondary btn-block dropdown-toggle" id="manualAdd" data-toggle="dropdown">
 										<s:text name="correctFormula.manualAddition"></s:text>
