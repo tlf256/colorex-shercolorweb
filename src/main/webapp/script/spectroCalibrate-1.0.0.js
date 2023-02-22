@@ -2,6 +2,8 @@
 	var ws_coloreye = new WSWrapper('coloreye');
     var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
     var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
+    var count = 0;
+    var newCol = "";
 
 	function InitializeMeasureScreen() {
 	    console.log("InitializeMeasureScreen");
@@ -26,11 +28,28 @@
   		$(".swmeasure").show();
 	}
 	
+	function setCount(countvar, intext) {
+	  	count = countvar;
+	  	newCol = intext;
+	}
+	
 	function GoodMeasure(measCurve) {
 	  	console.log("GoodMeasure")
 	  	console.log("meascurve = " + measCurve);
-	  	document.getElementById("measuredCurve").value = measCurve;
-	  $("#measure-color-form").submit();
+	  if(count == 2){
+			  alert("Now go do corrections");
+			  $('#measureColorModal').modal('hide');
+			  cancelMeasure();
+		  }
+	  else if(count == 1){
+			  SWMeasure();
+			  count++;
+			  $('#measureModalTitle').text(newCol);
+	      }
+	  else{
+		document.getElementById("measuredCurve").value = measCurve;
+	    $("#measure-color-form").submit();
+		  }
 	}
 	
 	
