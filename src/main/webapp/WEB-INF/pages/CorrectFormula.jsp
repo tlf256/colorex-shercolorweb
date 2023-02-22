@@ -812,6 +812,11 @@
 				}
 				$("#fillWarningListSummary").text('<s:text name="correctFormula.clickContinue2" />');
 				$('#fillWarningListOK').focus();
+				if(eventTriggerId === 'dispenseAdd') {
+					$('#dispenseEventId').val('Tinter');
+				} else {
+					$('#dispenseEventId').val('Hand');
+				}
 				$('#fillWarningListModal').modal('show');
 			}
 		} else {
@@ -1095,7 +1100,11 @@
 		$(document).on("click", "#fillWarningListOK", function(event){
 			event.preventDefault();
 			waitForShowAndHide("#fillWarningListModal");
-			preDispenseCheck();
+			if($('#dispenseEventId').val() === 'Tinter') {
+				preDispenseCheck();
+			} else {
+				$('#confirmHandDispenseModal').modal('show');
+			}
 		});
 		
 		$(document).on("shown.bs.modal", "#positionContainerModal", function(event){
@@ -1270,6 +1279,7 @@
  						<s:hidden name="mergeCorrWithStartingForm" value="%{mergeCorrWithStartingForm}"/>
  						<s:hidden name="formulaClrntSysId" id="formulaClrntSys" value="%{#session[reqGuid].displayFormula.clrntSysId}" />
  						<s:hidden name="tinterClrntSysId" id="tinterClrntSys" value="%{#session[reqGuid].tinter.clrntSysId}" />
+ 						<s:hidden name="dispenseEvent" id="dispenseEventId"/>
 					</div>
 					<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
 						<div class="card card-body bg-light">
