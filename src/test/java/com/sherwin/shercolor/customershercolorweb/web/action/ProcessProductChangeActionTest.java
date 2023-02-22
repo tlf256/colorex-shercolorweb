@@ -47,7 +47,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		reqObj.setCustomerType("CUSTOMER");
 		reqObj.setColorType("CUSTOM");
 		reqObj.setColorComp("SHERWIN-WILLIAMS");
-		reqObj.setColorID("1001");
+		reqObj.setColorID("0001");
 		reqObj.setDisplayFormula(setupFormulaInfo());
 		reqObj.setSizeCode("16");
 		reqObj.setClrntSys("CCE");
@@ -64,7 +64,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		FormulaInfo formInfo = new FormulaInfo();
 		formInfo.setGuid(reqObj.getGuid());
 		formInfo.setColorComp("SHERWIN-WILLIAMS");
-		formInfo.setColorId("1001");
+		formInfo.setColorId("0001");
 		formInfo.setProdComp("SW");
 		formInfo.setSalesNbr("640389151");
 		formInfo.setClrntSysId("CCE");
@@ -122,6 +122,106 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 			String success = executeAction("/lookupProductOptions");
 			assertNotNull(success);
 
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+
+	}
+	
+	@Test
+	public void testLookupProductOptionsActionCannotUseClrntSys() {
+		ActionProxy proxy = getActionProxy("/lookupProductOptions");
+		target = (ProcessProductChangeAction) proxy.getAction();
+
+		target.setReqGuid("123456789");
+		target.setPartialProductNameOrId("640362463");
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+
+		try {
+			String success = executeAction("/lookupProductOptions");
+			assertNotNull(success);
+			
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+
+	}
+	
+	@Test
+	public void testLookupProductOptionsActionNoPosProduct() {
+		ActionProxy proxy = getActionProxy("/lookupProductOptions");
+		target = (ProcessProductChangeAction) proxy.getAction();
+
+		target.setReqGuid("123456789");
+		target.setPartialProductNameOrId("zz99zz99");
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+
+		try {
+			String success = executeAction("/lookupProductOptions");
+			assertNotNull(success);
+			
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+
+	}
+	
+	@Test
+	public void testLookupProductOptionsActionUndefinedSizeCode() {
+		ActionProxy proxy = getActionProxy("/lookupProductOptions");
+		target = (ProcessProductChangeAction) proxy.getAction();
+
+		target.setReqGuid("123456789");
+		target.setPartialProductNameOrId("100000157");
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+
+		try {
+			String success = executeAction("/lookupProductOptions");
+			assertNotNull(success);
+			
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			System.out.println(sw.toString());
+		}
+
+	}
+	
+	@Test
+	public void testLookupProductOptionsActionProductColorFail() {
+		ActionProxy proxy = getActionProxy("/lookupProductOptions");
+		target = (ProcessProductChangeAction) proxy.getAction();
+
+		target.setReqGuid("123456789");
+		target.setPartialProductNameOrId("651085862");
+
+		request.setParameter("reqGuid", reqObj.getGuid());
+		HttpSession session = request.getSession();
+		session.setAttribute(reqObj.getGuid(), reqObj);
+
+		try {
+			String success = executeAction("/lookupProductOptions");
+			assertNotNull(success);
+			
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -265,7 +365,6 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		target.setOldTintStrength(100);
 		target.setOldSizeCode("16");
 		target.setNewSizeCode("20");
-		
 
 		request.setParameter("reqGuid", reqObj.getGuid());
 		HttpSession session = request.getSession();
