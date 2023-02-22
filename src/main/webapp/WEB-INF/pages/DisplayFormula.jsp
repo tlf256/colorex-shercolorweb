@@ -263,7 +263,12 @@ function printButtonClickGetJson() {
 
 function printFromManualDispense(dispenseQuantity) {
 	if (printerConfig && printerConfig.model && printerConfig.printOnDispense) {
-		myPrintLabelType = "storeLabel";
+		//Added conditional so the proper label prints for stores and self tinting customers.
+		if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+			myPrintLabelType = "storeLabel";
+		} else {
+			myPrintLabelType = "selfTintCustLabel";
+		}
 		myPrintOrientation = "PORTRAIT";
 		var myguid = $("#reqGuid").val();
 		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
@@ -685,12 +690,15 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 //callback stuff
 	function setDispenseQuantity(handDispense) {
+		var quantityOrdered = parseInt($('#qtyOrderedTextField').val());
+		var quantityDispensed = parseInt($("#qtyDispensed").text());
+		var quantityToDispense = quantityOrdered - quantityDispensed;
 		// check that user doesn't need to set rooms dropdown
-		if (verifyRoomSelected() == true){
+		if (verifyRoomSelected() == true && validateQtyOrdered() == true){
 			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
-			$("#dispenseQuantityInput").val("1");
-			$("#dispenseQuantityInput").attr("value", "1");
+			$("#dispenseQuantityInput").val(quantityToDispense);
+			$("#dispenseQuantityInput").attr("value", quantityToDispense);
 			$("#setDispenseQuantityModal").modal('show');
 			$("#dispenseQuantityInput").select();
 		}
@@ -1118,7 +1126,8 @@ function ParsePrintMessage() {
 	/* -------- Validation functions ----------- */
 	
 	function validateQtyOrdered(){
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 			//$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>');
@@ -1142,7 +1151,8 @@ function ParsePrintMessage() {
 	}
 	
 	function validateQtyOrderedForPrint() {
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 
@@ -1657,7 +1667,7 @@ function ParsePrintMessage() {
 					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
 				</div>
 				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
-					<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
+					<s:textfield type="number" id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
 					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
 				</div>
 				<br>

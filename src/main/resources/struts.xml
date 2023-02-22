@@ -417,6 +417,7 @@
 				<param name="actionName">invalidLoginAction</param>
 			</result>
 			<result name="success">/WEB-INF/pages/GetClrntSys.jsp</result>
+			<result name="input" type="json"/>
 		</action>
 		<action name="ProcessClrntSysAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessClrntSysAction" method="execute">
 			<result name="loginRedirect" type="redirectAction">
@@ -990,6 +991,7 @@
 				<param name="isAJAX">true</param>
 			</result>
 			<result name="success" type="json"/>
+			<result name="error" type="json"/>
 		</action>
 		<action name="saveCanType" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessFormulaAction" method="saveCanType">
 			<result name="loginRedirect" type="redirectAction">
