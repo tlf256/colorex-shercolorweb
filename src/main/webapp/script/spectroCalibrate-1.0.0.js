@@ -179,6 +179,13 @@
 		$(".done").removeClass('d-none');
 	}
 	
+	function detectSpectro(){
+		  	console.log("Detect")
+		var spectromessage = new SpectroMessage('Detect',clreyemodel,clreyeserial);
+	    var json = JSON.stringify(spectromessage);
+	    ws_coloreye.send(json);
+	}
+	
 	function CalibrateIncomplete() {
 		console.log("CalibrateIncomplete")
 	  	calibrate_step = "CalibrateIncomplete";

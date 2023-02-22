@@ -28,6 +28,7 @@
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
+		<script type="text/javascript" src="script/spectroCalibrate-1.0.0.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -132,6 +133,7 @@
 		isCharacterized();
 		//if fill limit reached
 		isFull();
+		ws_coloreye.receiver = null;
 		
 		$("#formulaAdditions > tbody").empty();
 		$("#addIngredients").show();
@@ -792,7 +794,7 @@
 	}
 	
 	
-	
+/*	
 	var ws_coloreye = new WSWrapper('coloreye');
 	ws_coloreye.receiver = RecdSpectroMessage;
     var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
@@ -1108,7 +1110,7 @@ function IllumModalClose() {
 	console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
 	//send the calibrate white message.
 	GetCalSteps();
-	}
+	}*/
 	  
 	  
 
@@ -1310,6 +1312,7 @@ function IllumModalClose() {
 	}
 	
 	function hasIllum() {
+		ws_coloreye.receiver = RecdSpectroMessage;
 		// ajax call to check if order has an illumination value set for it customerId, controlNbr, lineNbr 
         var str = { "reqGuid" : $('#reqGuid').val(), "customerId" : "${sessionScope[thisGuid].customerID}", "controlNbr" : "${sessionScope[thisGuid].controlNbr}", "lineNbr" : "${sessionScope[thisGuid].lineNbr}"};
         var jsonIN = JSON.stringify(str);        
@@ -1354,7 +1357,7 @@ function IllumModalClose() {
 		var sample = $('#measureSample').val();
 		console.log('standard: ' + standard);
 		console.log('sample: ' + sample);
-		setMeasureModalTitle(standard, sample); 
+		setMeasureModalTitle(standard, sample, '<s:text name="compareColors.measureStandard"/>', '<s:text name="compareColors.measureSample"/>', '<s:text name="measureColor.measureColor"/>');
 		InitializeMeasureScreen();
 		
 		//Get the calibration status to initialize connection.
@@ -1378,7 +1381,6 @@ function IllumModalClose() {
 		table = document.getElementById("correctionAttempts");
 			for (var i = 1, row; row = table.rows[i]; i++) {
 				   var clr = row.cells[4].innerHTML;
-				   console.log(clr); 
 				   if(clr.includes("W1")||clr.includes("TW")||clr.includes("WHT")){
 					   return true;
 				   }
