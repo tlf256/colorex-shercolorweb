@@ -690,12 +690,15 @@ function ParsePrintMessage() {
 <script type="text/javascript">
 //callback stuff
 	function setDispenseQuantity(handDispense) {
+		var quantityOrdered = parseInt($('#qtyOrderedTextField').val());
+		var quantityDispensed = parseInt($("#qtyDispensed").text());
+		var quantityToDispense = quantityOrdered - quantityDispensed;
 		// check that user doesn't need to set rooms dropdown
 		if (verifyRoomSelected() == true && validateQtyOrdered() == true){
 			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
-			$("#dispenseQuantityInput").val("1");
-			$("#dispenseQuantityInput").attr("value", "1");
+			$("#dispenseQuantityInput").val(quantityToDispense);
+			$("#dispenseQuantityInput").attr("value", quantityToDispense);
 			$("#setDispenseQuantityModal").modal('show');
 			$("#dispenseQuantityInput").select();
 		}
