@@ -124,7 +124,7 @@
 		 Uncomment this block out once a color formulation service backend has been finished for coloreye corrections 
 		 See JIRA ticket SCD-111*/
 		//let goodmeasure know how many times to loop
-		setCount(1, '<s:text name="correctFormula.newColor"/>');
+		setCount(1, '<s:text name="correctFormula.newColor"/>', '<s:text name="correctFormula.oldColor"/>');
 		//customerId, controlNbr, lineNbr 
 		ws_coloreye.receiver = RecdSpectroMessage;
 		//if no spectro disable eye addition
@@ -1313,7 +1313,6 @@ function IllumModalClose() {
 	}
 	
 	function hasIllum() {
-		$('#measureModalTitle').text('<s:text name="correctFormula.oldColor"/>')
 		ws_coloreye.receiver = RecdSpectroMessage;
 		// ajax call to check if order has an illumination value set for it customerId, controlNbr, lineNbr 
         var str = { "reqGuid" : $('#reqGuid').val(), "customerId" : "${sessionScope[thisGuid].customerID}", "controlNbr" : "${sessionScope[thisGuid].controlNbr}", "lineNbr" : "${sessionScope[thisGuid].lineNbr}"};

@@ -4,6 +4,7 @@
     var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
     var count = 0;
     var newCol = "";
+    var oldCol = "";
 
 	function InitializeMeasureScreen() {
 	    console.log("InitializeMeasureScreen");
@@ -28,9 +29,10 @@
   		$(".swmeasure").show();
 	}
 	
-	function setCount(countvar, intext) {
+	function setCount(countvar, newColtext, oldColtext) {
 	  	count = countvar;
-	  	newCol = intext;
+	  	newCol = newColtext;
+	  	oldCol = oldColtext;
 	}
 	
 	function GoodMeasure(measCurve) {
@@ -177,7 +179,11 @@
 		    } else if(sample != null && sample == "true"){
 		    	console.log("color sample measure");
 		    	modalTitle = measureSample;
-		    } else {
+		    } else if(count == 1){
+		    	console.log("color eye correction");
+		    	modalTitle = oldCol;
+		    }
+		    else{
 		    	console.log("color measure");
 		    	modalTitle = measureColor;
 		    }
