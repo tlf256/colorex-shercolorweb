@@ -312,7 +312,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 					result = false;
 				} else {
 					logger.debug("Validation warning has not been flagged for this salesNbr {}. Notifying the user", salesNbr);
-					addActionMessage(item.getMessage());
+					addActionMessage(item.getMessage() + " " + OVERRIDEWARNMSG);
 					reqObj.setValidationWarning(true);
 					result = true;
 				}
