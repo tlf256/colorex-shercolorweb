@@ -218,7 +218,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 
 		//Check if a product has a primary illumination
 		public String checkIlluminatedProduct() {
-			CustWebTran illuminatedObj = tranHistoryService.readTranHistory(customerId, controlNbr, lineNbr);
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			CustWebTran illuminatedObj = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
 			//CustWebTran illuminatedObj = productService.getIlluminatedProduct(customerId, controlNbr, lineNbr);
 				if(illuminatedObj!=null) {
 					if(illuminatedObj.getIllumPrimary() != null) {

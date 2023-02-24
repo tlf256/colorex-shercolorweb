@@ -4,14 +4,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import com.sherwin.shercolor.util.domain.SwMessage;
+
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -236,5 +240,29 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 
 		String success = executeAction("/ProcessProductAction");
 		assertNotNull(success);
+	}
+	
+	@Test
+	public void testcheckIlluminatedProduct() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CustWebTran custWebTran = new CustWebTran();
+		//there's a chance you'll have to autowire it if it breaks
+		custWebTran.setIllumPrimary(1);
+		
+		saveNewTranHistory (CustWebTran custWebTran)
+		target.setReqGuid(reqGuid);
+		reqObj.setCustomerID("CCF");
+		reqObj.setControlNbr(82);
+		reqObj.setLineNbr(1);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForIlluminationAction");
+		assertEquals("SUCCESS",success);
+		
+		//String success = target.checkIlluminatedProduct();
+		//	assertEquals("SUCCESS",success);
 	}
 }
