@@ -25,7 +25,7 @@
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/tinter-1.4.8.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
 <script type="text/javascript" charset="utf-8"	src="script/ProductChange.js"></script>
 <s:set var="thisGuid" value="reqGuid" />
@@ -263,7 +263,12 @@ function printButtonClickGetJson() {
 
 function printFromManualDispense(dispenseQuantity) {
 	if (printerConfig && printerConfig.model && printerConfig.printOnDispense) {
-		myPrintLabelType = "storeLabel";
+		//Added conditional so the proper label prints for stores and self tinting customers.
+		if ($('#formulaUserPrintAction_accountIsSwStore').val() === 'true') {
+			myPrintLabelType = "storeLabel";
+		} else {
+			myPrintLabelType = "selfTintCustLabel";
+		}
 		myPrintOrientation = "PORTRAIT";
 		var myguid = $("#reqGuid").val();
 		str = { "reqGuid" : myguid, "printLabelType" : myPrintLabelType, "printOrientation" : myPrintOrientation, "printCorrectionLabel" : false, "shotList" : shotList};
@@ -680,18 +685,20 @@ function ParsePrintMessage() {
 			}
 		});
 		*/
-		jQuery(document).on("keydown", fkey); // capture F4
 	
 </script>
 <script type="text/javascript">
 //callback stuff
 	function setDispenseQuantity(handDispense) {
+		var quantityOrdered = parseInt($('#qtyOrderedTextField').val());
+		var quantityDispensed = parseInt($("#qtyDispensed").text());
+		var quantityToDispense = quantityOrdered - quantityDispensed;
 		// check that user doesn't need to set rooms dropdown
-		if (verifyRoomSelected() == true){
+		if (verifyRoomSelected() == true && validateQtyOrdered() == true){
 			isHandDispense = handDispense;
 			$("#dispenseQuantityInputError").text("");
-			$("#dispenseQuantityInput").val("1");
-			$("#dispenseQuantityInput").attr("value", "1");
+			$("#dispenseQuantityInput").val(quantityToDispense);
+			$("#dispenseQuantityInput").attr("value", quantityToDispense);
 			$("#setDispenseQuantityModal").modal('show');
 			$("#dispenseQuantityInput").select();
 		}
@@ -1119,7 +1126,8 @@ function ParsePrintMessage() {
 	/* -------- Validation functions ----------- */
 	
 	function validateQtyOrdered(){
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 			//$("#savedCanTypeError").text('<s:text name="displayFormula.canTypeNotAvailable"><s:param>' + "${canType}" + '</s:param></s:text>');
@@ -1143,7 +1151,8 @@ function ParsePrintMessage() {
 	}
 	
 	function validateQtyOrderedForPrint() {
-		var qtyOrdered = $("#qtyOrderedTextField").val();
+		var qtyOrdered = parseInt($("#qtyOrderedTextField").val());
+		$("#qtyOrderedTextField").val(qtyOrdered);
 		var qtyDisp = parseInt($.trim($("#qtyDispensed").text()));
 		var qtyOrderedErrText = $("#qtyOrderedErrorText");
 
@@ -1658,7 +1667,7 @@ function ParsePrintMessage() {
 					<strong><s:text name="displayFormula.qtyOrderedColon"/></strong>
 				</div>
 				<div class="col-lg-2 col-md-6 col-sm-7 col-xs-8">
-					<s:textfield id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
+					<s:textfield type="number" id="qtyOrderedTextField" onblur="validateQtyOrdered()"/>
 					<p id="qtyOrderedErrorText" style="color:red" class="d-none"></p>
 				</div>
 				<br>
@@ -1877,7 +1886,9 @@ function ParsePrintMessage() {
 								<div class="modal-body">
 									<p id="tinterInProgressDispenseStatus" font-size="4"></p>
 									<p id="tinterInProgressMessage" font-size="4"></p>
-									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold"> <s:text name="global.pressF4ToAbort"/> </p>
+									<p id="abort-message" font-size="4" style="display:none;color:purple;font-weight:bold">
+										<s:text name="global.pressAkeyToAbort"/>
+									</p>
 									<ul class="list-unstyled" id="tinterProgressList"></ul> 
 								
 									<div class="progress-wrapper "></div>
@@ -2615,8 +2626,6 @@ function ParsePrintMessage() {
 					} else {
 						console.log("button on/off");
 						console.log("hasTinter is false");
-						// No Tinter, hide correct button
-						$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 	
 						// if dispensed (could have been done at another station)
 						var myint = parseInt($.trim($("#qtyDispensed").text()));
@@ -2628,9 +2637,15 @@ function ParsePrintMessage() {
 							$("#formulaUserPrintAction_formulaUserEditAction").hide();
 							$("#formulaUserPrintAction_displayJobFieldUpdateAction").show();
 							btnCount += 1;
+							// only show correct if product is not package color
+							if($("#isPackageColor").val() == "false"){
+								$("#formulaUserPrintAction_formulaUserCorrectAction").show();
+								btnCount += 1;
+							}
 							// make Print primary
 							makePrintPrimary()
 						} else {
+							$("#formulaUserPrintAction_formulaUserCorrectAction").hide();
 							// Has not been dispensed, always show Edit
 							// unless product is package color and cannot be tinted
 							if($("#isPackageColor").val() == "true" && $("#isTintable").val() == "false"){
