@@ -4,7 +4,7 @@ on:
 
 jobs:
   prod-promote:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/k8s-promotion-workflow.yml@dja557/SCD-722
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/k8s-promotion-workflow.yml@master
     with:
       dest_env_name: 'prod'
       release_name: shercolorweb
