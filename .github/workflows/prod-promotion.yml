@@ -7,8 +7,10 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/k8s-promotion-workflow.yml@dja557/SCD-722
     with:
       dest_env_name: 'prod'
-      release_name: 'shercolorweb'
+      release_name: shercolorweb
+      current_namespace: 'qa-shercolor'
       dest_helm_values: '"values.yaml" "values-rancher-dmz-prod.yaml"'
       dest_url: 'https://shercolor.sherwin.com/shercolorweb'
-      kube_config_secret_name: 'KUBE_CONFIG_PROD_DMZ_RANCHER'
+      current_kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
+      dest_kube_config_secret_name: 'KUBE_CONFIG_PROD_DMZ_RANCHER'
     secrets: inherit
