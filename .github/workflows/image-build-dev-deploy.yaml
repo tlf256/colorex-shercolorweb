@@ -20,6 +20,7 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-deploy-workflow.yml@dja557/SCD-722
     with:
       java_version: '8'
+      deploy_env_name: 'dev'
       chart_directory: shercolorweb-chart
       release_name: shercolorweb
       deploy_url: 'https://dev-shercolor.np-dmz-rancher.sherwin.com/shercolorweb'
