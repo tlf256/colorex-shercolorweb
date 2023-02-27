@@ -3,11 +3,12 @@ on: workflow_dispatch
   
 jobs:
   qa-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/k8s-promotion-workflow.yml@dja557/SCD-722
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/k8s-promotion-workflow.yml@master
     with:
       release_name: shercolorweb
       dest_env_name: 'qa'
       dest_url: 'https://qa-shercolor.np-dmz-rancher.sherwin.com/shercolorweb'
       dest_helm_values: '"values.yaml" "values-rancher-dmz-qa.yaml"'
       current_kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
+      dest_kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
     secrets: inherit
