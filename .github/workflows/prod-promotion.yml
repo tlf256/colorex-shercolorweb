@@ -9,6 +9,7 @@ jobs:
       dest_env_name: 'prod'
       release_name: shercolorweb
       current_namespace: 'qa-shercolor'
+      dest_namespace: 'shercolor'
       dest_helm_values: '"values.yaml" "values-rancher-dmz-prod.yaml"'
       dest_url: 'https://shercolor.sherwin.com/shercolorweb'
       current_kube_config_secret_name: 'KUBE_CONFIG_NP_DMZ_RANCHER'
