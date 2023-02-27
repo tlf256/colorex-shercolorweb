@@ -6,7 +6,6 @@ jobs:
   prod-promote:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/k8s-promotion-workflow.yml@dja557/SCD-722
     with:
-      chart_directory: shercolorweb-chart
       dest_env_name: 'prod'
       release_name: 'shercolorweb'
       dest_helm_values: '"values.yaml" "values-rancher-dmz-prod.yaml"'
