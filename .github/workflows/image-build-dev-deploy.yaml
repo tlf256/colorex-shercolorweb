@@ -17,7 +17,7 @@ on:
     
 jobs:
   image-build-dev-deploy:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-deploy-workflow.yml@dja557/SCD-722
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/image-build-deploy-workflow.yml@master
     with:
       java_version: '8'
       deploy_env_name: 'dev'
