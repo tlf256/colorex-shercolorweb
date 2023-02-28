@@ -37,7 +37,6 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	private TinterInfo newtinter;
 
 	private boolean reReadLocalHostTinter;
-	public static final String OS_NAME = System.getProperty("os.name").toLowerCase();
 
 	@Autowired
 	TinterService tinterService;
@@ -236,6 +235,10 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 	public void setSession(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;		
+	}
+
+	public Map<String, Object> getSessionMap() {
+		return sessionMap;
 	}
 
 	public String getReqGuid() {

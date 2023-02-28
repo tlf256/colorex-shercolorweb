@@ -483,7 +483,7 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ //only FM X series has purge in progress % done
+						if(tinterModel !=null && (tinterModel.startsWith("FM X") || tinterModel.startsWith("AS"))){
 							 if(return_message.errorNumber == 4226){
 							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 							    }
@@ -491,7 +491,7 @@
 						}
 						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
-							}
+						}
 						else{  
 							purgeComplete(myGuid, curDate, return_message, tedArray);
 						}
@@ -639,8 +639,13 @@
 		});
 	    
 	    $(document).on("click", "#tinterPurgeButton", function(event) {	  
-	    	if(tinterModel.startsWith("FM X") && cleanNozzleRequired()){
-	    		$("#cleanNozzleInProgress").modal('show');
+	    	if(cleanNozzleRequired()){
+				if(tinterModel.startsWith("FM X")){
+					$("#cleanNozzleInProgress").modal('show');
+				}
+				else{
+					$('#warnUser').html('<h5>Clean nozzle required before purge</h5>');
+				}
 	    	} else {
 	    		$("#purgeInProgressModal").modal('show');
 	    	}
@@ -673,6 +678,11 @@
 		}
 		
 	});
+
+	function cleanNozzleNotify(){
+		// notify user to clean nozzle
+		$('#warnUser').html('<h5>Clean nozzle required before purge</h5>');
+	}
     
 </script>
 </head>
@@ -705,6 +715,7 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
+								<div class="text-danger" id="warnUser"></div>
 								<s:if test="#session[reqGuid].tinter.model != null">
 									<s:if test="#session[reqGuid].tinter.model.startsWith('FM X') && (#session[reqGuid].tinter.clrntSysId == 'CCE' || #session[reqGuid].tinter.clrntSysId == 'BAC')">
 										<p class="lead"><s:text name="tinterPurge.tinterPrepXProTintWater"/></p>

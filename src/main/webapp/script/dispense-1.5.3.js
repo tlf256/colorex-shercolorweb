@@ -42,6 +42,7 @@ function buildProgressBars(return_message) {
 			var colorList = item.message.split(" ");
 			var color = colorList[0];
 			var pct = colorList[1];
+			console.log("PROGRESS BAR COLORANT% " + color + " " + pct)
 			//fix bug where we are done, but not all pumps report as 100%
 			if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 				return_message.status == 0)) {
@@ -137,10 +138,7 @@ function ASDispenseProgress(tintermessage) {
 	console.log('before dispense progress send');
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
-	var cmd = "DispenseProgress";
-	if(!platform.startsWith("Win")){
-		cmd = "DispenseStatus";
-	}
+	var cmd = "DispenseStatus";
 	var tinterModel = sessionTinterInfo.model;
 	if(tinterModel !=null){ 
 		
@@ -235,35 +233,39 @@ function dispenseProgressResp(return_message) {
 }
 
 function asDispenseProgressResp(return_message) {
-
+	console.log("in AS dispense progress...");
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
+	console.log("ERROR MESSAGE DISPENSE JOB COMPLETE = " + return_message.errorMessage.indexOf("Dispense Job Complete"));
 	if (return_message.errorMessage.indexOf("Dispense Job Complete") == -1 && return_message.commandRC == 33) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
-		if (return_message.errorMessage != null) {
+		if (return_message.statusMessages != null) {
+			console.log("STATUS MESSAGES ARE NOT NULL");
 			//keep updating modal with status
 			buildProgressBars(return_message);
 		}
 		if (return_message.errorList != null && return_message.errorList[0] != null) {
-			// show errors
+			console.log("ERROR LIST IS NOT NULL");
 			return_message.errorList.forEach(function(item) {
 				$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				tinterErrorList.push(item.message);
 			});
 		}
-		if (platform.startsWith("Win") && return_message.errorMessage != null) {
+		if (return_message.errorMessage != null && (return_message.commandRC != 33 
+			&& return_message.commandRC != 0)) {
+			console.log("ERROR MESSAGE IS NOT NULL, DISPENSE WAS NOT COMPLETED");
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			ASDispenseProgress(); //TODO create function
+			console.log("CALLING AS DISPENSE PROGRESS...");
+			ASDispenseProgress();
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
 	}
-	else if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("done") > 0 || !platform.startsWith("Win") && 
-		return_message.errorMessage.indexOf("Dispense Job Complete") == 0) || return_message.errorNumber != 0) {
+	else if (return_message.errorMessage.indexOf("Dispense Job Complete") >= 0 || return_message.errorNumber != 0) {
 		if (return_message.errorNumber == 4226) {
 			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
 		}
@@ -393,10 +395,10 @@ function ASDispenseComplete(return_message) {
 		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
 			buildProgressBars(return_message);
 		} else {
-			if(platform.startsWith("Win")){
+			//if(platform.startsWith("Win")){
 				tinterErrorList.push(return_message.errorMessage);
 				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-			}
+			//}
 		}
 		if ($('#progressok').length > 0 ) {
 			$('#progressok').removeClass('d-none');
@@ -553,8 +555,9 @@ function RecdMessage() {
 					case 'DispenseProgress':
 					case 'DispenseStatus':
 					case 'Abort':
+						console.log("DISPENSE/DISPENSE STATUS TINTER MODEL: " + tinterModel);
 						$("#dispenseStatus").text('');
-						if (tinterModel != null && (tinterModel.startsWith("FM X") || tinterModel.startsWith("AS"))) {
+						if (tinterModel != null && tinterModel.startsWith("FM X")) {
 							dispenseProgressResp(return_message);
 						}
 						else if (tinterModel != null && tinterModel.startsWith("ALFA")) { //alfa needs a progress check
@@ -562,6 +565,7 @@ function RecdMessage() {
 						}
 						else if(tinterModel != null && tinterModel.startsWith("AS")) {
 							// implement dispense progress for 9500
+							console.log("TINTER MODEL STARTS WITH AS...");
 							asDispenseProgressResp(return_message);
 						}
 						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
