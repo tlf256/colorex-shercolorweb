@@ -33,7 +33,7 @@ spring:
 
 logging:
   pattern:
-    console: "%d{dd/MMM/yyyy HH:mm:ss,SSS} %-4level %C{3}.%M:%L - %m%n"
+    console: "%d{'dd/MMM/yyyy HH:mm:ss', EST} %-4level %C{3}.%M:%L - %m%n"
   level:
     org.hibernate.sql: error
     org.hibernate: error
