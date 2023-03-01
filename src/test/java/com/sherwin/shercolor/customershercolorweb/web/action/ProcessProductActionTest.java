@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import com.opensymphony.xwork2.ActionProxy;
 import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
@@ -13,6 +14,9 @@ import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.util.domain.SwMessage;
 
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -20,11 +24,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SherColorWebTransactionalTest
+@AutoConfigureTestEntityManager
 public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<ProcessProductAction> {
 
+	@Autowired
+	private TestEntityManager testentitymanager;
+	
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
 	ProcessProductAction target;
@@ -247,22 +258,57 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
 		target = (ProcessProductAction) proxy.getAction();
 		CustWebTran custWebTran = new CustWebTran();
-		//there's a chance you'll have to autowire it if it breaks
-		custWebTran.setIllumPrimary(1);
-		
-		saveNewTranHistory (CustWebTran custWebTran)
+		custWebTran.setIllumPrimary("D65");
+		custWebTran.setCustomerId("CCF");
+		custWebTran.setControlNbr(1000);
+		custWebTran.setLineNbr(1);
+		testentitymanager.persistAndFlush(custWebTran);
 		target.setReqGuid(reqGuid);
 		reqObj.setCustomerID("CCF");
-		reqObj.setControlNbr(82);
+		reqObj.setControlNbr(1000);
 		reqObj.setLineNbr(1);
 		
 		HttpSession session = request.getSession();
 		session.setAttribute(reqGuid, reqObj);
 		
 		String success = executeAction("/checkForIlluminationAction");
-		assertEquals("SUCCESS",success);
+		assertTrue(success.contains("D65"));
+	}
+	
+	@Test
+	public void testcheckIlluminatedProductMissingIllum() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CustWebTran custWebTran = new CustWebTran();
+		custWebTran.setCustomerId("CCF");
+		custWebTran.setControlNbr(1000);
+		custWebTran.setLineNbr(1);
+		testentitymanager.persistAndFlush(custWebTran);
+		target.setReqGuid(reqGuid);
+		reqObj.setCustomerID("CCF");
+		reqObj.setControlNbr(1000);
+		reqObj.setLineNbr(1);
 		
-		//String success = target.checkIlluminatedProduct();
-		//	assertEquals("SUCCESS",success);
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForIlluminationAction");
+		assertTrue(success.contains("\"customerId\":null"));
+	}
+	
+	@Test
+	public void testcheckIlluminatedProductReadFail() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		target.setReqGuid(reqGuid);
+		reqObj.setCustomerID("CCF");
+		reqObj.setControlNbr(1000);
+		reqObj.setLineNbr(1);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForIlluminationAction");
+		assertTrue(success.contains("\"customerId\":null"));
 	}
 }
