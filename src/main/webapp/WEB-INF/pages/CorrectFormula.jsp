@@ -1259,7 +1259,8 @@ function IllumModalClose() {
 	
 	function isCharacterized() {
 		// ajax call to check if product is characterized
-        var str = { "reqGuid" : $('#reqGuid').val(), "prodNum" : "${sessionScope[thisGuid].prodNbr}", "clrntSysId" : "${sessionScope[thisGuid].displayFormula.clrntSysId}"};
+        var str = { "reqGuid" : $('#reqGuid').val()};
+		//, "prodNum" : "${sessionScope[thisGuid].prodNbr}", "clrntSysId" : "${sessionScope[thisGuid].displayFormula.clrntSysId}"
         var jsonIN = JSON.stringify(str);
         $.ajax({	
             url : "checkForCharacterizationAction.action",
@@ -1315,7 +1316,8 @@ function IllumModalClose() {
 	function hasIllum() {
 		ws_coloreye.receiver = RecdSpectroMessage;
 		// ajax call to check if order has an illumination value set for it customerId, controlNbr, lineNbr 
-        var str = { "reqGuid" : $('#reqGuid').val(), "customerId" : "${sessionScope[thisGuid].customerID}", "controlNbr" : "${sessionScope[thisGuid].controlNbr}", "lineNbr" : "${sessionScope[thisGuid].lineNbr}"};
+        var str = { "reqGuid" : $('#reqGuid').val()};
+		//, "customerId" : "${sessionScope[thisGuid].customerID}", "controlNbr" : "${sessionScope[thisGuid].controlNbr}", "lineNbr" : "${sessionScope[thisGuid].lineNbr}"
         var jsonIN = JSON.stringify(str);        
         
         $.ajax({	
@@ -1351,6 +1353,15 @@ function IllumModalClose() {
     }
 	
 	function colorEyeCorrectClick(){
+		
+		//Get the calibration status to initialize connection.
+		ws_coloreye.receiver = RecdSpectroMessage;
+		GetCalStatusMinUntilCalExpiration();
+		//ws_coloreye.receiver = null;
+		
+		
+		
+		
 		//The lighting chosen in the modal will be output here to the console in the case of custom manual
 		//hasIllum will handle this in every other case and the value can be pulled from there
 		console.log($('#selectedLight').find("input:radio:checked").attr('value'));
@@ -1361,8 +1372,7 @@ function IllumModalClose() {
 		setMeasureModalTitle(standard, sample, '<s:text name="compareColors.measureStandard"/>', '<s:text name="compareColors.measureSample"/>', '<s:text name="measureColor.measureColor"/>');
 		InitializeMeasureScreen();
 		
-		//Get the calibration status to initialize connection.
-		GetCalStatusMinUntilCalExpiration();
+
 	  	}
 	
 	function isWhite(){
@@ -1388,7 +1398,6 @@ function IllumModalClose() {
 			}
 		return false;
 	}
-	
 	
 	
 	</script>

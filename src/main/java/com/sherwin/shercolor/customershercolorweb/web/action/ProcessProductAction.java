@@ -205,7 +205,8 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	
 	//Check if a color is characterized
 		public String checkCharacterizedProduct() {
-			CdsProdCharzd characterizedObj = productService.readCdsProdCharzd(prodNum, clrntSysId);
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			CdsProdCharzd characterizedObj = productService.readCdsProdCharzd(reqObj.getProdNbr(), reqObj.getClrntSys());
 			if(characterizedObj!=null) {
 				setChard(true);
 				if(characterizedObj.getIsWhite()) {
@@ -220,7 +221,6 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		public String checkIlluminatedProduct() {
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			CustWebTran illuminatedObj = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
-			//CustWebTran illuminatedObj = productService.getIlluminatedProduct(customerId, controlNbr, lineNbr);
 				if(illuminatedObj!=null) {
 					if(illuminatedObj.getIllumPrimary() != null) {
 					setIllum(illuminatedObj.getIllumPrimary());

@@ -141,11 +141,24 @@
   	}
   	
   	function calibrate(){
-  		$(".calibrate").removeClass('d-none');
-  		$('.init').hide();
-  		setTimeout(function(){
-			$("#calibrateForm").submit();
-  		}, 1000);
+		if(count==0){
+	  		$(".calibrate").removeClass('d-none');
+	  		$('.init').hide();
+	  		setTimeout(function(){
+				$("#calibrateForm").submit();
+	  		}, 1000);
+	  	}
+	  	else{
+			var cntr = 1;
+	
+			InitializeCalibrationScreen();
+	
+			console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
+				
+			//send the calibrate white message.
+			GetCalSteps();
+			//ws_coloreye.receiver = null;
+		}
   	}
   	
   	function cancelMeasure(){
