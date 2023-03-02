@@ -4,6 +4,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.common.domain.CdsProdCharzd;
 import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
@@ -310,5 +311,63 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		
 		String success = executeAction("/checkForIlluminationAction");
 		assertTrue(success.contains("\"customerId\":null"));
+	}
+	
+	@Test
+	public void testcheckCharacterizedProduct() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForCharacterizationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CdsProdCharzd cdsprodcharzd = new CdsProdCharzd();
+		cdsprodcharzd.setProdNbr("temp");
+		cdsprodcharzd.setClrntSysId("test");
+		cdsprodcharzd.setIsWhite(true);
+
+		testentitymanager.persistAndFlush(cdsprodcharzd);
+		target.setReqGuid(reqGuid);
+		reqObj.setProdNbr("temp");
+		reqObj.setClrntSys("test");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForCharacterizationAction");
+		assertTrue(success.contains("\"chard\":true") & success.contains("\"wht\":true"));
+		//assertEquals(success,"");
+	}
+	
+	@Test
+	public void testcheckCharacterizedProductMissingWhite() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForCharacterizationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CdsProdCharzd cdsprodcharzd = new CdsProdCharzd();
+		cdsprodcharzd.setProdNbr("temp");
+		cdsprodcharzd.setClrntSysId("test");
+
+		testentitymanager.persistAndFlush(cdsprodcharzd);
+		target.setReqGuid(reqGuid);
+		reqObj.setProdNbr("temp");
+		reqObj.setClrntSys("test");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForCharacterizationAction");
+		assertTrue(success.contains("\"chard\":true") & success.contains("\"wht\":false"));
+		//assertEquals(success,"");
+	}
+	
+	@Test
+	public void testcheckCharacterizedProductReadFail() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForCharacterizationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		target.setReqGuid(reqGuid);
+		reqObj.setProdNbr("temp");
+		reqObj.setClrntSys("test");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForCharacterizationAction");
+		assertTrue(success.contains("\"chard\":false") & success.contains("\"wht\":false"));
 	}
 }
