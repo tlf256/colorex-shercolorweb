@@ -273,7 +273,7 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		session.setAttribute(reqGuid, reqObj);
 		
 		String success = executeAction("/checkForIlluminationAction");
-		assertTrue(success.contains("D65"));
+		assertTrue(success.contains("\"illum\":\"D65\""));
 	}
 	
 	@Test
@@ -294,7 +294,7 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		session.setAttribute(reqGuid, reqObj);
 		
 		String success = executeAction("/checkForIlluminationAction");
-		assertTrue(success.contains("\"customerId\":null"));
+		assertTrue(success.contains("\"illum\":null"));
 	}
 	
 	@Test
@@ -310,7 +310,7 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		session.setAttribute(reqGuid, reqObj);
 		
 		String success = executeAction("/checkForIlluminationAction");
-		assertTrue(success.contains("\"customerId\":null"));
+		assertTrue(success.contains("\"illum\":null"));
 	}
 	
 	@Test
@@ -332,7 +332,6 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		
 		String success = executeAction("/checkForCharacterizationAction");
 		assertTrue(success.contains("\"chard\":true") & success.contains("\"wht\":true"));
-		//assertEquals(success,"");
 	}
 	
 	@Test
@@ -353,7 +352,6 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 		
 		String success = executeAction("/checkForCharacterizationAction");
 		assertTrue(success.contains("\"chard\":true") & success.contains("\"wht\":false"));
-		//assertEquals(success,"");
 	}
 	
 	@Test

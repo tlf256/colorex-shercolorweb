@@ -123,7 +123,7 @@
 		 This has been tested and finished but is to be commented out for the time being 
 		 Uncomment this block out once a color formulation service backend has been finished for coloreye corrections 
 		 See JIRA ticket SCD-111*/
-		//let goodmeasure know how many times to loop
+		/*//let goodmeasure know how many times to loop
 		setCount(1, '<s:text name="correctFormula.newColor"/>', '<s:text name="correctFormula.oldColor"/>');
 		//customerId, controlNbr, lineNbr 
 		ws_coloreye.receiver = RecdSpectroMessage;
@@ -134,7 +134,7 @@
 		isCharacterized();
 		//if fill limit reached
 		isFull();
-		ws_coloreye.receiver = null;
+		ws_coloreye.receiver = null;*/
 		
 		$("#formulaAdditions > tbody").empty();
 		$("#addIngredients").show();
@@ -1894,13 +1894,13 @@ function IllumModalClose() {
 								<!-- This has been tested and finished but is to be commented out for the time being -->
 								<!-- Uncomment this block out once a color formulation service backend has been finished for coloreye corrections -->
 								<!-- See JIRA ticket SCD-111 -->
-								<tr><td>
+								<!--<tr><td>
 								<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
 									<button type="button" class="btn btn-secondary btn-block" id="eyeAdd" onclick="hasIllum()">
 											<s:text name="correctFormula.colorEyeAddition"></s:text>
 										</button>
 									</div>
-								</td></tr>
+								</td></tr>-->
 								<tr><td>
 									<button type="button" class="btn btn-secondary btn-block dropdown-toggle" id="manualAdd" data-toggle="dropdown">
 										<s:text name="correctFormula.manualAddition"></s:text>

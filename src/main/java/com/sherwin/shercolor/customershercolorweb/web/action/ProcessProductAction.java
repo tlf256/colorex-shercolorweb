@@ -55,11 +55,6 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String OVERRIDEWARNMSG;
 	private String forceProd;
 	private String shorthandProdNbr;
-	private String prodNum;
-	private String clrntSysId;
-	private String customerId;
-	private int controlNbr;
-	private int lineNbr;
 
 	private boolean chard;
 	private boolean wht;
@@ -618,30 +613,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		this.characterizedList = characterizedList;
 	}	
 
-	public String getProdNum() {
-		return prodNum;
-	}
-
-
-	public void setProdNum(String prodNum) {
-		this.prodNum = prodNum;
-	}
-
-
-	public String getClrntSysId() {
-		return clrntSysId;
-	}
-
-
-	public void setClrntSysId(String clrntSysId) {
-		this.clrntSysId = clrntSysId;
-	}
-
-
 	public boolean isChard() {
 		return chard;
 	}
-
 
 	public void setChard(boolean chard) {
 		this.chard = chard;
@@ -664,33 +638,4 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		this.illum = illum;
 	}
 
-	public String getCustomerId() {
-		return customerId;
-	}
-
-
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
-
-
-	public int getControlNbr() {
-		return controlNbr;
-	}
-
-
-	public void setControlNbr(int controlNbr) {
-		this.controlNbr = controlNbr;
-	}
-
-
-	public int getLineNbr() {
-		return lineNbr;
-	}
-
-
-	public void setLineNbr(int lineNbr) {
-		this.lineNbr = lineNbr;
-	}
-	
 }
