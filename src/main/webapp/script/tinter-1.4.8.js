@@ -286,6 +286,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata,mymessage
 	
 	
 	this.shotList=shotList
+	this.messageText = "";
 	
 	//returned items
 	this.status = 0;
