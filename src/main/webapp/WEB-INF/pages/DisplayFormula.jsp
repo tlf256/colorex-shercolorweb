@@ -107,10 +107,22 @@ badge {
 //printer scripts
 
 function setLabelPrintEmbedContainer(labelType,orientation,printWithFormula) {
-	if(printWithFormula === true) {
-		var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
-	} else {
-		var embedString = '<embed src="formulaUserPrintActionNoFormula.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+	
+
+	//If the operating system is Linux, disable toolbar
+	if (window.navigator.userAgent.indexOf("Linux") != -1) {
+		if(printWithFormula === true) {
+		    var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&" frameborder="0" class="embed-responsive-item">';
+		} else {
+			var embedString = '<embed src="formulaUserPrintActionNoFormula.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&" frameborder="0" class="embed-responsive-item">';
+		}
+	}
+	else {
+		if(printWithFormula === true) {
+			var embedString = '<embed src="formulaUserPrintAction.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+		} else {
+			var embedString = '<embed src="formulaUserPrintActionNoFormula.action?reqGuid=<s:property value="reqGuid" escapeHtml="true"/>&printLabelType=' + labelType + '&printOrientation=' + orientation + '" frameborder="0" class="embed-responsive-item">';
+		}
 	}
 	$("#printLabelEmbedContainer").html(embedString);
 }
