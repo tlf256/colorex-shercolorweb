@@ -10,7 +10,6 @@ function WSWrapper(devicecontext) {
         var ws;
         var self = this;
         var timeoutVar;
-        var receiver;
         
         //Detect browser and create ws
         var browser = getBrowser();

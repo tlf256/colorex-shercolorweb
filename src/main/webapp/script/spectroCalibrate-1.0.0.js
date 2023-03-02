@@ -36,7 +36,7 @@
 	}
 	
 	function GoodMeasure(measCurve) {
-	  	console.log("GoodMeasure")
+	  	console.log("GoodMeasure");
 	  	console.log("meascurve = " + measCurve);
 	  if(count == 2){
 			  alert("Now go do corrections");
@@ -77,7 +77,7 @@
 		$('#calcrcl')
 			.removeClass('d-none')
 			.css('background-color', 'white');
-		console.log("CalibrateWhite")
+		console.log("CalibrateWhite");
 	  	calibrate_step = "CalibrateWhite";
 		var spectromessage = new SpectroMessage('CalibrateWhite',clreyemodel,clreyeserial);
 	    var json = JSON.stringify(spectromessage);
@@ -93,7 +93,7 @@
 		$('#calcrcl')
 			.removeClass('d-none')
 			.css('background-color', 'black');
-	  	console.log("CalibrateBlack")
+	  	console.log("CalibrateBlack");
 	  	calibrate_step = "CalibrateBlack";
 		var spectromessage = new SpectroMessage('CalibrateBlack',clreyemodel,clreyeserial);
 	    var json = JSON.stringify(spectromessage);
@@ -109,7 +109,7 @@
 		$('#calcrcl')
 			.removeClass('d-none')
 			.css('background-color', 'green');
-	  	console.log("MeasureGreen")
+	  	console.log("MeasureGreen");
 	  	calibrate_step = "MeasureGreen";
 		var spectromessage = new SpectroMessage('MeasureGreen',clreyemodel,clreyeserial);
 	    var json = JSON.stringify(spectromessage);
@@ -124,7 +124,7 @@
 	function DisplayError() {
 		$('#spectroCalModal').modal('hide');
 		$('#measureColorModal').modal('hide');
-	  	console.log("DisplayError")
+	  	console.log("DisplayError");
 	  	calibrate_step = "DisplayError";
 	  	
 		$(".calsuccess").addClass('d-none');
@@ -149,8 +149,6 @@
 	  		}, 1000);
 	  	}
 	  	else{
-			var cntr = 1;
-	
 			InitializeCalibrationScreen();
 	
 			console.log("docready, between check and calibrate, isReady is " + ws_coloreye.isReady);
