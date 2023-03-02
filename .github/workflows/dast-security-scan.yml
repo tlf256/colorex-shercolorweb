@@ -1,7 +1,6 @@
 # Run Qualys DAST scan when a release branch is made or by manual trigger
 name: Run Qualys DAST Scan
 on:
-  create:
   workflow_dispatch:
     inputs:
         release_version:
