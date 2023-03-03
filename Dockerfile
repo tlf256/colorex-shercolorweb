@@ -1,11 +1,11 @@
 #Simply build an image from a jar pre-built with 'mvn package'
 FROM openjdk:8-jre-slim
 LABEL maintainer="SherColor Team"
-EXPOSE 8090 8543
 ENV GC_METASPACE_SIZE=96
+EXPOSE 8090 8543
 COPY wildfly wildfly
 COPY target/SherColorWeb-bootable.jar SherColorWeb-bootable.jar
-RUN echo '#!/bin/bash \n java -jar SherColorWeb-bootable.jar --cli-script=wildfly/scripts/setup.cli --properties=wildfly/scripts/properties/"${1:-dev}".properties' > ./entrypoint.sh
+RUN echo '#!/bin/bash \n java -jar SherColorWeb-bootable.jar --cli-script=wildfly/scripts/setup.cli -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0 --properties=wildfly/scripts/properties/"${1:-dev}".properties' > ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
 
