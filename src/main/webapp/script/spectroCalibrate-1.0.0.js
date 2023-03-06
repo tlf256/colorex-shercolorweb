@@ -278,7 +278,10 @@
 				}
 				break;
 			case 'Detect':
-			if(!return_message.responseMessage==="true"){
+			if(return_message.responseMessage=="true"){
+				console.log("Coloreye found, business as usual");
+				}
+				else{
 				console.log("No coloreye attached, lock engaged");
 				$("#eyeAdd").prop('disabled', true);
 				$('#eyeAdd').css('pointer-events', 'none');
