@@ -398,7 +398,7 @@ public class RequestObject {
 		this.displayFormula = null;
 		this.rgbHex = "";
 		this.vinylExclude = false;
-		this.lightSource = "";
+		this.lightSource = null;
 		this.colorType = "";
 		this.primerId = "";
 		this.colorVinylOnly = false;

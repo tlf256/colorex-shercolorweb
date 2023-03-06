@@ -1,11 +1,7 @@
 if (outcome != success) of /system-property=jboss.http.port:read-resource
   /system-property=jboss.http.port:add(value=8090)
-  /system-property=jboss.bind.address.management:add(value=0.0.0.0)
-  /system-property=jboss.bind.address:add(value=0.0.0.0)
 else
   /system-property=jboss.http.port:write-attribute(name="value",value=8090)
-  /system-property=jboss.bind.address.management:write-attribute(name="value",value=0.0.0.0)
-  /system-property=jboss.bind.address:write-attribute(name="value",value=0.0.0.0)
 end-if
 
 if (outcome != success) of /subsystem=datasources/jdbc-driver=oracle:read-resource
