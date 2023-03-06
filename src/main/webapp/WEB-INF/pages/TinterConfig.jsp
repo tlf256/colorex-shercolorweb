@@ -956,7 +956,7 @@
 			case 'Config':
 				// no need to detect since it is initiated before retrieving serial
 				if (return_message.commandRC == 0) {
-					waitForShowAndHide("#detectInProgress");
+					waitForShowAndHide("#detectInProgressModal");
 					$("#detectStatusModal").modal('show');
 					$("#detectStatus")
 						.text('<s:text name="global.tinterDetectConfigComplete"/>');
@@ -1042,16 +1042,14 @@
 				if(return_message.commandRC == 0 && return_message.messageText == ""){
 					// credentials do not need updating
 					// continue with configuration
-					//var displayMessage = "Detecting tinter...";
-					//pleaseWaitModal_updateMsg(displayMessage);
 					waitForShowAndHide("#pleaseWaitModal");
 					$("#detectInProgressModal").modal('show');
 					rotateIcon();
 
 					// give detect modal time to display
-					setTimeout(() => {
+					//setTimeout(() => {
 						init();
-					}, 5000);
+					//}, 5000);
 				}
 				else if(return_message.commandRC == -1 && return_message.messageText != ""){
 					// credentials need updated
@@ -1069,16 +1067,14 @@
 				break;
 			case 'UpdateCredentials':
 				if(return_message.commandRC == 0) {
-					//var dspMsg = "Detecting tinter..."
-					//pleaseWaitModal_show(dspMsg, '#passwordModal');
 					waitForShowAndHide("#pleaseWaitModal");
 					$("#detectInProgressModal").modal('show');
 					rotateIcon();
 
 					// give detect modal time to display
-					setTimeout(() => {
+					//setTimeout(() => {
 						init();
-					}, 5000);
+					//}, 5000);
 				}
 				else {
 					// error updating credentials
@@ -1106,17 +1102,15 @@
 			case 'SetHostname':
 				if(return_message.commandRC == 0) {
 					// continue configuration
-					//waitForShowAndHide("#detectInProgressModal");
-					//$("#detectInProgressModal").modal('show');
-					//rotateIcon();
 					tinter.clrntSysId = $('#selectClrntSysId').val();
 					tinter.model = $('#modelSelect').val();
 					tinter.serialNbr = $('#tSerialNbr').val();
 					tinter.tinterIp = $('#tIpAddr').val();
-					// give detect modal enough time to display
+
 					//setTimeout(() => {
 						config();
-					//}, 4000);
+					//}, 5000);
+					
 				}
 				else {
 					// display error message
