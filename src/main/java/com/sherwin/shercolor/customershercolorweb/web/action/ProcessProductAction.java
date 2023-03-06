@@ -45,7 +45,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
 	private String partialProductNameOrId;
 	private List<autoComplete> options;
-	private List<CdsProdCharzd> characterizedList;
+	private transient List<CdsProdCharzd> characterizedList;
 	private String message;
 	private String colorComp;
 	private String colorID;
@@ -73,7 +73,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	@Autowired
 	private ColorMastService colorMastService;
 	@Autowired
-	private TranHistoryService tranHistoryService;
+	private transient TranHistoryService tranHistoryService;
 	
 
 	

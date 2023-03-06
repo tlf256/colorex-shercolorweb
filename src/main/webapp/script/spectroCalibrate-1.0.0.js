@@ -1,10 +1,10 @@
-	var calibrate_step = "start";		
-	var ws_coloreye = new WSWrapper('coloreye');
-    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
-    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
-    var count = 0;
-    var newCol = "";
-    var oldCol = "";
+	let calibrate_step = "start";		
+	let ws_coloreye = new WSWrapper('coloreye');
+    let clreyemodel = "${sessionScope[reqGuid].spectro.model}";
+    let clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
+    let count = 0;
+    let newCol = "";
+    let oldCol = "";
 
 	function InitializeMeasureScreen() {
 	    console.log("InitializeMeasureScreen");
@@ -13,16 +13,16 @@
 	
 	function GetCalStatusMinUntilCalExpiration() {
 	  	console.log("GetCalStatusMinUntilCalExpiration")
-		var spectromessage = new SpectroMessage('GetCalStatusMinUntilCalExpiration',clreyemodel,clreyeserial);
-	    var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('GetCalStatusMinUntilCalExpiration',clreyemodel,clreyeserial);
+	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
 	}
 	
 	function SWMeasure() {
 	  	console.log("SWMeasure")
 	  	checkWsIsReady();
-		var spectromessage = new SpectroMessage('SWMeasure',clreyemodel,clreyeserial);
-	    var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('SWMeasure',clreyemodel,clreyeserial);
+	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
   		$(".calibrate").hide();
   		$('.init').hide();
@@ -68,8 +68,8 @@
 	function GetCalSteps() {
 	  	console.log("GetCalSteps")
 	  	calibrate_step = "GetCalSteps";
-		var spectromessage = new SpectroMessage('GetCalSteps',clreyemodel,clreyeserial);
-		var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('GetCalSteps',clreyemodel,clreyeserial);
+		let json = JSON.stringify(spectromessage);
 		ws_coloreye.send(json);
 	}
 	  
@@ -79,8 +79,8 @@
 			.css('background-color', 'white');
 		console.log("CalibrateWhite");
 	  	calibrate_step = "CalibrateWhite";
-		var spectromessage = new SpectroMessage('CalibrateWhite',clreyemodel,clreyeserial);
-	    var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('CalibrateWhite',clreyemodel,clreyeserial);
+	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
 		$(".pleasewait").hide();
 		$(".blackcal").hide();
@@ -95,8 +95,8 @@
 			.css('background-color', 'black');
 	  	console.log("CalibrateBlack");
 	  	calibrate_step = "CalibrateBlack";
-		var spectromessage = new SpectroMessage('CalibrateBlack',clreyemodel,clreyeserial);
-	    var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('CalibrateBlack',clreyemodel,clreyeserial);
+	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
 	    $(".pleasewait").hide();
 		$(".whitecal").hide();
@@ -111,8 +111,8 @@
 			.css('background-color', 'green');
 	  	console.log("MeasureGreen");
 	  	calibrate_step = "MeasureGreen";
-		var spectromessage = new SpectroMessage('MeasureGreen',clreyemodel,clreyeserial);
-	    var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('MeasureGreen',clreyemodel,clreyeserial);
+	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
 	    $(".pleasewait").hide();
 		$(".whitecal").hide();
@@ -155,7 +155,6 @@
 				
 			//send the calibrate white message.
 			GetCalSteps();
-			//ws_coloreye.receiver = null;
 		}
   	}
   	
@@ -165,8 +164,8 @@
   	}
   	
   	function checkWsIsReady(){
-  		var coloreyeStatus;
-  		var interval = setInterval(function(){
+  		let coloreyeStatus;
+  		let interval = setInterval(function(){
   			console.log("ws ready state: " + coloreyeStatus);
 			if($('#measureColorModal').is(':visible')){
   				coloreyeStatus = ws_coloreye.isReady;
@@ -182,7 +181,7 @@
   	}
   	
   	function setMeasureModalTitle(standard, sample, measureStandard, measureSample, measureColor){
-	  		var modalTitle = "";
+	  		let modalTitle = "";
 			
 			if(standard != null && standard == "true"){
 				console.log("color standard measure");
@@ -217,8 +216,8 @@
 	
 	function detectSpectro(){
 		  	console.log("Detect")
-		var spectromessage = new SpectroMessage('Detect',clreyemodel,clreyeserial);
-	    var json = JSON.stringify(spectromessage);
+		let spectromessage = new SpectroMessage('Detect',clreyemodel,clreyeserial);
+	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
 	}
 	
@@ -244,8 +243,8 @@
 	  		return;
 	  	}
 	  		
-		var return_message=JSON.parse(ws_coloreye.wsmsg);
-		var myGuid = "${reqGuid}";
+		let return_message=JSON.parse(ws_coloreye.wsmsg);
+		let myGuid = "${reqGuid}";
 	  	sendSpectroEvent(myGuid, return_message);
 		switch (return_message.command) {
 			case 'GetCalSteps':
@@ -279,14 +278,14 @@
 				}
 				break;
 			case 'Detect':
-			if(return_message.responseMessage==="true"){
-			} else {
+			if(!return_message.responseMessage==="true"){
 				console.log("No coloreye attached, lock engaged");
 				$("#eyeAdd").prop('disabled', true);
 				$('#eyeAdd').css('pointer-events', 'none');
 				$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
 				$('#disableWrapper').css('cursor', 'not-allowed');
-			}
+					}
+				break;
 			case 'GetCalStatusMinUntilCalExpiration':
 				if (return_message.responseMessage.match(/^OK/)) {
 					$('#measureColorModal').modal('show');
@@ -297,11 +296,11 @@
 				break;
 			case 'SWMeasure':
 				if (return_message.responseMessage=="") {
-					var thisCurve = return_message.curve;
+					let thisCurve = return_message.curve;
 					console.log("curvepointCnt = " + thisCurve.curvePointCnt);
-					var curveString = "";
-					for (var i = 0; i < thisCurve.curvePointCnt; i++) {
-					    var counter = thisCurve.curve[i];
+					let curveString = "";
+					for (let i = 0; i < thisCurve.curvePointCnt; i++) {
+					    let counter = thisCurve.curve[i];
 					    console.log("curve is "+ counter);
 					    if (i==0) {
 					    	curveString = counter;
