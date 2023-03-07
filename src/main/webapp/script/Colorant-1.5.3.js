@@ -54,7 +54,7 @@ $(function(){
                     success : function(data){
                     	if(data.sessionStatus === "expired"){
                     		//Handle expired sessions here
-                    		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                    		window.location.href = "./invalidLoginAction.action";
                     	}
                     	else{
                     		//Execute AJAX success here
@@ -88,7 +88,7 @@ $(function(){
                     data : str,
                     success : function(data){
                     	if(data.sessionStatus === "expired"){
-                    		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                    		window.location.href = "./invalidLoginAction.action";
                     	}
                     	else{
                     		updateRow(data, rowVal);
@@ -120,7 +120,7 @@ $(function(){
                     data : str,
                     success : function(data){
                     	if(data.sessionStatus === "expired"){
-                    		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                    		window.location.href = "./invalidLoginAction.action";
                     	}
                     	else{
                     		updateRow(data, rowVal);

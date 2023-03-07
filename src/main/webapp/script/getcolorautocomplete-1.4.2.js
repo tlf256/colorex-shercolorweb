@@ -34,7 +34,7 @@ $(document).ready(function() {
 //				}
 				success : function(data){
 					if(data.sessionStatus === "expired"){
-                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                		window.location.href = "./invalidLoginAction.action";
                 	}
                 	else{
                 		$("#colorData").attr("value",encodeURIComponent(JSON.stringify(data)));

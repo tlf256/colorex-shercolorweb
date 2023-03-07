@@ -149,7 +149,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -222,7 +222,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -265,7 +265,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -315,7 +315,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -381,7 +381,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -426,7 +426,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -470,7 +470,7 @@
             success : function(data){
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
@@ -542,7 +542,7 @@
 			async: true,
 			success: function (data) {
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		// walk through result formula
@@ -680,7 +680,7 @@
 	            success : function(data){
 	            	//console.log(data);
 	            	if(data.sessionStatus === "expired"){
-                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                		window.location.href = "./invalidLoginAction.action";
                 	}
                 	else{
                 		//Building shotList of Colorants to dispense for row
@@ -951,7 +951,7 @@
             	processingDispense = false;
 				//console.log(data);
 				if(data.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		if(data.errorMessage==null){
