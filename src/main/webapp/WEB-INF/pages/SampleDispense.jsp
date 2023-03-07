@@ -501,7 +501,7 @@ badge {
 				processingDispense = false;
 				startSessionTimeoutTimers();
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#controlNbr").text(data.controlNbr);
 					$("#controlNbrDisplay").show();
