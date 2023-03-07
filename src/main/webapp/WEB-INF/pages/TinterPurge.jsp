@@ -209,7 +209,7 @@
 		}
     	ws_tinter.send(json);
 	}
-	
+
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		//$("#progress-message").text(return_message.errorMessage);
 		$("#abort-message").show();
@@ -546,6 +546,8 @@
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
 						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
+							removeTinterAlertDangerWarnings();
+							cleanNozzles = true;
 						} else {
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -569,6 +571,7 @@
 							if(!cleanNozzleBeforePurge){
 					    		$("#fmxCleanNozzleModal").modal('show');
 					    	}
+							cleanNozzles = true;
 						} else {
 							waitForShowAndHide("#cleanNozzleInProgress");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -626,8 +629,6 @@
 
 	    $(document).on("hidden.bs.modal", "#cleanNozzleModal", function(event){
 	        $("#cleanNozzleVid").get(0).pause();
-			$('#tinterAlert').addClass('d-none');
-			cleanNozzles = true;
 			closeNozzle();
 	    });
 	    
@@ -667,8 +668,8 @@
 					$("#cleanNozzleInProgress").modal('show');
 				}
 				else{
-					$('#tinterAlert').removeClass('d-none');
-					$('#tinterAlertList').html('<li>Clean nozzle required before purge</li>');
+					var warningMsg = "Clean nozzle required before purge";
+					addTinterAlertDangerWarnings(warningMsg);
 				}
 	    	} else {
 	    		$("#purgeInProgressModal").modal('show');
@@ -703,9 +704,18 @@
 		
 	});
 
-	function cleanNozzleNotify(){
-		// notify user to clean nozzle
-		$('#warnUser').html('<h5>Clean nozzle required before purge</h5>');
+	function addTinterAlertDangerWarnings(warningMsgs){
+		if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
+		if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
+		warningMsgs.forEach(function(msg){
+			$("#tinterAlertList").append('<li>' + msg + '</li>');
+		});
+	}
+
+	function removeTinterAlertDangerWarnings(){
+		if(!$("#tinterAlert").hasClass("d-none")) $("#tinterAlert").addClass("d-none");
+		if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
+		$("#tinterAlertList").empty();
 	}
     
 </script>
@@ -777,7 +787,7 @@
 							
 						</div>
 						<div class="col-sm-6">
-							<div class="alert alert-danger d-none" id="tinterAlert">
+							<div class="alert d-none" id="tinterAlert">
 								<ul class="list-unstyled mb-0" id="tinterAlertList">
 								</ul>
 							</div>
