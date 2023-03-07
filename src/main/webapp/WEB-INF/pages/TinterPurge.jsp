@@ -49,6 +49,7 @@
 	</s:iterator>
 	var platform = navigator.platform;
 	var cleanNozzleBeforePurge = false;
+	var cleanNozzles = false;
 
 	$(function(){ // on ready
 		//capture A key to abort
@@ -74,7 +75,12 @@
 		}
 		return rgb;
 	}
-	function buildProgressBars(return_message){
+
+	function parseStatusMessages(tinterModel){
+		// TODO
+	}
+
+	function buildProgressBars(return_message, tinterModel){
 		var count = 1;
 		var keys=[];
 		$(".progress-wrapper").empty();
@@ -84,16 +90,23 @@
 				var colorList = item.message.split(" ");
 				var color;
 				var pct;
-				if(platform.startsWith("Win")){
-					//colorList = item.message.split(" ");
-					color= colorList[0];
-					pct = colorList[1];
-				} else {
-					//colorList = item.message;
+				
+				/* if(tinterModel.startsWith("FM X") && !platform.startsWith("Win")){
 					color= "";
 					pct = item.message;
 				}
-				
+				else {
+					color= colorList[0];
+					pct = colorList[1];
+				} */
+
+				if(platform.startsWith("Win")){
+					color= colorList[0];
+					pct = colorList[1];
+				} else {
+					color= "";
+					pct = item.message;
+				}
 				
 				//fix bug where we are done, but not all pumps report as 100%
 				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
@@ -153,7 +166,7 @@
 		var shotList = null;
 		var configuration = null;
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-		if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
+		if(tinterModel !=null && (tinterModel.startsWith("AS") || tinterModel.startsWith("FM X"))){ 
 			var cmd = "PurgeProgress";
 			if(!platform.startsWith("Win")){
 				cmd = "PurgeStatus";
@@ -196,6 +209,7 @@
 		}
     	ws_tinter.send(json);
 	}
+	
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		//$("#progress-message").text(return_message.errorMessage);
 		$("#abort-message").show();
@@ -223,7 +237,10 @@
 			
 		}
 		else{
-			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+			var fmx = "fmx";
+			var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+			if(!tinterModel.startsWith('FM X')) fmx = ""
+			purgeComplete(myGuid, curDate,return_message, tedArray, fmx);
 			$(".progress-wrapper").empty();
 			}
 			
@@ -369,8 +386,8 @@
     	console.log("last purge datetime: " + dateFromString);
 		var today = new Date();
 		console.log("today's date: " + today);
-		if (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() 
-				|| dateFromString.getDate()<today.getDate()){
+		if (!cleanNozzles && (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() 
+				|| dateFromString.getDate()<today.getDate())){
 			console.log("nozzle cleaning required before purge");
 			cleanNozzleBeforePurge = true;
 			return true;
@@ -483,16 +500,20 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+						console.log("TINTERMODEL -> " + tinterModel);
 						if(tinterModel !=null && (tinterModel.startsWith("FM X") || tinterModel.startsWith("AS"))){
-							 if(return_message.errorNumber == 4226){
-							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
-							    }
+							console.log("FMX or 9500 TINTER");
+							if(return_message.errorNumber == 4226){
+								return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
+							}
+							console.log("CALLING dispenseProgressResp");
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
 						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
 						}
-						else{  
+						else{
+							console.log("CALLING purgeComplete");
 							purgeComplete(myGuid, curDate, return_message, tedArray);
 						}
 						break;
@@ -605,6 +626,8 @@
 
 	    $(document).on("hidden.bs.modal", "#cleanNozzleModal", function(event){
 	        $("#cleanNozzleVid").get(0).pause();
+			$('#tinterAlert').addClass('d-none');
+			cleanNozzles = true;
 			closeNozzle();
 	    });
 	    
@@ -644,7 +667,8 @@
 					$("#cleanNozzleInProgress").modal('show');
 				}
 				else{
-					$('#warnUser').html('<h5>Clean nozzle required before purge</h5>');
+					$('#tinterAlert').removeClass('d-none');
+					$('#tinterAlertList').html('<li>Clean nozzle required before purge</li>');
 				}
 	    	} else {
 	    		$("#purgeInProgressModal").modal('show');
@@ -753,10 +777,9 @@
 							
 						</div>
 						<div class="col-sm-6">
-							<div class="alert d-none" id="tinterAlert">
+							<div class="alert alert-danger d-none" id="tinterAlert">
 								<ul class="list-unstyled mb-0" id="tinterAlertList">
 								</ul>
-							 <!-- Put text here -->
 							</div>
 						</div>
 						<div class="col-sm-3">

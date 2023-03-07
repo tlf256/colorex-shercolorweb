@@ -474,7 +474,7 @@
 	});
 
 	$(document).on('click', '#updateCredsBtn_win', function(){
-		// TODO write password file to disk
+		// TODO - windows - write password file to disk
 	});
 
 	/***
@@ -940,7 +940,7 @@
 			
 		}
 	}
-	// modify the following to accomodate the AS 9500...
+	
 	function RecdMessageAS() {
 		var curDate = new Date();
 		console.log("Received FM Message");
@@ -975,10 +975,6 @@
 					var displayMessage = "Retrieving tinter serial...";
 					pleaseWaitModal_updateMsg(displayMessage);
 					getSerial();
-					//waitForShowAndHide("#pleaseWaitModal");
-					//$("#detectInProgress").modal('show');
-					
-					//sendTinterEventConfig(reqGuid, curDate, return_message,null);
 				}
 				else {
 					$("#detectErrorModal").modal('show');
@@ -1045,11 +1041,7 @@
 					waitForShowAndHide("#pleaseWaitModal");
 					$("#detectInProgressModal").modal('show');
 					rotateIcon();
-
-					// give detect modal time to display
-					//setTimeout(() => {
-						init();
-					//}, 5000);
+					init();
 				}
 				else if(return_message.commandRC == -1 && return_message.messageText != ""){
 					// credentials need updated
@@ -1070,11 +1062,7 @@
 					waitForShowAndHide("#pleaseWaitModal");
 					$("#detectInProgressModal").modal('show');
 					rotateIcon();
-
-					// give detect modal time to display
-					//setTimeout(() => {
-						init();
-					//}, 5000);
+					init();
 				}
 				else {
 					// error updating credentials
@@ -1106,11 +1094,7 @@
 					tinter.model = $('#modelSelect').val();
 					tinter.serialNbr = $('#tSerialNbr').val();
 					tinter.tinterIp = $('#tIpAddr').val();
-
-					//setTimeout(() => {
-						config();
-					//}, 5000);
-					
+					config();					
 				}
 				else {
 					// display error message

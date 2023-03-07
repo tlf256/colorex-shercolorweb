@@ -42,7 +42,6 @@ function buildProgressBars(return_message) {
 			var colorList = item.message.split(" ");
 			var color = colorList[0];
 			var pct = colorList[1];
-			console.log("PROGRESS BAR COLORANT% " + color + " " + pct)
 			//fix bug where we are done, but not all pumps report as 100%
 			if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 				return_message.status == 0)) {
