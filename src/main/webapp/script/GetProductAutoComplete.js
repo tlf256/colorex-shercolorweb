@@ -18,7 +18,7 @@ $(document).ready(function() {
 				data : {"partialProductNameOrId" : request.term, "reqGuid" : $('#reqGuid').val()  },
 				success : function(data){
 					if(data.sessionStatus === "expired"){
-                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                		window.location.href = "./invalidLoginAction.action";
                 	}
                 	else {
                 		response(data.slice(0,100));
@@ -42,7 +42,7 @@ function autocompleteForceProd(){
 			},
 		success : function(data){
 			if(data.sessionStatus === "expired") {
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
         	else {
         		// color has restricted products, display these in dropdown

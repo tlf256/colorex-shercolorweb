@@ -107,7 +107,7 @@
 						
 						//console.log(data);		
 						if(data.sessionStatus === "expired"){
-		            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		            		window.location.href = "./invalidLoginAction.action";
 		            	}
 		            	else{
 		            		
@@ -179,7 +179,7 @@
 					
 					//console.log(data);		
 					if(data.sessionStatus === "expired"){
-	            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	            		window.location.href = "./invalidLoginAction.action";
 	            	}
 	            	else{
 	            		

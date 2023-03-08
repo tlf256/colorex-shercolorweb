@@ -183,7 +183,7 @@
 				console.log("getCanisterList resp");
 				console.log(objs);
 				if(objs.sessionStatus === "expired"){
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				}
 				else{
 					if (objs != null && objs.newtinter != null && objs.newtinter.model != null && 
@@ -339,7 +339,7 @@
 			datatype : "json",
 			success: function (data) {
 				if(data.sessionStatus === "expired"){
-	        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	        		window.location.href = "./invalidLoginAction.action";
 	        	}
 	        	else{
 	        		//Handle success after checking expiration
@@ -368,7 +368,7 @@
 				dataType : "json",
 				success : function(objs) {
 					if(objs.sessionStatus === "expired"){
-                   		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                   		window.location.href = "./invalidLoginAction.action";
                    	}
                    	else{
                    		modellist = objs.defaultModelList;

@@ -203,7 +203,7 @@ function prePrintSave(labelType, orientation) {
 						async : true,
 						success : function(data) {
 							if (data.sessionStatus === "expired") {
-								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+								window.location.href = "./invalidLoginAction.action";
 							} else {
 								$("#controlNbr").text(data.controlNbr);
 								$("#controlNbrDisplay").show();
@@ -401,7 +401,7 @@ function ParsePrintMessage() {
 						async : true,
 						success : function(data) {
 							if (data.sessionStatus === "expired") {
-								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+								window.location.href = "./invalidLoginAction.action";
 							} else {
 								$("#controlNbr").text(data.controlNbr);
 								$("#controlNbrDisplay").show();
@@ -434,7 +434,7 @@ function ParsePrintMessage() {
 							processingDispense = false;
 							startSessionTimeoutTimers();
 							if (data.sessionStatus === "expired") {
-								window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+								window.location.href = "./invalidLoginAction.action";
 							} else {
 								$("#controlNbr").text(data.controlNbr);
 								$("#controlNbrDisplay").show();
@@ -521,7 +521,7 @@ function ParsePrintMessage() {
 								data : {"shorthandProdNbr" : $("#verifyScanInput").val(), "reqGuid" : $('#reqGuid').val() },
 								success : function(data){
 									if(data.sessionStatus === "expired"){
-				                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+				                		window.location.href = "./invalidLoginAction.action";
 				                	}
 									else {
 										filledProdNbr = data.shorthandProdNbr;
@@ -601,7 +601,7 @@ function ParsePrintMessage() {
 														+ "&jsDateString=" + curDate.toString(),
 												function(data) {
 													if (data.sessionStatus === "expired") {
-														window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+														window.location.href = "./invalidLoginAction.action";
 													} else {
 														$("#controlNbr").text(data.controlNbr);
 														$("#controlNbrDisplay").show();
@@ -1017,7 +1017,7 @@ function ParsePrintMessage() {
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					//console.log("successfully saved can type");
 				}
@@ -1045,7 +1045,7 @@ function ParsePrintMessage() {
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					//console.log("successfully saved dispense base");
 				}
@@ -1071,7 +1071,7 @@ function ParsePrintMessage() {
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				}
 			},
 			error : function(err) {
@@ -1094,7 +1094,7 @@ function ParsePrintMessage() {
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					//console.log("successfully saved room");
 				}
@@ -1118,7 +1118,7 @@ function ParsePrintMessage() {
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					//console.log("successfully saved room");
 					var qtyRemaining = qtyOrdered - parseInt($('#qtyDispensed').text());
