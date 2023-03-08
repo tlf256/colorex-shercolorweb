@@ -1347,7 +1347,7 @@
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
 								<p>
-								  Credentials need updated.<br>Enter current service password
+								  Credentials need updated. Enter the current service password
 								  and new service password.
 								</p>
 								<div id="credError" class="text-danger"></div>
@@ -1381,7 +1381,7 @@
 							<div class="row">
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
-								<p>Credentials need updated.<br>Enter service password given by the Manufacturer.</p>
+								<p>Credentials need updated. Enter the service password given by the Manufacturer.</p>
 								<div id="credError" class="text-danger"></div>
 							</div>
 							<div class="col-sm-2"></div>
@@ -1424,7 +1424,7 @@
 							<button type="button" class="btn btn-primary pull-right" id="updateCredsBtn_lnx"
 							aria-label="%{getText('global.continue')}"><s:text name="global.continue"/></button>
 						</s:else>
-						<s:submit class="btn btn-secondary" value="%{getText('global.cancel')}" action="userCancelAction" />
+						<s:submit class="btn btn-secondary mr-1" value="%{getText('global.cancel')}" action="userCancelAction" />
 					</s:form>
 				</div>
 			</div>

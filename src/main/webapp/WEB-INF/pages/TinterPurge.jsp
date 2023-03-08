@@ -668,7 +668,7 @@
 					$("#cleanNozzleInProgress").modal('show');
 				}
 				else{
-					var warningMsg = "Clean nozzle required before purge";
+					const warningMsg = ["Clean nozzle required before purge"];
 					addTinterAlertDangerWarnings(warningMsg);
 				}
 	    	} else {
