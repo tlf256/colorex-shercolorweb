@@ -255,7 +255,7 @@
 				dataType: "json",
 				success: function (result) {
 					if(result.sessionStatus === "expired"){
-                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                		window.location.href = "./invalidLoginAction.action";
                 	}
                 	else{
                 		complete = true;
