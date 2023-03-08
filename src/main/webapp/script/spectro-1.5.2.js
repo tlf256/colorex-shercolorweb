@@ -56,7 +56,7 @@ function sendSpectroEvent(myGuid, myMessage) {
 		datatype: "json",
 		success: function (data) {
 			if (data.sessionStatus === "expired") {
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
 			}
 		}
 	});
