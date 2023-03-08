@@ -49,7 +49,7 @@
 					async : true,
 					success : function(data) {
 						if (data.sessionStatus === "expired") {
-							window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+							window.location.href = "./invalidLoginAction.action";
 						} else {
 							$("#prodChangeStatusMsg").text("");
 							// in case they are re-doing product lookup, reset the options available and add them back in down below
@@ -247,7 +247,7 @@
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#changeProductMenu").addClass("d-none");
 					
@@ -310,7 +310,7 @@
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#changeProductMenu").addClass("d-none");
 					$("#prodChangeStatusMsg").text("");
@@ -371,7 +371,7 @@
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#prodChangeStatusMsg").text("");
 										
@@ -464,7 +464,7 @@
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#prodChangeStatusMsg").text("");
 					
@@ -598,7 +598,7 @@
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#prodChangeStatusMsg").text("");
 					
@@ -667,7 +667,7 @@
 			async : true,
 			success : function(data) {
 				if (data.sessionStatus === "expired") {
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				} else {
 					$("#prodChangeStatusMsg").text("");
 					
