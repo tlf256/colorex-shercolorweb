@@ -136,7 +136,7 @@
 			<div class="form-label-group" id="password-container">
 				<label class="sw-label" for="userPass"><s:text name="setLogin.password"/></label>
 				<s:password name="userPass" id="userPass"></s:password>
-				<i class="text-muted fa fa-eye-slash" id="passIcon"></i>
+				<em class="text-muted fa fa-eye-slash" id="passIcon"></em>
 			</div>
 			<div class="form-row">
 				<s:submit cssClass="btn btn-primary btn-lg btn-block active"
