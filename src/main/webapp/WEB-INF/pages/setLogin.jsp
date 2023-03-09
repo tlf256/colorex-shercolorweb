@@ -6,12 +6,29 @@
 
 <html lang="en">
 <head>
+<style>
+	#passIcon {
+	  position: absolute;
+	  top: 60%;
+	  right: 4%;
+	  cursor: pointer;
+	  font-size: 115%;
+	}
+	
+	#password-container{
+	  position: relative;
+	}
+</style>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><s:text name="global.login"/></title>
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
 <link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
+
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
+
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
@@ -45,6 +62,22 @@
 			}
 		});
 	}
+	
+	$(document).on('click', '#passIcon', function(){
+		var passIcon = $('#passIcon');
+		var passField = $('#userPass');
+		
+		if (passField.prop('type') === 'password') {
+			passField.prop('type','text');
+			passIcon.removeClass('fa-eye-slash');
+			passIcon.addClass('fa-eye');
+		} 
+		else {
+			passField.prop('type','password');
+			passIcon.removeClass('fa-eye');
+			passIcon.addClass('fa-eye-slash');
+		}
+	});
 	
 	$(document).ready(function() {
 	    // update dropdown to display the language that the user picked if they have done so
@@ -100,9 +133,10 @@
 					placeholder="%{getText('setLogin.userIDPlaceholder')}" size="30" maxlength="30"
 					cssStyle="font-size: 16px;" autofocus="autofocus"></s:textfield>
 			</div>
-			<div class="form-label-group">
+			<div class="form-label-group" id="password-container">
 				<label class="sw-label" for="userPass"><s:text name="setLogin.password"/></label>
 				<s:password name="userPass" id="userPass"></s:password>
+				<i class="text-muted fa fa-eye-slash" id="passIcon"></i>
 			</div>
 			<div class="form-row">
 				<s:submit cssClass="btn btn-primary btn-lg btn-block active"
