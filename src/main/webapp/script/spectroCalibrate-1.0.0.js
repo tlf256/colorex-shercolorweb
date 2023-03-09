@@ -1,10 +1,16 @@
 	let calibrate_step = "start";		
 	let ws_coloreye = new WSWrapper('coloreye');
-    let clreyemodel = "${sessionScope[reqGuid].spectro.model}";
-    let clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
     let count = 0;
     let newCol = "";
     let oldCol = "";
+    let clreyemodel = "";
+    let clreyeserial = "";
+    
+    function InitializeModelAndSerial(clmod, clser){
+	console.log("Setting model & serial number");
+	clreyemodel = clmod;
+	clreyeserial = clser;
+	}
 
 	function InitializeMeasureScreen() {
 	    console.log("InitializeMeasureScreen");
@@ -12,14 +18,14 @@
 	}
 	
 	function GetCalStatusMinUntilCalExpiration() {
-	  	console.log("GetCalStatusMinUntilCalExpiration")
+	  	console.log("GetCalStatusMinUntilCalExpiration");
 		let spectromessage = new SpectroMessage('GetCalStatusMinUntilCalExpiration',clreyemodel,clreyeserial);
 	    let json = JSON.stringify(spectromessage);
 	    ws_coloreye.send(json);
 	}
 	
 	function SWMeasure() {
-	  	console.log("SWMeasure")
+	  	console.log("SWMeasure");
 	  	checkWsIsReady();
 		let spectromessage = new SpectroMessage('SWMeasure',clreyemodel,clreyeserial);
 	    let json = JSON.stringify(spectromessage);
@@ -66,7 +72,7 @@
 	}
 
 	function GetCalSteps() {
-	  	console.log("GetCalSteps")
+	  	console.log("GetCalSteps");
 	  	calibrate_step = "GetCalSteps";
 		let spectromessage = new SpectroMessage('GetCalSteps',clreyemodel,clreyeserial);
 		let json = JSON.stringify(spectromessage);
@@ -205,7 +211,7 @@
 		  	  	  	
 	function CalibrateSuccess() {
 		$('#spectroCalModal').modal('hide');
-		console.log("CalibrateSuccess")
+		console.log("CalibrateSuccess");
 	  	calibrate_step = "CalibrateSuccess";
 	  	
 		$(".calincomplete").addClass('d-none');
@@ -214,21 +220,24 @@
 		$(".done").removeClass('d-none');
 	}
 	
-	function detectSpectro(){
-		  	console.log("Detect")
-		let spectromessage = new SpectroMessage('Detect',clreyemodel,clreyeserial);
-	    let json = JSON.stringify(spectromessage);
-	    ws_coloreye.send(json);
-	}
-	
 	function CalibrateIncomplete() {
-		console.log("CalibrateIncomplete")
+		console.log("CalibrateIncomplete");
 	  	calibrate_step = "CalibrateIncomplete";
 	  	
 		$(".calsuccess").addClass('d-none');
 		$(".error").addClass('d-none');
 		$(".calincomplete").removeClass('d-none');
 		$(".done").removeClass('d-none');
+	}
+	
+	function detectSpectro(){
+		console.log("Detect");
+		let spectromessage = new SpectroMessage('Detect',clreyemodel,clreyeserial);
+		console.log(clreyemodel);
+		console.log("marko aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		console.log(clreyeserial);
+	    let json = JSON.stringify(spectromessage);
+	    ws_coloreye.send(json);
 	}
 	  	
 	function RecdSpectroMessage() {
@@ -278,7 +287,17 @@
 				}
 				break;
 			case 'Detect':
-			if(return_message.responseMessage=="true"){
+				if (return_message.responseMessage=="true") {
+					console.log("Coloreye found, business as usual");					
+				} else {
+					console.log("No coloreye attached, lock engaged");
+					//$("#eyeAdd").prop('disabled', true);
+					//$('#eyeAdd').css('pointer-events', 'none');
+					//$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
+					//$('#disableWrapper').css('cursor', 'not-allowed');
+					}
+					break;
+			/*if(return_message.responseMessage=="true"){
 				console.log("Coloreye found, business as usual");
 				}
 				else{
@@ -288,7 +307,7 @@
 				$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
 				$('#disableWrapper').css('cursor', 'not-allowed');
 					}
-				break;
+				break;*/
 			case 'GetCalStatusMinUntilCalExpiration':
 				if (return_message.responseMessage.match(/^OK/)) {
 					$('#measureColorModal').modal('show');

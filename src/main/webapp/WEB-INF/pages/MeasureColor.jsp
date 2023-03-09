@@ -29,6 +29,7 @@
 			$(document).ready(function() {	
 				ws_coloreye.receiver = RecdSpectroMessage;
 				console.log("in docready");
+				InitializeModelAndSerial("${sessionScope[reqGuid].spectro.model}", "${sessionScope[reqGuid].spectro.serialNbr}");
 				
 				var standard = $('#measureStandard').val();
 				var sample = $('#measureSample').val();

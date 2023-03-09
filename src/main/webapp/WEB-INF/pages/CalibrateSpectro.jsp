@@ -32,7 +32,7 @@
 			console.log("in docready");
 			//this loads on startup! 
 			ws_coloreye.receiver = RecdSpectroMessage;
-			
+			InitializeModelAndSerial("${sessionScope[reqGuid].spectro.model}", "${sessionScope[reqGuid].spectro.serialNbr}");
 			var cntr = 1;
 
 			InitializeCalibrationScreen();
