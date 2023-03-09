@@ -1011,6 +1011,7 @@
 				// if so, set the value of the textfield
 				console.log("received GetHostName msg");
 				pleaseWaitModal_hide();
+				$('#error').empty();
 				if(return_message.messageText != "" && return_message.commandRC == 0){
 					var ip = return_message.messageText.trim();
 					$('#tinterIp').removeClass('d-none');
@@ -1035,6 +1036,7 @@
 				break;
 			case 'CheckCredentials':
 				// check if credentials need updating
+				$('#error').empty();
 				if(return_message.commandRC == 0 && return_message.messageText == ""){
 					// credentials do not need updating
 					// continue with configuration
@@ -1058,6 +1060,7 @@
 				}
 				break;
 			case 'UpdateCredentials':
+				$('#error').empty();
 				if(return_message.commandRC == 0) {
 					waitForShowAndHide("#pleaseWaitModal");
 					$("#detectInProgressModal").modal('show');
@@ -1072,6 +1075,7 @@
 				}
 				break;
 			case 'GetSerialCode':
+				$('#error').empty();
 				if(return_message.commandRC == 0) {
 					// parse serial nbr then set hostname
 					// leave detect in progress modal showing
@@ -1088,6 +1092,7 @@
 				}
 				break;
 			case 'SetHostname':
+				$('#error').empty();
 				if(return_message.commandRC == 0) {
 					// continue configuration
 					tinter.clrntSysId = $('#selectClrntSysId').val();
