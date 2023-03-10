@@ -229,22 +229,17 @@
 		$(".calincomplete").removeClass('d-none');
 		$(".done").removeClass('d-none');
 	}
-	
-	function detectSpectro(){
-		console.log("Detect");
-		let spectromessage = new SpectroMessage('Detect',clreyemodel,clreyeserial);
-		console.log(clreyemodel);
-		console.log("marko aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		console.log(clreyeserial);
-	    let json = JSON.stringify(spectromessage);
-	    ws_coloreye.send(json);
-	}
 	  	
 	function RecdSpectroMessage() {
 		console.log("Received Message");
 	  	//parse the spectro
 	  	console.log("Message is " + ws_coloreye.wsmsg);
 	  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
+	  	
+	  	if(ws_coloreye.wsmsg.includes("\"errorCode\":-4") & count != 0){
+		eyeaddDisabler();
+		return;
+		}
 	  	
 	  	if (ws_coloreye.wserrormsg != "") {
 		  	$("#errmsg").text('<s:text name="global.webSocketErrorPlusErr"><s:param>' + ws_coloreye.wserrormsg + '</s:param></s:text>');
@@ -286,28 +281,6 @@
 	  		  		DisplayError();
 				}
 				break;
-			case 'Detect':
-				if (return_message.responseMessage=="true") {
-					console.log("Coloreye found, business as usual");					
-				} else {
-					console.log("No coloreye attached, lock engaged");
-					//$("#eyeAdd").prop('disabled', true);
-					//$('#eyeAdd').css('pointer-events', 'none');
-					//$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
-					//$('#disableWrapper').css('cursor', 'not-allowed');
-					}
-					break;
-			/*if(return_message.responseMessage=="true"){
-				console.log("Coloreye found, business as usual");
-				}
-				else{
-				console.log("No coloreye attached, lock engaged");
-				$("#eyeAdd").prop('disabled', true);
-				$('#eyeAdd').css('pointer-events', 'none');
-				$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
-				$('#disableWrapper').css('cursor', 'not-allowed');
-					}
-				break;*/
 			case 'GetCalStatusMinUntilCalExpiration':
 				if (return_message.responseMessage.match(/^OK/)) {
 					$('#measureColorModal').modal('show');

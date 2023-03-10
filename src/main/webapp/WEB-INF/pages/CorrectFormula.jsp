@@ -127,8 +127,6 @@
 		setCount(1, '<s:text name="correctFormula.newColor"/>', '<s:text name="correctFormula.oldColor"/>');
 		//customerId, controlNbr, lineNbr 
 		ws_coloreye.receiver = RecdSpectroMessage;
-		//if no spectro disable eye addition
-		detectSpectro();
 		//if uncharacterized lock color eye addition
 		//new stuff
 		isCharacterized();
@@ -1103,6 +1101,13 @@
 				  };
         var jsonIN = JSON.stringify(str);
 		saveCorrectionStep(jsonIN, "Hand", "");
+    }
+    
+    function eyeaddDisabler(){
+    	$("#eyeAdd").prop('disabled', true);
+		$('#eyeAdd').css('pointer-events', 'none');
+		$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
+		$('#disableWrapper').css('cursor', 'not-allowed');
     }
     
     function saveCorrectionStep(jsonIN, dispenseType, return_message) {
