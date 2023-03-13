@@ -237,7 +237,7 @@ function loadProducts(dt){
 			},
 		success : function(data){
 			if(data.sessionStatus === "expired") {
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
 
 			$.each(data.productList, function(index, val) {

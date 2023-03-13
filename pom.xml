@@ -350,7 +350,7 @@
             <properties>
                 <sonar.coverage.exclusions>
                     src/main/java/com/sherwin/shercolor/customershercolorweb/config/*,
-		    src/main/webapp/script/*,
+                    src/main/webapp/**,
                     src/main/java/com/sherwin/shercolor/customershercolorweb/SherColorWebApplication.java
                 </sonar.coverage.exclusions>
             </properties>
