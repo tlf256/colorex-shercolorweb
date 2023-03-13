@@ -236,7 +236,7 @@
 	  	console.log("Message is " + ws_coloreye.wsmsg);
 	  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
 	  	
-	  	if(ws_coloreye.wsmsg.includes("\"errorCode\":-4") & count != 0){
+	  	if(ws_coloreye.wsmsg.includes("\"errorCode\":-4") && count != 0){
 		eyeaddDisabler();
 		return;
 		}
