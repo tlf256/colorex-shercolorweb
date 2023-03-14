@@ -356,9 +356,8 @@
 		ws_tinter.send(json);
 	}
 
-	function validatePasswords() {
-		// windows - ensure current password is correct
-		// and new password fits requirements
+	function validatePassword(password) {
+		// ensure new password fits requirements
 	}
 	
 	function onSubmit(event){
@@ -467,14 +466,27 @@
 
 	});
 
-	$(document).on('click', '#updateCredsBtn_lnx', function(){
+	function startCredentialUpdate(){
 		var dspMsg = "Updating credentials..."
 		pleaseWaitModal_show(dspMsg, '#passwordModal');
 		updateCredentials();
+	}
+
+	$(document).on('click', '#updateCredsBtn_lnx', function(){
+		startCredentialUpdate();
 	});
 
 	$(document).on('click', '#updateCredsBtn_win', function(){
-		// TODO - windows - write password file to disk
+		// validate admin pasword and send update credentials
+		var adminPwd = $('#newPwd').val();
+		if(validatePassword(adminPwd)){
+			$('#credError').empty();
+			startCredentialUpdate();
+		}
+		else{
+			// password invalid
+			$('#pwdError').html('<p></p>');
+		}
 	});
 
 	/***
@@ -1364,7 +1376,7 @@
 							<div class="col-sm-8">
 								<div id="currentPwd" class="form-label-group">
 									<label class="sw-label" for="currentPwd">Current Password</label>
-									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="currentPwdToggle"></i>
+									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="currentPwdToggle" aria-hidden="true"></i>
 									<s:password id="currentPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
 							</div>
@@ -1375,9 +1387,10 @@
 							<div class="col-sm-8">
 								<div id="newPwd" class="form-label-group">
 									<label class="sw-label" for="newPwd">New Password</label>
-									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="newPwdToggle"></i>
+									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="newPwdToggle" aria-hidden="true"></i>
 									<s:password id="newPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
+								<div id="pwdError" class="text-danger"></div>
 							</div>
 							<div class="col-sm-2"></div>
 							</div>
@@ -1408,7 +1421,7 @@
 								<div id="servicePwd" class="form-label-group">
 									<label class="sw-label" for="srvPwd">Service Password</label>
 									<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
-									<i class="text-muted fa fa-eye-slash pwd-icon" id="srvPwdToggle"></i>
+									<i class="text-muted fa fa-eye-slash pwd-icon" id="srvPwdToggle" aria-hidden="true"></i>
 								</div>
 								</div>
 								<div class="col-sm-2"></div>
@@ -1421,9 +1434,7 @@
 					<s:hidden name="reqGuid" />
 						<s:if test="%{sessionMap[reqGuid].osName.contains('win')}">
 							<button type="button" class="btn btn-primary pull-right" id="updateCredsBtn_win" data-toggle="tooltip"
-							aria-label="%{getText('global.continue')}" title="Not yet implemented" disabled>
-							<s:text name="global.continue"/>
-							</button>
+							aria-label="%{getText('global.continue')}"><s:text name="global.continue"/></button>
 						</s:if>
 						<s:else>
 							<button type="button" class="btn btn-primary pull-right" id="updateCredsBtn_lnx"
