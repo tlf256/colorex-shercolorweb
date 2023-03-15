@@ -76,10 +76,6 @@
 		return rgb;
 	}
 
-	function parseStatusMessages(tinterModel){
-		// TODO
-	}
-
 	function buildProgressBars(return_message, tinterModel){
 		var count = 1;
 		var keys=[];
@@ -90,15 +86,6 @@
 				var colorList = item.message.split(" ");
 				var color;
 				var pct;
-				
-				/* if(tinterModel.startsWith("FM X") && !platform.startsWith("Win")){
-					color= "";
-					pct = item.message;
-				}
-				else {
-					color= colorList[0];
-					pct = colorList[1];
-				} */
 
 				if(platform.startsWith("Win")){
 					color= colorList[0];
@@ -198,7 +185,6 @@
 	*/
 	function purge(){
 		var cmd = "PurgeAll";
-		
 		var shotList = null;
     	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
     	var json = JSON.stringify(tintermessage);
@@ -242,7 +228,7 @@
 			if(!tinterModel.startsWith('FM X')) fmx = ""
 			purgeComplete(myGuid, curDate,return_message, tedArray, fmx);
 			$(".progress-wrapper").empty();
-			}
+		}
 			
     }
 	function alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray){
@@ -399,14 +385,11 @@
         
     function abort(){
     	console.log('before abort');
-    	
-    	
     	var cmd = "Abort";
     	var shotList = null;
     	var configuration = null;
     	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
     	var json = JSON.stringify(tintermessage);
-
     	ws_tinter.send(json);
     }
 	function openNozzle(){
@@ -425,7 +408,6 @@
 
 	function closeNozzle(){
 		var cmd = "CloseNozzle";
-		
 		var shotList = null;
     	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
     	var json = JSON.stringify(tintermessage);
@@ -500,9 +482,7 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						console.log("TINTERMODEL -> " + tinterModel);
 						if(tinterModel !=null && (tinterModel.startsWith("FM X") || tinterModel.startsWith("AS"))){
-							console.log("FMX or 9500 TINTER");
 							if(return_message.errorNumber == 4226){
 								return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 							}
@@ -513,7 +493,6 @@
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
 						}
 						else{
-							console.log("CALLING purgeComplete");
 							purgeComplete(myGuid, curDate, return_message, tedArray);
 						}
 						break;

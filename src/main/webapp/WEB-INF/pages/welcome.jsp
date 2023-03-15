@@ -559,43 +559,6 @@
             	
         	}
 
-		function ResetAS9500Resp(){
-			console.log("Processing AS 9500SW Reset Response");
-			var initErrorList=[];
-			// log event
-			var curDate = new Date();
-			var myGuid = $( "#startNewJob_reqGuid" ).val();
-
-			if(return_message.errorMessage.trim() != 'Reset complete'){
-				// send reset status with timeout
-				$("#progress-message").text(return_message.errorMessage);
-				if(detectAttempt < 85){
-					setTimeout(function(){
-						afterResetTinterGetStatus(); // keep sending reset status until you get something.
-					}, 5000);					
-					detectAttempt++;
-				}
-				else{
-					sendTinterEvent(myGuid, curDate, return_message, null); 
-					waitForShowAndHide('#initTinterInProgressModal');
-					$("#tinterErrorList").empty();
-					return_message.errorMessage = "Timeout Waiting for Tinter Initialization";
-				
-					initErrorList.push(return_message.errorMessage);
-					$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
-				
-					$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
-					$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
-					$("#tinterErrorListModal").modal('show');
-					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
-				}
-				console.log(return_message);
-			}
-			else if(return_message.errorMessage.trim() === 'Reset complete'){
-				//
-			}
-		}
-
 		function DetectAlfaFMXResp(return_message){
 			console.log("Processing FMX Detect Response");
 			var initErrorList=[];
