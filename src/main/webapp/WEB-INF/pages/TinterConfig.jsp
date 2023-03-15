@@ -270,10 +270,7 @@
 
 	function changeModel(model) {
 		if(model.startsWith('AS')){
-			// check for tinter-ip file 
-			// send command that retrieves the hostname
-			// if the file exists
-			var dspMsg = "Retrieving hostname..."
+			var dspMsg = '<s:text name="tinterConfig.retrievingHostname"/>'
 			pleaseWaitModal_show(dspMsg, null);
 			$('#tinterSerial').addClass('d-none');
 			$('#btn_tinterConfig').prop('disabled', true);
@@ -344,9 +341,20 @@
 
 	function updateCredentials(){
 		var command = "UpdateCredentials";
-		var srvcred = $('#srvPwd').val().trim();
+		var srvcred;
+		var msgtxt;
+		console.log("OS NAME: " + $('#os').val().toUpperCase());
+		if($('#os').val().toUpperCase().startsWith("WIN")){
+			srvcred = $('#currPwd').val().trim();
+			var admincred = $('#newPwd').val().trim();
+			msgtxt = srvcred + ',' + admincred;
+		}
+		else {
+			srvcred = $('#srvPwd').val().trim();
+			msgtxt = srvcred;
+		}
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
-		tinterMsg.messageText = srvcred;
+		tinterMsg.messageText = msgtxt;
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
@@ -358,6 +366,8 @@
 
 	function validatePassword(password) {
 		// ensure new password fits requirements
+		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~])[A-Za-z\d@$!%*?&^-~]{8,}$/
+		return passwordPattern.test(password);
 	}
 	
 	function onSubmit(event){
@@ -368,7 +378,7 @@
 			console.log("onSubmit tinter IP: " + ip);
 			
 			if(validateIpField(ip)) {
-				var dspMsg = "Validating credentials..."
+				var dspMsg = '<s:text name="tinterConfig.validatingCredentials"/>'
 				pleaseWaitModal_show(dspMsg, null);
 
 				setTimeout(() => {
@@ -377,8 +387,8 @@
 			}
 			else{
 				// return validation error
-				var errorText = "<h6>IP Address/Hostname invalid</h6>";
-				$('#error').html(errorText);
+				var errorText = '<s:text name="tinterConfig.invalidIpHostname"/>';
+				$('#error').html('<h6>' + errorText + '</h6>');
 			}
 		} else {
 			$('#tSerialNbr').val($('#tSerialNbr').val().toUpperCase());
@@ -467,7 +477,7 @@
 	});
 
 	function startCredentialUpdate(){
-		var dspMsg = "Updating credentials..."
+		var dspMsg = '<s:text name="tinterConfig.updatingCredentials"/>';
 		pleaseWaitModal_show(dspMsg, '#passwordModal');
 		updateCredentials();
 	}
@@ -480,12 +490,13 @@
 		// validate admin pasword and send update credentials
 		var adminPwd = $('#newPwd').val();
 		if(validatePassword(adminPwd)){
-			$('#credError').empty();
+			$('#pwdError').empty();
 			startCredentialUpdate();
 		}
 		else{
 			// password invalid
-			$('#pwdError').html('<p></p>');
+			var errorMsg = '<s:text name="tinterConfig.invalidPassword"/>';
+			$('#pwdError').html('<p>' + errorMsg + '</p>');
 		}
 	});
 
@@ -984,7 +995,7 @@
 			case 'InitStatus':
 				if (return_message.errorMessage.toUpperCase().trim() == initializationDone) {
 					// retrieve serial
-					var displayMessage = "Retrieving tinter serial...";
+					var displayMessage = '<s:text name="tinterConfig.retrievingSerial"/>';
 					pleaseWaitModal_updateMsg(displayMessage);
 					getSerial();
 				}
@@ -1033,15 +1044,15 @@
 				}
 				else if(return_message.messageText != "" && return_message.commandRC == -1) {
 					// error reading/writing hostname file
-					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>";
-					$('#error').html(errorText);
+					var errorText = return_message.errorMessage;
+					$('#error').html("<br><h5>" + errorText + "</h5>");
 					$('#modelSelect')[0].selectedIndex = 0;
 					$('#tinterSerial').removeClass('d-none');
 				}
 				else {
 					// other unknown error
-					var errorText = "<br><h5>Error retrieving hostname</h5>";
-					$('#error').html(errorText);
+					var errorText = '<s:text name="tinterConfig.errorRetrievingHostname"/>';
+					$('#error').html('<br><h5>' + errorText + '</h5>');
 					$('#modelSelect')[0].selectedIndex = 0;
 					$('#tinterSerial').removeClass('d-none');
 				}
@@ -1067,8 +1078,8 @@
 				else {
 					// error
 					pleaseWaitModal_hide();
-					var errorText = "<br><h5>" + return_message.errorMessage + "</h5>";
-					$('#error').html(errorText);
+					var errorText = return_message.errorMessage;
+					$('#error').html("<br><h5>" + errorText + "</h5>");
 				}
 				break;
 			case 'UpdateCredentials':
@@ -1082,8 +1093,8 @@
 				else {
 					// error updating credentials
 					pleaseWaitModal_hide();
-					var errorText = "<h6>" + return_message.errorMessage + "</h6>";
-					$('#error').html(errorText);
+					var errorText = return_message.errorMessage;
+					$('#error').html("<h6>" + errorText + "</h6>");
 				}
 				break;
 			case 'GetSerialCode':
@@ -1099,8 +1110,8 @@
 				else {
 					//fail, display error message
 					pleaseWaitModal_hide();
-					var errorText = "<h6>" + return_message.errorMessage + "</h6>";
-					$('#error').html(errorText);
+					var errorText = return_message.errorMessage;
+					$('#error').html("<h6>" + errorText + "</h6>");
 				}
 				break;
 			case 'SetHostname':
@@ -1116,8 +1127,8 @@
 				else {
 					// display error message
 					pleaseWaitModal_hide();
-					var errorText = "<h6>" + return_message.errorMessage + "</h6>";
-					$('#error').html(errorText);
+					var errorText = return_message.errorMessage;
+					$('#error').html("<h6>" + errorText + "</h6>");
 				}
 				break;
 			default:
@@ -1273,6 +1284,7 @@
 
 
 		<s:set var="thisGuid" value="reqGuid" />
+		<s:hidden name="osName" value="%{sessionMap[reqGuid].osName}" id="os"/>
 
 		<s:form class="form-sw-centered" id="frmSubmit" action="SaveNewTinter"
 			validate="true" theme="bootstrap">
@@ -1352,7 +1364,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header bg-light">
-					<h5 class="modal-title">Device Credentials</h5>
+					<h5 class="modal-title"><s:text name="tinterConfig.deviceCredentials"/></h5>
 					<button type="button" id="pModalClose_btn" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1363,10 +1375,8 @@
 							<div class="row">
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
-								<p>
-								  Credentials need updated. Enter the current service password
-								  and new service password.
-								</p>
+								<p><s:text name="tinterConfig.credentialsNeedUpdated"/></p>
+								<p><s:text name="tinterConfig.enterCurrentAndNewPassword"/></p>
 								<div id="credError" class="text-danger"></div>
 							</div>
 							<div class="col-sm-2"></div>
@@ -1375,7 +1385,7 @@
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
 								<div id="currentPwd" class="form-label-group">
-									<label class="sw-label" for="currentPwd">Current Password</label>
+									<label class="sw-label" for="currentPwd"><s:text name="tinterConfig.currentPassword"/></label>
 									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="currentPwdToggle" aria-hidden="true"></i>
 									<s:password id="currentPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
@@ -1386,7 +1396,7 @@
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
 								<div id="newPwd" class="form-label-group">
-									<label class="sw-label" for="newPwd">New Password</label>
+									<label class="sw-label" for="newPwd"><s:text name="tinterConfig.newPassword"/></label>
 									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="newPwdToggle" aria-hidden="true"></i>
 									<s:password id="newPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
@@ -1399,7 +1409,8 @@
 							<div class="row">
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
-								<p>Credentials need updated. Enter the service password given by the Manufacturer.</p>
+								<p><s:text name="tinterConfig.credentialsNeedUpdated"/></p>
+								<p><s:text name="tinterConfig.enterServicePassword"/></p>
 								<div id="credError" class="text-danger"></div>
 							</div>
 							<div class="col-sm-2"></div>
@@ -1408,7 +1419,7 @@
 								<div class="col-sm-2"></div>
 								<div class="col-sm-8">
 								<div id="ipAddress" class="form-label-group">
-									<label class="sw-label" for="ipAddr">Tinter IP Address</label>
+									<label class="sw-label" for="ipAddr"><s:text name="tinterConfig.tinterIp"/></label>
 									<s:textfield id="ipAddr" class="form-control" name="newtinter.tinterIp" 
 										disabled="true"></s:textfield>
 								</div>
@@ -1419,7 +1430,7 @@
 								<div class="col-sm-2"></div>
 								<div class="col-sm-8">
 								<div id="servicePwd" class="form-label-group">
-									<label class="sw-label" for="srvPwd">Service Password</label>
+									<label class="sw-label" for="srvPwd"><s:text name="tinterConfig.servicePassword"/></label>
 									<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
 									<i class="text-muted fa fa-eye-slash pwd-icon" id="srvPwdToggle" aria-hidden="true"></i>
 								</div>
