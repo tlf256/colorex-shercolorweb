@@ -4,7 +4,10 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "120s"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300s"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300s"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300s"
+    nginx.ingress.kubernetes.io/send_timeout: "300s"
     nginx.ingress.kubernetes.io/session-cookie-name: "INGRESSID"
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
