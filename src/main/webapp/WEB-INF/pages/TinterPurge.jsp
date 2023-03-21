@@ -322,7 +322,7 @@
 				success: function (data) {
 					//console.log(data);		
 					if(data.sessionStatus === "expired"){
-	            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	            		window.location.href = "./invalidLoginAction.action";
 	            	}
 	            	else{
 	            		if (data != null && data.updatedLastPurgeMsg != null){

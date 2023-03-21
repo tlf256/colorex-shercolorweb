@@ -40,7 +40,7 @@ function getModels(){
 			 dataType: "json",
 			    success: function (cals) {
 			    	if(cals.sessionStatus === "expired"){
-                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                		window.location.href = "./invalidLoginAction.action";
                 	}
                 	else{
                 		callist = cals;
@@ -75,7 +75,7 @@ function getGDataFromServer(colorantid){
 			success: function (obj) {
 				console.log("gdata received");
 				if(obj.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		gdataobj = obj;
@@ -114,7 +114,7 @@ function getCalFromServer(uFilename){
 				//console.log(calobj);
 				console.log(encodeURI(calobj));
 				if(cal.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		calobj = cal;
@@ -348,7 +348,7 @@ function sendTinterEvent(myGuid, myDate, myMessage, teDetail){
 		datatype : "json",
 		success: function (data) {
 			if(data.sessionStatus === "expired"){
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
         	else{
         		//Handle success after checking expiration
@@ -382,7 +382,7 @@ function updateColorantsTxt(myGuid, myMessage, layoutUpdateChosen, callback){
 				datatype: "json",
 				success: function (data) {
 					if(data.sessionStatus === "expired"){
-		        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		        		window.location.href = "./invalidLoginAction.action";
 		        	}
 		        	else{
 		        		/* show the updated canister layout modal if user chose that menu item 
@@ -436,7 +436,7 @@ function saveConfigToSession(myGuid, myclrnt, mymodel, myserial) {
 		async: false,
 		success: function (data) {
 			if(data.sessionStatus === "expired"){
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
         	else{
         		//Check result of stamp and if tinter is on DB
@@ -476,7 +476,7 @@ function saveInitErrorsToSession(myGuid, myInitErrorList){
 		async: false,
 		success: function (data) {
 			if(data.sessionStatus === "expired"){
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
         	else{
         		//Handle success after checking expiration
@@ -500,7 +500,7 @@ function getSessionTinterInfo(myGuid, callback) {
 		async: true,
 		success: function (data) {
 			if(data.sessionStatus === "expired"){
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
         	else{
         		//Check result of stamp and if tinter is on DB
@@ -633,7 +633,7 @@ function decrementColorantForDispense(myGuid, myShotList, callback) {
 		async: true,
 		success: function (data) {
 			if(data.sessionStatus === "expired"){
-        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+        		window.location.href = "./invalidLoginAction.action";
         	}
         	else{
         		//Check result of decrement
