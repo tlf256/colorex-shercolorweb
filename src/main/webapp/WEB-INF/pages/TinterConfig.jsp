@@ -328,6 +328,7 @@
 	function checkCredentials(){
 		var command = "CheckCredentials";
 		var tinterIp = $('#tIpAddr').val();
+		console.log("CHECK CREDENTIALS TINTER IP: "+ tinterIp);
 		var configuration = new Configuration(null, null, null, tinterIp, null);
 		var tinterMsg = new TinterMessage(command, null, configuration, null, null);
 		var json = JSON.stringify(tinterMsg);
@@ -366,7 +367,7 @@
 
 	function validatePassword(password) {
 		// ensure new password fits requirements
-		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~])[A-Za-z\d@$!%*?&^-~]{8,}$/
+		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~])[A-Za-z\d@$!%*?&^-~]{8,20}$/;
 		return passwordPattern.test(password);
 	}
 	
@@ -414,13 +415,21 @@
 	}
 
 	$(document).on('click', '#srvPwdToggle', function(){
-		togglePwdIcon($('#srvPwdToggle'), $('#srvPwd'));
+		togglePwdIcon('#srvPwdToggle', '#srvPwd');
+	});
+
+	$(document).on('click', '#currentPwdToggle', function(){
+		togglePwdIcon('#currentPwdToggle', '#currentPwd');
+	});
+
+	$(document).on('click', '#newPwdToggle', function(){
+		togglePwdIcon('#newPwdToggle', '#newPwd');
 	});
 
 	function togglePwdIcon(iconElement, pwdInput){
 		//toggle password input and icon
-		var icon = iconElement;
-		var srvPwd = pwdInput;
+		var icon = $(iconElement);
+		var srvPwd = $(pwdInput);
 
 		//const type = (srvPwd.prop('type') == 'password') ? 'text' : 'password';
 		//srvPwd.prop('type', type);
@@ -1386,7 +1395,7 @@
 							<div class="col-sm-8">
 								<div id="currentPwd" class="form-label-group">
 									<label class="sw-label" for="currentPwd"><s:text name="tinterConfig.currentPassword"/></label>
-									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="currentPwdToggle" aria-hidden="true"></i>
+									<i class="text-muted fa fa-eye-slash pwd-icon" id="currentPwdToggle" aria-hidden="true"></i>
 									<s:password id="currentPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
 							</div>
@@ -1397,13 +1406,19 @@
 							<div class="col-sm-8">
 								<div id="newPwd" class="form-label-group">
 									<label class="sw-label" for="newPwd"><s:text name="tinterConfig.newPassword"/></label>
-									<i class="text-muted fa fa-eye-slash pwd-icon mt-1" id="newPwdToggle" aria-hidden="true"></i>
+									<i class="text-muted fa fa-eye-slash pwd-icon" id="newPwdToggle" aria-hidden="true"></i>
 									<s:password id="newPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
-								<div id="pwdError" class="text-danger"></div>
 							</div>
 							<div class="col-sm-2"></div>
 							</div>
+							<div class="row">
+								<div class="col-sm-2"></div>
+								<div class="col-sm-8">
+									<div id="pwdError" class="text-danger"></div>
+								</div>
+								<div class="col-sm-2"></div>
+								</div>
 						</s:if>
 						<s:else>
 							<div class="row">
@@ -1431,8 +1446,8 @@
 								<div class="col-sm-8">
 								<div id="servicePwd" class="form-label-group">
 									<label class="sw-label" for="srvPwd"><s:text name="tinterConfig.servicePassword"/></label>
-									<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
 									<i class="text-muted fa fa-eye-slash pwd-icon" id="srvPwdToggle" aria-hidden="true"></i>
+									<s:password id="srvPwd" class="form-control" aria-autocomplete="none"></s:password>
 								</div>
 								</div>
 								<div class="col-sm-2"></div>
