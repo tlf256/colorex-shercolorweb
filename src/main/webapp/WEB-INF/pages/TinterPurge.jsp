@@ -84,16 +84,21 @@
 		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
+				var colorPct = true;
 				var color;
 				var pct;
 
-				if(platform.startsWith("Win")){
-					color= colorList[0];
-					pct = colorList[1];
+				if(colorList[1] == 'undefined'){
+					color = null;
+					pct = colorList[0];
+					colorPct = false;
 				} else {
-					color= "";
-					pct = item.message;
+					color = colorList[0];
+					pct = colorList[1];
 				}
+
+				console.log("COLOR = " + color);
+				console.log("PCT = " + pct);
 				
 				//fix bug where we are done, but not all pumps report as 100%
 				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
@@ -110,6 +115,7 @@
 				$bar.css("width", pct);
 				$clone.css("display", "block");
 				var color_rgb = getRGB(color);
+				console.log("COLOR RGB = " + color_rgb);
 	//change color of text based on background color
 				switch(color){
 				case "WHT":
@@ -130,7 +136,7 @@
 					break;
 				}
 				
-				if(platform.startsWith("Win")){
+				if(colorPct){
 					$bar.children("span").text(color + " " + pct);
 				} else{
 					$bar.children("span").text(pct);
@@ -155,7 +161,7 @@
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
 		if(tinterModel !=null && (tinterModel.startsWith("AS") || tinterModel.startsWith("FM X"))){ 
 			var cmd = "PurgeProgress";
-			if(!platform.startsWith("Win")){
+			if(!platform.startsWith("Win") || tinterModel.startsWith("AS")){
 				cmd = "PurgeStatus";
 			}
 		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);  

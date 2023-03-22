@@ -346,7 +346,7 @@
 		var msgtxt;
 		console.log("OS NAME: " + $('#os').val().toUpperCase());
 		if($('#os').val().toUpperCase().startsWith("WIN")){
-			srvcred = $('#currPwd').val().trim();
+			srvcred = $('#currentPwd').val().trim();
 			var admincred = $('#newPwd').val().trim();
 			msgtxt = srvcred + ',' + admincred;
 		}
@@ -355,6 +355,7 @@
 			msgtxt = srvcred;
 		}
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
+		console.log("UPDATE CREDENTIALS MSGTXT = " + msgtxt);
 		tinterMsg.messageText = msgtxt;
 		var json = JSON.stringify(tinterMsg);
 
@@ -367,7 +368,8 @@
 
 	function validatePassword(password) {
 		// ensure new password fits requirements
-		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~])[A-Za-z\d@$!%*?&^-~]{8,20}$/;
+		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~])[A-Za-z\d@$!%*?&^-~]{8,}$/;
+		console.log("PASSWORD IS VALID? "+ passwordPattern.test(password));
 		return passwordPattern.test(password);
 	}
 	
@@ -430,14 +432,8 @@
 		//toggle password input and icon
 		var icon = $(iconElement);
 		var srvPwd = $(pwdInput);
-
-		//const type = (srvPwd.prop('type') == 'password') ? 'text' : 'password';
-		//srvPwd.prop('type', type);
-		//icon.classList.toggle('fa-eye');
-
-		const type = srvPwd.prop('type');
 		
-		if(type == 'password'){
+		if(srvPwd.prop('type') === 'password'){
 			srvPwd.prop('type', 'text');
 			icon.removeClass('fa-eye-slash');
 			icon.addClass('fa-eye');
@@ -498,15 +494,15 @@
 	$(document).on('click', '#updateCredsBtn_win', function(){
 		// validate admin pasword and send update credentials
 		var adminPwd = $('#newPwd').val();
-		if(validatePassword(adminPwd)){
+		//if(validatePassword(adminPwd)){
 			$('#pwdError').empty();
 			startCredentialUpdate();
-		}
-		else{
+		//}
+		//else{
 			// password invalid
-			var errorMsg = '<s:text name="tinterConfig.invalidPassword"/>';
-			$('#pwdError').html('<p>' + errorMsg + '</p>');
-		}
+			//var errorMsg = '<s:text name="tinterConfig.invalidPassword"/>';
+			//$('#pwdError').html('<p>' + errorMsg + '</p>');
+		//}
 	});
 
 	/***
@@ -1034,9 +1030,6 @@
 						}
 					}
 				}
-				if (return_message.commandRC == 0) {
-					sendTinterEventConfig(reqGuid, curDate, return_message,null);
-				}
 				break;
 			case 'GetHostName':
 				// check if the hostname was returned
@@ -1114,6 +1107,10 @@
 					var serial = return_message.messageText.trim();
 					console.log("get serial code returned: " + serial);
 					$('#tSerialNbr').val(serial);
+
+					//log tinter event after retrieving serial number
+					sendTinterEventConfig(reqGuid, curDate, return_message, null);
+
 					setHostName();
 				}
 				else {
@@ -1393,7 +1390,7 @@
 							<div class="row">
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
-								<div id="currentPwd" class="form-label-group">
+								<div id="currentPwdDiv" class="form-label-group">
 									<label class="sw-label" for="currentPwd"><s:text name="tinterConfig.currentPassword"/></label>
 									<i class="text-muted fa fa-eye-slash pwd-icon" id="currentPwdToggle" aria-hidden="true"></i>
 									<s:password id="currentPwd" class="form-control" aria-autocomplete="none"></s:password>
@@ -1404,7 +1401,7 @@
 							<div class="row">
 							<div class="col-sm-2"></div>
 							<div class="col-sm-8">
-								<div id="newPwd" class="form-label-group">
+								<div id="newPwdDiv" class="form-label-group">
 									<label class="sw-label" for="newPwd"><s:text name="tinterConfig.newPassword"/></label>
 									<i class="text-muted fa fa-eye-slash pwd-icon" id="newPwdToggle" aria-hidden="true"></i>
 									<s:password id="newPwd" class="form-control" aria-autocomplete="none"></s:password>
