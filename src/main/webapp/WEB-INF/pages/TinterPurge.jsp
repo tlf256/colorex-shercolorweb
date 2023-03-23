@@ -49,7 +49,6 @@
 	</s:iterator>
 	var platform = navigator.platform;
 	var cleanNozzleBeforePurge = false;
-	var cleanNozzles = false;
 
 	$(function(){ // on ready
 		//capture A key to abort
@@ -84,15 +83,17 @@
 		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
-				var colorPct = true;
+				var colorPct = true; //flag for individual colorant progress
 				var color;
 				var pct;
 
-				if(colorList[1] == 'undefined'){
+				if(colorList[1] == undefined){
+					//overall purge progress
 					color = null;
 					pct = colorList[0];
 					colorPct = false;
 				} else {
+					//individual colorant progress
 					color = colorList[0];
 					pct = colorList[1];
 				}
@@ -116,7 +117,7 @@
 				$clone.css("display", "block");
 				var color_rgb = getRGB(color);
 				console.log("COLOR RGB = " + color_rgb);
-	//change color of text based on background color
+				//change color of text based on background color
 				switch(color){
 				case "WHT":
 				case "TW":
@@ -378,8 +379,8 @@
     	console.log("last purge datetime: " + dateFromString);
 		var today = new Date();
 		console.log("today's date: " + today);
-		if (!cleanNozzles && (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() 
-				|| dateFromString.getDate()<today.getDate())){
+		if (dateFromString.getFullYear()<today.getFullYear() || dateFromString.getMonth()<today.getMonth() 
+				|| dateFromString.getDate()<today.getDate()){
 			console.log("nozzle cleaning required before purge");
 			cleanNozzleBeforePurge = true;
 			return true;
@@ -532,7 +533,6 @@
 						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							removeTinterAlertDangerWarnings();
-							cleanNozzles = true;
 						} else {
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -556,7 +556,6 @@
 							if(!cleanNozzleBeforePurge){
 					    		$("#fmxCleanNozzleModal").modal('show');
 					    	}
-							cleanNozzles = true;
 						} else {
 							waitForShowAndHide("#cleanNozzleInProgress");
 							//Show a modal with error message to make sure the user is forced to read it.
