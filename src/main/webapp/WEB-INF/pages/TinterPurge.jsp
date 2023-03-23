@@ -493,7 +493,6 @@
 							if(return_message.errorNumber == 4226){
 								return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
 							}
-							console.log("CALLING dispenseProgressResp");
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
 						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
@@ -652,6 +651,8 @@
 					$("#cleanNozzleInProgress").modal('show');
 				}
 				else{
+					// TODO - fix so this functions similar to POS in that 
+					// the "clean nozzle" starts automatically before purge...
 					const warningMsg = ["Clean nozzle required before purge"];
 					addTinterAlertDangerWarnings(warningMsg);
 				}

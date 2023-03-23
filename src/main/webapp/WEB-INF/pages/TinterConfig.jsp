@@ -1030,6 +1030,10 @@
 						}
 					}
 				}
+				if (return_message.errorMessage.toUpperCase().trim() == initializationDone) {
+					if(return_message.Configuration.serial == undefined) return_message.Configuration.serial = ""
+					sendTinterEventConfig(reqGuid, curDate, return_message, null);
+				}
 				break;
 			case 'GetHostName':
 				// check if the hostname was returned
