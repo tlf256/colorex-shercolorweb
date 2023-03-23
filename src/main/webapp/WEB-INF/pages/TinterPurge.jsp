@@ -75,7 +75,9 @@
 		return rgb;
 	}
 
-	function buildProgressBars(return_message, tinterModel){
+	//function parses status messages to display progress bars
+	//for individual colorant or overall purge progress
+	function buildProgressBars(return_message){
 		var count = 1;
 		var keys=[];
 		$(".progress-wrapper").empty();
@@ -97,15 +99,16 @@
 					color = colorList[0];
 					pct = colorList[1];
 				}
-
-				console.log("COLOR = " + color);
-				console.log("PCT = " + pct);
 				
 				//fix bug where we are done, but not all pumps report as 100%
 				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 						 return_message.status == 0)) {
 					  pct = "100%";
 				  }
+
+				console.log("COLOR = " + color);
+				console.log("PCT = " + pct);
+
 				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				
 				var $clone = $("#progress-0").clone();
@@ -117,6 +120,7 @@
 				$clone.css("display", "block");
 				var color_rgb = getRGB(color);
 				console.log("COLOR RGB = " + color_rgb);
+
 				//change color of text based on background color
 				switch(color){
 				case "WHT":
@@ -165,13 +169,15 @@
 			if(!platform.startsWith("Win") || tinterModel.startsWith("AS")){
 				cmd = "PurgeStatus";
 			}
-		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		   	//var tintermessage = new TinterMessage(cmd,null,null,null,null);  
 		}
 		else{
 			var cmd = "DispenseStatus";
-			var msgId = tintermessage.msgId;
-    		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
+			  
 		}
+		var msgId = tintermessage.msgId;
+    	var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);
+
     	var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
     	ws_tinter.send(json);
