@@ -1574,33 +1574,8 @@
 			</div>
 		</div>
 	</div>
-	<!-- AS 9500SW password modal -->
-	<div class="modal fade" aria-labelledby="" data-backdrop="static"
-		aria-hidden="true" id="password_modal" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">AS 9500SW Password Setup</h5>
-				</div>
-				<div class="modal-body">
-					<p id=""></p>
-					<div id="passwrd" class="form-label-group">
-						<label class="sw-label" for="passwrd">Password:</label>
-						<s:textfield id="passwrd" name="passwrd"></s:textfield>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button id="" type="button" class="btn btn-primary"
-						data-dismiss="modal" aria-label="%{getText('global.continue')}"><s:text name="global.continue"/></button>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	
 	<br>
-
-
-
 
 	<!-- Including footer -->
 	<s:include value="Footer.jsp"></s:include>
