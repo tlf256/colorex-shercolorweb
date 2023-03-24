@@ -139,11 +139,6 @@
 					$("#tinterStatusList").append('<li class="bg-danger"><strong><s:text name="welcome.lastPurgeColon"/></strong> <s:text name="welcome.purgeNeverDone"/></li>');
 					alertErrors.push("Tinter Purge is Required");
 				}
-
-				// remove calibration manager for AS 9500?
-				if(sessionTinterInfo.model != null && sessionTinterInfo.model.includes("AS")){
-					//
-				}
 				
 				// leave off Ecal and Colorant Levels indicators for Santint tinters
 				if (sessionTinterInfo.model != null && !sessionTinterInfo.model.includes("SANTINT")){

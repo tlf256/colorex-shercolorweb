@@ -531,7 +531,7 @@
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
 						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
-							removeTinterAlertDangerWarnings();
+							//removeTinterAlertDangerWarnings();
 						} else {
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -614,6 +614,13 @@
 	        $("#cleanNozzleVid").get(0).pause();
 			closeNozzle();
 	    });
+
+		$(document).on("hidden.bs.modal", "#closeNozzleInProgressModal", function(event){
+	        console.log("done cleaning nozzles");
+	    	if(cleanNozzleBeforePurge && !$("#tinterErrorListModal").is(":visible")){
+	    		$("#purgeInProgressModal").modal('show');
+	    	}
+	    });
 	    
 	    $(document).on("shown.bs.modal", "#cleanNozzleInProgress", function(event){
 			cleanNozzle();
@@ -651,10 +658,8 @@
 					$("#cleanNozzleInProgress").modal('show');
 				}
 				else{
-					// TODO - fix so this functions similar to POS in that 
-					// the "clean nozzle" starts automatically before purge...
-					const warningMsg = ["Clean nozzle required before purge"];
-					addTinterAlertDangerWarnings(warningMsg);
+					// fire event for nozzle cleaning
+					$('#tinterCleanNozzle').click();
 				}
 	    	} else {
 	    		$("#purgeInProgressModal").modal('show');
