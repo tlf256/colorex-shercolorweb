@@ -479,48 +479,68 @@ function abort() {
 	ws_tinter.send(json);
 }
 
+function printerDefined(){
+	return (typeof ws_printer !== 'undefined' && ws_printer !=null);
+}
+
+function tinterDefined(){
+	return (typeof ws_tinter !== 'undefined' && ws_tinter);
+}
+
+function wsErrorMsgDefined(){
+	return (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "");
+}
+
+function dispalyWsErrorMsg(){
+	if (sendingTinterCommand == "true") {
+		// received an error from WSWrapper so we won't get any JSON result
+		// Since we are sending a dispense command, show as dispense error
+
+		$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter.wserrormsg);
+		//Show a modal with error message to make sure the user is forced to read it.
+		$("#tinterSocketError").text(ws_tinter.wserrormsg);
+		$('#progressok').removeClass('d-none');
+		waitForShowAndHide("#tinterInProgressModal");
+
+		startSessionTimeoutTimers();
+		console.log('hide done');
+		$("#tinterSocketErrorModal").modal('show');
+
+	} else {
+		console.log("Received unsolicited error " + ws_tinter.wserrormsg);
+		// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
+		// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
+	}
+}
+
+function parseWsMsgAsJson(){
+	try {
+		return JSON.parse(ws_tinter?.wsmsg);
+		//isTintJSON = true;
+	}
+	catch (error) {
+		console.log("Caught error is = " + error);
+		console.log("Message is junk, throw it out");
+		//console.log("Junk Message is " + ws_tinter.wsmsg);
+	}
+}
 
 function RecdMessage() {
 	var printMessageParsed = false;
 	console.log("Received Message");
 	//parse the spectro
-	if (typeof(ws_printer) !== 'undefined' && ws_printer !=null) {
+	if (printerDefined()) {
 		printMessageParsed = ParsePrintMessage();
 	}
-	if (!printMessageParsed && typeof ws_tinter !== 'undefined' && ws_tinter) {
+	if (!printMessageParsed && tinterDefined()) {
 		console.log("Received Message");
-		if (ws_tinter.wserrormsg != "") {
-			if (sendingTinterCommand == "true") {
-				// received an error from WSWrapper so we won't get any JSON result
-				// Since we are sending a dispense command, show as dispense error
-
-				$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter?.wserrormsg);
-				//Show a modal with error message to make sure the user is forced to read it.
-				$("#tinterSocketError").text(ws_tinter?.wserrormsg);
-				$('#progressok').removeClass('d-none');
-				waitForShowAndHide("#tinterInProgressModal");
-
-				startSessionTimeoutTimers();
-				console.log('hide done');
-				$("#tinterSocketErrorModal").modal('show');
-
-			} else {
-				console.log("Received unsolicited error " + ws_tinter?.wserrormsg);
-				// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-				// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-			}
+		if (wsErrorMsgDefined()) {
+			dispalyWsErrorMsg();
 		} else {
 			// is result (wsmsg) JSON?
-			let isTintJSON = false;
-			try {
-				var return_message = JSON.parse(ws_tinter?.wsmsg);
-				isTintJSON = true;
-			}
-			catch (error) {
-				console.log("Caught error is = " + error);
-				console.log("Message is junk, throw it out");
-				//console.log("Junk Message is " + ws_tinter.wsmsg);
-			}
+			let return_message = parseWsMsgAsJson();
+			let isTintJSON = (return_message !== undefined);
+			
 			if (isTintJSON) {
 				var tinterModel = sessionTinterInfo.model;
 				var errorKey = return_message.errorMessage;
