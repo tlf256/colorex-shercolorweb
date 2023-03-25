@@ -133,20 +133,13 @@ function FMXdispenseProgress(tintermessage) {
 	ws_tinter.send(json);
 }
 
-function ASDispenseProgress(tintermessage) {
+function ASDispenseProgress() {
 	console.log('before dispense progress send');
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
-	var cmd = "DispenseStatus";
-	var tinterModel = sessionTinterInfo.model;
-	if(tinterModel !=null){ 
-		
-   		var tintermessage = new TinterMessage(cmd,null,null,null,null);
-	
-	}
-	var msgId = tintermessage.msgId;
-	var tintermessage = new TinterMessage(cmd, null, null, null, null, msgId);
-	var json = JSON.stringify(tintermessage);
+	let cmd = "DispenseStatus";
+	let tintermessage = new TinterMessage(cmd,null,null,null,null);
+	let json = JSON.stringify(tintermessage);
 	sendingTinterCommand = "true";
 	ws_tinter.send(json);
 }
@@ -259,7 +252,6 @@ function asDispenseProgressResp(return_message) {
 		}
 		console.log(return_message);
 		setTimeout(function() {
-			console.log("CALLING AS DISPENSE PROGRESS...");
 			ASDispenseProgress();
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
 
@@ -380,36 +372,32 @@ function ASDispenseComplete(return_message) {
 	$('#spinner').addClass('d-none');
 	$("#abort-message").hide();
 
-	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) 
-		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+	if (dispenseRespComplete(return_message)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
-
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
-
 		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
 		$('#tinterInProgressMessage').text('');
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
 			buildProgressBars(return_message);
-		} else {
-			//if(platform.startsWith("Win")){
-				tinterErrorList.push(return_message.errorMessage);
-				$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
-			//}
 		}
-		if ($('#progressok').length > 0 ) {
-			$('#progressok').removeClass('d-none');
+		else if(return_message.statusMessages == null && return_message.errorMessage.indexOf('Dispense Job Complete') >= 0){
+			// status messages are null but the dispense completed normally
+			if ($('#progressok').length > 0 ) {
+				$('#progressok').removeClass('d-none');
+			}
+			else {
+				writeDispense(return_message); // will also send tinter event
+				waitForShowAndHide("#tinterInProgressModal");
+			}
 		}
 		else {
-			writeDispense(return_message); // will also send tinter event
-			waitForShowAndHide("#tinterInProgressModal");
+			tinterErrorList.push(return_message.errorMessage);
+			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
 	} else {
-		if (return_message.errorNumber == 4226) {
-			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry'];
-		}
 		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
 		waitForShowAndHide("#tinterInProgressModal");
 		console.log('hide done');
@@ -499,18 +487,16 @@ function RecdMessage() {
 	if (typeof(ws_printer) !== 'undefined' && ws_printer !=null) {
 		printMessageParsed = ParsePrintMessage();
 	}
-	if (!printMessageParsed && typeof ws_tinter !== 'undefined'
-		&& ws_tinter) {
+	if (!printMessageParsed && typeof ws_tinter !== 'undefined' && ws_tinter) {
 		console.log("Received Message");
-		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-
+		if (ws_tinter.wserrormsg != "") {
 			if (sendingTinterCommand == "true") {
 				// received an error from WSWrapper so we won't get any JSON result
 				// Since we are sending a dispense command, show as dispense error
 
-				$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter.wserrormsg);
+				$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter?.wserrormsg);
 				//Show a modal with error message to make sure the user is forced to read it.
-				$("#tinterSocketError").text(ws_tinter.wserrormsg);
+				$("#tinterSocketError").text(ws_tinter?.wserrormsg);
 				$('#progressok').removeClass('d-none');
 				waitForShowAndHide("#tinterInProgressModal");
 
@@ -519,8 +505,7 @@ function RecdMessage() {
 				$("#tinterSocketErrorModal").modal('show');
 
 			} else {
-				console.log("Received unsolicited error " + ws_tinter.wserrormsg);
-
+				console.log("Received unsolicited error " + ws_tinter?.wserrormsg);
 				// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
 				// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
 			}
@@ -528,23 +513,18 @@ function RecdMessage() {
 			// is result (wsmsg) JSON?
 			let isTintJSON = false;
 			try {
-				if (ws_tinter && ws_tinter.wsmsg != null) {
-					var return_message = JSON.parse(ws_tinter.wsmsg);
-					isTintJSON = true;
-				}
+				var return_message = JSON.parse(ws_tinter?.wsmsg);
+				isTintJSON = true;
 			}
 			catch (error) {
-
 				console.log("Caught error is = " + error);
-
-
 				console.log("Message is junk, throw it out");
 				//console.log("Junk Message is " + ws_tinter.wsmsg);
 			}
 			if (isTintJSON) {
 				var tinterModel = sessionTinterInfo.model;
 				var errorKey = return_message.errorMessage;
-				if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+				if (tinterModel?.startsWith("SANTINT")) {
 					return_message.errorMessage = i18n[errorKey];
 				}
 				console.log("in istintJSON return message = ");
@@ -554,30 +534,25 @@ function RecdMessage() {
 					case 'DispenseProgress':
 					case 'DispenseStatus':
 					case 'Abort':
-						console.log("DISPENSE/DISPENSE STATUS TINTER MODEL: " + tinterModel);
 						$("#dispenseStatus").text('');
-						if (tinterModel != null && tinterModel.startsWith("FM X")) {
+						if (tinterModel?.startsWith("FM X")) {
 							dispenseProgressResp(return_message);
 						}
-						else if (tinterModel != null && tinterModel.startsWith("ALFA")) { //alfa needs a progress check
+						else if (tinterModel?.startsWith("ALFA")) { //alfa needs a progress check
 							alfaDispenseProgressResp(return_message);
 						}
-						else if(tinterModel != null && tinterModel.startsWith("AS")) {
-							// implement dispense progress for 9500
-							console.log("TINTER MODEL STARTS WITH AS...");
+						else if(tinterModel?.startsWith("AS")) {
 							asDispenseProgressResp(return_message);
 						}
-						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
-
+						else if (dispenseRespComplete(return_message)) {
 							// save a dispense (will bump the counter)
-							if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+							if (tinterModel?.startsWith("SANTINT")) {
 								return_message.errorMessage = log_english[errorKey];
 							}
 							writeDispense(return_message); // will also send tinter event
 							waitForShowAndHide("#tinterInProgressModal");
 						}
 						else {
-
 							waitForShowAndHide("#tinterInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
 							showTinterErrorModal("Dispense Error", null, return_message);
@@ -586,22 +561,17 @@ function RecdMessage() {
 							// send tinter event (no blocking here)
 							var curDate = new Date();
 							var myGuid = $("#reqGuid").val();
-
 							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-
 							var tedArray = [teDetail];
-							if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+							if (tinterModel?.startsWith("SANTINT")) {
 								return_message.errorMessage = log_english[errorKey];
 							}
 							sendTinterEvent(myGuid, curDate, return_message, tedArray);
-
 						}
-
 						break;
 					default:
 						//Not an response we expected...
 						console.log("Message from different command is junk, throw it out");
-
 				} // end switch statement
 			} else {
 				console.log("Message is junk, throw it out");
@@ -616,6 +586,12 @@ function RecdMessage() {
 	}
 
 }
+
+function dispenseRespComplete(return_message){ // naming?
+	return (return_message.errorNumber == 0 && return_message.commandRC == 0) || 
+		(return_message.errorNumber == -10500 && return_message.commandRC == -10500)
+}
+
 //pre Dispense
 function preDispenseRoutine() {
 	shotList = [];

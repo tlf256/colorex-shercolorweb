@@ -1,8 +1,7 @@
 var timeoutWarning, timeoutExpire;
 // switch to userAgent, navigator.platform is deprecated
 // adding it here will make it globally available to the application
-var agent = navigator.userAgent;
-console.log("user-agent data: " + agent); // TODO delete this console msg
+const agent = navigator.userAgent;
 
 function startSessionTimeoutTimers(){
 	//Session Timeout Message after 25 minutes
