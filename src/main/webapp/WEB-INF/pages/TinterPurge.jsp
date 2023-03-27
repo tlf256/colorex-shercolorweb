@@ -238,7 +238,7 @@
 		else{
 			var fmx = "fmx";
 			var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-			if(!tinterModel.startsWith('FM X')) fmx = ""
+			if(!tinterModel.startsWith('FM X')) fmx = "";
 			purgeComplete(myGuid, curDate,return_message, tedArray, fmx);
 			$(".progress-wrapper").empty();
 		}

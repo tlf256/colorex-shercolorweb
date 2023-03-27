@@ -491,7 +491,7 @@ function wsErrorMsgDefined(){
 	return (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "");
 }
 
-function dispalyWsErrorMsg(){
+function displayWsErrorMsg(){
 	if (sendingTinterCommand == "true") {
 		// received an error from WSWrapper so we won't get any JSON result
 		// Since we are sending a dispense command, show as dispense error
@@ -534,7 +534,7 @@ function RecdMessage() {
 	if (!printMessageParsed && tinterDefined()) {
 		console.log("Received Message");
 		if (wsErrorMsgDefined()) {
-			dispalyWsErrorMsg();
+			displayWsErrorMsg();
 		} else {
 			// is result (wsmsg) JSON?
 			let return_message = parseWsMsgAsJson();
