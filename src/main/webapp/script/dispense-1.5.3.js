@@ -549,56 +549,15 @@ function RecdMessage() {
 				}
 				console.log("in istintJSON return message = ");
 				console.log(return_message);
-				switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'DispenseStatus':
-					case 'Abort':
-						$("#dispenseStatus").text('');
-						if (tinterModel?.startsWith("FM X")) {
-							dispenseProgressResp(return_message);
-						}
-						else if (tinterModel?.startsWith("ALFA")) { //alfa needs a progress check
-							alfaDispenseProgressResp(return_message);
-						}
-						else if(tinterModel?.startsWith("AS")) {
-							asDispenseProgressResp(return_message);
-						}
-						else if (dispenseRespComplete(return_message)) {
-							// save a dispense (will bump the counter)
-							if (tinterModel?.startsWith("SANTINT")) {
-								return_message.errorMessage = log_english[errorKey];
-							}
-							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
-						}
-						else {
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Dispense Error", null, return_message);
-							processingDispense = false; // allow user to start another dispense after tinter error
-							sendingDispCommand = "false";
-							// send tinter event (no blocking here)
-							var curDate = new Date();
-							var myGuid = $("#reqGuid").val();
-							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-							var tedArray = [teDetail];
-							if (tinterModel?.startsWith("SANTINT")) {
-								return_message.errorMessage = log_english[errorKey];
-							}
-							sendTinterEvent(myGuid, curDate, return_message, tedArray);
-						}
-						break;
-					default:
-						//Not an response we expected...
-						console.log("Message from different command is junk, throw it out");
-				} // end switch statement
+				
+				processDispenseCommand(return_message.command);
+
 			} else {
 				console.log("Message is junk, throw it out");
 			}
 		}
 
-		//Clearing  for dispense.jsp
+		//Clearing for dispense.jsp
 		if ($('.table-bordered input:not([type=hidden])').length > 0) {
 			//Clearing inputs
 			$('.table-bordered input:not([type=hidden])').val('');
@@ -607,9 +566,56 @@ function RecdMessage() {
 
 }
 
-function dispenseRespComplete(return_message){ // naming?
+function dispenseRespComplete(return_message){
 	return (return_message.errorNumber == 0 && return_message.commandRC == 0) || 
 		(return_message.errorNumber == -10500 && return_message.commandRC == -10500)
+}
+
+function processDispenseCommand(command){
+	switch (command) {
+		case 'Dispense':
+		case 'DispenseProgress':
+		case 'DispenseStatus':
+		case 'Abort':
+			$("#dispenseStatus").text('');
+			if (tinterModel?.startsWith("FM X")) {
+				dispenseProgressResp(return_message);
+			}
+			else if (tinterModel?.startsWith("ALFA")) { //alfa needs a progress check
+				alfaDispenseProgressResp(return_message);
+			}
+			else if(tinterModel?.startsWith("AS")) {
+				asDispenseProgressResp(return_message);
+			}
+			else if (dispenseRespComplete(return_message)) {
+				// save a dispense (will bump the counter)
+				if (tinterModel?.startsWith("SANTINT")) {
+					return_message.errorMessage = log_english[errorKey];
+				}
+				writeDispense(return_message); // will also send tinter event
+				waitForShowAndHide("#tinterInProgressModal");
+			}
+			else {
+				waitForShowAndHide("#tinterInProgressModal");
+				//Show a modal with error message to make sure the user is forced to read it.
+				showTinterErrorModal("Dispense Error", null, return_message);
+				processingDispense = false; // allow user to start another dispense after tinter error
+				sendingDispCommand = "false";
+				// send tinter event (no blocking here)
+				var curDate = new Date();
+				var myGuid = $("#reqGuid").val();
+				var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+				var tedArray = [teDetail];
+				if (tinterModel?.startsWith("SANTINT")) {
+					return_message.errorMessage = log_english[errorKey];
+				}
+				sendTinterEvent(myGuid, curDate, return_message, tedArray);
+			}
+			break;
+		default:
+			//Not an response we expected...
+			console.log("Message from different command is junk, throw it out");
+	}
 }
 
 //pre Dispense
