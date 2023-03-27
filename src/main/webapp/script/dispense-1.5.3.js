@@ -516,7 +516,6 @@ function dispalyWsErrorMsg(){
 function parseWsMsgAsJson(){
 	try {
 		return JSON.parse(ws_tinter?.wsmsg);
-		//isTintJSON = true;
 	}
 	catch (error) {
 		console.log("Caught error is = " + error);
@@ -526,7 +525,7 @@ function parseWsMsgAsJson(){
 }
 
 function RecdMessage() {
-	var printMessageParsed = false;
+	let printMessageParsed = false;
 	console.log("Received Message");
 	//parse the spectro
 	if (printerDefined()) {
