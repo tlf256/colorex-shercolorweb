@@ -35,6 +35,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
     LocaleContainer localeContainer;
 
 
+	@Override
 	public String execute() {
 		try {
 			logger.info("begin execute...");
@@ -53,6 +54,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 					localeCookie.setMaxAge(60 * 60 * 24 * 365 * 10);
 					// httponly helps to prevent XSS attacks
 					localeCookie.setHttpOnly(true);
+					localeCookie.setSecure(true);
 					response = (HttpServletResponse) ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
 					response.addCookie(localeCookie);
 				}
