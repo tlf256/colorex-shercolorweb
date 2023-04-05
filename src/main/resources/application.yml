@@ -31,6 +31,8 @@ spring:
       # instead of the Wildfly JNDI connection for testing. These can be overridden via command-line args or env variables.
       active: oracle,dev,local
 
+supportedLanguages: en,zh
+
 logging:
   pattern:
     console: "%d{'dd/MMM/yyyy HH:mm:ss', EST} %-4level %C{3}.%M:%L - %m%n"
