@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SherColorWebTransactionalTest
@@ -59,6 +60,30 @@ public class UpdateLocaleActionTest extends StrutsSpringJUnit4TestCase<UpdateLoc
 		//assert
 		assertTrue(StringUtils.isNotBlank(result));
 		assertEquals(Action.ERROR, result);
+	}
+
+	@Test
+	public void execute_LocaleSupportedAndConsentExists_CookieCreatedProperly() throws Exception {
+
+		//arrange
+		request.setCookies(new Cookie("consent","true"));
+
+		ActionProxy proxy = getActionProxy("/updateLocale.action");
+		assertNotNull(proxy);
+
+		Map<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE, Locale.US);
+		proxy.getInvocation().getInvocationContext().setSession(sessionMap);
+
+		//act
+		String result = proxy.execute();
+
+		//assert
+		assertTrue(StringUtils.isNotBlank(result));
+		assertEquals(Action.SUCCESS, result);
+		assertNotNull(response.getCookie("locale"));
+		assertThat(response.getCookie("locale").getValue()).isNotBlank();
+		assertSame(Locale.US.toLanguageTag(), response.getCookie("locale").getValue());
 	}
 
 	@Test
