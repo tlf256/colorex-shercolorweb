@@ -169,7 +169,7 @@
 			if(!platform.startsWith("Win") || tinterModel.startsWith("AS")){
 				cmd = "PurgeStatus";
 			}
-		   	//var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);
 		}
 		else{
 			var cmd = "DispenseStatus";

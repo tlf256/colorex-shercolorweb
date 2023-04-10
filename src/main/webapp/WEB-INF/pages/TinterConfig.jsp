@@ -368,7 +368,8 @@
 
 	function validatePassword(password) {
 		// ensure new password fits requirements
-		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~])[A-Za-z\d@$!%*?&^-~]{8,}$/;
+		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~#])[A-Za-z\d@$!%*?&^-~#]{8,}$/;
+		console.log("PASSWORD IS: " + password);
 		console.log("PASSWORD IS VALID? "+ passwordPattern.test(password));
 		return passwordPattern.test(password);
 	}
@@ -493,16 +494,17 @@
 
 	$(document).on('click', '#updateCredsBtn_win', function(){
 		// validate admin pasword and send update credentials
-		var adminPwd = $('#newPwd').val();
-		//if(validatePassword(adminPwd)){
+		var adminPwd = $('#newPwd').val().trim();
+		console.log("NEW PASSWORD = " + adminPwd);
+		if(validatePassword(adminPwd)){
 			$('#pwdError').empty();
 			startCredentialUpdate();
-		//}
-		//else{
+		}
+		else{
 			// password invalid
-			//var errorMsg = '<s:text name="tinterConfig.invalidPassword"/>';
-			//$('#pwdError').html('<p>' + errorMsg + '</p>');
-		//}
+			var errorMsg = '<s:text name="tinterConfig.invalidPassword"/>';
+			$('#pwdError').html('<p>' + errorMsg + '</p>');
+		}
 	});
 
 	/***
@@ -999,7 +1001,7 @@
 			case 'Init':
 			case 'InitStatus':
 				if (return_message.errorMessage.toUpperCase().trim() == initializationDone) {
-					// retrieve serial
+					// retrieve tinter serial number
 					var displayMessage = '<s:text name="tinterConfig.retrievingSerial"/>';
 					pleaseWaitModal_updateMsg(displayMessage);
 					getSerial();
@@ -1029,10 +1031,6 @@
 							$("#detectErrorList").append(errorText);
 						}
 					}
-				}
-				if (return_message.errorMessage.toUpperCase().trim() == initializationDone) {
-					if(return_message.Configuration.serial == undefined) return_message.Configuration.serial = ""
-					sendTinterEventConfig(reqGuid, curDate, return_message, null);
 				}
 				break;
 			case 'GetHostName':
