@@ -228,17 +228,17 @@ function asDispenseProgressResp(return_message) {
 	console.log("in AS dispense progress...");
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
-	console.log("ERROR MESSAGE DISPENSE JOB COMPLETE = " + return_message.errorMessage.indexOf("Dispense Job Complete"));
+	console.log("ERROR MESSAGE DISPENSE JOB COMPLETE = " + return_message.errorMessage.indexOf("Dispense Job Complete")); // TODO - delete console log
 	if (return_message.errorMessage.indexOf("Dispense Job Complete") == -1 && return_message.commandRC == 33) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if (return_message.statusMessages != null) {
-			console.log("STATUS MESSAGES ARE NOT NULL");
+			console.log("STATUS MESSAGES ARE NOT NULL"); // TODO - delete console log
 			//keep updating modal with status
 			buildProgressBars(return_message);
 		}
 		if (return_message.errorList != null && return_message.errorList[0] != null) {
-			console.log("ERROR LIST IS NOT NULL");
+			console.log("ERROR LIST IS NOT NULL"); // TODO - delete console log
 			return_message.errorList.forEach(function(item) {
 				$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				tinterErrorList.push(item.message);
@@ -246,7 +246,7 @@ function asDispenseProgressResp(return_message) {
 		}
 		if (return_message.errorMessage != null && (return_message.commandRC != 33 
 			&& return_message.commandRC != 0)) {
-			console.log("ERROR MESSAGE IS NOT NULL, DISPENSE WAS NOT COMPLETED");
+			console.log("ERROR MESSAGE IS NOT NULL, DISPENSE WAS NOT COMPLETED"); // TODO - delete console log
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
@@ -549,7 +549,7 @@ function RecdMessage() {
 				console.log("in istintJSON return message = ");
 				console.log(return_message);
 				
-				processDispenseCommand(return_message.command);
+				processDispenseCommand(return_message, tinterModel);
 
 			} else {
 				console.log("Message is junk, throw it out");
@@ -570,13 +570,14 @@ function dispenseRespComplete(return_message){
 		(return_message.errorNumber == -10500 && return_message.commandRC == -10500)
 }
 
-function processDispenseCommand(command){
-	switch (command) {
+function processDispenseCommand(return_message, tinterModel){
+	switch (return_message.command) {
 		case 'Dispense':
 		case 'DispenseProgress':
 		case 'DispenseStatus':
 		case 'Abort':
 			$("#dispenseStatus").text('');
+			console.log("PROCESS DISPENSE TINTER MODEL -> " + tinterModel); // TODO - delete console log
 			if (tinterModel?.startsWith("FM X")) {
 				dispenseProgressResp(return_message);
 			}

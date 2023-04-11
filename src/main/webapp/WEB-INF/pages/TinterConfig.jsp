@@ -135,7 +135,7 @@
 		var json = JSON.stringify(configMessage);
 		
 		if (ws_tinter && ws_tinter.isReady == "false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -149,7 +149,7 @@
 			var json = JSON.stringify(initmessage);
 	
 			if (ws_tinter && ws_tinter.isReady == "false") {
-				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+				console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 				ws_tinter = new WSWrapper("tinter");
 			}
 			ws_tinter.send(json);
@@ -270,7 +270,7 @@
 
 	function changeModel(model) {
 		if(model.startsWith('AS')){
-			var dspMsg = '<s:text name="tinterConfig.retrievingHostname"/>'
+			var dspMsg = '<s:text name="tinterConfig.retrievingHostname"/>';
 			pleaseWaitModal_show(dspMsg, null);
 			$('#tinterSerial').addClass('d-none');
 			$('#btn_tinterConfig').prop('disabled', true);
@@ -295,7 +295,7 @@
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -307,7 +307,7 @@
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -319,7 +319,7 @@
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -328,13 +328,13 @@
 	function checkCredentials(){
 		var command = "CheckCredentials";
 		var tinterIp = $('#tIpAddr').val();
-		console.log("CHECK CREDENTIALS TINTER IP: "+ tinterIp);
+		console.log("CHECK CREDENTIALS TINTER IP: "+ tinterIp); // TODO - delete console log
 		var configuration = new Configuration(null, null, null, tinterIp, null);
 		var tinterMsg = new TinterMessage(command, null, configuration, null, null);
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -355,12 +355,12 @@
 			msgtxt = srvcred;
 		}
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
-		console.log("UPDATE CREDENTIALS MSGTXT = " + msgtxt);
+		console.log("UPDATE CREDENTIALS MSGTXT = " + msgtxt); // TODO - delete console log
 		tinterMsg.messageText = msgtxt;
 		var json = JSON.stringify(tinterMsg);
 
 		if (ws_tinter && ws_tinter.isReady == "false") {
-			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+			console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
 			ws_tinter = new WSWrapper("tinter");
 		}
 		ws_tinter.send(json);
@@ -369,8 +369,8 @@
 	function validatePassword(password) {
 		// ensure new password fits requirements
 		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~#])[A-Za-z\d@$!%*?&^-~#]{8,}$/;
-		console.log("PASSWORD IS: " + password);
-		console.log("PASSWORD IS VALID? "+ passwordPattern.test(password));
+		console.log("PASSWORD IS: " + password); // TODO - delete console log
+		console.log("PASSWORD IS VALID? "+ passwordPattern.test(password)); // TODO - delete console log
 		return passwordPattern.test(password);
 	}
 	
@@ -379,10 +379,10 @@
 		if($('#modelSelect').val().indexOf('AS') >= 0){
 			// check credentials, possibly need updating
 			var ip = $('#tIpAddr').val().trim();
-			console.log("onSubmit tinter IP: " + ip);
+			console.log("onSubmit tinter IP: " + ip); // TODO - delete console log
 			
 			if(validateIpField(ip)) {
-				var dspMsg = '<s:text name="tinterConfig.validatingCredentials"/>'
+				var dspMsg = '<s:text name="tinterConfig.validatingCredentials"/>';
 				pleaseWaitModal_show(dspMsg, null);
 
 				setTimeout(() => {
@@ -495,7 +495,7 @@
 	$(document).on('click', '#updateCredsBtn_win', function(){
 		// validate admin pasword and send update credentials
 		var adminPwd = $('#newPwd').val().trim();
-		console.log("NEW PASSWORD = " + adminPwd);
+		console.log("NEW PASSWORD = " + adminPwd); // TODO - delete console log
 		if(validatePassword(adminPwd)){
 			$('#pwdError').empty();
 			startCredentialUpdate();
@@ -975,11 +975,11 @@
 		var curDate = new Date();
 		console.log("Received FM Message");
 		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-				console.log(ws_tinter.wsmsg);
-				console.log("isReady is " + ws_tinter.isReady + " BTW");
-				//Show a modal with error message to make sure the user is forced to read it.
-				$("#configError").text(ws_tinter.wserrormsg);
-				$("#configErrorModal").modal('show');			
+			console.log(ws_tinter.wsmsg);
+			console.log("isReady is " + ws_tinter.isReady + " BTW");
+			//Show a modal with error message to make sure the user is forced to read it.
+			$("#configError").text(ws_tinter.wserrormsg);
+			$("#configErrorModal").modal('show');
 		} else {
 			var return_message = JSON.parse(ws_tinter.wsmsg);
 			switch (return_message.command) {
@@ -1110,9 +1110,6 @@
 					console.log("get serial code returned: " + serial);
 					$('#tSerialNbr').val(serial);
 
-					//log tinter event after retrieving serial number
-					sendTinterEventConfig(reqGuid, curDate, return_message, null);
-
 					setHostName();
 				}
 				else {
@@ -1129,7 +1126,14 @@
 					tinter.clrntSysId = $('#selectClrntSysId').val();
 					tinter.model = $('#modelSelect').val();
 					tinter.serialNbr = $('#tSerialNbr').val();
-					tinter.tinterIp = $('#tIpAddr').val();
+					tinter.tinterIp = return_message.messageText.trim();
+					$('#tIpAddr').val(tinter.tinterIp);
+
+					console.log("TINTER CLRNTSYS SET IN STRUCT: " + tinter.clrntSysId); //TODO - delete console log
+					console.log("TINTER MODEL SET IN STRUCT: " + tinter.model); //TODO - delete console log
+					console.log("TINTER SERIAL SET IN STRUCT: " + tinter.serialNbr); //TODO - delete console log
+					console.log("TINTER IP SET IN STRUCT: " + tinter.tinterIp); //TODO - delete console log
+
 					config();					
 				}
 				else {
