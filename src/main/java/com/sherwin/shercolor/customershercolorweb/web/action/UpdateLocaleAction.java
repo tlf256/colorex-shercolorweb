@@ -90,8 +90,9 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 
 
 			localeCookie.ifPresent(cookie -> {
-
 				Locale userLocale = Locale.forLanguageTag(cookie.getValue());
+				cookie.setSecure(true);
+
 				if (userLocale != null && localeContainer.isLanguageSupported(userLocale)) {
 					localeContainer.setLocale(userLocale);
 					cookie.setValue(userLocale.toLanguageTag());
