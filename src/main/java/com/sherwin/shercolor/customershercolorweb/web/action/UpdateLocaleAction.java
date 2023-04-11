@@ -1,12 +1,16 @@
 package com.sherwin.shercolor.customershercolorweb.web.action;
 
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -41,7 +45,7 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 			logger.info("begin execute...");
 			Locale userLocale = (Locale) sessionMap.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE);
 			// userLocale will be null if user has not requested a language change during this session
-			if (userLocale != null) {
+			if (userLocale != null && localeContainer.isLanguageSupported(userLocale)) {
 				localeContainer.setLocale(userLocale);
 
 				// convert locale to language tag so it can be easily converted back later
@@ -59,12 +63,17 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
 					response.addCookie(localeCookie);
 				}
 
+			} else {
+				logger.warn("Locale update failed - {} , resetting session cookie to default.",
+						Objects.nonNull(userLocale) && StringUtils.isNotBlank(userLocale.toLanguageTag()) ? userLocale.toLanguageTag() + " unsupported" : "locale null");
+				sessionMap.put(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE, Locale.US);
 			}
 
 			return SUCCESS;
 
 		} catch (RuntimeException e) {
-			logger.error("Exception Caught: " + e.getMessage(), e);
+			logger.error("Exception Caught: {}", e.getMessage(), e);
+			sessionMap.put(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE, Locale.US);
 			return ERROR;
 		}
     }
@@ -72,22 +81,29 @@ public class UpdateLocaleAction extends ActionSupport implements SessionAware, S
     
     public String checkLocaleCookie() {
 		try {
-			String cookieLocale = null;
-			request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-			if(request != null && request.getCookies() != null) {
-				for (Cookie c : request.getCookies()) {
-					if (c.getName().equals("locale")) {
-						cookieLocale = c.getValue();
-					}
-				}
-			}
-			if (cookieLocale != null) {
-				Locale userLocale = Locale.forLanguageTag(cookieLocale);
-				if (userLocale != null) {
+			request = (HttpServletRequest) ActionContext.getContext().get(StrutsStatics.HTTP_REQUEST);
+			Optional<Cookie> localeCookie = Optional.ofNullable(request.getCookies())
+					.map(Arrays::stream)
+					.orElse(Stream.empty())
+					.filter(cookie -> StringUtils.equals(cookie.getName(),"locale"))
+					.findFirst();
+
+
+			localeCookie.ifPresent(cookie -> {
+
+				Locale userLocale = Locale.forLanguageTag(cookie.getValue());
+				if (userLocale != null && localeContainer.isLanguageSupported(userLocale)) {
 					localeContainer.setLocale(userLocale);
+					cookie.setValue(userLocale.toLanguageTag());
+					response.addCookie(cookie);
 					sessionMap.put(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE, userLocale);
+				} else {
+					// Reset cookie and session variables to default
+					cookie.setValue(Locale.US.toLanguageTag());
+					response.addCookie(cookie);
+					sessionMap.put(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE, Locale.US);
 				}
-			}
+			});
 
 			return SUCCESS;
 
