@@ -772,7 +772,7 @@
 
 			case 'Config':
 				if (return_message.errorNumber == 0
-						&& return_message.commandRC == 0) {
+						&& (return_message.commandRC == 0 || return_message.commandRC == 2)) {
 					init();
 					$("#detectInProgressModal").modal('show');
 					rotateIcon();
@@ -789,7 +789,7 @@
 	           
 
 				if (return_message.errorNumber == 0
-						&& return_message.commandRC == 0) {
+						&& (return_message.commandRC == 0 || return_message.commandRC == 2)) {
 					//save
 					$("#detectStatusModal").modal('show');
 					$("#detectStatus")
