@@ -596,10 +596,10 @@ function processDispenseCommand(return_message, tinterModel){
 				processingDispense = false; // allow user to start another dispense after tinter error
 				sendingDispCommand = "false";
 				// send tinter event (no blocking here)
-				var curDate = new Date();
-				var myGuid = $("#reqGuid").val();
-				var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-				var tedArray = [teDetail];
+				let curDate = new Date();
+				let myGuid = $("#reqGuid").val();
+				let teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+				let tedArray = [teDetail];
 				if (tinterModel?.startsWith("SANTINT")) {
 					return_message.errorMessage = log_english[errorKey];
 				}
