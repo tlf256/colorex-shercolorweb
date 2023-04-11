@@ -225,20 +225,16 @@ function dispenseProgressResp(return_message) {
 }
 
 function asDispenseProgressResp(return_message) {
-	console.log("in AS dispense progress...");
 	$("#abort-message").show();
 	$('#progressok').addClass('d-none');  //hide ok button
-	console.log("ERROR MESSAGE DISPENSE JOB COMPLETE = " + return_message.errorMessage.indexOf("Dispense Job Complete")); // TODO - delete console log
 	if (return_message.errorMessage.indexOf("Dispense Job Complete") == -1 && return_message.commandRC == 33) {
 		$("#tinterProgressList").empty();
 		tinterErrorList = [];
 		if (return_message.statusMessages != null) {
-			console.log("STATUS MESSAGES ARE NOT NULL"); // TODO - delete console log
 			//keep updating modal with status
 			buildProgressBars(return_message);
 		}
 		if (return_message.errorList != null && return_message.errorList[0] != null) {
-			console.log("ERROR LIST IS NOT NULL"); // TODO - delete console log
 			return_message.errorList.forEach(function(item) {
 				$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				tinterErrorList.push(item.message);
@@ -246,7 +242,6 @@ function asDispenseProgressResp(return_message) {
 		}
 		if (return_message.errorMessage != null && (return_message.commandRC != 33 
 			&& return_message.commandRC != 0)) {
-			console.log("ERROR MESSAGE IS NOT NULL, DISPENSE WAS NOT COMPLETED"); // TODO - delete console log
 			tinterErrorList.push(return_message.errorMessage);
 			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
 		}
@@ -577,7 +572,6 @@ function processDispenseCommand(return_message, tinterModel){
 		case 'DispenseStatus':
 		case 'Abort':
 			$("#dispenseStatus").text('');
-			console.log("PROCESS DISPENSE TINTER MODEL -> " + tinterModel); // TODO - delete console log
 			if (tinterModel?.startsWith("FM X")) {
 				dispenseProgressResp(return_message);
 			}

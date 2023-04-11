@@ -106,9 +106,6 @@
 					  pct = "100%";
 				  }
 
-				console.log("COLOR = " + color);
-				console.log("PCT = " + pct);
-
 				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				
 				var $clone = $("#progress-0").clone();
@@ -119,7 +116,6 @@
 				$bar.css("width", pct);
 				$clone.css("display", "block");
 				var color_rgb = getRGB(color);
-				console.log("COLOR RGB = " + color_rgb);
 
 				//change color of text based on background color
 				switch(color){
@@ -203,26 +199,23 @@
     	var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
 		if(ws_tinter!=null && ws_tinter.isReady=="false") {
-    		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+    		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
     		ws_tinter = new WSWrapper("tinter");
 		}
     	ws_tinter.send(json);
 	}
 
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
-		//$("#progress-message").text(return_message.errorMessage);
 		$("#abort-message").show();
 		if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("Done") == -1 || 
 				!platform.startsWith("Win") && return_message.errorMessage.indexOf("Purge Job Complete") == -1) 
 				&& (return_message.errorNumber == 1 || return_message.status == 1)) {
 			//keep updating modal with status
-			//$("#progress-message").text(return_message.errorMessage);
 			$("#tinterProgressList").empty();
 			dispenseErrorList = [];
 			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 				return_message.statusMessages.forEach(function(item){
 					buildProgressBars(return_message);
-						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 					dispenseErrorList.push(item.message);
 				});
 			} else {
@@ -236,9 +229,8 @@
 			
 		}
 		else{
-			var fmx = "fmx";
+			var fmx = (tinterModel.startsWith('FM X')) ? "fmx" : "";
 			var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-			if(!tinterModel.startsWith('FM X')) fmx = "";
 			purgeComplete(myGuid, curDate,return_message, tedArray, fmx);
 			$(".progress-wrapper").empty();
 		}
@@ -362,7 +354,7 @@
 			if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
 			if($("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").removeClass("alert-success");
 			//Show a modal with error message to make sure the user is forced to acknowledge it.
-			if(fmx = "fmx"){
+			if(fmx == "fmx"){
 				FMXShowTinterErrorModal(null,null,return_message);
 			}
 			else{				

@@ -328,7 +328,6 @@
 	function checkCredentials(){
 		var command = "CheckCredentials";
 		var tinterIp = $('#tIpAddr').val();
-		console.log("CHECK CREDENTIALS TINTER IP: "+ tinterIp); // TODO - delete console log
 		var configuration = new Configuration(null, null, null, tinterIp, null);
 		var tinterMsg = new TinterMessage(command, null, configuration, null, null);
 		var json = JSON.stringify(tinterMsg);
@@ -344,7 +343,6 @@
 		var command = "UpdateCredentials";
 		var srvcred;
 		var msgtxt;
-		console.log("OS NAME: " + $('#os').val().toUpperCase());
 		if($('#os').val().toUpperCase().startsWith("WIN")){
 			srvcred = $('#currentPwd').val().trim();
 			var admincred = $('#newPwd').val().trim();
@@ -355,7 +353,6 @@
 			msgtxt = srvcred;
 		}
 		var tinterMsg = new TinterMessage(command, null, null, null, null);
-		console.log("UPDATE CREDENTIALS MSGTXT = " + msgtxt); // TODO - delete console log
 		tinterMsg.messageText = msgtxt;
 		var json = JSON.stringify(tinterMsg);
 
@@ -369,8 +366,6 @@
 	function validatePassword(password) {
 		// ensure new password fits requirements
 		var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^-~#])[A-Za-z\d@$!%*?&^-~#]{8,}$/;
-		console.log("PASSWORD IS: " + password); // TODO - delete console log
-		console.log("PASSWORD IS VALID? "+ passwordPattern.test(password)); // TODO - delete console log
 		return passwordPattern.test(password);
 	}
 	
@@ -379,7 +374,6 @@
 		if($('#modelSelect').val().indexOf('AS') >= 0){
 			// check credentials, possibly need updating
 			var ip = $('#tIpAddr').val().trim();
-			console.log("onSubmit tinter IP: " + ip); // TODO - delete console log
 			
 			if(validateIpField(ip)) {
 				var dspMsg = '<s:text name="tinterConfig.validatingCredentials"/>';
@@ -495,7 +489,6 @@
 	$(document).on('click', '#updateCredsBtn_win', function(){
 		// validate admin pasword and send update credentials
 		var adminPwd = $('#newPwd').val().trim();
-		console.log("NEW PASSWORD = " + adminPwd); // TODO - delete console log
 		if(validatePassword(adminPwd)){
 			$('#pwdError').empty();
 			startCredentialUpdate();
@@ -1107,7 +1100,7 @@
 					// parse serial nbr then set hostname
 					// leave detect in progress modal showing
 					var serial = return_message.messageText.trim();
-					console.log("get serial code returned: " + serial);
+					//console.log("get serial code returned: " + serial);
 					$('#tSerialNbr').val(serial);
 
 					setHostName();
@@ -1128,12 +1121,6 @@
 					tinter.serialNbr = $('#tSerialNbr').val();
 					tinter.tinterIp = return_message.messageText.trim();
 					$('#tIpAddr').val(tinter.tinterIp);
-
-					console.log("TINTER CLRNTSYS SET IN STRUCT: " + tinter.clrntSysId); //TODO - delete console log
-					console.log("TINTER MODEL SET IN STRUCT: " + tinter.model); //TODO - delete console log
-					console.log("TINTER SERIAL SET IN STRUCT: " + tinter.serialNbr); //TODO - delete console log
-					console.log("TINTER IP SET IN STRUCT: " + tinter.tinterIp); //TODO - delete console log
-
 					config();					
 				}
 				else {
