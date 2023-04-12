@@ -7,6 +7,8 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-name: "INGRESSID"
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_clear_headers "Server";
   hosts:
   - host: shercolor.sherwin.com
     paths:
