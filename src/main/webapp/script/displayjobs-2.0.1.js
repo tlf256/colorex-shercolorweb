@@ -1,5 +1,6 @@
 let jobTable;
 let valid = true;
+let controlNbr;
 
 $(document).ready(function() {
 	const displayTintQueue = $("#listJobsAction_displayTintQueue").val();
@@ -154,7 +155,7 @@ $(document).ready(function() {
 					const inputStr = $('#cntrlnbr').val();
 		    		if(inputStr.includes("-")) {
 		    			const strArr = inputStr.split("-");
-		    			const controlNbr = strArr[0];
+		    			controlNbr = strArr[0];
 		            	const lineNbr = strArr[1];
 			            $('#controlnbr').val(controlNbr);
 			    		$('#linenbr').val(lineNbr);
@@ -167,7 +168,7 @@ $(document).ready(function() {
     
     $(document).on('blur', "#cntrlnbr", function(){
 		console.log("blur event");
-		const controlNbr = $(this).val();
+		controlNbr = $(this).val();
     	const parsedCntrlNbr = parseInt(controlNbr);
     	console.log("parsed control number is " + parsedCntrlNbr);
     	try {
@@ -204,7 +205,6 @@ $(document).ready(function() {
     }, '.dltrow');
     
     let deleteRow;
-    let controlNbr;
     
     $('#job_table tbody').on('click', '.dltrow', function(event){
     	deleteRow = $(this).closest('tr');
