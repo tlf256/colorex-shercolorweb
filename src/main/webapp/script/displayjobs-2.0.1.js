@@ -85,11 +85,6 @@ $(document).ready(function() {
             	},
             	customize: function(win)
                 {
-     
-                    let last = null;
-                    let current = null;
-                    let bod = [];
-     
                     let css = '@page { size: landscape; }',
                         head = win.document.head || win.document.getElementsByTagName('head')[0],
                         style = win.document.createElement('style');
