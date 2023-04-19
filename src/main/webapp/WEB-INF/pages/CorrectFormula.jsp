@@ -49,7 +49,6 @@
 			color: white;
 		}
 		</style>
-		
 	<script type="text/javascript">
 	// global vars for tinter
 	var sendingDispCommand = "false";
