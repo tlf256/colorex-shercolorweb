@@ -1,12 +1,13 @@
-var jobTable;
-var valid = true;
+let jobTable;
+let valid = true;
+let controlNbr;
 
 $(document).ready(function() {
-	var displayTintQueue = $("#listJobsAction_displayTintQueue").val();
+	const displayTintQueue = $("#listJobsAction_displayTintQueue").val();
 	if (displayTintQueue) {
 		
-		var userLocale = "${session['WW_TRANS_I18N_LOCALE']}";
-		var langUrl = null;
+		const userLocale = "${session['WW_TRANS_I18N_LOCALE']}";
+		let langUrl = null;
 		// translate datatable text and make it sortable by that locale's date format 
 		switch(userLocale){
 			case("es_ES"):
@@ -21,12 +22,10 @@ $(document).ready(function() {
 				$.fn.dataTable.moment('MMM D, YYYY h:mm:ss A', 'en');
 		}
 	}
-	
-	//var match = $.urlParam('match');
-	//$("#listJobsAction_formulaUserCorrectAction")
-	var exportColList = $("#listJobsAction_exportColList").val();
-	var columnList = exportColList.split(',').map(function(item) {
-		var result = parseInt(item, 10);
+
+	const exportColList = $("#listJobsAction_exportColList").val();
+	const columnList = exportColList.split(',').map(function(item) {
+		const result = parseInt(item, 10);
 		if (isNaN(result)) {
 			return 0;
 		} else {
@@ -37,7 +36,7 @@ $(document).ready(function() {
 	$('#fdate').datepicker({
 		defaultDate: null,
 		onClose: function(input, obj){
-			var dateInput = $(this).val();
+			const dateInput = $(this).val();
 			console.log("from date is " + dateInput);
 			validateDateFormat($(this), dateInput);
 		}
@@ -46,7 +45,7 @@ $(document).ready(function() {
 	$('#tdate').datepicker({
 		defaultDate: null,
 		onClose: function(input, obj){
-			var dateInput = $(this).val();
+			const dateInput = $(this).val();
 			console.log("to date is " + dateInput);
 			validateDateFormat($(this), dateInput);
 		}
@@ -87,12 +86,7 @@ $(document).ready(function() {
             	},
             	customize: function(win)
                 {
-     
-                    var last = null;
-                    var current = null;
-                    var bod = [];
-     
-                    var css = '@page { size: landscape; }',
+                    let css = '@page { size: landscape; }',
                         head = win.document.head || win.document.getElementsByTagName('head')[0],
                         style = win.document.createElement('style');
      
@@ -134,8 +128,8 @@ $(document).ready(function() {
         "pagingType": "full"
     });
     
-    var newSearchBtn = jobTable.buttons(['#newSearch']);
-	var matchStandard = $.urlParam('matchStandard');
+    let newSearchBtn = jobTable.buttons(['#newSearch']);
+	const matchStandard = $.urlParam('matchStandard');
 	
 	console.log('matchStandard is ' + matchStandard);
 
@@ -149,28 +143,6 @@ $(document).ready(function() {
     if (displayTintQueue) {
     	$(".dt-buttons").hide();
     }
-	
-	/*var cell = jobTable.cell(this);
-	var celldata = cell.data();
-	var enteredValue = jobTable.cells(".idNumber").data();
-	var index = 0;*/
-	
-	/*$(".idNumber").each(function(){
-		$(this).html($(this).text());
-	});*/
-	
-	/*$.fn.dataTable.render.encodedHtml = function(){
-		return function(data, type, row){
-			console.log(data);
-			console.log(type);
-			console.log(row);
-			if(type === 'display'){
-				var str = data.toString();
-				return $('td').html(str);
-			}
-			return data;
-		};
-	};*/
     
     // prevent enter key from being used on text imput, except for scanner
     $(document).on({
@@ -180,11 +152,11 @@ $(document).ready(function() {
 				event.preventDefault();
 				console.log("this is " + $(this).attr("id"));
 				if($(this).attr("id") == 'cntrlnbr') {
-					var inputStr = $('#cntrlnbr').val();
+					const inputStr = $('#cntrlnbr').val();
 		    		if(inputStr.includes("-")) {
-		    			var strArr = inputStr.split("-");
-		    			var controlNbr = strArr[0];
-		            	var lineNbr = strArr[1];
+		    			const strArr = inputStr.split("-");
+		    			controlNbr = strArr[0];
+		            	const lineNbr = strArr[1];
 			            $('#controlnbr').val(controlNbr);
 			    		$('#linenbr').val(lineNbr);
 			    		$('#jobSearchForm').submit();
@@ -196,8 +168,8 @@ $(document).ready(function() {
     
     $(document).on('blur', "#cntrlnbr", function(){
 		console.log("blur event");
-		var controlNbr = $(this).val();
-    	var parsedCntrlNbr = parseInt(controlNbr);
+		controlNbr = $(this).val();
+    	const parsedCntrlNbr = parseInt(controlNbr);
     	console.log("parsed control number is " + parsedCntrlNbr);
     	try {
     		if(controlNbr && Number.isNaN(parsedCntrlNbr)) {
@@ -216,9 +188,7 @@ $(document).ready(function() {
 	});
     
     $('#job_table tbody').on('click','tr',function(event){
-    	//window.alert("row clicked ");
-    	var lookupControlNbr = jobTable.row(this).data()[0];
-    	//window.alert("job number clicked is " + lookupControlNbr);
+        const lookupControlNbr = jobTable.row(this).data()[0];
     	document.getElementById('controlNbr').value = lookupControlNbr;
     	document.getElementById('mainForm').submit();
     });
@@ -234,19 +204,17 @@ $(document).ready(function() {
     	}
     }, '.dltrow');
     
-    var deleteRow;
-    var controlNbr;
+    let deleteRow;
     
     $('#job_table tbody').on('click', '.dltrow', function(event){
     	deleteRow = $(this).closest('tr');
     	controlNbr = jobTable.row(deleteRow).data()[0];
-    	//console.log("controlNbr " + controlNbr);
     	$('#deletemodal').modal().show();
     	event.stopPropagation();
     });
     
     $('#yesbtn').on('click', function(){
-    	var reqGuid = $('#guid').val();
+    	const reqGuid = $('#guid').val();
     	$.ajax({
 			url:"deleteJobAction.action",
 			data:{"controlNbr": controlNbr, "reqGuid": reqGuid},
@@ -273,7 +241,6 @@ $(document).ready(function() {
     
     $('#searchmodal').on('hidden.bs.modal', function(){
     	if($('.popover').is(':visible')) {
-    		//console.log("popover is visible");
     		removeWarningPopover();
     	}
     	// Forces a cancellation of the search if you exit out of the search filter modal
@@ -285,7 +252,7 @@ $(document).ready(function() {
 
 //function parses url to get value of specified param name
 $.urlParam = function(name){
-var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+const results = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.href);
     if (results==null){
        return null;
     } else{
@@ -346,7 +313,7 @@ function showSearchModal() {
 }
 
 function validateDateFormat(selector, value) {
-	var regex = new RegExp("[0-9]{2}\/[0-9]{2}\/[0-9]{4}");
+	const regex = new RegExp("[0-9]{2}\/[0-9]{2}\/[0-9]{4}");
 	try {
 		if(value && !regex.test(value)) {
 			console.log('date is wrong format');
@@ -361,18 +328,3 @@ function validateDateFormat(selector, value) {
 		valid = false;
 	}
 }
-
-//function displayJobTable(){
-//	$('#job_table').dataTable({
-//			"emptyTable" : "No jobs available",
-//	        "ordering": true,
-//	        "paginate": false,
-//	        "pagingType": "full"
-//	});
-// 
-//}
-
-//$(document).ready(function() {
-//	displayJobTable()
-//});
-

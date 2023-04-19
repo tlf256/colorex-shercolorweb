@@ -1174,7 +1174,7 @@
 				async : true,
 				success : function(data) {
 					if (data.sessionStatus === "expired") {
-						window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+						window.location.href = "./invalidLoginAction.action";
 					} else {
 						// reload page to update the language
 						location.reload();
@@ -1574,7 +1574,7 @@
 		  		async: true,
 		  		success: function (data) {
 		  			if(data.sessionStatus === "expired"){
-		  	        	window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		  	        	window.location.href = "./invalidLoginAction.action";
 		  	        } else{
 		  				if(data.measurementTable.length > 0){
 		  					$('#spectroManageStoredMeasurements').removeClass('d-none');

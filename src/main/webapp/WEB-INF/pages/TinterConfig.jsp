@@ -21,7 +21,7 @@
 
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 
@@ -183,7 +183,7 @@
 				console.log("getCanisterList resp");
 				console.log(objs);
 				if(objs.sessionStatus === "expired"){
-					window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+					window.location.href = "./invalidLoginAction.action";
 				}
 				else{
 					if (objs != null && objs.newtinter != null && objs.newtinter.model != null && 
@@ -339,7 +339,7 @@
 			datatype : "json",
 			success: function (data) {
 				if(data.sessionStatus === "expired"){
-	        		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+	        		window.location.href = "./invalidLoginAction.action";
 	        	}
 	        	else{
 	        		//Handle success after checking expiration
@@ -368,7 +368,7 @@
 				dataType : "json",
 				success : function(objs) {
 					if(objs.sessionStatus === "expired"){
-                   		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                   		window.location.href = "./invalidLoginAction.action";
                    	}
                    	else{
                    		modellist = objs.defaultModelList;

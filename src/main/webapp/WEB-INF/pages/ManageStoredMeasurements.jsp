@@ -19,7 +19,7 @@
 		<link rel="stylesheet" href="css/joblist_datatable.css" type="text/css">
 		<link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css"> 
 		<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
- 		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
+ 		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
@@ -164,7 +164,7 @@
 		  				async: true,
 		  				success: function (data) {
 		  					if(data.sessionStatus === "expired"){
-		  	               		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+		  	               		window.location.href = "./invalidLoginAction.action";
 		  	            	} else{		  	                	
 		  	      				hexList = data.hexList;		  	                	
 		  	                	$('#loadMeasurementsButton').prop('disabled',false);
@@ -421,7 +421,7 @@
 			  		async: true,
 			  		success: function (data) {
 			  			if(data.sessionStatus === "expired"){
-			          		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+			          		window.location.href = "./invalidLoginAction.action";
 			         	}
 			          	else{
 			          		

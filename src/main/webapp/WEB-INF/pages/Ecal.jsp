@@ -15,12 +15,11 @@
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="css/bootstrapxtra.css" type="text/css">
 <link rel="stylesheet" href="js/smoothness/jquery-ui.min.css" type="text/css">
-<link rel="StylesSheet" href="css/jquery.dataTables.min-1.10.16.css" type="text/css">
 <link rel="stylesheet" href="css/CustomerSherColorWeb.css" type="text/css">
 <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" type="text/css">
 <script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min-1.10.16.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
@@ -255,7 +254,7 @@
 				dataType: "json",
 				success: function (result) {
 					if(result.sessionStatus === "expired"){
-                		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+                		window.location.href = "./invalidLoginAction.action";
                 	}
                 	else{
                 		complete = true;

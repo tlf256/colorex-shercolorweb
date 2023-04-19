@@ -26,7 +26,7 @@ function getPdfFromServer(myGuid, jsonIN){
 				//console.log(calobj);
 				console.log(encodeURI(pdfResp));
 				if(pdfResp.sessionStatus === "expired"){
-            		window.location = "/CustomerSherColorWeb/invalidLoginAction.action";
+            		window.location.href = "./invalidLoginAction.action";
             	}
             	else{
             		pdfobj = pdfResp;
