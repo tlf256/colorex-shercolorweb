@@ -5,26 +5,13 @@ server:
       cookie:
         secure: true
         http-only: true
+
 spring:
   config:
     import: optional:file:${user.home}/dev.properties
-  datasource:
-    password: ${dbPassword}
-    username: ${dbUsername}
-  jpa:
-    hibernate:
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    properties:
-      hibernate:
-        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-    show-sql: true
-  main:
-    allow-bean-definition-overriding: true
-    allow-circular-references: true
   profiles:
       # login profile is unconditionally included in order to use the Wildfly security JNDI connection
-      include: login
+      include: login,common
       # activate db type (oracle or postgres) and environment (dev, qa or prod)
 
       # The login-jdbc profile is used to tell Spring to use a JDBC connection for SherColorLogin

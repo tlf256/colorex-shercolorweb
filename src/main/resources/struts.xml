@@ -1452,24 +1452,6 @@
 			<result name="ajax" type="json"/>
 			<result name="success">/WEB-INF/pages/LoggedOut.jsp</result>
 		</action>
-		<action name="listDealerCustomers" class="com.sherwin.shercolor.customershercolorweb.web.action.ListDealerCustomers" method="display">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/DisplayDealerCustomers.jsp</result>
-		</action>
-		<action name="listDealerCustomerOrders" class="com.sherwin.shercolor.customershercolorweb.web.action.ListDealerCustomerOrders" method="display">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrders.jsp</result>
-		</action>
-		<action name="listDealerCustomerOrderDetail" class="com.sherwin.shercolor.customershercolorweb.web.action.ListDealerCustomerOrderDetail" method="display">
-			<result name="loginRedirect" type="redirectAction">
-				<param name="actionName">invalidLoginAction</param>
-			</result>
-			<result name="success">/WEB-INF/pages/DisplayDealerCustomerOrderDetail.jsp</result>
-		</action>
 		<action name="printerConfigureAction" class="com.sherwin.shercolor.customershercolorweb.web.action.PrinterConfigureAction" method="display">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>
