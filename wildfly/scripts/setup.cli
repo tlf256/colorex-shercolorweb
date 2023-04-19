@@ -31,6 +31,7 @@ if (outcome != success) of /subsystem=undertow/configuration=filter/custom-filte
 end-if
 
 /subsystem=undertow/server=default-server/http-listener=default:write-attribute(name="max-post-size",value=0)
+/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name="proxy-address-forwarding",value=false)
 /subsystem=undertow/server=default-server/http-listener=default:write-attribute(name="max-parameters",value=20000)
 /subsystem=undertow:write-attribute(name=instance-id,value=${instance.id})
 
