@@ -23,151 +23,13 @@
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
 		<script type="text/javascript" src="script/WSWrapper.js"></script>
+		<script type="text/javascript" src="script/spectroCalibrate-1.0.0.js"></script>
 		<script>
-
-		  	var ws_coloreye = new WSWrapper('coloreye');
-		    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
-		    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
-		  	
-		  	function InitializeMeasureScreen() {
-	  		    console.log("InitializeMeasureScreen");
-	  	  		$(".error").hide();
-	  		}
-		  	
-	  	  	function GetCalStatusMinUntilCalExpiration() {
-	  		  	console.log("GetCalStatusMinUntilCalExpiration")
-				var spectromessage = new SpectroMessage('GetCalStatusMinUntilCalExpiration',clreyemodel,clreyeserial);
-			    var json = JSON.stringify(spectromessage);
-			    ws_coloreye.send(json);
-	  		}
-	  	  
-	  	  	function SWMeasure() {
-	  		  	console.log("SWMeasure")
-	  		  	checkWsIsReady();
-	  			var spectromessage = new SpectroMessage('SWMeasure',clreyemodel,clreyeserial);
-			    var json = JSON.stringify(spectromessage);
-			    ws_coloreye.send(json);
-		  		$(".calibrate").hide();
-		  		$('.init').hide();
-		  		$(".swmeasure").show();
-	  		}
-	  	  	
-	  	  	function GoodMeasure(measCurve) {
-	  		  	console.log("GoodMeasure")
-	  		  	console.log("meascurve = " + measCurve);
-	  		  	document.getElementById("measuredCurve").value = measCurve;
-	  		  $("#measure-color-form").submit();
-	  		}
- 	  	
-	  	  	function DisplayError() {
-				$('#measureColorModal').modal('hide');
-	  		  	console.log("DisplayError");
-		  		$(".error").show();
-		  		$(".cancel").removeClass('d-none');
-	  		}
-	  	  	
-	  	  	function RecdError() {
-	  	  		$("#errmsg").text(return_message.errorMessage);
-		  		DisplayError();
-	  	  	}
-	  	  	
-	  	  	function calibrate(){
-	  	  		$(".calibrate").removeClass('d-none');
-	  	  		$('.init').hide();
-	  	  		setTimeout(function(){
-					$("#calibrateForm").submit();
-	  	  		}, 1000);
-	  	  	}
-	  	  	
-	  	  	function cancelMeasure(){
-	  	  		$("#errmsg").text('<s:text name="measureColor.colormeasurementterminated"/>');
-		  		DisplayError();
-	  	  	}
-	  	  	
-	  	  	function checkWsIsReady(){
-	  	  		var coloreyeStatus;
-	  	  		var interval = setInterval(function(){
-	  	  			console.log("ws ready state: " + coloreyeStatus);
-  	  				if($('#measureColorModal').is(':visible')){
-	  	  				coloreyeStatus = ws_coloreye.isReady;
-		  	  			if(coloreyeStatus === "false"){
-		  	  				$('#measureColorModal').modal('hide');
-		  	  				$("#errmsg").text('<s:text name="measureColor.connectionTimeout"/>');
-		  	  				DisplayError();
-		  	  			}
-  	  				} else {
-  	  					clearInterval(interval);
-  	  				}
-	  	  		}, 1000);
-	  	  	}
-	  	  	
-	  	  
-	  	  	function RecdMessage() {
-	  		  	console.log("Received Message");
-	  		  	//parse the spectro
-	  		  	console.log("Message is " + ws_coloreye.wsmsg);
-	  		  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
-	  		  	
-	  		  	if (ws_coloreye.wserrormsg != "") {
-		  		  	$("#errmsg").text('<s:text name="global.webSocketErrorPlusErr"><s:param>' + ws_coloreye.wserrormsg + '</s:param></s:text>');
-	  		  		DisplayError();
-	  		  		return;
-	  		  	}
-	  		  	var return_message=JSON.parse(ws_coloreye.wsmsg);
-	  		  	var myGuid = "${reqGuid}";
-	  		  	sendSpectroEvent(myGuid, return_message);
-	  			switch (return_message.command) {
-	  				case 'GetCalStatusMinUntilCalExpiration':
-	  					if (return_message.responseMessage.match(/^OK/)) {
-	  						$('#measureColorModal').modal('show');
-	  						SWMeasure();
-	  					} else {
-	  						calibrate();
-	  					}
-	  					break;
-	  				case 'SWMeasure':
-	  					if (return_message.responseMessage=="") {
-	  						var thisCurve = return_message.curve;
-	  						console.log("curvepointCnt = " + thisCurve.curvePointCnt);
-	  						var curveString = "";
-	  						for (var i = 0; i < thisCurve.curvePointCnt; i++) {
-	  						    var counter = thisCurve.curve[i];
-	  						    console.log("curve is "+ counter);
-	  						    if (i==0) {
-	  						    	curveString = counter;
-	  						    } else {
-	  						    	curveString = curveString + "," + counter;
-	  						    }
-	  						    console.log("curveString is " + curveString);
-	  						}
-	  						console.log("thisCurve is " + thisCurve);
-	  						GoodMeasure(curveString);
-	  					} else {
-	  						$("#errmsg").text(return_message.errorMessage);
-	  		  		  		DisplayError();
-	  					}
-	  					break;
-  					default:
-  						//Not an response we expected...
-  						$("#errmsg").text('<s:text name="global.unexpectedCallToErr"><s:param>' + return_message.command + '</s:param></s:text>');
-  						
-  		  		  		DisplayError();
-	  			}
-	  		  	
-	  	  	}
-
-	  	  //function parses url to get value of specified param name
-	  	  /*$.urlParam = function(name){
-	  	  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	  	      if (results==null){
-	  	         return null;
-	  	      } else{
-	  	         return results[1] || 0;
-	  	      }
-	  	  }*/
-				
+		
 			$(document).ready(function() {	
+				ws_coloreye.receiver = RecdSpectroMessage;
 				console.log("in docready");
+				InitializeModelAndSerial("${sessionScope[reqGuid].spectro.model}", "${sessionScope[reqGuid].spectro.serialNbr}");
 				
 				var standard = $('#measureStandard').val();
 				var sample = $('#measureSample').val();
@@ -175,7 +37,7 @@
 				console.log('standard: ' + standard);
 				console.log('sample: ' + sample);
 				
-				setMeasureModalTitle(standard, sample);
+				setMeasureModalTitle(standard, sample, '<s:text name="compareColors.measureStandard"/>', '<s:text name="compareColors.measureSample"/>', '<s:text name="measureColor.measureColor"/>');
 				
 				//this loads on startup!  
 				InitializeMeasureScreen();
@@ -184,26 +46,7 @@
 				GetCalStatusMinUntilCalExpiration();
 				
 			});
-	  	  
-	  	  function setMeasureModalTitle(standard, sample){
-	  		var modalTitle = "";
 			
-			if(standard != null && standard == "true"){
-				console.log("color standard measure");
-				modalTitle = '<s:text name="compareColors.measureStandard"/>';
-		    } else if(sample != null && sample == "true"){
-		    	console.log("color sample measure");
-		    	modalTitle = '<s:text name="compareColors.measureSample"/>';
-		    } else {
-		    	console.log("color measure");
-		    	modalTitle = '<s:text name="measureColor.measureColor"/>';
-		    }
-			
-			console.log("setting modal title to " + modalTitle);
-			
-			$('#measureModalTitle').text(modalTitle);
-	  	  }
-
 		</script>
 	</head>
 	
