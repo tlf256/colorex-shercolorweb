@@ -125,7 +125,8 @@ public class ShercolorLabelPrintImpl implements ShercolorLabelPrint{
 			drawDrawdownCanLabel(partMessage, canType, clrntAmtList);
 			break;
 		default:
-			logger.warn("Undefined labelType detected: {}", labelType);
+			String logLabelType = Encode.forJava(labelType);
+			logger.warn("Undefined labelType detected: {}", logLabelType);
 			break;
 		}
 	}
