@@ -342,6 +342,29 @@
 			</result>
 			<result name="success" type="json"/>
 		</action>
+		
+		<action name="checkForCharacterizationAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="checkCharacterizedProduct">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+			<result name="error" type="json"/>
+		</action>
+
+		<action name="checkForIlluminationAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessProductAction" method="checkIlluminatedProduct">
+	        <interceptor-ref name="defaultStack"/>
+	        <interceptor-ref name="json" />
+			<result name="loginRedirect" type="redirectAction">
+				<param name="actionName">invalidLoginAction</param>
+				<param name="isAJAX">true</param>
+			</result>
+			<result name="success" type="json"/>
+			<result name="error" type="json"/>
+		</action>
+		
 		<action name="colorLookupSearchAction" class="com.sherwin.shercolor.customershercolorweb.web.action.ProcessColorAction" method="colorLookup">
 			<result name="loginRedirect" type="redirectAction">
 				<param name="actionName">invalidLoginAction</param>

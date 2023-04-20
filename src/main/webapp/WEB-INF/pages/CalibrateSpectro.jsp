@@ -23,167 +23,16 @@
 		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
 		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
 		<script type="text/javascript" src="script/WSWrapper.js"></script>
+		<script type="text/javascript" src="script/spectroCalibrate-1.0.0.js"></script>
 		<script>
 		
-		var calibrate_step = "start";		
-		var ws_coloreye = new WSWrapper('coloreye');
-	    var clreyemodel = "${sessionScope[reqGuid].spectro.model}";
-	    var clreyeserial = "${sessionScope[reqGuid].spectro.serialNbr}";
 
-		function InitializeCalibrationScreen() {
-		    console.log("InitializeCalibrationScreen");
-			$(".whitecal").hide();
-			$(".blackcal").hide();
-			$(".greenmeas").hide();
-			$('#closeModal').hide();
-			$('#spectroCalModal').modal('show');
-		}
-
-		function GetCalSteps() {
-		  	console.log("GetCalSteps")
-		  	calibrate_step = "GetCalSteps";
-			var spectromessage = new SpectroMessage('GetCalSteps',clreyemodel,clreyeserial);
-			var json = JSON.stringify(spectromessage);
-			ws_coloreye.send(json);
-		}
-		  
-		function CalibrateWhite() {
-			$('#calcrcl')
-				.removeClass('d-none')
-				.css('background-color', 'white');
-			console.log("CalibrateWhite")
-		  	calibrate_step = "CalibrateWhite";
-			var spectromessage = new SpectroMessage('CalibrateWhite',clreyemodel,clreyeserial);
-		    var json = JSON.stringify(spectromessage);
-		    ws_coloreye.send(json);
-			$(".pleasewait").hide();
-			$(".blackcal").hide();
-			$(".greenmeas").hide();
-			$(".whitecal").show();
-			$('#closeModal').show();
-		}
-
-		function CalibrateBlack() {
-			$('#calcrcl')
-				.removeClass('d-none')
-				.css('background-color', 'black');
-		  	console.log("CalibrateBlack")
-		  	calibrate_step = "CalibrateBlack";
-			var spectromessage = new SpectroMessage('CalibrateBlack',clreyemodel,clreyeserial);
-		    var json = JSON.stringify(spectromessage);
-		    ws_coloreye.send(json);
-		    $(".pleasewait").hide();
-			$(".whitecal").hide();
-			$(".greenmeas").hide();
-			$(".blackcal").show();
-			$('#closeModal').show();
-		}
-
-		function MeasureGreen() {
-			$('#calcrcl')
-				.removeClass('d-none')
-				.css('background-color', 'green');
-		  	console.log("MeasureGreen")
-		  	calibrate_step = "MeasureGreen";
-			var spectromessage = new SpectroMessage('MeasureGreen',clreyemodel,clreyeserial);
-		    var json = JSON.stringify(spectromessage);
-		    ws_coloreye.send(json);
-		    $(".pleasewait").hide();
-			$(".whitecal").hide();
-			$(".blackcal").hide();
-			$(".greenmeas").show();
-			$('#closeModal').show();
-		}
-
-		function DisplayError() {
-			$('#spectroCalModal').modal('hide');
-		  	console.log("DisplayError")
-		  	calibrate_step = "DisplayError";
-		  	
-			$(".calsuccess").addClass('d-none');
-			$(".calincomplete").addClass('d-none');
-			$(".error").removeClass('d-none');
-			$(".done").removeClass('d-none');
-		}
-			  	  	  	
-		function CalibrateSuccess() {
-			$('#spectroCalModal').modal('hide');
-			console.log("CalibrateSuccess")
-		  	calibrate_step = "CalibrateSuccess";
-		  	
-			$(".calincomplete").addClass('d-none');
-			$(".error").addClass('d-none');
-			$(".calsuccess").removeClass('d-none');
-			$(".done").removeClass('d-none');
-		}
-		
-		function CalibrateIncomplete() {
-			console.log("CalibrateIncomplete")
-		  	calibrate_step = "CalibrateIncomplete";
-		  	
-			$(".calsuccess").addClass('d-none');
-			$(".error").addClass('d-none');
-			$(".calincomplete").removeClass('d-none');
-			$(".done").removeClass('d-none');
-		}
-		  	
-		function RecdMessage() {
-			console.log("Received Message");
-		  	//parse the spectro
-		  	console.log("Message is " + ws_coloreye.wsmsg);
-		  	console.log("isReady is " + ws_coloreye.isReady + "BTW");
-		  	if (ws_coloreye.wserrormsg != "") {
-			  	$("#errmsg").text('<s:text name="global.webSocketErrorPlusErr"><s:param>' + ws_coloreye.wserrormsg + '</s:param></s:text>');
-		  		DisplayError();
-		  		return;
-		  	}
-		  		
-			var return_message=JSON.parse(ws_coloreye.wsmsg);
-			var myGuid = "${reqGuid}";
-  		  	sendSpectroEvent(myGuid, return_message);
-			switch (return_message.command) {
-				case 'GetCalSteps':
-					//TO DO: Evaluate the responseMssage and process in appropriate order.
-					//       In our case for now, we know it's white then black.  Do that
-					//       temporarily until everything is working procedurally.
-					CalibrateWhite();
-					break;
-				case 'CalibrateWhite':
-					if (return_message.responseMessage=="true") {
-						CalibrateBlack();
-					} else {
-						$("#errmsg").text(return_message.errorMessage);
-		  		  		DisplayError();
-					}
-					break;
-				case 'CalibrateBlack':
-					if (return_message.responseMessage=="true") {
-						MeasureGreen();
-					} else {
-						$("#errmsg").text(return_message.errorMessage);
-		  		  		DisplayError();
-					}
-					break;
-				case 'MeasureGreen':
-					if (return_message.responseMessage=="true") {
-						CalibrateSuccess();						
-					} else {
-						$("#errmsg").text(return_message.errorMessage);
-		  		  		DisplayError();
-					}
-					break;
-				default:
-					//Not an response we expected...
-					$("#errmsg").text('<s:text name="global.unexpectedCallToErr"><s:param>' + return_message.command + '</s:param></s:text>');
-			  		DisplayError();
-			}
-		  	
-		}
 			
 		$(document).ready(function() {	
 			console.log("in docready");
 			//this loads on startup! 
-			
+			ws_coloreye.receiver = RecdSpectroMessage;
+			InitializeModelAndSerial("${sessionScope[reqGuid].spectro.model}", "${sessionScope[reqGuid].spectro.serialNbr}");
 			var cntr = 1;
 
 			InitializeCalibrationScreen();
@@ -192,8 +41,6 @@
 			
 			//send the calibrate white message.
 			GetCalSteps();
-			
-			//CalibrateSuccess(); //test calibrateSuccess
 			
 			//TODO set a timer
 			
