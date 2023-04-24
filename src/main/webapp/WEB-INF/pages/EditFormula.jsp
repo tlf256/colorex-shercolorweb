@@ -19,8 +19,8 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.5.0.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script>
 		function moveDown(selector){
