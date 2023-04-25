@@ -122,6 +122,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
 		String success = executeAction("/lookupProductOptions");
+		System.out.println("Success String: " + success);
 		assertTrue(StringUtils.contains(success, "WARNING - Product base type INTERIOR EXTRA WHITE is not the primary base type."));
 
 	}
@@ -139,6 +140,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
 		String success = executeAction("/lookupProductOptions");
+		System.out.println("Success String: " + success);
 		assertTrue(StringUtils.contains(success, "The entered product 640362463 is not able to use the selected colorant system CCE. (code: 409)."));
 			
 	}
@@ -156,6 +158,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
 		String success = executeAction("/lookupProductOptions");
+		System.out.println("Success String: " + success);
 		assertTrue(StringUtils.contains(success, "The entered product sales, UPC or rex number was not found in the Master Product table. (code : 405) zz99zz99."));
 
 	}
@@ -173,6 +176,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
 		String success = executeAction("/lookupProductOptions");
+		System.out.println("Success String: " + success);
 		assertTrue(StringUtils.contains(success, "WARNING. The tint info for the entered product is not defined in Sher-Color."));
 	}
 	
@@ -189,6 +193,7 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
 		String success = executeAction("/lookupProductOptions");
+		System.out.println("Success String: " + success);
 		assertTrue(StringUtils.contains(success, "Formula Unavailable. This color\\/base assignment (SHERWIN-WILLIAMS-0001\\/CHALKY EW) is not optimized. Please use this color with UltraDeep base."));
 	}
 
