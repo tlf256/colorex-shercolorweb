@@ -18,8 +18,10 @@ import com.sherwin.shercolor.common.domain.CdsColorMast;
 import com.sherwin.shercolor.common.domain.CdsFbColor;
 import com.sherwin.shercolor.common.domain.CdsFbProd;
 import com.sherwin.shercolor.common.domain.CdsProd;
+import com.sherwin.shercolor.common.domain.CdsProdCharzd;
 import com.sherwin.shercolor.common.domain.CustWebPackageColor;
 import com.sherwin.shercolor.common.domain.CustWebParms;
+import com.sherwin.shercolor.common.domain.CustWebTran;
 import com.sherwin.shercolor.common.domain.PosProd;
 import com.sherwin.shercolor.common.exception.SherColorException;
 import com.sherwin.shercolor.common.service.ColorBaseService;
@@ -28,6 +30,7 @@ import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.ProductColorService;
 import com.sherwin.shercolor.common.service.ProductService;
+import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.autoComplete;
 import com.sherwin.shercolor.util.domain.SwMessage;
@@ -42,6 +45,7 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	static Logger logger = LogManager.getLogger(ProcessProductAction.class);
 	private String partialProductNameOrId;
 	private List<autoComplete> options;
+	private transient List<CdsProdCharzd> characterizedList;
 	private String message;
 	private String colorComp;
 	private String colorID;
@@ -51,6 +55,10 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private String OVERRIDEWARNMSG;
 	private String forceProd;
 	private String shorthandProdNbr;
+
+	private boolean chard;
+	private boolean wht;
+	private String illum;
 	
 	@Autowired
 	private ProductService productService;
@@ -64,6 +72,9 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	private CustomerService customerService;
 	@Autowired
 	private ColorMastService colorMastService;
+	@Autowired
+	private transient TranHistoryService tranHistoryService;
+	
 
 	
 	public String checkForceProd() {
@@ -187,6 +198,32 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 		}
 	}
 	
+	//Check if a color is characterized
+		public String checkCharacterizedProduct() {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			CdsProdCharzd characterizedObj = productService.readCdsProdCharzd(reqObj.getProdNbr(), reqObj.getClrntSys());
+			if(characterizedObj!=null) {
+				setChard(true);
+				if(characterizedObj.getIsWhite()) {
+					setWht(true);	
+					}
+				return SUCCESS;
+			}
+			return ERROR;
+		}
+
+		//Check if a product has a primary illumination
+		public String checkIlluminatedProduct() {
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			CustWebTran illuminatedObj = tranHistoryService.readTranHistory(reqObj.getCustomerID(), reqObj.getControlNbr(), reqObj.getLineNbr());
+				if(illuminatedObj!=null) {
+					if(illuminatedObj.getIllumPrimary() != null) {
+					setIllum(illuminatedObj.getIllumPrimary());
+					}
+				  return SUCCESS;
+				}
+			return ERROR;
+		}
 	
 	// check if a color / product combo is a package color, and whether it is tintable
 	public void checkPackageColor(String colorComp, String colorId) {
@@ -566,5 +603,39 @@ public class ProcessProductAction extends ActionSupport implements SessionAware,
 	public void setShorthandProdNbr(String shorthandProdNbr) {
 		this.shorthandProdNbr = shorthandProdNbr;
 	}	
+
+	public List<CdsProdCharzd> getCharacterizedList() {
+		return characterizedList;
+	}
+
+
+	public void setCharacterizedList(List<CdsProdCharzd> characterizedList) {
+		this.characterizedList = characterizedList;
+	}	
+
+	public boolean isChard() {
+		return chard;
+	}
+
+	public void setChard(boolean chard) {
+		this.chard = chard;
+	}
+
+	public boolean isWht() {
+		return wht;
+	}
+
+
+	public void setWht(boolean wht) {
+		this.wht = wht;
+	}
+
+	public String getIllum() {
+		return illum;
+	}
+
+	public void setIllum(String illum) {
+		this.illum = illum;
+	}
 
 }

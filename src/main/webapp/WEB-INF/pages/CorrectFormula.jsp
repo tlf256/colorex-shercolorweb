@@ -27,6 +27,8 @@
 		<script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/dispense-1.5.3.js"></script>
+		<script type="text/javascript" src="script/spectro-1.5.2.js"></script>
+		<script type="text/javascript" src="script/spectroCalibrate-1.0.0.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style type="text/css">
 		.popover-danger {
@@ -116,6 +118,23 @@
 	}
 	
 	function addStepClick(){
+		
+		 /*These checks are for color eye corrections
+		 This has been tested and finished but is to be commented out for the time being 
+		 Uncomment this block out once a color formulation service backend has been finished for coloreye corrections 
+		 See JIRA ticket SCD-111*/
+		/*//let goodmeasure know how many times to loop
+		setCount(1, '<s:text name="correctFormula.newColor"/>', '<s:text name="correctFormula.oldColor"/>');
+		//customerId, controlNbr, lineNbr 
+		ws_coloreye.receiver = RecdSpectroMessage;
+		//if uncharacterized lock color eye addition
+		//new stuff
+		isCharacterized();
+		//if fill limit reached
+		isFull();
+		ws_coloreye.receiver = null;*/
+		
+		$("#formulaAdditions > tbody").empty();
 		$("#addIngredients").show();
 		$("#currentCont").text($("#mainForm_nextUnitNbr").val());
 		$('#pct').text('');
@@ -772,6 +791,7 @@
 		return false;
 		
 	}
+	
 </script>
 <script type="text/javascript"> // dispense checks
 	function productFillLevelCheck(eventTriggerId){
@@ -909,6 +929,150 @@
 			$("#tinterErrorListModal").modal('show');
 		}
 	}
+	
+	function isCharacterized() {
+		// ajax call to check if product is characterized
+        var str = { "reqGuid" : $('#reqGuid').val()};
+		//, "prodNum" : "${sessionScope[thisGuid].prodNbr}", "clrntSysId" : "${sessionScope[thisGuid].displayFormula.clrntSysId}"
+        var jsonIN = JSON.stringify(str);
+        $.ajax({	
+            url : "checkForCharacterizationAction.action",
+            type: "POST",
+            contentType : "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            data : jsonIN,
+            success : function(data){
+            	//check the boolean from here
+            	if(data.chard){
+            		if(data.wht & isWhite()){
+            			//characterized but white, lock it
+            			console.log("Product is white, lock engaged");
+            			$("#eyeAdd").prop('disabled', true);
+            			$('#eyeAdd').css('pointer-events', 'none');
+            			$('#disableWrapper').prop("title", '<s:text name="correctFormula.whiteColorant" />');
+						$('#disableWrapper').css('cursor', 'not-allowed');
+            		}	
+            		else{
+            			//characterized and not white, don't lock it
+            			console.log("Product is characterized & not white, no lock needed");
+            		}
+            	}
+            	else{
+            		//uncharacterized, lock it
+                	console.log("Product is uncharacterized, lock engaged");
+            		$("#eyeAdd").prop('disabled', true);
+            		$('#eyeAdd').css('pointer-events', 'none');
+            		$('#disableWrapper').prop("title", '<s:text name="correctFormula.uncharacterizedProduct" />');
+					$('#disableWrapper').css('cursor', 'not-allowed');
+            	}
+            	},
+            error: function() {
+            	//unexpected err
+            	console.log("checkCharacterizedProduct encountered an unexpected error");
+            }
+        });
+    }
+	function isFull() {
+		if(parseFloat($("#clrntSpaceAvail").text())<0){
+			//lock the coloreye
+			console.log("Fill limit reached, lock coloreye correcton");
+			$("#eyeAdd").prop('disabled', true);
+            $('#eyeAdd').css('pointer-events', 'none');
+            $('#disableWrapper').prop("title", '<s:text name="correctFormula.filledLimit" />');
+			$('#disableWrapper').css('cursor', 'not-allowed');
+		}
+		//no lock needed
+		console.log("Still room to fill, no lock needed");
+	}
+	
+	function hasIllum() {
+		ws_coloreye.receiver = RecdSpectroMessage;
+		// ajax call to check if order has an illumination value set for it customerId, controlNbr, lineNbr 
+        var str = { "reqGuid" : $('#reqGuid').val()};
+		//, "customerId" : "${sessionScope[thisGuid].customerID}", "controlNbr" : "${sessionScope[thisGuid].controlNbr}", "lineNbr" : "${sessionScope[thisGuid].lineNbr}"
+        var jsonIN = JSON.stringify(str);        
+        
+        $.ajax({	
+            url : "checkForIlluminationAction.action",
+            type: "POST",
+            contentType : "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            data : jsonIN,
+            success : function(data){
+            	//check the boolean from here
+            	if(data.illum!=null){
+            		//illumation record exists, output to console and proceed as normal
+            		console.log("Illumination record found, illum modal not needed");
+            		console.log(data.illum);
+            		colorEyeCorrectClick();
+            	}
+            	else if(data.illum==null){
+            		//prompt user to input illumprimary and pop modal
+            		console.log("Illumination record not found, modal popped");
+            		$("#illuminationModal").modal('show');
+            	}
+            	else{
+            		//the record couldn't be found, if this happens something very bad has happened
+            		console.log("Hopefully this never pops up, if you've found this something is profoundly broken in CorrectFormula.hasIllum");
+            	}
+            	},
+            error: function() {
+            	//unexpected err
+            	console.log("checkIlluminatedProduct encountered an unexpected error");
+            }
+        });	
+    }
+	
+	function colorEyeCorrectClick(){
+		
+		//Get the calibration status to initialize connection.
+		ws_coloreye.receiver = RecdSpectroMessage;
+		GetCalStatusMinUntilCalExpiration();
+		//ws_coloreye.receiver = null;
+		
+		
+		
+		
+		//The lighting chosen in the modal will be output here to the console in the case of custom manual
+		//hasIllum will handle this in every other case and the value can be pulled from there
+		console.log($('#selectedLight').find("input:radio:checked").attr('value'));
+		var standard = $('#measureStandard').val();
+		var sample = $('#measureSample').val();
+		console.log('standard: ' + standard);
+		console.log('sample: ' + sample);
+		setMeasureModalTitle(standard, sample, '<s:text name="compareColors.measureStandard"/>', '<s:text name="compareColors.measureSample"/>', '<s:text name="measureColor.measureColor"/>');
+		InitializeMeasureScreen();
+		
+
+	  	}
+	
+	function isWhite(){
+    	//Starting Formula Table
+		//loop thru each tr, check its td, substring that
+		var table = document.getElementById("origFormula");
+			for (var i = 1, row; row = table.rows[i]; i++) {
+				   var clr = row.cells[0].innerHTML.substring(0,3);
+				   if(clr.substring(2)==("-") & clr.substring(0,2)==("W1"||"TW")){
+					   return true;
+				   }
+				   else if(clr=="WHT"){
+					   return true;
+				   }
+			}
+		//Correction Attempts Table
+		table = document.getElementById("correctionAttempts");
+			for (var i = 1, row; row = table.rows[i]; i++) {
+				   var clr = row.cells[4].innerHTML;
+				   if(clr.includes("W1")||clr.includes("TW")||clr.includes("WHT")){
+					   return true;
+				   }
+			}
+		return false;
+	}
+	
+	
 	</script>
 	<script type="text/javascript"> //dispense
 
@@ -937,6 +1101,13 @@
 				  };
         var jsonIN = JSON.stringify(str);
 		saveCorrectionStep(jsonIN, "Hand", "");
+    }
+    
+    function eyeaddDisabler(){
+    	$("#eyeAdd").prop('disabled', true);
+		$('#eyeAdd').css('pointer-events', 'none');
+		$('#disableWrapper').prop("title", '<s:text name="correctFormula.noColoreyeDetected" />');
+		$('#disableWrapper').css('cursor', 'not-allowed');
     }
     
     function saveCorrectionStep(jsonIN, dispenseType, return_message) {
@@ -1399,6 +1570,17 @@
 							<tr>
 							<td style="width: 20%;">
 								<table id="addColorantActions" class="table">
+								<!-- This button is for color eye corrections -->
+								<!-- This has been tested and finished but is to be commented out for the time being -->
+								<!-- Uncomment this block out once a color formulation service backend has been finished for coloreye corrections -->
+								<!-- See JIRA ticket SCD-111 -->
+								<!--<tr><td>
+								<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
+									<button type="button" class="btn btn-secondary btn-block" id="eyeAdd" onclick="hasIllum()">
+											<s:text name="correctFormula.colorEyeAddition"></s:text>
+										</button>
+									</div>
+								</td></tr>-->
 								<tr><td>
 									<button type="button" class="btn btn-secondary btn-block dropdown-toggle" id="manualAdd" data-toggle="dropdown">
 										<s:text name="correctFormula.manualAddition"></s:text>
@@ -1705,7 +1887,198 @@
 		</div>
 		<br>
 		<br>
+		
+		<!-- Color Correct Modal Window -->
+		<s:set var="thisGuid" value="reqGuid" />
+		<s:form id="calibrateForm" action="spectroCalibrateRedirectAction">
+			<s:hidden name="measureStandard" id="measureStandardCal" value="%{measureStandard}"/>
+			<s:hidden name="measureSample" id="measureSampleCal" value="%{measureSample}"/>
+			<s:hidden name="closestColors" id="closestColorsCal" value="%{closestColors}"/>
+			<s:hidden name="compareColors" id="compareColorsCal" value="%{compareColors}"/>
+		</s:form>
+
+		<!-- Measure New & Old Colors Modal Window -->
+		<div class="modal fade modal-xl" tabindex="-1" role="dialog" id="measureColorModal" data-backdrop="static">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light">
+		      	<s:if test="compare">
+		      		<h2 class="modal-title ml-3"><s:text name="deez"></s:text></h2>
+		      	</s:if>
+		      	<s:else>
+		      		<h2 class="modal-title ml-3" id="measureModalTitle"></h2>
+		      	</s:else>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close')}" onclick="cancelMeasure()">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-1"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="swmeasure"><s:text name="measureColor.positionColorEye"/></h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="swmeasure"><s:text name="measureColor.pressFirmly"/></h3>
+ 	            		</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="swmeasure"></h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="swmeasure"><s:text name="measureColor.statusLightsShouldChangeRedToGreen"/></h5>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="swmeasure"></h5>
+						</div>
+					</div>
+				</div>
+		      </div>
+		      <div class="modal-footer">
+			       <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelMeasure()"><s:text name="global.close"/></button>
+			  </div>
+		    </div>
+		  </div>
+		</div>
+
+	    <!-- Calibration Modal Window-->
+	    <div class="modal fade modal-xl" tabindex="-1" role="dialog" id="spectroCalModal" data-backdrop="static">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-header bg-light clearfix">
+		        <h2 class="modal-title ml-3"><s:text name="calibrateSpectro.calibrateColorEye" /></h2>
+		        <span class="dot d-none" id="calcrcl"></span>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CalibrateIncomplete();">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-1"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="pleasewait"></h3>
+ 	            			<h3 class="whitecal"><s:text name="calibrateSpectro.removeWhitePlasticCap" /></h3>
+ 	            			<h3 class="blackcal"><s:text name="calibrateSpectro.replaceWhitePlasticCap" /></h3>
+ 	            			<h3 class="greenmeas"><s:text name="calibrateSpectro.flipBase" /></h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="pleasewait"></h3>
+ 	            			<h3 class="whitecal"><s:text name="calibrateSpectro.positionWhite" /></h3>
+ 	            			<h3 class="blackcal"><s:text name="calibrateSpectro.positionBlack" /></h3>
+ 	            			<h3 class="greenmeas"><s:text name="calibrateSpectro.positionGreen" /></h3>
+ 	            		</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h3 class="pleasewait"><s:text name="calibrateSpectro.connectingColorEye" /></h3>
+ 	            			<h3 class="whitecal"><s:text name="calibrateSpectro.pressFirmly" /></h3>
+ 	            			<h3 class="blackcal"><s:text name="calibrateSpectro.pressFirmly" /></h3>
+ 	            			<h3 class="greenmeas"><s:text name="calibrateSpectro.pressFirmly" /></h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10"></div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-sm-1"></div>
+	            		<div class="col-sm-10">
+	            			<h5 class="pleasewait"></h5>
+ 	            			<h5 class="whitecal"><s:text name="calibrateSpectro.fromRedToGreenSuccess" /></h5>
+ 	            			<h5 class="blackcal"><s:text name="calibrateSpectro.toYellowOnSuccess" /></h5>
+ 	            			<h5 class="greenmeas"><s:text name="calibrateSpectro.fromRedToGreenSuccess" /></h5>
+						</div>
+					</div>
+				</div>
+		      </div>
+		      <div class="modal-footer">
+			       <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal" onclick="CalibrateIncomplete();"><s:text name="global.close"></s:text></button>
+			  </div>
+		    </div>
+		  </div>
+		</div>	    
+		
+		<!-- Illumination Modal Window-->
+						<div class="modal" tabindex="-1" role="dialog" id="illuminationModal">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title"><s:text name="displayFormula.chooseLightSource" /></h5>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+					      </div>
+					      <div class="modal-body">
+							<!-- radio buttons in here-->
+							<form id="selectedLight">
+								<input type="radio" id="incandescentButton" name="luminationList" value="A">
+								<s:text name="processLightSourceAction.incandescent" />
+								<br>
+								<input type="radio" id="daylightButton" name="luminationList" value="D65">
+								<s:text name="processLightSourceAction.daylight" />
+								<br>
+								<input type="radio" id="fluorescentButton" name="luminationList" value="F2">
+								<s:text name="processLightSourceAction.fluorescent" />
+							</form>
+					      </div>
+					      <div class="modal-footer">
+					 		<button type="button" id="subModal" class="btn btn-primary" data-dismiss="modal" onclick="colorEyeCorrectClick();"><s:text name="correctFormula.submit"></s:text></button>
+				       		<button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal" onclick="IllumModalClose();"><s:text name="global.close"></s:text></button>
+						  </div>
+					    </div>
+					  </div>
+					</div>
+		
+		
 		<script>
+		
+		
+		
 		<!--
 		  function HF_openSherwin() {
 		    var popupWin = window.open("http://www.sherwin-williams.com", "Sherwin", "resizable=yes,toolbar=yes,menubar=yes,statusbar=yes,directories=no,location=yes,scrollbars=yes,width=800,height=600,left=10,top=10");
@@ -1721,6 +2094,9 @@
 		  }
 		//-->
 		$(document).ready(function(){
+			//give Spectro model & serial number on load
+			InitializeModelAndSerial("${sessionScope[reqGuid].spectro.model}", "${sessionScope[reqGuid].spectro.serialNbr}");
+			
 			//get user printer config
 			if ($("#mainForm_siteHasPrinter").val() == "true") {
 				getPrinterConfig();

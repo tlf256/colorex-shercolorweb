@@ -55,7 +55,7 @@ TAG Color Excellence
 1. Build the bootable jar using the following Maven command:
 
     ```sh
-    mvn package
+    mvn clean package -Dmaven.test.skip=true
     ```
 2. Run the bootable jar just as you would any other Jar:
     ```sh
@@ -95,12 +95,14 @@ Prior to build the jar, uncomment the following configuration in the `wildfly-ja
 Once the application is running, attach a remote debugger to the process using your IDE or command line (https://www.baeldung.com/java-application-remote-debugging)
 
 ### Docker
-1. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
+1. Build the bootable jar by running `mvn clean package -Dmaven.test.skip=true`
+
+2. From the root directory of this project, you can use the following command to build the `shercolorweb` Docker image:
     ```sh
     docker build -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag> .
     ```
 
-2. Run the image locally using the following command:
+3. Run the image locally using the following command:
     ```sh
     docker run --env-file $HOME/dev.properties -p 8090:8090 -t docker.artifactory.sherwin.com/sherwin-williams-co/colorex-shercolorweb:<tag> <env>
     ```
