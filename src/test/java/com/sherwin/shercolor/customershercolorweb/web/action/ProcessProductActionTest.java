@@ -4,23 +4,39 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.common.domain.CdsProdCharzd;
+import com.sherwin.shercolor.common.domain.CustWebTran;
+import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Test;
 
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+import com.sherwin.shercolor.util.domain.SwMessage;
+
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SherColorWebTransactionalTest
+@AutoConfigureTestEntityManager
 public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<ProcessProductAction> {
 
+	@Autowired
+	private TestEntityManager testentitymanager;
+	
 	RequestObject reqObj = new RequestObject();
 	String reqGuid = "12345";
 	ProcessProductAction target;
@@ -236,5 +252,120 @@ public class ProcessProductActionTest extends StrutsSpringJUnit4TestCase<Process
 
 		String success = executeAction("/ProcessProductAction");
 		assertNotNull(success);
+	}
+	
+	@Test
+	public void testcheckIlluminatedProduct() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CustWebTran custWebTran = new CustWebTran();
+		custWebTran.setIllumPrimary("D65");
+		custWebTran.setCustomerId("CCF");
+		custWebTran.setControlNbr(1000);
+		custWebTran.setLineNbr(1);
+		testentitymanager.persistAndFlush(custWebTran);
+		target.setReqGuid(reqGuid);
+		reqObj.setCustomerID("CCF");
+		reqObj.setControlNbr(1000);
+		reqObj.setLineNbr(1);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForIlluminationAction");
+		assertTrue(success.contains("\"illum\":\"D65\""));
+	}
+	
+	@Test
+	public void testcheckIlluminatedProductMissingIllum() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CustWebTran custWebTran = new CustWebTran();
+		custWebTran.setCustomerId("CCF");
+		custWebTran.setControlNbr(1000);
+		custWebTran.setLineNbr(1);
+		testentitymanager.persistAndFlush(custWebTran);
+		target.setReqGuid(reqGuid);
+		reqObj.setCustomerID("CCF");
+		reqObj.setControlNbr(1000);
+		reqObj.setLineNbr(1);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForIlluminationAction");
+		assertTrue(success.contains("\"illum\":null"));
+	}
+	
+	@Test
+	public void testcheckIlluminatedProductReadFail() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForIlluminationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		target.setReqGuid(reqGuid);
+		reqObj.setCustomerID("CCF");
+		reqObj.setControlNbr(1000);
+		reqObj.setLineNbr(1);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForIlluminationAction");
+		assertTrue(success.contains("\"illum\":null"));
+	}
+	
+	@Test
+	public void testcheckCharacterizedProduct() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForCharacterizationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CdsProdCharzd cdsprodcharzd = new CdsProdCharzd();
+		cdsprodcharzd.setProdNbr("temp");
+		cdsprodcharzd.setClrntSysId("test");
+		cdsprodcharzd.setIsWhite(true);
+
+		testentitymanager.persistAndFlush(cdsprodcharzd);
+		target.setReqGuid(reqGuid);
+		reqObj.setProdNbr("temp");
+		reqObj.setClrntSys("test");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForCharacterizationAction");
+		assertTrue(success.contains("\"chard\":true") & success.contains("\"wht\":true"));
+	}
+	
+	@Test
+	public void testcheckCharacterizedProductMissingWhite() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForCharacterizationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		CdsProdCharzd cdsprodcharzd = new CdsProdCharzd();
+		cdsprodcharzd.setProdNbr("temp");
+		cdsprodcharzd.setClrntSysId("test");
+
+		testentitymanager.persistAndFlush(cdsprodcharzd);
+		target.setReqGuid(reqGuid);
+		reqObj.setProdNbr("temp");
+		reqObj.setClrntSys("test");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForCharacterizationAction");
+		assertTrue(success.contains("\"chard\":true") & success.contains("\"wht\":false"));
+	}
+	
+	@Test
+	public void testcheckCharacterizedProductReadFail() throws UnsupportedEncodingException, ServletException {
+		ActionProxy proxy = getActionProxy("/checkForCharacterizationAction");
+		target = (ProcessProductAction) proxy.getAction();
+		target.setReqGuid(reqGuid);
+		reqObj.setProdNbr("temp");
+		reqObj.setClrntSys("test");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(reqGuid, reqObj);
+		
+		String success = executeAction("/checkForCharacterizationAction");
+		assertTrue(success.contains("\"chard\":false") & success.contains("\"wht\":false"));
 	}
 }
