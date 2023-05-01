@@ -32,12 +32,11 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 	private String clrntSysId;
 	private String tinterModel;
 	private String tinterSerialNbr;
+
 	//to send back canister list
 	private TinterInfo newtinter;
 
 	private boolean reReadLocalHostTinter;
-
-
 
 	@Autowired
 	TinterService tinterService;
@@ -236,6 +235,10 @@ public class ProcessTinterConfigAction extends ActionSupport implements SessionA
 
 	public void setSession(Map<String, Object> sessionMap) {
 		this.sessionMap = sessionMap;		
+	}
+
+	public Map<String, Object> getSessionMap() {
+		return sessionMap;
 	}
 
 	public String getReqGuid() {

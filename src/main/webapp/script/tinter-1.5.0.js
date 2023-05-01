@@ -233,11 +233,12 @@ function Canister(pos,color){
 	//this.lowAlarmAmt=0;
 }
 
-function Configuration(mycolorantSystem,mymodel,myserial,canister_layout){
+function Configuration(mycolorantSystem,mymodel,myserial,tinter_ip,canister_layout){
 		
 	this.colorantSystem=mycolorantSystem;
 	this.model=mymodel;
 	this.serial=myserial;
+	this.ip=tinter_ip;
 	this.port=null;
 	this.canisterLayout=canister_layout;
 	this.canisterMap=null;
@@ -285,6 +286,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata,mymessage
 	
 	
 	this.shotList=shotList
+	this.messageText = "";
 	
 	//returned items
 	this.status = 0;
@@ -297,6 +299,7 @@ function TinterMessage(command,shotList,myconfig,mycalibration,mygdata,mymessage
 	this.statusMessages=null;
 	this.msgId = mymessageId;
 }
+
 function createUUID() {
     // http://www.ietf.org/rfc/rfc4122.txt
     var s = [];

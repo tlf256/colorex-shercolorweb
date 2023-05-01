@@ -19,9 +19,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.5.0.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro-1.5.2.js"></script>
 	
 	<style>
@@ -227,7 +227,8 @@
 		function initTinter(){
 			var tinterModel = sessionTinterInfo.model;
 			console.log("init tinter - tinter model is: " + tinterModel);
-			if(tinterModel.startsWith("FM X") && !platform.startsWith("Win")){
+			if((tinterModel.startsWith("FM X") && !platform.startsWith("Win")) 
+				|| tinterModel.startsWith("AS")){
 				resetTinter();
 			} else {
 				detectTinter();
@@ -259,7 +260,20 @@
 	    	var json = JSON.stringify(tintermessage);
 			sendingTinterCommand = "true";
 	    	ws_tinter.send(json);
-		}		
+		}
+
+		function afterResetTinterGetStatus(){
+			var cmd = "ResetStatus";
+			$("#initTinterInProgressModal").modal('show');
+			rotateIcon();
+			var shotList = null;
+			var configuration = null;
+			var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+	    	var json = JSON.stringify(tintermessage);
+			sendingTinterCommand = "true";
+	    	ws_tinter.send(json);
+		}
+
 		function readLocalhostSpectroConfig(){
 			var cmd = "ReadConfig";
 	    	var clreyemodel = $('#spectroModel').val();
@@ -322,6 +336,7 @@
  				//TODO anything to do here?  maybe check result of stamp...
  			});
 		}
+
 		function DetectFMResp(return_message){
 			console.log("Processing FM Detect Response");
 			var initErrorList=[];
@@ -330,9 +345,8 @@
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			console.log(return_message);
 			//status = 1, means, still trying serial ports so still in progress.
-			if (return_message.errorMessage.toUpperCase().trim() !== initializationDone
-					 && (return_message.errorNumber >= 0 ||
-					 return_message.status == 1)) {
+			if ((return_message.errorMessage.toUpperCase().trim() !== initializationDone)
+					 && (return_message.errorNumber >= 0 || return_message.status == 1)) {
 				//save				
 				//no need to keep showing $("#initTinterInProgressModal").modal('show');
 				$("#progress-message").text(return_message.errorMessage);
@@ -387,6 +401,7 @@
 				getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
 			}
     	}
+
 		function DetectCorobResp(return_message){
 			console.log("Processing Corob Detect Response");
 			var initErrorList;
@@ -543,6 +558,7 @@
 				readLocalhostConfig();
             	
         	}
+
 		function DetectAlfaFMXResp(return_message){
 			console.log("Processing FMX Detect Response");
 			var initErrorList=[];
@@ -550,8 +566,7 @@
 			var curDate = new Date();
 			var myGuid = $( "#startNewJob_reqGuid" ).val();
 			if ((return_message.errorMessage.toUpperCase().trim() !== initializationDone )&& 
-					 (return_message.errorNumber >= 0 ||
-					 return_message.status == 1)) {
+					 (return_message.errorNumber >= 0 || return_message.status == 1)) {
 				
 				$("#progress-message").text(return_message.errorMessage);
 				if(detectAttempt < 85){
@@ -578,7 +593,6 @@
 					}
 				console.log(return_message);
 			}
-			
 			else if(return_message.errorMessage.toUpperCase().trim() === initializationDone){
 				sendingTinterCommand = "false";
 				// clear init error in session
@@ -753,9 +767,9 @@
 							var todayYYYYMMDD = YYYY+MM+DD;
 							console.log("Compare " + todayYYYYMMDD + " to " + return_message.lastInitDate);
 
-							if(localhostConfig != null && localhostConfig.model != null && 
-									( localhostConfig.model.indexOf("FM X") >= 0 || localhostConfig.model.indexOf("ALFA") >= 0)){
-									DetectAlfaFMXResp(return_message);
+							if(localhostConfig != null && localhostConfig.model != null && (localhostConfig.model.indexOf("FM X") >= 0 
+								|| localhostConfig.model.indexOf("ALFA") >= 0)){
+								DetectAlfaFMXResp(return_message);
 							}
 							else if(localhostConfig != null && localhostConfig.model != null && (localhostConfig.model.indexOf("SANTINT") >= 0)){
 								DetectSantintResp(return_message);
@@ -763,8 +777,8 @@
 							else if (todayYYYYMMDD>return_message.lastInitDate){
 								// detect is not from today, redo
 								detectTinter();
-								
-							}else {				
+							}
+							else {				
 								// current detect, see if there were errors			}
 								if(return_message.errorNumber == 0 && return_message.commandRC == 0){
 									// Detected and no errors from tinter 
@@ -814,12 +828,39 @@
 							} // end else init current
 							break;
 						case 'Reset':
-							console.log("Processing FMX Reset Response");
+						case 'ResetStatus':
+							console.log("Processing Reset Response");
 							var initErrorList=[];
 							// log event
 							var curDate = new Date();
-							var myGuid = $("#startNewJob_reqGuid").val();
-							if(return_message.errorMessage.trim() === 'Reset complete'){
+							var myGuid = $( "#startNewJob_reqGuid" ).val();
+
+							if(return_message.errorMessage.trim() != 'Reset complete'){
+								// send reset status with timeout
+								$("#progress-message").text(return_message.errorMessage);
+								if(detectAttempt < 85){
+									setTimeout(function(){
+										afterResetTinterGetStatus(); // keep sending reset status until you get something.
+									}, 5000);					
+									detectAttempt++;
+								}
+								else{
+									sendTinterEvent(myGuid, curDate, return_message, null); 
+									waitForShowAndHide('#initTinterInProgressModal');
+									$("#tinterErrorList").empty();
+									return_message.errorMessage = "Timeout Waiting for Tinter Initialization";
+								
+									initErrorList.push(return_message.errorMessage);
+									$("#tinterErrorList").append("<li>" + return_message.errorMessage + "</li>");
+								
+									$("#tinterErrorListTitle").text('<s:text name="global.tinterDetectandInitializationFailed"/>');
+									$("#tinterErrorListSummary").text('<s:text name="global.resolveIssuesBeforeDispense"/>');
+									$("#tinterErrorListModal").modal('show');
+									saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
+								}
+								console.log(return_message);
+							}
+							else if(return_message.errorMessage.trim() === 'Reset complete'){
 								sendingTinterCommand = "false";
 								// clear init error in session
 								initErrorList = [];
@@ -830,7 +871,8 @@
 							
 								// Detected and no errors from tinter 
 								waitForShowAndHide('#initTinterInProgressModal');
-							} else {
+							}
+							else{
 								sendingTinterCommand = "false";
 								initErrorList = [];
 								sendTinterEvent(myGuid, curDate, return_message, null); 
@@ -844,9 +886,6 @@
 								$("#tinterErrorListModal").modal('show');
 								saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
 							}
-							
-							getSessionTinterInfo($("#startNewJob_reqGuid").val(),sessionTinterInfoCallback);
-							
 							break;
 						case 'Detect':
 						case 'Init':

@@ -20,7 +20,7 @@
 <script type="text/javascript" charset="utf-8"	src="js/popper.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/WSWrapper.js"></script>
 <script type="text/javascript" charset="utf-8" src="script/printer-1.4.8.js"></script>
 <script type="text/javascript">

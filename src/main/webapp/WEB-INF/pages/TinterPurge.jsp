@@ -21,9 +21,9 @@
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
-		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.4.8.js"></script>
+		<script type="text/javascript" charset="utf-8"	src="script/tinter-1.5.0.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<style>
 	        .sw-bg-main {
@@ -74,6 +74,9 @@
 		}
 		return rgb;
 	}
+
+	//function parses status messages to display progress bars
+	//for individual colorant or overall purge progress
 	function buildProgressBars(return_message){
 		var count = 1;
 		var keys=[];
@@ -82,24 +85,27 @@
 		if (keys !=null && keys.length > 0) {			
 			return_message.statusMessages.forEach(function(item){
 				var colorList = item.message.split(" ");
+				var colorPct = true; //flag for individual colorant progress
 				var color;
 				var pct;
-				if(platform.startsWith("Win")){
-					//colorList = item.message.split(" ");
-					color= colorList[0];
-					pct = colorList[1];
+
+				if(colorList[1] == undefined){
+					//overall purge progress
+					color = null;
+					pct = colorList[0];
+					colorPct = false;
 				} else {
-					//colorList = item.message;
-					color= "";
-					pct = item.message;
+					//individual colorant progress
+					color = colorList[0];
+					pct = colorList[1];
 				}
-				
 				
 				//fix bug where we are done, but not all pumps report as 100%
 				if (return_message.errorMessage.indexOf("done") > 1 && (return_message.errorNumber == 0 &&
 						 return_message.status == 0)) {
 					  pct = "100%";
 				  }
+
 				//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 				
 				var $clone = $("#progress-0").clone();
@@ -110,7 +116,8 @@
 				$bar.css("width", pct);
 				$clone.css("display", "block");
 				var color_rgb = getRGB(color);
-	//change color of text based on background color
+
+				//change color of text based on background color
 				switch(color){
 				case "WHT":
 				case "TW":
@@ -130,7 +137,7 @@
 					break;
 				}
 				
-				if(platform.startsWith("Win")){
+				if(colorPct){
 					$bar.children("span").text(color + " " + pct);
 				} else{
 					$bar.children("span").text(pct);
@@ -153,18 +160,20 @@
 		var shotList = null;
 		var configuration = null;
 		var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-		if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ 
+		if(tinterModel !=null && (tinterModel.startsWith("AS") || tinterModel.startsWith("FM X"))){ 
 			var cmd = "PurgeProgress";
-			if(!platform.startsWith("Win")){
+			if(!platform.startsWith("Win") || tinterModel.startsWith("AS")){
 				cmd = "PurgeStatus";
 			}
-		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
+		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);
 		}
 		else{
 			var cmd = "DispenseStatus";
-			var msgId = tintermessage.msgId;
-    		var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);  
+			  
 		}
+		var msgId = tintermessage.msgId;
+    	var tintermessage = new TinterMessage(cmd,null,null,null,null,msgId);
+
     	var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
     	ws_tinter.send(json);
@@ -185,31 +194,28 @@
 	*/
 	function purge(){
 		var cmd = "PurgeAll";
-		
 		var shotList = null;
     	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
     	var json = JSON.stringify(tintermessage);
 		sendingTinterCommand = "true";
 		if(ws_tinter!=null && ws_tinter.isReady=="false") {
-    		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.")
+    		console.log("WSWrapper connection has been closed (timeout is defaulted to 5 minutes). Make a new WSWrapper.");
     		ws_tinter = new WSWrapper("tinter");
 		}
     	ws_tinter.send(json);
 	}
+
 	function dispenseProgressResp(myGuid, curDate,return_message, tedArray){
-		//$("#progress-message").text(return_message.errorMessage);
 		$("#abort-message").show();
 		if ((platform.startsWith("Win") && return_message.errorMessage.indexOf("Done") == -1 || 
 				!platform.startsWith("Win") && return_message.errorMessage.indexOf("Purge Job Complete") == -1) 
 				&& (return_message.errorNumber == 1 || return_message.status == 1)) {
 			//keep updating modal with status
-			//$("#progress-message").text(return_message.errorMessage);
 			$("#tinterProgressList").empty();
 			dispenseErrorList = [];
 			if(return_message.statusMessages!=null && return_message.statusMessages[0]!=null){
 				return_message.statusMessages.forEach(function(item){
 					buildProgressBars(return_message);
-						//$("#tinterProgressList").append("<li>" + item.message + "</li>");
 					dispenseErrorList.push(item.message);
 				});
 			} else {
@@ -223,9 +229,11 @@
 			
 		}
 		else{
-			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+			var fmx = (tinterModel.startsWith('FM X')) ? "fmx" : "";
+			var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+			purgeComplete(myGuid, curDate,return_message, tedArray, fmx);
 			$(".progress-wrapper").empty();
-			}
+		}
 			
     }
 	function alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray){
@@ -346,7 +354,7 @@
 			if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
 			if($("#tinterAlert").hasClass("alert-success")) $("#tinterAlert").removeClass("alert-success");
 			//Show a modal with error message to make sure the user is forced to acknowledge it.
-			if(fmx = "fmx"){
+			if(fmx == "fmx"){
 				FMXShowTinterErrorModal(null,null,return_message);
 			}
 			else{				
@@ -382,14 +390,11 @@
         
     function abort(){
     	console.log('before abort');
-    	
-    	
     	var cmd = "Abort";
     	var shotList = null;
     	var configuration = null;
     	var tintermessage = new TinterMessage(cmd,null,null,null,null);  
     	var json = JSON.stringify(tintermessage);
-
     	ws_tinter.send(json);
     }
 	function openNozzle(){
@@ -408,7 +413,6 @@
 
 	function closeNozzle(){
 		var cmd = "CloseNozzle";
-		
 		var shotList = null;
     	var tintermessage = new TinterMessage(cmd,shotList,null,null,null);  
     	var json = JSON.stringify(tintermessage);
@@ -483,16 +487,16 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						if(tinterModel !=null && ( tinterModel.startsWith("FM X"))){ //only FM X series has purge in progress % done
-							 if(return_message.errorNumber == 4226){
-							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
-							    }
+						if(tinterModel !=null && (tinterModel.startsWith("FM X") || tinterModel.startsWith("AS"))){
+							if(return_message.errorNumber == 4226){
+								return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
+							}
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
 						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
-							}
-						else{  
+						}
+						else{
 							purgeComplete(myGuid, curDate, return_message, tedArray);
 						}
 						break;
@@ -525,6 +529,7 @@
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
 						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
+							//removeTinterAlertDangerWarnings();
 						} else {
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//Show a modal with error message to make sure the user is forced to read it.
@@ -607,6 +612,13 @@
 	        $("#cleanNozzleVid").get(0).pause();
 			closeNozzle();
 	    });
+
+		$(document).on("hidden.bs.modal", "#closeNozzleInProgressModal", function(event){
+	        console.log("done cleaning nozzles");
+	    	if(cleanNozzleBeforePurge && !$("#tinterErrorListModal").is(":visible")){
+	    		$("#purgeInProgressModal").modal('show');
+	    	}
+	    });
 	    
 	    $(document).on("shown.bs.modal", "#cleanNozzleInProgress", function(event){
 			cleanNozzle();
@@ -639,8 +651,14 @@
 		});
 	    
 	    $(document).on("click", "#tinterPurgeButton", function(event) {	  
-	    	if(tinterModel.startsWith("FM X") && cleanNozzleRequired()){
-	    		$("#cleanNozzleInProgress").modal('show');
+	    	if(cleanNozzleRequired()){
+				if(tinterModel.startsWith("FM X")){
+					$("#cleanNozzleInProgress").modal('show');
+				}
+				else{
+					// fire event for nozzle cleaning
+					$('#tinterCleanNozzle').click();
+				}
 	    	} else {
 	    		$("#purgeInProgressModal").modal('show');
 	    	}
@@ -673,6 +691,20 @@
 		}
 		
 	});
+
+	function addTinterAlertDangerWarnings(warningMsgs){
+		if($("#tinterAlert").hasClass("d-none")) $("#tinterAlert").removeClass("d-none");
+		if(!$("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").addClass("alert-danger");
+		warningMsgs.forEach(function(msg){
+			$("#tinterAlertList").append('<li>' + msg + '</li>');
+		});
+	}
+
+	function removeTinterAlertDangerWarnings(){
+		if(!$("#tinterAlert").hasClass("d-none")) $("#tinterAlert").addClass("d-none");
+		if($("#tinterAlert").hasClass("alert-danger")) $("#tinterAlert").removeClass("alert-danger");
+		$("#tinterAlertList").empty();
+	}
     
 </script>
 </head>
@@ -705,6 +737,7 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="card card-body bg-light mb-3">
+								<div class="text-danger" id="warnUser"></div>
 								<s:if test="#session[reqGuid].tinter.model != null">
 									<s:if test="#session[reqGuid].tinter.model.startsWith('FM X') && (#session[reqGuid].tinter.clrntSysId == 'CCE' || #session[reqGuid].tinter.clrntSysId == 'BAC')">
 										<p class="lead"><s:text name="tinterPurge.tinterPrepXProTintWater"/></p>
@@ -745,7 +778,6 @@
 							<div class="alert d-none" id="tinterAlert">
 								<ul class="list-unstyled mb-0" id="tinterAlertList">
 								</ul>
-							 <!-- Put text here -->
 							</div>
 						</div>
 						<div class="col-sm-3">
