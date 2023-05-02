@@ -124,7 +124,6 @@ public class ProcessProductChangeActionTest extends StrutsSpringJUnit4TestCase<P
 		String success = executeAction("/lookupProductOptions");
 		System.out.println("Success String: " + success);
 		assertTrue(StringUtils.contains(success, "WARNING - Product base type INTERIOR EXTRA WHITE is not the primary base type."));
-
 	}
 	
 	@Test
