@@ -1,4 +1,7 @@
 var timeoutWarning, timeoutExpire;
+// switch to userAgent, navigator.platform is deprecated
+// adding it here will make it globally available to the application
+const agent = navigator.userAgent;
 
 function startSessionTimeoutTimers(){
 	//Session Timeout Message after 25 minutes
@@ -71,7 +74,7 @@ function waitForShowAndHide(showString){
 
 function showWaitModal(){
 	$('#pleaseWaitModal').modal('show');
-	rotateSpinner('#pleaseWaitModal');
+	rotateSpinner('#pleaseWaitModal', '#pwSpinner');
 }
 
 /** Please Wait modal js - use for displaying wait modal located in footer **/
@@ -79,7 +82,7 @@ function showWaitModal(){
 //of bs modal that contains input to be processed in java action
 //if relevant, otherwise pass in null
 function pleaseWaitModal_show(displayMessage, inputModal){
-	$('#processMsg').text(displayMessage);
+	pleaseWaitModal_updateMsg(displayMessage);
 	
 	if(inputModal){
 		hideInputModal(inputModal);
@@ -94,25 +97,29 @@ function pleaseWaitModal_hide(){
 	$('#pleaseWaitModal').modal('hide');
 }
 
+function pleaseWaitModal_updateMsg(displayMessage){
+	$('#processMsg').text(displayMessage);
+}
+
 function hideInputModal(inputModal){
 	waitForShowAndHide(inputModal);
 }
 
-function rotateSpinner(processModal){
+function rotateSpinner(processModal, spinnerId){
 	let n = 0;
-	$('#spinner').removeClass('d-none');
+	$(spinnerId).removeClass('d-none');
 	let interval = setInterval(function(){
     	n += 1;
     	if(n >= 60000){
-            $('#spinner').addClass('d-none');
+            $(spinnerId).addClass('d-none');
         	clearInterval(interval);
         }else{
-        	$('#spinner').css("transform","rotate(" + n + "deg)");
+        	$(spinnerId).css("transform","rotate(" + n + "deg)");
         }
 	},5);
 	
 	$(processModal).on('hide.bs.modal',function(){
-		$('#spinner').addClass('d-none');
+		$(spinnerId).addClass('d-none');
     	if(interval){clearInterval(interval);}
 	});
 }

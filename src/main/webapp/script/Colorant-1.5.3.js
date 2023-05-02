@@ -34,7 +34,6 @@ $(function(){
 		if(!platform.startsWith("Win")){
 			clrnt = $('#color' + rowVal).text().split(" ")[0];
 		}
-        console.log("COLORANT CODE: " + clrnt);
         
         var str = {
         		"updateType" : idSubstr,
@@ -225,7 +224,6 @@ $(function(){
     }); 
 
     //Modify display values of double currentclrntamounts to show as integers
-
     function modifyDisplayAmts(){
         $('td[id^=ounces],[id^=quarts]').each(function(){
             var textArr = [];

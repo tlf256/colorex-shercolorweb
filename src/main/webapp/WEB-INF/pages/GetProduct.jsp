@@ -24,7 +24,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/dataTables.bootstrap4.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/dataTables.buttons.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/GetProductAutoComplete.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/product-lookup-1.5.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />

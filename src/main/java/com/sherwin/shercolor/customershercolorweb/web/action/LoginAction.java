@@ -123,6 +123,8 @@ public class LoginAction extends ActionSupport  implements SessionAware, LoginRe
 					reqObj.setUserId(userId);
 					reqObj.setDaysUntilPasswdExpire(daysUntilPwdExp);
 					reqObj.setTintQueueCount(tranHistoryService.getActiveCustomerTintQueue(reqObj.getCustomerID(), false).size());
+					// add OS name to reqObj to determine if scw is running on windows or linux
+					reqObj.setOsName(System.getProperty("os.name").toLowerCase());
 
 					logger.debug("DEBUG new reqGuid created {}", () -> Encode.forJava(reqGuid));
 					List<CustWebDevices> spectroList = customerService.getCustSpectros(Encode.forHtml(reqObj.getCustomerID()));

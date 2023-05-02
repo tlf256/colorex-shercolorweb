@@ -135,7 +135,6 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 			this.setSalesNbr(enteredSalesNbr);
 		}
 		
-		
 		logger.debug("Validating product info in master product table...");
 		List<SwMessage> errlist = productService.validateProductInPOS(salesNbr);
 		if(!errlist.isEmpty()) {
@@ -193,6 +192,14 @@ public class ProcessProductChangeAction extends ActionSupport implements Session
 		return SUCCESS;
 	}
 	
+	/**This method will check the contents of the SwMessage List which can contain errors/warnings related 
+	 * to the validation process. It will check the last warning message displayed to the user as to not
+	 * show it twice when the user confirms the warning to proceed.
+	 * 
+	 * @param errlist
+	 * @param reqObj
+	 * @return true if the validation process encountered an error-level message. Or if the validation process encountered a warning that it has not encountered yet.
+	 */
 	private boolean checkMessageSeverity(List<SwMessage> errlist, RequestObject reqObj) {
 		boolean result = false;
 		for(SwMessage item:errlist) {

@@ -22,7 +22,7 @@
  		<script type="text/javascript" charset="utf-8" src="js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/WSWrapper.js"></script>
 		<script type="text/javascript" charset="utf-8"	src="script/spectro-1.5.2.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />

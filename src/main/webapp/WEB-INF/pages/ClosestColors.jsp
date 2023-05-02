@@ -21,7 +21,7 @@
 		<script type="text/javascript" charset="utf-8"	src="js/bootstrap.min.js"></script>
  		<script type="text/javascript" charset="utf-8"	src="js/moment.min.js"></script>
   		<script type="text/javascript" charset="utf-8"	src="js/moment-with-locales.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/closestColors-1.5.2.js"></script>
 		<style>
 		  .sw-bg-main {

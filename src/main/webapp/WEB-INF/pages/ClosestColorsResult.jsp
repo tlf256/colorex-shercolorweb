@@ -28,7 +28,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/buttons.colVis.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/buttons.html5.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/buttons.print.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<script type="text/javascript" charset="utf-8" src="script/closestColorsResult-1.5.2.js"></script>
 		<style>
 			.sw-bg-main {
