@@ -89,7 +89,14 @@ public class RequestObject {
 	private int dispenseBase = -1;
 	private List<CdsRoomList> allRooms;
 	private String customerType;
+	private String osName;
 
+	public String getOsName() {
+		return osName;
+	}
+	public void setOsName(String osName) {
+		this.osName = osName;
+	}
 	public String getColorComp() {
 		return colorComp;
 	}

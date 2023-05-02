@@ -133,6 +133,17 @@ function FMXdispenseProgress(tintermessage) {
 	ws_tinter.send(json);
 }
 
+function ASDispenseProgress() {
+	console.log('before dispense progress send');
+	$('#tinterInProgressMessage').text('');
+	rotateIcon();
+	let cmd = "DispenseStatus";
+	let tintermessage = new TinterMessage(cmd,null,null,null,null);
+	let json = JSON.stringify(tintermessage);
+	sendingTinterCommand = "true";
+	ws_tinter.send(json);
+}
+
 function dispense() {
 	//dispense
 	let cmd = "Dispense";
@@ -213,6 +224,42 @@ function dispenseProgressResp(return_message) {
 	}
 }
 
+function asDispenseProgressResp(return_message) {
+	$("#abort-message").show();
+	$('#progressok').addClass('d-none');  //hide ok button
+	if (return_message.errorMessage.indexOf("Dispense Job Complete") == -1 && return_message.commandRC == 33) {
+		$("#tinterProgressList").empty();
+		tinterErrorList = [];
+		if (return_message.statusMessages != null) {
+			//keep updating modal with status
+			buildProgressBars(return_message);
+		}
+		if (return_message.errorList != null && return_message.errorList[0] != null) {
+			return_message.errorList.forEach(function(item) {
+				$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				tinterErrorList.push(item.message);
+			});
+		}
+		if (return_message.errorMessage != null && (return_message.commandRC != 33 
+			&& return_message.commandRC != 0)) {
+			tinterErrorList.push(return_message.errorMessage);
+			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+		}
+		console.log(return_message);
+		setTimeout(function() {
+			ASDispenseProgress();
+		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+
+	}
+	else if (return_message.errorMessage.indexOf("Dispense Job Complete") >= 0 || return_message.errorNumber != 0) {
+		if (return_message.errorNumber == 4226) {
+			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
+		}
+		ASDispenseComplete(return_message);
+
+	}
+}
+
 function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
 	$("#tinterErrorList").empty();
 	$("#tinterErrorListModal").modal('show');
@@ -242,6 +289,7 @@ function FMXShowTinterErrorModal(myTitle, mySummary, my_return_message) {
 	else $("#tinterErrorListSummary").text("");
 
 }
+
 function showTinterErrorModal(myTitle, mySummary, my_return_message) {
 	$("#tinterErrorList").empty();
 	if (my_return_message.errorList =  null && my_return_message.errorList[0] != null) {
@@ -310,6 +358,46 @@ function FMXDispenseComplete(return_message) {
 		console.log('hide done');
 		//Show a modal with error message to make sure the user is forced to read it.
 		FMXShowTinterErrorModal(i18n['global.dispenseError'], null, return_message);
+	}
+	sendingTinterCommand = "false";
+}
+
+function ASDispenseComplete(return_message) {
+	processingDispense = false; // allow user to start another dispense after tinter error
+	$('#spinner').addClass('d-none');
+	$("#abort-message").hide();
+
+	if (dispenseRespComplete(return_message)) {
+		// save a dispense (will bump the counter)
+		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
+		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
+		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
+		$('#tinterInProgressMessage').text('');
+		$("#tinterProgressList").empty();
+		tinterErrorList = [];
+		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
+			buildProgressBars(return_message);
+		}
+		else if(return_message.statusMessages == null && return_message.errorMessage.indexOf('Dispense Job Complete') >= 0){
+			// status messages are null but the dispense completed normally
+			if ($('#progressok').length > 0 ) {
+				$('#progressok').removeClass('d-none');
+			}
+			else {
+				writeDispense(return_message); // will also send tinter event
+				waitForShowAndHide("#tinterInProgressModal");
+			}
+		}
+		else {
+			tinterErrorList.push(return_message.errorMessage);
+			$("#tinterProgressList").append("<li>" + return_message.errorMessage + "</li>");
+		}
+	} else {
+		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
+		waitForShowAndHide("#tinterInProgressModal");
+		console.log('hide done');
+		//Show a modal with error message to make sure the user is forced to read it.
+		showTinterErrorModal(i18n['global.dispenseError'], null, return_message);
 	}
 	sendingTinterCommand = "false";
 }
@@ -386,118 +474,84 @@ function abort() {
 	ws_tinter.send(json);
 }
 
+function printerDefined(){
+	return (typeof ws_printer !== 'undefined' && ws_printer !=null);
+}
+
+function tinterDefined(){
+	return (typeof ws_tinter !== 'undefined' && ws_tinter);
+}
+
+function wsErrorMsgDefined(){
+	return (ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "");
+}
+
+function displayWsErrorMsg(){
+	if (sendingTinterCommand == "true") {
+		// received an error from WSWrapper so we won't get any JSON result
+		// Since we are sending a dispense command, show as dispense error
+
+		$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter.wserrormsg);
+		//Show a modal with error message to make sure the user is forced to read it.
+		$("#tinterSocketError").text(ws_tinter.wserrormsg);
+		$('#progressok').removeClass('d-none');
+		waitForShowAndHide("#tinterInProgressModal");
+
+		startSessionTimeoutTimers();
+		console.log('hide done');
+		$("#tinterSocketErrorModal").modal('show');
+
+	} else {
+		console.log("Received unsolicited error " + ws_tinter.wserrormsg);
+		// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
+		// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
+	}
+}
+
+function parseWsMsgAsJson(){
+	try {
+		return JSON.parse(ws_tinter?.wsmsg);
+	}
+	catch (error) {
+		console.log("Caught error is = " + error);
+		console.log("Message is junk, throw it out");
+		//console.log("Junk Message is " + ws_tinter.wsmsg);
+	}
+}
 
 function RecdMessage() {
-	var printMessageParsed = false;
+	let printMessageParsed = false;
 	console.log("Received Message");
 	//parse the spectro
-	if (typeof(ws_printer) !== 'undefined' && ws_printer !=null) {
+	if (printerDefined()) {
 		printMessageParsed = ParsePrintMessage();
 	}
-	if (!printMessageParsed && typeof ws_tinter !== 'undefined'
-		&& ws_tinter) {
+	if (!printMessageParsed && tinterDefined()) {
 		console.log("Received Message");
-		if (ws_tinter && ws_tinter.wserrormsg != null && ws_tinter.wserrormsg != "") {
-
-			if (sendingTinterCommand == "true") {
-				// received an error from WSWrapper so we won't get any JSON result
-				// Since we are sending a dispense command, show as dispense error
-
-				$("#dispenseStatus").text(i18n['global.lastDispense'] + ws_tinter.wserrormsg);
-				//Show a modal with error message to make sure the user is forced to read it.
-				$("#tinterSocketError").text(ws_tinter.wserrormsg);
-				$('#progressok').removeClass('d-none');
-				waitForShowAndHide("#tinterInProgressModal");
-
-				startSessionTimeoutTimers();
-				console.log('hide done');
-				$("#tinterSocketErrorModal").modal('show');
-
-			} else {
-				console.log("Received unsolicited error " + ws_tinter.wserrormsg);
-
-				// so far this only happens when SWDeviceHandler is not running and we created a new WSWrapper when 
-				// page intially loaded.  For now wait until they do a dispense to show the error (no everybody has a tinter)
-			}
+		if (wsErrorMsgDefined()) {
+			displayWsErrorMsg();
 		} else {
 			// is result (wsmsg) JSON?
-			let isTintJSON = false;
-			try {
-				if (ws_tinter && ws_tinter.wsmsg != null) {
-					var return_message = JSON.parse(ws_tinter.wsmsg);
-					isTintJSON = true;
-				}
-			}
-			catch (error) {
-
-				console.log("Caught error is = " + error);
-
-
-				console.log("Message is junk, throw it out");
-				//console.log("Junk Message is " + ws_tinter.wsmsg);
-			}
+			let return_message = parseWsMsgAsJson();
+			let isTintJSON = (return_message !== undefined);
+			
 			if (isTintJSON) {
 				var tinterModel = sessionTinterInfo.model;
 				var errorKey = return_message.errorMessage;
-				if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+				if (tinterModel?.startsWith("SANTINT")) {
 					return_message.errorMessage = i18n[errorKey];
 				}
 				console.log("in istintJSON return message = ");
 				console.log(return_message);
-				switch (return_message.command) {
-					case 'Dispense':
-					case 'DispenseProgress':
-					case 'DispenseStatus':
-					case 'Abort':
-						$("#dispenseStatus").text('');
-						if (tinterModel != null && tinterModel.startsWith("FM X")) { //only FM X series has purge in progress % done
-							dispenseProgressResp(return_message);
-						}
-						else if (tinterModel != null && tinterModel.startsWith("ALFA")) { //alfa needs a progress check
-							alfaDispenseProgressResp(return_message);
-						}
-						else if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+				
+				processDispenseCommand(return_message, tinterModel);
 
-							// save a dispense (will bump the counter)
-							if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
-								return_message.errorMessage = log_english[errorKey];
-							}
-							writeDispense(return_message); // will also send tinter event
-							waitForShowAndHide("#tinterInProgressModal");
-						}
-						else {
-
-							waitForShowAndHide("#tinterInProgressModal");
-							//Show a modal with error message to make sure the user is forced to read it.
-							showTinterErrorModal("Dispense Error", null, return_message);
-							processingDispense = false; // allow user to start another dispense after tinter error
-							sendingDispCommand = "false";
-							// send tinter event (no blocking here)
-							var curDate = new Date();
-							var myGuid = $("#reqGuid").val();
-
-							var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
-
-							var tedArray = [teDetail];
-							if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
-								return_message.errorMessage = log_english[errorKey];
-							}
-							sendTinterEvent(myGuid, curDate, return_message, tedArray);
-
-						}
-
-						break;
-					default:
-						//Not an response we expected...
-						console.log("Message from different command is junk, throw it out");
-
-				} // end switch statement
 			} else {
 				console.log("Message is junk, throw it out");
 			}
 		}
 
-		//Clearing  for dispense.jsp
+		//Clearing for dispense.jsp
 		if ($('.table-bordered input:not([type=hidden])').length > 0) {
 			//Clearing inputs
 			$('.table-bordered input:not([type=hidden])').val('');
@@ -505,6 +559,59 @@ function RecdMessage() {
 	}
 
 }
+
+function dispenseRespComplete(return_message){
+	return (return_message.errorNumber == 0 && return_message.commandRC == 0) || 
+		(return_message.errorNumber == -10500 && return_message.commandRC == -10500)
+}
+
+function processDispenseCommand(return_message, tinterModel){
+	switch (return_message.command) {
+		case 'Dispense':
+		case 'DispenseProgress':
+		case 'DispenseStatus':
+		case 'Abort':
+			$("#dispenseStatus").text('');
+			if (tinterModel?.startsWith("FM X")) {
+				dispenseProgressResp(return_message);
+			}
+			else if (tinterModel?.startsWith("ALFA")) { //alfa needs a progress check
+				alfaDispenseProgressResp(return_message);
+			}
+			else if(tinterModel?.startsWith("AS")) {
+				asDispenseProgressResp(return_message);
+			}
+			else if (dispenseRespComplete(return_message)) {
+				// save a dispense (will bump the counter)
+				if (tinterModel?.startsWith("SANTINT")) {
+					return_message.errorMessage = log_english[errorKey];
+				}
+				writeDispense(return_message); // will also send tinter event
+				waitForShowAndHide("#tinterInProgressModal");
+			}
+			else {
+				waitForShowAndHide("#tinterInProgressModal");
+				//Show a modal with error message to make sure the user is forced to read it.
+				showTinterErrorModal("Dispense Error", null, return_message);
+				processingDispense = false; // allow user to start another dispense after tinter error
+				sendingDispCommand = "false";
+				// send tinter event (no blocking here)
+				let curDate = new Date();
+				let myGuid = $("#reqGuid").val();
+				let teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+				let tedArray = [teDetail];
+				if (tinterModel?.startsWith("SANTINT")) {
+					return_message.errorMessage = log_english[errorKey];
+				}
+				sendTinterEvent(myGuid, curDate, return_message, tedArray);
+			}
+			break;
+		default:
+			//Not an response we expected...
+			console.log("Message from different command is junk, throw it out");
+	}
+}
+
 //pre Dispense
 function preDispenseRoutine() {
 	shotList = [];

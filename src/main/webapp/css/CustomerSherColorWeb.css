@@ -3,7 +3,12 @@ html {
   position: relative;
   min-height: 100%;
 }
-
+.pwd-icon {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  cursor: pointer;
+}
 navbar-brandcenter {
   transform: translateX(-50%);
   left: 50%;

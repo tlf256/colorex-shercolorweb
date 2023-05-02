@@ -33,7 +33,7 @@
 		<script type="text/javascript" charset="utf-8" src="js/jszip.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/pdfmake.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/vfs_fonts.js"></script>
-		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="script/customershercolorweb-1.5.3.js"></script>
 		<s:set var="thisGuid" value="reqGuid" />
 		<script type="text/javascript" src="script/displayjobs-2.0.1.js"></script>
 	</head>
