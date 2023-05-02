@@ -272,7 +272,7 @@ function evoDispenseProgressResp(return_message){
 		//keep updating modal with status
 		$("#tinterProgressList").empty();
 		buildEvoProgressBars(return_message)
-		if (return_message.errorList != null && return_message.errorList[0] != null && return_message.errorList.length > 0) { //TODO needed?
+		if (return_message.errorList != null && return_message.errorList[0] != null && return_message.errorList.length > 0) {
 			// show errors
 			return_message.errorList.forEach(function(item) {
 				$("#tinterProgressList").append("<li>" + item.message + "</li>");
