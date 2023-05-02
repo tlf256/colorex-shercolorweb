@@ -91,6 +91,70 @@ function buildProgressBars(return_message) {
 	}
 }
 
+function buildEvoProgressBars(return_message) {
+	let count = 1;
+	let keys = [];
+	$(".progress-wrapper").empty();
+	keys = Object.keys(return_message.statusMessages);
+	if (keys != null && keys.length > 0) {
+		return_message.statusMessages.forEach(function(item) {
+			let colorList = item.message.split(" ");
+			let color;
+			let pct;
+			if(colorList.length > 1){
+				color= colorList[0];
+				pct = colorList[1];
+			} else {
+				color= "";
+				pct = item.message;
+			}
+
+			let $clone = $("#progress-0")
+				.removeClass('d-none')
+				.clone();
+			$clone.attr("id", "progress-" + count);
+			let $bar = $clone.children(".progress-bar");
+			$bar.attr("id", "bar-" + count);
+			$bar.attr("aria-valuenow", pct);
+			$bar.css("width", pct);
+			$clone.css("display", "block");
+			let color_rgb = getRGB(color);
+			if(color_rgb === ""){
+				$bar.children("span").css("color", "white");
+				$bar.css("background-color", "blue");
+			}
+			else {
+				//change color of text based on background color
+				switch (color) {
+					case "WHT":
+					case "TW":
+					case "W1":
+						$bar.children("span").css("color", "black");
+						$bar.css("background-color", "#efefef");
+						break;
+					case "OY":
+					case "Y1":
+					case "YGS":
+						$bar.children("span").css("color", "black");
+						$bar.css("background-color", color_rgb);
+						break;
+					default:
+						$bar.css("background-color", color_rgb);
+						$bar.children("span").css("color", "white");
+						break;
+				}
+			}
+
+			$bar.children("span").text(color + " " + pct);
+			console.log("barring " + item.message);
+
+			$clone.appendTo(".progress-wrapper");
+
+			count++;
+		});
+	}
+}
+
 //old function FMXAlfaDispenseProgress
 //separated alfa and fmx dispense progress
 function alfaDispenseProgress(tintermessage) {
@@ -144,6 +208,18 @@ function ASDispenseProgress() {
 	ws_tinter.send(json);
 }
 
+function evoDispenseProgress() {
+	console.log('before dispense progress send');
+	$('#tinterInProgressMessage').text('');
+	rotateIcon();
+	let cmd = "DispenseStatus";
+
+	let newTinterMessage = new TinterMessage(cmd, null, null, null, null);
+	let json = JSON.stringify(newTinterMessage);
+	sendingTinterCommand = "true";
+	ws_tinter.send(json);
+}
+
 function dispense() {
 	//dispense
 	let cmd = "Dispense";
@@ -178,6 +254,61 @@ function alfaDispenseProgressResp(return_message) {
 	}
 	else if (return_message.errorMessage.indexOf("complete") > 0 || return_message.errorNumber != 0) {
 		alfaDispenseComplete(return_message);
+	}
+}
+function evoDispenseProgressResp(return_message){
+	console.log("starting evo disp progress resp")
+	console.log(return_message)
+	$("#abort-message").show();
+	$('#progressok').addClass('d-none');  //hide ok button
+	if(return_message.commandRC == 3){
+		//just started
+		console.log(return_message);
+		setTimeout(function() {
+			evoDispenseProgress();
+		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+	} else if(return_message.commandRC == 33){
+		//in progress
+		//keep updating modal with status
+		$("#tinterProgressList").empty();
+		buildEvoProgressBars(return_message)
+		if (return_message.errorList != null && return_message.errorList[0] != null && return_message.errorList.length > 0) {
+			// show errors
+			return_message.errorList.forEach(function(item) {
+				$("#tinterProgressList").append("<li>" + item.message + "</li>");
+				tinterErrorList.push(item.message);
+			});
+		}
+
+		console.log(return_message);
+		setTimeout(function() {
+			evoDispenseProgress();
+		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
+	} else if(return_message.commandRC == 2){
+		//done
+		if (return_message.errorNumber == 4226) {
+			return_message.errorMessage = i18n['global.tinterDriverBusyReinitAndRetry'];
+		}
+		evoDispenseComplete(return_message);
+	} else {
+		//not expected
+		console.log(return_message)
+		waitForShowAndHide("#tinterInProgressModal");
+		//Show a modal with error message to make sure the user is forced to read it.
+		showTinterErrorModal("Dispense Error", null, return_message);
+		processingDispense = false; // allow user to start another dispense after tinter error
+		sendingDispCommand = "false";
+		// send tinter event (no blocking here)
+		let curDate = new Date();
+		let myGuid = $("#reqGuid").val();
+
+		let teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+
+		let tedArray = [teDetail];
+		if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
+			return_message.errorMessage = log_english[errorKey];
+		}
+		sendTinterEvent(myGuid, curDate, return_message, tedArray);
 	}
 }
 function dispenseProgressResp(return_message) {
@@ -402,6 +533,46 @@ function ASDispenseComplete(return_message) {
 	sendingTinterCommand = "false";
 }
 
+function evoDispenseComplete(return_message) {
+	processingDispense = false; // allow user to start another dispense after tinter error
+	$('#spinner').addClass('d-none');
+	$("#abort-message").hide();
+
+	if ((return_message.errorNumber == 0 &&  return_message.commandRC == 2)
+		|| (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+		// save a dispense (will bump the counter)
+		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
+
+		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
+
+
+		$('#tinterInProgressTitle').text(i18n['global.tinterProgress']);
+		$('#tinterInProgressMessage').text('');
+		$("#tinterProgressList").empty();
+		tinterErrorList = [];
+		if (return_message.statusMessages != null && return_message.statusMessages[0] != null) {
+			buildEvoProgressBars(return_message);
+		}
+		if ($('#progressok').length > 0 ) {
+			$('#progressok').removeClass('d-none');
+		}
+		else {
+			writeDispense(return_message); // will also send tinter event
+			waitForShowAndHide("#tinterInProgressModal");
+		}
+	} else {
+		if (return_message.errorNumber == 4226) {
+			return_message.errorMessage = i18n['global.tinterDriverBustReinitRetry'];
+		}
+		$("#dispenseStatus").text(i18n['global.lastDispense'] + return_message.errorMessage);
+		waitForShowAndHide("#tinterInProgressModal");
+		console.log('hide done');
+		//Show a modal with error message to make sure the user is forced to read it.
+		FMXShowTinterErrorModal(i18n['global.dispenseError'], null, return_message);
+	}
+	sendingTinterCommand = "false";
+}
+
 function alfaDispenseComplete(return_message) {
 	processingDispense = false; // allow user to start another dispense after tinter error
 	$('#spinner').addClass('d-none');
@@ -440,7 +611,7 @@ function dispenseComplete(return_message) {
 	let curDate = new Date();
 	sendTinterEvent($('#reqGuid').val(), curDate, return_message, tedArray);
 
-	if ((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
+	if ((return_message.errorNumber == 0 && (return_message.commandRC == 0 || return_message.commandRC == 2)) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)) {
 		// save a dispense (will bump the counter)
 		getSessionTinterInfo($("#reqGuid").val(), warningCheck);
 		$("#dispenseStatus").text(i18n['global.lastDispenseComplete']);
@@ -580,6 +751,9 @@ function processDispenseCommand(return_message, tinterModel){
 			}
 			else if(tinterModel?.startsWith("AS")) {
 				asDispenseProgressResp(return_message);
+			}
+			else if (tinterModel != null && tinterModel.startsWith("COROB EVO")){
+				evoDispenseProgressResp(return_message);
 			}
 			else if (dispenseRespComplete(return_message)) {
 				// save a dispense (will bump the counter)
