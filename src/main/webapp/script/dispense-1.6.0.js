@@ -92,15 +92,15 @@ function buildProgressBars(return_message) {
 }
 
 function buildEvoProgressBars(return_message) {
-	var count = 1;
-	var keys = [];
+	let count = 1;
+	let keys = [];
 	$(".progress-wrapper").empty();
 	keys = Object.keys(return_message.statusMessages);
 	if (keys != null && keys.length > 0) {
 		return_message.statusMessages.forEach(function(item) {
-			var colorList = item.message.split(" ");
-			var color;
-			var pct;
+			let colorList = item.message.split(" ");
+			let color;
+			let pct;
 			if(colorList.length > 1){
 				color= colorList[0];
 				pct = colorList[1];
@@ -109,16 +109,16 @@ function buildEvoProgressBars(return_message) {
 				pct = item.message;
 			}
 
-			var $clone = $("#progress-0")
+			let $clone = $("#progress-0")
 				.removeClass('d-none')
 				.clone();
 			$clone.attr("id", "progress-" + count);
-			var $bar = $clone.children(".progress-bar");
+			let $bar = $clone.children(".progress-bar");
 			$bar.attr("id", "bar-" + count);
 			$bar.attr("aria-valuenow", pct);
 			$bar.css("width", pct);
 			$clone.css("display", "block");
-			var color_rgb = getRGB(color);
+			let color_rgb = getRGB(color);
 			if(color_rgb === ""){
 				$bar.children("span").css("color", "white");
 				$bar.css("background-color", "blue");
@@ -147,7 +147,6 @@ function buildEvoProgressBars(return_message) {
 
 			$bar.children("span").text(color + " " + pct);
 			console.log("barring " + item.message);
-			//console.log($clone);
 
 			$clone.appendTo(".progress-wrapper");
 
@@ -209,22 +208,14 @@ function ASDispenseProgress() {
 	ws_tinter.send(json);
 }
 
-function evoDispenseProgress(tinterMessage) {
+function evoDispenseProgress() {
 	console.log('before dispense progress send');
 	$('#tinterInProgressMessage').text('');
 	rotateIcon();
-	var cmd = "DispenseStatus";
+	let cmd = "DispenseStatus";
 
-	/*if(tinterMessage != null) {
-		msgId = tinterMessage.msgId;
-	}
-	else {
-		msgId = (new TinterMessage(cmd, null, null, null, null)).msgId;
-	}*/
-
-	//var newTinterMessage = new TinterMessage(cmd, null, null, null, null, msgId);
-	var newTinterMessage = new TinterMessage(cmd, null, null, null, null);
-	var json = JSON.stringify(newTinterMessage);
+	let newTinterMessage = new TinterMessage(cmd, null, null, null, null);
+	let json = JSON.stringify(newTinterMessage);
 	sendingTinterCommand = "true";
 	ws_tinter.send(json);
 }
@@ -273,7 +264,6 @@ function evoDispenseProgressResp(return_message){
 	if(return_message.commandRC == 3){
 		//just started
 		console.log(return_message);
-		//PurgeProgress(return_message);
 		setTimeout(function() {
 			evoDispenseProgress();
 		}, 500);  //send progress request after waiting 200ms.  No need to slam the SWDeviceHandler
@@ -282,7 +272,6 @@ function evoDispenseProgressResp(return_message){
 		//keep updating modal with status
 		$("#tinterProgressList").empty();
 		buildEvoProgressBars(return_message)
-		//buildProgressBars(return_message);
 		if (return_message.errorList != null && return_message.errorList[0] != null && return_message.errorList.length > 0) { //TODO needed?
 			// show errors
 			return_message.errorList.forEach(function(item) {
@@ -310,12 +299,12 @@ function evoDispenseProgressResp(return_message){
 		processingDispense = false; // allow user to start another dispense after tinter error
 		sendingDispCommand = "false";
 		// send tinter event (no blocking here)
-		var curDate = new Date();
-		var myGuid = $("#reqGuid").val();
+		let curDate = new Date();
+		let myGuid = $("#reqGuid").val();
 
-		var teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
+		let teDetail = new TintEventDetail("ORDER NUMBER", $("#controlNbr").text(), 0);
 
-		var tedArray = [teDetail];
+		let tedArray = [teDetail];
 		if (tinterModel != null && tinterModel.startsWith("SANTINT")) {
 			return_message.errorMessage = log_english[errorKey];
 		}
@@ -547,7 +536,6 @@ function ASDispenseComplete(return_message) {
 function evoDispenseComplete(return_message) {
 	processingDispense = false; // allow user to start another dispense after tinter error
 	$('#spinner').addClass('d-none');
-//	buildProgressBars(return_message);
 	$("#abort-message").hide();
 
 	if ((return_message.errorNumber == 0 &&  return_message.commandRC == 2)
