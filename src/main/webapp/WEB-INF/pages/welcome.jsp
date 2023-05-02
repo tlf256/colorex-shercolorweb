@@ -426,7 +426,7 @@
 				layoutUpdateChosen = false;
 			} else {
 				initErrorList = [];
-				if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+				if(return_message.errorNumber == 0 && (return_message.commandRC == 0 || return_message.commandRC == 2)){
 					// Detected and no errors from tinter 			
 					// clear init error in session			
 					saveInitErrorsToSession($("#startNewJob_reqGuid").val(),initErrorList);
@@ -780,7 +780,7 @@
 							}
 							else {				
 								// current detect, see if there were errors			}
-								if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+								if(return_message.errorNumber == 0 && (return_message.commandRC == 0 || return_message.commandRC == 2)){
 									// Detected and no errors from tinter 
 									//Update session to clear error in status area
 									initErrorList = [];

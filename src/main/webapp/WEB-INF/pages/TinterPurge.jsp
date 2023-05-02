@@ -152,6 +152,70 @@
 			});
 		}
 	}
+
+	function buildEvoProgressBars(return_message) {
+		var count = 1;
+		var keys=[];
+		$(".progress-wrapper").empty();
+		keys = Object.keys(return_message.statusMessages);
+		if (keys !=null && keys.length > 0) {			
+			return_message.statusMessages.forEach(function(item){
+				var colorList = item.message.split(" ");
+				var color;
+				var pct;
+				if(colorList.length > 1){
+					color= colorList[0];
+					pct = colorList[1];
+				} else {
+					color= "";
+					pct = item.message;
+				}
+				
+				var $clone = $("#progress-0").clone();
+				$clone.attr("id","progress-" + count);
+				var $bar = $clone.children(".progress-bar");
+				$bar.attr("id","bar-" + count);
+				$bar.attr("aria-valuenow",pct);
+				$bar.css("width", pct);
+				$clone.css("display", "block");
+				var color_rgb = getRGB(color);
+				if(color_rgb === ""){
+					$bar.children("span").css("color", "white");
+					$bar.css("background-color", "blue");
+				}
+				else {
+					//change color of text based on background color
+					switch(color){
+					case "WHT":
+					case "TW":
+					case "W1":
+						$bar.children("span").css("color", "black");
+						$bar.css("background-color", "#efefef");
+						break;
+					case "OY":
+					case "Y1":
+					case "YGS":
+						$bar.children("span").css("color", "black");
+						$bar.css("background-color", color_rgb);
+						break;
+					default:
+						$bar.css("background-color", color_rgb);
+						$bar.children("span").css("color", "white");
+						break;
+					}
+				}
+				
+				$bar.children("span").text(pct);
+				
+				console.log("barring " + item.message);
+				//console.log($clone);
+				
+				$clone.appendTo(".progress-wrapper");
+				
+				count++;
+			});
+		}
+	}
 	
 	function PurgeProgress(tintermessage){
 		console.log('before purge status modal show');
@@ -166,6 +230,10 @@
 				cmd = "PurgeStatus";
 			}
 		   	var tintermessage = new TinterMessage(cmd,null,null,null,null);
+		}
+		else if(tinterModel !=null && ( tinterModel.startsWith("COROB EVO"))){ 
+			var cmd = "PurgeStatus";
+			var tintermessage = new TinterMessage(cmd,null,null,null,null);  
 		}
 		else{
 			var cmd = "DispenseStatus";
@@ -236,6 +304,42 @@
 		}
 			
     }
+	function evoDispenseProgressResp(myGuid, curDate,return_message, tedArray){
+		$("#abort-message").show();
+		if(return_message.commandRC == 3){
+			//just started
+			if(return_message.errorNumber == -10500){
+				//warnings present
+				return_message.errorList.forEach(function(item){
+					$("#tinterWarningList").append('<li class="alert alert-warning">'+item.message+'</li>');
+				});
+				//Show in modal, they can say OK to continue
+				waitForShowAndHide("#tinterInProgressModal");
+				$("#tinterWarningListModal").modal('show');
+			}
+
+			console.log(return_message);
+			PurgeProgress(return_message);
+		} else if(return_message.commandRC == 33){
+			//in progress
+			//keep updating modal with status
+			$("#tinterProgressList").empty();
+			buildEvoProgressBars(return_message)
+			//buildProgressBars(return_message);
+			console.log(return_message);
+			PurgeProgress(return_message);
+		} else if(return_message.commandRC == 2){
+			//done
+			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+			$(".progress-wrapper").empty();
+			console.log("done purging")
+			console.log(return_message)
+		} else {
+			//assume it is an error
+			purgeComplete(myGuid, curDate,return_message, tedArray, "fmx");
+			console.log(return_message)
+		}
+	}
 	function alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray){
 		$("#abort-message").show();
 		$('#progressok').addClass('d-none');  //hide ok button
@@ -487,13 +591,21 @@
 						var teDetail = new TintEventDetail("PURGE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						var tinterModel = $("#tinterPurgeAction_tinterModel").val();
-						if(tinterModel !=null && (tinterModel.startsWith("FM X") || tinterModel.startsWith("AS"))){
-							if(return_message.errorNumber == 4226){
-								return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
-							}
+						
+						if(tinterModel == null ) {
+							//do we really want this behavior?
+							purgeComplete(myGuid, curDate, return_message, tedArray);
+						}
+						else if(tinterModel.startsWith("FM X") || tinterModel.startsWith("AS")){
+							 if(return_message.errorNumber == 4226){
+							    	return_message.errorMessage = '<s:text name="global.tinterDriverBusyReinitAndRetry"/>';
+							    }
 							dispenseProgressResp(myGuid, curDate,return_message, tedArray); 
 						}
-						else if (tinterModel !=null && tinterModel.startsWith("ALFA")){
+						else if(tinterModel.startsWith("COROB EVO")){
+							evoDispenseProgressResp(myGuid, curDate,return_message, tedArray);
+						}
+						else if(tinterModel.startsWith("ALFA")){
 							alfaDispenseProgressResp(myGuid, curDate,return_message, tedArray);
 						}
 						else{
@@ -510,7 +622,7 @@
 						var teDetail = new TintEventDetail("NOZZLE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
-						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+						if((return_message.errorNumber == 0 && (return_message.commandRC == 0 || return_message.commandRC == 2)) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							// Enable Done button
 							$("#cleanNozzleButton").prop('disabled', false);
 						} else {
@@ -527,7 +639,7 @@
 						var teDetail = new TintEventDetail("NOZZLE USER", $("#tinterPurgeAction_currUser").val(), 0);
 						var tedArray = [teDetail];
 						sendTinterEvent(myGuid, curDate, return_message, tedArray); 
-						if((return_message.errorNumber == 0 && return_message.commandRC == 0) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
+						if((return_message.errorNumber == 0 && (return_message.commandRC == 0 || return_message.commandRC == 2)) || (return_message.errorNumber == -10500 && return_message.commandRC == -10500)){
 							waitForShowAndHide("#closeNozzleInProgressModal");
 							//removeTinterAlertDangerWarnings();
 						} else {
@@ -956,7 +1068,29 @@
 							</div>
 						</div>
 					</div>
-				</div>			    
+				</div>
+				<!-- Tinter Warning List Modal Window -->
+			    <div class="modal fade" aria-labelledby="tinterWarningListModal" aria-hidden="true"  id="tinterWarningListModal" role="dialog">
+			    	<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="tinterWarningListTitle"><s:text name="global.tinterWarning"></s:text></h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="%{getText('global.close)}"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<div>
+									<ul class="p-0" id="tinterWarningList" style="list-style: none;">
+									</ul>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" id="tinterWarningListOK" data-dismiss="modal" aria-label="%{getText('global.close)}" >
+									<s:text name="global.ok"></s:text>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>			    		    
 			</s:form>
 	
 		</div>

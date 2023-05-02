@@ -171,7 +171,7 @@
 			updateColorantsTxt(reqGuid, return_message, false, null);
 		}
 		
-		if(return_message.errorNumber == 0 && return_message.commandRC == 0){
+		if(return_message.errorNumber == 0 && (return_message.commandRC == 0 || return_message.commandRC == 2)){
 			// Detected and no errors from tinter 
             waitForShowAndHide("#initTinterInProgressModal");
 			$("#tinterAlertList").empty();
@@ -312,7 +312,7 @@
 			switch (return_message.command) {
 			case 'CalDownload':
 				if (return_message.errorNumber == 0
-						&& return_message.commandRC == 0) {
+						&& (return_message.commandRC == 0 || return_message.commandRC == 2)) {
 					init();
 					$("#initTinterInProgressModal").modal('show');
 				} else {
@@ -350,7 +350,7 @@
 				  waitForShowAndHide("#detectInProgressModal");
 				  $('#btn_downloadEcal').prop('disabled', false); //reenable button
 				if (return_message.errorNumber == 0
-						&& return_message.commandRC == 0) {
+						&& (return_message.commandRC == 0 || return_message.commandRC == 2)) {
 					//save
 					$('#detectInProgressModal').on('hidden.bs.modal', function(e) {
 						$("#detectStatusModal").modal('show');
