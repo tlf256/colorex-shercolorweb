@@ -67,25 +67,25 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private boolean debugOn = false;
 	
 	@Autowired
-	TranHistoryService tranHistoryService;
+	private transient TranHistoryService tranHistoryService;
 	
 	@Autowired
-	ColorantService colorantService;
+	private transient ColorantService colorantService;
 	
 	@Autowired
-	FormulationService formulationService;
+	private transient FormulationService formulationService;
 	
 	@Autowired
-	CustomerService customerService;
+	private transient CustomerService customerService;
 	
 	@Autowired
-	ColorService colorService;
+	private transient ColorService colorService;
 	
 	@Autowired
-	UtilityService utilityService;
+	private transient UtilityService utilityService;
 	
 	@Autowired
-	ProductService productService;
+	private transient ProductService productService;
 	
 	public String display() {
 		
