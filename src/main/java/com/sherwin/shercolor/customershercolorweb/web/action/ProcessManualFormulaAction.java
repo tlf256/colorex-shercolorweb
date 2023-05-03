@@ -25,6 +25,7 @@ import com.sherwin.shercolor.common.service.ColorService;
 import com.sherwin.shercolor.common.service.ColorantService;
 import com.sherwin.shercolor.common.service.CustomerService;
 import com.sherwin.shercolor.common.service.FormulationService;
+import com.sherwin.shercolor.common.service.ProductService;
 import com.sherwin.shercolor.common.service.TranHistoryService;
 import com.sherwin.shercolor.common.service.UtilityService;
 import com.sherwin.shercolor.customershercolorweb.web.model.JobField;
@@ -66,22 +67,25 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 	private boolean debugOn = false;
 	
 	@Autowired
-	TranHistoryService tranHistoryService;
+	private transient TranHistoryService tranHistoryService;
 	
 	@Autowired
-	ColorantService colorantService;
+	private transient ColorantService colorantService;
 	
 	@Autowired
-	FormulationService formulationService;
+	private transient FormulationService formulationService;
 	
 	@Autowired
-	CustomerService customerService;
+	private transient CustomerService customerService;
 	
 	@Autowired
-	ColorService colorService;
+	private transient ColorService colorService;
 	
 	@Autowired
-	UtilityService utilityService;
+	private transient UtilityService utilityService;
+	
+	@Autowired
+	private transient ProductService productService;
 	
 	public String display() {
 		
@@ -240,8 +244,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 			// get displayFormula and apply percent of formula, return ingredientList
 			
-			CdsMiscCodes conversionRatio = utilityService.getCdsMiscCodes("SZCNV",
-											startingContainer+endingContainer);
+			Double conversionRatio = productService.getSzCodeConversionRatio(startingContainer, endingContainer);
 			
 			if (conversionRatio != null) {
 				displayFormula = reqObj.getDisplayFormula();
@@ -252,7 +255,7 @@ public class ProcessManualFormulaAction extends ActionSupport implements Session
 				}
 				
 				logger.debug("in sizeAdjustment, about to call scaleByPercent");
-				displayFormula = formulationService.scaleFormulaBySize(displayFormula, Double.parseDouble(conversionRatio.getMiscName()));
+				displayFormula = formulationService.scaleFormulaBySize(displayFormula, conversionRatio);
 				
 				logger.debug("in sizeAdjustment, new Formula ingredient count returned is " + displayFormula.getIngredients().size());
 				for(FormulaIngredient item : displayFormula.getIngredients()){
