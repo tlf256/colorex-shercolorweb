@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -119,13 +120,13 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 				
 				String loginId = swUserService.getLoginId(userId);	//Get the loginID from the table instead of getting from the login page after authentication;
 				if(loginId == null){
-					throw new Exception("User "+  Encode.forHtml(userId)  + " does not exist.");
+					throw new FailedLoginException("User "+  Encode.forHtml(userId)  + " does not exist.");
 				}
 				userId = loginId;  
 				
 				// Does userID match valid user ID pattern
 				if (!pattern.matcher(userId).matches()) {
-					throw new Exception("Login failed. This login ID failed pattern matching (A-Z/a-z/0-9).");
+					throw new FailedLoginException("Login failed. login ID "+ Encode.forHtml(userId) +" failed pattern matching (A-Z/a-z/0-9).");
 				}
 				
 				// Is Login Active
@@ -133,7 +134,7 @@ public class LoginUserAction  extends ActionSupport  implements SessionAware  {
 					isDisabledLogin = true;
 					if (logger.isDebugEnabled())
 						logger.debug(Encode.forJava("authentication failed, inactive login  -> " + Encode.forHtml(userId)));
-					throw new Exception("Login failed. This login has been disabled.");
+					throw new FailedLoginException("Login failed. login ID "+ Encode.forHtml(userId) +" has been disabled.");
 				}
 				
 				// Do Login
