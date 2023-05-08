@@ -17,7 +17,8 @@ on:
       
 jobs:
   pr-validation:
-    uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@master
+    uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@dja557/SCD-700
     with:
       java_version: 8
+      postgresql_build_test_run: true
     secrets: inherit
