@@ -11,7 +11,7 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
+    org.hibernate.type.descriptor.sql: info
     org.hibernate: error
     org.apache.struts: warn
     com.opensymphony.xwork2: warn
