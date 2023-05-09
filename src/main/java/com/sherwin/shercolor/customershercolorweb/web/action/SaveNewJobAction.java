@@ -123,6 +123,10 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 			} else {
 				// Create
 				custWebTran.setInitTranDate(localeDateTime);
+
+				// set default sale status for new custwebtran
+				custWebTran.setSaleStatus("OPEN");
+
 				// save job through tranHistoryService
 				//logger.info("its a create call saveNewTranHistory ");
 				SwMessage errMsg = tranHistoryService.saveNewTranHistory(custWebTran);
@@ -423,6 +427,7 @@ public class SaveNewJobAction  extends ActionSupport  implements SessionAware, L
 		custWebTran.setLastTranDate(reqObj.getLastTranDate());
 		custWebTran.setVinylSafe(reqObj.isVinylExclude());
 		custWebTran.setRoomByRoom(reqObj.getRoomByRoom());
+		custWebTran.setRequestSource(reqObj.getRequestSource());
 		
 		//formula fields
 		FormulaInfo displayFormula = reqObj.getDisplayFormula();

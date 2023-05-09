@@ -144,6 +144,9 @@ public class ProcessJobFieldsAction extends ActionSupport implements SessionAwar
 		try{
 			updateMode=1;
 			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+
+			// set default request source when copying to new job
+			reqObj.setRequestSource("SCWEB");
 			
 			jobFieldList = reqObj.getJobFieldList();
 			

@@ -5,6 +5,8 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
+
 import org.springframework.stereotype.Component;
 
 
@@ -39,6 +41,9 @@ public class SelectJobAction extends ActionSupport  implements SessionAware, Log
 	public String startNewJob() {
 		
 		 try {
+			// set default request source when job started
+			RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
+			reqObj.setRequestSource("SCWEB");
 		     return SUCCESS;
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);

@@ -90,6 +90,7 @@ public class RequestObject {
 	private List<CdsRoomList> allRooms;
 	private String customerType;
 	private String osName;
+	private String requestSource;
 
 	public String getOsName() {
 		return osName;
@@ -600,6 +601,12 @@ public class RequestObject {
 	}
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
+	}
+	public String getRequestSource() {
+		return requestSource;
+	}
+	public void setRequestSource(String requestSource) {
+		this.requestSource = requestSource;
 	}
 
 }
