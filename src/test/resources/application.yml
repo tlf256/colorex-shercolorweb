@@ -1,0 +1,17 @@
+# Test-specific properties
+spring:
+  config:
+    import: optional:file:${user.home}/dev.properties
+  profiles:
+    # login profile is unconditionally included in order to use the Wildfly security JNDI connection
+    include: login,login-jdbc,common
+    # activate db type (oracle or postgres) and environment (dev, qa or prod)
+    active: oracle,dev,local
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
+    org.hibernate: error
+    org.apache.struts: warn
+    com.opensymphony.xwork2: warn
