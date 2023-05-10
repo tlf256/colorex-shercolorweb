@@ -297,8 +297,8 @@
 			
 		}
 		else{
-			var fmx = (tinterModel.startsWith('FM X')) ? "fmx" : "";
 			var tinterModel = $("#tinterPurgeAction_tinterModel").val();
+			var fmx = (tinterModel.startsWith('FM X')) ? "fmx" : "";
 			purgeComplete(myGuid, curDate,return_message, tedArray, fmx);
 			$(".progress-wrapper").empty();
 		}
