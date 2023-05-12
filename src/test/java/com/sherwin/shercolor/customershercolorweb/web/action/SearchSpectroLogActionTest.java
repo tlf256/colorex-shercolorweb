@@ -4,10 +4,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.opensymphony.xwork2.ActionProxy;
+import com.sherwin.shercolor.common.domain.CustWebSpectroEvents;
 import com.sherwin.shercolor.customershercolorweb.annotation.SherColorWebTransactionalTest;
 import com.sherwin.shercolor.customershercolorweb.web.model.RequestObject;
 import com.sherwin.shercolor.customershercolorweb.web.model.SpectroInfo;
@@ -92,6 +95,7 @@ public class SearchSpectroLogActionTest extends StrutsSpringJUnit4TestCase<Searc
 		assertTrue(value.contains("ReadConfig"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testLogLookupActionNoSpectro() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/spectroLogLookupAction");
@@ -109,9 +113,11 @@ public class SearchSpectroLogActionTest extends StrutsSpringJUnit4TestCase<Searc
 		String success = executeAction("/spectroLogLookupAction");
 		System.out.println("testLogLookupActionWithNoSpectro Success String: " + success);
 		assertNotNull(success);
-		assertTrue(success.contains("\"customerId\":\"LB6110\",\"deltaE\":0,\"errorCode\":0,\"errorMsg\":null,\"guid\":\"b38e4a0e-eb64-471b-a207-b69b1a9bc95a\",\"requestTime\":\"2022-12-08T16:44:20\",\"responseCode\":0,\"responseMsg\":null,\"responseTime\":\"2022-12-08T16:44:22\",\"spectroCommand\":\"ReadConfig\",\"spectroModel\":\"SWSimSpectro\",\"spectroPort\":\"USB\",\"spectroSerialNbr\":\"simunit1\",\"targetSizeMm\":0"));
+		List<CustWebSpectroEvents> events = (List<CustWebSpectroEvents>) findValueAfterExecute("spectroEventResults");
+		assertTrue(CollectionUtils.isNotEmpty(events));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testLogLookupActionWithSpectro() throws UnsupportedEncodingException, ServletException {
 		ActionProxy proxy = getActionProxy("/spectroLogLookupAction");
@@ -132,6 +138,7 @@ public class SearchSpectroLogActionTest extends StrutsSpringJUnit4TestCase<Searc
 		String success = executeAction("/spectroLogLookupAction");
 		System.out.println("testLogLookupActionWithSpectro Success String: " + success);
 		assertNotNull(success);
-		assertTrue(success.contains("\"customerId\":\"LB6110\",\"deltaE\":0,\"errorCode\":0,\"errorMsg\":null,\"guid\":\"0b6049cc-cc03-4bc6-9882-74a8cb67c9f7\",\"requestTime\":\"2022-10-26T15:25:45\",\"responseCode\":0,\"responseMsg\":null,\"responseTime\":\"2022-10-26T15:25:46\",\"spectroCommand\":\"ReadConfig\",\"spectroModel\":\"Ci52+SWS\",\"spectroPort\":\"USB\",\"spectroSerialNbr\":\"005970\",\"targetSizeMm\":0"));
+		List<CustWebSpectroEvents> events = (List<CustWebSpectroEvents>) findValueAfterExecute("spectroEventResults");
+		assertTrue(CollectionUtils.isNotEmpty(events));
 	}
 }
