@@ -140,6 +140,10 @@ You must pass the following values manually to this command in order to keep the
 helm upgrade shercolorweb . --install -f values.yaml -f values-stores.yaml --set sherlinkDbPassword=<value> --set postgres.shercolorPass=<value> --set artifactoryToken=<value>
 ```
 
+## Configuration
+### Switching Environments
+1. Change the environment profile in the `src/main/resources/application.yml` `spring.profiles.active` property to your desired environment (defaults to dev - dev, qa, or prod)
+2. In the pom.xml file, change the `wildfly-jar-maven-plugin.configuration.cli-sessions.cli-session.properties-file` property to `wildfly/scripts/properties/<dev,qa,or prod>.properties`
 
 ## Testing
 This application is tested in a number of ways:
