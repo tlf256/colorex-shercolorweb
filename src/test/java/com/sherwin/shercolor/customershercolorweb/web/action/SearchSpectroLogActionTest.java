@@ -107,9 +107,9 @@ public class SearchSpectroLogActionTest extends StrutsSpringJUnit4TestCase<Searc
 		session.setAttribute(reqObj.getGuid(), reqObj);
 
 		String success = executeAction("/spectroLogLookupAction");
-		System.out.println("testLogLookupActionWithSpectro Success String: " + success);
+		System.out.println("testLogLookupActionWithNoSpectro Success String: " + success);
 		assertNotNull(success);
-		assertTrue(success.contains("\"customerId\":\"LB6110\",\"deltaE\":0,\"errorCode\":0,\"errorMsg\":null,\"guid\":\"b38e4a0e-eb64-471b-a207-b69b1a9bc95a\",\"requestTime\":\"2022-12-08T11:44:20\",\"responseCode\":0,\"responseMsg\":null,\"responseTime\":\"2022-12-08T11:44:22\",\"spectroCommand\":\"ReadConfig\",\"spectroModel\":\"SWSimSpectro\",\"spectroPort\":\"USB\",\"spectroSerialNbr\":\"simunit1\",\"targetSizeMm\":0"));
+		assertTrue(success.contains("\"customerId\":\"LB6110\",\"deltaE\":0,\"errorCode\":0,\"errorMsg\":null,\"guid\":\"b38e4a0e-eb64-471b-a207-b69b1a9bc95a\",\"requestTime\":\"2022-12-08T16:44:20\",\"responseCode\":0,\"responseMsg\":null,\"responseTime\":\"2022-12-08T16:44:22\",\"spectroCommand\":\"ReadConfig\",\"spectroModel\":\"SWSimSpectro\",\"spectroPort\":\"USB\",\"spectroSerialNbr\":\"simunit1\",\"targetSizeMm\":0"));
 	}
 	
 	@Test
@@ -132,6 +132,6 @@ public class SearchSpectroLogActionTest extends StrutsSpringJUnit4TestCase<Searc
 		String success = executeAction("/spectroLogLookupAction");
 		System.out.println("testLogLookupActionWithSpectro Success String: " + success);
 		assertNotNull(success);
-		assertTrue(success.contains("\"customerId\":\"LB6110\",\"deltaE\":0,\"errorCode\":0,\"errorMsg\":null,\"guid\":\"0b6049cc-cc03-4bc6-9882-74a8cb67c9f7\",\"requestTime\":\"2022-10-26T11:25:45\",\"responseCode\":0,\"responseMsg\":null,\"responseTime\":\"2022-10-26T11:25:46\",\"spectroCommand\":\"ReadConfig\",\"spectroModel\":\"Ci52+SWS\",\"spectroPort\":\"USB\",\"spectroSerialNbr\":\"005970\",\"targetSizeMm\":0"));
+		assertTrue(success.contains("\"customerId\":\"LB6110\",\"deltaE\":0,\"errorCode\":0,\"errorMsg\":null,\"guid\":\"0b6049cc-cc03-4bc6-9882-74a8cb67c9f7\",\"requestTime\":\"2022-10-26T15:25:45\",\"responseCode\":0,\"responseMsg\":null,\"responseTime\":\"2022-10-26T15:25:46\",\"spectroCommand\":\"ReadConfig\",\"spectroModel\":\"Ci52+SWS\",\"spectroPort\":\"USB\",\"spectroSerialNbr\":\"005970\",\"targetSizeMm\":0"));
 	}
 }

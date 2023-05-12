@@ -95,8 +95,6 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 			if (tdate != null && tdate.length() != 0) {
 				toRequestTime = jsdf.parse(tdate);
 			}
-			logger.debug("spectroEventLog search params: reqObj.getCustomerID() - {}, spectroModel - {}, spectroSerial - {}, cmd - {}, fromRequestTime - {}, toRequestTime - {}",
-						reqObj.getCustomerID(), spectroModel, spectroSerial, cmd, fromRequestTime, toRequestTime);
 			results = spectroService.searchSpectroEvents(reqObj.getCustomerID(), spectroModel, spectroSerial, cmd, fromRequestTime, toRequestTime);
 			setSpectroEventResults(results);
 			
