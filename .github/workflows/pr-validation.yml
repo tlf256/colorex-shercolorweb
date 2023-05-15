@@ -20,4 +20,5 @@ jobs:
     uses: sherwin-williams-co/colorex-actions/.github/workflows/pr-validation-workflow.yml@master
     with:
       java_version: 8
+      postgresql_build_test_run: true
     secrets: inherit

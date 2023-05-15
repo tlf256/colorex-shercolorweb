@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
@@ -42,16 +43,23 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 		List<String> commands = new ArrayList<>();
 		RequestObject reqObj = (RequestObject) sessionMap.get(reqGuid);
 		try {
-			if(reqObj.getSpectro() != null && reqObj.getSpectro().getModel() != null && reqObj.getSpectro().getSerialNbr() != null) {
+			if(reqObj.getSpectro() != null && StringUtils.isNotBlank(reqObj.getSpectro().getModel()) && StringUtils.isNotBlank(reqObj.getSpectro().getSerialNbr())) {
+				logger.debug("Retrieving spectro command list for customer {},  model {}, and serial {}",
+						reqObj.getCustomerID(), reqObj.getSpectro().getModel(), reqObj.getSpectro().getSerialNbr());
 				commands = spectroService.getSpectroCommands(reqObj.getCustomerID(), reqObj.getSpectro().getModel(), reqObj.getSpectro().getSerialNbr());
 			} else {
+				logger.debug("retrieving spectro command list for customerid {}", reqObj.getCustomerID());
 				commands = spectroService.getSpectroCommands(reqObj.getCustomerID());
 			}
 
 			if(!commands.isEmpty()) {
 				setSpectroCommands(commands);
+			} else {
+				logger.debug("spectro command list is empty. Adding default value 'No Commands Available' to list.");
+				commands.add("No Commands Available");
+				setSpectroCommands(commands);
 			}
-			
+						
 		} catch(RuntimeException e) {
 			logger.error("Exception Caught: {} {}", e, e.getMessage());
 			return ERROR;
@@ -75,7 +83,7 @@ public class SearchSpectroLogAction extends ActionSupport implements SessionAwar
 			cmd = URLDecoder.decode(this.spectroCommand.trim(), "UTF-8");
 			fdate = URLDecoder.decode(this.fromDate.trim(), "UTF-8");
 			tdate = URLDecoder.decode(this.toDate.trim(), "UTF-8");
-			if(reqObj.getSpectro() != null && reqObj.getSpectro().getModel() != null && reqObj.getSpectro().getSerialNbr() != null) {
+			if(reqObj.getSpectro() != null && StringUtils.isNotBlank(reqObj.getSpectro().getModel()) && StringUtils.isNotBlank(reqObj.getSpectro().getSerialNbr())) {
 				spectroModel = reqObj.getSpectro().getModel();
 				spectroSerial = reqObj.getSpectro().getSerialNbr();
 			}
