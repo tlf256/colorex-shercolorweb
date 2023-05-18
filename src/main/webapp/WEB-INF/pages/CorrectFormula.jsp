@@ -48,6 +48,9 @@
 		.popover-body{
 			color: white;
 		}
+		.disableTinterDispenseWrapper {
+			display: inline;
+		}
 		</style>
 	<script type="text/javascript">
 	// global vars for tinter
@@ -209,19 +212,29 @@
 	function dispenseAcceptedClick(){
 		method="DISPENSE ACCEPTED";
 		dispenseAccepted = true;
+		shotList = [];
 		// if dispenseItemList avail on display then it is the accepted formula
-	<s:iterator value="dispenseItemList">
-		shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
-	</s:iterator>
+		<s:iterator value="dispenseItemList">
+			shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
+		</s:iterator>
 		//console.log(shotList);
 		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
 		$("#mainForm_stepStatus").val("ACCEPTED");
 		// start dispense process (preDispenseCheck --> decrementColorantLevels --> dispense --> recdMessage)
-		if($("#mainForm_sessionHasTinter").val()=="true" && $('#tinterClrntSys').val() === $('#formulaClrntSys').val()) {
-			preDispenseCheck();
-		} else {
-			$("#startDispenseButton").click();
-		}
+		preDispenseCheck();
+	}
+	
+	function handDispenseAcceptedClick() {
+		method="DISPENSE ACCEPTED";
+		dispenseAccepted = true;
+		shotList = [];
+		// if dispenseItemList avail on display then it is the accepted formula
+		<s:iterator value="dispenseItemList">
+			shotList.push(new Colorant("<s:property value="clrntCode"/>",<s:property value="shots"/>,<s:property value="position"/>,<s:property value="uom"/>));
+		</s:iterator>
+		$("#mainForm_stepStatus").val("ACCEPTED");
+		$("#reason").val('<s:text name="correctFormula.dispenseSameAsContainer"><s:param>'+$("#mainForm_acceptedContNbr").val()+'</s:param></s:text>');
+		$('#confirmHandDispenseModal').modal('show');
 	}
 
 	function mistintContainerClick(){
@@ -318,6 +331,7 @@
 
 
 	function skipConfirmOKClick(){
+		shotList = [];
 		method="SKIP CONTAINER";
 		//Build correction step info and save to DB
 		var curDate = new Date();
@@ -1536,8 +1550,13 @@
 										<button type="button" class="btn btn-secondary" id="mistintContainer" onclick="mistintContainerClick()">
 											<s:text name="correctFormula.mistintContainer"></s:text>
 										</button>
-										<button type="button" class="btn btn-secondary" id="dispenseAccepted" onclick="dispenseAcceptedClick()">
-											<s:text name="correctFormula.dispenseAccepted"></s:text>
+										<div class="disableTinterDispenseWrapper" data-toggle="tooltip" data-placement="top">
+											<button type="button" class="btn btn-secondary" id="dispenseAccepted" onclick="dispenseAcceptedClick()">
+												<s:text name="correctFormula.dispenseAccepted"></s:text>
+											</button>
+										</div>
+										<button type="button" class="btn btn-secondary" id="acceptedHandDispense" onclick="handDispenseAcceptedClick()">
+											<s:text name="correctFormula.handDispenseAccepted"></s:text>
 										</button>
 										<button type="button" class="btn btn-secondary" id="skipContainer" onclick="skipContainerClick()">
 											<s:text name="correctFormula.skipContainer"></s:text>
@@ -1598,7 +1617,7 @@
 									</button>
 								</td></tr>
 								<tr><td>
-									<div id="disableWrapper" data-toggle="tooltip" data-placement="top">
+									<div class="disableTinterDispenseWrapper" data-toggle="tooltip" data-placement="top">
 									    <button type="button" class="btn btn-primary btn-block" id="dispenseAdd" onclick="dispenseAddClick()">
 										    <s:text name="correctFormula.dispenseAddition"></s:text>
 									    </button>
@@ -2154,6 +2173,7 @@
 				$("#acceptContainer").hide();
 				$("#mistintContainer").hide();
 				$("#dispenseAccepted").hide();
+				$('#acceptedHandDispense').hide();
 				$("#skipContainer").hide();
 			} 
 			if($("#mainForm_corrStatus").val()=="NEWCYCLE"){
@@ -2164,6 +2184,7 @@
 				$("#acceptContainer").hide();
 				$("#mistintContainer").hide();
 				$("#dispenseAccepted").hide();
+				$('#acceptedHandDispense').hide();
 				$("#skipContainer").hide();
 			}
 			if($("#mainForm_corrStatus").val()=="MIDUNIT"){
@@ -2174,6 +2195,7 @@
 				$("#acceptContainer").show();
 				$("#mistintContainer").show();
 				$("#dispenseAccepted").hide();
+				$('#acceptedHandDispense').hide();
 				$("#skipContainer").hide();
 			}
 			if($("#mainForm_corrStatus").val()=="MIDCYCLE"){
@@ -2184,6 +2206,22 @@
 					$("#addStep").hide();
 					$("#acceptContainer").hide();
 					$("#mistintContainer").hide();
+					if($("#mainForm_sessionHasTinter").val() == "true") {
+						if($('#tinterClrntSys').val() !== $('#formulaClrntSys').val()) {
+							$('#dispenseAccepted').prop('disabled', true);
+							$('#dispenseAccepted').css('pointer-events', 'none');
+							$('.disableTinterDispenseWrapper').prop('title', '<s:text name="correctFormula.wrongTinterColorantSys" />');
+							$('.disableTinterDispenseWrapper').css('cursor', 'not-allowed');
+							$('[data-toggle="tooltip"]').tooltip();
+						}
+					} else {
+						$('#dispenseAccepted').prop('disabled', true);
+						$('#dispenseAccepted').css('pointer-events', 'none');
+						$('.disableTinterDispenseWrapper').prop("title", '<s:text name="correctFormula.noTinterDetected" />');
+						$('.disableTinterDispenseWrapper').css('cursor', 'not-allowed');
+						$('[data-toggle="tooltip"]').tooltip();
+					}
+					$('#acceptedHandDispense').show();
 					$("#dispenseAccepted").show();
 					$("#skipContainer").show();
 				} else {
@@ -2194,6 +2232,7 @@
 					$("#acceptContainer").hide();
 					$("#mistintContainer").hide();
 					$("#dispenseAccepted").hide();
+					$('#acceptedHandDispense').hide();
 					$("#skipContainer").hide();
 				}
 			}
@@ -2203,8 +2242,8 @@
 					loadManualDispenseColorantDropdown();
 					$('#dispenseAdd').prop('disabled', true);
 					$('#dispenseAdd').css('pointer-events', 'none');
-					$('#disableWrapper').prop('title', '<s:text name="correctFormula.wrongTinterColorantSys" />');
-					$('#disableWrapper').css('cursor', 'not-allowed');
+					$('.disableTinterDispenseWrapper').prop('title', '<s:text name="correctFormula.wrongTinterColorantSys" />');
+					$('.disableTinterDispenseWrapper').css('cursor', 'not-allowed');
 					$('#dispenseAddManual').attr('class', 'btn btn-primary btn-block');
 					$('#dispenseAdd').attr('class', 'btn btn-secondary btn-block');
 					$('[data-toggle="tooltip"]').tooltip();
@@ -2216,8 +2255,8 @@
 				loadManualDispenseColorantDropdown();
 				$('#dispenseAdd').prop('disabled', true);
 				$('#dispenseAdd').css('pointer-events', 'none');
-				$('#disableWrapper').prop("title", '<s:text name="correctFormula.noTinterDetected" />');
-				$('#disableWrapper').css('cursor', 'not-allowed');
+				$('.disableTinterDispenseWrapper').prop("title", '<s:text name="correctFormula.noTinterDetected" />');
+				$('.disableTinterDispenseWrapper').css('cursor', 'not-allowed');
 				$('#dispenseAddManual').attr('class', 'btn btn-primary btn-block');
 				$('#dispenseAdd').attr('class', 'btn btn-secondary btn-block');
 				$('[data-toggle="tooltip"]').tooltip();
